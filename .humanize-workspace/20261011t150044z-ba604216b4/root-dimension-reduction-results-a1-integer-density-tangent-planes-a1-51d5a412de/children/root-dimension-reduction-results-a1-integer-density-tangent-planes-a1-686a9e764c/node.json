@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_sector_endpoint_density-a1.edge_tangent_plane-a1.plane_frame_sign-a1",
+  "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_sector_endpoint_density-a1.edge_tangent_plane-a1",
+  "depth": 5,
+  "title": "Two orthonormal frames of the same 2-plane: equal spans and 2-covectors agree up to a sign",
+  "statement": "Let P ∈ ℕ, Q a linear subspace of ℝ^P with dim Q = 2 (Module.finrank ℝ Q = 2), a, e ∈ Q with |a| = |e| = 1 and ⟨a, e⟩ = 0, and τ = (τ_0, τ_1) an orthonormal pair in ℝ^P (τ : Fin 2 → Euclid P) with a, e ∈ span{τ_0, τ_1}. Then span{τ_0, τ_1} = Q, and there is ε ∈ ℤ with |ε| = 1 (ε.natAbs = 1) such that α(τ) = ε·α(a, e) for every 2-covector α ∈ Covector(ℝ^P, 2), where α(a, e) denotes α applied to ![a, e].",
+  "lean_statement": "∀ (P : ℕ) (Q : Submodule ℝ (Euclid P)) (a e : Euclid P) (τ : Fin 2 → Euclid P), Module.finrank ℝ Q = 2 → a ∈ Q → e ∈ Q → ‖a‖ = 1 → ‖e‖ = 1 → inner ℝ a e = 0 → Orthonormal ℝ τ → a ∈ Submodule.span ℝ (Set.range τ) → e ∈ Submodule.span ℝ (Set.range τ) → Submodule.span ℝ (Set.range τ) = Q ∧ ∃ ε : ℤ, ε.natAbs = 1 ∧ ∀ α : Covector (Euclid P) 2, α τ = (ε : ℝ) * α ![a, e]",
+  "lean_name": "idtp_cse_etp_plane_frame_sign",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-686a9e764c-a1"
+}

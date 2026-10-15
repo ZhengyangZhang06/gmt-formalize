@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.lipschitz_pushforward-a1.integrality-a1.cylinder_im-a1.cyl_fubini-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.lipschitz_pushforward-a1.integrality-a1.cylinder_im-a1",
+  "depth": 6,
+  "title": "Fubini–Tonelli on the cylinder (0,1) × A ⊆ ℝ^{n+1} (supplied step 2(b)–(c))",
+  "statement": "Let n ∈ ℕ and let A ⊆ ℝⁿ (Euclid n) be Borel. Write ι(t, u) := (t, u_1, …, u_n) ∈ ℝ^{n+1} (Lean WithLp.toLp 2 (Fin.cons t (WithLp.ofLp u))), z_0 := WithLp.ofLp z 0, tail z := WithLp.toLp 2 (Fin.tail (WithLp.ofLp z)) ∈ ℝⁿ, and Â := {z ∈ ℝ^{n+1} : z_0 ∈ (0, 1) and tail z ∈ A}. All measures are Lebesgue measure (volume). Then (a) Â is Borel; (b) for every Borel f : ℝ^{n+1} → [0, ∞], ∫⁻_Â f = ∫⁻_{u ∈ A} ∫⁻_{t ∈ (0,1)} f(ι(t, u)) dt du; (c) for every f : ℝ^{n+1} → ℝ integrable on Â, ∫_Â f = ∫_{u ∈ A} ∫_{t ∈ (0,1)} f(ι(t, u)) dt du.",
+  "lean_statement": "∀ (n : ℕ) (A : Set (Euclid n)), MeasurableSet A → MeasurableSet {z : Euclid (n + 1) | WithLp.ofLp z 0 ∈ Ioo (0 : ℝ) 1 ∧ (WithLp.toLp 2 (Fin.tail (WithLp.ofLp z)) : Euclid n) ∈ A} ∧ (∀ f : Euclid (n + 1) → ℝ≥0∞, Measurable f → ∫⁻ z in {z : Euclid (n + 1) | WithLp.ofLp z 0 ∈ Ioo (0 : ℝ) 1 ∧ (WithLp.toLp 2 (Fin.tail (WithLp.ofLp z)) : Euclid n) ∈ A}, f z = ∫⁻ u in A, ∫⁻ t in Ioo (0 : ℝ) 1, f (WithLp.toLp 2 (Fin.cons t (WithLp.ofLp u)))) ∧ ∀ f : Euclid (n + 1) → ℝ, IntegrableOn f {z : Euclid (n + 1) | WithLp.ofLp z 0 ∈ Ioo (0 : ℝ) 1 ∧ (WithLp.toLp 2 (Fin.tail (WithLp.ofLp z)) : Euclid n) ∈ A} → ∫ z in {z : Euclid (n + 1) | WithLp.ofLp z 0 ∈ Ioo (0 : ℝ) 1 ∧ (WithLp.toLp 2 (Fin.tail (WithLp.ofLp z)) : Euclid n) ∈ A}, f z = ∫ u in A, ∫ t in Ioo (0 : ℝ) 1, f (WithLp.toLp 2 (Fin.cons t (WithLp.ofLp u)))",
+  "lean_name": "cmcdt_lpi_cyl_fubini",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-lip-36d21f0b90-a1"
+}

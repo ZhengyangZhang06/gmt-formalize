@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.mass_representation-a1.null_sets-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.mass_representation-a1",
+  "depth": 3,
+  "title": "The mass measure of a locally normal current vanishes on Hⁿ-null sets (Simon 6.2.36, parent Part II)",
+  "statement": "Let P, n ∈ ℕ, U ⊆ ℝ^P open, and T ∈ 𝒟_n(U) with M_W(∂T) < ∞ for every open W ⊂⊂ U (boundaryMassOn, read as 0 when n = 0). Let μ be a Borel measure on ℝ^P and ξ : ℝ^P → Λ_n a map into the n-vectors (MultiVector P n) such that:\n- μ(ℝ^P ∖ U) = 0;\n- μ(K) < ∞ for every compact K ⊆ U;\n- M_W(T) = μ(W) for every open W;\n- ξ is μ-a.e. strongly measurable;\n- |ξ(x)(α)| ≤ covectorEuclideanNorm α for all x and α;\n- T(ω) = ∫ ξ(x)(ω(x)) dμ(x) for all ω ∈ 𝒟ⁿ(U).\nThen μ(E) = 0 for every E ⊆ ℝ^P with μHE[n](E) = 0.",
+  "lean_statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (μ : Measure (Euclid P)) (ξ : Euclid P → MultiVector P n), IsOpen U → (∀ W : Set (Euclid P), IsOpen W → CompactlyContained W U → boundaryMassOn T W < ∞) → μ Uᶜ = 0 → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μ K < ∞) → (∀ W : Set (Euclid P), IsOpen W → T.massOn W = μ W) → AEStronglyMeasurable ξ μ → (∀ (x : Euclid P) (α : Covector (Euclid P) n), |ξ x α| ≤ covectorEuclideanNorm α) → (∀ ω : TestFormOn U n, T ω = ∫ x, ξ x ((ω : DifferentialForm (Euclid P) n) x) ∂μ) → ∀ E : Set (Euclid P), μHE[n] E = 0 → μ E = 0",
+  "lean_name": "cmr_null_of_representation",
+  "depends_on": [
+    "root.compactness_of_minimizing_currents-a1.mass_representation-a1.eval_mass_bound-a1",
+    "root.compactness_of_minimizing_currents-a1.mass_representation-a1.coordinate_covectors-a1",
+    "root.compactness_of_minimizing_currents-a1.mass_representation-a1.top_dim_null-a1",
+    "root.compactness_of_minimizing_currents-a1.mass_representation-a1.divergence_form-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.compactness_of_minimizing_currents-a1.mass_representation-a1.eval_mass_bound-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.compactness_of_minimizing_currents-a1.mass_representation-a1.coordinate_covectors-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.compactness_of_minimizing_currents-a1.mass_representation-a1.top_dim_null-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.compactness_of_minimizing_currents-a1.mass_representation-a1.divergence_form-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-mass-representation-a1-null-sets-a1-a1"
+}

@@ -1,0 +1,61 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat local-references/123e8435b4a2469b/manifest.json; read GMT/Ch07/Contract.lean, GMT/Ch07/README.md, PROBLEM.md and this node's parent-child-handoff.json, parent-supplied-plan.md, parent-supplied-natural-proof.md (proof identical to the handoff)",
+        "grep '^theorem|^def|^structure|^abbrev|^instance' simongmt Poincare/SimonGMT/Chapter06/{Forms,Currents,Mass,CurrentLocalEquality,AffineCurrentPushforward}.lean and Chapter03/{Rectifiable,Differential}.lean",
+        "grep '^theorem' simongmt Poincare/SimonGMT/Chapter02/{AreaLipschitz,AreaNoninjective,AreaCritical,AreaDomain,Area}.lean (weighted_area_formula_lipschitz_injOn, area_image_criticalSet_eq_zero, linear_area_formula)",
+        "python3 -I scans of dag.json (995 nodes): lean_name/statement matching push|area|pullback|compContinuousLinearMap|mollif|fderiv|ContDiffOn; status and candidate_commit of dpf_pushforward_formula_current_exists, dpf_pushforward_formula_boundaryVanishes, dpf_smooth_approx_compact_perturbation, dpf_rectifiable_bilipschitz_pieces, covectorEuclideanNorm_gram_bounds, ptd_ae_approxTangent_iff_of_subset, ptd_piece_image_approxTangent_ae; parallel nodes dimred_mbl_pf_* and dor_lmb_pc_* (all decomposing); byte-identity comparisons; collision check of dtc_bc_lc_pf_* (none)",
+        "git show <candidate_commit>:GMT/Ch07/Submission.lean | grep 'theorem Submission.<name>' for the six reused declarations (types identical); git log --all --oneline -S'dtc_bc_lc_pf_' (no match)",
+        "read nodes/root-dimension-reduction-results-a1-moving-blowups-a1-pushforward-a1/decomposition-v1.json, nodes/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-comparison-a1/decomposition-v1.json, and the parent-child-handoff.json of the reused nodes (audited proofs)",
+        "grep -n '_existing_lean_name_problem|_accepted_checkpoint|_overlay_accepted_children' /runtime/flows/gmt-claude-9a0895c8c5e1/_recursive_lean/runtime.py",
+        "grep Mathlib at the pin: exists_contDiff_support_eq_eq_one_iff, IsCompact.exists_cthickening_subset_open, exists_partition_approximatesLinearOn_of_hasFDerivWithinAt, MeasurableSet.image_of_continuousOn_injOn, LipschitzWith.ae_differentiableAt, ContDiffOn.continuousOn_fderiv_of_isOpen, norm_compContinuousLinearMap_le, ae_tendsto_average_norm_sub, ae_tendsto_measure_inter_div, norm_integral_le_of_norm_le, LipschitzOnWith.hausdorffMeasure_image_le, Filter.EventuallyEq.fderiv_eq, ContDiffBump.convolution_tendsto_right_of_continuous, Isometry.hausdorffMeasure_image, euclideanHausdorffMeasure_smul₀, LinearMap.euclideanHausdorffMeasure_image",
+        "sed -n book/chapter-06.txt lines 395-540 and 760-870 (2.23-2.29, 3.1-3.10); book/chapter-03.txt lines 330-412 (2.1-2.6)",
+        "lake env lean /tmp/pfdecomp/check/Types2.lean (12 child types in the scope from gmt-compare.py contract_scope); lake env lean /tmp/pfdecomp/check/Assembly2.lean with #print axioms; verifier lean_contract.validate_lean_statement on all 12 strings; topological sort of depends_on"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/README.md",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/PROBLEM.md",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-compari-a685b45291/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-compari-a685b45291/parent-supplied-natural-proof.md",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-comparison-a1/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-pushforward-a1/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/AffineCurrentPushforward.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Differential.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/AreaLipschitz.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/AreaCritical.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/Area.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/mathlib/Mathlib/Geometry/Manifold/PartitionOfUnity.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/mathlib/Mathlib/MeasureTheory/Function/Jacobian.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-03.txt",
+        "/runtime/flows/gmt-claude-9a0895c8c5e1/_recursive_lean/runtime.py",
+        "/tmp/pfdecomp/check/Types2.lean",
+        "/tmp/pfdecomp/check/Assembly2.lean"
+      ],
+      "conclusion": "The pinned SimonGMT library has currents, boundary, mass with the Euclidean coefficient norm, support and zero region, countable rectifiability, approximate tangent spaces and the Lipschitz area formula on ℝⁿ. It has only the affine push-forward, and no push-forward of integer multiplicity currents by C¹ maps. Comparator-accepted DAG declarations already prove, for compactly supported C¹ perturbations of the identity, that the push-forward formula defines a current and maps cycles to cycles (dpf_pushforward_formula_current_exists, dpf_pushforward_formula_boundaryVanishes). They are reused together with the node's four inherited dependencies (dtc_mass_eq_measure, dtc_vanish_off_support, cmc_imRep_locality_restrict_sub, rsd_cmr_support_subset_of_vanish), all with types identical to their accepted candidate commits. Five new types are byte-identical to the unaccepted dimred_mbl_pf_*/dor_lmb_pc_* nodes and get new unique names dtc_bc_lc_pf_*; c1_perturbation is new. All 12 types elaborate in the comparator scope, and a Lean assembly proves the exact frozen parent type from them using only propext, Classical.choice and Quot.sound."
+    }
+  ],
+  "proof": "Source: step 5 of the parent proof (Simon Ch. 6, 2.27 and 2.29: M_W(f_#T) ≤ (ess sup |Df|)ⁿ·M_{f⁻¹(W)}(T), chapter-06.txt lines 464–520), applied to any current Z given by the push-forward formula, together with the parent's remark that L ≥ 0 when O ≠ ∅ while O = ∅ forces spt Y = ∅. The frozen type is byte-identical to that of dimred_mbl_pf_pushforward_mass_le in another branch.\nNotation: Hⁿ := μHE[n]; |·|_E := covectorEuclideanNorm; R = (M, θ, ξ); μ_R := R.measure = θ·Hⁿ⌞M; K := spt Y; M(·) is the mass, the local mass on the whole domain ℝ^P (massOn univ), i.e. the supremum of ofReal(T(ω)) over ω ∈ 𝒟ⁿ(ℝ^P) with |ω(z)|_E ≤ 1 for all z.\n1. By the sibling carrier_facts (part (1)): Hⁿ(M ∖ K) = 0, M(Y) = μ_R(ℝ^P), and μ_R(ℝ^P) < ∞ because K is compact. Since μ_R(ℝ^P) = ∫⁻_M θ dHⁿ, θ is Hⁿ⌞M-integrable and ∫_M θ dHⁿ = μ_R(ℝ^P).toReal.\n2. Case L < 0. If y ∈ O, then 0 ≤ ‖Df(y)‖ ≤ L < 0, which is impossible; so O = ∅, hence K = ∅ (K ⊆ O) and Hⁿ(M) = Hⁿ(M ∖ K) = 0. Then Hⁿ⌞M is the zero measure, every integral over M vanishes, Z(ω) = 0 for every ω, and M(Z) = sup ofReal(0) = 0 ≤ ofReal(Lⁿ)·M(Y). From now on L ≥ 0.\n3. Pointwise bound. Let ω ∈ 𝒟ⁿ(ℝ^P) with |ω(z)|_E ≤ 1 for every z. For Hⁿ⌞M-a.e. x we have x ∈ K ⊆ O (step 1) and, by R.orients, a subspace Q_x with IsUnitOrientationOf (ξ(x)) Q_x. At such x the sibling orient_comp, part (a), applied with L := Df(x) and α := ω(f(x)), gives |ξ(x)(ω(f(x))∘Df(x))| ≤ |ω(f(x))|_E·‖Df(x)‖ⁿ ≤ 1·Lⁿ, because 0 ≤ ‖Df(x)‖ ≤ L (x ∈ O) and t ↦ tⁿ is monotone on [0, ∞). Hence |θ(x)·ξ(x)(ω(f(x))∘Df(x))| ≤ Lⁿ·θ(x) for Hⁿ⌞M-a.e. x.\n4. Integral bound. If ‖F‖ ≤ G a.e. with G integrable, then ‖∫F‖ ≤ ∫G, whether or not F is integrable (the Bochner integral of a non-integrable function is 0; Mathlib norm_integral_le_of_norm_le). With G := Lⁿθ, steps 1 and 3 give Z(ω) ≤ |Z(ω)| ≤ Lⁿ·∫_M θ dHⁿ = Lⁿ·μ_R(ℝ^P).toReal.\n5. Supremum. Hence ofReal(Z(ω)) ≤ ofReal(Lⁿ·μ_R(ℝ^P).toReal) = ofReal(Lⁿ)·ofReal(μ_R(ℝ^P).toReal) = ofReal(Lⁿ)·μ_R(ℝ^P) = ofReal(Lⁿ)·M(Y), using Lⁿ ≥ 0, μ_R(ℝ^P) < ∞ and step 1. Taking the supremum over all such ω (SimonGMT massOn with W = ℝ^P; the condition tsupport ω ⊆ ℝ^P is automatic), M(Z) ≤ ofReal(Lⁿ)·M(Y). ∎",
+  "key_steps": [
+    "carrier_facts: Hⁿ(M ∖ spt Y) = 0 and M(Y) = μ_R(ℝ^P) = ∫_M θ < ∞.",
+    "If L < 0 then O = ∅, so M is Hⁿ-null and Z = 0.",
+    "For |ω|_E ≤ 1 and a.e. x ∈ M (x ∈ spt Y ⊆ O), orient_comp (a) gives |ξ(x)(ω(f(x))∘Df(x))| ≤ ‖Df(x)‖ⁿ ≤ Lⁿ.",
+    "|Z(ω)| ≤ Lⁿ∫_M θ = Lⁿμ_R(ℝ^P); the supremum over admissible ω gives M(Z) ≤ ofReal(Lⁿ)·M(Y)."
+  ],
+  "unresolved": [],
+  "validation_notes": []
+}

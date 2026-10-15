@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.cone_splitting-a1.subspace_projection-a1.orient_projection-a1.projected_gram_det-a1",
+  "parent_id": "root.dimension_reduction_results-a1.cone_splitting-a1.subspace_projection-a1.orient_projection-a1",
+  "depth": 5,
+  "title": "The orthogonal projection of an orthonormal frame has Gram determinant at most 1",
+  "statement": "Let P, m ∈ ℕ, let V ⊆ ℝ^P (Euclid P) be a linear subspace with orthogonal projection q := V.starProjection : ℝ^P → ℝ^P, and let τ = (τ_1, …, τ_m) be an orthonormal family in ℝ^P (Orthonormal ℝ τ). Let G be the m×m real Gram matrix of qτ_1, …, qτ_m, G_ij := ⟨qτ_i, qτ_j⟩ (Matrix.of fun i j => inner ℝ (V.starProjection (τ i)) (V.starProjection (τ j))). Then det G ≤ 1.",
+  "lean_statement": "∀ (P m : ℕ) (V : Submodule ℝ (Euclid P)) (τ : Fin m → Euclid P), Orthonormal ℝ τ → Matrix.det (Matrix.of fun i j => inner ℝ (V.starProjection (τ i)) (V.starProjection (τ j))) ≤ 1",
+  "lean_name": "dimred_cs_sp_op_gram_det_starProjection_le_one",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-cone-splitting-a1-subspace-projec-0c49b2c354-a1"
+}
