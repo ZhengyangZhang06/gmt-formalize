@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.cone_splitting-a1.spine_tangency-a1",
+  "parent_id": "root.dimension_reduction_results-a1.cone_splitting-a1",
+  "depth": 3,
+  "title": "Stationary varifold with L-invariant n-homogeneous weight contains x and L in its tangent planes",
+  "statement": "Let P, n ∈ ℕ with n ≥ 1, R = (M, θ, ξ) ∈ IMRep(ℝ^P, n) with μ := R.measure, and L ⊆ ℝ^P a linear subspace. Assume v(M, θ) is stationary in ℝ^P: R.firstVariation X = ∫_M θ·div_M X dH^n = 0 for every C¹ vector field X : ℝ^P → ℝ^P with compact support (div_M X(x) = trace(p_x ∘ DX(x))). Assume μ((fun x => y + x)⁻¹' A) = μ(A) for every y ∈ L and Borel A, and μ(λA) = λ^n μ(A) for every λ > 0 and Borel A. Then for μ-a.e. x: p_x(x) = x and p_x(v) = v for every v ∈ L, where p_x is the orthogonal projection onto T_x = approxTangentPlane n M x; i.e. x ∈ T_x and L ⊆ T_x.",
+  "lean_statement": "∀ (P n : ℕ) (R : IMRep (univ : Set (Euclid P)) n) (L : Submodule ℝ (Euclid P)), 0 < n → (∀ X : Euclid P → Euclid P, ContDiff ℝ 1 X → HasCompactSupport X → R.firstVariation X = 0) → (∀ y ∈ L, ∀ A : Set (Euclid P), MeasurableSet A → R.measure ((fun x => y + x) ⁻¹' A) = R.measure A) → (∀ lam : ℝ, 0 < lam → ∀ A : Set (Euclid P), MeasurableSet A → R.measure ((fun x => lam • x) '' A) = ENNReal.ofReal (lam ^ n) * R.measure A) → ∀ᵐ x ∂R.measure, (approxTangentPlane n R.carrier x).starProjection x = x ∧ ∀ v ∈ L, (approxTangentPlane n R.carrier x).starProjection v = v",
+  "lean_name": "dimred_cs_spine_tangent_of_invariant_measure",
+  "depends_on": [
+    "root.half_space_cone_lies_in_boundary-a1.tangent_projection_aemeasurable-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.half_space_cone_lies_in_boundary-a1.tangent_projection_aemeasurable-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-half-space-cone-lies-in-boundary-a1-tangent-projection-aemeasurable-a1-a1",
+      "result_commit": "74a7d9117386066688fb3586d8463c5a8900db71",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-cone-splitting-a1-spine-tangency-a1-a1"
+}

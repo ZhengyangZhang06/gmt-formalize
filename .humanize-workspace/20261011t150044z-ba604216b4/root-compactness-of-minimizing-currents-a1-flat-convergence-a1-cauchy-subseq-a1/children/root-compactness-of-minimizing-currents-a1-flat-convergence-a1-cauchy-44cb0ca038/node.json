@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.flat_convergence-a1.cauchy_subseq-a1.close_pair-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.flat_convergence-a1.cauchy_subseq-a1",
+  "depth": 4,
+  "title": "Two decompositions with a common center give a close pair",
+  "statement": "Assume (IS): for all P, n ∈ ℕ, every open U ⊆ ℝ^P and integer multiplicity A, B ∈ 𝒟_n(U), the current A − B is integer multiplicity. Let P, m ∈ ℕ and let U ⊆ ℝ^P be open. Let Y, Z, Q, S₁, S₂ ∈ 𝒟_{m+1}(U) and R₁, R₂ ∈ 𝒟_{m+2}(U), with R₁, S₁, R₂, S₂ integer multiplicity, Y − Q − S₁ = ∂R₁ and Z − Q − S₂ = ∂R₂. Then there are integer multiplicity R ∈ 𝒟_{m+2}(U) and S ∈ 𝒟_{m+1}(U) with Y − Z − S = ∂R and M(R) + M(S) ≤ (M(R₁) + M(S₁)) + (M(R₂) + M(S₂)) in [0, ∞]. Conventions: 𝒟_d(U) = GeometricCurrentOn U d. Subtraction is the contract instance Sub, with (A − B)(ω) = A(ω) − B(ω). ∂T(ω) = T(dω) (GeometricCurrentOn.boundary). M(T) = T.mass = T.massOn U. Integer multiplicity means the contract predicate IsIntegerMultiplicity.",
+  "lean_statement": "(∀ (P n : ℕ) (U : Set (Euclid P)) (A B : GeometricCurrentOn U n), IsOpen U → IsIntegerMultiplicity A → IsIntegerMultiplicity B → IsIntegerMultiplicity (A - B)) → ∀ (P m : ℕ) (U : Set (Euclid P)) (Y Z Q S₁ S₂ : GeometricCurrentOn U (m + 1)) (R₁ R₂ : GeometricCurrentOn U (m + 2)), IsOpen U → IsIntegerMultiplicity R₁ → IsIntegerMultiplicity S₁ → IsIntegerMultiplicity R₂ → IsIntegerMultiplicity S₂ → Y - Q - S₁ = R₁.boundary → Z - Q - S₂ = R₂.boundary → ∃ (R : GeometricCurrentOn U (m + 2)) (S : GeometricCurrentOn U (m + 1)), IsIntegerMultiplicity R ∧ IsIntegerMultiplicity S ∧ Y - Z - S = R.boundary ∧ R.mass + S.mass ≤ (R₁.mass + S₁.mass) + (R₂.mass + S₂.mass)",
+  "lean_name": "cmc_fc_cs_close_of_common_center",
+  "depends_on": [
+    "root.compactness_of_minimizing_currents-a1.flat_convergence-a1.cauchy_subseq-a1.mass_sub_le-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.compactness_of_minimizing_currents-a1.flat_convergence-a1.cauchy_subseq-a1.mass_sub_le-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-flat-convergence-a1-cauchy-44cb0ca038-a1"
+}

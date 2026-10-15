@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_sector_endpoint_density-a1.box_mass_limits-a1.subseq_criterion-a1",
+  "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_sector_endpoint_density-a1.box_mass_limits-a1",
+  "depth": 5,
+  "title": "One-sided limits at 0⁺ from subsequences of positive null sequences",
+  "statement": "Let f : ℝ → [0, ∞] and L ∈ [0, ∞]. Suppose that for every sequence (λ_j)_{j∈ℕ} of positive reals with λ_j → 0 there is a strictly increasing φ : ℕ → ℕ with f(λ_{φ(j)}) → L as j → ∞. Then f(t) → L as t → 0⁺ (Tendsto f (𝓝[>] 0) (𝓝 L)).",
+  "lean_statement": "∀ (f : ℝ → ℝ≥0∞) (L : ℝ≥0∞), (∀ lams : ℕ → ℝ, (∀ j, 0 < lams j) → Tendsto lams atTop (𝓝 0) → ∃ φ : ℕ → ℕ, StrictMono φ ∧ Tendsto (fun j => f (lams (φ j))) atTop (𝓝 L)) → Tendsto f (𝓝[>] 0) (𝓝 L)",
+  "lean_name": "idtp_cse_bml_tendsto_nhdsGT_of_subseq",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-68ec986d31-a1"
+}

@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.slicing-a1.slice_family-a1.piece_weak_limit-a1.left_inverse-a1",
+  "parent_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.slicing-a1.slice_family-a1.piece_weak_limit-a1",
+  "depth": 6,
+  "title": "Continuous left-inverse field for the derivative of a C¹ immersion",
+  "statement": "Let P, d ∈ ℕ, V ⊆ ℝ^d open and ψ : ℝ^d → ℝ^P C¹ on V with Dψ(y) injective for every y ∈ V. Then there is a map R : ℝ^d → L(ℝ^P, ℝ^d), continuous on V, with R(y)∘Dψ(y) = id_{ℝ^d} for every y ∈ V.",
+  "lean_statement": "∀ (P d : ℕ) (V : Set (Euclid d)) (ψ : Euclid d → Euclid P), IsOpen V → ContDiffOn ℝ 1 ψ V → (∀ y ∈ V, Injective (fderiv ℝ ψ y)) → ∃ R : Euclid d → (Euclid P →L[ℝ] Euclid d), ContinuousOn R V ∧ ∀ y ∈ V, (R y).comp (fderiv ℝ ψ y) = ContinuousLinearMap.id ℝ (Euclid d)",
+  "lean_name": "dor_lmbsf_pwl_immersion_left_inverse",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-limsup-mass-bound-a1-slicing-a1-s-bf3b3a5b91-a1"
+}

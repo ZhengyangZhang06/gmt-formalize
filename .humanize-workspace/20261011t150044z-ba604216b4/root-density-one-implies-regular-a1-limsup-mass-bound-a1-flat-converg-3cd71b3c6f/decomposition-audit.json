@@ -1,0 +1,112 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "structure IMRep|def IsUnitOrientationOf|abbrev MultiVector|def action|def Represents|def measure|def IsIntegerMultiplicity|^import|^open",
+        "pushforward|push_forward|lipschitz.*current",
+        "theorem exists_partition_approximatesLinearOn_of_hasFDerivWithinAt|theorem measurableSet_of_differentiableAt|theorem measurable_fderiv|isOpen_injective|ae_tendsto_measure_inter_div|hasSum_integral_iUnion|prod_fiberwise|hausdorffMeasure_zero_singleton|euclideanHausdorffMeasure_zero",
+        "theorem .*prod_fiberwise|theorem .*comp_quasiMeasurePreserving|theorem .*integral_withDensity_eq_integral_smul|continuous_compContinuousLinearMapCLM|def apply \\(m",
+        "rg -l '\"lean_name\": \"dor_lmb_fcd_imp_' .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes -g 'decomposition-v*.json'",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/im-pushforward-audit/Types.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/Jacobian.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Measurable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/Alternating/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-limsup-mass-bound-a1-flat-converg-3cd71b3c6f/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-limsup-mass-bound-a1-flat-converg-3cd71b3c6f/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-bilipschi-4344c8c0d8/comparator-v1.log",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-db95546c3f/comparator-v3.log",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-piece-tan-680a7024c9/comparator-v1.log",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-828dc69c10/comparator-v1.log",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-regular-set-dense-a1-integer-combination-a1-orientation-sign-a1/comparator-v1.log",
+        "/tmp/im-pushforward-audit/Types.lean"
+      ],
+      "conclusion": "Verified snapshot revisions b4d606db/25730c7c and byte-identical Ch07 contract definitions. All 12 child propositions independently elaborate without child implementations; each is one line and uses a bare declaration name. The five reused types are byte-identical to comparator-accepted contracts, with recorded kernel acceptance under propext, Classical.choice and Quot.sound. The seven new names are unreserved. Child dependencies and the relevant existing dependency closures are acyclic and do not rely on the selected parent. IMS and IMC antecedents match their frozen types exactly. Inline Gram matrices use Matrix.of; no problematic matrix-unit construction occurs. Splitting is appropriate: degree_zero handles k = 0; parametric_rep and image_series_im construct the positive-degree currents; transfer, the declared WC dependency and summable domination prove smooth-limit convergence; derivative locality proves carrier locality. These conclusions establish the selected push-forward contract."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "bilipschitz_pieces",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Prose and type agree. Exact-type reuse of the independently verified accepted declaration supplies the disjoint regular parametrizations without circularity."
+    },
+    {
+      "key": "gram_area_formula",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Exact-type accepted reuse establishes both Jacobian measurability and the stated weighted injective area formula. Matrix.of correctly constructs the Gram matrices."
+    },
+    {
+      "key": "piece_approx_tangent",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Exact-type accepted reuse includes openness, local measure finiteness, differentiability, injectivity and the lower Lipschitz bound. Its conclusion supplies the required parameter-a.e. tangent statement."
+    },
+    {
+      "key": "normalized_wedge_orientation",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Exact-type accepted reuse proves Gram positivity and the normalized orientation, including the empty-family case. The prose matches the universally quantified multivector characterization."
+    },
+    {
+      "key": "orientation_sign",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Exact-type accepted reuse gives equality up to sign for orientations of the same subspace. The supplied change-of-basis argument is valid also in degree zero."
+    },
+    {
+      "key": "degree_zero",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Finite total weight forces a finite carrier. The proof establishes current continuity, smooth-limit convergence, an IM representation obtained by regrouping finite fibres, its approximate tangent condition, and locality. IMS is unnecessary in this case."
+    },
+    {
+      "key": "piece_orientation_sign",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Inverse Lipschitz null-set transfer justifies pulling back the orientation field. Tangent uniqueness and normalized wedges give the sign identity; the norm comparison and measurable modification produce the required globally Borel, everywhere ±1-valued sign."
+    },
+    {
+      "key": "parametric_rep",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof supplies every asserted property of the pieces and weights. Inverse-map measure domination establishes integrability and a.e. pullback; the area formula and disjoint integral summation establish the mass bound and exact HasSum transfer for bounded continuous forms."
+    },
+    {
+      "key": "regular_partition",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The regular set is Borel even for arbitrary H. The pinned partition theorem provides the stated measurable disjoint pieces and derivative representatives; coercivity yields positive lower Lipschitz constants and exact coverage. Empty and zero-dimensional cases are covered."
+    },
+    {
+      "key": "piece_current",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof constructs all IMRep fields using the measurable inverse, normalized derivative wedge and tangent theorem. The exact IMC antecedent supplies a represented current and the coefficient-norm bound; the area formula proves both its action and mass estimate."
+    },
+    {
+      "key": "lipschitz_jacobian_locality",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Difference quotients give derivative domination, and the linear area formula with the Lipschitz image bound gives the Jacobian inequality. Nondifferentiability and degree zero are handled. The density-point argument proves derivative equality on the specified restricted measure."
+    },
+    {
+      "key": "image_series_im",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The regular partition and piece currents cover the action, with vanishing on the complement justified by positive degree. Jacobian comparison bounds the total masses, permitting the exact IMS application. Reindexing and fibrewise HasSum identify the current, and scaled admissible forms give the stated per-domain bound."
+    }
+  ],
+  "required_changes": []
+}

@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.cone_splitting-a1.subspace_projection-a1.current_pushforward-a1.support_closed-a1",
+  "parent_id": "root.dimension_reduction_results-a1.cone_splitting-a1.subspace_projection-a1.current_pushforward-a1",
+  "depth": 5,
+  "title": "The support of τ(M, θ, ξ) lies in every closed set containing M (parent step 4; Simon 6.2.11–2.12)",
+  "statement": "Let P, n ∈ ℕ, let Y ∈ 𝒟_n(ℝ^P) be a current in ℝ^P (GeometricCurrentOn univ n), and let R = (M, θ, ξ) be an integer multiplicity triple in ℝ^P (IMRep univ n) representing Y, i.e. Y(ω) = R.action(ω) = ∫_M θ⟨ω, ξ⟩ dHⁿ for every ω ∈ 𝒟ⁿ(ℝ^P). If F ⊆ ℝ^P is closed and M ⊆ F (R.carrier ⊆ F), then spt Y ⊆ F. Here spt Y = Y.support is Simon's support (6.2.11): ℝ^P minus the union of the relatively compact open sets W on which Y vanishes, i.e. Y(ω) = 0 whenever spt ω ⊆ W.",
+  "lean_statement": "∀ (P n : ℕ) (Y : GeometricCurrentOn (univ : Set (Euclid P)) n) (R : IMRep (univ : Set (Euclid P)) n) (F : Set (Euclid P)), R.Represents Y → IsClosed F → R.carrier ⊆ F → Y.support ⊆ F",
+  "lean_name": "dimred_cs_sp_cp_support_subset_of_carrier_subset",
+  "depends_on": [
+    "root.density_one_implies_regular-a1.imrep_mass_and_support-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.density_one_implies_regular-a1.imrep_mass_and_support-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-imrep-mass-and-support-a1-a1",
+      "result_commit": "d49dda91b75b7417d67a10053e6dc4b65d4f0312",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-cone-splitting-a1-subspace-projec-84c49b7e9e-a1"
+}

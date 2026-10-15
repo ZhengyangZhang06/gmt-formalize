@@ -1,0 +1,70 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "extDeriv|intervalIntegral|homotopy|Poincaré",
+        "curryLeftLI|curryLeft_smul|curryLeft_apply_apply|alternatizeUncurryFinCLM|alternatizeUncurryFin_curryLeft|alternatizeUncurryFin_apply",
+        "hasFDerivAt_integral_of_dominated_of_fderiv_le''",
+        "fderiv_comp_smul|intervalIntegral_comp_comm|integral_eq_sub_of_hasDerivAt",
+        "contDiff_infty|contDiff_succ_iff_hasFDerivAt|continuous_fderiv|fderiv_right",
+        "CompleteSpace|completeSpace",
+        "Poincare lemma|Poincaré lemma|homotopy operator",
+        "dimred_cs_sos_cfs_rh_(extDeriv_param_integral|radial_cartan)",
+        "git show 445fb9017470896594b24d5d23bf892b8796493b:GMT/Ch07/Submission.lean",
+        "git show 77ba6718296797531c46092c9edeed99a93d1890:GMT/Ch07/Submission.lean",
+        "lake env lean /tmp/rh-decomp/Check5_full.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/DifferentialForm/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/Alternating/Curry.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/Alternating/Uncurry/Fin.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ParametricIntegral.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/Defs.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Module/Alternating/Topology.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/IntervalIntegral/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/IntervalIntegral/FundThmCalculus.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-cone-splitting-a1-split-off-spine-e486a1b156/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-cone-splitting-a1-split-off-spine-e486a1b156/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification/results/hoa66/20261014T035614Z-ch07-root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.lipschitz_push-1531pbwj/comparator-config.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification/results/hoa66/20261014T035614Z-ch07-root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.lipschitz_push-1531pbwj/comparator.log",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification/results/hoa65/20261012T151113Z-ch07-root.density_and_tangent_cones-a1.cone-a1.euler_cartan-a1-l5qcizl0/comparator-config.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification/results/hoa65/20261012T151113Z-ch07-root.density_and_tangent_cones-a1.cone-a1.euler_cartan-a1-l5qcizl0/comparator.log",
+        "/tmp/rh-decomp/Check5_full.lean"
+      ],
+      "conclusion": "The project and mathlib revisions match the manifest; snapshot Contract.lean, workspace Contract.lean and Submission.lean are identical. The pinned definitions and instances support the stated exterior derivative, contraction, completeness, differentiation and integration arguments. The snapshot search found no extDeriv-and-integral lemma; its Poincaré results concern 1-forms. Both reused declarations have byte-identical accepted types and copied proofs; their retained comparator logs record kernel acceptance with only propext, Quot.sound and Classical.choice permitted. Searches of DAG and active-branch records found the new names only in this proposal. All four names are bare identifiers, and all four types are standalone one-line propositions without self-reference or matrix-unit instance ambiguity. The dependency graph is correctly directed and acyclic. The split is appropriate: the two new obligations, accepted reuses, and supplied smoothness/FTC assembly establish exactly the selected parent. I inspected the exact Lean headers and full assembly; fresh compilation was unavailable because lake is absent. The radial exponents and homotopy identity also agree with [Kycia, equations (2)–(6)](https://arxiv.org/html/2009.08542v3)."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "extderiv_param_integral",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose includes the full smoothness hypothesis and matches the Lean proposition. The proof obtains the derivative from param_integral, proves continuity and integrability of the partial derivative by the chain rule, and commutes the continuous linear alternatization map with the integral. Completeness is available. Its only child dependency is correctly declared; no circularity or missing analytic justification remains."
+    },
+    {
+      "key": "radial_cartan",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type exactly matches the pointwise identity and requires only differentiability at t • x. The proof establishes differentiability of the dilated form, applies euler_cartan, and explicitly tracks scalar multiplication through fderiv, alternatization and contraction. The final algebra gives the stated exponents and coefficient without division, including t = 0 and q = 0."
+    },
+    {
+      "key": "param_integral",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Valid reuse of the comparator-accepted declaration with an identical frozen type. Independently, the supplied proof establishes smooth partial derivatives, supplies every dominated-differentiation hypothesis using a compact parameter neighborhood, and proves all finite smoothness orders by induction over complete value spaces. This proves both conjuncts without invoking the child or selected parent."
+    },
+    {
+      "key": "euler_cartan",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Valid reuse of the comparator-accepted declaration with an identical frozen type. The pointwise differentiability hypothesis suffices for the bilinear product rule. The explicit alternating-sum calculation yields the coefficient m + 1 and the cancellation with the contracted exterior derivative, using the pinned curryLeft sign convention. The proof is complete and independent of radial homotopy."
+    }
+  ],
+  "required_changes": []
+}

@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.slicing-a1.slice_family-a1.slice_imreps-a1",
+  "parent_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.slicing-a1.slice_family-a1",
+  "depth": 5,
+  "title": "Integer multiplicity slices from the co-area structure: mass bound, integrability and the averaged slice identity (Simon Ch. 6, 4.1–4.5(1), 4.2)",
+  "statement": "Let P, n ∈ ℕ, U ⊆ ℝ^P open, RT = (M, θ, ξ) an integer multiplicity triple in U of dimension n+1 (IMRep U (n+1)), f : ℝ^P → ℝ L-Lipschitz (L ≥ 0), and g : ℝ^P → ℝ^P Borel. Write T_xM := approxTangentPlane (n+1) M x and M_t := M ∩ {g ≠ 0} ∩ f⁻¹(t). Assume:\n(G1) |g(x)| ≤ L for all x;\n(G2) g(x) ∈ T_xM for H^{n+1}-a.e. x ∈ M;\n(G3) for every Borel φ : ℝ^P → [0, ∞], t ↦ ∫_{M_t} φ dHⁿ is a.e.-measurable on ℝ and ∫_ℝ ∫_{M_t} φ dHⁿ dt = ∫_M |g| φ dH^{n+1};\n(G4a) every M_t is countably n-rectifiable;\n(G4b) for every t with Hⁿ(M_t ∩ K) < ∞ for all compact K ⊆ U: for Hⁿ-a.e. x ∈ M_t, M_t has approximate tangent space T_xM ∩ g(x)^⊥ (= T_xM ⊓ (ℝ∙g(x))ᗮ) at x.\n(Hᵏ = μHE[k].) Then there is a family (R_t)_{t∈ℝ} of integer multiplicity triples in U of dimension n (Rs : ℝ → IMRep U n), R_t = (M'_t, θ_t, ξ_t), such that:\n(1) M'_t ⊆ f⁻¹(t) for every t;\n(2) for every Borel W ⊆ ℝ^P, t ↦ μ_{R_t}(W) (= R_t.measure W) is a.e.-measurable and ∫_ℝ μ_{R_t}(W) dt ≤ L·μ_{RT}(W) (lower integral in [0, ∞]; μ_{RT} = RT.measure);\n(3) for every ω ∈ 𝒟ⁿ(U), s ↦ τ(R_s)(ω) := R_s.action ω is Lebesgue integrable on ℝ;\n(4') for every ω ∈ 𝒟ⁿ(U) and a < b: ∫_a^b τ(R_s)(ω) ds = ∫_{M∩{a<f<b}} θ·⟨g♭∧ω, ξ⟩ dH^{n+1}, where g♭∧ω := alternatizeUncurryFin((innerSL ℝ g(x)).smulRight ω(x)) and ⟨α, ζ⟩ = ζ(α) (Bochner integrals; the left side is the interval integral).",
+  "lean_statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (RT : IMRep U (n + 1)) (f : Euclid P → ℝ) (L : NNReal) (g : Euclid P → Euclid P), IsOpen U → LipschitzWith L f → Measurable g → (∀ x, ‖g x‖ ≤ L) → (∀ᵐ x ∂(μHE[n + 1].restrict RT.carrier), g x ∈ approxTangentPlane (n + 1) RT.carrier x) → (∀ φ : Euclid P → ℝ≥0∞, Measurable φ → AEMeasurable (fun t => ∫⁻ x in RT.carrier ∩ {x | g x ≠ 0} ∩ f ⁻¹' {t}, φ x ∂μHE[n]) ∧ ∫⁻ t, (∫⁻ x in RT.carrier ∩ {x | g x ≠ 0} ∩ f ⁻¹' {t}, φ x ∂μHE[n]) = ∫⁻ x in RT.carrier, ‖g x‖ₑ * φ x ∂μHE[n + 1]) → (∀ t, CountablyRectifiable n (RT.carrier ∩ {x | g x ≠ 0} ∩ f ⁻¹' {t})) → (∀ t, (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μHE[n] (RT.carrier ∩ {x | g x ≠ 0} ∩ f ⁻¹' {t} ∩ K) ≠ ∞) → ∀ᵐ x ∂(μHE[n].restrict (RT.carrier ∩ {x | g x ≠ 0} ∩ f ⁻¹' {t})), HasApproximateTangentSpaceAt n (RT.carrier ∩ {x | g x ≠ 0} ∩ f ⁻¹' {t}) x (approxTangentPlane (n + 1) RT.carrier x ⊓ (ℝ ∙ g x)ᗮ)) → ∃ Rs : ℝ → IMRep U n, (∀ t, (Rs t).carrier ⊆ f ⁻¹' {t}) ∧ (∀ W : Set (Euclid P), MeasurableSet W → AEMeasurable (fun t => (Rs t).measure W) ∧ ∫⁻ t, (Rs t).measure W ≤ (L : ℝ≥0∞) * RT.measure W) ∧ (∀ ω : TestFormOn U n, Integrable (fun s => (Rs s).action (ω : DifferentialForm (Euclid P) n))) ∧ ∀ (ω : TestFormOn U n) (a b : ℝ), a < b → ∫ s in a..b, (Rs s).action (ω : DifferentialForm (Euclid P) n) = ∫ x in RT.carrier ∩ {x | a < f x ∧ f x < b}, (RT.mult x : ℝ) * RT.orient x (ContinuousAlternatingMap.alternatizeUncurryFin ((innerSL ℝ (g x)).smulRight ((ω : DifferentialForm (Euclid P) n) x))) ∂μHE[n + 1]",
+  "lean_name": "dor_lmbsf_slice_imreps",
+  "depends_on": [
+    "root.density_one_implies_regular-a1.limsup_mass_bound-a1.slicing-a1.slice_family-a1.wedge_orientation-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.slicing-a1.slice_family-a1.wedge_orientation-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-limsup-mass-bound-a1-slicing-a1-s-7a19fe4708-a1"
+}

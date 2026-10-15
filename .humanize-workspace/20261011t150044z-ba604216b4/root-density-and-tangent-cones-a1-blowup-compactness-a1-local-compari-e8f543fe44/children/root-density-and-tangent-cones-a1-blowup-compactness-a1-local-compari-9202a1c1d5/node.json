@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.flat_decomposition-a1.localize-a1.cutoff_estimate-a1",
+  "parent_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.flat_decomposition-a1.localize-a1",
+  "depth": 6,
+  "title": "Simon's identity 4.11 for one cut-off: |T(g dη)| ≤ a·M_V(∂T) + c·μ_T(S) (parent step 9(b)–(d))",
+  "statement": "Let P, m ∈ ℕ, U, V, S ⊆ ℝ^P, a, c ∈ ℝ, and let R = (M, θ, ξ) be an IMRep in U representing T ∈ 𝒟_{m+1}(U). Let g : ℝ^P → ℝ be C^∞ with tsupport g ⊆ V, |g(x)| ≤ a and ‖Dg(x)‖ ≤ c for every x (operator norm of fderiv ℝ g x), and Dg(x) ≠ 0 only for x ∈ S. Let η ∈ 𝒟^m(U) satisfy |η(x)| ≤ 1 for every x, where |·| = covectorEuclideanNorm is the Euclidean coefficient norm. Then ofReal|R.action(g dη)| ≤ ofReal(a)·M_V(∂T) + ofReal(c)·μ_R(S). Here R.action(g dη) = ∫_M θ(x)⟨g(x)dη(x), ξ(x)⟩ dH^{m+1}(x) = T(g dη), dη = exteriorDerivative η, M_V = massOn V and μ_R = R.measure.",
+  "lean_statement": "∀ (P m : ℕ) (U V S : Set (Euclid P)) (T : GeometricCurrentOn U (m + 1)) (R : IMRep U (m + 1)) (g : Euclid P → ℝ) (η : TestFormOn U m) (a c : ℝ), R.Represents T → ContDiff ℝ (⊤ : ℕ∞) g → tsupport g ⊆ V → (∀ x, |g x| ≤ a) → (∀ x, ‖fderiv ℝ g x‖ ≤ c) → (∀ x, fderiv ℝ g x ≠ 0 → x ∈ S) → (∀ x, covectorEuclideanNorm ((η : DifferentialForm (Euclid P) m) x) ≤ 1) → ENNReal.ofReal |R.action (fun x => g x • exteriorDerivative (η : DifferentialForm (Euclid P) m) x)| ≤ ENNReal.ofReal a * T.boundary.massOn V + ENNReal.ofReal c * R.measure S",
+  "lean_name": "dtc_bc_lc_fd_lz_cutoff_estimate",
+  "depends_on": [
+    "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.flat_decomposition-a1.localize-a1.action_bound-a1",
+    "root.compactness_of_minimizing_currents-a1.slicing-a1.cutoff_defect-a1.leibniz-a1",
+    "root.compactness_of_minimizing_currents-a1.slicing-a1.wedge_norm-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.flat_decomposition-a1.localize-a1.action_bound-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.compactness_of_minimizing_currents-a1.slicing-a1.cutoff_defect-a1.leibniz-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-slicing-a1-cutoff-defect-a-9dbb42610d-a1",
+      "result_commit": "19f5e1986c50f3aea0edcade3d15ca618e3f6763",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.compactness_of_minimizing_currents-a1.slicing-a1.wedge_norm-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-slicing-a1-wedge-norm-a1-a1",
+      "result_commit": "6c9a0741ef7348ef9dcc005b9eeaa2593511c6ca",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-compari-9202a1c1d5-a1"
+}

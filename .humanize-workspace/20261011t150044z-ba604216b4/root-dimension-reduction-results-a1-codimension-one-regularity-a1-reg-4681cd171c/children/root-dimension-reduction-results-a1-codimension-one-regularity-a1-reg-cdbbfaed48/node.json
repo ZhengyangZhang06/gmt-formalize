@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.de_giorgi-a1.rectifiable_criterion-a1.ball_cone_measurable-a1",
+  "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.de_giorgi-a1.rectifiable_criterion-a1",
+  "depth": 6,
+  "title": "Borel measurability of the ball and cone mass functions x ↦ μ(B̄_q(x)) and x ↦ μ(X_α(ν(x), x) ∩ B̄_q(x))",
+  "statement": "Let m ∈ ℕ, E := ℝ^{m+1}, μ an s-finite Borel measure on E, ν : E → E a Borel map and α, q ∈ ℝ. Then the functions x ↦ μ(B̄_q(x)) and x ↦ μ({z ∈ E : α|z − x| ≤ |⟨z − x, ν(x)⟩|} ∩ B̄_q(x)) from E to [0, ∞] are Borel measurable.",
+  "lean_statement": "∀ (m : ℕ) (μ : Measure (Euclid (m + 1))) (ν : Euclid (m + 1) → Euclid (m + 1)) (α q : ℝ), SFinite μ → Measurable ν → Measurable (fun x : Euclid (m + 1) => μ (closedBall x q)) ∧ Measurable (fun x : Euclid (m + 1) => μ ({z | α * ‖z - x‖ ≤ |inner ℝ (z - x) (ν x)|} ∩ closedBall x q))",
+  "lean_name": "codim1_rdo_dg_rc_ball_cone_measurable",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-cdbbfaed48-a1"
+}

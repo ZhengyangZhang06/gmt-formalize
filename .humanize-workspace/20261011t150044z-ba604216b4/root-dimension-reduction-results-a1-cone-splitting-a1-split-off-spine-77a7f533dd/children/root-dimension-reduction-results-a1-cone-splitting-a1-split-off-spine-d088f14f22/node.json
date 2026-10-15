@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.cone_splitting-a1.split_off_spine-a1.cone_filling_subspace-a1.cone_current-a1.cutoff_cone_operator-a1",
+  "parent_id": "root.dimension_reduction_results-a1.cone_splitting-a1.split_off_spine-a1.cone_filling_subspace-a1.cone_current-a1",
+  "depth": 6,
+  "title": "The cut-off radial operator ω ↦ ζ·Kω: a linear map 𝒟^{q+2}(ℝ^P) → 𝒟^{q+1}(ℝ^P) that equals Kω on ball(0, ρ), with ‖ζ·Kω‖ ≤ (ρ+1)·sup‖ω‖",
+  "statement": "Let P, q ∈ ℕ and ρ > 0. For a (q+2)-form β on ℝ^P (DifferentialForm (Euclid P) (q+1+1)) put\n (Kβ)(x) := ∫_0^1 t^{q+1}·ι_x(β(t x)) dt,\nwhere ι_xα := α.curryLeft x, i.e. (ι_xα)(v_1, …, v_{q+1}) = α(x, v_1, …, v_{q+1}).\nAssume (H): for every C^∞ (q+2)-form β (ContDiff ℝ (⊤ : ℕ∞) β: smoothness order ∞, not analytic), the (q+1)-form Kβ is C^∞ (ContDiff ℝ (⊤ : ℕ∞)).\nThen there is an ℝ-linear map Φ : 𝒟^{q+2}(ℝ^P) → 𝒟^{q+1}(ℝ^P) (TestFormOn univ (q+1+1) →ₗ[ℝ] TestFormOn univ (q+1)) such that:\n(i) (Φω)(x) = (Kω)(x) for every ω ∈ 𝒟^{q+2}(ℝ^P) and every x with ‖x‖ < ρ;\n(ii) if b ∈ ℝ and ‖ω(y)‖ ≤ b for every y ∈ ℝ^P (operator norm on covectors), then ‖(Φω)(x)‖ ≤ (ρ+1)·b for every x ∈ ℝ^P.\n(H) is the smoothness half of dimred_cs_sos_cfs_radial_homotopy at degree q+1. The selected node discharges it when it assembles its children.",
+  "lean_statement": "∀ (P q : ℕ) (ρ : ℝ), 0 < ρ → (∀ β : DifferentialForm (Euclid P) (q + 1 + 1), ContDiff ℝ (⊤ : ℕ∞) β → ContDiff ℝ (⊤ : ℕ∞) (fun x : Euclid P => ∫ t in (0 : ℝ)..1, t ^ (q + 1) • (β (t • x)).curryLeft x)) → ∃ Φ : TestFormOn (univ : Set (Euclid P)) (q + 1 + 1) →ₗ[ℝ] TestFormOn (univ : Set (Euclid P)) (q + 1), (∀ (ω : TestFormOn (univ : Set (Euclid P)) (q + 1 + 1)) (x : Euclid P), ‖x‖ < ρ → (Φ ω : DifferentialForm (Euclid P) (q + 1)) x = ∫ t in (0 : ℝ)..1, t ^ (q + 1) • ((ω : DifferentialForm (Euclid P) (q + 1 + 1)) (t • x)).curryLeft x) ∧ ∀ (ω : TestFormOn (univ : Set (Euclid P)) (q + 1 + 1)) (b : ℝ), (∀ y, ‖(ω : DifferentialForm (Euclid P) (q + 1 + 1)) y‖ ≤ b) → ∀ x, ‖(Φ ω : DifferentialForm (Euclid P) (q + 1)) x‖ ≤ (ρ + 1) * b",
+  "lean_name": "dimred_cs_sos_cfs_cc_cutoff_cone_operator",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-cone-splitting-a1-split-off-spine-d088f14f22-a1"
+}

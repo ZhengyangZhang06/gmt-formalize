@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.codim_zero-a1.minimizing-a1.bump_form-a1",
+  "parent_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.codim_zero-a1.minimizing-a1",
+  "depth": 5,
+  "title": "A test n-form on ℝⁿ supported in a given closed ball with positive integral",
+  "statement": "Let n ∈ ℕ (n = 0 allowed), p ∈ ℝⁿ and r > 0. There is a test form ω ∈ 𝒟ⁿ(ℝⁿ) (TestFormOn univ n: a smooth compactly supported n-form on ℝⁿ = Euclid n) with tsupport ω ⊆ closedBall(p, r) and ∫_{ℝⁿ} ω(y)(e₁, …, eₙ) dy > 0, where (e₁, …, eₙ) = EuclideanSpace.basisFun (Fin n) ℝ is the standard orthonormal basis and dy is Lebesgue measure (volume).",
+  "lean_statement": "∀ (n : ℕ) (p : Euclid n) (r : ℝ), 0 < r → ∃ ω : TestFormOn (univ : Set (Euclid n)) n, tsupport (ω : DifferentialForm (Euclid n) n) ⊆ closedBall p r ∧ 0 < ∫ y, (ω : DifferentialForm (Euclid n) n) y ⇑(EuclideanSpace.basisFun (Fin n) ℝ)",
+  "lean_name": "dtc_bc_cz_isMinimizingIn_bump_form",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-compactness-a1-codim-zero-a1-46b47f7f7c-a1"
+}

@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_constant_density_planar-a1.sheet_first_variation-a1",
+  "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_constant_density_planar-a1",
+  "depth": 4,
+  "title": "First variation of an integer multiplicity current whose support is locally a C¹ submanifold with constant density",
+  "statement": "For all P, n, k ∈ ℕ, every open U ⊆ ℝ^P, every T ∈ 𝒟_n(U), every integer multiplicity triple R = (S, θ, ξ) ∈ IMRep U n representing T, every M ⊆ ℝ^P, p ∈ ℝ^P and ρ ∈ ℝ with B_ρ(p) ⊆ U: if k ≥ 1, M is an embedded C¹ n-dimensional submanifold (IsEmbeddedSubmanifold 1 n M), spt T ∩ B_ρ(p) = M ∩ B_ρ(p) and Θⁿ(μ_T, y) = k (HasMassDensity T y k) for every y ∈ spt T ∩ B_ρ(p), then for every C¹ vector field X : ℝ^P → ℝ^P with compact support and tsupport X ⊆ B_ρ(p), the first variation of the varifold of R is R.firstVariation X = k·∫_{M ∩ B_ρ(p)} tr(P_x ∘ DX(x)) dH^n(x), where P_x is the orthogonal projection onto span(tangentSpace M x) and H^n := μHE[n].",
+  "lean_statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (R : IMRep U n) (M : Set (Euclid P)) (p : Euclid P) (ρ : ℝ) (k : ℕ), IsOpen U → R.Represents T → ball p ρ ⊆ U → 1 ≤ k → IsEmbeddedSubmanifold 1 n M → T.support ∩ ball p ρ = M ∩ ball p ρ → (∀ y ∈ T.support, y ∈ ball p ρ → HasMassDensity T y k) → ∀ X : Euclid P → Euclid P, ContDiff ℝ 1 X → HasCompactSupport X → tsupport X ⊆ ball p ρ → R.firstVariation X = (k : ℝ) * ∫ x in M ∩ ball p ρ, LinearMap.trace ℝ (Euclid P) ((Submodule.span ℝ (tangentSpace M x)).starProjection.toLinearMap ∘ₗ (fderiv ℝ X x).toLinearMap) ∂μHE[n]",
+  "lean_name": "idtp_ccd_sheet_first_variation",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-ffd8c630f3-a1"
+}

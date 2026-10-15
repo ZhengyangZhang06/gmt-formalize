@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.projected_comparison-a1.competitor_mass-a1.pullback_field-a1",
+  "parent_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.projected_comparison-a1.competitor_mass-a1",
+  "depth": 5,
+  "title": "The pull-back of a bounded continuous form along a C¹ map, cut off to G, is measurable and bounded by WΛⁿ",
+  "statement": "Let P, n ∈ ℕ, let G, O ⊆ ℝ^P be open with G ⊆ O, let f : ℝ^P → ℝ^P be of class C¹ on O, let ω : ℝ^P → Covector (Euclid P) n (a DifferentialForm (Euclid P) n) be continuous with ‖ω(z)‖ ≤ W for every z (operator norm on n-covectors), and let Λ ≥ 0 with ‖Df(x)‖ ≤ Λ for every x ∈ G (Df(x) = fderiv ℝ f x, operator norm). Let φ := 1_G·(x ↦ ω(f(x))∘Df(x)), i.e. φ(x) = (ω (f x)).compContinuousLinearMap (fderiv ℝ f x) for x ∈ G and φ(x) = 0 for x ∉ G. Then φ is a.e.-strongly measurable with respect to every measure μ on ℝ^P, and ‖φ(x)‖ ≤ W·Λⁿ for every x ∈ ℝ^P.",
+  "lean_statement": "∀ (P n : ℕ) (G O : Set (Euclid P)) (f : Euclid P → Euclid P) (ω : DifferentialForm (Euclid P) n) (Λ W : ℝ), IsOpen G → IsOpen O → G ⊆ O → ContDiffOn ℝ 1 f O → Continuous ω → 0 ≤ Λ → (∀ x ∈ G, ‖fderiv ℝ f x‖ ≤ Λ) → (∀ z, ‖ω z‖ ≤ W) → (∀ μ : Measure (Euclid P), AEStronglyMeasurable (G.indicator fun y => (ω (f y)).compContinuousLinearMap (fderiv ℝ f y)) μ) ∧ ∀ x, ‖G.indicator (fun y => (ω (f y)).compContinuousLinearMap (fderiv ℝ f y)) x‖ ≤ W * Λ ^ n",
+  "lean_name": "dor_lmb_pc_cm_pullback_field_bounded",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-limsup-mass-bound-a1-projected-co-091e68028c-a1"
+}

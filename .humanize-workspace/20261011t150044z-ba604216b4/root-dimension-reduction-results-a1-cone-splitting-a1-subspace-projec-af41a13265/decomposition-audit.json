@@ -1,0 +1,52 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "IsUnitOrientationOf|covectorEuclideanNorm|def Euclid|abbrev Euclid|MultiVector",
+        "eigenvectorBasis|apply_eigenvectorBasis|det_eq_prod_eigenvalues|def eigenvalues",
+        "norm_starProjection_apply_le|starProjection_norm_le",
+        "isometryOfOrthonormal",
+        "isSymmetric_adjoint_comp_self|adjoint_inner_right",
+        "def of |def Matrix|irreducible_def of|abbrev Matrix",
+        "git show 2fd8f6ff9db8d5c94835632a4abd3e7d37106715:GMT/Ch07/Submission.lean",
+        "dimred_cs_sp_op_gram_det_starProjection_le_one",
+        "'/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake' env '/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean' /tmp/orient-projection-independent-audit-3d3_kc1a/Audit.lean > /tmp/orient-projection-independent-audit-3d3_kc1a/Audit.out 2>&1"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Spectrum.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Projection/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Orthonormal.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Adjoint.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Matrix/Defs.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Data/Matrix/Mul.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-cone-splitting-a1-subspace-projec-af41a13265/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-cone-splitting-a1-subspace-projec-af41a13265/decomposition-v1.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-covector-gram-bounds-a1/accepted-candidate.json",
+        "/tmp/orient-projection-independent-audit-3d3_kc1a/AcceptedGram.lean",
+        "/tmp/orient-projection-independent-audit-3d3_kc1a/Audit.lean",
+        "/tmp/orient-projection-independent-audit-3d3_kc1a/Audit.out"
+      ],
+      "conclusion": "The split is appropriate for this exact selected node: reuse the accepted Gram bound, isolate the spectral determinant estimate, and retain orientation/sign handling and square-root monotonicity in the parent. Project/mathlib pins and reused-candidate build inputs match. Both frozen propositions passed the contract validator and independently elaborated before either child declaration. A fresh Lean run compiled the accepted Gram proof, the supplied determinant proof verbatim, and the exact selected parent from the child contracts; all audited proofs use only propext, Classical.choice and Quot.sound. Projection-instance synthesis and ordinary matrix multiplication were checked. Dependency edges are acyclic and correctly directed. Both names are bare identifiers; the reused name has an identical accepted type, and no competing reservation was found for the new name."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "gram_bounds",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose matches both conjuncts of the standalone one-line proposition. Its type is identical to the comparator-accepted declaration at 2fd8f6ff9db8d5c94835632a4abd3e7d37106715. Independently checked the alternating expansion, permutation signs, Cauchy–Binet identity, Cauchy–Schwarz estimate, and continuous determinant covector proving the second conjunct. Degree zero and degrees exceeding the ambient dimension are covered. The proof is complete and non-circular; part (1) supplies the selected parent's step 2."
+    },
+    {
+      "key": "projected_gram_det",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All hypotheses and the conclusion match the standalone one-line proposition. The proof constructs an isometry U and contraction T=qU, identifies G with the matrix of T* T, and proves each eigenvalue equals the squared norm of T applied to a unit eigenvector, hence lies in [0,1]. Their product gives the claimed determinant bound, including dimension zero. Matrix.of selects the intended matrix construction. The supplied proof is complete, independently compiles, and uses neither the parent nor the Gram-bound child. Together the children imply the exact selected parent."
+    }
+  ],
+  "required_changes": []
+}

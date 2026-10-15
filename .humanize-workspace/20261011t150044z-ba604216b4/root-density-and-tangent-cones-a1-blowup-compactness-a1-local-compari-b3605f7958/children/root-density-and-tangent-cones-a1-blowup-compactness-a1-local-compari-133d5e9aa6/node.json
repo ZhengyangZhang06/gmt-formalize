@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.orientation_fixed-a1.fderiv_fixes_tangent-a1",
+  "parent_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.orientation_fixed-a1",
+  "depth": 5,
+  "title": "A map fixing a set pointwise and differentiable at x fixes its approximate tangent plane at x",
+  "statement": "Let P, n ∈ ℕ, A ⊆ ℝ^P an arbitrary set, x ∈ ℝ^P and Q a linear subspace of ℝ^P such that Q is an approximate tangent space of A at x (HasApproximateTangentSpaceAt n A x Q: dim Q = n and ∫_{η_{x,r}(A)} φ dHⁿ → ∫_Q φ dHⁿ as r ↓ 0 for every φ ∈ C_c(ℝ^P), Hⁿ = μHE[n]; Simon Ch. 3, 1.4). Let f : ℝ^P → ℝ^P be differentiable at x with f(x) = x and f(y) = y for every y ∈ A. Then Df(x)v = v for every v ∈ Q, where Df(x) = fderiv ℝ f x.",
+  "lean_statement": "∀ (P n : ℕ) (A : Set (Euclid P)) (f : Euclid P → Euclid P) (x : Euclid P) (Q : Submodule ℝ (Euclid P)), HasApproximateTangentSpaceAt n A x Q → DifferentiableAt ℝ f x → f x = x → (∀ y ∈ A, f y = y) → ∀ v ∈ Q, fderiv ℝ f x v = v",
+  "lean_name": "dtc_bc_lc_fderiv_apply_eq_of_approxTangent",
+  "depends_on": [
+    "root.density_one_implies_regular-a1.mean_curvature_monotonicity-a1.approx_tangent_in_tangent_space-a1.blowup_points-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.density_one_implies_regular-a1.mean_curvature_monotonicity-a1.approx_tangent_in_tangent_space-a1.blowup_points-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-mean-curvature-monotonicity-a1-ap-0354723769-a1",
+      "result_commit": "cb667a61bedac01a38adc25c5277e01b9c79d4d4",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-compari-133d5e9aa6-a1"
+}

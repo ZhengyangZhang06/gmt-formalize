@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_sector_endpoint_density-a1.flux_density-a1.gap_ae-a1",
+  "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_sector_endpoint_density-a1.flux_density-a1",
+  "depth": 5,
+  "title": "Localization yields the sector gap μ-almost everywhere",
+  "statement": "Let P ∈ ℕ, C ∈ 𝒟_2(ℝ^P) (GeometricCurrentOn univ 2), Q a linear subspace of ℝ^P with orthogonal projection π = Q.starProjection, a, e ∈ ℝ^P, R = (M, θ, ξ) an integer multiplicity triple in ℝ^P (IMRep univ 2) representing C (R.Represents C), μ := R.measure, and s > 0. Write f(x) := arctan(⟨x,e⟩/⟨x,a⟩) and q(x) := x − πx. Assume the localization property Loc(s): for every s' ∈ (0, s] and every x ∈ spt C with ⟨x,a⟩ > 0, ||x| − 1| < s', |f(x)| < s' and |q(x)| ≤ 2s|x|, one has |q(x)| < (s'/4)|x| and |x − a| < 3s'. Then for μ-a.e. x ∈ ℝ^P: if ⟨x,a⟩ > 0, ||x| − 1| < s and |f(x)| < s, then |q(x)| < (s/2)|x| or 2s|x| < |q(x)|.",
+  "lean_statement": "∀ (P : ℕ) (C : GeometricCurrentOn (univ : Set (Euclid P)) 2) (Q : Submodule ℝ (Euclid P)) (a e : Euclid P) (R : IMRep (univ : Set (Euclid P)) 2) (s : ℝ), R.Represents C → 0 < s → (∀ s' : ℝ, 0 < s' → s' ≤ s → ∀ x ∈ C.support, 0 < inner ℝ x a → |‖x‖ - 1| < s' → |Real.arctan (inner ℝ x e / inner ℝ x a)| < s' → ‖x - Q.starProjection x‖ ≤ 2 * s * ‖x‖ → ‖x - Q.starProjection x‖ < s' / 4 * ‖x‖ ∧ dist x a < 3 * s') → ∀ᵐ x ∂R.measure, 0 < inner ℝ x a → |‖x‖ - 1| < s → |Real.arctan (inner ℝ x e / inner ℝ x a)| < s → ‖x - Q.starProjection x‖ < s / 2 * ‖x‖ ∨ 2 * s * ‖x‖ < ‖x - Q.starProjection x‖",
+  "lean_name": "idtp_cse_fd_gap_ae",
+  "depends_on": [
+    "root.half_space_cone_lies_in_boundary-a1.imrep_support_eq_measure_support-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.half_space_cone_lies_in_boundary-a1.imrep_support_eq_measure_support-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-half-space-cone-lies-in-boundary-a1-imrep-support-eq-measure-support-a1-a1",
+      "result_commit": "7a830063792397c1e0762d343148ff03c9dd8609",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-4e419e877d-a1"
+}

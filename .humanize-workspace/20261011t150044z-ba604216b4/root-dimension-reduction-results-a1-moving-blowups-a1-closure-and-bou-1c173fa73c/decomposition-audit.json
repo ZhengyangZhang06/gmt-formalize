@@ -1,0 +1,66 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "boundaryMassOn|massOn_eq_of_apply_eq_neg|ennreal_liminf_add_le|massOn_neg|liminf_add",
+        "def massAdmissibleOn|def massOn|le_massOn|covectorEuclideanNorm_neg|massOn_neg|massOn_sub",
+        "structure GeometricCurrentOn|def TestFormOn|def boundary|boundary_apply|boundary_boundary|theorem ext|zero_apply",
+        "liminf_eq_iSup_iInf|limsup_eq_iInf_iSup|biSup_add_biSup_le|le_liminf_add|liminf_add_le|liminf_add_of",
+        "aestronglyMeasurable_zero_measure|integral_zero_measure|theorem ae_zero|lemma ae_zero|tsupport_neg",
+        "dmcbr_sl_sb_massOn_eq_of_apply_eq_neg|dmcbr_sl_sb_ennreal_liminf_add_le|dmcbr_sl_sb_boundaryMassOn_slice_le",
+        "git -C . rev-parse HEAD",
+        "git -C .lake/packages/mathlib rev-parse HEAD",
+        "git -C .lake/packages/simongmt rev-parse HEAD",
+        "sed -n '1,260p' /tmp/dmcbr-sb-decomp/Check.lean",
+        "cat /tmp/dmcbr-sb-decomp/Check.out",
+        "lake env lean /tmp/dmcbr-sb-independent-audit-16ec2b52/Types.lean",
+        "lake env lean /tmp/dmcbr-sb-independent-audit-16ec2b52/Checked.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Order/LiminfLimsup.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Basic/ENNReal/Operations.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Order/LiminfLimsup.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Support.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/StronglyMeasurable/AEStronglyMeasurable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Filter.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Module.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/lake-manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-closure-and-bou-1c173fa73c/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-closure-and-bou-1c173fa73c/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-closure-and-bou-1c173fa73c/parent-supplied-natural-proof.json",
+        "/tmp/dmcbr-sb-decomp/Check.lean",
+        "/tmp/dmcbr-sb-decomp/Check.out"
+      ],
+      "conclusion": "The snapshot revisions, contract files, frozen parent type and independently recomputed parent digest match. The split is appropriate: three independent obligations combine with the first SL application to prove the selected parent's exact conclusion for the same families A and B. All dependency lists are correctly empty. All names are bare, distinct and unreserved; the identical boundary theorem in another active branch has a different name and is not reused. Every child type passes lexical validation and contains no implementation-dependent reference or problematic inline construction. Pinned definitions support the supplied proofs; no matching project mass-negation or liminf-addition lemma was found. The inspected Lean proof contains the exact four frozen types, and its supplied axiom log reports only propext, Classical.choice and Quot.sound. Fresh Lean execution was unavailable because this shell has no lake executable; that compilation result was inspected, not independently reproduced."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "mass_neg",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The standalone proposition exactly matches the prose, including arbitrary U and W. Negation preserves admissibility through support and Euclidean covector norm invariance. Linearity identifies each admissible evaluation with one for the other current; taking suprema in both directions proves equality. The proof correctly handles ENNReal.ofReal and requires neither finite mass nor a negation instance on currents."
+    },
+    {
+      "key": "liminf_add",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proposition matches the stated Type universe and arbitrary filter. The complete-lattice liminf formula, intersection argument and ENNReal.biSup_add_biSup_le' establish precisely the required inequality. Nonempty indexing is justified by univ membership; empty intersections, the bottom filter and infinite values introduce no gap. No circular dependency or unstated boundedness hypothesis occurs."
+    },
+    {
+      "key": "boundary_slice",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The SL premise is byte-identical to the parent's, and every additional hypothesis appears in the prose. Degree zero follows definitionally. In positive degree, the proof checks every SL hypothesis for ∂T using the zero representation of ∂∂T, then identifies A'_t=B and B'_t=0 by extensionality. This proves the exact boundary-mass bound without either sibling or parent theorem. Together with mass_neg and liminf_add, it supplies the parent's required boundary contribution and combined estimate."
+    }
+  ],
+  "required_changes": []
+}
