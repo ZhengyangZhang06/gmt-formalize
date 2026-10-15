@@ -1,0 +1,105 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "def (IsUnitOrientationOf|IsEmbeddedSubmanifold|tangentSpace|IsOrientation)|abbrev (Euclid|MultiVector)|def (Euclid|MultiVector)",
+        "theorem contDiffAt_symm|def toOpenPartialHomeomorph|theorem mem_toOpenPartialHomeomorph_source|theorem isOpen|continuousOn_fderiv_of_isOpen",
+        "reflection_orthogonalComplement_singleton_eq_neg|reflection_mem_subspace_eq_self|reflection_reflection|adjoint_comp_self|def apply|theorem intermediate_value|isUnit_det",
+        "norm_image_sub_le|det_to_matrix_orthonormalBasis_real",
+        "codim1_zsl_gc_",
+        "python3 /tmp/codim1-graph-chart-audit/prepare.py",
+        "git show fe95347baaed6a2cf2ecde4455e2b32f361fde51:GMT/Ch07/Submission.lean",
+        "git show 62aa1f1193489a8786e91aa3e2dceb0197ececf6:GMT/Ch07/Submission.lean",
+        "git show 8f402cb9186dec35e39aea49d7ea887fd87109ae:GMT/Ch07/Submission.lean",
+        "git show 5e4b215846243d699169f3e42b95b8e007ea2d70:GMT/Ch07/Submission.lean",
+        "git show dd8fcf8bcea714d918709c56ea7e24f4d81f39ea:GMT/Ch07/Submission.lean",
+        "cat /tmp/gc-split/review/integration.out /tmp/gc-split/review/proofs.done",
+        "lake env lean -DautoImplicit=false /tmp/codim1-graph-chart-audit/Types.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/InverseFunctionTheorem/FDeriv.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/Operations.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Operator/BoundedLinearMaps.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Module/Alternating/Topology.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/Alternating/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Adjoint.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Order/IntermediateValue.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-zer-3803907b64/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-zer-3803907b64/decomposition-v1.json",
+        "/tmp/gc-split/Assembly.lean",
+        "/tmp/gc-split/review/Integration.snapshot.lean",
+        "/tmp/gc-split/review/integration.out",
+        "/tmp/codim1-graph-chart-audit/prepare.py"
+      ],
+      "conclusion": "Splitting is appropriate: the five new lemmas isolate distinct obligations, and all ten proposed keys contribute through an acyclic dependency graph to precisely codim1_zsl_oriented_graph_chart. The assembly establishes every conjunct of the selected frozen type. Project and library pins match the snapshot. All names are bare identifiers; the five new names have no reservation in the DAG or another searched proposal. All five reused types are byte-identical to their accepted contracts, with matching candidate-source hashes and passing comparator records. The ten propositions match their prose, are independently usable, and contain no problematic matrix-unit construction. I independently checked every supplied proof. Retained validation sources match the supplied proof bodies and accepted implementations; their logs report successful integration using only propext, Classical.choice and Quot.sound. Fresh compilation was unavailable here because lake was not found."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "oriented_frame",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and frozen type match. The unit orientation supplies dimension n+1; orthogonal coordinates and the sign dichotomy give the desired frame. Reflection in coordinate 0 is valid because n+1 is positive and preserves all coordinate conclusions while correcting the orientation."
+    },
+    {
+      "key": "local_inverse",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact C¹ hypotheses suffice. Injectivity makes the finite-dimensional derivative invertible; the open invertibility locus and inverse function theorem give the required source and target. Pointwise inverse regularity proves C¹ regularity throughout the target. All asserted inverse identities are established."
+    },
+    {
+      "key": "local_graph",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof uses exactly the stated tangent-space inclusion. Adjoint identities and the local inverse construct u with zero value and derivative at 0. Proper-chart inverse continuity supplies the radius covering every nearby point of N. No graph-chart conclusion is assumed."
+    },
+    {
+      "key": "graph_cylinder",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Continuity at 0 supplies the image bound, and the chosen positive radii place the cylinder inside ball(x,s). Orthogonality gives uniqueness of the tangential coordinate, proving both inclusions in the exact set equality. No additional regularity or spanning hypothesis is needed."
+    },
+    {
+      "key": "orientation_along_graph",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The stated hypotheses identify the derivative range with the oriented tangent plane by inclusion and dimension. Evaluation against β gives a continuous sign; the derivative and orientation at 0 fix it to +1, and preconnectedness fixes it everywhere. This proves the precise positive square-root determinant formula."
+    },
+    {
+      "key": "orientation_sign",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Valid reuse of the identical accepted frozen type. The orthonormal change-of-basis determinant is ±1, and the alternating-form identity transfers this sign uniformly to every covector. Equality of the resulting functionals proves the conclusion, including dimension zero."
+    },
+    {
+      "key": "graph_orientation_jacobian",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Valid reuse of the identical accepted frozen type. The proof constructs the normalized evaluation functional and dual covector explicitly. The Gram determinant calculation proves positivity and unit orientation; the projection identity and continuity arguments establish all remaining conclusions without using the selected parent."
+    },
+    {
+      "key": "chart_range_tangent",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Valid reuse of the identical accepted frozen type. The bounded smooth reparametrization has derivative 1 at 0 and keeps the curve inside V, realizing exactly Dψ(v)a. The zero-vector case and the passage from Cʳ to C¹ are covered."
+    },
+    {
+      "key": "chart_inverse_continuity",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Valid reuse of the identical accepted frozen type. The convergent image sequence together with its limit is compact inside W. Properness produces a convergent source subsequence; relative continuity and injectivity identify its limit and yield the contradiction. No openness assumption is used."
+    },
+    {
+      "key": "orthonormal_coordinates",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Valid reuse of the identical accepted frozen type. Complementary dimensions justify both orthonormal bases. Their inverse coordinate maps give the isometries, while orthogonal projection proves spanning and the projection identity. Zero-dimensional cases are included."
+    }
+  ],
+  "required_changes": []
+}

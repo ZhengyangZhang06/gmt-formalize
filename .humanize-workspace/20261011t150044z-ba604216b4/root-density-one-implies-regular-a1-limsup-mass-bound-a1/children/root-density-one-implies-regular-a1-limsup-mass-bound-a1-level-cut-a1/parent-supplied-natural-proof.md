@@ -1,0 +1,122 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.density_one_implies_regular-a1.limsup_mass_bound-a1`
+- Child DAG node: `root.density_one_implies_regular-a1.limsup_mass_bound-a1.level_cut-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: the proof of Simon 7.2.4, displays (3)–(7) and (10) (chapter-07.txt lines 187–246), which is steps 5 and 9 of the parent proof. The level is chosen for the single current R, with slicing function f(x) := |x − y| (Simon Ch. 6, 4.5 allows Lipschitz f). So the cutting sets are the balls B_t(y), the level sets are the spheres ∂B_t(y), and F = B̄_t(y). The level depends on the current, so the parent needs no subsequence. Below B_s := B_s(y) and B̄_s := B̄_s(y).
+1. Representations.
+ (a) Fix representations R̂ = (M̂, θ̂, ξ̂) of R, R_T of T, R_{T'} of T' and R_S of S.
+ (b) Apply int_combination to the current T − T' (contract difference) with (p₁, p₂) = (1, −1). Apply it again to ∂R, which satisfies ∂R(ω) = (T − T')(ω) − S(ω), with (p₁, p₂) = (1, −1). This gives a representation RB = (M_B, θ_B, ξ_B) of ∂R.
+2. Slicing. Apply slicing to the (n+1)-current R with RT := R̂, RB, f(x) := |x − y| and L = 1. This gives currents P_t ∈ 𝒟_n(U). Note {f < t} = B_t and f⁻¹(t) = ∂B_t.
+3. Finiteness. By (C1), I := M_{B_{ρ'}}(R) = μ_{R̂}(B_{ρ'}) ≤ ∫_{M̂∩B̄_{ρ'}} θ̂ dH^{n+1} < ∞, since B̄_{ρ'} is a compact subset of U. Similarly μ_{R_{T'}}(B̄_{ρ'}) < ∞.
+4. Choice of t. Let J := (ρ, ρ') and consider three subsets of J.
+ (a) E₁ := {t ∈ J : the conclusions (2) of slicing hold at t}. It has full measure in J.
+ (b) E₂ := {t ∈ J : μ_{R_{T'}}(∂B_t) = 0}. The spheres ∂B_t, t ∈ J, are disjoint subsets of B̄_{ρ'}, which has finite μ_{R_{T'}}-measure. So J ∖ E₂ is countable.
+ (c) E₃ := {t ∈ J : M_{B_{ρ'}}(P_t) ≤ 2I/(ρ' − ρ)}. By slicing (1) with W := B_{ρ'}, the integrand is a.e.-measurable and ∫_J M_{B_{ρ'}}(P_t) dt ≤ I. If I = 0, E₃ has full measure in J. If I > 0, Markov's inequality gives |J ∖ E₃| ≤ ((ρ' − ρ)/(2I))·I = (ρ' − ρ)/2 < |J|.
+ Hence E₁ ∩ E₂ ∩ E₃ has positive measure. Fix t in it.
+5. Restriction of ∂R. Apply borel_restriction to RB and A := B_t. This gives D ∈ 𝒟_n(U) represented by RB_t := (M_B ∩ B_t, θ_B, ξ_B), with μ_{RB_t} = μ_{RB}⌞B_t and D(ω) = ∫_{M_B∩B_t} θ_B ξ_B(ω) dHⁿ.
+6. The cut cycle. Let X ∈ 𝒟_n(U) be the current D + P_t, i.e. X(ω) := D(ω) + P_t(ω). By slicing (2) at t ∈ E₁, for every ω ∈ 𝒟ⁿ(U),
+ (‡) X(ω) = ∫_{M̂∩B_t} θ̂ ξ̂(dω) dH^{n+1}.
+ In other words X = ∂(R⌞B_t(y)). This identity only describes the construction; the steps below use it solely in the form (‡), and the statement does not export it.
+ (a) ∂X = 0: X(dη) = ∫_{M̂∩B_t} θ̂ ξ̂(ddη) = 0, since d∘d = 0.
+ (b) Vanishing: if spt ω ∩ B̄_t = ∅, then dω = 0 on B_t (as spt dω ⊆ spt ω), so X(ω) = 0 by (‡).
+ (c) Integer multiplicity: P_t is integer multiplicity (t ∈ E₁) with some representation R_P. int_combination with (p₁, p₂) = (1, 1), applied to RB_t and R_P, gives a representation RX of X with μ_{RX} ≤ μ_{RB}⌞B_t + μ_{R_P}.
+7. The current Y. Let Y := T' + X. int_combination with (1, 1), applied to R_{T'} and RX, gives RY representing Y with μ_{RY} ≤ μ_{R_{T'}} + μ_{RX} ≤ μ_{R_{T'}} + μ_{RB}⌞B_t + μ_{R_P}.
+8. The open ball B_t.
+ (a) Let ω ∈ 𝒟ⁿ(U) with spt ω ⊆ B_t. Then dω vanishes outside B_t, and R̂ represents R, so (‡) gives X(ω) = ∫_{M̂} θ̂ ξ̂(dω) = R(dω) = ∂R(ω) = T(ω) − T'(ω) − S(ω). Hence Y(ω) = T(ω) − S(ω).
+ (b) For admissible ω (spt ω ⊆ B_t, |ω|_E ≤ 1), −ω is also admissible and ofReal(T(ω) − S(ω)) ≤ ofReal(T(ω)) + ofReal(S(−ω)). So M_{B_t}(Y) ≤ M_{B_t}(T) + M_{B_t}(S).
+ (c) By (C1) for Y and monotonicity of M_W in W: μ_{RY}(B_t) = M_{B_t}(Y) ≤ M_{B_{ρ'}}(T) + M_{B_{ρ'}}(S).
+9. The sphere ∂B_t.
+ (a) By step 7, μ_{RY}(∂B_t) ≤ μ_{R_{T'}}(∂B_t) + μ_{RB}(∂B_t ∩ B_t) + μ_{R_P}(∂B_t) = 0 + 0 + μ_{R_P}(∂B_t), using t ∈ E₂.
+ (b) By (C1), and since ∂B_t ⊆ B_{ρ'}, μ_{R_P}(∂B_t) ≤ μ_{R_P}(B_{ρ'}) = M_{B_{ρ'}}(P_t) ≤ 2I/(ρ' − ρ), using t ∈ E₃.
+10. Conclusion. B̄_t is the disjoint union of B_t and ∂B_t, so μ_{RY}(B̄_t) ≤ M_{B_{ρ'}}(T) + M_{B_{ρ'}}(S) + (2/(ρ' − ρ))·M_{B_{ρ'}}(R). Together with ρ < t < ρ' and steps 6–7, all assertions hold. ∎
+
+## Key steps
+
+1. ∂R = T − T' − S is integer multiplicity (int_combination); slice R by f = |x − y| (slicing).
+2. Choose t ∈ (ρ, ρ') where the slice identity holds, μ_{T'}(∂B_t) = 0 and M(P_t) ≤ 2M_{B_{ρ'}}(R)/(ρ'−ρ) (Markov).
+3. Define X := (∂R)⌞B_t + P_t. The slice identity gives X(ω) = ∫_{M̂∩B_t}θ̂ξ̂(dω) (so X is constructed as ∂(R⌞B_t)); hence X is an integer multiplicity cycle vanishing off B̄_t. Put Y := T' + X.
+4. On B_t, Y = T − S, so μ_Y(B_t) ≤ M(T) + M(S); on ∂B_t, μ_Y ≤ μ_{T'} + μ_{(∂R)⌞B_t} + μ_{P_t} ≤ M(P_t).
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cmp local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean GMT/Ch07/Contract.lean; cmp GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean (both identical)`
+- `rg -c sorry local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean (1, the final main_theorem)`
+- `rg -l -i 'slice|slicing|flat metric|flat norm|deformation theorem|nearest.point|tubular' simongmt/Poincare/SimonGMT local-references/123e8435b4a2469b/project -t lean`
+- `rg -n 'def .*[Pp]ushforward' simongmt/Poincare/SimonGMT -t lean`
+- `rg -n -i 'theorem .*area.*rectifiable|rectifiable.*area_formula|areaFormula.*Rectifiable' simongmt/Poincare/SimonGMT -t lean (no match)`
+- `grep -n '^theorem|^def' simongmt Chapter02/AreaNoninjective.lean, Chapter03/{SubmanifoldCover,DisjointCover,Rectifiable,Differential}.lean, Chapter06/{Currents,Mass,CurrentLocalEquality,Forms}.lean`
+- `grep -n 'measure_compl_support|hausdorffMeasure_image_le|norm_image_sub_le_of_norm_fderiv_le|toOpenPartialHomeomorph|exists_isCompact_diff_lt' in snapshot mathlib Support.lean, Hausdorff.lean, MeanValue.lean, InverseFunctionTheorem/ContDiff.lean, Regular.lean`
+- `grep -rln 'def compContinuousLinearMap' snapshot mathlib Topology/Algebra/Module/Alternating`
+- `dag.json lean_name scan for the eight proposed dor_lmb_* names (164 nodes at 2026-10-12T01:39Z; no collision); git grep dor_lmb over all branches (no match)`
+- `python3 -I: verifier/lean_contract.py validate_lean_statement and verifier/gmt-compare.py contract_scope on all eight lean_statement strings`
+- `lake env lean /tmp/lmb-decomp-v2/Types.lean (eight child types in the exact comparator scope, each also checked as `example : Prop`)`
+- `lake env lean /tmp/lmb-decomp-v2/Assembly.lean (#print axioms Submission.dor_minimizing_limsup_mass_bound)`
+- `lake env lean /tmp/lmb-decomp-v2/Inst.lean (implicit volume on ℝ, Measure.le_iff', ENNReal smul of measures)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/lake-manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/README.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Support.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Regular.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/MeanValue.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/InverseFunctionTheorem/ContDiff.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Module/Alternating/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaNoninjective.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/CoareaLinear.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/SubmanifoldCover.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/DisjointCover.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/AffineCurrentPushforward.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Product.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter08/DeformationIntegral.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-03.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-07.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-limsup-mass-bound-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-limsup-mass-bound-a1/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-limsup-mass-bound-a1/decomposition-audit-v1.json`
+- `/tmp/lmb-decomp-v2/v2_subproblems.json`
+- `/tmp/lmb-decomp-v2/Types.lean`
+- `/tmp/lmb-decomp-v2/Assembly.lean`
+- `/tmp/lmb-decomp-v2/Inst.lean`
+
+Snapshot: project b4d606d, mathlib 25730c7c; simongmt is pinned at 2b36630. The snapshot Contract.lean is byte-identical to the workspace Contract.lean and Submission.lean. Its only sorry is main_theorem.
+
+Reusable facts found:
+- SimonGMT Chapter03/Rectifiable.lean: HasApproximateTangentSpaceAt (Simon 1.4, unweighted), .unique, CountablyRectifiable and CountablyRectifiable.mono.
+- Chapter03/DisjointCover.lean: simon_remark_1_3 (disjoint Borel pieces).
+- Chapter03/SubmanifoldCover.lean: countablyRectifiable_of_submanifold_cover, measurableSet_of_isSimonSubmanifold, countablyRectifiable_image_contDiffOn_open. Its header says the converse direction of Lemma 1.2 "remains a separate theorem".
+- Chapter02/AreaNoninjective.lean: weighted_area_formula_lipschitz_fiberSum, a non-injective weighted Lipschitz area formula. It is for maps on a Euclidean domain, not on rectifiable subsets of ℝ^P.
+- Chapter06: massOn and massAdmissibleOn (Mass.lean); support as U minus the zero region (CurrentLocalEquality.lean); GeometricCurrentOn with sequential continuity, and boundary (Currents.lean).
+- Mathlib: measure_compl_support, LipschitzOnWith.hausdorffMeasure_image_le, Convex.norm_image_sub_le_of_norm_fderiv_le, ContDiffAt.toOpenPartialHomeomorph, MeasurableSet.exists_isCompact_diff_lt, ContinuousAlternatingMap.compContinuousLinearMap, μHE[d].
+
+Not available, so cited from Simon in the child proofs:
+- current slicing (6.4) and flat convergence (6.7.2): the keyword hits are only linear co-area slices, product point slices and varifold deformation slices;
+- the Deformation Theorem (6.5.3) and completeness (6.3.13);
+- C¹ or Lipschitz push-forward of currents: only affinePushforward and varifold push-forwards exist;
+- the rectifiable-set area formula (Ch. 3, 2.6), the only-if direction of Lemma 1.2, and a nonlinear tubular-neighbourhood retraction.
+
+Lean checks:
+- All eight child types elaborate as Prop in the exact comparator scope and pass validate_lean_statement.
+- The conditional assembly of the exact frozen parent type compiles. It depends only on propext, Classical.choice, Quot.sound and the stubs' sorryAx.
+- No proposed name collides.
