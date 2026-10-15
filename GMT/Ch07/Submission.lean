@@ -141977,5 +141977,268 @@ theorem Submission.idtp_tdc_density_locally_constant : ∀ (P : ℕ) (C : Geomet
     simpa only [mul_zero] using tendsto_one_div_add_atTop_nhds_zero_nat.const_mul (r / 4)
   exact Submission.idtp_tdc_dlc_accumulating_discs P C Q z k b (min (1 / 2) (r / 2 / 4)) hmin.1
     (lt_min (by norm_num) (by positivity)) hQ2 hzQ hlim hQdisc hbS
+/-- Uniqueness of planes in the proof of Simon 7.3.3(1) (p. 191: `spt S₀` lies in finitely many
+2-planes `Pᵢ` with `Pᵢ ∩ Pⱼ = {0}`): linear subspaces `Q₁, Q₂` of `ℝᴾ` that agree on a ball
+`B_t(x)`, `t > 0`, about a point `x ∈ Q₁` are equal.  First, `x ∈ Q₁ ∩ B_t(x) = Q₂ ∩ B_t(x)`
+gives `x ∈ Q₂`.  For `v ∈ Q₁` and `s = t / (2(|v| + 1)) > 0` we have `|s v| < t`, so `x + s v`
+lies in `Q₁ ∩ B_t(x) = Q₂ ∩ B_t(x)`; hence `s v ∈ Q₂` and `v ∈ Q₂`.  Exchanging `Q₁` and `Q₂`,
+antisymmetry gives `Q₁ = Q₂`. -/
+theorem Submission.idtp_tdc_csfp_subspace_eq_of_inter_ball : ∀ (P : ℕ) (Q₁ Q₂ : Submodule ℝ (Euclid P)) (x : Euclid P) (t : ℝ), x ∈ Q₁ → 0 < t → (Q₁ : Set (Euclid P)) ∩ ball x t = (Q₂ : Set (Euclid P)) ∩ ball x t → Q₁ = Q₂ := by
+  intro P Q₁ Q₂ x t hx ht h
+  -- Step 1: `x ∈ Q₁ ∩ B_t(x) = Q₂ ∩ B_t(x)`, so `x ∈ Q₂`
+  have hx₂ : x ∈ Q₂ := by
+    have hx' : x ∈ (Q₁ : Set (Euclid P)) ∩ ball x t := ⟨hx, mem_ball_self ht⟩
+    rw [h] at hx'
+    exact hx'.1
+  -- Step 2: if `x ∈ A`, `x ∈ B` and `A ∩ B_t(x) = B ∩ B_t(x)`, then `A ≤ B`
+  have key : ∀ A B : Submodule ℝ (Euclid P), x ∈ A → x ∈ B →
+      (A : Set (Euclid P)) ∩ ball x t = (B : Set (Euclid P)) ∩ ball x t → A ≤ B := by
+    intro A B hxA hxB hAB v hv
+    -- `s := t / (2(|v| + 1)) > 0` has `s |v| ≤ s (|v| + 1) = t / 2 < t`
+    obtain ⟨s, hs, hsv⟩ : ∃ s : ℝ, 0 < s ∧ s * ‖v‖ < t := by
+      refine ⟨t / (2 * (‖v‖ + 1)), by positivity, ?_⟩
+      calc t / (2 * (‖v‖ + 1)) * ‖v‖ ≤ t / (2 * (‖v‖ + 1)) * (‖v‖ + 1) := by gcongr; linarith
+        _ = t / 2 := by field_simp
+        _ < t := half_lt_self ht
+    -- `y := x + s v ∈ A ∩ B_t(x) = B ∩ B_t(x)`, so `s v = y − x ∈ B` and `v = s⁻¹ (s v) ∈ B`
+    have hy : x + s • v ∈ (A : Set (Euclid P)) ∩ ball x t := ⟨A.add_mem hxA (A.smul_mem s hv), by
+      rwa [mem_ball, dist_self_add_left, norm_smul_of_nonneg hs.le]⟩
+    rw [hAB] at hy
+    exact (B.smul_mem_iff hs.ne').1 ((B.add_mem_iff_right hxB).1 hy.1)
+  -- Step 3: `Q₁ ≤ Q₂` and `Q₂ ≤ Q₁`
+  exact le_antisymm (key Q₁ Q₂ hx hx₂ h) (key Q₂ Q₁ hx₂ hx h.symm)
+
+/-- Propagation along the great circle in the proof of Simon 7.3.3(1) (p. 191: `spt S₀` lies in
+finitely many 2-planes `Pᵢ` with `Pᵢ ∩ Pⱼ = {0}`): if a closed set `S ⊆ ℝᴾ` is a 2-plane near each
+of its nonzero points and agrees with the 2-plane `Q` near one unit vector `x₀ ∈ Q`, then `S`
+agrees with `Q` near every unit vector of `Q`.  The great circle `K = Q ∩ 𝕊` is preconnected: two
+non-antipodal points of `K` lie on the radial projection of the segment joining them, which
+avoids `0`, and antipodal points are joined through a third unit vector of `Q` (`dim Q = 2`).  The
+set `A` of points near which `S` agrees with `Q` is open, contains `x₀`, and `A ∩ Q ⊆ S`.  A point
+of `K` outside `A` has a ball free of `A ∩ Q`: off `S` because `S` is closed, and on `S` because
+its local plane `Q' ≠ Q` would agree with `Q` near a point of `A ∩ Q`
+(`idtp_tdc_csfp_subspace_eq_of_inter_ball`).  So the open sets `A` and `(closure (A ∩ Q))ᶜ`
+would separate `K` unless `K ⊆ A`. -/
+theorem Submission.idtp_tdc_csfp_great_circle_local_plane : ∀ (P : ℕ) (S : Set (Euclid P)) (Q : Submodule ℝ (Euclid P)) (x₀ : Euclid P) (ε₀ : ℝ), IsClosed S → (∀ p ∈ S, p ≠ 0 → ∃ (δ : ℝ) (Q' : Submodule ℝ (Euclid P)), 0 < δ ∧ Module.finrank ℝ Q' = 2 ∧ S ∩ ball p δ = (Q' : Set (Euclid P)) ∩ ball p δ) → Module.finrank ℝ Q = 2 → x₀ ∈ Q → ‖x₀‖ = 1 → 0 < ε₀ → S ∩ ball x₀ ε₀ = (Q : Set (Euclid P)) ∩ ball x₀ ε₀ → ∀ x : Euclid P, x ∈ Q → ‖x‖ = 1 → ∃ ε : ℝ, 0 < ε ∧ S ∩ ball x ε = (Q : Set (Euclid P)) ∩ ball x ε := by
+  intro P S Q x₀ ε₀ hS hloc hQ hx₀Q hx₀ hε₀ hx₀ε₀
+  -- Agreement of two sets on a set `U` persists on every `V ⊆ U`
+  have hres : ∀ {T₁ T₂ U V : Set (Euclid P)}, V ⊆ U → T₁ ∩ U = T₂ ∩ U → T₁ ∩ V = T₂ ∩ V := by
+    intro T₁ T₂ U V hVU h
+    rw [← inter_eq_right.2 hVU, ← inter_assoc, h, inter_assoc]
+  -- Step 1: the great circle `K = Q ∩ 𝕊` is preconnected
+  set K : Set (Euclid P) := (Q : Set (Euclid P)) ∩ sphere 0 1
+  have hx₀K : x₀ ∈ K := ⟨hx₀Q, mem_sphere_zero_iff_norm.2 hx₀⟩
+  have hKconn : IsPreconnected K := by
+    -- (i) `a, b ∈ K` with `a + b ≠ 0` lie on the arc `z ↦ z / |z|` of the segment `[a, b] ∌ 0`
+    have harc : ∀ a ∈ K, ∀ b ∈ K, a + b ≠ 0 → ∃ t ⊆ K, a ∈ t ∧ b ∈ t ∧ IsPreconnected t := by
+      rintro a ⟨haQ, ha⟩ b ⟨hbQ, hb⟩ hab
+      rw [mem_sphere_zero_iff_norm] at ha hb
+      -- `s a + t b = 0` with `s, t ≥ 0`, `s + t = 1` forces `s = t = 1 / 2` and `a + b = 0`
+      have h0 : ∀ z ∈ segment ℝ a b, z ≠ 0 := by
+        rintro _ ⟨s, t, hs, ht, hst, rfl⟩ h0
+        have hts : s = t := by
+          have h := congrArg norm (eq_neg_of_add_eq_zero_left h0)
+          rwa [norm_neg, norm_smul, norm_smul, ha, hb, Real.norm_of_nonneg hs,
+            Real.norm_of_nonneg ht, mul_one, mul_one] at h
+        subst hts
+        rw [← smul_add] at h0
+        exact hab ((smul_eq_zero.1 h0).resolve_left (by linarith))
+      refine ⟨(fun z => ‖z‖⁻¹ • z) '' segment ℝ a b, ?_,
+        ⟨a, left_mem_segment ℝ a b, by simp [ha]⟩, ⟨b, right_mem_segment ℝ a b, by simp [hb]⟩,
+        (convex_segment a b).isPreconnected.image _ ?_⟩
+      · rintro _ ⟨z, hz, rfl⟩
+        refine ⟨Q.smul_mem _ (Q.convex.segment_subset haQ hbQ hz), ?_⟩
+        rw [mem_sphere_zero_iff_norm, norm_smul, norm_inv, norm_norm,
+          inv_mul_cancel₀ (norm_ne_zero_iff.2 (h0 z hz))]
+      · exact (continuous_norm.continuousOn.inv₀ fun z hz => norm_ne_zero_iff.2 (h0 z hz)).smul
+          continuousOn_id
+    -- (ii) as `dim Q = 2 > 1 = dim ℝx₀`, some unit vector `w ∈ Q` is neither `x₀` nor `-x₀`
+    obtain ⟨w, hwK, hw₁, hw₂⟩ : ∃ w ∈ K, x₀ + w ≠ 0 ∧ w + -x₀ ≠ 0 := by
+      have hx₀0 : x₀ ≠ 0 := norm_ne_zero_iff.1 (by rw [hx₀]; exact one_ne_zero)
+      obtain ⟨q, hqQ, hq⟩ : ∃ q ∈ Q, q ∉ Submodule.span ℝ {x₀} := by
+        by_contra! h
+        have h' := Submodule.finrank_mono (show Q ≤ Submodule.span ℝ {x₀} from h)
+        rw [hQ, finrank_span_singleton hx₀0] at h'
+        norm_num at h'
+      have hq0 : ‖q‖ ≠ 0 := norm_ne_zero_iff.2 fun h => hq (h ▸ Submodule.zero_mem _)
+      have hw : ∀ c : ℝ, ‖q‖⁻¹ • q ≠ c • x₀ := fun c h => hq <| by
+        rw [← smul_inv_smul₀ hq0 q, h]
+        exact Submodule.smul_mem _ _ (Submodule.smul_mem _ _ (Submodule.mem_span_singleton_self x₀))
+      refine ⟨‖q‖⁻¹ • q, ⟨Q.smul_mem _ hqQ, ?_⟩, fun h => hw (-1) ?_, fun h => hw 1 ?_⟩
+      · rw [mem_sphere_zero_iff_norm, norm_smul, norm_inv, norm_norm, inv_mul_cancel₀ hq0]
+      · rw [neg_one_smul]
+        exact eq_neg_of_add_eq_zero_right h
+      · rw [one_smul]
+        exact add_neg_eq_zero.1 h
+    -- (iii) each `y ∈ K` is joined to `x₀` by one arc, or by two arcs through `w` if `y = -x₀`
+    refine isPreconnected_of_forall x₀ fun y hy => ?_
+    by_cases hxy : x₀ + y = 0
+    · obtain ⟨t₁, ht₁K, hx₀t₁, hwt₁, ht₁⟩ := harc x₀ hx₀K w hwK hw₁
+      obtain ⟨t₂, ht₂K, hwt₂, hyt₂, ht₂⟩ :=
+        harc w hwK y hy (by rwa [eq_neg_of_add_eq_zero_right hxy])
+      exact ⟨t₁ ∪ t₂, union_subset ht₁K ht₂K, Or.inl hx₀t₁, Or.inr hyt₂,
+        IsPreconnected.union w hwt₁ hwt₂ ht₁ ht₂⟩
+    · exact harc x₀ hx₀K y hy hxy
+  -- Step 2: the set `A` of points near which `S` agrees with `Q` is open
+  set A : Set (Euclid P) :=
+    {y | ∃ ε : ℝ, 0 < ε ∧ S ∩ ball y ε = (Q : Set (Euclid P)) ∩ ball y ε}
+  have hAopen : IsOpen A := by
+    refine Metric.isOpen_iff.2 fun y hy => ?_
+    obtain ⟨ε, hε, hyε⟩ := hy
+    refine ⟨ε, hε, fun y' hy' => ⟨ε - dist y' y, sub_pos.2 (mem_ball.1 hy'), ?_⟩⟩
+    exact hres (ball_subset_ball' (sub_add_cancel _ _).le) hyε
+  -- Step 3: `A ∩ Q ⊆ S`
+  have hAQS : ∀ y ∈ A, y ∈ Q → y ∈ S := by
+    rintro y ⟨ε, hε, hyε⟩ hyQ
+    exact (hyε.ge ⟨hyQ, mem_ball_self hε⟩).1
+  -- Step 4: a point of `K` outside `A` is not in `closure (A ∩ Q)`
+  have hfar : ∀ x ∈ K, x ∉ A → x ∉ closure (A ∩ (Q : Set (Euclid P))) := by
+    intro x hxK hxA hxcl
+    rw [Metric.mem_closure_iff] at hxcl
+    by_cases hxS : x ∈ S
+    · -- (b) `S` is a plane `Q' ≠ Q` on `B_δ(x)`; for `y ∈ A ∩ Q` with `|x - y| < δ / 2`, `Q`
+      -- and `Q'` agree with `S` on `B_τ(y)`, `τ = min(ε_y, δ / 2)`, so `Q = Q'`
+      have hx0 : x ≠ 0 :=
+        norm_ne_zero_iff.1 (by rw [mem_sphere_zero_iff_norm.1 hxK.2]; exact one_ne_zero)
+      obtain ⟨δ, Q', hδ, -, hxδ⟩ := hloc x hxS hx0
+      have hQ' : Q' ≠ Q := by
+        rintro rfl
+        exact hxA ⟨δ, hδ, hxδ⟩
+      obtain ⟨y, ⟨⟨εy, hεy, hyεy⟩, hyQ⟩, hxy⟩ := hxcl (δ / 2) (half_pos hδ)
+      obtain ⟨τ, hτ, hτy, hτδ⟩ : ∃ τ : ℝ, 0 < τ ∧ τ ≤ εy ∧ τ ≤ δ / 2 :=
+        ⟨min εy (δ / 2), lt_min hεy (half_pos hδ), min_le_left _ _, min_le_right _ _⟩
+      have hτx : ball y τ ⊆ ball x δ := ball_subset_ball' (by rw [dist_comm]; linarith)
+      exact hQ' (Submission.idtp_tdc_csfp_subspace_eq_of_inter_ball P Q Q' y τ hyQ hτ
+        ((hres (ball_subset_ball hτy) hyεy).symm.trans (hres hτx hxδ))).symm
+    · -- (a) a ball around `x` misses the closed set `S ⊇ A ∩ Q`
+      obtain ⟨r, hr, hrS⟩ := Metric.isOpen_iff.1 hS.isOpen_compl x hxS
+      obtain ⟨y, ⟨hyA, hyQ⟩, hxy⟩ := hxcl r hr
+      exact hrS (mem_ball'.2 hxy) (hAQS y hyA hyQ)
+  -- Step 5: `A` and `(closure (A ∩ Q))ᶜ` are open and cover `K` (Step 4); both meet `K` if
+  -- `K ⊄ A`, but no point of `K ∩ A ⊆ A ∩ Q` lies outside `closure (A ∩ Q)`
+  have hKA : K ⊆ A := by
+    intro x hxK
+    by_contra hxA
+    obtain ⟨z, hzK, hzA, hzv⟩ := hKconn A (closure (A ∩ (Q : Set (Euclid P))))ᶜ hAopen
+      isClosed_closure.isOpen_compl (fun y hy => (em (y ∈ A)).imp id (hfar y hy))
+      ⟨x₀, hx₀K, ε₀, hε₀, hx₀ε₀⟩ ⟨x, hxK, hfar x hxK hxA⟩
+    exact hzv (subset_closure ⟨hzA, hzK.1⟩)
+  -- Step 6: every unit vector of `Q` lies in `K ⊆ A`
+  intro x hxQ hx
+  exact hKA ⟨hxQ, mem_sphere_zero_iff_norm.2 hx⟩
+
+/-- Two seeded 2-planes of a closed, locally planar set are equal or meet only in `0` (proof of
+Simon 7.3.3(1), pp. 191–192: `spt S₀` lies in 2-planes `P₁, …, P_q` with `Pᵢ ∩ Pⱼ = {0}` for
+`i ≠ j`).  Here `S ⊆ ℝᴾ` is closed and locally a 2-plane near each `p ∈ S ∖ {0}`, and
+`S ∩ B_{δᵢ}(pᵢ) = Qᵢ ∩ B_{δᵢ}(pᵢ)` for 2-planes `Qᵢ` and unit vectors `pᵢ ∈ Qᵢ`.  If
+`Q₁ ⊓ Q₂ ≠ ⊥`, normalise a nonzero common vector to a unit vector `u ∈ Q₁ ∩ Q₂`.  Propagating
+local planarity along the great circles of `Q₁` and `Q₂` gives `S ∩ B_{εᵢ}(u) = Qᵢ ∩ B_{εᵢ}(u)`,
+so `Q₁` and `Q₂` agree on `B_t(u)`, `t = min(ε₁, ε₂)`, whence `Q₁ = Q₂`. -/
+theorem Submission.idtp_tdc_csfp_planes_eq_or_inf_bot : ∀ (P : ℕ) (S : Set (Euclid P)) (Q₁ Q₂ : Submodule ℝ (Euclid P)) (p₁ p₂ : Euclid P) (δ₁ δ₂ : ℝ), IsClosed S → (∀ p ∈ S, p ≠ 0 → ∃ (δ : ℝ) (Q : Submodule ℝ (Euclid P)), 0 < δ ∧ Module.finrank ℝ Q = 2 ∧ S ∩ ball p δ = (Q : Set (Euclid P)) ∩ ball p δ) → Module.finrank ℝ Q₁ = 2 → Module.finrank ℝ Q₂ = 2 → p₁ ∈ Q₁ → ‖p₁‖ = 1 → 0 < δ₁ → S ∩ ball p₁ δ₁ = (Q₁ : Set (Euclid P)) ∩ ball p₁ δ₁ → p₂ ∈ Q₂ → ‖p₂‖ = 1 → 0 < δ₂ → S ∩ ball p₂ δ₂ = (Q₂ : Set (Euclid P)) ∩ ball p₂ δ₂ → Q₁ = Q₂ ∨ Q₁ ⊓ Q₂ = ⊥ := by
+  intro P S Q₁ Q₂ p₁ p₂ δ₁ δ₂ hS hloc hQ₁ hQ₂ hp₁ hp₁n hδ₁ hS₁ hp₂ hp₂n hδ₂ hS₂
+  -- if `Q₁ ⊓ Q₂ ≠ ⊥`, there is a nonzero `v ∈ Q₁ ∩ Q₂`
+  rcases eq_or_ne (Q₁ ⊓ Q₂) ⊥ with hbot | hbot
+  · exact Or.inr hbot
+  refine Or.inl ?_
+  obtain ⟨v, hv, hv0⟩ := (Submodule.ne_bot_iff _).1 hbot
+  obtain ⟨hv₁, hv₂⟩ := Submodule.mem_inf.1 hv
+  -- `u = |v|⁻¹ v` is a common unit vector
+  obtain ⟨u, hu₁, hu₂, hun⟩ : ∃ u : Euclid P, u ∈ Q₁ ∧ u ∈ Q₂ ∧ ‖u‖ = 1 :=
+    ⟨‖v‖⁻¹ • v, Q₁.smul_mem _ hv₁, Q₂.smul_mem _ hv₂, by
+      rw [norm_smul, norm_inv, norm_norm, inv_mul_cancel₀ (norm_ne_zero_iff.2 hv0)]⟩
+  -- along the great circles through `p₁` and `p₂`, `S` is locally `Q₁` and locally `Q₂` at `u`
+  obtain ⟨ε₁, hε₁, h₁⟩ := Submission.idtp_tdc_csfp_great_circle_local_plane P S Q₁ p₁ δ₁ hS hloc
+    hQ₁ hp₁ hp₁n hδ₁ hS₁ u hu₁ hun
+  obtain ⟨ε₂, hε₂, h₂⟩ := Submission.idtp_tdc_csfp_great_circle_local_plane P S Q₂ p₂ δ₂ hS hloc
+    hQ₂ hp₂ hp₂n hδ₂ hS₂ u hu₂ hun
+  -- so `Q₁ ∩ B_t(u) = S ∩ B_t(u) = Q₂ ∩ B_t(u)` for `t = min(ε₁, ε₂)`, and `Q₁ = Q₂`
+  obtain ⟨t, ht, ht₁, ht₂⟩ : ∃ t : ℝ, 0 < t ∧ t ≤ ε₁ ∧ t ≤ ε₂ :=
+    ⟨min ε₁ ε₂, lt_min hε₁ hε₂, min_le_left _ _, min_le_right _ _⟩
+  have hshrink : ∀ (A : Set (Euclid P)) (ε : ℝ), t ≤ ε → A ∩ ball u ε ∩ ball u t = A ∩ ball u t :=
+    fun A ε hε => by rw [inter_assoc, inter_eq_right.2 (ball_subset_ball hε)]
+  refine Submission.idtp_tdc_csfp_subspace_eq_of_inter_ball P Q₁ Q₂ u t hu₁ ht ?_
+  calc (Q₁ : Set (Euclid P)) ∩ ball u t = (Q₁ : Set (Euclid P)) ∩ ball u ε₁ ∩ ball u t :=
+        (hshrink _ _ ht₁).symm
+    _ = S ∩ ball u ε₁ ∩ ball u t := by rw [h₁]
+    _ = S ∩ ball u t := hshrink _ _ ht₁
+    _ = S ∩ ball u ε₂ ∩ ball u t := (hshrink _ _ ht₂).symm
+    _ = (Q₂ : Set (Euclid P)) ∩ ball u ε₂ ∩ ball u t := by rw [h₂]
+    _ = (Q₂ : Set (Euclid P)) ∩ ball u t := hshrink _ _ ht₂
+
+/-- Finitely many planes in the proof of Simon 7.3.3(1) (p. 191: `spt S₀` lies in 2-planes
+`P₁, …, P_q` with `Pᵢ ∩ Pⱼ = {0}` for `i ≠ j`): a closed dilation-invariant set `S ⊆ ℝᴾ` that is
+a 2-plane near each `p ∈ S ∖ {0}` has `S ∖ {0}` inside finitely many 2-planes meeting pairwise
+only in `0`.  Choose `δ_p`, `Q_p` with `S ∩ B_{δ_p}(p) = Q_p ∩ B_{δ_p}(p)` (so `p ∈ Q_p`).  The
+link `Σ = S ∩ 𝕊` is compact, so finitely many balls `B_{δ_p}(p)`, `p ∈ F ⊆ Σ`, cover it; enumerate
+the finite set `{Q_p : p ∈ F}` injectively.  Distinct planes of it meet only in `0`
+(`idtp_tdc_csfp_planes_eq_or_inf_bot`).  For `x ∈ S ∖ {0}`, `x̂ = |x|⁻¹ x ∈ Σ` by dilation
+invariance; it lies in some `S ∩ B_{δ_p}(p) = Q_p ∩ B_{δ_p}(p)`, `p ∈ F`, so `x = |x| x̂ ∈ Q_p`. -/
+theorem Submission.idtp_tdc_cone_set_finite_planes : ∀ (P : ℕ) (S : Set (Euclid P)), IsClosed S → (∀ x ∈ S, ∀ s : ℝ, 0 < s → s • x ∈ S) → (∀ p ∈ S, p ≠ 0 → ∃ (δ : ℝ) (Q : Submodule ℝ (Euclid P)), 0 < δ ∧ Module.finrank ℝ Q = 2 ∧ S ∩ ball p δ = (Q : Set (Euclid P)) ∩ ball p δ) → ∃ (q : ℕ) (Ps : Fin q → Submodule ℝ (Euclid P)), (∀ i, Module.finrank ℝ (Ps i) = 2) ∧ (∀ i j, i ≠ j → Ps i ⊓ Ps j = ⊥) ∧ ∀ x ∈ S, x ≠ 0 → ∃ i, x ∈ Ps i := by
+  intro P S hS hdil hloc
+  classical
+  -- Step 1: a radius `δ p` and a plane `Q p` with `S ∩ B_{δ p}(p) = Q p ∩ B_{δ p}(p)` for every
+  -- `p ∈ S ∖ {0}`; then `p ∈ Q p`
+  have hloc' := hloc
+  choose! δ Q hδ hQ hSQ using hloc'
+  have hpQ : ∀ p ∈ S, p ≠ 0 → p ∈ Q p := by
+    intro p hp hp0
+    have h : p ∈ S ∩ ball p (δ p) := ⟨hp, mem_ball_self (hδ p hp hp0)⟩
+    rw [hSQ p hp hp0] at h
+    exact h.1
+  -- Step 2: the link `L = S ∩ 𝕊` is compact and consists of nonzero unit vectors of `S`
+  set L : Set (Euclid P) := S ∩ sphere 0 1
+  have hLc : IsCompact L := (isCompact_sphere 0 1).inter_left hS
+  have hL : ∀ p ∈ L, p ∈ S ∧ p ≠ 0 ∧ ‖p‖ = 1 := by
+    rintro p ⟨hp, hp1⟩
+    rw [mem_sphere_zero_iff_norm] at hp1
+    exact ⟨hp, norm_ne_zero_iff.1 (by rw [hp1]; exact one_ne_zero), hp1⟩
+  -- Step 3: finitely many balls `B_{δ p}(p)`, `p ∈ F ⊆ L`, cover `L`
+  obtain ⟨F, hFL, hcov⟩ := hLc.elim_nhds_subcover (fun p => ball p (δ p))
+    fun p hp => ball_mem_nhds p (hδ p (hL p hp).1 (hL p hp).2.1)
+  -- Step 4: enumerate the finite set of planes `{Q p : p ∈ F}` injectively by `Fin q`
+  set planes : Finset (Submodule ℝ (Euclid P)) := F.image Q
+  have hplanes : ∀ R ∈ planes, ∃ p ∈ L, Q p = R := by
+    intro R hR
+    obtain ⟨p, hp, rfl⟩ := Finset.mem_image.1 hR
+    exact ⟨p, hFL p hp, rfl⟩
+  refine ⟨planes.card, fun i => planes.equivFin.symm i, fun i => ?_, fun i j hij => ?_,
+    fun x hx hx0 => ?_⟩
+  · -- each plane is some `Q p`, `p ∈ L`, of dimension 2
+    obtain ⟨p, hp, hpR⟩ := hplanes _ (planes.equivFin.symm i).2
+    show Module.finrank ℝ (planes.equivFin.symm i : Submodule ℝ (Euclid P)) = 2
+    rw [← hpR]
+    exact hQ p (hL p hp).1 (hL p hp).2.1
+  · -- distinct planes `Q p ≠ Q p'` meet only in `0`
+    obtain ⟨p, hp, hpR⟩ := hplanes _ (planes.equivFin.symm i).2
+    obtain ⟨p', hp', hp'R⟩ := hplanes _ (planes.equivFin.symm j).2
+    obtain ⟨hpS, hp0, hp1⟩ := hL p hp
+    obtain ⟨hp'S, hp'0, hp'1⟩ := hL p' hp'
+    show (planes.equivFin.symm i : Submodule ℝ (Euclid P)) ⊓ planes.equivFin.symm j = ⊥
+    rw [← hpR, ← hp'R]
+    refine (Submission.idtp_tdc_csfp_planes_eq_or_inf_bot P S (Q p) (Q p') p p' (δ p) (δ p') hS
+      hloc (hQ p hpS hp0) (hQ p' hp'S hp'0) (hpQ p hpS hp0) hp1 (hδ p hpS hp0) (hSQ p hpS hp0)
+      (hpQ p' hp'S hp'0) hp'1 (hδ p' hp'S hp'0) (hSQ p' hp'S hp'0)).resolve_left fun h => hij ?_
+    exact planes.equivFin.symm.injective (Subtype.ext (hpR.symm.trans (h.trans hp'R)))
+  · -- `x̂ = |x|⁻¹ x ∈ L` lies in a ball `B_{δ p}(p)`, `p ∈ F`, so `x̂ ∈ Q p` and `x = |x| x̂ ∈ Q p`
+    have hxn : 0 < ‖x‖ := norm_pos_iff.2 hx0
+    have hxL : ‖x‖⁻¹ • x ∈ L := ⟨hdil x hx _ (inv_pos.2 hxn), by
+      rw [mem_sphere_zero_iff_norm, norm_smul, norm_inv, norm_norm, inv_mul_cancel₀ hxn.ne']⟩
+    obtain ⟨p, hpF, hxp⟩ := mem_iUnion₂.1 (hcov hxL)
+    obtain ⟨hpS, hp0, -⟩ := hL p (hFL p hpF)
+    have hxQ : ‖x‖⁻¹ • x ∈ Q p := by
+      have h : ‖x‖⁻¹ • x ∈ S ∩ ball p (δ p) := ⟨hxL.1, hxp⟩
+      rw [hSQ p hpS hp0] at h
+      exact h.1
+    have hxQ' : x ∈ Q p := by
+      have h := (Q p).smul_mem ‖x‖ hxQ
+      rwa [smul_inv_smul₀ hxn.ne'] at h
+    have hQp : Q p ∈ planes := Finset.mem_image_of_mem Q hpF
+    refine ⟨planes.equivFin ⟨Q p, hQp⟩, ?_⟩
+    show x ∈ (planes.equivFin.symm (planes.equivFin ⟨Q p, hQp⟩) : Submodule ℝ (Euclid P))
+    rw [Equiv.symm_apply_apply]
+    exact hxQ'
+
+/-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
+theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
 end GMT.Ch07
