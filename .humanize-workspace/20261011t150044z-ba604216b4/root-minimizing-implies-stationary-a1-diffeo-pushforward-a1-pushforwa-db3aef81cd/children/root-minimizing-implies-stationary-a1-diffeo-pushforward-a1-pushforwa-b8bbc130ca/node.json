@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.minimizing_implies_stationary-a1.diffeo_pushforward-a1.pushforward_current-a1.orient_bound-a1",
+  "parent_id": "root.minimizing_implies_stationary-a1.diffeo_pushforward-a1.pushforward_current-a1",
+  "depth": 4,
+  "title": "IMRep orientations are a.e. unit: |ξ(x)(β)| ≤ ‖β‖",
+  "statement": "Let P, n ∈ ℕ, U ⊆ ℝ^P and R = (M, θ, ξ) an integer multiplicity triple in U (IMRep U n). Then for Hⁿ⌞M-almost every x (i.e. μHE[n].restrict R.carrier-a.e.), every n-covector β ∈ Covector(ℝ^P, n) satisfies |ξ(x)(β)| ≤ ‖β‖, where ‖β‖ is the operator norm of β as a continuous alternating map.",
+  "lean_statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (R : IMRep U n), ∀ᵐ x ∂(μHE[n].restrict R.carrier), ∀ β : Covector (Euclid P) n, |R.orient x β| ≤ ‖β‖",
+  "lean_name": "dpf_pfc_imrep_orient_abs_apply_le",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-pushforwa-b8bbc130ca-a1"
+}
