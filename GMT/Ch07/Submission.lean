@@ -478,6 +478,25 @@ theorem Submission.idtp_tdc_dlc_subspace_eq_of_inter_ball_eq : ∀ (P : ℕ) (Q�
   -- Step 3: `Q₁ ∩ B_t(x) ⊆ Q₂` and `Q₂ ∩ B_t(x) ⊆ Q₁`; conclude by antisymmetry.
   exact le_antisymm (key Q₁ Q₂ hx hx₂ (h.subset.trans inter_subset_left))
     (key Q₂ Q₁ hx₂ hx (h.symm.subset.trans inter_subset_left))
+/-- Radial projection to the unit sphere at most doubles the distance to a unit vector: if
+`y ≠ 0` and `|w| = 1`, then `|y/|y| − w| ≤ 2|y − w|` (fact (e) in the proof that the density of a
+2-dimensional minimizing cone is locally constant).  `|y/|y| − y| = |1/|y| − 1| |y| = |1 − |y||`,
+and `|1 − |y|| = ||w| − |y|| ≤ |y − w|` by the reverse triangle inequality; conclude by the
+triangle inequality through `y`. -/
+theorem Submission.idtp_tdc_dlc_normalize_dist_le : ∀ (P : ℕ) (y w : Euclid P), y ≠ 0 → ‖w‖ = 1 → ‖‖y‖⁻¹ • y - w‖ ≤ 2 * ‖y - w‖ := by
+  intro P y w hy hw
+  have hy0 : 0 < ‖y‖ := norm_pos_iff.mpr hy
+  -- `‖y‖⁻¹ • y - y = (‖y‖⁻¹ - 1) • y` has norm `|‖y‖⁻¹ - 1| ‖y‖ = |1 - ‖y‖|`
+  have h1 : ‖‖y‖⁻¹ • y - y‖ = |1 - ‖y‖| := by
+    have e : (‖y‖⁻¹ - 1) * ‖y‖ = 1 - ‖y‖ := by
+      rw [sub_mul, inv_mul_cancel₀ hy0.ne', one_mul]
+    rw [← e, abs_mul, abs_of_pos hy0, ← Real.norm_eq_abs, ← norm_smul, sub_smul, one_smul]
+  -- reverse triangle inequality, as `‖w‖ = 1`
+  have h2 : |1 - ‖y‖| ≤ ‖y - w‖ := by
+    rw [← hw, norm_sub_rev y w]
+    exact abs_norm_sub_norm_le w y
+  calc ‖‖y‖⁻¹ • y - w‖ ≤ ‖‖y‖⁻¹ • y - y‖ + ‖y - w‖ := norm_sub_le_norm_sub_add_norm_sub _ _ _
+    _ ≤ 2 * ‖y - w‖ := by rw [h1]; linarith
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
