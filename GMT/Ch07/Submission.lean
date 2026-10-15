@@ -683,6 +683,37 @@ theorem Submission.cmc_fcl_massOn_le_measure_inter : ∀ (P d : ℕ) (U : Set (E
     _ = μ.restrict E (tsupport (ω : DifferentialForm (Euclid P) d)) := lintegral_indicator_one hS
     _ = μ (tsupport (ω : DifferentialForm (Euclid P) d) ∩ E) := Measure.restrict_apply hS
     _ ≤ μ (E ∩ V) := measure_mono fun x hx => ⟨hx.2, hω.1 hx.1⟩
+/-- **Support of a current vanishing away from a compact set** (Simon 6.2.11).  If `K ⊆ U` is
+compact and `F ∈ 𝒟ₙ(U)` kills every `ω ∈ 𝒟ⁿ(U)` with `spt ω ∩ K = ∅`, then `spt F ⊆ K` and
+`spt F` is compact.  For `y ∈ U \ K` choose `B_s(y) ⊆ U \ K`: the ball `W = B_{s/2}(y)` has compact
+closure `⊆ B̄_{s/2}(y) ⊆ U \ K` and every form supported in `W` misses `K`, so `y ∈ Z(F)`.  Hence
+`spt F = K \ Z(F)`, compact because the zero region `Z(F)` is open. -/
+theorem Submission.rsd_cmr_support_subset_of_vanish : ∀ (P n : ℕ) (U K : Set (Euclid P)) (F : GeometricCurrentOn U n), IsOpen U → IsCompact K → K ⊆ U → (∀ ω : TestFormOn U n, Disjoint (tsupport (ω : DifferentialForm (Euclid P) n)) K → F ω = 0) → F.support ⊆ K ∧ IsCompact F.support := by
+  intro P n U K F hU hK hKU hvan
+  -- Steps 1–2: no point of `U \ K` lies in `spt F = U \ Z(F)`, so `spt F ⊆ K`
+  have hsub : F.support ⊆ K := by
+    intro y hy
+    by_contra hyK
+    obtain ⟨s, hs, hball⟩ := Metric.isOpen_iff.mp (hU.sdiff hK.isClosed) y ⟨hy.1, hyK⟩
+    apply hy.2
+    -- `W = B_{s/2}(y)` is one of the open sets whose union is `Z(F)`
+    refine ⟨ball y (s / 2), ⟨isOpen_ball, ?_, ?_, ?_⟩, mem_ball_self (by positivity)⟩
+    · -- `closure W` is compact
+      exact (isCompact_closedBall y (s / 2)).of_isClosed_subset isClosed_closure
+        closure_ball_subset_closedBall
+    · -- `closure W ⊆ B̄_{s/2}(y) ⊆ B_s(y) ⊆ U \ K ⊆ U`
+      exact closure_ball_subset_closedBall.trans
+        ((closedBall_subset_ball (by linarith)).trans (hball.trans sdiff_subset))
+    · -- a form supported in `W ⊆ U \ K` misses `K`, so `F` kills it
+      intro ω hω
+      exact hvan ω (Set.disjoint_of_subset_left
+        (hω.trans ((ball_subset_ball (by linarith)).trans hball)) disjoint_sdiff_left)
+  -- Step 3: `spt F = K \ Z(F)` is compact, `Z(F)` being open
+  refine ⟨hsub, ?_⟩
+  have heq : F.support = K \ F.zeroRegion :=
+    Set.ext fun x => ⟨fun hx => ⟨hsub hx, hx.2⟩, fun hx => ⟨hKU hx.1, hx.2⟩⟩
+  rw [heq]
+  exact hK.diff F.isOpen_zeroRegion
 /-- **Simon Ch. 6, 2.4–2.5 and 3.2(1)**, algebra of integer multiplicity currents.  (a) The zero
 current is integer multiplicity (empty carrier).  (b) If `A = pB + qC` with `p, q ∈ ℤ`, then
 `M_W(A) ≤ |p| M_W(B) + |q| M_W(C)`: `−ω` is admissible with `ω`, so `|X(ω)| ≤ M_W(X)`.  (c) If
@@ -1858,6 +1889,259 @@ theorem Submission.dmcbr_cc_slice_property_of_im : ((∀ (P n : ℕ) (U M M' : S
     exact hsplit.trans_lt (ENNReal.add_lt_top.2 ⟨hZ, hBW⟩)
   -- Step 7: `Z_t = ∂A_t − B_t` is integer multiplicity by (IMC)(c)
   exact hIMCc P d univ (At t).boundary (Bt t) isOpen_univ hdAIM hBIM
+/-- **`H¹` on a line** (Simon Ch. 6, 2.2 and 2.4).  For a unit vector `τ`, `φ(u) = a + uτ` is an
+isometry `ℝ → ℝᴾ` (`|φ(u) − φ(v)| = |u − v| |τ|`), hence a closed and so measurable embedding, and
+`φ(A)` is Borel for Borel `A`.  On `ℝ`, `μHE[1]` is Lebesgue measure, and `μHE[1]` is preserved by
+isometries: `H¹(φ(A)) = H¹(A) = L¹(A)`, and `φ_#L¹ = H¹⌞range φ` gives `H¹⌞φ(A) = φ_#(L¹⌞A)`, so
+`∫_{φ(A)} h dH¹ = ∫_A h(a + uτ) du` for every `h` (change of variables along an embedding). -/
+theorem Submission.cbr_cc_seg_line_hausdorff : ∀ (P : ℕ) (a τ : Euclid P), ‖τ‖ = 1 → ∀ A : Set ℝ, MeasurableSet A → MeasurableSet ((fun u : ℝ => a + u • τ) '' A) ∧ μHE[1] ((fun u : ℝ => a + u • τ) '' A) = volume A ∧ ∀ h : Euclid P → ℝ, ∫ x in (fun u : ℝ => a + u • τ) '' A, h x ∂μHE[1] = ∫ u in A, h (a + u • τ) := by
+  intro P a τ hτ A hA
+  set φ : ℝ → Euclid P := fun u => a + u • τ with hφ
+  -- Step 1: `φ` is an isometry, `|φ(u) − φ(v)| = |(u − v)τ| = |u − v|`
+  have hiso : Isometry φ := by
+    refine Isometry.of_dist_eq fun u v => ?_
+    rw [hφ, dist_eq_norm, dist_eq_norm, add_sub_add_left_eq_sub, ← sub_smul, norm_smul, hτ,
+      mul_one]
+  -- Step 2: hence a closed, so measurable, embedding, and `φ(A)` is Borel
+  have hemb : MeasurableEmbedding φ := hiso.isClosedEmbedding.measurableEmbedding
+  have hmeas : MeasurableSet (φ '' A) := hemb.measurableSet_image.mpr hA
+  -- Step 3: on `ℝ`, `μHE[1]` is Lebesgue measure
+  have hvol : (μHE[1] : Measure ℝ) = volume := by
+    simpa only [Module.finrank_self] using
+      InnerProductSpace.euclideanHausdorffMeasure_eq_volume (V := ℝ)
+  refine ⟨hmeas, ?_, fun h => ?_⟩
+  -- Step 4: isometry invariance, `H¹(φ(A)) = H¹(A) = L¹(A)`
+  · rw [hiso.euclideanHausdorffMeasure_image, hvol]
+  -- Step 5: `H¹⌞φ(A) = (H¹⌞range φ)⌞φ(A) = (φ_#H¹)⌞φ(A) = φ_#(H¹⌞A) = φ_#(L¹⌞A)`
+  · have hrestr : (μHE[1] : Measure (Euclid P)).restrict (φ '' A) = (volume.restrict A).map φ :=
+      calc (μHE[1] : Measure (Euclid P)).restrict (φ '' A)
+          = ((μHE[1] : Measure (Euclid P)).restrict (range φ)).restrict (φ '' A) := by
+            rw [Measure.restrict_restrict hmeas, inter_eq_left.mpr (image_subset_range φ A)]
+        _ = ((μHE[1] : Measure ℝ).map φ).restrict (φ '' A) := by
+            rw [hiso.map_euclideanHausdorffMeasure]
+        _ = (volume.restrict A).map φ := by
+            rw [hemb.restrict_map, hemb.injective.preimage_image, hvol]
+    -- Step 6: change of variables along the measurable embedding `φ`, for every `h`
+    rw [hrestr, hemb.integral_map]
+
+/-- **Approximate tangent line of an open segment** (Simon Ch. 3, 1.4).  If `|τ| = 1`, the open
+segment `I = {a + uτ : 0 < u < ℓ}` has approximate tangent space `span{τ}` at every point
+`x = a + s₀τ` of `I`.  Let `f ∈ C_c` vanish outside `B̄_ρ(0)` and `0 < r < min(s₀, ℓ − s₀)/ρ`.
+Then `η_{x,r}(I) ⊆ span{τ}`, and every `y = cτ` with `f(y) ≠ 0` equals `η_{x,r}(a + (s₀ + rc)τ)`
+with `s₀ + rc ∈ (0, ℓ)`.  So `∫_{η_{x,r}(I)} f dH¹ = ∫_{span{τ}} f dH¹` for all small `r > 0`. -/
+theorem Submission.cbr_cc_seg_open_segment_tangent : ∀ (P : ℕ) (a τ : Euclid P) (ℓ : ℝ), ‖τ‖ = 1 → ∀ x ∈ (fun u : ℝ => a + u • τ) '' Ioo 0 ℓ, HasApproximateTangentSpaceAt 1 ((fun u : ℝ => a + u • τ) '' Ioo 0 ℓ) x (Submodule.span ℝ {τ}) := by
+  intro P a τ ℓ hτ x hx
+  -- Step 1: `x = a + s₀τ` with `0 < s₀ < ℓ`, and `dim span{τ} = 1` since `τ ≠ 0`
+  obtain ⟨s₀, ⟨hs₀, hs₀ℓ⟩, rfl⟩ := hx
+  have hτ0 : τ ≠ 0 := by
+    rintro rfl
+    simp at hτ
+  refine ⟨finrank_span_singleton hτ0, fun f => ?_⟩
+  -- Step 2: `f y ≠ 0` implies `|y| ≤ ρ`
+  obtain ⟨R₀, hR₀⟩ := (isBounded_iff_subset_closedBall (0 : Euclid P)).mp
+    f.hasCompactSupport.isCompact.isBounded
+  set ρ := max R₀ 1
+  have hρpos : 0 < ρ := lt_of_lt_of_le one_pos (le_max_right _ _)
+  have hfρ : ∀ y, f y ≠ 0 → ‖y‖ ≤ ρ := by
+    intro y hy
+    have h := hR₀ (subset_tsupport f hy)
+    rw [mem_closedBall, dist_zero_right] at h
+    exact h.trans (le_max_left _ _)
+  -- Step 3: `δ = min(s₀, ℓ - s₀)` and `0 < r < δ/ρ`
+  set δ := min s₀ (ℓ - s₀)
+  have hδpos : 0 < δ := lt_min hs₀ (sub_pos.mpr hs₀ℓ)
+  refine tendsto_const_nhds.congr' ?_
+  filter_upwards [Ioo_mem_nhdsGT (div_pos hδpos hρpos)] with r hr
+  obtain ⟨hr0, hrδ⟩ := hr
+  have hrρ : r * ρ < δ := by rwa [lt_div_iff₀ hρpos] at hrδ
+  -- Step 4: `η_r(a + uτ) = (r⁻¹(u - s₀))τ`, so `η_r(I) ⊆ span{τ}`
+  have hη : ∀ u : ℝ, Poincare.SimonGMT.Chapter03.blowUpMap (a + s₀ • τ) r (a + u • τ) =
+      (r⁻¹ * (u - s₀)) • τ := by
+    intro u
+    rw [Poincare.SimonGMT.Chapter03.blowUpMap, mul_smul, sub_smul, add_sub_add_left_eq_sub]
+  have hsub : Poincare.SimonGMT.Chapter03.blowUpMap (a + s₀ • τ) r ''
+      ((fun u : ℝ => a + u • τ) '' Ioo 0 ℓ) ⊆ (Submodule.span ℝ {τ} : Set (Euclid P)) := by
+    rintro _ ⟨_, ⟨u, -, rfl⟩, rfl⟩
+    exact Submodule.mem_span_singleton.mpr ⟨_, (hη u).symm⟩
+  -- Step 6: `span{τ}` is closed, so the two integrals agree once `f = 0` on `span{τ} \ η_r(I)`
+  refine setIntegral_eq_of_subset_of_ae_sdiff_eq_zero
+    (Submodule.closed_of_finiteDimensional _).measurableSet.nullMeasurableSet hsub
+    (Eventually.of_forall fun y hy => ?_)
+  -- Step 5: if `y = cτ` and `f y ≠ 0`, then `y = η_r(a + (s₀ + rc)τ)` with `s₀ + rc ∈ (0, ℓ)`
+  by_contra hfy
+  obtain ⟨c, rfl⟩ := Submodule.mem_span_singleton.mp hy.1
+  have hc : |c| ≤ ρ := by
+    have h := hfρ _ hfy
+    rwa [norm_smul, hτ, mul_one, Real.norm_eq_abs] at h
+  have hrc : |r * c| < δ := by
+    rw [abs_mul, abs_of_pos hr0]
+    exact (mul_le_mul_of_nonneg_left hc hr0.le).trans_lt hrρ
+  have hδs₀ : δ ≤ s₀ := min_le_left _ _
+  have hδℓ : δ ≤ ℓ - s₀ := min_le_right _ _
+  obtain ⟨hrc₁, hrc₂⟩ := abs_lt.mp hrc
+  refine hy.2 ⟨a + (s₀ + r * c) • τ, ⟨s₀ + r * c, ⟨by linarith, by linarith⟩, rfl⟩, ?_⟩
+  rw [hη, add_sub_cancel_left, inv_mul_cancel_left₀ hr0.ne']
+
+/-- **Fundamental theorem of calculus for a `0`-form along a segment** (Simon Ch. 6, 2.3: Stokes'
+theorem `∂T(ω) = T(dω)` in dimension one).  For a smooth `0`-form `g` on `ℝᴾ`, `a, v ∈ ℝᴾ` and
+`ℓ ≥ 0`, `∫_{(0,ℓ)} dg(a + uv)(v) du = g(a + ℓv)⟨⟩ − g(a)⟨⟩`.  The function `ĝ = g(·)⟨⟩` is
+smooth, and `dg(y)(v) = Dĝ(y)v` since `removeNth 0` of a `1`-tuple is the empty tuple `⟨⟩`.  By
+the chain rule `u ↦ ĝ(a + uv)` has the continuous derivative `Dĝ(a + uv)v`, and the FTC on
+`[0, ℓ]` concludes (`(0, ℓ)` and `(0, ℓ]` differ by a null set). -/
+theorem Submission.cbr_cc_seg_zero_form_ftc : ∀ (P : ℕ) (g : DifferentialForm (Euclid P) 0), IsSmoothForm g → ∀ (a v : Euclid P) (ℓ : ℝ), 0 ≤ ℓ → ∫ u in Ioo 0 ℓ, exteriorDerivative g (a + u • v) (fun _ => v) = g (a + ℓ • v) (fun i => i.elim0) - g a (fun i => i.elim0) := by
+  intro P g hg a v ℓ hℓ
+  set e : Fin 0 → Euclid P := fun i => i.elim0
+  -- (1) `ĝ = g(·)⟨⟩ = ev_⟨⟩ ∘ g` is smooth
+  have hĝ := (ContinuousAlternatingMap.apply ℝ (Euclid P) ℝ e).contDiff.comp hg
+  have hĝd : Differentiable ℝ (fun y => g y e) := hĝ.differentiable (by simp)
+  -- (2) `dg(y)(v) = Dĝ(y)v`: `removeNth 0` of a `1`-tuple is the empty tuple
+  have hd : ∀ y, exteriorDerivative g y (fun _ => v) = fderiv ℝ (fun z => g z e) y v := by
+    intro y
+    rw [exteriorDerivative_apply ((hg.differentiable (by simp)) y), Fin.sum_univ_one]
+    have hrm : (Fin.removeNth (0 : Fin 1) fun _ : Fin 1 => v) = e := Subsingleton.elim _ _
+    simp [hrm]
+  -- (3) chain rule: `d/du ĝ(a + uv) = Dĝ(a + uv)v`
+  have hderiv : ∀ u : ℝ, HasDerivAt (fun u => g (a + u • v) e)
+      (fderiv ℝ (fun z => g z e) (a + u • v) v) u := by
+    intro u
+    have h1 : HasDerivAt (fun u : ℝ => a + u • v) v u := by
+      simpa using ((hasDerivAt_id u).smul_const v).const_add a
+    exact (hĝd (a + u • v)).hasFDerivAt.comp_hasDerivAt u h1
+  -- (4) the derivative is continuous in `u`, hence interval integrable
+  have hcont : Continuous (fun u : ℝ => fderiv ℝ (fun z => g z e) (a + u • v) v) :=
+    ((hĝ.continuous_fderiv (by simp)).comp
+      (continuous_const.add (continuous_id.smul continuous_const))).clm_apply continuous_const
+  -- (5) `∫_{(0,ℓ)} = ∫_0^ℓ` for `ℓ ≥ 0`, then the FTC
+  rw [← integral_Ioc_eq_integral_Ioo, ← intervalIntegral.integral_of_le hℓ]
+  simp only [hd]
+  rw [intervalIntegral.integral_eq_sub_of_hasDerivAt (fun u _ => hderiv u)
+    (hcont.intervalIntegrable 0 ℓ), zero_smul, add_zero]
+/-- **The oriented open segment as an integer multiplicity triple** (Simon 6.2.2, 6.3.1).  For a
+unit vector `τ` and `ℓ > 0`, the triple `R = (I, 1, ζ₀)` with `I = φ((0, ℓ))`, `φ(u) = a + uτ`, and
+`ζ₀ = τ` (`⟨α, ζ₀⟩ = α(τ)`) is an `IMRep` of degree `1` in `ℝᴾ`.  `I` is Borel with `H¹(I) = ℓ`
+and `∫_I h dH¹ = ∫₀^ℓ h(a + uτ) du` (`line_hausdorff`); it lies in the range of the `1`-Lipschitz
+map `w ↦ a + w₀τ`, so it is countably `1`-rectifiable; `ζ₀` orients `span{τ}`, the approximate
+tangent space of `I` at each of its points (`open_segment_tangent`).  Hence `I ⊆ [a, a + ℓτ]`,
+`μ_R(ℝᴾ) = H¹(I) < ∞`, and `R(ω) = ∫_I ω(x)(τ) dH¹(x) = ∫₀^ℓ ω(a + uτ)(τ) du`. -/
+theorem Submission.cbr_cc_seg_segment_imrep : ∀ (P : ℕ) (a τ : Euclid P) (ℓ : ℝ), ‖τ‖ = 1 → 0 < ℓ → ∃ R : IMRep (univ : Set (Euclid P)) 1, R.carrier ⊆ segment ℝ a (a + ℓ • τ) ∧ R.measure univ < ∞ ∧ ∀ ω : DifferentialForm (Euclid P) 1, R.action ω = ∫ u in Ioo 0 ℓ, ω (a + u • τ) (fun _ => τ) := by
+  intro P a τ ℓ hτ hℓ
+  -- Step 1: `I = φ((0, ℓ))` is Borel, `H¹(I) = ℓ < ∞`, and `∫_I h dH¹ = ∫₀^ℓ h ∘ φ`
+  obtain ⟨hImeas, hIvol, hIint⟩ :=
+    Submission.cbr_cc_seg_line_hausdorff P a τ hτ (Ioo 0 ℓ) measurableSet_Ioo
+  have hIfin : μHE[1] ((fun u : ℝ => a + u • τ) '' Ioo 0 ℓ) < ∞ := by
+    rw [hIvol, Real.volume_Ioo]
+    exact ENNReal.ofReal_lt_top
+  -- Step 2: `ζ₀ = (α ↦ α(τ))` is a unit orientation of `span{τ}`
+  let ζ₀ : MultiVector P 1 := ContinuousAlternatingMap.apply ℝ (Euclid P) ℝ (fun _ : Fin 1 => τ)
+  have hζ₀ : IsUnitOrientationOf ζ₀ (Submodule.span ℝ {τ}) := by
+    refine ⟨fun _ => τ, ?_, by rw [range_const], Or.inl fun α => rfl⟩
+    rw [orthonormal_iff_ite]
+    intro i j
+    rw [Subsingleton.elim i j, ite_eq_left rfl, real_inner_self_eq_norm_sq, hτ, one_pow]
+  -- Step 3: `I` lies in the range of the `1`-Lipschitz map `w ↦ a + w₀τ`
+  have hrect : CountablyRectifiable 1 ((fun u : ℝ => a + u • τ) '' Ioo 0 ℓ) := by
+    let F : EuclideanSpace ℝ (Fin 1) → Euclid P := fun w => a + w 0 • τ
+    have hF : LipschitzWith 1 F := by
+      refine LipschitzWith.of_dist_le_mul fun w w' => ?_
+      rw [dist_eq_norm, dist_eq_norm, NNReal.coe_one, one_mul]
+      calc ‖F w - F w'‖ = ‖(w - w') 0‖ := by
+            simp only [F, add_sub_add_left_eq_sub, ← sub_smul, norm_smul, hτ, mul_one,
+              PiLp.sub_apply]
+        _ ≤ ‖w - w'‖ := PiLp.norm_apply_le _ _
+    refine (Poincare.SimonGMT.Chapter03.countablyRectifiable_range hF).mono ?_
+    rintro _ ⟨u, -, rfl⟩
+    exact ⟨EuclideanSpace.single 0 u, by simp [F]⟩
+  -- Step 4: the triple `R = (I, 1, ζ₀)`
+  let R : IMRep (univ : Set (Euclid P)) 1 :=
+    { carrier := (fun u : ℝ => a + u • τ) '' Ioo 0 ℓ
+      mult := fun _ => 1
+      orient := fun _ => ζ₀
+      measurableSet_carrier := hImeas
+      carrier_subset := subset_univ _
+      rectifiable := hrect
+      measurable_mult := measurable_const
+      mult_pos := fun _ _ => Nat.one_pos
+      locallyIntegrable_mult := fun K _ _ => by
+        rw [Nat.cast_one, setLIntegral_one]
+        exact (lt_of_le_of_lt (measure_mono inter_subset_left) hIfin).ne
+      aestronglyMeasurable_orient := aestronglyMeasurable_const
+      orients := ae_restrict_of_forall_mem hImeas fun x hx =>
+        ⟨_, Submission.cbr_cc_seg_open_segment_tangent P a τ ℓ hτ x hx, hζ₀⟩ }
+  refine ⟨R, ?_, ?_, ?_⟩
+  -- Step 5: `I ⊆ [a, a + ℓτ]`, via `φ(u) = a + (u/ℓ)((a + ℓτ) − a)` with `u/ℓ ∈ [0, 1]`
+  · rintro _ ⟨u, ⟨hu0, huℓ⟩, rfl⟩
+    rw [segment_eq_image']
+    refine ⟨u / ℓ, ⟨div_nonneg hu0.le hℓ.le, (div_le_one hℓ).mpr huℓ.le⟩, ?_⟩
+    simp only [add_sub_cancel_left, smul_smul, div_mul_cancel₀ u hℓ.ne']
+  -- Step 6: `μ_R(ℝᴾ) = H¹(I) < ∞`
+  · show ((μHE[1].restrict ((fun u : ℝ => a + u • τ) '' Ioo 0 ℓ)).withDensity
+      fun _ => ((1 : ℕ) : ℝ≥0∞)) univ < ∞
+    rw [withDensity_apply _ MeasurableSet.univ, Measure.restrict_univ, Nat.cast_one,
+      setLIntegral_one]
+    exact hIfin
+  -- Step 7: `R(ω) = ∫_I ω(x)(τ) dH¹(x) = ∫₀^ℓ ω(a + uτ)(τ) du`
+  · intro ω
+    show ∫ x in (fun u : ℝ => a + u • τ) '' Ioo 0 ℓ, ((1 : ℕ) : ℝ) * ζ₀ (ω x) ∂μHE[1] = _
+    rw [Nat.cast_one]
+    simp only [one_mul, ζ₀, ContinuousAlternatingMap.apply_apply]
+    exact hIint fun x => ω x fun _ => τ
+
+/-- **The segment current `[[a, b]]`** (Simon Ch. 6, 2.2 and 3.1).  Assuming (MR), i.e.
+`M_W(T) = μ_R(W)` for `T = τ(R)`, every pair `a, b ∈ ℝᴾ` bounds an integer multiplicity
+`S ∈ 𝒟₁(ℝᴾ)` with `∂S = δ_b − δ_a`, `M(S) < ∞` and `spt S ⊆ [a, b]`.  If `a = b`, `S = 0`
+(`current_algebra` (a), (b), `support_vanish`).  Otherwise let `ℓ = |b − a|`, `τ = ℓ⁻¹(b − a)`, so
+`a + ℓτ = b`, and let `S = τ(R)` for the triple `R = (I, 1, τ)` on the open segment
+`I = {a + uτ : 0 < u < ℓ} ⊆ [a, b]` (`segment_imrep`, `imrep_current`).  Then
+`∂S(g) = S(dg) = ∫₀^ℓ dg(a + uτ)(τ) du = g(b)⟨⟩ − g(a)⟨⟩` (`zero_form_ftc`), `M(S) = μ_R(ℝᴾ) < ∞`
+by (MR), and `S(ω) = 0` once `spt ω` misses the compact `[a, b]`, so `spt S ⊆ [a, b]`. -/
+theorem Submission.dmcbr_cc_segment_current : (∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (R : IMRep U n), IsOpen U → R.Represents T → ∀ W : Set (Euclid P), IsOpen W → T.massOn W = R.measure W) → ∀ (P : ℕ) (a b : Euclid P), ∃ S : GeometricCurrentOn (univ : Set (Euclid P)) 1, IsIntegerMultiplicity S ∧ (∀ g : TestFormOn (univ : Set (Euclid P)) 0, S.boundary g = (g : DifferentialForm (Euclid P) 0) b (fun i => i.elim0) - (g : DifferentialForm (Euclid P) 0) a (fun i => i.elim0)) ∧ S.mass < ∞ ∧ S.support ⊆ segment ℝ a b := by
+  intro hMR P a b
+  by_cases hab : a = b
+  · -- Case `a = b`: `S = 0`, integer multiplicity by `current_algebra` (a)
+    subst hab
+    refine ⟨0, Submission.cbr_cc_current_algebra.1 P 1 univ, fun g => ?_, ?_, ?_⟩
+    · -- `∂0(g) = 0 = g(a)⟨⟩ − g(a)⟨⟩`
+      rw [GeometricCurrentOn.boundary_apply, GeometricCurrentOn.zero_apply, sub_self]
+    · -- `M(0) ≤ |0| M(0) + |0| M(0) = 0` by `current_algebra` (b)
+      show (0 : GeometricCurrentOn (univ : Set (Euclid P)) 1).massOn univ < ∞
+      refine (Submission.cbr_cc_current_algebra.2.1 P 1 univ 0 0 0 0 0 (fun ω => by simp)
+        univ).trans_lt ?_
+      simp
+    · -- `0` kills every form, so `spt 0 ⊆ {a} = [a, a]`
+      rw [segment_same]
+      exact (Submission.rsd_cmr_support_subset_of_vanish P 1 univ _ 0 isOpen_univ
+        isCompact_singleton (subset_univ _) fun ω _ => rfl).1
+  · -- Case `a ≠ b`: `ℓ = |b − a| > 0`, `τ = ℓ⁻¹(b − a)` is a unit vector and `a + ℓτ = b`
+    set ℓ : ℝ := ‖b - a‖
+    have hℓ : 0 < ℓ := norm_pos_iff.mpr (sub_ne_zero.mpr (Ne.symm hab))
+    set τ : Euclid P := ℓ⁻¹ • (b - a) with hτdef
+    have hτ : ‖τ‖ = 1 := by
+      rw [hτdef, norm_smul, norm_inv, Real.norm_eq_abs, abs_of_pos hℓ]
+      exact inv_mul_cancel₀ hℓ.ne'
+    have hb : a + ℓ • τ = b := by
+      rw [hτdef, smul_smul, mul_inv_cancel₀ hℓ.ne', one_smul, add_sub_cancel]
+    -- the triple `R = (I, 1, τ)` on the open segment `I ⊆ [a, b]`, and its current `S = τ(R)`
+    obtain ⟨R, hRc, hRm, hRa⟩ := Submission.cbr_cc_seg_segment_imrep P a τ ℓ hτ hℓ
+    obtain ⟨S, hS⟩ := Submission.dtc_imrep_current P 1 univ R
+    rw [hb] at hRc
+    refine ⟨S, ⟨R, hS⟩, fun g => ?_, ?_, ?_⟩
+    · -- `∂S(g) = S(dg) = ∫_{(0,ℓ)} dg(a + uτ)(τ) du = g(a + ℓτ)⟨⟩ − g(a)⟨⟩`
+      rw [GeometricCurrentOn.boundary_apply, hS]
+      change R.action (exteriorDerivative (g : DifferentialForm (Euclid P) 0)) = _
+      rw [hRa, Submission.cbr_cc_seg_zero_form_ftc P _ g.property.1.1 a τ ℓ hℓ.le, hb]
+    · -- `M(S) = M_{ℝᴾ}(S) = μ_R(ℝᴾ) < ∞` by (MR) with `U = W = ℝᴾ`
+      show S.massOn univ < ∞
+      rw [hMR P 1 univ S R isOpen_univ hS univ isOpen_univ]
+      exact hRm
+    · -- `[a, b]` is compact, and `S(ω) = 0` if `spt ω` misses `[a, b] ⊇ I`
+      have hK : IsCompact (segment ℝ a b) := by
+        rw [segment_eq_image]
+        exact isCompact_Icc.image (by fun_prop)
+      refine (Submission.rsd_cmr_support_subset_of_vanish P 1 univ (segment ℝ a b) S isOpen_univ
+        hK (subset_univ _) fun ω hω => ?_).1
+      rw [hS, IMRep.action]
+      refine setIntegral_eq_zero_of_forall_eq_zero fun x hx => ?_
+      rw [image_eq_zero_of_notMem_tsupport (disjoint_right.mp hω (hRc hx)), map_zero, mul_zero]
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
