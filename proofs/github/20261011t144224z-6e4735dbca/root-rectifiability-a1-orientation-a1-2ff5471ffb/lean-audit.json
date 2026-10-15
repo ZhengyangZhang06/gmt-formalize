@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "a26e053e837bbe1aca109d534ffcaab3a8a6ca5f3b6c496565cdbc27ef0b75e1",
+  "git_delta": {
+    "base_commit": "02fb656279da44011d893b6e31ebd11c9385c7fb",
+    "candidate_commit": "537363e208ed29debbcba5af1302da4cd0d44a37",
+    "target": "GMT/Ch06/Submission.lean",
+    "changed_files": [
+      "GMT/Ch06/Submission.lean"
+    ],
+    "diff_sha256": "e60239eb1ecb82161f55664e84bb6b855e42c718b98111b59388fc4db36cf1f8",
+    "source_sha256": "9ed7752920ba83fd9d11207f4721782bb3adfa3d2ec9cdb69c4bace754ee98f5",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.rectifiability_orientation",
+      "statement": "∀ (P m : ℕ) (U : Set (Eucl P)), IsOpen U → ∀ T : GeometricCurrentOn U (m + 1), (∀ W, CompactlyContainedOpen W U → T.boundary.massOn W < ∞) → ∀ (M : Set (Eucl P)) (θ : Eucl P → ℝ) (ξ : Eucl P → NVector (Eucl P) (m + 1)), M ⊆ U → NullMeasurableSet M (μHE[m + 1] : Measure (Eucl P)) → CountablyRectifiable (m + 1) M → (∀ x ∈ M, 0 < θ x) → (∀ K : Set (Eucl P), IsCompact K → K ⊆ U → IntegrableOn θ (M ∩ K) (μHE[m + 1] : Measure (Eucl P))) → AEStronglyMeasurable ξ ((μHE[m + 1] : Measure (Eucl P)).restrict M) → (∀ᵐ x ∂((μHE[m + 1] : Measure (Eucl P)).restrict M), ∑ α : SimonMultiIndex (m + 1) P, (euclideanNVectorCoordinate (ξ x) α) ^ 2 = 1) → (∀ ω : TestFormOn U (m + 1), T ω = tauAction (m + 1) M θ ξ ω) → ∀ᵐ x ∂((μHE[m + 1] : Measure (Eucl P)).restrict M), ∃ τ : Fin (m + 1) → Eucl P, Orthonormal ℝ τ ∧ HasWeightedApproximateTangentSpaceAt (m + 1) M θ x (Submodule.span ℝ (range τ)) ∧ (ξ x = simpleNVector τ ∨ ξ x = -simpleNVector τ)",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "b3f48d9e8fa3bfd8263a460fcb93d3be0e67fb8f1301d663a702c55e0b27d7e5",
+  "git_delta": {
+    "base_commit": "0e4047b29eaa0e45af513fcde9cd9c3b0adc65e5",
+    "candidate_commit": "a145fda2dac383ffe93a07012061b77e738dba9f",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "deformation_ipl_mwc_mil_tendsto_integral_mul_det",
+    "diff_sha256": "9db1dec0263b27f1a599252997f6f4dad83e29a3f7589dd18a7967ff46461c8e",
+    "source_sha256": "bb0937ed3a803fe5585431a84f92056e9cd3fed9846be7415281c64c506c2775",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.deformation_ipl_mwc_mil_tendsto_integral_mul_det",
+      "statement": "∀ (α : Type) [MeasurableSpace α] (μ : Measure α) (n : ℕ) (C : ℝ) (A : ℕ → Fin n → Fin n → α → ℝ) (A₀ : Fin n → Fin n → α → ℝ) (h : ℕ → α → ℝ) (h₀ H : α → ℝ), (∀ m t s, AEStronglyMeasurable (A m t s) μ) → (∀ m, AEStronglyMeasurable (h m) μ) → Integrable H μ → (∀ m t s x, |A m t s x| ≤ C) → (∀ᶠ m in atTop, ∀ x, |h m x| ≤ H x) → (∀ᵐ x ∂μ, Tendsto (fun m => h m x) atTop (𝓝 (h₀ x))) → (∀ᵐ x ∂μ, ∀ t s, Tendsto (fun m => A m t s x) atTop (𝓝 (A₀ t s x))) → Tendsto (fun m => ∫ x, h m x * Matrix.det (Matrix.of fun t s => A m t s x) ∂μ) atTop (𝓝 (∫ x, h₀ x * Matrix.det (Matrix.of fun t s => A₀ t s x) ∂μ))",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

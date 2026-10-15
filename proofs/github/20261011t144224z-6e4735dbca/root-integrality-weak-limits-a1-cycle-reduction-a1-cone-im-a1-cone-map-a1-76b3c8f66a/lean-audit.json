@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "0ffb18765d5ac8547252cf1db1e3397d7ca49d9988d523ae89ac5423137fa148",
+  "git_delta": {
+    "base_commit": "1ff167fcfa0feda654bd70f30fabb3a7f0e5c9f1",
+    "candidate_commit": "61b7d3fe17a438a487bdf3a56eb93a01e6c7accd",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "iwl_cr_ci_cone_map",
+    "diff_sha256": "326bb2b4d2fea661d09d78e2fc5095dccfe9a987219bc9436ecd6675cdc31e3e",
+    "source_sha256": "fa4d6f879f43bd2eddb8d89c5573dfa7a6fa801aeb076cf684991afe5ba9e34b",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.iwl_cr_ci_cone_map",
+      "statement": "∀ (P m : ℕ), ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) (fun y : Eucl (P + 1) => y 0 • (EuclideanSpace.equiv (Fin P) ℝ).symm (Fin.tail (EuclideanSpace.equiv (Fin (P + 1)) ℝ y))) ∧ ∀ (s : ℝ) (x : Eucl P), (fun y : Eucl (P + 1) => y 0 • (EuclideanSpace.equiv (Fin P) ℝ).symm (Fin.tail (EuclideanSpace.equiv (Fin (P + 1)) ℝ y))) ((EuclideanSpace.equiv (Fin (P + 1)) ℝ).symm (Fin.cons s (EuclideanSpace.equiv (Fin P) ℝ x))) = s • x ∧ ∀ (α : Covector (Eucl P) (m + 1)) (v : Fin m → Eucl P), (α.compContinuousLinearMap (fderiv ℝ (fun y : Eucl (P + 1) => y 0 • (EuclideanSpace.equiv (Fin P) ℝ).symm (Fin.tail (EuclideanSpace.equiv (Fin (P + 1)) ℝ y))) ((EuclideanSpace.equiv (Fin (P + 1)) ℝ).symm (Fin.cons s (EuclideanSpace.equiv (Fin P) ℝ x))))) (Fin.cons (EuclideanSpace.single 0 1) fun i => (EuclideanSpace.equiv (Fin (P + 1)) ℝ).symm (Fin.cons 0 (EuclideanSpace.equiv (Fin P) ℝ (v i)))) = s ^ m * α (Fin.cons x v)",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "e14d56a969647be444a33108af20e2d3b38851d18914936a00868d2b586bfda2",
+  "git_delta": {
+    "base_commit": "67b865e063a7fd381eecc3b027eb8f068ae580e4",
+    "candidate_commit": "afa97e5c91a5d2941259bd5f78ffc4cdbfd907fb",
+    "target": "GMT/Ch06/Submission.lean",
+    "changed_files": [
+      "GMT/Ch06/Submission.lean"
+    ],
+    "diff_sha256": "107eee82dfa5f08a94715f862185db103c928ddd7c3539437f67258dd89de36a",
+    "source_sha256": "ac1f73c44cc6f0a888bb16d33aacc91b3476d7367e0fd01cc7c279b41e8dfeba",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.ind_pi_good_slice_selection",
+      "statement": "SlicingTheorem → (∀ (P k : ℕ) (U : Set (Eucl P)), IsOpen U → ∀ (Xj : ℕ → GeometricCurrentOn U k) (X : GeometricCurrentOn U k) (W : Set (Eucl P)) (φ : Eucl P → ℝ), WeaklyConvergesOn Xj X → IsOpen W → W ⊆ U → (⨆ j, (Xj j).massOn W) < ∞ → ContinuousOn φ U → ∃ (ψ : ℕ → ℕ) (E : Set ℝ), StrictMono ψ ∧ E.Countable ∧ ∀ s ∉ E, ∀ (Rj : ℕ → GeometricCurrentOn U k) (R : GeometricCurrentOn U k), (∀ j, IsRestriction (Xj (ψ j)) {x | x ∈ U ∧ φ x < s} (Rj j)) → IsRestriction X {x | x ∈ U ∧ φ x < s} R → (∀ ω : TestFormOn U k, tsupport (ω : DifferentialForm (Eucl P) k) ⊆ W → Tendsto (fun j => Rj j ω) atTop (𝓝 (R ω))) ∧ (∀ K : Set (Eucl P), IsCompact K → K ⊆ W → {x | x ∈ U ∧ φ x ≤ s} ⊆ K → WeaklyConvergesOn Rj R)) → ∀ (P m : ℕ) (U W : Set (Eucl P)) (Xk : ℕ → GeometricCurrentOn U (m + 1)) (X : GeometricCurrentOn U (m + 1)) (d : Eucl P → ℝ) (L : ℝ≥0) (a b : ℝ), IsOpen U → CompactlyContainedOpen W U → LipschitzWith L d → a < b → (∀ k, (Xk k).boundary = 0) → (∀ k V, CompactlyContainedOpen V U → (Xk k).massOn V < ∞) → (⨆ k, (Xk k).massOn W) < ∞ → WeaklyConvergesOn Xk X → ∃ (γ : ℝ) (κ : ℕ → ℕ) (Rk : ℕ → GeometricCurrentOn U (m + 1)) (G : ℝ≥0∞), γ ∈ Ioo a b ∧ StrictMono κ ∧ G < ∞ ∧ (∀ k, IsRestriction (Xk (κ k)) {x | x ∈ U ∧ d x < γ} (Rk k)) ∧ (∀ k, (Rk k).massOn W ≤ (Xk (κ k)).massOn W) ∧ (∀ k, (Rk k).boundary.massOn W ≤ G) ∧ ∀ R : GeometricCurrentOn U (m + 1), IsRestriction X {x | x ∈ U ∧ d x < γ} R → ∀ ω : TestFormOn U (m + 1), tsupport (ω : DifferentialForm (Eucl P) (m + 1)) ⊆ W → Tendsto (fun k => Rk k ω) atTop (𝓝 (R ω))",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

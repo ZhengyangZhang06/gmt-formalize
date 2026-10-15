@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "28bc50829bed8971f8fa11e0d2f40c76a02ad050f26fefe3288abac3196b43b9",
+  "git_delta": {
+    "base_commit": "ee11a5c5c31a08fea225b73dadfd49c58e95d301",
+    "candidate_commit": "151404f8d9c33e6ee003f3859bb80e657e76d7fe",
+    "target": "GMT/Ch06/Submission.lean",
+    "changed_files": [
+      "GMT/Ch06/Submission.lean"
+    ],
+    "diff_sha256": "7806bb1e06352fd80a4715c81e1c8d6f2cf3c60cc7859572373df36ab4ecc637",
+    "source_sha256": "cabc103533d9253d9d83d17d830c8dc2b1237f2b7415e1e558a5132b966ad710",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.constancy_of_local_constancy",
+      "statement": "∀ (m : ℕ) (U : Set (Eucl (m + 1))), IsOpen U → IsConnected U → ∀ T : GeometricCurrentOn U (m + 1), (∀ x₀ ∈ U, ∃ r : ℝ, 0 < r ∧ ball x₀ r ⊆ U ∧ ∃ c : ℝ, ∀ ω : TestFormOn U (m + 1), tsupport (ω : DifferentialForm (Eucl (m + 1)) (m + 1)) ⊆ ball x₀ r → T ω = c * ∫ x, (ω : DifferentialForm (Eucl (m + 1)) (m + 1)) x (fun i => EuclideanSpace.single i (1 : ℝ)) ∂volume) → ∃ c : ℝ, ∀ ω : TestFormOn U (m + 1), T ω = c * ∫ x in U, (ω : DifferentialForm (Eucl (m + 1)) (m + 1)) x (fun i => EuclideanSpace.single i (1 : ℝ)) ∂volume",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

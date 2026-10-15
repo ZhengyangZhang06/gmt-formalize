@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "c92e619d1f9eb1c91c5da7038cbae5c2a6ab7df5344b5726ca7527d45944653d",
+  "git_delta": {
+    "base_commit": "dbd37a474c3c8ec1f452a2402cfebc51dec7da8d",
+    "candidate_commit": "ff6ccae0f524744be9d005285c5d98019b11d381",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "iwl_sp_sn_covector_separating_family",
+    "diff_sha256": "3693895fe1a4fc0d8bf995f4da72e1447f71cec20ad8622f90ffed2d864b5341",
+    "source_sha256": "afdccd02257204b3fcfcd4f1d06a09b5bc8fda222e8674ed276c7ea5f4d46351",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.iwl_sp_sn_covector_separating_family",
+      "statement": "∀ (P n : ℕ), ∃ (N : ℕ) (b : Fin N → Covector (Eucl P) n), ∀ w : NVector (Eucl P) n, (∀ i, w (b i) = 0) → w = 0",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

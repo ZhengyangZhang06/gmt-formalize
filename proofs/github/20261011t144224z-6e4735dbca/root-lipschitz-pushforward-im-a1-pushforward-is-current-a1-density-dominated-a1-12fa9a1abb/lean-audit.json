@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "5d4a5c280951d432a578a00c7a007cab7e8df34a78dfff3c99b61f2dac36aa10",
+  "git_delta": {
+    "base_commit": "72ac91d782e0a901a70be4a2f8509d060561b388",
+    "candidate_commit": "be6570f329d4cbb687e2a505bf8d62802e27b2c6",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "lpf_pic_density_dominated",
+    "diff_sha256": "74d10dac2d8be0c01c2b24299d9756cf687a203a4122f36480550060cac4edd8",
+    "source_sha256": "6d830f75b730ef6ac03f7049d4871775965eec2c50f0a21f3ab1c5b0c27fb4df",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.lpf_pic_density_dominated",
+      "statement": "∀ (P Q n : ℕ) (U Z M : Set (Eucl P)) (θ : Eucl P → ℝ) (ξ : Eucl P → NVector (Eucl P) n) (f : Eucl P → Eucl Q) (L : Eucl P → (Eucl P →L[ℝ] Eucl Q)) (K : Set (Eucl Q)), IsRectifiableTriple U n M θ ξ → Z ⊆ U → (μHE[n] : Measure (Eucl P)) (M \\ Z) = 0 → IsCompact (f ⁻¹' K ∩ Z) → (∃ C : ℝ, ∀ x ∈ M ∩ (f ⁻¹' K ∩ Z), ‖L x‖ ≤ C) → ∃ h : Eucl P → ℝ, Integrable h ((μHE[n] : Measure (Eucl P)).restrict M) ∧ ∀ᵐ x ∂((μHE[n] : Measure (Eucl P)).restrict M), f x ∈ K → ‖θ x • nVectorPushforward n (L x) (ξ x)‖ ≤ h x",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

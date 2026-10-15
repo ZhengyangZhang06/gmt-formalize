@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "e4d46a4117e1acb667ecd81dc1a46eb5a7e47f0b0a252408e17390a880527126",
+  "git_delta": {
+    "base_commit": "91f6be301231a7dd1e704ffa98958f26390e9dd5",
+    "candidate_commit": "ecf4b9ac471bf2acece43e7adc55df2461d2d3b7",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "fiw_tb_ext_cutoff",
+    "diff_sha256": "3acd795a748a0bd30664ea94807e9d2f19682d6e2b6e7aaf98992df6aa4664c7",
+    "source_sha256": "272d91919ebcac558f26adf24e18b3ab6437fd685fe171f8843a000b254d89da",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.fiw_tb_ext_cutoff",
+      "statement": "∀ (P : ℕ) (U K : Set (Eucl P)), IsOpen U → IsCompact K → K ⊆ U → ∃ (χ : Eucl P → ℝ) (N : Set (Eucl P)), ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) χ ∧ (∀ x, 0 ≤ χ x ∧ χ x ≤ 1) ∧ HasCompactSupport χ ∧ tsupport χ ⊆ U ∧ IsOpen N ∧ K ⊆ N ∧ ∀ x ∈ N, χ x = 1",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

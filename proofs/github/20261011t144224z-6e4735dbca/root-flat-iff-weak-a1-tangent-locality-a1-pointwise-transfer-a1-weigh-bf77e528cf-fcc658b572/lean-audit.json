@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "cd2ff09602fdcec0eaed3dd8c11c1a8ff83e3718dd77838b4326e585bd37107c",
+  "git_delta": {
+    "base_commit": "58aa4d77c90ce1bd10818419a44affcb1e189fb6",
+    "candidate_commit": "0b194113f2f074f9c7edc7dcbc3ee2c366cfa16d",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "fiw_tl_tr_weighted_diff_bound",
+    "diff_sha256": "3054a62fa0d76fe9aae7ea9d0a07b94662b43b59438625503275f59d132e5697",
+    "source_sha256": "9dee5c453277ea04d359c1998b1c1a9b8fe434e0218a7a0c0cd2d09780827819",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.fiw_tl_tr_weighted_diff_bound",
+      "statement": "∀ (P n : ℕ) (M₁ M₂ : Set (Eucl P)) (θ₁ θ₂ φ : Eucl P → ℝ) (x : Eucl P) (c ρ s K : ℝ), NullMeasurableSet M₁ (μHE[n] : Measure (Eucl P)) → NullMeasurableSet M₂ (μHE[n] : Measure (Eucl P)) → IntegrableOn θ₁ (M₁ ∩ closedBall x ρ) (μHE[n] : Measure (Eucl P)) → IntegrableOn θ₂ (M₂ ∩ closedBall x ρ) (μHE[n] : Measure (Eucl P)) → Continuous φ → (∀ z, ‖φ z‖ ≤ K) → (∀ z, z ∉ closedBall x s → φ z = 0) → s ≤ ρ → ‖(∫ z in M₂, φ z * θ₂ z ∂(μHE[n] : Measure (Eucl P))) - c * ∫ z in M₁, φ z * θ₁ z ∂(μHE[n] : Measure (Eucl P))‖ₑ ≤ ENNReal.ofReal K * ∫⁻ z in closedBall x s, ‖M₂.indicator θ₂ z - c * M₁.indicator θ₁ z‖ₑ ∂(μHE[n] : Measure (Eucl P))",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

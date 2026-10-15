@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "3dea3ac614dc1d87820c1d9984844c621b27d959be5755290ccace00a35e9e7b",
+  "git_delta": {
+    "base_commit": "ebe0e6cfbeee858e708d07666d3fcc0f02b5efd6",
+    "candidate_commit": "f01106583c89ad4bb1066db1ab1490ea723e4bd2",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "ind_rs_tauAction_dilation",
+    "diff_sha256": "c1dcd5cfb7bf498a4ab40a7d38d28fe06e0e398b454b3008fd207aa71b4bad85",
+    "source_sha256": "0f83df513eaa8136d8217fd1800e98791cc6e86858e7cdd8fc4b40ca08a1a00e",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.ind_rs_tauAction_dilation",
+      "statement": "∀ (P n : ℕ) (M : Set (Eucl P)) (θ : Eucl P → ℝ) (ξ : Eucl P → NVector (Eucl P) n) (x : Eucl P) (r : ℝ) (ω : DifferentialForm (Eucl P) n), 0 < r → tauAction n M θ ξ (fun y => (r ^ n)⁻¹ • ω (r⁻¹ • (y - x))) = tauAction n ((fun y => r⁻¹ • (y - x)) '' M) (fun z => θ (x + r • z)) (fun z => ξ (x + r • z)) ω",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

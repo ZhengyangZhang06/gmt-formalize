@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "83b64b389f4e5fb33fe3f44c0ddc2baf87cea9dcaedd9885f95486924c8b66ed",
+  "git_delta": {
+    "base_commit": "43e887cd71a1329f19da4346b4145679b8e1f32c",
+    "candidate_commit": "4f122ed465fe666c4edb153adb463e20c64d88f6",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "br_boundary_isIntegerMultiplicity_of_finite_mass",
+    "diff_sha256": "1389dd10852491c6e9565d4a47dbcee4277b416898f925f191e51dfd0a754410",
+    "source_sha256": "8517e32ea7d3e3812f3fb0a94bec848a143a7fe29c990918befab712e0a48239",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.br_boundary_isIntegerMultiplicity_of_finite_mass",
+      "statement": "DeformationTheorem → IntegralityOfWeakLimits → ∀ (P m : ℕ) (X : GeometricCurrentOn (univ : Set (Eucl P)) (m + 1)), IsIntegerMultiplicity X → X.mass < ∞ → X.boundary.mass < ∞ → IsIntegerMultiplicity X.boundary",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

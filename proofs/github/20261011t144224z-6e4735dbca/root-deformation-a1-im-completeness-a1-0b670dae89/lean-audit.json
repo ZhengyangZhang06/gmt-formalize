@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "8973efa7366591bba0a0880715721cd8b4560901cf2757ccf8c55976d6d6e065",
+  "git_delta": {
+    "base_commit": "4872891a1d26441ef2f7be40a0f535fe0462a597",
+    "candidate_commit": "f58460aabccd98b8da8e866440d19b3d7c188eb4",
+    "target": "GMT/Ch06/Submission.lean",
+    "changed_files": [
+      "GMT/Ch06/Submission.lean"
+    ],
+    "diff_sha256": "063948a7f3bced6fc2e74c787b953e88e2a758410f8e5d8b99e42efdde260758",
+    "source_sha256": "3985bcf8a0bfddd398899f919eccf11f2ebc0aaf1b5603f5b63e7d9ea53ff888",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.deformation_im_completeness",
+      "statement": "∀ (N k : ℕ) (T : GeometricCurrentOn (univ : Set (Eucl N)) k) (Tj : ℕ → GeometricCurrentOn (univ : Set (Eucl N)) k), (∀ j, IsIntegerMultiplicity (Tj j)) → (∀ ε : ℝ≥0∞, 0 < ε → ∃ J : ℕ, ∀ j, J ≤ j → ∀ D : GeometricCurrentOn (univ : Set (Eucl N)) k, (∀ ω, D ω = T ω - Tj j ω) → D.mass < ε) → IsIntegerMultiplicity T",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

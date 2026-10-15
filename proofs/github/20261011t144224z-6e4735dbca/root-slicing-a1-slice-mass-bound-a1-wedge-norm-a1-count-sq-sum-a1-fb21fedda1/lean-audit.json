@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "43945b98b25dd1ffc64503330958a19b4052d3fd62a82fc0e0405ba3f20c3ef3",
+  "git_delta": {
+    "base_commit": "91d601bd0d6b05eed2dfc6c245ff656db55f855a",
+    "candidate_commit": "6c884a2c75285ef09b0d96d9ab4fee5fab26dbb2",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "slicing_mb_wn_sq_sum_eq_factorial_mul",
+    "diff_sha256": "96c3748fe4f32b936d6a7b9de8ab8c5938c3556d96275023d6e1a75dc5b40d25",
+    "source_sha256": "3b3159e7af1631d5307cdbc3e8b5be2b5f5a10f22958b361ba0060ba3ec3f5e4",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.slicing_mb_wn_sq_sum_eq_factorial_mul",
+      "statement": "∀ (P k : ℕ) (u : Fin P → Eucl P) (φ : Covector (Eucl P) k), ∑ I : Fin k → Fin P, (φ (fun i => u (I i))) ^ 2 = (k.factorial : ℝ) * ∑ I : Fin k → Fin P, if StrictMono I then (φ (fun i => u (I i))) ^ 2 else 0",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

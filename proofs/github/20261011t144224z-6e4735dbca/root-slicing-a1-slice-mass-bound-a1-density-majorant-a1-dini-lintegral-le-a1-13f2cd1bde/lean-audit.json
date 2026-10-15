@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "b8232d09c8ca69e3b928e7f896f2d1f58c64840fba07f15a85f6573376c3ef05",
+  "git_delta": {
+    "base_commit": "33ec297a69dff384f7c05f295dc62b63e3525f5c",
+    "candidate_commit": "f077c7d5152d76608567b28fd54a1ba2c7957a17",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "slicing_mb_dm_lintegral_lowerLeftDini_le",
+    "diff_sha256": "4e5f089adff721f0bef4c977585b9b097d1899cb17a9383882b0bf15483a9e06",
+    "source_sha256": "0222f4bc58db9c9899f1afe16e50a96e6343510df24737979e9782c68d9a8996",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.slicing_mb_dm_lintegral_lowerLeftDini_le",
+      "statement": "∀ G : ℝ → ℝ, Monotone G → ∀ a b : ℝ, a ≤ b → ∫⁻ t in Ioo a b, liminf (fun k : ℝ => ENNReal.ofReal ((G t - G (t - k)) / k)) (𝓝[>] 0) ≤ ENNReal.ofReal (G b - G a)",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

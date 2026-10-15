@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "a36add3b6dccee2a71475af31cd86990dcd5401201ea8b739dad38881c36f3d7",
+  "git_delta": {
+    "base_commit": "1b2e8c530e5f6dd89d9f412a7fac8199171f4e2d",
+    "candidate_commit": "8cfbc487a3d10545b0ea005ad58122242bbcc072",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "lpf_wtc_cat_fderiv_lower_bound",
+    "diff_sha256": "2ee12d23adab7c4e2505aef926ec68ea62e1219ed8e935472637a97d8b4e6480",
+    "source_sha256": "2eb4dae4fe46f90a4907d7009acb100ee49a0134222a1f8375f113488dffb327",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.lpf_wtc_cat_fderiv_lower_bound",
+      "statement": "∀ (Q n : ℕ) (Φ : Eucl n → Eucl Q) (Ω : Set (Eucl n)) (c : ℝ) (w : Eucl n), IsOpen Ω → w ∈ Ω → DifferentiableAt ℝ Φ w → (∀ v ∈ Ω, ∀ v' ∈ Ω, c * ‖v - v'‖ ≤ ‖Φ v - Φ v'‖) → ∀ s : Eucl n, c * ‖s‖ ≤ ‖fderiv ℝ Φ w s‖",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

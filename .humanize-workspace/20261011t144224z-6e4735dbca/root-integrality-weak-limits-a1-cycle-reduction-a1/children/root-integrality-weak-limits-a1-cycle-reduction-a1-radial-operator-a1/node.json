@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.integrality_weak_limits-a1.cycle_reduction-a1.radial_operator-a1",
+  "parent_id": "root.integrality_weak_limits-a1.cycle_reduction-a1",
+  "depth": 3,
+  "title": "Radial homotopy operator: smoothness, first derivative and derivative bounds",
+  "statement": "Let P, k, a ∈ ℕ and let ω : ℝ^P → Λ_{k+1} be a C^∞ (k+1)-form on ℝ^P. Then there is a C^∞ k-form ψ : ℝ^P → Λ_k such that (i) ψ(x)(v) = ∫_0^1 t^a ω(tx)(x, v_1, …, v_k) dt for all x ∈ ℝ^P and v ∈ (ℝ^P)^k; (ii) Dψ(x)[w](v) = ∫_0^1 t^a ( t·(Dω(tx)[w])(x, v) + ω(tx)(w, v) ) dt for all x, w ∈ ℝ^P and v ∈ (ℝ^P)^k; (iii) for all j ∈ ℕ and R, D ∈ ℝ with D ≥ 0: if ‖D^iω(y)‖ ≤ D for every i ≤ j and every y with ‖y‖ ≤ R, then ‖D^jψ(x)‖ ≤ (R + j)·D for every x with ‖x‖ ≤ R. Here (x, v) := Fin.cons x v, D^i is the i-th iterated Fréchet derivative (iteratedFDeriv) and ‖·‖ the operator norms.",
+  "lean_statement": "∀ (P k a : ℕ) (ω : DifferentialForm (Eucl P) (k + 1)), ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) ω → ∃ ψ : DifferentialForm (Eucl P) k, ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) ψ ∧ (∀ (x : Eucl P) (v : Fin k → Eucl P), ψ x v = ∫ t in (0 : ℝ)..1, t ^ a * ω (t • x) (Fin.cons x v)) ∧ (∀ (x w : Eucl P) (v : Fin k → Eucl P), fderiv ℝ ψ x w v = ∫ t in (0 : ℝ)..1, t ^ a * (t * fderiv ℝ ω (t • x) w (Fin.cons x v) + ω (t • x) (Fin.cons w v))) ∧ ∀ (j : ℕ) (R D : ℝ), 0 ≤ D → (∀ i ≤ j, ∀ y ∈ closedBall (0 : Eucl P) R, ‖iteratedFDeriv ℝ i ω y‖ ≤ D) → ∀ x ∈ closedBall (0 : Eucl P) R, ‖iteratedFDeriv ℝ j ψ x‖ ≤ (R + j) * D",
+  "lean_name": "iwl_cr_radial_operator",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-integrality-weak-limits-a1-cycle-reduction-a1-radial-operator-a1-a1"
+}

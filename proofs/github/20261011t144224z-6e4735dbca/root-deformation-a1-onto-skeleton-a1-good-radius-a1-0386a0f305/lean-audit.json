@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "e5001482597f8c4efd0c5d065e13bf2944ca18467d25dfc0135e0a5741a37ac0",
+  "git_delta": {
+    "base_commit": "6e8ff7b030240366e3568cad8dc06404db41fc9a",
+    "candidate_commit": "6097b18c8c435a85d061763e5e39ae235db36529",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "deformation_good_radius",
+    "diff_sha256": "15f9f88988d15aad33d076f6223317cb7c233f5f8ed78f665ed952992f79306c",
+    "source_sha256": "a2150c9def3c70b91ca53669d71aeab6d68537c42d9b23d115ed6f1edc752fc9",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.deformation_good_radius",
+      "statement": "∀ (a b : ℝ) (g : ℝ → ℝ≥0∞) (K : ℝ≥0∞) (N : Set ℝ), a < b → Measurable g → ∫⁻ t in Ioo a b, g t ≤ K → volume N = 0 → ∃ t ∈ Ioo a b, t ∉ N ∧ g t ≤ 2 * K / ENNReal.ofReal (b - a)",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

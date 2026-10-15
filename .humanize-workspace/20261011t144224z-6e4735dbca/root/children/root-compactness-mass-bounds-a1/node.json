@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_mass_bounds-a1",
+  "parent_id": "root",
+  "depth": 1,
+  "title": "Compactness under local mass bounds (Simon 2.15)",
+  "statement": "For all P, n ∈ ℕ, every open U ⊆ ℝ^P and every sequence T_q ∈ D_n(U) (GeometricCurrentOn U n) with sup_q M_W(T_q) < ∞ for every open W ⊂⊂ U (CompactlyContainedOpen W U), there are a strictly increasing φ : ℕ → ℕ and T₀ ∈ D_n(U) such that T_{φ(q)} ⇀ T₀ weakly in U and, for every continuous compactly supported n-form ω with tsupport ω ⊆ U and all measure representations (μ_q, v_q) of T_{φ(q)} and (μ₀, v₀) of T₀ (IsMeasureRepresentation), ∫ v_q(x)(ω(x)) dμ_q → ∫ v₀(x)(ω(x)) dμ₀.",
+  "lean_statement": "CompactnessUnderMassBounds",
+  "lean_name": "compactness_under_mass_bounds",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-compactness-mass-bounds-a1-a1"
+}

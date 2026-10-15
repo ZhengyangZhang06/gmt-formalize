@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "009895c934b7ef27d0f789af7aa03c6ec83db608749446a1e098c4d5c0316fb4",
+  "git_delta": {
+    "base_commit": "2d4b15f3359474478f2400e1d3ab1baef3f272ee",
+    "candidate_commit": "627ca1da6bbc0c0d3e3bafd3a9d4ccf3cc0dca84",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "smr_ofReal_integral_le_massOn",
+    "diff_sha256": "cb3f09bd8e2de70bc95f121cc61229d90d368977575e24cb181bdca7b00e50e3",
+    "source_sha256": "ae0f76241eade279c58b7a189bb91f65305f094db7218b10158802555d9c2a66",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.smr_ofReal_integral_le_massOn",
+      "statement": "∀ (P k : ℕ) (U : Set (Eucl P)) (μ : Measure (Eucl P)) (v : Eucl P → NVector (Eucl P) k), (∀ ω : TestFormOn U k, Integrable (fun x => v x ((ω : DifferentialForm (Eucl P) k) x)) μ) → (∀ K : Set (Eucl P), IsCompact K → K ⊆ U → μ K < ∞) → (∀ (x : Eucl P) (α : Covector (Eucl P) k), |v x α| ≤ covectorEuclideanNorm α) → ∀ (A : Set (Eucl P)) (S : GeometricCurrentOn U k), (∀ ω : TestFormOn U k, S ω = ∫ x in A, v x ((ω : DifferentialForm (Eucl P) k) x) ∂μ) → ∀ W : Set (Eucl P), IsOpen W → W ⊆ U → ∀ φ : Eucl P → Covector (Eucl P) k, Continuous φ → HasCompactSupport φ → tsupport φ ⊆ W → (∀ x, covectorEuclideanNorm (φ x) ≤ 1) → ENNReal.ofReal (∫ x in A, v x (φ x) ∂μ) ≤ S.massOn W",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

@@ -1,0 +1,141 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.integrality_weak_limits-a1.integer_density-a1.plane_integer-a1`
+- Child DAG node: `root.integrality_weak_limits-a1.integer_density-a1.plane_integer-a1.slice_selection-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: Steps 3, 4, 5, (5d), (6b) and (6c) of the parent proof (printed Proof of 8.2, display (8) and the selection argument “by 4.5(1) and a selection argument as in 6.7(2) of Ch. 2”), with U, W, d, L, a, b general.
+
+Conventions. (R1) and (R2) are the uniqueness and mass-measure/restriction parts of the comparator-accepted declaration Submission.iwl_restriction_theory. For s ∈ ℝ put A_s := {x ∈ U : d(x) < s}. W is open, W ⊆ closure W ⊆ U, and d is continuous (Lipschitz).
+
+1. Mass measures. For each k, X_k has finite mass on every V ⊂⊂ U, so (R2) gives a measure μ_k with IsMassMeasure X_k μ_k, a restriction of X_k to every measurable set, and M_V(S) = μ_k(V ∩ A) for every restriction S of X_k to a set A and every open V ⊆ U. Consequently, for every restriction S of X_k to any set A,
+ (∗) M_W(S) = μ_k(W ∩ A) ≤ μ_k(W) = M_W(X_k),
+ the last equality because W ⊂⊂ U and μ_k is a mass measure of X_k.
+
+2. Slicing. The zero current has M_V(0) = 0 for every V (each admissible value is ofReal 0 = 0). Hence, for each k, T := X_k satisfies the hypothesis of SlicingTheorem on U (M_V(X_k) < ∞ and M_V(∂X_k) = M_V(0) = 0 < ∞ for V ⊂⊂ U), and d is L-Lipschitz on U. Let S^k_t ∈ D_m(U) (t ∈ ℝ) be the slices it provides.
+
+3. Slices are boundaries. Fix k and t. IsSlice X_k d t S^k_t gives currents A′ and B′ with A′ a restriction of X_k to A_t, B′ a restriction of ∂X_k = 0 to A_t, and S^k_t(ω) = ∂A′(ω) − B′(ω) for all ω. The set A_t is measurable (first component of B′'s IsRestriction), and the zero current is a restriction of the zero current to A_t: use the representation μ := 0, v := 0, for which all integrals vanish. By (R1), B′ = 0, hence S^k_t = ∂A′. Choose such an A′ =: A^k_t for all k and t; thus A^k_t is a restriction of X_k to A_t with ∂A^k_t = S^k_t.
+
+4. Slice mass bound. By Mathlib norm_fderiv_le_of_lipschitz, ‖fderiv ℝ d x‖ ≤ L for every x, so the a.e. derivative hypothesis of the slicing mass clause holds on W with L_W := L. The band {x ∈ U : a < d(x) < b} is open, hence measurable, so by step 1 there is a restriction Rb_k of X_k to it. The slicing mass clause (with W, L, a < b, Rb_k) gives a measurable g_k : ℝ → [0, ∞] with M_W(S^k_t) ≤ g_k(t) for all t ∈ (a, b) and
+ ∫⁻_{(a,b)} g_k ≤ L · M_W(Rb_k) ≤ L · M_W(X_k) ≤ L · C₀, where C₀ := sup_j M_W(X_j) < ∞, using (∗).
+
+5. Restriction limits. Apply (RWL) to U, the sequence (X_k), X, W and φ := d: X_k ⇀ X, W is open and W ⊆ U, sup_k M_W(X_k) < ∞, and d is continuous on U. It gives a strictly increasing ψ and a countable E ⊆ ℝ such that for every s ∉ E, all restrictions R′_j of X_{ψ(j)} to A_s (j ∈ ℕ) and every restriction R of X to A_s, R′_j(ω) → R(ω) for every ω ∈ D^{m+1}(U) with tsupport ω ⊆ W.
+
+6. Fatou. F(t) := liminf_k g_{ψ(k)}(t) is measurable (Measurable.liminf), and by Fatou's lemma (lintegral_liminf_le) ∫⁻_{(a,b)} F ≤ liminf_k ∫⁻_{(a,b)} g_{ψ(k)} ≤ L · C₀ < ∞ (liminf_le_of_frequently_le' with the bound of step 4 for every k). Hence F(t) < ∞ for (volume⌞(a,b))-a.e. t (ae_lt_top).
+
+7. Choice of γ. E is countable, hence Lebesgue-null, so a.e. t satisfies t ∉ E (also for volume⌞(a,b)); and (volume⌞(a,b))-a.e. t lies in (a, b) (ae_restrict_mem). Since volume((a, b)) = b − a > 0, the measure volume⌞(a,b) is nonzero, so its a.e. filter is nontrivial (ae_neBot) and a property holding a.e. holds for some t. Hence there is γ ∈ (a, b) ∖ E with F(γ) < ∞.
+
+8. Subsequence. Put G := F(γ) + 1 < ∞. Since liminf_k g_{ψ(k)}(γ) = F(γ) < G, infinitely many k satisfy g_{ψ(k)}(γ) < G (frequently_lt_of_liminf_lt), so there is a strictly increasing σ with g_{ψ(σ(k))}(γ) < G for all k (extraction_of_frequently_atTop). Let κ := ψ ∘ σ (strictly increasing) and R_k := A^{κ(k)}_γ.
+
+9. Verification.
+ - R_k is a restriction of X_{κ(k)} to A_γ by step 3.
+ - M_W(R_k) ≤ M_W(X_{κ(k)}) by (∗).
+ - ∂R_k = S^{κ(k)}_γ by step 3, so M_W(∂R_k) ≤ g_{κ(k)}(γ) < G by step 4 (γ ∈ (a, b)) and step 8.
+ - Let R be a restriction of X to A_γ and ω ∈ D^{m+1}(U) with tsupport ω ⊆ W. Step 5 with s := γ ∉ E and R′_j := A^{ψ(j)}_γ (a restriction of X_{ψ(j)} to A_γ by step 3) gives R′_j(ω) → R(ω). Since σ is strictly increasing, σ(k) → ∞, so R_k(ω) = R′_{σ(k)}(ω) → R(ω). ∎
+
+## Key steps
+
+1. (R2) of Submission.iwl_restriction_theory gives mass measures μ_k; every restriction S of X_k satisfies M_W(S) = μ_k(W ∩ A) ≤ M_W(X_k).
+2. SlicingTheorem applies to each cycle X_k (∂X_k = 0 has zero mass); by (R1) the boundary restriction vanishes, so slices are S^k_t = ∂A^k_t with A^k_t a restriction of X_k to {d < t}.
+3. Slicing mass clause with ‖Dd‖ ≤ L: measurable g_k with M_W(S^k_t) ≤ g_k(t) on (a, b) and ∫⁻ g_k ≤ L·sup_j M_W(X_j).
+4. (RWL) gives ψ and a countable exceptional set E.
+5. Fatou: liminf_k g_{ψ(k)} has finite integral, so it is finite at some γ ∈ (a, b) ∖ E.
+6. Extract σ with g_{ψσ(k)}(γ) < G; set κ := ψ∘σ, R_k := A^{κ(k)}_γ.
+7. Verify the restriction, mass, boundary-mass and convergence claims; convergence passes to the subsequence σ.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat local-references/197bdd4b88278494/manifest.json (local-project; project d8d46c9587747dee0751a1f780fcafdba16a3886; mathlib 25730c7c759d108ef87ab70af2342a196760f79d)`
+- `diff local-references/197bdd4b88278494/project/GMT/Ch06/Submission.lean workspace GMT/Ch06/Submission.lean (identical)`
+- `python3 scan of dag.json: lean_name/status of all nodes (458 at last check); no ind_pi_* names; frozen types and statuses of iwl_restriction_theory, br_restrictDomain_isIntegerMultiplicity, br_weightedTangent_congr, polyhedral_approx_restriction_tau, slicing_representation_unique, ltg_tau_integrable, iwl_restriction_weak_limit, iwl_smooth_pushforward, iwl_top_dim_integrality, ind_const_multiple_integer, iwl_im_closure`
+- `keyword scan of all 192 accepted dag.json statements for restrictDomain|IsMeasureRepresentation|simpleNVector|span|IsRestriction|support|volume|∃ X : GeometricCurrentOn`
+- `grep -n 'def |theorem ' simongmt Poincare/SimonGMT/Chapter06/{Currents,CurrentLocalEquality,Mass,Forms,FormsDuality}.lean and Chapter03/Rectifiable.lean (CountablyRectifiable.mono)`
+- `rg in snapshot mathlib: Isometry.map_euclideanHausdorffMeasure, EuclideanSpace.euclideanHausdorffMeasure_eq_volume, MeasurableEmbedding.integral_map, IsClosedEmbedding.measurableEmbedding, Isometry isClosedEmbedding, IsClosedEmbedding.isCompact_preimage, exists_contDiff_zero_iff_one_iff_of_isClosed, IsCompact.exists_cthickening_subset_open, closure_thickening_subset_cthickening, cthickening_subset_thickening', IsCompact.cthickening, lintegral_liminf_le, frequently_lt_of_liminf_lt, liminf_le_of_frequently_le', extraction_of_frequently_atTop, ae_lt_top, ae_neBot, Set.Countable.measure_zero, norm_fderiv_le_of_lipschitz, LipschitzWith.of_le_add, norm_add_sq_eq_norm_sq_add_norm_sq_real, Orthonormal.inner_sum, orthonormal_iff_ite, EuclideanSpace.real_norm_sq_eq, Continuous.integrable_of_hasCompactSupport, norm_setIntegral_le_of_norm_le_const, setIntegral_eq_integral_of_ae_compl_eq_zero, setIntegral_eq_zero_of_forall_eq_zero, setIntegral_eq_integral_of_forall_compl_eq_zero, Submodule.closed_of_finiteDimensional, Submodule.mem_span_range_iff_exists_fun, norm_iteratedFDeriv_zero, ae_restrict_of_ae_restrict_of_subset, ae_restrict_mem₀, HasCompactSupport.smul_right, tsupport_smul_subset_left, Measurable.liminf, image_eq_zero_of_notMem_tsupport`
+- `sed -n 2300,2500p book/chapter-06.txt (printed Proof of 8.2, displays (8)-(10))`
+- `verifier gmt-compare.py contract_scope(Contract.lean, 'GMT.Ch06.main_theorem') + lean_contract.validate_lean_statement on the 7 child statements`
+- `lake env lean /tmp/pi-decomp-scratch/{Stmts,AsmParent,AsmL,AsmP,LeafG,LeafSPAN,LeafMC,LeafROI,LeafSEL}.lean (#print axioms)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Geometry/Manifold/PartitionOfUnity.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/MetricSpace/Thickening.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/MetricSpace/Isometry.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/MetricSpace/Lipschitz.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/Compactness/Compact.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/Algebra/Support.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/Algebra/Module/FiniteDimension.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Add.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Markov.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Constructions/BorelSpace/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Constructions/BorelSpace/Order.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/Filter.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/Typeclasses/NullSingletonClass.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Function/LocallyIntegrable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Order/LiminfLimsup.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Order/Filter/AtTopBot/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/FDeriv/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/ContDiff/FTaylorSeries.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/InnerProductSpace/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/InnerProductSpace/Orthonormal.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/LinearAlgebra/Finsupp/LinearCombination.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/FormsDuality.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-integrality-weak-limits-a1-integer-density-a1-plane-integer-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/tmp/pi-decomp-scratch/Stmts.lean`
+- `/tmp/pi-decomp-scratch/AsmParent.lean`
+- `/tmp/pi-decomp-scratch/AsmL.lean`
+- `/tmp/pi-decomp-scratch/AsmP.lean`
+- `/tmp/pi-decomp-scratch/LeafG.lean`
+- `/tmp/pi-decomp-scratch/LeafSPAN.lean`
+- `/tmp/pi-decomp-scratch/LeafMC.lean`
+- `/tmp/pi-decomp-scratch/LeafROI.lean`
+- `/tmp/pi-decomp-scratch/LeafSEL.lean`
+
+The snapshot (project d8d46c95, Mathlib 25730c7c) holds the frozen Ch06 Contract and a byte-identical Submission.
+
+Library support for the child proofs:
+- SimonGMT supplies GeometricCurrentOn with restrictDomain, testFormOnInclusion, zeroRegion, support and isOpen_zeroRegion; massOn with massOn_mono and le_massOn; NVector with simpleNVector_apply and covectorPullback; and CountablyRectifiable.mono.
+- Mathlib supplies all lemmas cited in the child proofs:
+  - Isometry.map_euclideanHausdorffMeasure and EuclideanSpace.euclideanHausdorffMeasure_eq_volume (Geometry/Euclidean/Volume/Measure.lean:141,187);
+  - exists_contDiff_zero_iff_one_iff_of_isClosed (Geometry/Manifold/PartitionOfUnity.lean:809);
+  - IsCompact.exists_cthickening_subset_open, cthickening_subset_thickening', closure_thickening_subset_cthickening and IsCompact.cthickening (Topology/MetricSpace/Thickening.lean);
+  - lintegral_liminf_le, ae_lt_top, extraction_of_frequently_atTop and LipschitzWith.of_le_add (Topology/MetricSpace/Lipschitz.lean:87);
+  - Isometry.isClosedEmbedding (declared as `theorem isClosedEmbedding` at Topology/MetricSpace/Isometry.lean:209).
+- Three `theorem <name>` searches found no match, because the lemmas are generated or namespaced: frequently_lt_of_liminf_lt (generated by to_dual at Order/LiminfLimsup.lean:645), image_eq_zero_of_notMem_tsupport (to_additive-generated) and Isometry.isClosedEmbedding (above). All three elaborate in the checks.
+
+DAG findings:
+- No dag.json node has an ind_pi_* name.
+- No accepted declaration has the type of any proposed child.
+- The closest node is iwl_im_closure, whose conjunct 2 is stronger than restriction_open_im (any measurable A instead of open A). It is unaccepted (waiting-children).
+- The child proofs reuse these accepted declarations with byte-identical types: iwl_restriction_theory, br_restrictDomain_isIntegerMultiplicity, br_weightedTangent_congr and polyhedral_approx_restriction_tau. The prose also mentions slicing_representation_unique and ltg_tau_integrable, which are accepted, as an alternative route.
+- RWL, SPF and TOP are byte-identical to the frozen types of iwl_restriction_weak_limit, iwl_smooth_pushforward and iwl_top_dim_integrality. The sibling ind_const_multiple_integer type is byte-identical to dag.json.
+
+Lean checks in the exact contract scope prove:
+- the parent from the children and the sibling;
+- localized_cycles from its five siblings and accepted lemmas;
+- projected_limit from frame_geometry and span_integral;
+- every leaf (outright, or from accepted-declaration types).
+
+All checks print only [propext, Classical.choice, Quot.sound].
+
+The printed Proof of 8.2 (book chapter-06 lines 2400–2500) matches the supplied Steps 5–8: display (8)/(9) is localized_cycles and display (10) plus the final convergence is projected_limit.

@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "be0d4441477e66d6b026a7502ff6db7baf5a18fc09ed319fc9625463b59032ec",
+  "git_delta": {
+    "base_commit": "cafa2dcc2242f7ec9108441aa18f192bd8a13c14",
+    "candidate_commit": "036fb2d84e9ce0ffaae8b7ab31c186da9e2a2e0e",
+    "target": "GMT/Ch06/Submission.lean",
+    "changed_files": [
+      "GMT/Ch06/Submission.lean"
+    ],
+    "diff_sha256": "e03b697532846eedafc262f692afb00f5f9287e9b173c0367410ec134d6bd084",
+    "source_sha256": "cdae3132ec8608f177bf0565446bb2f63c8805fd94c6409630cc60ac0e58eedb",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.integrality_of_weak_limits",
+      "statement": "IntegralityOfWeakLimits",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "a5074081852f07fd53b2298c08a12a8041e8a73bf66349e50b1e5ee084f4eb89",
+  "git_delta": {
+    "base_commit": "9f6ec514b377527799a1eaedae78f43210587b00",
+    "candidate_commit": "cb89cc7f436bbfa9b474f73003fa9aa79ebad102",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "cmb_exists_compactly_contained_exhaustion",
+    "diff_sha256": "a2924b21f53d80da381ab9fe6a3a6ce8f82b678c755cbd7a369ed8090f08a976",
+    "source_sha256": "6abd4e616a5d02e44887025172eb8cdee0d3d8eb1080979f42c554db80d7c9de",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cmb_exists_compactly_contained_exhaustion",
+      "statement": "∀ (P : ℕ) (U : Set (Eucl P)), IsOpen U → ∃ W : ℕ → Set (Eucl P), (∀ i, CompactlyContainedOpen (W i) U) ∧ ∀ K : Set (Eucl P), IsCompact K → K ⊆ U → ∃ i, K ⊆ W i",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

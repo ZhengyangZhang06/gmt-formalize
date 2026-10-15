@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "912455dc8f9e648056513c37529fc8e391c239558142e2d069a4932d39cbf9bb",
+  "git_delta": {
+    "base_commit": "5df54924532d03164037ee2634d8f204ee7654c0",
+    "candidate_commit": "c6266655f0f0aec7d78827b1a9144b7e30cde9c5",
+    "target": "GMT/Ch06/Submission.lean",
+    "changed_files": [
+      "GMT/Ch06/Submission.lean"
+    ],
+    "diff_sha256": "fbff2ccdb1dca1927ec0d5c41015c4661d22edd4d418c0a6bf6c4287adc06ccf",
+    "source_sha256": "58b89aeb1d65777977f68bc936d8142bbb9b6648a65f4dcecac90efe3b04695b",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.br_lattice_face_stokes",
+      "statement": "∀ (P m : ℕ) (ρ : ℝ), 0 < ρ → ∀ (F : LatticeFaceIndex (m + 1) P) (ω : DifferentialForm (Eucl P) m), IsSmoothForm ω → latticeFaceAction ρ F (exteriorDerivative ω) = ∑ i : Fin (m + 1), (-1 : ℝ) ^ (i : ℕ) * (latticeFaceAction ρ (F.1 + Pi.single (F.2 i) 1, (Fin.succAboveOrderEmb i).trans F.2) ω - latticeFaceAction ρ (F.1, (Fin.succAboveOrderEmb i).trans F.2) ω)",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "9c4593fe6ad5f520e1a68027f465f18b847a632a4fe55351d97e627f34fc6b38",
+  "git_delta": {
+    "base_commit": "16e8aef346d8275e29369d3ddc06716b3bc882d7",
+    "candidate_commit": "71e312bb1c69b9e54c14e44966d3c1263a643c30",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "smr_ufd_unit_coord_field",
+    "diff_sha256": "fcf0bcfe734e8bdcf59e60b5b9ff4b0751479218f3536abd7dbc45b2aeaaaa18",
+    "source_sha256": "5cc0fdebd25f06283a9eb58245cce64628185c38e18d19ac6d407a7e32cb2d0c",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.smr_ufd_unit_coord_field",
+      "statement": "∀ (P k N : ℕ) (μ : Measure (Eucl P)) (v : Eucl P → NVector (Eucl P) k) (J : Covector (Eucl P) k ≃ₗ[ℝ] EuclideanSpace ℝ (Fin N)), (∀ α : Covector (Eucl P) k, covectorEuclideanNorm α = ‖J α‖) → (∀ (x : Eucl P) (α : Covector (Eucl P) k), |v x α| ≤ covectorEuclideanNorm α) → (∀ α : Covector (Eucl P) k, Measurable (fun x => v x α)) → (∀ᵐ x ∂μ, ∃ α : Covector (Eucl P) k, covectorEuclideanNorm α ≤ 1 ∧ v x α = 1) → ∃ u : Eucl P → EuclideanSpace ℝ (Fin N), Measurable u ∧ (∀ x, ‖u x‖ ≤ 1) ∧ (∀ᵐ x ∂μ, ‖u x‖ = 1) ∧ ∀ (x : Eucl P) (α : Covector (Eucl P) k), v x α = inner ℝ (J α) (u x)",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "2571bccc3c1553a791401cb819d455ae10c899e6fcdef3ce8558be7c71bd935d",
+  "git_delta": {
+    "base_commit": "956d5f19d9a881b05966bd4ee2f27f228011214e",
+    "candidate_commit": "182a24a669099fd3680692622067fe760eb66894",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "slicing_ru_covector_expansion",
+    "diff_sha256": "3238dc6f425de580b4ec3af2a4840b797c7b2e5da4c25bd8aacdaf4e45d8185d",
+    "source_sha256": "653a611f8b9221d82304c6c71d3339395f5038f7a44453be5fa8b379981685fd",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.slicing_ru_covector_expansion",
+      "statement": "∀ (P k : ℕ) (α : Covector (Eucl P) k), α = ∑ β : SimonMultiIndex k P, euclideanCovectorCoordinate α β • wedgeCovectors k (fun j => EuclideanSpace.proj (β j))",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

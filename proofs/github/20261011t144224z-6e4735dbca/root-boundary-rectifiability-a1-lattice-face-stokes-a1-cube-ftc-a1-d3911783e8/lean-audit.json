@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "c3d4767862eea94ca7884fb7b1123153bcd0b69d79eac25d54f57f0de0b3cf20",
+  "git_delta": {
+    "base_commit": "e0df518f3f8b92c67f771f7ac8248909ca85f0bf",
+    "candidate_commit": "f63b9097587025e41f80f46badf445fc7351daeb",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "br_cube_integral_fderiv_eq_faces",
+    "diff_sha256": "8ba5bd133997844e9c433128294f55116a61dba9560b26c73e40fe4339faa26c",
+    "source_sha256": "ee838e616952b3aa1d2f85a395579a3c9e7a6041eb6cdc514692eacf99eb9566",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.br_cube_integral_fderiv_eq_faces",
+      "statement": "∀ (n : ℕ) (ρ : ℝ), 0 ≤ ρ → ∀ (φ : (Fin (n + 1) → ℝ) → ℝ), ContDiff ℝ 1 φ → ∀ (i : Fin (n + 1)), ∫ s in Set.Icc (0 : Fin (n + 1) → ℝ) (fun _ => ρ), fderiv ℝ φ s (Pi.single i 1) = ∫ s in Set.Icc (0 : Fin n → ℝ) (fun _ => ρ), (φ (Fin.insertNth i ρ s) - φ (Fin.insertNth i 0 s))",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

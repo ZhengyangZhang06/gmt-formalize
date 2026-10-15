@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "778ac41160e460fcd0742c4165f0a6d1f095cd2050d6be5d8e60f73f2345666a",
+  "git_delta": {
+    "base_commit": "b74923c68d94bd61ad6301c3948239d0cef49814",
+    "candidate_commit": "1787840307581f47dfa9029711b568ecf5a547b2",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "lpf_wtc_wtt_remainder_vanishes",
+    "diff_sha256": "ef5dc538de7500a46f49787705dde20f3dd833242e8cfab3a32c10a1bb8e9efd",
+    "source_sha256": "26e1282eae7dd30d2e60f9734e6a56e56823a1a4631fc4f024aafdc424c5a3e8",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.lpf_wtc_wtt_remainder_vanishes",
+      "statement": "∀ (Q n : ℕ) (D : Set (Eucl Q)) (θ : Eucl Q → ℝ) (y : Eucl Q) (φ : CompactlySupportedContinuousMap (Eucl Q) ℝ), NullMeasurableSet D (μHE[n] : Measure (Eucl Q)) → (∀ x ∈ D, 0 ≤ θ x) → Tendsto (fun ρ : ℝ => (∫⁻ x in D ∩ closedBall y ρ, ENNReal.ofReal (θ x) ∂(μHE[n] : Measure (Eucl Q))) / ENNReal.ofReal (ρ ^ n)) (𝓝[>] 0) (𝓝 0) → Tendsto (fun t : ℝ => (t ^ n)⁻¹ * ∫ x in D, φ (Poincare.SimonGMT.Chapter03.blowUpMap y t x) * θ x ∂(μHE[n] : Measure (Eucl Q))) (𝓝[>] 0) (𝓝 0)",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

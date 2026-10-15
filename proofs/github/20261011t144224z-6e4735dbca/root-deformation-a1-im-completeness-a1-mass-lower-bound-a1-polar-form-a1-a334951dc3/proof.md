@@ -1,0 +1,113 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.deformation-a1.im_completeness-a1.mass_lower_bound-a1`
+- Child DAG node: `root.deformation-a1.im_completeness-a1.mass_lower_bound-a1.polar_form-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: Step 0(a), (b), (d), (e) of the supplied proof of imc_lintegral_coordNorm_le_mass (coefficient vector c(w) := (w^γ)_γ ∈ ℝ^I, |c(w)| = |w|, a♭ := Σ_γ a_γ dx^γ with (a♭)_β = a_β, |a♭| = ‖a‖ and w(a♭) = ⟨a, c(w)⟩), together with the transfer in Steps 5–6 (f := (π∘g₀)♭·χ and κ(x)(f(x)) = ⟨F(x), c(κ(x))⟩). The analytic part of Steps 3–6 is the sibling polar_field; the linear algebra is the reused siblings coord_sum_wedge (smr_ci_coord_sum_smul_wedge) and norm_coord (smr_ci_norm_eq_sqrt_sum_coord_sq).
+
+Notation. I := SimonMultiIndex k N (a finite type) and H := EuclideanSpace ℝ I, with ‖a‖ = √(Σ_γ a_γ²) (EuclideanSpace.norm_eq together with ‖r‖² = |r|² = r²) and ⟨a, b⟩ = Σ_γ a_γ b_γ (PiLp.inner_apply; for real scalars ⟨r, s⟩ = r·s), where a_γ denotes the γ-th coordinate (a.ofLp γ). B := ball(0, R). dx^γ := wedgeCovectors k (fun j ↦ EuclideanSpace.proj (γ j)); by the definition of euclideanNVectorCoordinate, κ^γ(x) = euclideanNVectorCoordinate (κ x) γ = κ(x)(dx^γ). Put h(x) := √(Σ_γ κ^γ(x)²).
+
+1. (The coefficient field.) Define c : ℝ^N → H by c(x) := (κ^γ(x))_γ (WithLp.toLp 2 (fun γ ↦ κ^γ(x))). Comparing coordinates (EuclideanSpace.single γ 1 has β-coordinate 1 if β = γ and 0 otherwise), c(x) = Σ_γ κ^γ(x)·e_γ with e_γ := EuclideanSpace.single γ 1.
+
+2. (Integrability of c on B.) Each x ↦ κ^γ(x)·e_γ is μ-integrable on B (hypothesis, Integrable.smul_const), and a finite sum of integrable functions is integrable (integrable_finsetSum). By Step 1, c is μ-integrable on B.
+
+3. (|c| = h.) ‖c(x)‖ = √(Σ_γ |κ^γ(x)|²) = √(Σ_γ κ^γ(x)²) = h(x) for every x (EuclideanSpace.norm_eq, Real.norm_eq_abs, sq_abs).
+
+4. (Sibling polar_field.) Apply polar_field with N, E := H (a real inner product space), μ, R, g := c (integrable on B by Step 2) and ε > 0. It yields F : ℝ^N → H with F continuous, tsupport F ⊆ B, ‖F(x)‖ ≤ 1 for all x, x ↦ ⟨F(x), c(x)⟩ μ-integrable, and
+  ∫_B ‖c(x)‖ dμ ≤ ∫ ⟨F(x), c(x)⟩ dμ + ε.   (4.1)
+
+5. (The test field ω := F♭.) Define ω(x) := Σ_{γ ∈ I} F(x)_γ · dx^γ ∈ Covector (Eucl N) k.
+ (a) Continuity: x ↦ F(x)_γ is continuous (the coordinate map a ↦ a_γ is continuous, PiLp.continuous_apply, composed with F), so ω is a finite sum of continuous scalar functions times constant covectors (continuous_finsetSum, Continuous.smul).
+ (b) Support: if F(x) = 0 then every F(x)_γ = 0 and ω(x) = 0. Hence support ω ⊆ support F, so tsupport ω ⊆ tsupport F ⊆ B (closure_mono).
+ (c) Norm: by the sibling coord_sum_wedge (with P := N and coefficients γ ↦ F(x)_γ), euclideanCovectorCoordinate (ω(x)) β = F(x)_β for every β ∈ I. By the sibling norm_coord, covectorEuclideanNorm (ω(x)) = √(Σ_β (euclideanCovectorCoordinate (ω(x)) β)²) = √(Σ_β F(x)_β²) = ‖F(x)‖ ≤ 1.
+ (d) Pairing: κ(x) is a continuous linear functional on Covector (Eucl N) k, so κ(x)(ω(x)) = Σ_γ F(x)_γ·κ(x)(dx^γ) = Σ_γ F(x)_γ·κ^γ(x) = ⟨F(x), c(x)⟩ (map_sum, map_smul, smul_eq_mul, PiLp.inner_apply).
+
+6. (Integrability.) By 5(d) the function x ↦ κ(x)(ω(x)) coincides with x ↦ ⟨F(x), c(x)⟩, which is μ-integrable by Step 4. Also ∫ κ(x)(ω(x)) dμ = ∫ ⟨F(x), c(x)⟩ dμ.
+
+7. (The lower integral.) By Step 3, ∫⁻_B ofReal(h) dμ = ∫⁻_B ofReal(‖c‖) dμ. Since ‖c‖ is μ-integrable on B (Step 2) and nonnegative, ∫⁻_B ofReal(‖c‖) dμ = ofReal(∫_B ‖c‖ dμ) (ofReal_integral_eq_lintegral_ofReal). By (4.1), monotonicity of ENNReal.ofReal and Step 6: ofReal(∫_B ‖c‖ dμ) ≤ ofReal(∫ ⟨F, c⟩ dμ + ε) = ofReal(∫ κ(x)(ω(x)) dμ + ε).
+
+8. (Conclusion.) ω is continuous (5a), tsupport ω ⊆ B (5b), covectorEuclideanNorm (ω x) ≤ 1 (5c), x ↦ κ(x)(ω(x)) is μ-integrable (6), and ∫⁻_B ofReal(√(Σ_γ κ^γ(x)²)) dμ ≤ ofReal(∫ κ(x)(ω(x)) dμ + ε) (7). ∎
+
+Formalization note: a complete Lean proof of exactly this frozen statement following Steps 1–8, using polar_field, smr_ci_coord_sum_smul_wedge and smr_ci_norm_eq_sqrt_sum_coord_sq, compiled during the decomposition review in the comparator scope at default heartbeats (scratch copy /tmp/mlb_split/lean/ChildC.lean on the decomposition host; it is not a persistent artifact, and Steps 1–8 above are self-sufficient). Useful facts at this Mathlib pin: for a : EuclideanSpace ℝ I the γ-coordinate is a.ofLp γ (also written a γ); `simp [Pi.single_apply, mul_ite]` proves the coordinate identity of Step 1; Function.notMem_support gives F x = 0 in Step 5(b).
+
+## Key steps
+
+1. c(x) := (κ^γ(x))_γ ∈ EuclideanSpace ℝ (SimonMultiIndex k N) is μ-integrable on B (finite sum of κ^γ·e_γ) and ‖c(x)‖ = √(Σ_γ κ^γ(x)²).
+2. The sibling polar_field (E := EuclideanSpace ℝ (SimonMultiIndex k N), g := c) gives continuous F with ‖F‖ ≤ 1, tsupport F ⊆ B, ⟨F, c⟩ integrable and ∫_B ‖c‖ ≤ ∫⟨F, c⟩ + ε.
+3. ω(x) := Σ_γ F(x)_γ dx^γ is continuous, tsupport ω ⊆ tsupport F ⊆ B; by coord_sum_wedge and norm_coord its coordinates are F(x)_β and covectorEuclideanNorm ω(x) = ‖F(x)‖ ≤ 1.
+4. Linearity of κ(x): κ(x)(ω(x)) = Σ_γ F(x)_γ κ^γ(x) = ⟨F(x), c(x)⟩, so κ(ω) is integrable with the same integral.
+5. ∫⁻_B ofReal‖c‖ = ofReal(∫_B ‖c‖) ≤ ofReal(∫ κ(ω) dμ + ε) (ofReal_integral_eq_lintegral_ofReal, monotonicity of ofReal).
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat local-references/197bdd4b88278494/manifest.json (mode local-project; project_commit d8d46c9587747dee0751a1f780fcafdba16a3886; mathlib_commit 25730c7c759d108ef87ab70af2342a196760f79d)`
+- `cmp <snapshot>/project/GMT/Ch06/Contract.lean GMT/Ch06/Contract.lean; cmp <snapshot>/project/GMT/Ch06/Submission.lean GMT/Ch06/Submission.lean (both byte-identical)`
+- `python3 -I over dag.json: all accepted nodes and lean_statements (cmb_*, smr_ci_*, smr_ufd_*, polyhedral_approx_pairing_*, fiw_*), status/candidate_commit of the four reused nodes, collision check for imc_mlb_exists_hasCompactSupport_eLpNorm_sub_le, imc_mlb_exists_unit_field_integral_ge, imc_mlb_exists_form_lintegral_coordNorm_le (none), node count (531)`
+- `isolated-comparator-result.json and parent-child-handoff.json of root.compactness_mass_bounds-a1.repr_bound-a1, root.compactness_mass_bounds-a1.repr_bound-a1.coeff_integrable-a1, root.slicing-a1.mass_representation-a1.covector_isometry-a1.coord_sum_wedge-a1, root.slicing-a1.mass_representation-a1.covector_isometry-a1.norm_coord-a1 (all passed; accepted natural proofs copied verbatim)`
+- `git show <commit>:GMT/Ch06/Submission.lean | grep 'theorem Submission.<name>' for 5caba500 (cmb_measureRepresentation_continuous_bound), 3cd72266 (cmb_rb_measureRepresentation_integrableOn_coeff), 1b431e81 (smr_ci_coord_sum_smul_wedge), a1716c42 (smr_ci_norm_eq_sqrt_sum_coord_sq)`
+- `git show 83e1f61809c1:GMT/Ch06/Submission.lean | sed -n 374,560p (accepted hdense, hmoll, hretr helpers of fiw_im_mass_formula)`
+- `grep -n 'theorem\|lemma' lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean (GeometricCurrentOn.massOn_mono, GeometricCurrentOn.le_massOn; definitions of covectorEuclideanNorm, massAdmissibleOn, massOn, mass)`
+- `rg -n 'theorem lintegral_iUnion|theorem setLIntegral_iUnion|iSup_restrict|theorem lintegral_iSup_directed' <snapshot>/mathlib/Mathlib (setLIntegral_iUnion_of_directed at MeasureTheory/Integral/Lebesgue/Basic.lean:668, no measurability hypothesis)`
+- `rg -n 'theorem MemLp.induction_dense|theorem exists_Lp_half|theorem exists_eLpNorm_indicator_le' <snapshot>/mathlib/Mathlib`
+- `rg -n 'AEStronglyMeasurable.inner|bounded_above_of_compact_support|theorem lintegral_withDensity_eq_lintegral_mul|isFiniteMeasure_withDensity|theorem tendsto_measure_iInter_atTop|theorem setIntegral_eq_integral_of_forall_compl_eq_zero|theorem integrableOn_iff_integrable_of_support_subset|theorem eLpNorm_one_eq_lintegral_enorm|theorem MemLp.of_bound|theorem withDensity_apply|ofReal_norm|theorem Integrable.bdd_mul' <snapshot>/mathlib/Mathlib`
+- `rg -n imc_mlb <snapshot>/project lake-packages-25730c7c/simongmt/Poincare; grep -rl --include=*.json imc_mlb runs/20261011T144224Z-6e4735dbca/nodes; git log --all --oneline -S imc_mlb (no match anywhere)`
+- `python3 -I: verifier/gmt-compare.py contract_scope(Contract.lean, 'GMT.Ch06.main_theorem') for the child challenge scope; runtime lean_contract.validate_lean_statement on all seven types; key/name regexes and topological order`
+- `sed -n 6532,6575p /runtime/flows/gmt-claude-52228cbc47b2/_recursive_lean/runtime.py (cross-branch reuse rule), store.py ensure (existing nodes reused unchanged), decomposition_scope.py, prompts.py DECOMPOSE/DECOMPOSITION_AUDIT, swarm-project.json (max_depth 6, max_children 12, max_nodes 1000)`
+- `lake env lean /tmp/mlb_split/lean/{Probe0,ApiC,Api2,Stmts,FinalStmts,Parent,ChildA,ChildB,ChildC,All,AllFull}.lean (FinalStmts: all seven child types elaborate in the comparator scope; AllFull: parent and all children sorry-free, #print axioms = propext, Classical.choice, Quot.sound)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/GMT/Ch06/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/GMT/Ch06/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/problem.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-deformation-a1-im-completeness-a1-mass-lower-bound-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-deformation-a1-im-completeness-a1-mass-lower-bound-a1/parent-supplied-natural-proof.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-deformation-a1-im-completeness-a1/decomposition-v2.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-compactness-mass-bounds-a1-repr-bound-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-compactness-mass-bounds-a1-repr-bound-a1/isolated-comparator-result.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-compactness-mass-bounds-a1-repr-bound-a1-coeff-integrable-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-compactness-mass-bounds-a1-repr-bound-a1-coeff-integrable-a1/isolated-comparator-result.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-slicing-a1-mass-representation-a1-covector-isometry-a1-coord-sum-wedge-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-slicing-a1-mass-representation-a1-covector-isometry-a1-coord-sum-wedge-a1/isolated-comparator-result.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-slicing-a1-mass-representation-a1-covector-isometry-a1-norm-coord-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-slicing-a1-mass-representation-a1-covector-isometry-a1-norm-coord-a1/isolated-comparator-result.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Function/SimpleFuncDenseLp.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Function/LpSpace/Indicator.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Function/LpSeminorm/TriangleInequality.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Function/LpSeminorm/Defs.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Function/LpSeminorm/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Function/StronglyMeasurable/Inner.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Function/StronglyMeasurable/AEStronglyMeasurable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/WithDensity.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/Continuity.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Function/L1Space/Integrable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Normed/Group/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Function/ContinuousMapDense.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/runtime/flows/gmt-claude-52228cbc47b2/_recursive_lean/runtime.py`
+- `/runtime/flows/gmt-claude-52228cbc47b2/_recursive_lean/store.py`
+- `/runtime/flows/gmt-claude-52228cbc47b2/_recursive_lean/decomposition_scope.py`
+- `/runtime/flows/gmt-claude-52228cbc47b2/_recursive_lean/prompts.py`
+- `/runtime/flows/gmt-claude-52228cbc47b2/_recursive_lean/lean_contract.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/swarm-project.json`
+- `/tmp/mlb_split/lean/FinalStmts.lean`
+- `/tmp/mlb_split/lean/Parent.lean`
+- `/tmp/mlb_split/lean/ChildA.lean`
+- `/tmp/mlb_split/lean/ChildB.lean`
+- `/tmp/mlb_split/lean/ChildC.lean`
+- `/tmp/mlb_split/lean/AllFull.lean`
+
+Pinned revisions confirmed; the frozen contract is byte-identical to the snapshot. Four comparator-accepted declarations cover Steps 1, 2 and the linear algebra of Step 0 of the supplied proof with exactly the needed types and are reused by name with byte-identical frozen types: cmb_rb_measureRepresentation_integrableOn_coeff (3cd72266), cmb_measureRepresentation_continuous_bound (5caba500; Remark (iii) of the supplied proof), smr_ci_coord_sum_smul_wedge (1b431e81) and smr_ci_norm_eq_sqrt_sum_coord_sq (a1716c42); all are accepted with passing isolated comparators. Mathlib's C_c-density file ContinuousMapDense.lean is outside the frozen closure, so the new child l1_density re-proves its p = 1 case; the accepted hdense of fiw_im_mass_formula (83e1f618) proves it verbatim. setLIntegral_iUnion_of_directed gives the exhaustion of Step 7 without measurability; GeometricCurrentOn.massOn_mono gives the mass comparison. MeasureTheory.AEStronglyMeasurable.inner is not in the closure (continuous_inner.comp_aestronglyMeasurable is). The three new names occur nowhere (DAG, project, SimonGMT, Mathlib, node files, git history). In the comparator scope all seven child types elaborate, and a scratch file with the reused accepted proofs, complete proofs of the three new children and the parent assembled from the children compiles sorry-free at default heartbeats with axioms propext, Classical.choice and Quot.sound only.

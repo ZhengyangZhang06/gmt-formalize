@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.slicing-a1.slice_integer_multiplicity-a1.slice_triple-a1.measure_fields-a1.contraction_lipschitz-a1",
+  "parent_id": "root.slicing-a1.slice_integer_multiplicity-a1.slice_triple-a1.measure_fields-a1",
+  "depth": 5,
+  "title": "The interior-product operator v ↦ ι(v) = v♭ ∧ · from ℝ^P to L(Λ^m, Λ^{m+1}) is (m+1)-Lipschitz",
+  "statement": "Let P, m ∈ ℕ. For v ∈ ℝ^P let ι(v) := (alternatizeUncurryFinCLM ℝ ℝ^P ℝ) ∘ (smulRightL ℝ ℝ^P Λ^m (innerSL ℝ v)) : Λ^m → Λ^{m+1}, where Λ^k := Covector (Eucl P) k is the space of continuous alternating k-forms on ℝ^P (so ι(v)α = v♭∧α, (ι(v)α)(v₀,…,v_m) = Σ_i (−1)^i ⟨v, v_i⟩ α(v₀,…,v̂_i,…,v_m)). Then the map v ↦ ι(v), from ℝ^P to the space of continuous linear maps Λ^m → Λ^{m+1} with the operator norm, is Lipschitz with constant m + 1.",
+  "lean_statement": "∀ (P m : ℕ), LipschitzWith ((m : ℝ≥0) + 1) (fun v : Eucl P => (ContinuousAlternatingMap.alternatizeUncurryFinCLM ℝ (Eucl P) ℝ).comp (ContinuousLinearMap.smulRightL ℝ (Eucl P) (Covector (Eucl P) m) (innerSL ℝ v)))",
+  "lean_name": "slicing_im_st_mf_contraction_lipschitz",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-slicing-a1-slice-integer-multiplicity-a1-slice-triple-a1-measure-b15bd2c3bf-a1"
+}

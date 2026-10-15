@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "node_id": "root.boundary_rectifiability-a1",
+  "parent_id": "root",
+  "depth": 1,
+  "title": "Boundary rectifiability theorem (Simon 6.3)",
+  "statement": "For all P, m ∈ ℕ, every open U ⊆ ℝ^P and every integer multiplicity T ∈ D_{m+1}(U) with M_W(∂T) < ∞ for every open W ⊂⊂ U, the boundary ∂T ∈ D_m(U) is integer multiplicity.",
+  "lean_statement": "BoundaryRectifiability",
+  "lean_name": "boundary_rectifiability",
+  "depends_on": [
+    "root.deformation-a1",
+    "root.slicing-a1",
+    "root.integrality_weak_limits-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.deformation-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.slicing-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.integrality_weak_limits-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-boundary-rectifiability-a1-a1"
+}

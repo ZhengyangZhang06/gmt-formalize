@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "60152c1c9290892e98e794c76a1c8079b16de7096de324bbdf1eb2520f192ea4",
+  "git_delta": {
+    "base_commit": "50662d1eec1c8fa72fc4ba9a2a14b9b4c6bc75fb",
+    "candidate_commit": "15bc3161e8f8390ed254551a4f89dacd54bc1b15",
+    "target": "GMT/Ch06/Submission.lean",
+    "changed_files": [
+      "GMT/Ch06/Submission.lean"
+    ],
+    "diff_sha256": "d4ae8d71a915e8d94b704549c89bd1be15dffdcffc784dfa7c98edc351945f62",
+    "source_sha256": "aff5f00ace51a3d13258536694ee4e43a5c338124ea3b6c38641b97f5cc4ba7b",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.rectifiability_mass_measure_rectifiable",
+      "statement": "∀ (P m : ℕ) (U : Set (Eucl P)), IsOpen U → ∀ T : GeometricCurrentOn U (m + 1), (∀ W, CompactlyContainedOpen W U → T.massOn W + T.boundary.massOn W < ∞) → ∀ μ : Measure (Eucl P), IsMassMeasure T μ → (∀ᵐ x ∂μ, 0 < dimensionalUpperDensity μ.toOuterMeasure ((m + 1 : ℕ) : ℝ) univ x) → ∃ (M : Set (Eucl P)) (θ : Eucl P → ℝ), M ⊆ U ∧ MeasurableSet M ∧ CountablyRectifiable (m + 1) M ∧ Measurable θ ∧ (∀ x ∈ M, 0 < θ x) ∧ (∀ K : Set (Eucl P), IsCompact K → K ⊆ U → IntegrableOn θ (M ∩ K) (μHE[m + 1] : Measure (Eucl P))) ∧ μ = ((μHE[m + 1] : Measure (Eucl P)).restrict M).withDensity (fun x => ENNReal.ofReal (θ x))",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

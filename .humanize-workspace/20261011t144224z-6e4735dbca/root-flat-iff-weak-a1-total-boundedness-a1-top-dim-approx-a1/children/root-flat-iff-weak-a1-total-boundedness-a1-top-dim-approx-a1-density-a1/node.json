@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.flat_iff_weak-a1.total_boundedness-a1.top_dim_approx-a1.density-a1",
+  "parent_id": "root.flat_iff_weak-a1.total_boundedness-a1.top_dim_approx-a1",
+  "depth": 4,
+  "title": "Integer L¹ density of a top-dimensional integer multiplicity current (Simon 5.1, (27)–(28))",
+  "statement": "Let m ∈ ℕ, n := m + 1, ℝ^n = Eucl n with Lebesgue measure L = volume (= μHE[n]), e_i := EuclideanSpace.single i 1 and ω_e(x) := ω(x)(e_0, …, e_m) for an n-form ω. Let X ∈ D_n(ℝ^n) (a GeometricCurrentOn univ n) be integer multiplicity with M(X) < ∞. Assume (H): for every triple (M, θ, ξ) with IsRectifiableTriple univ n M θ ξ and X(ω) = tauAction n M θ ξ ω for all ω ∈ D^n(ℝ^n), one has M(X) = ∫⁻_M θ dμHE[n] and μHE[n](M ∖ spt X) = 0. Then there is u : ℝ^n → ℝ with the following properties:\n- u is measurable;\n- u(x) ∈ ℤ for every x;\n- u is L-integrable;\n- ∫⁻ |u| dL = M(X);\n- u(x) = 0 for L-a.e. x ∉ spt X;\n- X(ω) = ∫ u(x) ω_e(x) dL(x) for every ω ∈ D^n(ℝ^n).",
+  "lean_statement": "∀ (m : ℕ) (X : GeometricCurrentOn (univ : Set (Eucl (m + 1))) (m + 1)), IsIntegerMultiplicity X → X.mass < ∞ → (∀ (M : Set (Eucl (m + 1))) (θ : Eucl (m + 1) → ℝ) (ξ : Eucl (m + 1) → NVector (Eucl (m + 1)) (m + 1)), IsRectifiableTriple (univ : Set (Eucl (m + 1))) (m + 1) M θ ξ → (∀ ω : TestFormOn (univ : Set (Eucl (m + 1))) (m + 1), X ω = tauAction (m + 1) M θ ξ ω) → X.mass = ∫⁻ x in M, ENNReal.ofReal (θ x) ∂(μHE[m + 1] : Measure (Eucl (m + 1))) ∧ (μHE[m + 1] : Measure (Eucl (m + 1))) (M \\ X.support) = 0) → ∃ u : Eucl (m + 1) → ℝ, Measurable u ∧ (∀ x, ∃ k : ℤ, u x = k) ∧ Integrable u ∧ ∫⁻ x, ENNReal.ofReal |u x| = X.mass ∧ (∀ᵐ x ∂(volume : Measure (Eucl (m + 1))), x ∉ X.support → u x = 0) ∧ ∀ ω : TestFormOn (univ : Set (Eucl (m + 1))) (m + 1), X ω = ∫ x, u x * (ω : DifferentialForm (Eucl (m + 1)) (m + 1)) x (fun i => EuclideanSpace.single i (1 : ℝ))",
+  "lean_name": "fiw_tb_tda_density",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-flat-iff-weak-a1-total-boundedness-a1-top-dim-approx-a1-density-a1-a1"
+}

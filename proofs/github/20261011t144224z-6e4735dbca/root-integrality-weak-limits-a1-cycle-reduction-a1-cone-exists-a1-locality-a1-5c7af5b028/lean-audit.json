@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "42e641fad857feab747ad7b4e6141e4aadeb962fcec46770ac3ad67a1ff3a8d8",
+  "git_delta": {
+    "base_commit": "e4242ce9220451850ea91686a6cef19ad69e9fd1",
+    "candidate_commit": "2bb89d471b76edd9ebc081e2c902866237ab1a3a",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "iwl_cr_ce_apply_eq_of_eqOn_nhds_support",
+    "diff_sha256": "dba5f92f0fc7c3771aaae5ca3396b87ec8dc50b069934db3a64617024ca5e3b6",
+    "source_sha256": "f6060d3354f405daa603cc97eb180573aade22d4c87e7df22bf90c690a9c0e64",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.iwl_cr_ce_apply_eq_of_eqOn_nhds_support",
+      "statement": "∀ (P n : ℕ) (U : Set (Eucl P)) (T : GeometricCurrentOn U n) (ψ φ : TestFormOn U n) (N : Set (Eucl P)), IsOpen N → T.support ⊆ N → (∀ x ∈ N, (ψ : DifferentialForm (Eucl P) n) x = (φ : DifferentialForm (Eucl P) n) x) → T ψ = T φ",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

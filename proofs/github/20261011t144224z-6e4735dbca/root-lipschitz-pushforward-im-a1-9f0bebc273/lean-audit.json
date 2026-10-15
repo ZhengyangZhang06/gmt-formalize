@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "41ef6c466daf5fe77242c4ddec7a9cdffdbc823820d4ee50b93889aca740b826",
+  "git_delta": {
+    "base_commit": "1279dce06e5ec9508c6a6990bd2906cbaacfe42f",
+    "candidate_commit": "3289485ca49a4dbf893b52910c0328145a85bc66",
+    "target": "GMT/Ch06/Submission.lean",
+    "changed_files": [
+      "GMT/Ch06/Submission.lean"
+    ],
+    "diff_sha256": "25ec9b74012f3a020b85aaf82cbbe53b1e5f4c0c8dcd6472e76e58869b8d88f5",
+    "source_sha256": "71dd62b7b26bccc9c34f52e3d2fc7e909f7fedfb370fbca328cc0de41b544ee7",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.lipschitz_pushforward_integer_multiplicity",
+      "statement": "LipschitzPushforwardIntegerMultiplicity",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

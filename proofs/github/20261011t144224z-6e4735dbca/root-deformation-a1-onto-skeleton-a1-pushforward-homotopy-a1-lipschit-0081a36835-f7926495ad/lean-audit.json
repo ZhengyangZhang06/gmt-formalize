@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "b66a54bfbd33d2700c58b53c8e36fa278e1f365694b313b1aaa9c134855e7618",
+  "git_delta": {
+    "base_commit": "d2cb777e7be2cc421ca3f2f25db5ad1afccd5b1d",
+    "candidate_commit": "d31416678baad56be35d428a3903588bd5c1c626",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "dph_lpfex_support_subset_closure_image",
+    "diff_sha256": "960183d6cd84746f719a807022c35d331625e8d3dc7d955d274ab1b120f3c2dd",
+    "source_sha256": "65dfe8ec936727df8e555b0ddcd2bacc2ac5a3d4ca9ab31098e7a9d04cf1279b",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dph_lpfex_support_subset_closure_image",
+      "statement": "∀ (m m' k : ℕ) (X : GeometricCurrentOn (univ : Set (Eucl m)) k) (S : GeometricCurrentOn (univ : Set (Eucl m')) k) (G : Eucl m → Eucl m') (Gj : ℕ → Eucl m → Eucl m'), (∀ n, Continuous (Gj n)) → TendstoUniformlyOn Gj G atTop X.support → (∀ (ω : TestFormOn (univ : Set (Eucl m')) k) (ηj : ℕ → TestFormOn (univ : Set (Eucl m)) k), (∀ᶠ n in atTop, ∃ N : Set (Eucl m), IsOpen N ∧ X.support ⊆ N ∧ ∀ x ∈ N, (ηj n : DifferentialForm (Eucl m) k) x = ((ω : DifferentialForm (Eucl m') k) (Gj n x)).compContinuousLinearMap (fderiv ℝ (Gj n) x)) → Tendsto (fun n => X (ηj n)) atTop (𝓝 (S ω))) → S.support ⊆ closure (G '' X.support)",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

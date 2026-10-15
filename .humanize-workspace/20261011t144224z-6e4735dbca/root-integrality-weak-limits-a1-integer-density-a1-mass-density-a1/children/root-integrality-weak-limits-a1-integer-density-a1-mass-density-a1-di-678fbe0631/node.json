@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.integrality_weak_limits-a1.integer_density-a1.mass_density-a1.diagonal_weak_subseq-a1",
+  "parent_id": "root.integrality_weak_limits-a1.integer_density-a1.mass_density-a1",
+  "depth": 4,
+  "title": "Diagonal subsequence with closed-set limsup bounds on every ball B̄_R(0)",
+  "statement": "Let P ∈ ℕ and let μ_j (j ∈ ℕ) be measures on ℝ^P = Eucl P with sup_j μ_j(ℝ^P) < ∞. Then there are a strictly increasing φ : ℕ → ℕ and measures ν_R (R ∈ ℕ) on ℝ^P, with ν_R(ℝ^P) < ∞ for every R, such that for every R ∈ ℕ and every closed set F ⊆ ℝ^P with F ⊆ B̄_R(0) = closedBall 0 R: limsup_{j→∞} μ_{φ(j)}(F) ≤ ν_R(F).",
+  "lean_statement": "∀ (P : ℕ) (μ : ℕ → Measure (Eucl P)), (⨆ j, μ j univ) < ∞ → ∃ (φ : ℕ → ℕ) (ν : ℕ → Measure (Eucl P)), StrictMono φ ∧ (∀ R, ν R univ < ∞) ∧ ∀ (R : ℕ) (F : Set (Eucl P)), IsClosed F → F ⊆ closedBall 0 (R : ℝ) → limsup (fun j => μ (φ j) F) atTop ≤ ν R F",
+  "lean_name": "ind_md_diagonal_weak_subseq",
+  "depends_on": [
+    "root.integrality_weak_limits-a1.integer_density-a1.mass_density-a1.ball_weak_subseq-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.integrality_weak_limits-a1.integer_density-a1.mass_density-a1.ball_weak_subseq-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-integrality-weak-limits-a1-integer-density-a1-mass-density-a1-di-678fbe0631-a1"
+}

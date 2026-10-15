@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.flat_iff_weak-a1.total_boundedness-a1.top_dim_approx-a1.integer_median-a1.median_bounds-a1",
+  "parent_id": "root.flat_iff_weak-a1.total_boundedness-a1.top_dim_approx-a1.integer_median-a1",
+  "depth": 5,
+  "title": "Size and support bounds for a median (Simon 5.1, (35))",
+  "statement": "Let α be a type with a σ-algebra and μ a measure on it. Let F ⊆ α be measurable, let a > 0 be real, let u : α → ℝ be measurable, and let c ∈ ℝ be a median of u on F in the sense that ofReal(a/2) ≤ μ(F ∩ {x : u(x) ≤ c}) and ofReal(a/2) ≤ μ(F ∩ {x : c ≤ u(x)}). Then (M1) ofReal(|c|·a) ≤ 2 ∫⁻_F ofReal|u| dμ, and (M2) c ≠ 0 implies μ(F ∩ {x : u(x) ≠ 0}) ≠ 0.",
+  "lean_statement": "∀ {α : Type} [MeasurableSpace α] (μ : Measure α) (F : Set α) (a c : ℝ) (u : α → ℝ), MeasurableSet F → 0 < a → Measurable u → ENNReal.ofReal (a / 2) ≤ μ (F ∩ {x | u x ≤ c}) → ENNReal.ofReal (a / 2) ≤ μ (F ∩ {x | c ≤ u x}) → ENNReal.ofReal (|c| * a) ≤ 2 * ∫⁻ x in F, ENNReal.ofReal |u x| ∂μ ∧ (c ≠ 0 → μ (F ∩ {x | u x ≠ 0}) ≠ 0)",
+  "lean_name": "fiw_tb_tda_im_median_bounds",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-flat-iff-weak-a1-total-boundedness-a1-top-dim-approx-a1-integer-a1ff4a20a6-a1"
+}

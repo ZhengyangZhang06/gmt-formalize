@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "9fa141700edf90b22171b8a8e1b24a5e2af6303e14e84f4c6f2f1d404325d538",
+  "git_delta": {
+    "base_commit": "4bef37acfc838f99a18b5be8310211eea2453ef7",
+    "candidate_commit": "47253038859d33af0820bf392502f62b1707dfeb",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "deformation_ipl_tangential_pushforward_aestronglyMeasurable",
+    "diff_sha256": "46089743c854a56c23fcb4fc93cea3454f1fa0ebf0a67b380a7340966e8a6dc7",
+    "source_sha256": "c9d8307d9a7a40c0fd92c7d7cecb8d4bbdb0b60b0d959cdbafee39de2ef75654",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.deformation_ipl_tangential_pushforward_aestronglyMeasurable",
+      "statement": "∀ (P Q k : ℕ) (U M : Set (Eucl P)) (θ : Eucl P → ℝ) (ξ : Eucl P → NVector (Eucl P) k) (f : Eucl P → Eucl Q) (L : Eucl P → (Eucl P →L[ℝ] Eucl Q)), IsOpen U → IsRectifiableTriple U k M θ ξ → LocallyLipschitzOn U f → (∀ᵐ x ∂((μHE[k] : Measure (Eucl P)).restrict M), ∀ Tx : Submodule ℝ (Eucl P), HasWeightedApproximateTangentSpaceAt k M θ x Tx → ∀ v ∈ Tx, HasDerivAt (fun t : ℝ => f (x + t • v)) (L x v) 0) → AEStronglyMeasurable (fun x => nVectorPushforward k (L x) (ξ x)) ((μHE[k] : Measure (Eucl P)).restrict M)",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

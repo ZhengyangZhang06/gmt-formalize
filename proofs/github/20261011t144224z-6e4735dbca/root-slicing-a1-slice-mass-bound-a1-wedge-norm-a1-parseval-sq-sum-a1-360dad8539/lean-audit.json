@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "7cb26b0b651cf55867bf2069d01259e01f8179cc3cead0a5e8320255483b1d93",
+  "git_delta": {
+    "base_commit": "91d601bd0d6b05eed2dfc6c245ff656db55f855a",
+    "candidate_commit": "f12646af114b0f8ee6da768da27db2bdaa5773a9",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "slicing_mb_wn_sq_sum_onb_invariant",
+    "diff_sha256": "198dd25b808f9be6a4eeaba5066a1d227a80a2e4c177a04f83709332b049ebee",
+    "source_sha256": "965e777b3d5b5e892c782a522e286fb8740c608749efce6b1fe3dd7ab5994490",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.slicing_mb_wn_sq_sum_onb_invariant",
+      "statement": "∀ (P k : ℕ) (u v : OrthonormalBasis (Fin P) ℝ (Eucl P)) (φ : Covector (Eucl P) k), ∑ I : Fin k → Fin P, (φ (fun i => u (I i))) ^ 2 = ∑ I : Fin k → Fin P, (φ (fun i => v (I i))) ^ 2",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

@@ -1,0 +1,95 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.deformation-a1.onto_skeleton-a1.pushforward_homotopy-a1.smooth_homotopy-a1.affine_estimate-a1`
+- Child DAG node: `root.deformation-a1.onto_skeleton-a1.pushforward_homotopy-a1.smooth_homotopy-a1.affine_estimate-a1.affine_homotopy_fderiv-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: step 1 of the supplied proof of dph_sh_affine_estimate (Simon Ch. 6, 2.27: dh = (F₁ − F₀)dt + ((1 − t)DF₀ + tDF₁)dx for the straight-line homotopy h), with all details filled in. Notation as in the statement. Put e := EuclideanSpace.equiv (Fin (m+1)) ℝ and e′ := EuclideanSpace.equiv (Fin m) ℝ; both are continuous linear equivalences.
+
+1. (The coordinate maps are continuous linear.) Define tL := (ContinuousLinearMap.proj 0) ∘L e : ℝ^{m+1} →L[ℝ] ℝ and tlL := e′.symm ∘L (ContinuousLinearMap.pi (j ↦ ContinuousLinearMap.proj j.succ)) ∘L e : ℝ^{m+1} →L[ℝ] ℝ^m. Since Fin.tail q = (j ↦ q (j.succ)), we have tL(y) = t(y) and tlL(y) = tl(y) for every y, both by definition (rfl). Hence G(y) = F₀(tlL y) + tL(y)·(F₁(tlL y) − F₀(tlL y)) for all y (rfl).
+
+2. (Values on cons, ι and e₀.) Let τ ∈ ℝ and z ∈ ℝ^m. Then e(cons(τ, z)) = Fin.cons τ (e′ z), so tL(cons(τ, z)) = (Fin.cons τ (e′ z)) 0 = τ (Fin.cons_zero). Also tlL(cons(τ, z)) = e′.symm (Fin.tail (Fin.cons τ (e′ z))) = e′.symm (e′ z) = z (Fin.tail_cons, ContinuousLinearEquiv.symm_apply_apply). Both identities even hold definitionally. With τ = 0 and z = v this gives tL(ι v) = 0 and tlL(ι v) = v. Moreover e(e₀) = Pi.single 0 1 (PiLp.ofLp_single), so tL(e₀) = 1. Since j.succ ≠ 0 for every j : Fin m, we get tlL(e₀) = e′.symm (j ↦ (Pi.single 0 1) j.succ) = e′.symm 0 = 0.
+
+3. (G is C^∞.) Continuous linear maps are C^∞ (ContinuousLinearMap.contDiff). So F₀∘tlL and F₁∘tlL are C^∞ (ContDiff.comp), hence so is their difference F₁∘tlL − F₀∘tlL (ContDiff.sub). The product of the C^∞ real function tL with that difference is C^∞ (ContDiff.smul), and adding F₀∘tlL keeps the map C^∞ (ContDiff.add). By step 1 the result is G, so G is C^∞.
+
+4. (The derivative of G at an arbitrary point.) Since ∞ ≠ 0, F₀ and F₁ are differentiable (ContDiff.differentiable), so HasFDerivAt F_i (DF_i(z)) z for every z and i = 0, 1. Fix y ∈ ℝ^{m+1}.
+   - Chain rule with the linear map tlL (HasFDerivAt.comp, ContinuousLinearMap.hasFDerivAt): y ↦ F_i(tlL y) has derivative DF_i(tlL y) ∘L tlL at y.
+   - Difference rule: y ↦ F₁(tlL y) − F₀(tlL y) has derivative DF₁(tlL y) ∘L tlL − DF₀(tlL y) ∘L tlL.
+   - Product rule for the scalar factor tL (HasFDerivAt.smul: D(c·f)(y) = c(y)·Df(y) + (Dc(y)).smulRight(f(y)), where Dc(y) = tL because tL is linear), then the sum rule (HasFDerivAt.add). By HasFDerivAt.fderiv this gives
+   DG(y) = DF₀(tlL y) ∘L tlL + tL(y)·(DF₁(tlL y) ∘L tlL − DF₀(tlL y) ∘L tlL) + tL.smulRight(F₁(tlL y) − F₀(tlL y)).
+   Evaluated at h ∈ ℝ^{m+1}:
+   DG(y)h = DF₀(tl y)(tl h) + t(y)·(DF₁(tl y)(tl h) − DF₀(tl y)(tl h)) + t(h)·(F₁(tl y) − F₀(tl y)).
+
+5. (The value at e₀.) Let y = cons(s, x). By step 2, tl y = x, t y = s, tl e₀ = 0 and t e₀ = 1. Step 4 then gives DG(y)e₀ = DF₀(x)0 + s·(DF₁(x)0 − DF₀(x)0) + 1·(F₁(x) − F₀(x)) = 0 + s·0 + (F₁(x) − F₀(x)) = F₁(x) − F₀(x). The rules used are map_zero, sub_zero, smul_zero, one_smul and zero_add.
+
+6. (The value at ι v.) Let y = cons(s, x) and v ∈ ℝ^m. By step 2, tl(ι v) = v and t(ι v) = 0, so step 4 gives
+   DG(y)(ι v) = DF₀(x)v + s·(DF₁(x)v − DF₀(x)v) + 0·(F₁(x) − F₀(x)) = DF₀(x)v + s·DF₁(x)v − s·DF₀(x)v = (1 − s)·DF₀(x)v + s·DF₁(x)v.
+   The rules used are zero_smul, add_zero, smul_sub, sub_smul, one_smul and commutativity of addition.
+
+Step 3 proves the first conjunct, and steps 5 and 6 prove the two derivative identities for all s, x and v. ∎
+
+## Key steps
+
+1. t and tl are continuous linear maps tL = proj 0 ∘L e and tlL = e′.symm ∘L pi(proj ∘ succ) ∘L e, with tL(cons(τ,z)) = τ, tlL(cons(τ,z)) = z, tL(e₀) = 1 and tlL(e₀) = 0; G = F₀∘tlL + tL·(F₁∘tlL − F₀∘tlL) by rfl.
+2. G is C^∞, because C^∞ maps are closed under composition with linear maps, sums, differences and scalar products.
+3. Chain and product rules: DG(y) = DF₀(tl y)∘tlL + t(y)(DF₁(tl y)∘tlL − DF₀(tl y)∘tlL) + tL.smulRight(F₁(tl y) − F₀(tl y)).
+4. At y = cons(s,x): DG(y)e₀ = F₁(x) − F₀(x) and DG(y)(ιv) = DF₀(x)v + s(DF₁(x)v − DF₀(x)v) = (1 − s)DF₀(x)v + sDF₁(x)v.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat .humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json (mode local-project; project_commit d8d46c9587747dee0751a1f780fcafdba16a3886; mathlib_commit 25730c7c759d108ef87ab70af2342a196760f79d)`
+- `python3 -I verifier/gmt-compare.py contract_scope(GMT/Ch06/Contract.lean, GMT.Ch06.main_theorem) -> open MeasureTheory Filter Set Metric / open scoped ENNReal NNReal Topology / namespace GMT.Ch06 / open Poincare.SimonGMT.Chapter06 / open ...Chapter03 (CountablyRectifiable HasWeightedApproximateTangentSpaceAt) / open ...Chapter01 (dimensionalUpperDensity) / noncomputable section / end; diff Contract.lean Submission.lean (identical)`
+- `grep -n '^structure|^def|^abbrev|^theorem' .lake/packages/simongmt/Poincare/SimonGMT/Chapter06/{Forms,Currents,Mass,CurrentLocalEquality}.lean: Covector, DifferentialForm, TestFormOn = testFormOnSubmodule (IsTestForm ∧ tsupport ⊆ U), GeometricCurrentOn, support = U \ zeroRegion, isOpen_zeroRegion, massOn, mass = massOn U, covectorEuclideanNorm, covectorEuclideanNorm_zero/_nonneg`
+- `python3 -I over dag.json: selected node (depth 5, decomposing); lean_statement/status of mass_bound, compatible_form, slice_forms (accepted) and slice_comparison, interior_bound (decomposing); regex scan of all statements for cthickening | Fin.tail | fderiv ℝ (fun y | homotop | IsCompact (.*⁻¹' -> precedent iwl_cr_ci_cone_map, no straight-line-homotopy lemma`
+- `git show 61b7d3fe17a438a487bdf3a56eb93a01e6c7accd:GMT/Ch06/Submission.lean (accepted iwl_cr_ci_cone_map: p₀, π as continuous linear maps, Φ-values by rfl, HasFDerivAt.smul, compContinuousLinearMap_apply, Fin.comp_cons)`
+- `grep -n -i 'proper|ContDiff|affine|straight|F₀|cthickening' nodes/root-deformation-a1-onto-skeleton-a1-pushforward-homotopy-a1/parent-supplied-natural-proof.md (Parts 4.3, 5.1: G_ij C^∞ and proper on [0,1]×spt X; 6.11: ĥ_σ C^∞ and proper)`
+- `rg -n 'theorem norm_integral_le_of_norm_le_const|theorem mem_cthickening_of_dist_le|IsCompact.cthickening|theorem compContinuousLinearMap_apply|theorem comp_cons|theorem cons_self_tail|theorem HasFDerivAt.smul|lemma ofLp_single|abbrev EuclideanSpace.single|abbrev EuclideanSpace.equiv|theorem IsCompact.of_isClosed_subset|lemma uIoc_of_le' local-references/197bdd4b88278494/mathlib/Mathlib; cmp of 8 snapshot files with .lake/packages/mathlib (all identical)`
+- `lake env lean Probe.lean / Probe2.lean: #check intervalIntegral.norm_integral_le_of_norm_le_const, Metric.mem_cthickening_of_dist_le, IsCompact.cthickening, image_eq_zero_of_notMem_tsupport, ContinuousAlternatingMap.compContinuousLinearMap_apply, Fin.comp_cons, ContinuousLinearMap.opNorm_le_bound, pow_le_pow_left₀, HasFDerivAt.fun_add/fun_sub/fun_smul, ContDiff.differentiable (n ≠ 0), ContDiff.fun_smul, Fin.cons_self_tail, ContinuousLinearMap.finCons, IsCompact.of_isClosed_subset, Set.uIoc_of_le`
+- `lake env lean /tmp/dph_sh_ae_split/lean/AllStmts.lean (2 children + selected + 5 dependency types; only sorry warnings)`
+- `lake env lean /tmp/dph_sh_ae_split/lean/ChildA.lean, ChildB.lean, Iface.lean, Final.lean (no errors or warnings; #print axioms: propext, Classical.choice, Quot.sound)`
+- `python3 -I validate_lean_statement (verifier/lean_contract.py and /runtime/flows/gmt-claude-eb5f84b9e61e/_recursive_lean/lean_contract.py) on both child statements: unchanged, single line`
+- `name collisions: python3 over dag.json lean_names (685 nodes; dph_sh_* = 6 names, none dph_sh_ae_*); rg -c 'dph_sh_ae_|affine_homotopy_contDiff_fderiv|affine_homotopy_isCompact_preimage_cyl' in the snapshot project and mathlib (exit 1, no match); grep GMT/ and .lake/packages/simongmt/Poincare (no match); git grep over the 1749 distinct ref-tip commits of 4096 refs -- '*.lean' (no match)`
+- `read /runtime/flows/gmt-claude-eb5f84b9e61e/_recursive_lean/runtime.py (_existing_lean_name_problem, _solve_children, _overlay_accepted_children with prerequisite_ids = children + depends_on, _wait_for_accepted_dependencies, _implementation_plan) and speculation.py contract (children + depends_on)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Normed/Lp/PiLp.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/FDeriv/Mul.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/MetricSpace/Thickening.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/IntervalIntegral/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Data/Fin/Tuple/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/Algebra/Module/Alternating/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/Compactness/Compact.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Order/Interval/Set/UnorderedInterval.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/GMT/Ch06/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/GMT/Ch06/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-deformation-a1-onto-skeleton-a1-pushforward-homotopy-a1-smooth-h-88afce5b06/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-deformation-a1-onto-skeleton-a1-pushforward-homotopy-a1-smooth-h-88afce5b06/parent-supplied-plan.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-deformation-a1-onto-skeleton-a1-pushforward-homotopy-a1-smooth-homotopy-a1/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-deformation-a1-onto-skeleton-a1-pushforward-homotopy-a1-smooth-homotopy-a1/decomposition-audit-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-deformation-a1-onto-skeleton-a1-pushforward-homotopy-a1-smooth-h-f068722a83/decomposition-review-retry.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-deformation-a1-onto-skeleton-a1-pushforward-homotopy-a1-smooth-h-33fe8712de/decomposition-review-retry.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-deformation-a1-onto-skeleton-a1-pushforward-homotopy-a1/parent-supplied-natural-proof.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/runtime/flows/gmt-claude-eb5f84b9e61e/_recursive_lean/runtime.py`
+- `/runtime/flows/gmt-claude-eb5f84b9e61e/_recursive_lean/speculation.py`
+- `/runtime/flows/gmt-claude-eb5f84b9e61e/_recursive_lean/lean_contract.py`
+- `/tmp/dph_sh_ae_split/lean/AllStmts.lean`
+- `/tmp/dph_sh_ae_split/lean/ChildA.lean`
+- `/tmp/dph_sh_ae_split/lean/ChildB.lean`
+- `/tmp/dph_sh_ae_split/lean/Iface.lean`
+- `/tmp/dph_sh_ae_split/lean/Final.lean`
+
+The pinned project, SimonGMT and the snapshot Mathlib contain no lemma on the straight-line homotopy G(y) = F₀(tl y) + t(y)(F₁ − F₀)(tl y): neither its smoothness or slice derivative nor its properness on [0,1] × S. So the two new children are genuine obligations. The accepted iwl_cr_ci_cone_map (cone map h = y₀·π(y)) is the direct precedent for splitting off such a calculus fact, and the grandparent's proof (Parts 5.1, 6.11) needs the same smoothness and properness. Mathlib supplies every input, identically in the snapshot and in .lake: HasFDerivAt.comp/fun_add/fun_sub/fun_smul, ContDiff.differentiable, IsCompact.cthickening, mem_cthickening_of_dist_le, Fin.cons_self_tail and IsCompact.of_isClosed_subset. Both child statements pass both lexical validators and elaborate in the replayed comparator scope, and each was proved in Lean. An interface theorem proves the exact selected type from the two children plus the five existing dependencies, taken with their frozen types. All of these checks use only propext, Classical.choice and Quot.sound. The two dph_sh_ae_ names are unused in the DAG, the project, SimonGMT, the snapshot and every ref-tip commit.

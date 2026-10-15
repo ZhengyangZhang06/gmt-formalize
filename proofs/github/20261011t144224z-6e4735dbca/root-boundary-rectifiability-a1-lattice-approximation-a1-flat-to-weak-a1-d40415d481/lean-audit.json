@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "46f98e319709f4e4ad40cf4543433e1301b35123315d0ab868fa8ef9023ff3d2",
+  "git_delta": {
+    "base_commit": "82a3c783f0c18c59d8dc62577b0bffd5f6862594",
+    "candidate_commit": "d3d5fa610f706d48e18d0b66b2d2e42b13391a68",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "br_la_weaklyConvergesOn_of_flat_decomposition",
+    "diff_sha256": "292374419c5baa325586d724a992743788812c9647147e51ba0ed1d1c773b280",
+    "source_sha256": "dae74c4949c49f89b63e033e4d071c3b30f8c229ed9d399351bbb7c52b272ba3",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.br_la_weaklyConvergesOn_of_flat_decomposition",
+      "statement": "∀ (P m : ℕ) (U : Set (Eucl P)) (X : GeometricCurrentOn U (m + 1)) (Pk S : ℕ → GeometricCurrentOn U (m + 1)) (R : ℕ → GeometricCurrentOn U (m + 2)), (∀ (k : ℕ) (ω : TestFormOn U (m + 1)), X ω - Pk k ω = (R k).boundary ω + S k ω) → Tendsto (fun k => (R k).mass) atTop (𝓝 0) → Tendsto (fun k => (S k).mass) atTop (𝓝 0) → WeaklyConvergesOn Pk X",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

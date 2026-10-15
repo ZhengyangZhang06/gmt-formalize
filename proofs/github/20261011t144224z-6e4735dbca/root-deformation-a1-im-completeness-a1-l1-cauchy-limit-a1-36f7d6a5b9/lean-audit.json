@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "eda03f82aa7071ded6e9a6cc98df03fda2e3082a826eececbb8a85062756acde",
+  "git_delta": {
+    "base_commit": "4af1ba2effe34dc3635ea657ab92cb565c05bde1",
+    "candidate_commit": "08f55173c4b985f019a6dfd7352b7d2e41f0b2b6",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "imc_ae_tendsto_of_summable_lintegral",
+    "diff_sha256": "181a923d40ff2cb5ffb3f6799a1c217f9a653aad7d4db469d11280771c487337",
+    "source_sha256": "70b03d629a5c68c922b7190d6cfcd04583dd04d4f36c1d41428c03391a78ed2a",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.imc_ae_tendsto_of_summable_lintegral",
+      "statement": "∀ (X : Type) [MeasurableSpace X] (μ : Measure X) (E : Type) [NormedAddCommGroup E] [CompleteSpace E] (f : ℕ → X → E), (∀ n, AEStronglyMeasurable (f n) μ) → (∑' n, ∫⁻ x, ‖f (n + 1) x - f n x‖ₑ ∂μ) ≠ ∞ → ∃ g : X → E, AEStronglyMeasurable g μ ∧ (∀ᵐ x ∂μ, Tendsto (fun n => f n x) atTop (𝓝 (g x))) ∧ Tendsto (fun n => ∫⁻ x, ‖f n x - g x‖ₑ ∂μ) atTop (𝓝 0)",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

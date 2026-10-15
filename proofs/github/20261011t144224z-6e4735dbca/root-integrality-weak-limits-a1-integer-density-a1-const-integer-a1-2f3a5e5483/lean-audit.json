@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "12efead61df69ad16c55b90d60c2ac1957dff0c74154733ddc1635413e2601ca",
+  "git_delta": {
+    "base_commit": "40fddfa3d8a64541f89c20a84af20db2c2eb4c9d",
+    "candidate_commit": "3cf5b3cf1bbde4d93f5276f642828f2ed7007133",
+    "target": "GMT/Ch06/Submission.lean",
+    "changed_files": [
+      "GMT/Ch06/Submission.lean"
+    ],
+    "diff_sha256": "63385a76e7a1019d99130e2ad1d521fa067009a1cad9a4d179a0dabf34e2a903",
+    "source_sha256": "e8fe742c874965e70eb72808ec35472aa192858f1e26e270b2563f6026ac84d2",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.ind_const_multiple_integer",
+      "statement": "∀ (m : ℕ) (U : Set (Eucl (m + 1))) (c : ℝ) (X : GeometricCurrentOn U (m + 1)), IsOpen U → U.Nonempty → IsIntegerMultiplicity X → (∀ ω : TestFormOn U (m + 1), X ω = c * ∫ x in U, (ω : DifferentialForm (Eucl (m + 1)) (m + 1)) x (fun i => EuclideanSpace.single i (1 : ℝ)) ∂volume) → ∃ k : ℤ, c = k",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

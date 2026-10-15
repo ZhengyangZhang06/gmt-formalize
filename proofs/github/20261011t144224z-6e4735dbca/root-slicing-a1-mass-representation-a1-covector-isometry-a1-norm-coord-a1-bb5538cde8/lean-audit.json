@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "e371142419db86f196e88369eb98d6fc0453f2b95f04136fcab067209db72d05",
+  "git_delta": {
+    "base_commit": "f67223e3c34e47820e0985e92550db4c8ae4c553",
+    "candidate_commit": "a1716c42aeab9df87edfc4f71e693c99790858a0",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "smr_ci_norm_eq_sqrt_sum_coord_sq",
+    "diff_sha256": "37c1a8d863b8e791ace20fcbc56f1067b6954aa7a81ba2fddf8e0b3f1e8fb1cd",
+    "source_sha256": "725d92f1c44dcc71c72beb03ad89e100bd312692d598d8212880589e1976861e",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.smr_ci_norm_eq_sqrt_sum_coord_sq",
+      "statement": "∀ (P k : ℕ) (α : Covector (Eucl P) k), covectorEuclideanNorm α = Real.sqrt (∑ I : SimonMultiIndex k P, euclideanCovectorCoordinate α I ^ 2)",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

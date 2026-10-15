@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "dfbbc47dd732b5ea0ea8fc4e253d796b9a348413d14b7bb93b050a6a5e744045",
+  "git_delta": {
+    "base_commit": "d89d679bc8d1f8263e9676ff8a604c7e864df926",
+    "candidate_commit": "f5968e33198f60d76a8e740862b9c4f5295ce6ab",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "rectifiability_mass_measure_abs_continuous",
+    "diff_sha256": "e835f665eef056b4379ac0a5f1fb62a9d0a4ad621262426163d728486ca4f291",
+    "source_sha256": "7d739d95e9a64992b2bae6067099f8674c937d245188825bed9c42e6202db76d",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.rectifiability_mass_measure_abs_continuous",
+      "statement": "∀ (P m : ℕ) (U : Set (Eucl P)), IsOpen U → ∀ T : GeometricCurrentOn U (m + 1), (∀ W, CompactlyContainedOpen W U → T.massOn W + T.boundary.massOn W < ∞) → ∀ μ : Measure (Eucl P), IsMassMeasure T μ → μ ≪ (μHE[m + 1] : Measure (Eucl P))",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

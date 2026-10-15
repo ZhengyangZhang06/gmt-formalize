@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "310f35fe65c6dfe1b3b62d12779e9b6cdc6525fd26d7ad53ff66667b970dc546",
+  "git_delta": {
+    "base_commit": "d984a69b74bc72ac1f3093d2b5259f02a0aa91ad",
+    "candidate_commit": "d559c74c7b3f6b182bf58a468f736ea742f5e05a",
+    "target": "GMT/Ch06/Submission.lean",
+    "changed_files": [
+      "GMT/Ch06/Submission.lean"
+    ],
+    "diff_sha256": "8718fa5a90b1daf2dfc56190d34b07410ca8ba243f7feb81e0a934e732473f5e",
+    "source_sha256": "58fc832e724a01429d1f66ca6fd46728dcd93f187a3ff9b7c645be42eda6eeee",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.br_local_finite_mass_extension",
+      "statement": "SlicingTheorem → ∀ (P m : ℕ) (U : Set (Eucl P)), IsOpen U → ∀ T : GeometricCurrentOn U (m + 1), IsIntegerMultiplicity T → (∀ W, CompactlyContainedOpen W U → T.boundary.massOn W < ∞) → ∀ x₀ ∈ U, ∃ r : ℝ, 0 < r ∧ ball x₀ r ⊆ U ∧ ∃ X : GeometricCurrentOn (univ : Set (Eucl P)) (m + 1), IsIntegerMultiplicity X ∧ X.mass < ∞ ∧ X.boundary.mass < ∞ ∧ ∀ η : TestFormOn U (m + 1), tsupport (η : DifferentialForm (Eucl P) (m + 1)) ⊆ ball x₀ r → X (testFormOnInclusion (subset_univ U) (m + 1) η) = T η",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

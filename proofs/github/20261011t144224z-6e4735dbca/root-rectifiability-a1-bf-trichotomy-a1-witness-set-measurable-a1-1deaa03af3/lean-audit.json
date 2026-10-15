@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "cc709924602d4778faae4e39cb488dcfccd09d268030e11ce0afce72c7f2511c",
+  "git_delta": {
+    "base_commit": "1f50dff69b857fccd015abd6785ba90365763069",
+    "candidate_commit": "79eed5da6c76bc8f14609bfe2fe08102ba036348",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "rectifiability_bf_witness_set_measurable",
+    "diff_sha256": "02c7c41fb723edd3dee3b52682b7864909f616e1e2d18e70ff792a3b2f548afb",
+    "source_sha256": "d33c7f6e66bdc346c57808881f62b53e319bafe7b0fec4cff567144e827f28e3",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.rectifiability_bf_witness_set_measurable",
+      "statement": "∀ (N m : ℕ) (E : Set (Eucl N)) (δ : ℝ), IsSigmaCompact E → MeasurableSet {p : Eucl N × (Fin (m + 1) → Eucl N) | ∃ x ∈ E, x ≠ p.1 ∧ dist x p.1 < δ ∧ (WithLp.toLp 2 (fun i : Fin (m + 1) => inner ℝ (p.2 i) x) : Eucl (m + 1)) = (WithLp.toLp 2 (fun i : Fin (m + 1) => inner ℝ (p.2 i) p.1) : Eucl (m + 1))}",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

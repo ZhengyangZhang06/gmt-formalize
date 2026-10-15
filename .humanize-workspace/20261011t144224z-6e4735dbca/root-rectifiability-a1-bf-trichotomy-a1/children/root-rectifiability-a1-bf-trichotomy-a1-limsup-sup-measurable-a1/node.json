@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.rectifiability-a1.bf_trichotomy-a1.limsup_sup_measurable-a1",
+  "parent_id": "root.rectifiability-a1.bf_trichotomy-a1",
+  "depth": 3,
+  "title": "Measurability of a normalised limsup–sup of section measures over a monotone measurable set family",
+  "statement": "Let Z and Y be measurable spaces, k ∈ ℕ, μ an s-finite measure on Y and δ ∈ ℝ. For r, s ∈ ℝ let G(r,s) ⊆ Z × Y be a set that is measurable for the product σ-algebra, and assume (i) G(r,s) ⊆ G(r,s′) whenever s ≤ s′, and (ii) G(r,s) = ⋃_{0<r′<r} G(r′,s) whenever r > 0. For z ∈ Z let Φ(z) := limsup_{s→0⁺} sup_{0<r<δ} μ({y : (z,y) ∈ G(r,s)}) / (rs)ᵏ ∈ [0,∞], where (rs)ᵏ stands for ENNReal.ofReal((r·s)ᵏ), the quotient is taken in [0,∞] and the limsup is along the filter 𝓝[>]0. Then Φ : Z → [0,∞] is measurable.",
+  "lean_statement": "∀ (Z Y : Type) [MeasurableSpace Z] [MeasurableSpace Y] (k : ℕ) (μ : Measure Y) (δ : ℝ) (G : ℝ → ℝ → Set (Z × Y)), SFinite μ → (∀ r s, MeasurableSet (G r s)) → (∀ r s s', s ≤ s' → G r s ⊆ G r s') → (∀ r s, 0 < r → G r s = ⋃ r' ∈ Ioo (0 : ℝ) r, G r' s) → Measurable (fun z : Z => limsup (fun s : ℝ => ⨆ r ∈ Ioo (0 : ℝ) δ, μ {y | (z, y) ∈ G r s} / ENNReal.ofReal ((r * s) ^ k)) (𝓝[>] 0))",
+  "lean_name": "rectifiability_bf_limsup_sup_measurable",
+  "depends_on": [
+    "root.rectifiability-a1.mickle_rado-a1.limsup_eq_iinf-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.rectifiability-a1.mickle_rado-a1.limsup_eq_iinf-a1",
+      "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-rectifiability-a1-mickle-rado-a1-limsup-eq-iinf-a1-a1",
+      "result_commit": "cfa90d4234cc3e0bf046417af74d50498c203094",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-rectifiability-a1-bf-trichotomy-a1-limsup-sup-measurable-a1-a1"
+}

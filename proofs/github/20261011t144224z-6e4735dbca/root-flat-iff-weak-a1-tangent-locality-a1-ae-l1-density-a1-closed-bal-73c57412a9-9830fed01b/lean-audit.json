@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "de18cb8d019465448d188202131a380efee920d2516c52fd9f5cbe66402c9f06",
+  "git_delta": {
+    "base_commit": "f75bd8a0e8a761d8751e01680fb1eb6bd3108997",
+    "candidate_commit": "053bc37acaf468f26c713d4b615a2202c8022cf9",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "fiw_tl_ald_closedBall_lebesgue_point",
+    "diff_sha256": "d7737bbe223537a0074dd718a497453d3cdb264d15bfce9c652eb863570fc426",
+    "source_sha256": "32ab0e7c9ffe7aeaba2be9d2ea6dd588916709b04c062d096a89456d69923717",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.fiw_tl_ald_closedBall_lebesgue_point",
+      "statement": "∀ (P : ℕ) (ν : Measure (Eucl P)) [IsFiniteMeasure ν] (g : Eucl P → ℝ), Integrable g ν → ∀ᵐ x ∂ν, Tendsto (fun s : ℝ => (∫⁻ z in closedBall x s, ‖g z - g x‖ₑ ∂ν) / ν (closedBall x s)) (𝓝[>] 0) (𝓝 0)",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

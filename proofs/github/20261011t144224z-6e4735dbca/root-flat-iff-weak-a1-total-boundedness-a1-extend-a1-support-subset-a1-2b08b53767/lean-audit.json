@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "7a5e71855f574d7afd7a6a1a977ad7ce57d05e2e014ae4d9bcf1558ecbf2994c",
+  "git_delta": {
+    "base_commit": "91f6be301231a7dd1e704ffa98958f26390e9dd5",
+    "candidate_commit": "3d64216fd707864ee89d87538a4aa0d85cadf386",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "fiw_tb_ext_support_subset",
+    "diff_sha256": "089fb9ba391dbd1bbfb8b3510ea1cf060bf4b28323f7d1b55ccc75cfead9e62b",
+    "source_sha256": "875645ad2f18ca87fdf21045d6e85fc096a9020d5ab0caf71a0c1d083d0aa1fb",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.fiw_tb_ext_support_subset",
+      "statement": "∀ (P q : ℕ) (V K : Set (Eucl P)) (Z : GeometricCurrentOn V q), IsOpen V → IsClosed K → (∀ ω : TestFormOn V q, Disjoint (tsupport (ω : DifferentialForm (Eucl P) q)) K → Z ω = 0) → Z.support ⊆ K",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "129fc91c727bbaf13a54cfc76a32109edb467ad90fff2dd72362eade3a0dc39a",
+  "git_delta": {
+    "base_commit": "d11eb3def4ee3265ab79726eeb3da9b5b78a9435",
+    "candidate_commit": "7919071b797dbcfd09ca6be2c5181155f44b0f94",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "lpf_c1r_egoroff_closed",
+    "diff_sha256": "5bff82445fd6ad28f1b4856db9ae796c1b7d24ef0ff04cd5821fe83481e03cba",
+    "source_sha256": "382b0916b0647209c94ab9ac3d764bffe4c8e49e3703f41e8db98a2a4d36f563",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.lpf_c1r_egoroff_closed",
+      "statement": "∀ (n : ℕ) (C : Set (Eucl n)) (f : ℕ → Eucl n → ℝ) (g : Eucl n → ℝ), MeasurableSet C → (∀ k, Measurable (f k)) → Measurable g → (∀ x ∈ C, Tendsto (fun k => f k x) atTop (𝓝 (g x))) → ∀ ε : ℝ≥0∞, 0 < ε → ∃ A : Set (Eucl n), IsClosed A ∧ A ⊆ C ∧ (volume : Measure (Eucl n)) (C \\ A) < ε ∧ ∀ R : ℝ, TendstoUniformlyOn f g atTop (A ∩ closedBall 0 R)",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

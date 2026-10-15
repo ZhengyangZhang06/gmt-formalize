@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "8bfe99787f5cf082d56138303551ce81efb8108ae634af6ba5e4cbf8e0b0c2dc",
+  "git_delta": {
+    "base_commit": "96f3759eeacadb5228a3ef5ca5d0dce83911c014",
+    "candidate_commit": "48beb763c9e51aafa51490411902729988f41445",
+    "target": "GMT/Ch06/Submission.lean",
+    "changed_files": [
+      "GMT/Ch06/Submission.lean"
+    ],
+    "diff_sha256": "3f1fe3c4b40f8406f1ae7414616f42f4933cf4b6515ac5ac14ad83da723b8dba",
+    "source_sha256": "d4e8da3568b193903933bf745f2f52e1e46453c7ce0ffff4c9784e7e03b93fdc",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.slicing_representation_unique",
+      "statement": "∀ (P k : ℕ) (U : Set (Eucl P)), IsOpen U → ∀ (μ₁ μ₂ : Measure (Eucl P)) (v₁ v₂ : Eucl P → NVector (Eucl P) k), (∀ ω : TestFormOn U k, Integrable (fun x => v₁ x ((ω : DifferentialForm (Eucl P) k) x)) μ₁) → (∀ ω : TestFormOn U k, Integrable (fun x => v₂ x ((ω : DifferentialForm (Eucl P) k) x)) μ₂) → ∀ W : Set (Eucl P), IsOpen W → (∀ ω : TestFormOn U k, tsupport (ω : DifferentialForm (Eucl P) k) ⊆ W → ∫ x, v₁ x ((ω : DifferentialForm (Eucl P) k) x) ∂μ₁ = ∫ x, v₂ x ((ω : DifferentialForm (Eucl P) k) x) ∂μ₂) → ∀ A : Set (Eucl P), MeasurableSet A → ∀ ω : TestFormOn U k, tsupport (ω : DifferentialForm (Eucl P) k) ⊆ W → ∫ x in A, v₁ x ((ω : DifferentialForm (Eucl P) k) x) ∂μ₁ = ∫ x in A, v₂ x ((ω : DifferentialForm (Eucl P) k) x) ∂μ₂",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "4440362af3a2b5b4cc39d5daf64aff10e7f78ee5d14ff64c42f2ddeb2da7ca0d",
+  "git_delta": {
+    "base_commit": "93f3462dde9fe25fdf74219a3064c1d34e6b724d",
+    "candidate_commit": "d57bd3700c220d24cf66f12e852624be7dd975e4",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "lpf_simple_nvector_algebra",
+    "diff_sha256": "83f0172e692ad801cad06326b0398698f2ccfd9d557eea2b37dee0c682dc065b",
+    "source_sha256": "eef9d5252c04f22db687ea9d33024a86bbcf00fbffa02a4dad368f4a2617621e",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.lpf_simple_nvector_algebra",
+      "statement": "(∀ (P n : ℕ) (v : Fin n → Eucl P), ‖simpleNVector v‖ ^ 2 = (Matrix.of fun i j => inner ℝ (v i) (v j)).det) ∧ ∀ (P n : ℕ) (B : Matrix (Fin n) (Fin n) ℝ) (τ : Fin n → Eucl P), simpleNVector (fun i => ∑ j, B i j • τ j) = B.det • simpleNVector τ",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

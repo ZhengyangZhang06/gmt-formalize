@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "13a1f9befaac92c8ace6e8debcb5801dd106b752014f073d5c56a49cc9b889b6",
+  "git_delta": {
+    "base_commit": "cf556face01e9ac477ed0393778bbdc527e9722f",
+    "candidate_commit": "bc4ced0777075cca0b2e8f7beba5ba914fae595c",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "cmb_rb_abs_euclideanCovectorCoordinate_le",
+    "diff_sha256": "906a4fe6d50246af9db1f1c0f5ffb084fafff7619f35b2bbcf587d7381c571d9",
+    "source_sha256": "16963c91e35199a3c6a537d563c8484aed90f39d9309f2be97315e9d9a252f8e",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cmb_rb_abs_euclideanCovectorCoordinate_le",
+      "statement": "∀ (P n : ℕ) (α : Covector (Eucl P) n) (β : SimonMultiIndex n P), |euclideanCovectorCoordinate α β| ≤ covectorEuclideanNorm α",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

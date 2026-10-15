@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "f88a54e6520010e85ed216c7f4623441b9b1824f4de74ca54cff100c34519a34",
+  "git_delta": {
+    "base_commit": "8527dbe37a19b6262204b24dabb05a8436f22e0a",
+    "candidate_commit": "a008ba30dbd55ad9aac4bee8d2804d7eae8c5a57",
+    "target": "GMT/Ch06/Submission.lean",
+    "changed_files": [
+      "GMT/Ch06/Submission.lean"
+    ],
+    "diff_sha256": "67f671b925af9d1a364895574755a098e42285cc090b100a1d88565483411cb2",
+    "source_sha256": "2eb1c9a39cdbf30132bf594234df86ece9e0a2fc8a1226a173ad39a50dfa481f",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.deformation_telescope_limit",
+      "statement": "∀ (N k : ℕ) (A B : ℕ → GeometricCurrentOn (univ : Set (Eucl N)) k), (∀ ν ω, A (ν + 1) ω = A ν ω + B ν ω) → (∑' ν, (B ν).mass) < ∞ → ∃ A' : GeometricCurrentOn (univ : Set (Eucl N)) k, WeaklyConvergesOn A A' ∧ A'.mass ≤ (A 0).mass + ∑' ν, (B ν).mass ∧ (∀ (ν : ℕ) (Dν : GeometricCurrentOn (univ : Set (Eucl N)) k), (∀ ω, Dν ω = A' ω - A ν ω) → Dν.mass ≤ ∑' μ, (B (μ + ν)).mass) ∧ ∀ F : Set (Eucl N), IsClosed F → (∀ ν, (A ν).support ⊆ F) → A'.support ⊆ F",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

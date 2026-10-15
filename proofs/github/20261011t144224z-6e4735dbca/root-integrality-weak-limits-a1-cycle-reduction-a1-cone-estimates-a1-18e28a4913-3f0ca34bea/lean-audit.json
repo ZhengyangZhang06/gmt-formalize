@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "372612923ddda4fac5b2803d4dc53cb19aa917085041641240a1d31a505e8323",
+  "git_delta": {
+    "base_commit": "3fb6eed30a63af74d7ddfae0ee87b36ea57a4f28",
+    "candidate_commit": "9635524d1d0b18da24749c46e9d04460da7b0903",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "iwl_cr_cest_mass_le_of_forms",
+    "diff_sha256": "bfa4c9143cf3be9f92229f1b6075d96614b514427bb71ca10f8464875e7e94ef",
+    "source_sha256": "986ee17c5e7f5fb0d7191c5fd8cfdfba2f070e7cd654ef63f10347a3d6edd0bd",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.iwl_cr_cest_mass_le_of_forms",
+      "statement": "∀ (P n k : ℕ) (X : GeometricCurrentOn (univ : Set (Eucl P)) n) (C : GeometricCurrentOn (univ : Set (Eucl P)) k) (c R : ℝ), 0 ≤ c → 0 ≤ R → X.mass < ∞ → (∀ ω ∈ massAdmissibleOn (univ : Set (Eucl P)) k univ, ∀ δ : ℝ, 0 < δ → ∃ ψ : TestFormOn (univ : Set (Eucl P)) n, C ω = X ψ ∧ ∀ x, covectorEuclideanNorm ((ψ : DifferentialForm (Eucl P) n) x) ≤ c * (R + δ)) → C.mass ≤ ENNReal.ofReal (c * R) * X.mass",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

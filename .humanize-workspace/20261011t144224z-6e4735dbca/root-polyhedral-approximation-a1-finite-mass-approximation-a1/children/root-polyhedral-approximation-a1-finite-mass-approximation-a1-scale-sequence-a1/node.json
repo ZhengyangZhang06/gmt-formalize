@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.polyhedral_approximation-a1.finite_mass_approximation-a1.scale_sequence-a1",
+  "parent_id": "root.polyhedral_approximation-a1.finite_mass_approximation-a1",
+  "depth": 3,
+  "title": "Positive antitone null scales adapted to a given real sequence",
+  "statement": "Let a : ℕ → ℝ be an arbitrary real sequence. Then there is a sequence ρ : ℕ → ℝ such that ρ_k > 0 for every k ∈ ℕ, ρ is antitone (ρ_l ≤ ρ_k whenever k ≤ l), ρ_k → 0 as k → ∞, and ρ_k·a_k ≤ 1/(k+1) for every k ∈ ℕ.",
+  "lean_statement": "∀ a : ℕ → ℝ, ∃ ρ : ℕ → ℝ, (∀ k, 0 < ρ k) ∧ Antitone ρ ∧ Tendsto ρ atTop (𝓝 0) ∧ ∀ k, ρ k * a k ≤ 1 / ((k : ℝ) + 1)",
+  "lean_name": "polyhedral_approx_scale_seq",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-polyhedral-approximation-a1-finite-mass-approximation-a1-scale-sequence-a1-a1"
+}

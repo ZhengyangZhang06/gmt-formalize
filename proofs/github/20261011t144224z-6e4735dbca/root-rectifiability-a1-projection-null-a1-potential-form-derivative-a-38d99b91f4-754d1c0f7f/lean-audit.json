@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "1157f3dccffcc187c21398885c8f0430c332a50650c392d3ed8b0aadee990c7e",
+  "git_delta": {
+    "base_commit": "64c1fb77e7b2e01f8079af4cf39a4b93b90f757f",
+    "candidate_commit": "3ceb8b21a8d3961c1d9a4aad2075a7d209773632",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "rpn_pfd_wedge_cons_succAbove_sign",
+    "diff_sha256": "1626bb99de8841b08c71c79cfcbdeb14235b2bd3d9b0beca4b755706f2eeeb0d",
+    "source_sha256": "e942e115410488ac1c4f6808cfde30df0f1f219c4654fd6894333148a126b9cb",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.rpn_pfd_wedge_cons_succAbove_sign",
+      "statement": "∀ (P m : ℕ) (l : Fin (m + 1) → (Eucl P →L[ℝ] ℝ)) (j : Fin (m + 1)), wedgeCovectors (m + 1) (Fin.cons (l j) (fun k => l (j.succAbove k)) : Fin (m + 1) → (Eucl P →L[ℝ] ℝ)) = ((-1 : ℝ) ^ (j : ℕ)) • wedgeCovectors (m + 1) l ∧ ∀ i : Fin (m + 1), i ≠ j → wedgeCovectors (m + 1) (Fin.cons (l i) (fun k => l (j.succAbove k)) : Fin (m + 1) → (Eucl P →L[ℝ] ℝ)) = 0",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

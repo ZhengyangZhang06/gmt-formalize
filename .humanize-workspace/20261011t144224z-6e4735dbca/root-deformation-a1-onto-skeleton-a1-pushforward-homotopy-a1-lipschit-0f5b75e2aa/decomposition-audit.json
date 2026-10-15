@@ -1,0 +1,67 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "dph_lpf_cmp|cmp_core_estimate|affine_homotopy|iwl_sp_exists_compatible_testForm|br_la_testForm_covectorNorm_bounded",
+        "exists_contDiff_support_eq_eq_one_iff",
+        "exists_contDiff_support_eq_eq_one_iff|analyticOnNhd_compContinuousLinearMapCLM|theorem ContDiff.fderiv_right|bounded_above_of_compact_support|exists_cthickening_subset_open|theorem cthickening_subset_thickening|closure_thickening_subset_cthickening|theorem ContinuousLinearEquiv.contDiff|theorem contDiff_pi|theorem contDiff_apply",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/comparison_independent_audit_7o_q1qvv/Types.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/comparison_independent_audit_7o_q1qvv/Scoped.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/comparison_independent_audit_7o_q1qvv/Full.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Geometry/Manifold/PartitionOfUnity.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Analytic/CPolynomial.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Normed/Group/Bounded.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/ContDiff/Operations.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-deformation-a1-onto-skeleton-a1-pushforward-homotopy-a1-lipschit-0f5b75e2aa/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-deformation-a1-onto-skeleton-a1-pushforward-homotopy-a1-lipschit-0f5b75e2aa/decomposition-v1.json",
+        "/tmp/comparison_independent_audit_7o_q1qvv/Types.lean",
+        "/tmp/comparison_independent_audit_7o_q1qvv/Scoped.lean",
+        "/tmp/comparison_independent_audit_7o_q1qvv/Full.lean"
+      ],
+      "conclusion": "The split appropriately separates the uniform quantitative estimate and affine calculus facts from the selected parent's convergence argument. Searches found the required library facts and no declarations matching the proposed new names. Both new names are unreserved; all names are bare identifiers. The three reused declarations have identical frozen types and passed comparator records. The proposed dependency graph, including retained prerequisites, is acyclic. All five types independently elaborate as propositions before their declarations exist. Scoped checks prove the new children using only their declared dependencies and prove the exact parent from core_estimate and proper_transfer. Full assembly, including accepted dependency proofs, compiles without placeholders and uses only propext, Classical.choice and Quot.sound. Inline coordinate, derivative and scalar constructions have the intended types; no Matrix/IsUnit construction occurs. The binding digest was independently reproduced. proper_transfer is now accepted, which does not change its valid role as an existing parent dependency."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "compatible_form",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and exact type agree, including arbitrary V and A ⊆ U. Properness makes the relevant inverse-image intersection compact; the smooth cut-off constructs η, ζ and the required open N, with both compatibility and support inclusion justified. The supplied proof is complete and non-circular. Reuse preserves the accepted frozen type."
+    },
+    {
+      "key": "support_lemmas",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All three conjuncts match their prose and openness hypotheses. Derivative locality proves boundary support inclusion; the retained accepted vanishing lemma and zero-region arguments prove the weak-limit and linear-combination assertions. Its existing prerequisite is preserved, with no dependency cycle."
+    },
+    {
+      "key": "testform_bounded",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact type requires the stated positive global bound for arbitrary U. Continuity of the finite coefficient norm and inherited compact support give a uniform bound; adding one makes it positive. The proof is complete, and reuse preserves the accepted type."
+    },
+    {
+      "key": "affine_homotopy",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The coordinate identities prove both endpoint equalities without smoothness assumptions. Continuous linear equivalences and coordinate projections establish smoothness under precisely the two stated ContDiff hypotheses. The standalone type and supplied proof compile without dependencies or circular references."
+    },
+    {
+      "key": "core_estimate",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type matches the prose, retaining the parent's exact Prod and SH hypotheses and the HEq boundary-mass condition. Constants are chosen before the maps. Both degree cases correctly apply compatibility, E0/E1 and Aff; boundary properness and restriction of compatibility are explicitly justified. Dependencies are exactly the four declared children. Combined with proper_transfer and the supplied epsilon argument, its conclusion proves the selected frozen comparison theorem."
+    }
+  ],
+  "required_changes": []
+}

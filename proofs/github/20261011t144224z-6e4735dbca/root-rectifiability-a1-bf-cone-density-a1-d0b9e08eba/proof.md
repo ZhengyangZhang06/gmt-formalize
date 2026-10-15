@@ -1,0 +1,116 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.rectifiability-a1`
+- Child DAG node: `root.rectifiability-a1.bf_cone_density-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: P. Mattila, Geometry of Sets and Measures in Euclidean Spaces (Cambridge Univ. Press, 1995): Lemma 15.13 (a cone condition gives a Lipschitz graph), Lemma 15.14 (the conical density estimate) and Corollary 15.15. The statement is the form used by R. Hovila, E. Järvenpää, M. Järvenpää and F. Ledrappier, Besicovitch-Federer projection theorem and geodesic flows on Riemann surfaces, Geom. Dedicata 161 (2012), arXiv:1104.3453, Lemma 2.2 ('E_{1,δ}(λ) has measure zero'). Here the orthogonal projection Q_V is replaced by the linear map L_v; the proof uses only the linearity of L_v and its operator norm ‖L_v‖. Simon's book does not contain this lemma: it belongs to the proof of the Structure Theorem 3.6 of Ch. 3, which Simon cites without proof. The argument is therefore written out in full. Step 1 is the conical density estimate; its 'graph part' is the Lipschitz-graph criterion. Step 2 is the covering argument behind the lower bound for upper densities of Hausdorff measure (Mattila 6.2(1); Simon Ch. 1, 3.26(2)), in the uniform form needed here. Step 3 combines them.
+
+Notation: k := m + 1 and Hᵏ := μHE[k], an outer measure on ℝ^N. All inequalities below are for outer measures, so no measurability is needed. B(x,ρ) and B̄(x,ρ) are the open and closed balls, ω_k := Lᵏ(B(0,1)), and Z(a,ρ) := {x : |L_v(x − a)| < ρ} = L_v^{-1}(B(L_va,ρ)) is the cylinder around the fibre a + ker L_v. Note that X_v(a,r,s) ⊆ X_v(a,r,s′) for s ≤ s′, and that a ∉ X_v(a,r,s).
+
+1. Conical density estimate (Mattila 15.14). Claim: let B ⊆ E, s ∈ (0,1), δ′ > 0 and λ ≥ 0 satisfy Hᵏ(E ∩ X_v(a,r,s)) ≤ λ(rs)ᵏ for all a ∈ B and 0 < r ≤ δ′. Then Hᵏ(B ∩ B(x₀,δ′/6)) ≤ C₁λδ′ᵏ for every x₀ ∈ ℝ^N, where C₁ := 2(20/3)ᵏ(‖L_v‖ + 1)ᵏ.
+ Proof. Let F := B ∩ B(x₀,δ′/6), so diam F ≤ δ′/3. Write X_v(a,∞,s/4) := {x : |L_v(x − a)| < (s/4)|x − a|}. For a ∈ F let h(a) := sup{|b − a| : b ∈ F ∩ X_v(a,∞,s/4)}, with sup ∅ := 0, so 0 ≤ h(a) ≤ δ′/3. Let F₀ := {a ∈ F : h(a) = 0} and F₁ := F∖F₀.
+ (a) The graph part (Mattila 15.13). Let a, b ∈ F₀ be distinct. Then b ∉ X_v(a,∞,s/4), since otherwise h(a) ≥ |b − a| > 0; that is, |L_v(b − a)| ≥ (s/4)|b − a|. Hence L_v is injective on F₀, and g := (L_v|F₀)^{-1} : L_v(F₀) → ℝ^N is (4/s)-Lipschitz. Extend each of the N coordinates of g to a (4/s)-Lipschitz function on ℝᵏ (McShane; Mathlib LipschitzOnWith.extend_real). This gives a Lipschitz map G : ℝᵏ → ℝ^N with F₀ = g(L_v(F₀)) ⊆ G(ℝᵏ). By Simon Ch. 3, 1.1 (SimonGMT countablyRectifiable_range, CountablyRectifiable.mono), F₀ is countably k-rectifiable. Since F₀ ⊆ E and E is purely k-unrectifiable, Hᵏ(F₀) = 0.
+ (b) Two cones cover a cylinder. Let a ∈ F₁ and h := h(a) > 0. By the definition of the supremum choose b = b(a) ∈ F ∩ X_v(a,∞,s/4) with |b − a| > 3h/4; also |b − a| ≤ h. Put ρ(a) := sh/20.
+ We claim F ∩ Z(a,5ρ(a)) ⊆ X_v(a,2h,s) ∪ X_v(b,2h,s). Let c ∈ F with |L_v(c − a)| < 5ρ(a) = sh/4.
+ First, |c − a| ≤ h. Otherwise |L_v(c − a)| < sh/4 < (s/4)|c − a|, so c ∈ F ∩ X_v(a,∞,s/4) and hence |c − a| ≤ h(a) = h, a contradiction.
+ If |c − a| ≥ h/4, then |L_v(c − a)| < sh/4 ≤ s|c − a| and |c − a| ≤ h < 2h, so c ∈ X_v(a,2h,s).
+ If |c − a| < h/4, then |c − b| ≥ |b − a| − |c − a| > 3h/4 − h/4 = h/2 and |c − b| ≤ |c − a| + |a − b| < h/4 + h < 2h. Also |L_v(c − b)| ≤ |L_v(c − a)| + |L_v(a − b)| < sh/4 + (s/4)|a − b| ≤ sh/2 < s|c − b|. So c ∈ X_v(b,2h,s).
+ Since a, b ∈ F ⊆ B and 2h ≤ 2δ′/3 ≤ δ′, the hypothesis gives
+ Hᵏ(F ∩ Z(a,5ρ(a))) ≤ Hᵏ(E ∩ X_v(a,2h,s)) + Hᵏ(E ∩ X_v(b,2h,s)) ≤ 2λ(2hs)ᵏ = 2λ(40ρ(a))ᵏ.
+ (c) Covering. The open balls B(L_va,ρ(a)) ⊆ ℝᵏ (a ∈ F₁) have radii ≤ sδ′/60. Apply the Vitali covering lemma (Mathlib Vitali.exists_disjoint_subfamily_covering_enlargement with enlargement factor τ = 2). It gives a pairwise disjoint subfamily {B(L_va_i,ρ_i)} (ρ_i := ρ(a_i)) such that every ball B(L_va,ρ(a)) of the family meets some B(L_va_i,ρ_i) with ρ(a) ≤ 2ρ_i, hence B(L_va,ρ(a)) ⊆ B(L_va_i,5ρ_i). The subfamily is countable, since disjoint nonempty open sets in ℝᵏ are countably many. Consequently F₁ ⊆ ⋃_{a∈F₁}Z(a,ρ(a)) ⊆ ⋃_iZ(a_i,5ρ_i).
+ Since |L_va_i − L_vx₀| ≤ ‖L_v‖|a_i − x₀| ≤ ‖L_v‖δ′/6 and ρ_i ≤ sδ′/60 < δ′/6, each B(L_va_i,ρ_i) lies in B(L_vx₀,(‖L_v‖ + 1)δ′/6). By disjointness, Σ_iω_kρ_iᵏ ≤ ω_k((‖L_v‖ + 1)δ′/6)ᵏ.
+ (d) Conclusion. By countable subadditivity and (a)-(c), Hᵏ(F) ≤ Hᵏ(F₀) + Σ_iHᵏ(F ∩ Z(a_i,5ρ_i)) ≤ 2λ40ᵏΣ_iρ_iᵏ ≤ 2λ40ᵏ((‖L_v‖ + 1)/6)ᵏδ′ᵏ = C₁λδ′ᵏ. ∎
+
+2. Uniform density bounds force measure zero (Mattila 6.2(1)). By the definition of euclideanHausdorffMeasure, Hᵏ = c_k·μH[k] with a constant c_k ∈ (0,∞): μHE[k] = volume.addHaarScalarFactor μH[k] • μH[k]. Here μH[k](S) = sup_{ε>0}inf{Σ_j(diam C_j)ᵏ : S ⊆ ⋃_jC_j, diam C_j ≤ ε}, where only nonempty C_j count (Mathlib hausdorffMeasure_apply).
+ Claim: suppose B ⊆ ℝ^N, ρ₀ > 0 and 0 ≤ c₀ < c_k satisfy Hᵏ(B ∩ B̄(x,ρ)) ≤ c₀ρᵏ for all x ∈ B and 0 < ρ ≤ ρ₀. Then Hᵏ(B) = 0.
+ Proof. Fix x₁ ∈ B and let B′ := B ∩ B(x₁,ρ₀/2). Then Hᵏ(B′) ≤ Hᵏ(B ∩ B̄(x₁,ρ₀/2)) ≤ c₀(ρ₀/2)ᵏ < ∞, and B′ satisfies the same hypothesis.
+ Let 0 < ε ≤ ρ₀ and let (C_j) be a countable cover of B′ by sets of diameter ≤ ε, each meeting B′ (discard the others). Pick x_j ∈ C_j ∩ B′ and put d_j := diam C_j ≤ ρ₀. If d_j > 0, then C_j ⊆ B̄(x_j,d_j), so Hᵏ(B′ ∩ C_j) ≤ c₀d_jᵏ. If d_j = 0, then B′ ∩ C_j = {x_j} and Hᵏ({x_j}) = 0 because k ≥ 1. Hence Hᵏ(B′) ≤ Σ_jHᵏ(B′ ∩ C_j) ≤ c₀Σ_jd_jᵏ.
+ Taking the infimum over such covers and letting ε ↓ 0 gives Hᵏ(B′) ≤ c₀μH[k](B′) = (c₀/c_k)Hᵏ(B′). Since Hᵏ(B′) < ∞ and c₀ < c_k, Hᵏ(B′) = 0. Finally, B is covered by countably many balls B(x₁,ρ₀/2) with x₁ in a countable dense subset of B, so Hᵏ(B) = 0. ∎
+
+3. Proof of the statement. Put η₀ := c_k/(2C₁·24ᵏ) > 0. For a rational s′ ∈ (0,1) let B_{s′} := {a ∈ E : Hᵏ(E ∩ X_v(a,r,s′)) ≤ 2ᵏη₀(rs′)ᵏ for all r ∈ (0,δ)}.
+ (a) E₁ ⊆ ⋃_{s′∈ℚ∩(0,1)}B_{s′}. Let a ∈ E₁. Take η := η₀ and the corresponding s ∈ (0,1), and choose a rational s′ ∈ (s/2,s). For r ∈ (0,δ), X_v(a,r,s′) ⊆ X_v(a,r,s), so Hᵏ(E ∩ X_v(a,r,s′)) ≤ η₀(rs)ᵏ ≤ 2ᵏη₀(rs′)ᵏ. Thus a ∈ B_{s′}.
+ (b) Hᵏ(B_{s′}) = 0. Let x ∈ B_{s′} and 0 < ρ < δ/12. Apply step 1 with B := B_{s′} ⊆ E, s := s′, λ := 2ᵏη₀, δ′ := 12ρ < δ and x₀ := x; its hypothesis holds because 0 < r ≤ δ′ < δ. This gives Hᵏ(B_{s′} ∩ B̄(x,ρ)) ≤ Hᵏ(B_{s′} ∩ B(x,δ′/6)) ≤ C₁2ᵏη₀(12ρ)ᵏ = (c_k/2)ρᵏ, using B̄(x,ρ) ⊆ B(x,2ρ) = B(x,δ′/6). Step 2 with c₀ := c_k/2 and ρ₀ := δ/13 then gives Hᵏ(B_{s′}) = 0.
+ Hence Hᵏ(E₁) ≤ Σ_{s′}Hᵏ(B_{s′}) = 0. ∎
+
+## Key steps
+
+1. Lipschitz-graph criterion (Mattila 15.13): let F₀ be the points of F whose s/4-cone contains no other point of F. L_v is injective on F₀ with Lipschitz inverse, so F₀ is a countably k-rectifiable, hence Hᵏ-null, subset of E.
+2. Two-cone covering: for every other point a, the part of F in the cylinder Z(a,5ρ(a)) lies in X_v(a,2h,s) ∪ X_v(b(a),2h,s), so its measure is at most 2λ(40ρ(a))ᵏ.
+3. Vitali covering of the projected balls B(L_va,ρ(a)) in ℝᵏ gives Σρ_iᵏ ≤ ((‖L_v‖+1)δ′/6)ᵏ, hence Hᵏ(B ∩ B(x₀,δ′/6)) ≤ C₁λδ′ᵏ (Mattila 15.14).
+4. A uniform bound Hᵏ(B ∩ B̄(x,ρ)) ≤ c₀ρᵏ with c₀ below the Hausdorff normalization constant forces Hᵏ(B) = 0 (covering definition of Hᵏ).
+5. E₁ lies in countably many sets B_{s′} (s′ rational) with small cone ratios; the two previous steps make each B_{s′} null.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat local-references/197bdd4b88278494/manifest.json (mode local-project; project_commit d8d46c9587747dee0751a1f780fcafdba16a3886; mathlib_commit 25730c7c759d108ef87ab70af2342a196760f79d)`
+- `cmp local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean workspaces/gmt-ch06/GMT/Ch06/Contract.lean; cmp Contract.lean Submission.lean (all identical)`
+- `rg -n 'theorem exists_partition_approximatesLinearOn_of_hasFDerivWithinAt|theorem MeasurableSet.image_of_continuousOn_injOn|theorem measurePreserving_homeomorphUnitSphereProd|theorem ae_tendsto_average_norm_sub|theorem exists_disjoint_subfamily_covering_enlargement|theorem haarMeasure_unique|theorem addHaar_image_linearMap' local-references/197bdd4b88278494/mathlib/Mathlib`
+- `rg -n 'euclideanHausdorffMeasure_eq_volume|LipschitzOnWith.extend_real|contDiff_convolution_right|LipschitzWith.ae_differentiableAt|toSphere_apply_univ :|theorem ae_tendsto_measure_inter_div|theorem hausdorffMeasure_apply|measure_toMeasurable_inter|hausdorffMeasure_smul₀' local-references/197bdd4b88278494/mathlib/Mathlib`
+- `rg -c 'Besicovitch.Federer|purely unrectifiable|PurelyUnrectifiable|Mickle' local-references/197bdd4b88278494/mathlib/Mathlib (no match)`
+- `grep -n '^theorem\|^def' simongmt Chapter03/{Rectifiable,SubmanifoldCover}.lean, Chapter02/{AreaLipschitz,AreaCritical,Area,AreaBranches,Lipschitz,BV,WhitneyExtension}.lean, Chapter01/{DensityComparison,HausdorffDensityBounds,HausdorffContentDensity,Lusin,Densities,RadonPolarRepresentation,VectorFunctionalEnvelope}.lean, Chapter06/{Mass,FormsDuality,Currents}.lean`
+- `grep -n 'def massOn|def massAdmissibleOn|def covectorEuclideanNorm|abbrev SimonMultiIndex|def HasWeightedApproximateTangentSpaceAt|def PurelyUnrectifiable|def CountablyRectifiable' simongmt Chapter06/Mass.lean, Chapter06/FormsDuality.lean, Chapter03/Rectifiable.lean`
+- `sed -n chapter-02.txt 140,330 (Ch.2 1.5-1.8); chapter-03.txt 1,560 (Ch.3 §1 and §3); chapter-06.txt 560,720 and 2130,2300 (2.34-2.37, 8.1)`
+- `lake build GMT.Ch06.Submission (scratch /tmp/rect_a1_v2_check, frozen commit d8d46c9, pinned packages lake-packages-25730c7c)`
+- `lake env lean Scratch/V2_Names.lean and Scratch/V2_Names2.lean (#check and #print axioms of every cited Mathlib/SimonGMT declaration)`
+- `lake env lean Scratch/V2_Challenge.lean (12 child statements generated with verifier/gmt-compare.py contract_scope/child_modules; 0 errors)`
+- `lake env lean Scratch/Assembly.lean, Scratch/C4fromC3.lean, Scratch/C5Check.lean, Scratch/V2_Glue.lean (#print axioms)`
+- `python3 lean_name collision scan of dag.json and nodes/*/decomposition-v*.json (86 DAG names; no rectifiability_* or mickle_* collision)`
+- `python3 audit of nodes/root-rectifiability-a1/decomposition-v1.json and decomposition-audit-v1.json (accepted and rejected children, required changes)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/GMT/Ch06/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Function/Jacobian.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Constructions/Polish/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Constructions/HaarToSphere.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Covering/DensityTheorem.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Covering/Besicovitch.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Covering/Vitali.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/Haar/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/EqHaar.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/Rademacher.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/ContDiff/Convolution.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/MetricSpace/Lipschitz.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/SubmanifoldCover.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaLipschitz.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaCritical.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/Area.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaBranches.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/Lipschitz.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/BV.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/WhitneyExtension.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/DensityComparison.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/HausdorffDensityBounds.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/HausdorffContentDensity.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/Lusin.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/Densities.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/RadonPolarRepresentation.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/VectorFunctionalEnvelope.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/FormsDuality.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-02.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-03.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-rectifiability-a1/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-rectifiability-a1/decomposition-audit-v1.json`
+- `/tmp/rect_a1_v2_check/Scratch/V2_Challenge.lean`
+- `/tmp/rect_a1_v2_check/Scratch/V2_Names.lean`
+- `/tmp/rect_a1_v2_check/Scratch/V2_Names2.lean`
+- `/tmp/rect_a1_v2_check/Scratch/V2_Glue.lean`
+- `/tmp/rect_a1_v2_check/Scratch/Assembly.lean`
+- `/tmp/rect_a1_v2_check/Scratch/C4fromC3.lean`
+- `/tmp/rect_a1_v2_check/Scratch/C5Check.lean`
+
+The snapshot (project d8d46c95, Mathlib 25730c7c) contains the frozen Ch06 contract; it is byte-identical to the workspace Contract and Submission. The pinned Mathlib has no Besicovitch-Federer, purely-unrectifiable or Mickle-Radó result (rg: no match), and SimonGMT has neither BV compactness (Chapter02/BV.lean proves only closure statements) nor the rectifiable-to-C¹ cover (SubmanifoldCover.lean proves only the converse). This confirms the three gaps the v1 audit identified. The pinned libraries do contain every ingredient that the rewritten proofs cite. Mathlib: exists_partition_approximatesLinearOn_of_hasFDerivWithinAt (Jacobian.lean:255), MeasurableSet.image_of_continuousOn_injOn (Polish/Basic.lean:821), LipschitzWith.ae_differentiableAt (Rademacher.lean:385), Measure.measurePreserving_homeomorphUnitSphereProd and toSphere_apply_univ (HaarToSphere.lean), IsUnifLocDoublingMeasure.ae_tendsto_average_norm_sub and ae_tendsto_measure_inter_div (DensityTheorem.lean), Besicovitch.ae_tendsto_measure_inter_div, Vitali.exists_disjoint_subfamily_covering_enlargement, Measure.haarMeasure_unique, Measure.addHaar_image_linearMap, hausdorffMeasure_apply, Measure.hausdorffMeasure_smul₀, InnerProductSpace.euclideanHausdorffMeasure_eq_volume, LipschitzOnWith.extend_real, HasCompactSupport.contDiff_convolution_right and hasFDerivAt_convolution_right. SimonGMT: weighted_area_formula_lipschitz_injOn, area_image_criticalSet_eq_zero, linear_area_formula, euclideanHausdorffMeasure_image_le_of_lipschitzOn, simon_theorem_3_3, simon_theorem_3_6, IsBorelRegularOuterMeasure.simon_theorem_1_17, measurable_rectifiable_purelyUnrectifiable_decomposition, countablyRectifiable_range, simon_theorem_4_14_caratheodory and simon_theorem_4_14_positive_envelope. #print axioms gives [propext, Classical.choice, Quot.sound] for all of them. In the scratch build of the frozen project, all 12 child statements elaborate in the comparator's exact child scope (0 errors). Re-run with standard axioms only: the parent assembly from mass_measure_representation, mass_measure_rectifiable and orientation, the C4-from-C3 reduction, the C5 proof, and the glue lemmas v2_glue_rows, v2_glue_volume and v2_glue_infinite_density. The product-measure instance on Fin (m+1) → Eucl N was confirmed by rfl. No proposed lean_name collides with the 86 names in dag.json. These checks certify the statements, the assembly, the glue and the library inputs, not the new analytic proofs; three independent referees reviewed those (all ACCEPT after the minor fixes, which were applied).

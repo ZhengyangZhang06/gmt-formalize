@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "2e2cb6307f087336655d01fd754637fc6491ad8852198edc65c530ebb2ef3ee3",
+  "git_delta": {
+    "base_commit": "510e70d341aabe3d8575c6e2f606574d90537035",
+    "candidate_commit": "7939be729e4251ddf8b268fc42ce06ad04b1a75a",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "deformation_dilation_im_tauAction",
+    "diff_sha256": "fe5823a627b7ac7dcc0ebc6ed7ac5b1182cdd8fe6ea011bd07d69174da1a5540",
+    "source_sha256": "7097381c6b7aac2b00bc49e45df8b40b35dc12eedb366cc08ad143022321f799",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.deformation_dilation_im_tauAction",
+      "statement": "∀ (N k : ℕ) (ρ : ℝ) (M : Set (Eucl N)) (θ : Eucl N → ℝ) (ξ : Eucl N → NVector (Eucl N) k) (ω : DifferentialForm (Eucl N) k), 0 < ρ → MeasurableEmbedding (fun x : Eucl N => ρ • x) → MeasurePreserving (fun x : Eucl N => ρ • x) (ENNReal.ofReal (ρ ^ k) • (μHE[k] : Measure (Eucl N))) (μHE[k] : Measure (Eucl N)) → tauAction k M θ ξ (fun x : Eucl N => ρ ^ k • ω (ρ • x)) = tauAction k ((fun x : Eucl N => ρ • x) '' M) (fun y : Eucl N => θ (ρ⁻¹ • y)) (fun y : Eucl N => ξ (ρ⁻¹ • y)) ω",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

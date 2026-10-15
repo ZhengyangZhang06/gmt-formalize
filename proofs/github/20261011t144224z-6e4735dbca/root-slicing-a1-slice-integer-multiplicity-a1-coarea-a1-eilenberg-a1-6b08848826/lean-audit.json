@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "7ea5a3350f0c4852f3ef253fd12309fc089435d50ba10be24b8a4b26e58905e0",
+  "git_delta": {
+    "base_commit": "c11bba9972768626c0b5eabb9a39394329f358eb",
+    "candidate_commit": "bda07ad440784761b447efa58410b071a9797ee5",
+    "target": "GMT/Ch06/Submission.lean",
+    "changed_files": [
+      "GMT/Ch06/Submission.lean"
+    ],
+    "diff_sha256": "ef3851477964e776fae2526d7a7d2ccafc1f7abf0f1e4a66c31776565c021947",
+    "source_sha256": "141142d66133cfc50f491500b9614b1d978e53e09c346961decc3aa6b280c768",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.slicing_im_coarea_eilenberg",
+      "statement": "∀ m : ℕ, ∃ C : ℝ≥0, ∀ (P : ℕ) (f : Eucl P → ℝ) (L : ℝ≥0) (A : Set (Eucl P)), LipschitzOnWith L f A → ∃ φ : ℝ → ℝ≥0∞, Measurable φ ∧ (∀ t : ℝ, (μHE[m] : Measure (Eucl P)) (A ∩ f ⁻¹' {t}) ≤ φ t) ∧ ∫⁻ t, φ t ≤ (C : ℝ≥0∞) * (L : ℝ≥0∞) * (μHE[m + 1] : Measure (Eucl P)) A",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

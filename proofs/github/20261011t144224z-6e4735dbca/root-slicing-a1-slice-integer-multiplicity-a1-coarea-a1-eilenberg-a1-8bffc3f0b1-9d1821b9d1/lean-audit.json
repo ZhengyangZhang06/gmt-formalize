@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "a271428b286f54b79cbfd1e8148a1b32dfd55521897443b1f20dcdd399d06843",
+  "git_delta": {
+    "base_commit": "fdabd75f7a18974ef19474f309d11ccd4a04b5b8",
+    "candidate_commit": "c0d786c5e4b06aca6e343432977c859920f0c9a5",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "slicing_im_coarea_eil_cover_majorant",
+    "diff_sha256": "ef886bb8e37be1394be17c8862ed62f6e323c862478d578f6f8394d20d8c7ce7",
+    "source_sha256": "c363e10c6144e08a797e340a51e6c3b6c4643c9c93016b09184b3a86693c0dbd",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.slicing_im_coarea_eil_cover_majorant",
+      "statement": "∀ (X : Type) [EMetricSpace X] (m : ℕ) (f : X → ℝ) (L : ℝ≥0) (A : Set X) (S : ℕ → Set X), LipschitzOnWith L f A → (∀ i, S i ⊆ A) → ∃ ψ : ℝ → ℝ≥0∞, Measurable ψ ∧ (∀ t : ℝ, ∑' i, ⨆ (_ : (S i ∩ (A ∩ f ⁻¹' {t})).Nonempty), ediam (S i ∩ (A ∩ f ⁻¹' {t})) ^ (m : ℝ) ≤ ψ t) ∧ ∫⁻ t, ψ t ≤ 2 * (L : ℝ≥0∞) * ∑' i, ⨆ (_ : (S i).Nonempty), ediam (S i) ^ ((m + 1 : ℕ) : ℝ)",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

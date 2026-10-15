@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "6e628acd35d9f05c33cb56e081dafe146413cc548e9ea20520e53e8b74922232",
+  "git_delta": {
+    "base_commit": "df43cd1364f40d98b9fc3b5deb98a2bb5820947a",
+    "candidate_commit": "908c000bd33e68642b5749d4e210965ba947b37d",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "slicing_im_tg_cg_borel_transfer",
+    "diff_sha256": "4f61dc27cdb422d100b891127b477223fc564ceb7363555a5949716be07e0100",
+    "source_sha256": "38a365a133f68017706a50d4aaa148a724d30c0f8cc108d42c9ebdea42828b41",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.slicing_im_tg_cg_borel_transfer",
+      "statement": "∀ (n P Q : ℕ) (Φ : Eucl n → Eucl P) (D : Set (Eucl n)) (γ : Eucl n → Eucl Q), MeasurableSet D → ContinuousOn Φ D → InjOn Φ D → Measurable γ → ∃ g : Eucl P → Eucl Q, Measurable g ∧ (∀ w ∈ D, g (Φ w) = γ w) ∧ ∀ y, y ∉ Φ '' D → g y = 0",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

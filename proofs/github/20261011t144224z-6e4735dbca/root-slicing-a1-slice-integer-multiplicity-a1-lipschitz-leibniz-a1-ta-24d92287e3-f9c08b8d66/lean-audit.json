@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "c418981e25eb6416b4acd87fc0f53080b015cda06b09d9af24f931bcd388e987",
+  "git_delta": {
+    "base_commit": "b1b375b0d86c4b5b9dd38bfbc664c618fee3d86b",
+    "candidate_commit": "b66ff150c0b526a1e83196023f83a6538539c6c3",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "slicing_im_ll_twl_cie_weighted_transfer",
+    "diff_sha256": "244a2d3aed915561712d179dac650a760fead1e708ae2a46ae6214126f7f80b3",
+    "source_sha256": "19a8d655f847b5dee4e8e93c2792ebca6f9d097e5efaa8fe0118618ac97445ab",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.slicing_im_ll_twl_cie_weighted_transfer",
+      "statement": "∀ (X Y E : Type) [MeasurableSpace X] [MeasurableSpace Y] [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E] (μ : Measure X) (ν : Measure Y) (Φ : X → Y) (J : X → ℝ) (F : Y → E), AEMeasurable Φ μ → AEMeasurable J μ → (∀ x, 0 ≤ J x) → (∀ g : Y → ℝ≥0∞, Measurable g → ∫⁻ y, g y ∂ν = ∫⁻ x, g (Φ x) * ENNReal.ofReal (J x) ∂μ) → Integrable F ν → Integrable (fun x => J x • F (Φ x)) μ ∧ ∫ y, F y ∂ν = ∫ x, J x • F (Φ x) ∂μ",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

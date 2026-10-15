@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "bf6973e15a5b921850e536612eb4d6d1d5386ae862e21c8d37fbc6ad7451907d",
+  "git_delta": {
+    "base_commit": "7b19010629f37b5502f7e27a04540212ef7b0bcf",
+    "candidate_commit": "96e830881dafe74af53547d1e5de4de197719c25",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "iwl_weighted_tangent_locality",
+    "diff_sha256": "a71f42220f33a61d66b14df4a905cea7e90ddb619c27e230e5777a6301908e8f",
+    "source_sha256": "f44bc866b1041ea4cf7dbb130c8409430f54f52d53e897d82290ddf759473080",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.iwl_weighted_tangent_locality",
+      "statement": "∀ (P n : ℕ) (M M' : Set (Eucl P)) (θ θ' : Eucl P → ℝ) (x : Eucl P), NullMeasurableSet M (μHE[n] : Measure (Eucl P)) → NullMeasurableSet M' (μHE[n] : Measure (Eucl P)) → θ x = θ' x → (∃ ρ : ℝ, 0 < ρ ∧ IntegrableOn θ (M ∩ closedBall x ρ) (μHE[n] : Measure (Eucl P)) ∧ IntegrableOn θ' (M' ∩ closedBall x ρ) (μHE[n] : Measure (Eucl P))) → (∀ R : ℝ, 0 < R → Tendsto (fun r : ℝ => ENNReal.ofReal ((r ^ n)⁻¹) * ∫⁻ z in closedBall x (R * r), ‖M.indicator θ z - M'.indicator θ' z‖ₑ ∂(μHE[n] : Measure (Eucl P))) (𝓝[>] 0) (𝓝 0)) → ∀ Q : Submodule ℝ (Eucl P), HasWeightedApproximateTangentSpaceAt n M θ x Q ↔ HasWeightedApproximateTangentSpaceAt n M' θ' x Q",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

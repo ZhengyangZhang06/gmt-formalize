@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.integrality_weak_limits-a1.integer_density-a1.rescale-a1.triple_image-a1",
+  "parent_id": "root.integrality_weak_limits-a1.integer_density-a1.rescale-a1",
+  "depth": 4,
+  "title": "The image of a rectifiable triple under the dilation η_{x,r} is a rectifiable triple",
+  "statement": "Let P, n ∈ ℕ, M ⊆ ℝ^P, θ : ℝ^P → ℝ, ξ : ℝ^P → Λ_n(ℝ^P) (NVector), x ∈ ℝ^P and r > 0. If (M, θ, ξ) is a rectifiable triple in ℝ^P (IsRectifiableTriple univ n M θ ξ), then so is (η(M), θ′, ξ′) with η(y) = r⁻¹(y − x), θ′(z) = θ(x + r z), ξ′(z) = ξ(x + r z).",
+  "lean_statement": "∀ (P n : ℕ) (M : Set (Eucl P)) (θ : Eucl P → ℝ) (ξ : Eucl P → NVector (Eucl P) n) (x : Eucl P) (r : ℝ), 0 < r → IsRectifiableTriple (univ : Set (Eucl P)) n M θ ξ → IsRectifiableTriple (univ : Set (Eucl P)) n ((fun y => r⁻¹ • (y - x)) '' M) (fun z => θ (x + r • z)) (fun z => ξ (x + r • z))",
+  "lean_name": "ind_rs_rectifiableTriple_dilation",
+  "depends_on": [
+    "root.integrality_weak_limits-a1.integer_density-a1.rescale-a1.dilation_measure-a1",
+    "root.integrality_weak_limits-a1.integer_density-a1.rescale-a1.weighted_tangent-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.integrality_weak_limits-a1.integer_density-a1.rescale-a1.dilation_measure-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.integrality_weak_limits-a1.integer_density-a1.rescale-a1.weighted_tangent-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-integrality-weak-limits-a1-integer-density-a1-rescale-a1-triple-image-a1-a1"
+}

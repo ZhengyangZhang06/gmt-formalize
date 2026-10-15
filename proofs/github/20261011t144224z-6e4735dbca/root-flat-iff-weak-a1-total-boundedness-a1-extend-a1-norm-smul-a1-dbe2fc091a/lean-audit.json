@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "c683799da759a56177f62b7382d562b1d7b7228da8f67d7e9246f8f86f5fa9e7",
+  "git_delta": {
+    "base_commit": "91f6be301231a7dd1e704ffa98958f26390e9dd5",
+    "candidate_commit": "47d3d707ce2549340faa5348399ab1f244e0be84",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "fiw_tb_ext_covectorNorm_smul",
+    "diff_sha256": "8dceb5dbcfa7cfacd520abe5921b0ea2348d06cc00ada9b698e889dcd405a58b",
+    "source_sha256": "12374b4fa63db87f6bb943ddc4ffbf57a438ee219b247f0ef0f183455f17f274",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.fiw_tb_ext_covectorNorm_smul",
+      "statement": "∀ (P q : ℕ) (c : ℝ) (α : Covector (Eucl P) q), covectorEuclideanNorm (c • α) = |c| * covectorEuclideanNorm α",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.flat_iff_weak-a1.im_series-a1.series_current-a1",
+  "parent_id": "root.flat_iff_weak-a1.im_series-a1",
+  "depth": 3,
+  "title": "An integer series of currents with locally summable masses defines a current with the mass bound",
+  "statement": "Let P, n ∈ ℕ, U ⊆ ℝ^P open, T_r ∈ D_n(U) (r ∈ ℕ) arbitrary currents (GeometricCurrentOn U n, not necessarily integer multiplicity) and c_r ∈ ℤ such that Σ'_r |c_r|·M_W(T_r) < ∞ in [0, ∞] for every open W ⊂⊂ U (CompactlyContainedOpen W U). Then there is S ∈ D_n(U) such that for every ω ∈ D^n(U) the series Σ_r c_r T_r(ω) has (unconditional) sum S(ω), i.e. HasSum (r ↦ c_r T_r(ω)) (S(ω)), and M_W(S) ≤ Σ'_r |c_r|·M_W(T_r) for every set W ⊆ ℝ^P.",
+  "lean_statement": "∀ (P n : ℕ) (U : Set (Eucl P)), IsOpen U → ∀ (T : ℕ → GeometricCurrentOn U n) (c : ℕ → ℤ), (∀ W, CompactlyContainedOpen W U → (∑' r, ((c r).natAbs : ℝ≥0∞) * (T r).massOn W) < ∞) → ∃ S : GeometricCurrentOn U n, (∀ ω, HasSum (fun r => (c r : ℝ) * T r ω) (S ω)) ∧ ∀ W, S.massOn W ≤ ∑' r, ((c r).natAbs : ℝ≥0∞) * (T r).massOn W",
+  "lean_name": "fiw_ims_series_current",
+  "depends_on": [
+    "root.flat_iff_weak-a1.im_series-a1.mass_bound-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.flat_iff_weak-a1.im_series-a1.mass_bound-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-flat-iff-weak-a1-im-series-a1-series-current-a1-a1"
+}

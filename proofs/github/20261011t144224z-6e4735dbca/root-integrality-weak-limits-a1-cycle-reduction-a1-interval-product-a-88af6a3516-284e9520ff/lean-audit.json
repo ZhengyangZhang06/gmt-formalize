@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "3ad19e7f0b24c3dcce4257769db3bf365a0e1107a1cabb54fa01e47ff9a02c90",
+  "git_delta": {
+    "base_commit": "138d01ccb96c036d96422445a576be827eb71bd4",
+    "candidate_commit": "29efe5550b5b803bc16ca631badcef265f1c514e",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "iwl_cr_ip_pt_cylinder_countablyRectifiable",
+    "diff_sha256": "c7366dff7d87ae5649d5d162f65c4357f0a38d2b6e536fcde9f9500e7e66041d",
+    "source_sha256": "039b9480e93563132c806070cb1fe53bf9993b464d69f3c0ae917f4219f3366d",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.iwl_cr_ip_pt_cylinder_countablyRectifiable",
+      "statement": "∀ (P m : ℕ), (∀ N : Set (Eucl P), (μHE[m] : Measure (Eucl P)) N = 0 → (μHE[m + 1] : Measure (Eucl (P + 1))) {y | (EuclideanSpace.equiv (Fin P) ℝ).symm (Fin.tail (EuclideanSpace.equiv (Fin (P + 1)) ℝ y)) ∈ N} = 0) → ∀ M : Set (Eucl P), CountablyRectifiable m M → CountablyRectifiable (m + 1) {y : Eucl (P + 1) | (EuclideanSpace.equiv (Fin P) ℝ).symm (Fin.tail (EuclideanSpace.equiv (Fin (P + 1)) ℝ y)) ∈ M}",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

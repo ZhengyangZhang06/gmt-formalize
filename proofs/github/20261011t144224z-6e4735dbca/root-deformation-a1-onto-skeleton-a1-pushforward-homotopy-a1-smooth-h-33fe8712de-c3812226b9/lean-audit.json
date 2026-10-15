@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "dbb8d20f3019ef3c637bec27cc2b88d5d2777f0b4fef8c55f96a40e59ad46694",
+  "git_delta": {
+    "base_commit": "d5ea77ff5d55777b2b3b26b3d818d56115eedf53",
+    "candidate_commit": "12c5eb5f57cb9027d80d5385cfd87974d6c9bed1",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "dph_sh_apply_eq_of_eqOn_nhds_cyl",
+    "diff_sha256": "7299cb7d76c13d388e98ed258dea39c8ace2a44d6568ff15a3a0de9a576c1334",
+    "source_sha256": "ded3baea2f50997acb2737da19f67d58d2cf29a7513e55345191ef41c6220494",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dph_sh_apply_eq_of_eqOn_nhds_cyl",
+      "statement": "∀ (m q : ℕ) (X : GeometricCurrentOn (univ : Set (Eucl m)) q) (Z : GeometricCurrentOn (univ : Set (Eucl (m + 1))) (q + 1)), (∀ (η : TestFormOn (univ : Set (Eucl (m + 1))) (q + 1)) (φ : ℝ → TestFormOn (univ : Set (Eucl m)) q), (∀ s ∈ Icc (0 : ℝ) 1, ∀ (x : Eucl m) (v : Fin q → Eucl m), (φ s : DifferentialForm (Eucl m) q) x v = (η : DifferentialForm (Eucl (m + 1)) (q + 1)) ((EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm (Fin.cons s (EuclideanSpace.equiv (Fin m) ℝ x))) (Fin.cons (EuclideanSpace.single 0 1) fun i => (EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm (Fin.cons 0 (EuclideanSpace.equiv (Fin m) ℝ (v i))))) → Z η = ∫ s in (0 : ℝ)..1, X (φ s)) → ∀ (η η' : TestFormOn (univ : Set (Eucl (m + 1))) (q + 1)) (N : Set (Eucl (m + 1))), IsOpen N → {y : Eucl (m + 1) | EuclideanSpace.equiv (Fin (m + 1)) ℝ y 0 ∈ Icc (0 : ℝ) 1 ∧ (EuclideanSpace.equiv (Fin m) ℝ).symm (Fin.tail (EuclideanSpace.equiv (Fin (m + 1)) ℝ y)) ∈ X.support} ⊆ N → (∀ y ∈ N, (η : DifferentialForm (Eucl (m + 1)) (q + 1)) y = (η' : DifferentialForm (Eucl (m + 1)) (q + 1)) y) → Z η = Z η'",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

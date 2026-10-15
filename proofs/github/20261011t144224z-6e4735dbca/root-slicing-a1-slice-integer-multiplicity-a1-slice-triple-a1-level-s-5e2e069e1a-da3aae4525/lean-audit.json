@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "6832669f6f020d002e2a63bf0454f0810a4a84907cbd91d86bddc4115c2f2bf0",
+  "git_delta": {
+    "base_commit": "1ef2ac32b003737dba12b4435597d8c41e9d7699",
+    "candidate_commit": "45ba0d8e0ccd12ecd200797b6fd3881134c9197c",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "slicing_im_st_lsc_local_graph",
+    "diff_sha256": "e692964356e4b9ef7b477e3c9876af8739463e847ea91cecb7643080e70d7f0a",
+    "source_sha256": "c51686bf199bf5bdb681fcf48db00190ede9d8a9a9f3adb84e2a0c3f13720367",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.slicing_im_st_lsc_local_graph",
+      "statement": "∀ (m : ℕ) (h : Eucl (m + 1) → ℝ) (U : Set (Eucl (m + 1))) (w₀ : Eucl (m + 1)), ContDiff ℝ 1 h → IsOpen U → w₀ ∈ U → fderiv ℝ h w₀ ≠ 0 → ∃ (ψ : Eucl m → Eucl (m + 1)) (r : ℝ) (W : Set (Eucl (m + 1))), ContDiff ℝ 1 ψ ∧ 0 < r ∧ IsOpen W ∧ w₀ ∈ W ∧ (∀ v v' : Eucl m, ‖v - v'‖ ≤ ‖ψ v - ψ v'‖) ∧ (∀ v ∈ ball (0 : Eucl m) r, ψ v ∈ U ∧ h (ψ v) = h w₀ ∧ fderiv ℝ h (ψ v) ≠ 0) ∧ ∀ w ∈ W, h w = h w₀ → ∃ v ∈ ball (0 : Eucl m) r, ψ v = w",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "b789500ff0318430ce5b1376b95c229b6f33a402f66f4fafcc9eb2ff15725f37",
+  "git_delta": {
+    "base_commit": "35575cb8367bb2d5cfc467f609a07966b924b20c",
+    "candidate_commit": "2e7a66f237aa2f84e43e273f39c40d04770484f9",
+    "target": "GMT/Ch06/Submission.lean",
+    "changed_files": [
+      "GMT/Ch06/Submission.lean"
+    ],
+    "diff_sha256": "4f6c96b94d17398f36e33584ae0c6108dd81750e27cd0bc4af0357f3496b9a8f",
+    "source_sha256": "05f968c5ee09626c7b88aeb120af18e8e29f7f7fb35758aea0dca832ac842849",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.isoperimetric_theorem",
+      "statement": "IsoperimetricTheorem",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

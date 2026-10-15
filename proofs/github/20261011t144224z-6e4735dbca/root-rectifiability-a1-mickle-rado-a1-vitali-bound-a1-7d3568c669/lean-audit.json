@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "64737ae69453161e8c050bbe3ac5f9b40ab87e5c4801b3abee6669b1e6eb5713",
+  "git_delta": {
+    "base_commit": "fa6a180514582c612267b20322541440d54613c3",
+    "candidate_commit": "5ffa2b8672c50cfa9760324579fcf09c6f36ecdc",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "rectifiability_mickle_rado_vitali_bound",
+    "diff_sha256": "dd87e6efb5a4c69f981b9c896798cc6b70dd5fff88f952c4c06647497786d3c0",
+    "source_sha256": "4db753c7a9906d7364a63d6cb77f92e6ae6ce2e000fdfa4c0a8f996a2767fc25",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.rectifiability_mickle_rado_vitali_bound",
+      "statement": "∀ (m : ℕ) (ψ : OuterMeasure (Eucl (m + 1))) (K : Set (Eucl (m + 1))) (C : ℝ≥0∞) (r : ℝ), IsClosed K → ψ K = 0 → (∀ z ∈ K, ∀ τ ∈ Ioo (0 : ℝ) r, ψ (ball z τ) ≤ C * ENNReal.ofReal (τ ^ (m + 1))) → ∀ c₀ ∈ K, ∀ t : ℝ, 0 < t → 6 * t ≤ r → ψ (ball c₀ t) * (volume : Measure (Eucl (m + 1))) (ball 0 1) ≤ C * 6 ^ (m + 1) * (volume : Measure (Eucl (m + 1))) (ball c₀ (2 * t) \\ K)",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

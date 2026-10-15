@@ -1,0 +1,104 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "fiw_tb_|theorem .*IsIntegerMultiplicity|theorem .*IsLatticeChain",
+        "def (CountablyRectifiable|blowUpMap|HasWeightedApproximateTangentSpaceAt)|theorem CountablyRectifiable.mono|countablyRectifiable_of_measure_zero",
+        "exists_nnreal_pos_mul_lt|exists_isCompact_diff_lt|exists_isOpen_diff_lt",
+        "exteriorDerivative_apply|extDeriv_apply",
+        "python3 run_check.py AuditTypes.lean",
+        "python3 run_check.py Assembly.lean",
+        "python3 run_check.py FiniteNet.lean",
+        "python3 run_check.py AcceptedVanish.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-flat-iff-weak-a1-total-boundedness-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-flat-iff-weak-a1-total-boundedness-a1/decomposition-v5.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/FormsDuality.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Geometry/Manifold/PartitionOfUnity.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt",
+        "/tmp/fiw-tb-independent-audit-ecrqarpg/AuditTypes.lean",
+        "/tmp/fiw-tb-independent-audit-ecrqarpg/Assembly.lean",
+        "/tmp/fiw-tb-independent-audit-ecrqarpg/FiniteNet.lean",
+        "/tmp/fiw-tb-independent-audit-ecrqarpg/AcceptedVanish.lean",
+        "/tmp/fiw-tb-independent-audit-ecrqarpg/reuse-evidence.json"
+      ],
+      "conclusion": "The split is appropriate for the selected total-boundedness theorem. The pinned definitions support the domain, mass, lattice and tangent-space arguments; the project search found no existing fiw_tb declarations or matching integer-multiplicity/lattice-chain theorem implementations. All ten exact propositions independently elaborated in the comparator's frozen scope without implemented children. The supplied finite-net derivation and exact selected-parent assembly were inspected and independently recompiled, each using only propext, Classical.choice and Quot.sound. MF and LC exactly match the authorized dependency contracts; their dependencies and the proposed child graph are acyclic. All names are bare identifiers, with no collisions in the latest 255-node DAG or other branches' decomposition proposals. The accepted vanishing theorem has an identical frozen type and its proof recompiled with only permitted axioms. Original comparator evidence for all twelve optional reuse pointers uses identical frozen contracts and package manifests and passes the permitted-axiom checks. The analytic proofs were separately reviewed step by step; compilation of their types is not being treated as verification of their implementations. The parent assembly covers B = 0 and ε = ∞. No matrix-unit construction or other incorrect inline instance selection occurs."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "vanish_off_support",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and exact type agree, including arbitrary U. Compactness and disjointness place the test support inside finitely many zero-region neighborhoods; the subordinate partition and linearity prove vanishing. No openness hypothesis on U is needed. The optional accepted proof has the identical type."
+    },
+    {
+      "key": "support_null",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "MF is explicitly assumed with the correct frozen type. Vanishing gives zero mass on the open set U ∩ zeroRegion(T); MF, local integrability on a compact exhaustion, and positivity of θ then give the asserted Hausdorff-null carrier difference. The dependency is correctly directed."
+    },
+    {
+      "key": "restrict_im",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The statement correctly requires only W to be open. Inclusion preserves admissibility, proving the mass bound. The proof verifies the restricted triple, proves tangent locality through eventual equality of blow-up integrals, and establishes representation using vanishing outside W."
+    },
+    {
+      "key": "extend",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The cutoff construction proves continuity using precisely the assumed finite mass of X. Restriction and boundary identities establish both mass bounds without assuming finite boundary mass. Support-null removal and preservation of null sets under blow-ups prove both conditional integrality conclusions without circular reliance."
+    },
+    {
+      "key": "lattice_chain_coeff",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Coordinate covectors eliminate other directions, while geometric separation eliminates other parallel faces. Thus the isolated evaluation requires no unproved summability assumption. Positive bumps give interior support, closedness on univ gives the whole face, and shrinking-face cutoffs yield the exact coefficient mass bound."
+    },
+    {
+      "key": "lattice_coeff_finite",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Each face contains its lattice vertex, so boundedness and positive scale give finitely many possible indices. The integer coefficient bound gives finitely many values, and coefficients vanish outside those indices. Restriction is injective, proving finiteness for every stated n, N and real A."
+    },
+    {
+      "key": "translation_estimate",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The divergence-form calculation matches the pinned exterior-derivative normalization and coefficient norm. FTC, Fubini and boundary mass give the weak estimate; regularity and smooth cutoffs recover the full L¹ norm. Zero translation and infinite boundary mass are handled explicitly, and no unstated integrality assumption is used."
+    },
+    {
+      "key": "top_dim_approx",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof supplies the measurable integer density, median estimates, current continuity, lattice representation, rectifiable triple and LC application. Summing the median errors and applying translation_estimate proves the stated uniform constant. It also proves the stronger noncompact-support contract: global L¹ control and local finiteness suffice."
+    },
+    {
+      "key": "finite_net",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The three dimension cases exhaust the contract. The five declared dependencies supply extension, approximation, coefficient finiteness and restriction with exactly the required bounds. Uniqueness for fixed coefficients makes the centers finite, and C is independent of B and ρ. The exact derivation from these child types independently compiled with permitted axioms only."
+    },
+    {
+      "key": "flat_sub",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof constructs sequentially continuous difference currents, applies LC in both degrees, and obtains the boundary identity directly from its definition. Testing with ω and −ω proves the ENNReal mass bound without any unstated finiteness assumption. This supplies precisely the parent's final subtraction step."
+    }
+  ],
+  "required_changes": []
+}

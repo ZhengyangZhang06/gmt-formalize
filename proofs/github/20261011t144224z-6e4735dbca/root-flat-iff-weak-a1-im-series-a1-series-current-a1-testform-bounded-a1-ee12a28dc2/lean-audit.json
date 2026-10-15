@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "bd1c111ed52e840be9ea677d98d77634d0aec5582a88e00ac08779d7468c508b",
+  "git_delta": {
+    "base_commit": "c85f995f89c6fb55c28f47b2d2bb2b0882d50973",
+    "candidate_commit": "e8e708e479c2c230359f8d384400997461b0d256",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "fiw_ims_sc_testForm_bounded",
+    "diff_sha256": "149052a5b9a3044796f4b56f8bc6ed720714269fe4221b81f2ccfce842b909cf",
+    "source_sha256": "9640d0e499d7c9892a9fb7ce4cd8603249ff8d8d9e292b95fecceb377d928e92",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.fiw_ims_sc_testForm_bounded",
+      "statement": "∀ (P n : ℕ) (U : Set (Eucl P)) (ω : TestFormOn U n), ∃ C : ℝ, 0 < C ∧ ∀ x, covectorEuclideanNorm ((ω : DifferentialForm (Eucl P) n) x) ≤ C",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

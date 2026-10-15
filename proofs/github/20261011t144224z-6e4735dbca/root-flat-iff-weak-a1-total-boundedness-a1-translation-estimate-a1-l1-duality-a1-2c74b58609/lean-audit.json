@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "eba7e0db31d9a9374ba402813ef4a1f00a129a72b9e58747e798c1f93e726eeb",
+  "git_delta": {
+    "base_commit": "72412dfcaff2f0afc998b6a625c698276a5df636",
+    "candidate_commit": "58888e426fc3678bb2af7e2f2fb828551a480151",
+    "target": "GMT/Ch06/Submission.lean",
+    "changed_files": [
+      "GMT/Ch06/Submission.lean"
+    ],
+    "diff_sha256": "f6bdd9c8bdf6cc1162c16b33af0323e3bee873531d87b688280c2ceb4061aa6d",
+    "source_sha256": "d44468bbd7a43374c59694833e63d283d6e0da36ba67a4bae6b5405ac892e9e3",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.fiw_tb_te_l1_le_of_smooth_dual",
+      "statement": "∀ (n : ℕ) (w : Eucl n → ℝ) (C : ℝ), Integrable w → (∀ g : Eucl n → ℝ, ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) g → HasCompactSupport g → (∀ x, |g x| ≤ 1) → ∫ x, w x * g x ≤ C) → ∫ x, |w x| ≤ C",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

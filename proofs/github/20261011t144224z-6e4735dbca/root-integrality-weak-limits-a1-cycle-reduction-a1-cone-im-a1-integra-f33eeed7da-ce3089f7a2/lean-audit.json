@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "23d730cbc869dcf3fcae3756aded7d12ddc7e7e02e9eb02d9036269c04943175",
+  "git_delta": {
+    "base_commit": "3e98ccb9efb397e04910d66808e8f5f3e6c555a1",
+    "candidate_commit": "db77a916adae93269c61633e2983023f72b8d7f5",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "iwl_cr_ci_ie_param_fubini",
+    "diff_sha256": "20a8566ba4d562e436a5e71944b5992a03a8b193d8238b705af430ce24423900",
+    "source_sha256": "1c475bc056f36047566c86a115b4278f94cce6c965663bc2f7aca2e45f23897e",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.iwl_cr_ci_ie_param_fubini",
+      "statement": "∀ (P m : ℕ) (μ : Measure (Eucl P)) (θ : Eucl P → ℝ) (ξ : Eucl P → NVector (Eucl P) m) (Φ : ℝ → Eucl P → Covector (Eucl P) m) (Ψ : Eucl P → Covector (Eucl P) m) (B : ℝ), SFinite μ → Integrable θ μ → AEStronglyMeasurable ξ μ → (∀ᵐ x ∂μ, ∀ α : Covector (Eucl P) m, |ξ x α| ≤ ‖α‖) → Continuous (fun p : ℝ × Eucl P => Φ p.1 p.2) → (∀ s ∈ Icc (0 : ℝ) 1, ∀ x, ‖Φ s x‖ ≤ B) → (∀ (x : Eucl P) (v : Fin m → Eucl P), Ψ x v = ∫ s in (0 : ℝ)..1, Φ s x v) → ∫ s in (0 : ℝ)..1, ∫ x, θ x * ξ x (Φ s x) ∂μ = ∫ x, θ x * ξ x (Ψ x) ∂μ",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

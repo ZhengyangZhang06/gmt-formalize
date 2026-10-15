@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "c2720f7323d8f7e3843febd9a8ac758fb904e182a1d12c9b0ad32969995db82e",
+  "git_delta": {
+    "base_commit": "7d772974e31e208b4f33e693251664d32f69940a",
+    "candidate_commit": "a4d7cce8f76414fa11b4b48ca4329c70280f03ce",
+    "target": "GMT/Ch06/Submission.lean",
+    "changed_files": [
+      "GMT/Ch06/Submission.lean"
+    ],
+    "diff_sha256": "e99c7ff227acde352b83650bcb121cce141a89c70a780b4c90173840e1fd73d1",
+    "source_sha256": "6d64a779b27ddbf8b4f706060ef373df5a21eb24cb52d1c27e658ba56965ab6a",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.polyhedral_approx_truncation_seq",
+      "statement": "SlicingTheorem → ∀ (P m : ℕ) (U : Set (Eucl P)), IsOpen U → ∀ T : GeometricCurrentOn U (m + 1), IsIntegerMultiplicity T → (∀ W, CompactlyContainedOpen W U → T.massOn W < ∞ ∧ T.boundary.massOn W < ∞) → ∃ X : ℕ → GeometricCurrentOn (univ : Set (Eucl P)) (m + 1), (∀ k, IsIntegerMultiplicity (X k)) ∧ (∀ k, (X k).mass + (X k).boundary.mass < ∞) ∧ ∀ ω : TestFormOn U (m + 1), ∀ᶠ k in atTop, X k (testFormOnInclusion (subset_univ U) (m + 1) ω) = T ω",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

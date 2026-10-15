@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "eb8ed9a335cae259114cdb8aa6139f60423f2d8994c1dafea3b7b0ccbe237097",
+  "git_delta": {
+    "base_commit": "2c49edebdb78197cf330595bec7ec0614df8e3d3",
+    "candidate_commit": "63de75d44548ee15afbf6d64cc2e850e95860e42",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "ind_ab_rescaled_tangent_limit",
+    "diff_sha256": "84217af982d3429224bedad8f2384f762a9052e8991a0469206fc73ae5ad0968",
+    "source_sha256": "f8d11c3c0bc67c23f6075eac2cef9a48f9e681cfd46b287056b8337dd416a2f3",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.ind_ab_rescaled_tangent_limit",
+      "statement": "∀ (P n : ℕ) (M : Set (Eucl P)) (θ : Eucl P → ℝ) (x : Eucl P) (Q : Submodule ℝ (Eucl P)) (f : Eucl P → ℝ), HasWeightedApproximateTangentSpaceAt n M θ x Q → Continuous f → HasCompactSupport f → Tendsto (fun r : ℝ => (r ^ n)⁻¹ * ∫ y in M, θ y * f (r⁻¹ • (y - x)) ∂(μHE[n] : Measure (Eucl P))) (𝓝[>] 0) (𝓝 (θ x * ∫ z in (Q : Set (Eucl P)), f z ∂(μHE[n] : Measure (Eucl P))))",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

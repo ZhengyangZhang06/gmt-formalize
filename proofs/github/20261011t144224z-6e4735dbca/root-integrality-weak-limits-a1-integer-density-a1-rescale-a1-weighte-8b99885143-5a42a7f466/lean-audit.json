@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "6b8dc5b52e82edd10076ef64250ffdf28ff15d532606f83da5c826f629c00495",
+  "git_delta": {
+    "base_commit": "ebe0e6cfbeee858e708d07666d3fcc0f02b5efd6",
+    "candidate_commit": "1633a21d7a9328b9a73418042d14492e0ce8490a",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "ind_rs_weightedTangent_dilation",
+    "diff_sha256": "d0275d217b21541966dcba2ea5ea78f12e26405aee91f5c00447914a278c9ced",
+    "source_sha256": "e88b4cafdb7d3fb3ec3a5abc89affda1c58843fcc4fab2132544e0cd285c2181",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.ind_rs_weightedTangent_dilation",
+      "statement": "∀ (P n : ℕ) (M : Set (Eucl P)) (θ : Eucl P → ℝ) (x y : Eucl P) (r : ℝ) (Q : Submodule ℝ (Eucl P)), 0 < r → HasWeightedApproximateTangentSpaceAt n M θ y Q → HasWeightedApproximateTangentSpaceAt n ((fun w => r⁻¹ • (w - x)) '' M) (fun z => θ (x + r • z)) (r⁻¹ • (y - x)) Q",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

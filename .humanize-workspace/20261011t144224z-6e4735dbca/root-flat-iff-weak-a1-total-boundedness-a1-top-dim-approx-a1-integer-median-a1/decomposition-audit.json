@@ -1,0 +1,68 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat manifest.json",
+        "rg -n -i median project mathlib/Mathlib -l",
+        "rg -n -i 'median|quantile' project mathlib/Mathlib/MeasureTheory mathlib/Mathlib/Probability -l",
+        "rg -n -A 14 -B 3 'theorem tendsto_measure_iUnion_atTop|theorem tendsto_measure_iInter_atTop' mathlib/Mathlib/MeasureTheory/Measure/Continuity.lean",
+        "rg -n -A 12 -B 3 'theorem exists_least_of_bdd' mathlib/Mathlib/Order/Int/LeastGreatest.lean",
+        "rg -n -A 8 -B 2 \"theorem lintegral_const_mul'|theorem setLIntegral_const |theorem setLIntegral_mono' |theorem lintegral_mono_set \" mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Basic.lean mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Add.lean",
+        "rg -n -A 6 -B 2 'theorem ofReal_integral_eq_lintegral_ofReal|lemma integral_mono |lemma abs_integral_le_integral_abs|theorem integral_indicator_const |theorem setIntegral_const |theorem measureReal_restrict_apply |theorem measureReal_union ' mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean mathlib/Mathlib/MeasureTheory/Measure/Real.lean",
+        "rg -n 'fiw_tb_tda_im_' dag.json",
+        ". /tmp/im-decomp/env.sh\nlean /tmp/im-decomp/Full.lean",
+        ". /tmp/im-decomp/env.sh\nlean /tmp/integer-median-audit-9l8ha88s/Independent.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/LinearAlgebra/AffineSpace/Simplex/Centroid.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/Continuity.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Order/Int/LeastGreatest.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Add.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/Real.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Basic/ENNReal/Real.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/Typeclasses/Finite.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-flat-iff-weak-a1-total-boundedness-a1-top-dim-approx-a1-integer-median-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-flat-iff-weak-a1-total-boundedness-a1-top-dim-approx-a1-integer-median-a1/decomposition-v1.json",
+        "/tmp/im-decomp/Full.lean",
+        "/tmp/integer-median-audit-9l8ha88s/Independent.lean"
+      ],
+      "conclusion": "The four-way split is appropriate for the selected integer-median theorem. Verified project revision d8d46c9587747dee0751a1f780fcafdba16a3886 and Mathlib revision 25730c7c759d108ef87ab70af2342a196760f79d; the inspected compiler sources match the snapshot. Searches found no relevant statistical median result; the median hit concerns simplex geometry. All four exact one-line propositions pass validation and elaborate independently in the comparator scope without child implementations, placeholders, or aliases. All names are bare identifiers, with no collisions in the current DAG or other proposed branches. Empty child dependency lists are correct: median conditions are explicit hypotheses, so the children are independent and acyclic. The independent assembly proves the exact frozen parent from these four contracts. Recompiling the supplied complete prototypes also succeeded; every child and the parent use only propext, Classical.choice, and Quot.sound. Integer/Natural filter instances and the real inverse expression were checked. Supplementary mathematical support for the median comparison argument appears in [Geyer’s lecture slides, pages 12–15](https://www.stat.umn.edu/geyer/f11/5101/slides/s4a.pdf)."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "median_exists",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Prose and Lean type match, including measurability, positive finite mass, and pointwise integrality. Both measure limits have their required hypotheses; they establish nonemptiness and boundedness below of K. Its least integer and the integer-valued covering argument yield both stated half-mass inequalities. The proof is complete and non-circular."
+    },
+    {
+      "key": "median_bounds",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Prose and Lean type match. The sign-selected measurable set has sufficient measure and satisfies |u| ≥ |c|, proving M1 by lower-integral monotonicity. For c ≠ 0 it lies in {u ≠ 0}, proving M2. Neither total-mass equality nor integrability is needed, including when measures or lower integrals are infinite. No circular reliance occurs."
+    },
+    {
+      "key": "median_minimizes",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Prose and Lean type match. Finite restricted measure justifies constants, indicators, deviations, and real-measure complement identities. Both explicit sign comparisons give the Bochner inequality using only the stated non-strict median bounds. Integrability and nonnegativity justify both conversions to lower integrals. The supplied proof is complete and independent."
+    },
+    {
+      "key": "mean_deviation",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Prose and Lean type match, including the normalized mean and integral order. Finite mass justifies integrating constants and subtracting u; positivity permits division by a. The integral triangle inequality, valid ofReal conversion, and lower-integral monotonicity prove the bound. The finite-scalar version of lintegral_const_mul' requires no additional joint-measurability or σ-finiteness assumption. The proof is complete and non-circular."
+    }
+  ],
+  "required_changes": []
+}

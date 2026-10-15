@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "1e6722d2c7993e0ef404189ef1a4b2cab3677f691919c2b99dbc5f7973db4076",
+  "git_delta": {
+    "base_commit": "d7421f8b4eaf284642a4605e2ef3b223cfa3383a",
+    "candidate_commit": "e23946e21500d09924e1851603a3047afe085117",
+    "target": "GMT/Ch06/Submission.lean",
+    "changed_files": [
+      "GMT/Ch06/Submission.lean"
+    ],
+    "diff_sha256": "3f8326db3167a906b9bd605b696c360fea0f2164ebd136e7bea0c5edf2fe233c",
+    "source_sha256": "f7e01f431cbe2707938d47e3f56bd6422cae96f8cce55f3695ed27d8a1b28cf9",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.lpf_tde_measurable_chart_differential",
+      "statement": "∀ (P Q n : ℕ) (Φ : ℕ → Eucl n → Eucl P) (Ω : ℕ → Set (Eucl n)) (f : Eucl P → Eucl Q), (∀ j, IsOpen (Ω j)) → (∀ j, ContDiff ℝ 1 (Φ j)) → (∀ j, ∃ c : ℝ, 0 < c ∧ ∀ w ∈ Ω j, ∀ w' ∈ Ω j, c * ‖w - w'‖ ≤ ‖Φ j w - Φ j w'‖) → ∃ L : Eucl P → (Eucl P →L[ℝ] Eucl Q), StronglyMeasurable L ∧ (∀ x, x ∉ (⋃ j, Φ j '' Ω j) → L x = 0) ∧ ∀ x ∈ (⋃ j, Φ j '' Ω j), ∃ j, ∃ w ∈ Ω j, Φ j w = x ∧ (∀ s : Eucl n, L x (fderiv ℝ (Φ j) w s) = fderiv ℝ (f ∘ Φ j) w s) ∧ ∀ v : Eucl P, ∃ s : Eucl n, ‖fderiv ℝ (Φ j) w s‖ ≤ ‖v‖ ∧ L x v = fderiv ℝ (f ∘ Φ j) w s",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

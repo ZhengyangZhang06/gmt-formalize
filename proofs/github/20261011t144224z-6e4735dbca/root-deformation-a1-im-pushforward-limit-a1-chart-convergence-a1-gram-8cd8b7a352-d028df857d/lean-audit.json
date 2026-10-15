@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "ed0dec880633f533ad54763007c694bf106d07df9c3b934c73b2acfb57bfe268",
+  "git_delta": {
+    "base_commit": "e0dd7ce5b0feca7e9a2ba50c5a63f67f21ebf018",
+    "candidate_commit": "e6cf424d70b1b1a013e2aed4fef54c5bdd3543b3",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "deformation_ipl_cc_gram_det_lower_bound",
+    "diff_sha256": "d155854a5e5322dab598e541d3f9f769a891c044949ae47d2dffeede70311626",
+    "source_sha256": "29000238204930d529f03f475d6d527cbb977a8f836ef60a16b9aa5034448d6d",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.deformation_ipl_cc_gram_det_lower_bound",
+      "statement": "∀ (P k : ℕ) (T : Eucl k →L[ℝ] Eucl P) (c : ℝ), 0 ≤ c → (∀ s : Eucl k, c * ‖s‖ ≤ ‖T s‖) → c ^ k ≤ Real.sqrt (Matrix.of fun i j => inner ℝ (T (EuclideanSpace.single i 1)) (T (EuclideanSpace.single j 1))).det",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

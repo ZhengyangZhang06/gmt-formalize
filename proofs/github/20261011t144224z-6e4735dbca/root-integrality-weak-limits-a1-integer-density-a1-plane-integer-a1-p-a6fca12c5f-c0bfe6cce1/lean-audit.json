@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "07a3499345780c65d5040d594dcc5e73243f4a2cb57a5c00a02afdd84f7bc966",
+  "git_delta": {
+    "base_commit": "b98bd60f5602d12d74fe07e43614c8d4f057df0b",
+    "candidate_commit": "363a55563e3264117cc13814e5ade1637ca7d563",
+    "target": "GMT/Ch06/Submission.lean",
+    "changed_files": [
+      "GMT/Ch06/Submission.lean"
+    ],
+    "diff_sha256": "0470e806ca2e21b64a6c2ef84f79efcebb78fbd2871e2dfb9246d1fb472c13e2",
+    "source_sha256": "5fc83c6187f67f8d77b35a871e6970cbeff2d4621f1283a253dc104498d69765",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.ind_pi_projected_limit",
+      "statement": "LipschitzPushforwardIntegerMultiplicity → (LipschitzPushforwardIntegerMultiplicity → ∀ (P Q k : ℕ) (U : Set (Eucl P)) (V : Set (Eucl Q)), IsOpen U → IsOpen V → ∀ (X : GeometricCurrentOn U (k + 1)) (f : Eucl P → Eucl Q), IsIntegerMultiplicity X → ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) f → MapsTo f U V → (∀ K : Set (Eucl Q), IsCompact K → K ⊆ V → IsCompact (f ⁻¹' K ∩ X.support)) → ∃ S : GeometricCurrentOn V (k + 1), IsIntegerMultiplicity S ∧ (∀ (ω : TestFormOn V (k + 1)) (η : TestFormOn U (k + 1)), (∃ N : Set (Eucl P), IsOpen N ∧ X.support ⊆ N ∧ ∀ x ∈ N, (η : DifferentialForm (Eucl P) (k + 1)) x = ((ω : DifferentialForm (Eucl Q) (k + 1)) (f x)).compContinuousLinearMap (fderiv ℝ f x)) → S ω = X η) ∧ (∀ (ω : TestFormOn V k) (η : TestFormOn U k), (∃ N : Set (Eucl P), IsOpen N ∧ X.support ⊆ N ∧ ∀ x ∈ N, (η : DifferentialForm (Eucl P) k) x = ((ω : DifferentialForm (Eucl Q) k) (f x)).compContinuousLinearMap (fderiv ℝ f x)) → S.boundary ω = X.boundary η) ∧ ∀ c : ℝ, 0 ≤ c → (∀ x, ‖fderiv ℝ f x‖ ≤ c) → ∀ W : Set (Eucl Q), S.massOn W ≤ ENNReal.ofReal (c ^ (k + 1)) * X.massOn (f ⁻¹' W ∩ U) ∧ S.boundary.massOn W ≤ ENNReal.ofReal (c ^ k) * X.boundary.massOn (f ⁻¹' W ∩ U)) → ∀ (P m : ℕ) (τ : Fin (m + 1) → Eucl P) (c γ : ℝ) (p : Eucl P →L[ℝ] Eucl (m + 1)) (d : Eucl P → ℝ) (Z : ℕ → GeometricCurrentOn {y : Eucl P | ‖p y‖ < 1 ∧ d y < 3 / 4} (m + 1)) (S : GeometricCurrentOn (ball (0 : Eucl (m + 1)) 1) (m + 1)), Orthonormal ℝ τ → (∀ y i, p y i = inner ℝ (τ i) y) → (∀ y, d y = ‖y - ∑ i, inner ℝ (τ i) y • τ i‖) → 0 ≤ γ → γ < 3 / 4 → (∀ k, IsIntegerMultiplicity (Z k)) → (∀ k, (Z k).support ⊆ {y | d y ≤ γ}) → (⨆ k, ((Z k).mass + (Z k).boundary.mass)) < ∞ → (∀ ω : TestFormOn {y : Eucl P | ‖p y‖ < 1 ∧ d y < 3 / 4} (m + 1), Tendsto (fun k => Z k ω) atTop (𝓝 (c * ∫ z in (Submodule.span ℝ (Set.range τ) : Set (Eucl P)), (ω : DifferentialForm (Eucl P) (m + 1)) z τ ∂(μHE[m + 1] : Measure (Eucl P))))) → (∀ ω : TestFormOn (ball (0 : Eucl (m + 1)) 1) (m + 1), S ω = c * ∫ x in ball (0 : Eucl (m + 1)) 1, (ω : DifferentialForm (Eucl (m + 1)) (m + 1)) x (fun i => EuclideanSpace.single i (1 : ℝ)) ∂volume) → ∃ S' : ℕ → GeometricCurrentOn (ball (0 : Eucl (m + 1)) 1) (m + 1), (∀ k, IsIntegerMultiplicity (S' k)) ∧ (∀ W, CompactlyContainedOpen W (ball (0 : Eucl (m + 1)) 1) → (⨆ k, ((S' k).massOn W + (S' k).boundary.massOn W)) < ∞) ∧ WeaklyConvergesOn S' S",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

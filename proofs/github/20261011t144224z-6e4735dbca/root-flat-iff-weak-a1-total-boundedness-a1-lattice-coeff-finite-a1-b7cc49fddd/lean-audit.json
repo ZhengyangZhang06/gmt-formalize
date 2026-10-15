@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "c2dff0494b63de86407e4391a420dbcbef69cfad943446ae133cb42a7b06f3d1",
+  "git_delta": {
+    "base_commit": "48003458fad021bfb5c2e6033b53fcc6b2f37d85",
+    "candidate_commit": "c9c7285ac3ad767db86ba98d13ec97967a0eafbe",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "fiw_tb_lattice_coeff_finite",
+    "diff_sha256": "7d87e462ff462382d2752a155e3c8f1f071f39d933eadc5ddaf11389297ea428",
+    "source_sha256": "b5d561550284851109bbd97727702c042bdc383cdb17c306f48ce099eec7179a",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.fiw_tb_lattice_coeff_finite",
+      "statement": "∀ (n N : ℕ) (ρ : ℝ), 0 < ρ → ∀ (Y : Set (Eucl N)), Bornology.IsBounded Y → ∀ A : ℝ, {β : LatticeFaceIndex n N → ℝ | (∀ F, ∃ k : ℤ, β F = k) ∧ ∀ F, β F ≠ 0 → latticeFace ρ F ⊆ Y ∧ |β F| ≤ A}.Finite",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

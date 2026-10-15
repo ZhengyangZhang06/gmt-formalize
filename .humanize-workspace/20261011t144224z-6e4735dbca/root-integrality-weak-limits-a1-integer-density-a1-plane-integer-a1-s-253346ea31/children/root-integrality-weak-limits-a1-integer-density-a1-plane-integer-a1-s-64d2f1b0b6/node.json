@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.integrality_weak_limits-a1.integer_density-a1.plane_integer-a1.slice_selection-a1.cycle_slice_boundary-a1",
+  "parent_id": "root.integrality_weak_limits-a1.integer_density-a1.plane_integer-a1.slice_selection-a1",
+  "depth": 5,
+  "title": "A slice of a cycle is the boundary of the corresponding restriction",
+  "statement": "Let P, m ∈ ℕ, U ⊆ ℝ^P open, T ∈ D_{m+1}(U) with ∂T = 0, f : ℝ^P → ℝ, t ∈ ℝ, and S ∈ D_m(U) with IsSlice T f t S (S = ∂(T ⌞ {f < t}) − (∂T) ⌞ {f < t}, with the sets taken inside U). Then there is A ∈ D_{m+1}(U) such that A is a restriction of T to {x ∈ U : f(x) < t} (IsRestriction T {x ∈ U : f(x) < t} A) and ∂A = S.",
+  "lean_statement": "∀ (P m : ℕ) (U : Set (Eucl P)) (T : GeometricCurrentOn U (m + 1)) (f : Eucl P → ℝ) (t : ℝ) (S : GeometricCurrentOn U m), IsOpen U → T.boundary = 0 → IsSlice T f t S → ∃ A : GeometricCurrentOn U (m + 1), IsRestriction T {x | x ∈ U ∧ f x < t} A ∧ A.boundary = S",
+  "lean_name": "ind_pi_ss_cycle_slice_boundary",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-integrality-weak-limits-a1-integer-density-a1-plane-integer-a1-s-64d2f1b0b6-a1"
+}

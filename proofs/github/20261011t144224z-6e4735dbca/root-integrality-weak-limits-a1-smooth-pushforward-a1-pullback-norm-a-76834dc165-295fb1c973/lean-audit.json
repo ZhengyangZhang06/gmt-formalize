@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "f371a244dc84e4023a22a5bdbdbc6118637a53fd25dbb0fba6490d63b4232f98",
+  "git_delta": {
+    "base_commit": "23dd76401b0fe75bae38e0310d9fdde734c8aad2",
+    "candidate_commit": "e37372c4d9bc73e255d4a62d7b1ccaf8caace2cc",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "iwl_sp_pn_sum_sq_comp_basis_le",
+    "diff_sha256": "db7a44c88263634d4f615658ec5efb7eaa3893033a924a5627355e7fe92aeb99",
+    "source_sha256": "3cbd7d4ef9d7c763b82eec437bbcfc961dd366156d005d5161bf3f5fcb65444d",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.iwl_sp_pn_sum_sq_comp_basis_le",
+      "statement": "∀ (P Q : ℕ) (L : Eucl P →L[ℝ] Eucl Q) (f : Eucl Q →ₗ[ℝ] ℝ), ∑ a : Fin P, (f (L (EuclideanSpace.basisFun (Fin P) ℝ a))) ^ 2 ≤ ‖L‖ ^ 2 * ∑ b : Fin Q, (f (EuclideanSpace.basisFun (Fin Q) ℝ b)) ^ 2",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

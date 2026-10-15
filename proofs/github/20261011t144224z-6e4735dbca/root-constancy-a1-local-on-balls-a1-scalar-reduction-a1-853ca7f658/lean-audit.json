@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "a8c1ba853d3f37f465c8318792cbdea5667650a65774ccf634c0ceaa0712fb46",
+  "git_delta": {
+    "base_commit": "d8be7fc93934ce2e49e3ee73297b051ba8637deb",
+    "candidate_commit": "0104810ac99c486f07cf17ce44a92a5d3aceceba",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "constancy_topForm_scalar_reduction",
+    "diff_sha256": "213e5ae47241ae86d553ddf74d2f21b730f6d02a628beb0006ac10e42093bdf7",
+    "source_sha256": "2c974858604cd9dd4fb0b0e379f505f6d64521c8851d3ffefce6e012507cea01",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.constancy_topForm_scalar_reduction",
+      "statement": "∀ (m : ℕ) (U : Set (Eucl (m + 1))) (T : GeometricCurrentOn U (m + 1)), ∃ u : (Eucl (m + 1) → ℝ) → ℝ, (∀ ω : TestFormOn U (m + 1), T ω = u (fun x => (ω : DifferentialForm (Eucl (m + 1)) (m + 1)) x (fun i => EuclideanSpace.single i (1 : ℝ)))) ∧ (∀ b : Eucl (m + 1) → ℝ, ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) b → HasCompactSupport b → tsupport b ⊆ U → ∃ ω : TestFormOn U (m + 1), ∀ x, (ω : DifferentialForm (Eucl (m + 1)) (m + 1)) x (fun i => EuclideanSpace.single i (1 : ℝ)) = b x) ∧ (∀ a b : Eucl (m + 1) → ℝ, ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) a → HasCompactSupport a → tsupport a ⊆ U → ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) b → HasCompactSupport b → tsupport b ⊆ U → u (a + b) = u a + u b) ∧ (∀ (c : ℝ) (a : Eucl (m + 1) → ℝ), ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) a → HasCompactSupport a → tsupport a ⊆ U → u (c • a) = c * u a) ∧ (∀ (a : ℕ → Eucl (m + 1) → ℝ) (b : Eucl (m + 1) → ℝ) (K : Set (Eucl (m + 1))), IsCompact K → K ⊆ U → (∀ k, ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) (a k)) → ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) b → (∀ k, tsupport (a k) ⊆ K) → tsupport b ⊆ K → (∀ q : ℕ, TendstoUniformly (fun k x => iteratedFDeriv ℝ q (a k) x) (fun x => iteratedFDeriv ℝ q b x) atTop) → Tendsto (fun k => u (a k)) atTop (𝓝 (u b)))",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "9e426b0fe38a637971e0193be0459503ec194c8bf363fbda53cac9fb2c762023",
+  "git_delta": {
+    "base_commit": "f914571b72920784e84411cd4d9824d621519dc9",
+    "candidate_commit": "38e98aa2eb31584c93904cf1396ee4fcfda8246f",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "ind_top_form_density_ae_unique",
+    "diff_sha256": "aa3d6daa0ca3a30ab4202c08e33d63fbc3641ba099f75506169291440cc9744c",
+    "source_sha256": "d12eae05a61fcceb22943aec9e240a3ca2ce41e5fd6d4b95efc5abace6251aa7",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.ind_top_form_density_ae_unique",
+      "statement": "∀ (m : ℕ) (U : Set (Eucl (m + 1))) (u v : Eucl (m + 1) → ℝ), IsOpen U → (∀ K : Set (Eucl (m + 1)), IsCompact K → K ⊆ U → IntegrableOn u K volume) → (∀ K : Set (Eucl (m + 1)), IsCompact K → K ⊆ U → IntegrableOn v K volume) → (∀ ω : TestFormOn U (m + 1), ∫ x in U, u x * (ω : DifferentialForm (Eucl (m + 1)) (m + 1)) x (fun i => EuclideanSpace.single i (1 : ℝ)) ∂volume = ∫ x in U, v x * (ω : DifferentialForm (Eucl (m + 1)) (m + 1)) x (fun i => EuclideanSpace.single i (1 : ℝ)) ∂volume) → ∀ᵐ x ∂(volume : Measure (Eucl (m + 1))), x ∈ U → u x = v x",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

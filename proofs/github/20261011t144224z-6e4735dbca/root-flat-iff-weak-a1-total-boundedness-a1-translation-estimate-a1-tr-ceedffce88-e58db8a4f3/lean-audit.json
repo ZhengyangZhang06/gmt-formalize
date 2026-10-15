@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "be02ce36763b23c3c2c12c602fcf72e3d2d9eb4f4547c36c14b628ed46a5b120",
+  "git_delta": {
+    "base_commit": "59387efbfe5184cd9f891c98a52cf7be9e049c4c",
+    "candidate_commit": "2cdc05826715e3b4d88578c2fc43d0ee69184637",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "fiw_tb_te_translation_dual",
+    "diff_sha256": "6c8942f5e7fbafd48a951cf865e1530f45aa4e81de5c601f8b47a2a0bd0d1043",
+    "source_sha256": "0f65ff7c93f3a245437f4e0ec01b1a37e593d2e2b4ff98847c823e8a91898066",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.fiw_tb_te_translation_dual",
+      "statement": "∀ (n : ℕ) (u : Eucl n → ℝ) (h : Eucl n) (B : ℝ), Integrable u → (∀ φ : Eucl n → ℝ, ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) φ → HasCompactSupport φ → (∀ x, |φ x| ≤ 1) → |∫ x, u x * fderiv ℝ φ x h| ≤ B) → ∀ g : Eucl n → ℝ, ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) g → HasCompactSupport g → (∀ x, |g x| ≤ 1) → |∫ x, (u (x + h) - u x) * g x| ≤ B",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

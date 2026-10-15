@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.deformation-a1.onto_skeleton-a1.pushforward_homotopy-a1.smooth_homotopy-a1.interior_bound-a1.contraction_bound-a1",
+  "parent_id": "root.deformation-a1.onto_skeleton-a1.pushforward_homotopy-a1.smooth_homotopy-a1.interior_bound-a1",
+  "depth": 6,
+  "title": "Contraction bound |γ(w, ·)| ≤ √(k+1)·‖w‖·|γ| for the Euclidean coefficient norm",
+  "statement": "Let p, k ∈ ℕ, let γ be a (k+1)-covector on ℝ^p (γ : Covector (Eucl p) (k+1), a continuous alternating (k+1)-linear map (ℝ^p)^{k+1} → ℝ), let w ∈ ℝ^p, and let δ be a k-covector on ℝ^p (δ : Covector (Eucl p) k) with δ(u) = γ(Fin.cons w u) = γ(w, u_1, …, u_k) for every u : Fin k → ℝ^p. Then |δ| ≤ √(k+1)·‖w‖·|γ|. Here |·| = covectorEuclideanNorm, the Euclidean norm of the coefficients α(e_{I(1)}, …, e_{I(n)}) over strictly increasing index tuples I (e = standard basis of ℝ^p, EuclideanSpace.basisFun), and ‖w‖ is the Euclidean norm.",
+  "lean_statement": "∀ (p k : ℕ) (γ : Covector (Eucl p) (k + 1)) (w : Eucl p) (δ : Covector (Eucl p) k), (∀ u : Fin k → Eucl p, δ u = γ (Fin.cons w u)) → covectorEuclideanNorm δ ≤ Real.sqrt ((k : ℝ) + 1) * ‖w‖ * covectorEuclideanNorm γ",
+  "lean_name": "dph_sh_ib_covectorEuclideanNorm_contract_le",
+  "depends_on": [
+    "root.integrality_weak_limits-a1.smooth_pushforward-a1.pullback_norm-a1.tuple_sum_factorial-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.integrality_weak_limits-a1.smooth_pushforward-a1.pullback_norm-a1.tuple_sum_factorial-a1",
+      "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-integrality-weak-limits-a1-smooth-pushforward-a1-pullback-norm-a-71535d6e53-a1",
+      "result_commit": "5d1a7f344e2f451f9ba86a77653fa6071726ad71",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-deformation-a1-onto-skeleton-a1-pushforward-homotopy-a1-smooth-h-f193576245-a1"
+}

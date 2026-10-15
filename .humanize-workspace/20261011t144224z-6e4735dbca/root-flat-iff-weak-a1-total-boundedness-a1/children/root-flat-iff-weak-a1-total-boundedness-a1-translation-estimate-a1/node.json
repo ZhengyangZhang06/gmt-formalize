@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.flat_iff_weak-a1.total_boundedness-a1.translation_estimate-a1",
+  "parent_id": "root.flat_iff_weak-a1.total_boundedness-a1",
+  "depth": 3,
+  "title": "L¹ translation estimate for a top-dimensional current with an integrable density",
+  "statement": "Let m ∈ ℕ, n := m + 1, X ∈ D_n(ℝ^n) a current on univ, and u : ℝ^n → ℝ Lebesgue-integrable with X(ω) = ∫ u(x) ω(x)(e_1, …, e_n) dx for every ω ∈ D^n(ℝ^n), where e_i = EuclideanSpace.single i 1. Then for every h ∈ ℝ^n, ∫⁻ |u(x + h) − u(x)| dx ≤ |h| · M(∂X) in [0, ∞], M(∂X) = mass of the m-current ∂X on ℝ^n.",
+  "lean_statement": "∀ (m : ℕ) (X : GeometricCurrentOn (univ : Set (Eucl (m + 1))) (m + 1)) (u : Eucl (m + 1) → ℝ), Integrable u → (∀ ω : TestFormOn (univ : Set (Eucl (m + 1))) (m + 1), X ω = ∫ x, u x * (ω : DifferentialForm (Eucl (m + 1)) (m + 1)) x (fun i => EuclideanSpace.single i (1 : ℝ))) → ∀ h : Eucl (m + 1), ∫⁻ x, ENNReal.ofReal |u (x + h) - u x| ≤ ENNReal.ofReal ‖h‖ * X.boundary.mass",
+  "lean_name": "fiw_tb_translation_estimate",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-flat-iff-weak-a1-total-boundedness-a1-translation-estimate-a1-a1"
+}

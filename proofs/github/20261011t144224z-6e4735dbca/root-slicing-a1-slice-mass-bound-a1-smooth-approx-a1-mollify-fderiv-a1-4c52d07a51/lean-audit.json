@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "c12e84a73fc7a3c8abec48b2f2586472b6623fe2ad71c85ce6750991da3e3377",
+  "git_delta": {
+    "base_commit": "b4234a9dd3d42e8e090c071ecb99244a728e1ce3",
+    "candidate_commit": "fd43c997849f47644bfc0e4ee70fb3f8b7743995",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "slicing_mb_sa_mollify_lipschitz_hasFDerivAt",
+    "diff_sha256": "08b97f87edc263e512a87c52712f0a71429f6d6a584016f90557b5a6edb6fa15",
+    "source_sha256": "cf08956e88833d151cbc3148369b89f183d1406a742c400d6f519a5d5f45ed26",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.slicing_mb_sa_mollify_lipschitz_hasFDerivAt",
+      "statement": "∀ (P : ℕ) (F : Eucl P → ℝ) (L : ℝ≥0), LipschitzWith L F → ∀ ρ : Eucl P → ℝ, Continuous ρ → HasCompactSupport ρ → ∀ x : Eucl P, HasFDerivAt (fun x' : Eucl P => ∫ y, ρ y * F (x' - y)) (∫ y, ρ y • fderiv ℝ F (x - y)) x",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

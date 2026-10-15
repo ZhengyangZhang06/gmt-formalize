@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "5baa31e5b0a5d3a1af78072c94640f1d50da9ac2a296c06191f24c4845525fcd",
+  "git_delta": {
+    "base_commit": "74948dd60fbbdc812505b76f92c9f03579701d82",
+    "candidate_commit": "12d217bba2a42bdf5072eede11b18f9349b61094",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "lpf_wtc_ae_zero_density_off_set",
+    "diff_sha256": "adba341a7d433b78c87967c51724263437fb00e54df64878a960a33db8c991b2",
+    "source_sha256": "022ec157f50c30cd8249362ae6e2b50f4e399599061244816e72154a0ff3e35f",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.lpf_wtc_ae_zero_density_off_set",
+      "statement": "∀ (Q n : ℕ) (W S : Set (Eucl Q)) (g : Eucl Q → ℝ≥0∞), IsOpen W → NullMeasurableSet S (μHE[n] : Measure (Eucl Q)) → (∀ K : Set (Eucl Q), IsCompact K → K ⊆ W → ∫⁻ x in S ∩ K, g x ∂(μHE[n] : Measure (Eucl Q)) < ∞) → ∀ᵐ y ∂(μHE[n] : Measure (Eucl Q)), y ∈ W → y ∉ S → Tendsto (fun ρ : ℝ => (∫⁻ x in S ∩ closedBall y ρ, g x ∂(μHE[n] : Measure (Eucl Q))) / ENNReal.ofReal (ρ ^ n)) (𝓝[>] 0) (𝓝 0)",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

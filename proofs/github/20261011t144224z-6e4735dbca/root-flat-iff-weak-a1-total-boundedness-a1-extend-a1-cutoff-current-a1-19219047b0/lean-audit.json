@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "6294ad383000b90c3f3c69661132c5180cb4382e47a324eb80ecaf5c2c9d3080",
+  "git_delta": {
+    "base_commit": "c51cebb97e1f5b128fa66e9db01914347f507493",
+    "candidate_commit": "d39fb30b5115ca0dfbe2be26762305cbe4c328b9",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "fiw_tb_ext_cutoff_current",
+    "diff_sha256": "79e9e3c66660d4cc711753a7bebf30bc2884294687f0abb025dad5fb8c7b6288",
+    "source_sha256": "4f85d45183c069f8b113a96e40592865e18eb5d2545e8b17e788fbecb48f63f3",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.fiw_tb_ext_cutoff_current",
+      "statement": "∀ (P q : ℕ) (U : Set (Eucl P)) (χ : Eucl P → ℝ), ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) χ → tsupport χ ⊆ U → (∀ x, |χ x| ≤ 1) → ∀ X : GeometricCurrentOn U q, X.mass ≠ ∞ → ∃ Y : GeometricCurrentOn (univ : Set (Eucl P)) q, ∀ (ω : TestFormOn (univ : Set (Eucl P)) q) (η : TestFormOn U q), (∀ x, (η : DifferentialForm (Eucl P) q) x = χ x • (ω : DifferentialForm (Eucl P) q) x) → Y ω = X η",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "bc6b750bc2b7e29611c41eb4889329b6adad8fb0cf70f8ebdd4464f23a103f69",
+  "git_delta": {
+    "base_commit": "6b7dcaab2d6f6ca2aef299c4ebc9b2f30d3da562",
+    "candidate_commit": "b493cac78ec5d3f1c4d1802905a943605dd6d19e",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "lpf_wtc_tangent_transfer",
+    "diff_sha256": "9f728635b3b42fc25ae2277753c808be5805975f159e525a31833b36cfc822c8",
+    "source_sha256": "efe3eb3e307965c328097d216df85489da452e34b67aa2784b8afa4cb6579a9b",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.lpf_wtc_tangent_transfer",
+      "statement": "∀ (Q n : ℕ) (C N : Set (Eucl Q)) (y : Eucl Q) (T : Submodule ℝ (Eucl Q)), NullMeasurableSet C (μHE[n] : Measure (Eucl Q)) → NullMeasurableSet N (μHE[n] : Measure (Eucl Q)) → Poincare.SimonGMT.Chapter03.HasApproximateTangentSpaceAt n N y T → (∃ r : ℝ, 0 < r ∧ (μHE[n] : Measure (Eucl Q)) (N ∩ closedBall y r) < ∞) → Tendsto (fun ρ : ℝ => (μHE[n] : Measure (Eucl Q)) ((C \\ N) ∩ closedBall y ρ) / ENNReal.ofReal (ρ ^ n)) (𝓝[>] 0) (𝓝 0) → Tendsto (fun ρ : ℝ => (μHE[n] : Measure (Eucl Q)) ((N \\ C) ∩ closedBall y ρ) / ENNReal.ofReal (ρ ^ n)) (𝓝[>] 0) (𝓝 0) → Poincare.SimonGMT.Chapter03.HasApproximateTangentSpaceAt n C y T",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

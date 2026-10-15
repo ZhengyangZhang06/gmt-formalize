@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.deformation-a1.onto_skeleton-a1.telescope_limit-a1",
+  "parent_id": "root.deformation-a1.onto_skeleton-a1",
+  "depth": 3,
+  "title": "Mass limits of currents with summable increments (parent I.5, printed (19))",
+  "statement": "Let N, k ∈ ℕ and A_ν, B_ν ∈ D_k(ℝ^N) (ν ∈ ℕ) with A_{ν+1}(ω) = A_ν(ω) + B_ν(ω) for all ν and all test forms ω, and Σ_ν M(B_ν) < ∞. Then there is A′ ∈ D_k(ℝ^N) such that A_ν ⇀ A′ (weakly), M(A′) ≤ M(A_0) + Σ_ν M(B_ν), every current D_ν with D_ν(ω) = A′(ω) − A_ν(ω) for all ω satisfies M(D_ν) ≤ Σ_μ M(B_{μ+ν}), and spt A′ ⊆ F for every closed F containing all spt A_ν.",
+  "lean_statement": "∀ (N k : ℕ) (A B : ℕ → GeometricCurrentOn (univ : Set (Eucl N)) k), (∀ ν ω, A (ν + 1) ω = A ν ω + B ν ω) → (∑' ν, (B ν).mass) < ∞ → ∃ A' : GeometricCurrentOn (univ : Set (Eucl N)) k, WeaklyConvergesOn A A' ∧ A'.mass ≤ (A 0).mass + ∑' ν, (B ν).mass ∧ (∀ (ν : ℕ) (Dν : GeometricCurrentOn (univ : Set (Eucl N)) k), (∀ ω, Dν ω = A' ω - A ν ω) → Dν.mass ≤ ∑' μ, (B (μ + ν)).mass) ∧ ∀ F : Set (Eucl N), IsClosed F → (∀ ν, (A ν).support ⊆ F) → A'.support ⊆ F",
+  "lean_name": "deformation_telescope_limit",
+  "depends_on": [
+    "root.compactness_mass_bounds-a1.mass_bound-a1",
+    "root.integrality_weak_limits-a1.cycle_reduction-a1.support_lemmas-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.compactness_mass_bounds-a1.mass_bound-a1",
+      "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-compactness-mass-bounds-a1-mass-bound-a1-a1",
+      "result_commit": "ba202ac0407b6e93210594416fcd0729874b2eff",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.integrality_weak_limits-a1.cycle_reduction-a1.support_lemmas-a1",
+      "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-integrality-weak-limits-a1-cycle-reduction-a1-support-lemmas-a1-a1",
+      "result_commit": "02f3305faacfc43200f665dd4b67e2a44ab25d0b",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-deformation-a1-onto-skeleton-a1-telescope-limit-a1-a1"
+}

@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "7f5a4b4211b2466a5121d15570669544d5968d9b3f36211aaadc3bd7318bbb40",
+  "git_delta": {
+    "base_commit": "34737310517bafba5556985526ab7212c9326a9b",
+    "candidate_commit": "c5336e1a14131119b486a9306a19dac19728d9fb",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "rectifiability_density_comparison",
+    "diff_sha256": "ad9a92f7600dc86a1efa44ec78fdc237fe29cc0fc55d00ab48e571ff802ce8b7",
+    "source_sha256": "f1fe7b89e5196f843648d49e84d69b271fff2131cdb8ff9eb1e79e280e0ec225",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.rectifiability_density_comparison",
+      "statement": "∀ (P n : ℕ) (ν : Measure (Eucl P)) (A V : Set (Eucl P)) (t : ℝ≥0∞), IsOpen V → A ⊆ V → (∀ x ∈ A, t ≤ dimensionalUpperDensity ν.toOuterMeasure (n : ℝ) univ x) → t * (μHE[n] : Measure (Eucl P)) A ≤ ν V",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

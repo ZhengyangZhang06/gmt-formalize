@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "075bccade5d2b11f724c80dc748ac0a34bc61e6cdfa0ab2af3b68ac82e8c55ed",
+  "git_delta": {
+    "base_commit": "bad05b0eaf76c3fddfdf10120f3a37e6745eaf86",
+    "candidate_commit": "bf6aeaf20acf6ef35ac5f0eea69030306a395c4b",
+    "target": "GMT/Ch06/Submission.lean",
+    "changed_files": [
+      "GMT/Ch06/Submission.lean"
+    ],
+    "diff_sha256": "e804b6bb263dfda26d23bcea2fa6c7169c42b2a50cbdc8f396b972cacec83bb2",
+    "source_sha256": "0ad233e2211ac37c7f71c703f952b0b59e66f9468637b7d9b60d156db447a7fc",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.deformation_im_combination",
+      "statement": "∀ (N k : ℕ) (X Y Z : GeometricCurrentOn (univ : Set (Eucl N)) k) (a b : ℤ), IsIntegerMultiplicity X → IsIntegerMultiplicity Y → (∀ ω, Z ω = a * X ω + b * Y ω) → IsIntegerMultiplicity Z",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

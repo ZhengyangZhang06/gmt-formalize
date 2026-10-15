@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "1280090a25b061ac4bcbae52c817c57906653d146f7fb4214e73c6997b993749",
+  "git_delta": {
+    "base_commit": "33ec297a69dff384f7c05f295dc62b63e3525f5c",
+    "candidate_commit": "630c339ebee48d07c501b0b8d42789cb996173a9",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "slicing_mb_dm_lowerLeftDini_measurable",
+    "diff_sha256": "903231e808e3e32a7fc7b4f863a5223753729e4d357e217addf6a2f1ba4cb45d",
+    "source_sha256": "cb2af2aba9e67ade59592ad82aa65a8de311db0fb59511c4e50ecdbb4590be56",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.slicing_mb_dm_lowerLeftDini_measurable",
+      "statement": "∀ G : ℝ → ℝ, Monotone G → (∀ s : ℝ, ContinuousWithinAt G (Ici s) s) → Measurable (fun t : ℝ => liminf (fun k : ℝ => ENNReal.ofReal ((G t - G (t - k)) / k)) (𝓝[>] 0))",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

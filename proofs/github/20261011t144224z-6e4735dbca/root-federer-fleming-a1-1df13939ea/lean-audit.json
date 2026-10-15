@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "537fc7af55f13b0b3772fc896ecb9b103a2d21859f61e42256936f02aad8c9fd",
+  "git_delta": {
+    "base_commit": "c96ec02d1b3dd24de9e3908f232b4e10411041d8",
+    "candidate_commit": "5abeab0440878430eddbed9432aaf400aff066d7",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "federer_fleming_compactness",
+    "diff_sha256": "632a23e65a29ccd80845bb24a7eab0e36bc103e4c09ca7e02e336ae3ba880a6d",
+    "source_sha256": "4a7d457ab5f0fcd8d324ed6cc071dfd5a98a4a897997d56042679552473bf5a9",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.federer_fleming_compactness",
+      "statement": "FedererFlemingCompactness",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

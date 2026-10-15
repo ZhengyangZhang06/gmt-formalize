@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.flat_iff_weak-a1.total_boundedness-a1.top_dim_approx-a1.integer_median-a1.median_minimizes-a1",
+  "parent_id": "root.flat_iff_weak-a1.total_boundedness-a1.top_dim_approx-a1.integer_median-a1",
+  "depth": 5,
+  "title": "A median minimizes the L¹ deviation on F (Simon 5.1, (31)–(32))",
+  "statement": "Let α be a type with a σ-algebra and μ a measure on it. Let F ⊆ α be measurable with μ(F) = ofReal a for a real number a > 0, let u : α → ℝ be measurable and integrable on F, and let c₀ ∈ ℝ satisfy ofReal(a/2) ≤ μ(F ∩ {x : u(x) ≤ c₀}) and ofReal(a/2) ≤ μ(F ∩ {x : c₀ ≤ u(x)}). Then for every c ∈ ℝ, ∫⁻_F ofReal|u − c₀| dμ ≤ ∫⁻_F ofReal|u − c| dμ.",
+  "lean_statement": "∀ {α : Type} [MeasurableSpace α] (μ : Measure α) (F : Set α) (a c₀ : ℝ) (u : α → ℝ), MeasurableSet F → 0 < a → μ F = ENNReal.ofReal a → Measurable u → IntegrableOn u F μ → ENNReal.ofReal (a / 2) ≤ μ (F ∩ {x | u x ≤ c₀}) → ENNReal.ofReal (a / 2) ≤ μ (F ∩ {x | c₀ ≤ u x}) → ∀ c : ℝ, ∫⁻ x in F, ENNReal.ofReal |u x - c₀| ∂μ ≤ ∫⁻ x in F, ENNReal.ofReal |u x - c| ∂μ",
+  "lean_name": "fiw_tb_tda_im_median_minimizes",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-flat-iff-weak-a1-total-boundedness-a1-top-dim-approx-a1-integer-0c7ab12b90-a1"
+}

@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "be88f316d097c9073ee74ad515b4194355d77913512b1f4fcbe4d3cc0aadbdc8",
+  "git_delta": {
+    "base_commit": "d09941c7b356f16098be29674acda4669dd224af",
+    "candidate_commit": "e7ec1ab7ad46a4f58ca81fbaf684bb410be6d32a",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "iwl_top_dim_integrality",
+    "diff_sha256": "d298043daf0daa3271b08432167e430a88019ae6e974ab62e7530d58e9b177c7",
+    "source_sha256": "506f1a7d2348e9924717a33d23b91dba123d7f7561f78a205bd1c823f1a84821",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.iwl_top_dim_integrality",
+      "statement": "∀ (m : ℕ) (U : Set (Eucl (m + 1))), IsOpen U → ∀ (Tj : ℕ → GeometricCurrentOn U (m + 1)) (T : GeometricCurrentOn U (m + 1)), (∀ j, IsIntegerMultiplicity (Tj j)) → (∀ W, CompactlyContainedOpen W U → (⨆ j, ((Tj j).massOn W + (Tj j).boundary.massOn W)) < ∞) → WeaklyConvergesOn Tj T → IsIntegerMultiplicity T",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

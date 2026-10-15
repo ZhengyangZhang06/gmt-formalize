@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "6f32bd847bbae43c6d24fa3dfde93d14f44f411508ec09e871b505f1d3b07d1a",
+  "git_delta": {
+    "base_commit": "f2d233fe016d432932f45c4706c731047ee0c2ee",
+    "candidate_commit": "fd6cb8de53c6914403c038321eb62bab8c15065d",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "slicing_im_st_lsc_tangent_range",
+    "diff_sha256": "dc75845bf9c210cbe53cb112e93c8cdbb006c166c19c51a3513ed50aac05f3cc",
+    "source_sha256": "fb7ee5359451d89c72dfc3a7ed41a250379728fbd1b03482018ccd92a5e8ffdf",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.slicing_im_st_lsc_tangent_range",
+      "statement": "∀ (P m : ℕ) (ψ : Eucl m → Eucl (m + 1)) (Φ : Eucl (m + 1) → Eucl P) (h : Eucl (m + 1) → ℝ) (V : Set (Eucl m)) (c : ℝ) (v : Eucl m), IsOpen V → v ∈ V → 0 < c → DifferentiableAt ℝ ψ v → DifferentiableAt ℝ Φ (ψ v) → DifferentiableAt ℝ h (ψ v) → fderiv ℝ h (ψ v) ≠ 0 → (∀ v' ∈ V, ∀ v'' ∈ V, c * ‖v' - v''‖ ≤ ‖ψ v' - ψ v''‖) → (∀ v' ∈ V, h (ψ v') = h (ψ v)) → LinearMap.range (fderiv ℝ (Φ ∘ ψ) v).toLinearMap = Submodule.map (fderiv ℝ Φ (ψ v)).toLinearMap (LinearMap.ker (fderiv ℝ h (ψ v)).toLinearMap)",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

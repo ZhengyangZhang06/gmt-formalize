@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "0b163043e82c8a093d73850f5ff8f7743833182d824323b4f7962fa80b0cb593",
+  "git_delta": {
+    "base_commit": "51c91d19ebbedca006cf4f6f2e80cc4c6cda5dd5",
+    "candidate_commit": "d90a235b0e2f1e6dc56f7403a10da148651efa8e",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "slicing_mb_lb_extDeriv_smul",
+    "diff_sha256": "a1ca016c2e0067704585fb552bfc7f1e68886345784aebac23fd6605c6867cd4",
+    "source_sha256": "13494f3a75e9bd1fd0dbc8975839193a665e972e492305e0fd60a4611b6228c1",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.slicing_mb_lb_extDeriv_smul",
+      "statement": "∀ (P m : ℕ) (ψ : Eucl P → ℝ) (ω : DifferentialForm (Eucl P) m) (x : Eucl P), DifferentiableAt ℝ ψ x → DifferentiableAt ℝ ω x → exteriorDerivative (fun y => ψ y • ω y : DifferentialForm (Eucl P) m) x = ψ x • exteriorDerivative ω x + ContinuousAlternatingMap.alternatizeUncurryFin ((fderiv ℝ ψ x).smulRight (ω x))",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "02ff0ae1a0e3c946483b84632e8d850875f32585bd8a22ccd9e5a932de0fcb0c",
+  "git_delta": {
+    "base_commit": "7723319cc89da65603aeacbf8fa39b5651ec26c5",
+    "candidate_commit": "dded2fa657ffd8eb98a1f5e8a3a7fef601bd9194",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "isoperimetric_lattice_face_isolating_form",
+    "diff_sha256": "edc29d3787d01512de3f5478d1389e5165bcb328edeaf2fe4e63126c78501995",
+    "source_sha256": "38d87cb64e6fc651e5a5dc3e8ca66ca4928b5f7e03085e1ce45194138c4ff9bf",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.isoperimetric_lattice_face_isolating_form",
+      "statement": "∀ (n N : ℕ) (ρ δ : ℝ) (F₀ : LatticeFaceIndex n N), 0 < ρ → 0 < δ → δ < 1 / 4 → ∃ ω : TestFormOn (univ : Set (Eucl N)) n, ω ∈ massAdmissibleOn (univ : Set (Eucl N)) n univ ∧ (∀ F : LatticeFaceIndex n N, F ≠ F₀ → latticeFaceAction ρ F (ω : DifferentialForm (Eucl N) n) = 0) ∧ (ρ * (1 - 2 * δ)) ^ n ≤ latticeFaceAction ρ F₀ (ω : DifferentialForm (Eucl N) n)",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

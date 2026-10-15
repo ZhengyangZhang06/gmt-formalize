@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "33b5c5e482f92ef9a8cb7621a42f8c249a812248b09ff54e8e3fd611852aaaf9",
+  "git_delta": {
+    "base_commit": "a818bea2c0e5380cd219ed0dea9e80cda32a2a67",
+    "candidate_commit": "c90a40505abdbff33b9174acf9b20037eb2cb2a1",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "fiw_ims_frame_sign",
+    "diff_sha256": "5232094db51dc05056e59785cd2031f5e00d884ac21e5811c08d9a9b2cc4a15f",
+    "source_sha256": "f117ef8fa7d1606a35a68748eae9283d1398e1ef415e2280f851b62d63ac3793",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.fiw_ims_frame_sign",
+      "statement": "∀ (P n : ℕ) (τ τ' : Fin n → Eucl P), Orthonormal ℝ τ → Orthonormal ℝ τ' → Submodule.span ℝ (range τ) = Submodule.span ℝ (range τ') → simpleNVector τ' = simpleNVector τ ∨ simpleNVector τ' = -simpleNVector τ",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

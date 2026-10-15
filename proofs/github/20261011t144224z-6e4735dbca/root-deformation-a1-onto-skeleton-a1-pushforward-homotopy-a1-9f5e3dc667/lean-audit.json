@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "2d8e7853c0ee52629de242d79e6cfefbe3c63f190e546b1f4729ea2bdfaf276a",
+  "git_delta": {
+    "base_commit": "c3e5311b7bf010a5638b1dfe5177df605a4d601e",
+    "candidate_commit": "3e3cf51f15a30c3f9e896936f3285ee329794f8d",
+    "target": "GMT/Ch06/Submission.lean",
+    "changed_files": [
+      "GMT/Ch06/Submission.lean"
+    ],
+    "diff_sha256": "10eb1805232be27917fd63d4426d4aed5e7a5f61ec4ee384b1825d735b0061dd",
+    "source_sha256": "642bfdf705b12abd6dc22e2425d092d39173232851995923201c7095bb271852",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.deformation_pushforward_homotopy",
+      "statement": "(∀ (P Q k : ℕ) (X : GeometricCurrentOn (univ : Set (Eucl P)) k) (M : Set (Eucl P)) (θ : Eucl P → ℝ) (ξ : Eucl P → NVector (Eucl P) k), IsRectifiableTriple (univ : Set (Eucl P)) k M θ ξ → (∀ x ∈ M, ∃ j : ℕ, θ x = j) → (∀ ω : TestFormOn (univ : Set (Eucl P)) k, X ω = tauAction k M θ ξ ω) → ∀ (g : Eucl P → Eucl Q) (Λ : ℝ≥0), LipschitzWith Λ g → (∀ K : Set (Eucl Q), IsCompact K → IsCompact (g ⁻¹' K ∩ X.support)) → ∃ S : GeometricCurrentOn (univ : Set (Eucl Q)) k, IsLipschitzPushforward X g S ∧ IsIntegerMultiplicity S ∧ ∀ (gj : ℕ → Eucl P → Eucl Q) (Λ' : ℝ≥0), (∀ j, ContDiff ℝ 1 (gj j)) → (∀ j, LipschitzWith Λ' (gj j)) → TendstoUniformly gj g atTop → ∀ ω : TestFormOn (univ : Set (Eucl Q)) k, Tendsto (fun j => ∫ x in M, θ x * nVectorPushforward k (fderiv ℝ (gj j) x) (ξ x) ((ω : DifferentialForm (Eucl Q) k) (gj j x)) ∂(μHE[k] : Measure (Eucl P))) atTop (𝓝 (S ω))) → ∀ D : ℕ, ∃ c : ℕ → ℝ≥0, ∀ f : Eucl D → Eucl D, ∃ (Pf : (k : ℕ) → GeometricCurrentOn (univ : Set (Eucl D)) k → GeometricCurrentOn (univ : Set (Eucl D)) k) (Hf : (k : ℕ) → GeometricCurrentOn (univ : Set (Eucl D)) k → GeometricCurrentOn (univ : Set (Eucl D)) (k + 1)), (∀ (k : ℕ) (E : Set (Eucl D)) (Λ : ℝ≥0) (δ b : ℝ) (X : GeometricCurrentOn (univ : Set (Eucl D)) k), IsClosed E → 0 < δ → LipschitzOnWith Λ f (thickening δ E) → (∀ x ∈ E, dist (f x) x ≤ b) → X.mass < ∞ → (∀ (j : ℕ) (Y : GeometricCurrentOn (univ : Set (Eucl D)) (j + 1)), k = j + 1 → HEq Y X → Y.boundary.mass < ∞) → X.support ⊆ E → (Pf k X).mass ≤ (c k : ℝ≥0∞) * (Λ : ℝ≥0∞) ^ k * X.mass ∧ (Hf k X).mass ≤ (c k : ℝ≥0∞) * ENNReal.ofReal b * (1 + (Λ : ℝ≥0∞)) ^ k * X.mass ∧ (Pf k X).support ⊆ closure (f '' X.support) ∧ (Hf k X).support ⊆ cthickening b X.support ∧ (IsIntegerMultiplicity X → IsIntegerMultiplicity (Pf k X) ∧ IsIntegerMultiplicity (Hf k X)) ∧ (∀ (α : SimonMultiIndex k D) (z : Eucl D) (ω : TestFormOn (univ : Set (Eucl D)) k) (ε : ℝ), 0 < ε → (∀ x ∈ thickening ε X.support, f x ∈ thickening ε (tsupport (ω : DifferentialForm (Eucl D) k)) → ∀ i, i ∉ range α → f x i = z i) → (∀ y, (ω : DifferentialForm (Eucl D) k) y (fun j => EuclideanSpace.single (α j) (1 : ℝ)) = 0) → Pf k X ω = 0) ∧ ∀ (X₁ X₂ : GeometricCurrentOn (univ : Set (Eucl D)) k) (a a₁ : ℝ), X₁.mass < ∞ → (∀ (j : ℕ) (Y : GeometricCurrentOn (univ : Set (Eucl D)) (j + 1)), k = j + 1 → HEq Y X₁ → Y.boundary.mass < ∞) → X₁.support ⊆ E → (∀ ω, X₂ ω = a * X ω + a₁ * X₁ ω) → (∀ ω, Pf k X₂ ω = a * Pf k X ω + a₁ * Pf k X₁ ω) ∧ ∀ ω, Hf k X₂ ω = a * Hf k X ω + a₁ * Hf k X₁ ω) ∧ ∀ (j : ℕ) (E : Set (Eucl D)) (Λ : ℝ≥0) (δ b : ℝ) (X : GeometricCurrentOn (univ : Set (Eucl D)) (j + 1)), IsClosed E → 0 < δ → LipschitzOnWith Λ f (thickening δ E) → (∀ x ∈ E, dist (f x) x ≤ b) → X.mass < ∞ → X.boundary.mass < ∞ → X.support ⊆ E → (Pf (j + 1) X).boundary = Pf j X.boundary ∧ ∀ ω, X ω - Pf (j + 1) X ω = (Hf (j + 1) X).boundary ω + Hf j X.boundary ω",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

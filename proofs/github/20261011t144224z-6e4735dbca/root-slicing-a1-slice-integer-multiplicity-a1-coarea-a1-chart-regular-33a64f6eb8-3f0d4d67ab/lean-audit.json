@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "fb79de0f2f35335853943e355cb90022091efd3bc2a67bebe6c4979c89201525",
+  "git_delta": {
+    "base_commit": "d80a3e139c17bb8f0be7c508569b09eb2997a09b",
+    "candidate_commit": "21ca221e73024cb7c92b0f21ea4acc547a28e4ac",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "slicing_im_creg_lintegral_cons",
+    "diff_sha256": "26abf035287a51739d49350d72f8536b032d6af34df11382eb7444fa02465fd8",
+    "source_sha256": "e2fb1b92bdc1a14fa3fbb7a940082ffa9d014cd8ec7190e299dbe1cadd47aec6",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.slicing_im_creg_lintegral_cons",
+      "statement": "∀ (m : ℕ) (F : Eucl (m + 1) → ℝ≥0∞), Measurable F → Measurable (fun t : ℝ => ∫⁻ v : Eucl m, F ((EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm (Fin.cons t (EuclideanSpace.equiv (Fin m) ℝ v)))) ∧ ∫⁻ y, F y = ∫⁻ t : ℝ, ∫⁻ v : Eucl m, F ((EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm (Fin.cons t (EuclideanSpace.equiv (Fin m) ℝ v)))",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

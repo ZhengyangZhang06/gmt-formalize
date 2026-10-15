@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "1fcfb82a1ffb028813b3cc80755659a9414001e007a4e6f431aadc2f1d0c3a4a",
+  "git_delta": {
+    "base_commit": "3f89dbb8571a0570a05f4e25a05b83edce51f682",
+    "candidate_commit": "1e660afc8717b07e03e81bebfc492f50087b5aed",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "isoperimetric_mass_lt_top",
+    "diff_sha256": "3233c7a0c5c390a4202b8644e01fd5c9ea1183293e3f619a81c9819e75542d8a",
+    "source_sha256": "acd8992fe4d9457fbc569a9c419fb535d213bcac694b322b042cc7c8425d76cf",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.isoperimetric_mass_lt_top",
+      "statement": "∀ (P n : ℕ) (T : GeometricCurrentOn (univ : Set (Eucl P)) n), IsIntegerMultiplicity T → IsCompact T.support → T.mass < ∞",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

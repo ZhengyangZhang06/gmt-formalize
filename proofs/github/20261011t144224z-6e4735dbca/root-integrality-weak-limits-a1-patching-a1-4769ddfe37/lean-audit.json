@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "9c5b33a90fce97bf4037de2746a733942cf503d1d3ee7270c10c0c43b134f1e2",
+  "git_delta": {
+    "base_commit": "316ebcb2b6c186d1ad058d39d4c03b90fac4adce",
+    "candidate_commit": "c9a4db0e8a686783d4a87a419764a7f41ce45f24",
+    "target": "GMT/Ch06/Submission.lean",
+    "changed_files": [
+      "GMT/Ch06/Submission.lean"
+    ],
+    "diff_sha256": "bf478d62282cf33c42585434077e531660f5d189830aab93a761ae5d6ba5604e",
+    "source_sha256": "870c5e10da05df8bf6846d45679e5e07e488bf2b1df4c19afd43e68eb2b0b19f",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.iwl_im_patching",
+      "statement": "∀ (P k : ℕ) (U : Set (Eucl P)), IsOpen U → ∀ X : GeometricCurrentOn U k, (∀ x ∈ U, ∃ V : Set (Eucl P), IsOpen V ∧ x ∈ V ∧ V ⊆ U ∧ ∃ Y : GeometricCurrentOn U k, IsIntegerMultiplicity Y ∧ ∀ ω : TestFormOn U k, tsupport (ω : DifferentialForm (Eucl P) k) ⊆ V → X ω = Y ω) → IsIntegerMultiplicity X",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

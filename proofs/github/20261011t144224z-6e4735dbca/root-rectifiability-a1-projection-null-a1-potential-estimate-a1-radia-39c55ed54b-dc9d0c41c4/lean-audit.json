@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "7c9db6e00ffb07c06327efd2b044f4105f9b31680ca8811f67459fc0b293d7d1",
+  "git_delta": {
+    "base_commit": "41c74f174351383535e7a5bdcbb0e3bdc9de20dc",
+    "candidate_commit": "8c5c1649b711aed8ae45d654dcaa083b76525eea",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "rpn_pe_inv_norm_pow_ball",
+    "diff_sha256": "44a2f6352a78903cc062959b0b90a97fe46c760640842c9ba57f6ae4ea366a55",
+    "source_sha256": "f6637b90c46d3c499fcd8ccdd0b39731f5db4f802dcd4b1953c01a9ce3293208",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.rpn_pe_inv_norm_pow_ball",
+      "statement": "∀ (m : ℕ) (ρ : ℝ), 0 < ρ → IntegrableOn (fun t : Eucl (m + 1) => (‖t‖ ^ m)⁻¹) (ball (0 : Eucl (m + 1)) ρ) ∧ ∫ t in ball (0 : Eucl (m + 1)) ρ, (‖t‖ ^ m)⁻¹ = ((m : ℝ) + 1) * (volume (ball (0 : Eucl (m + 1)) 1)).toReal * ρ",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "09c887f890dd3b6c495f3fbb30286979b698b19d123076d8080f51091edc9154",
+  "git_delta": {
+    "base_commit": "d1cda07f3426e330f9ad1f7af9fcd2c2e2385198",
+    "candidate_commit": "1760770a16a130dd89633830184a89dcd73c9b0b",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "rpn_pe_kernel_locallyIntegrable",
+    "diff_sha256": "6967707f882c89fdd4caf77bef945490548a4c217d1f71b90884cae6ca47d15b",
+    "source_sha256": "6c232bddda7277732804eb150754b0b1d70ee0fa18ce614f55fbcc633f3c2ee8",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.rpn_pe_kernel_locallyIntegrable",
+      "statement": "∀ (m : ℕ) (j : Fin (m + 1)) (c : ℝ), LocallyIntegrable (fun t : Eucl (m + 1) => t j / (c * ‖t‖ ^ (m + 1)))",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.polyhedral_approximation-a1",
+  "parent_id": "root",
+  "depth": 1,
+  "title": "Weak polyhedral approximation theorem (Simon 6.2)",
+  "statement": "For all m, ℓ ∈ ℕ with ℓ ≥ 1, every open U ⊆ ℝ^{m+1+ℓ} and every integer multiplicity T ∈ D_{m+1}(U) with M_W(T) < ∞ and M_W(∂T) < ∞ for all W ⊂⊂ U, there are ρ : ℕ → (0,∞) antitone with ρ_k → 0, integer coefficients β_k on the faces 𝓛_{m+1}(ρ_k) and currents P_k ∈ D_{m+1}(U) with IsLatticeChain ρ_k β_k P_k for all k and P_k ⇀ T in U.",
+  "lean_statement": "PolyhedralApproximation",
+  "lean_name": "polyhedral_approximation",
+  "depends_on": [
+    "root.deformation-a1",
+    "root.slicing-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.deformation-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.slicing-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-polyhedral-approximation-a1-a1"
+}

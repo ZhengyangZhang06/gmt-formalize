@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "31a7e2ee05b0868fd7bf6afbaa456f7ecf683e492a98100c8102dbe3754527bc",
+  "git_delta": {
+    "base_commit": "9f6ec514b377527799a1eaedae78f43210587b00",
+    "candidate_commit": "6c6b4b2753e8214a3e45619bb0b65d8d553557a5",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "cmb_covector_eq_sum_coord_smul_wedge",
+    "diff_sha256": "b9d91c0f75246bbd2f4a40ce21600701d2ea85f51763e5ee0e5937943c313858",
+    "source_sha256": "fa1ad947b8bc6c0e7f8ac872d624a5db5e284015bc488c63e0598205f4894e6a",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cmb_covector_eq_sum_coord_smul_wedge",
+      "statement": "∀ (P n : ℕ) (α : Covector (Eucl P) n), α = ∑ β : SimonMultiIndex n P, euclideanCovectorCoordinate α β • wedgeCovectors n (fun j => EuclideanSpace.proj (β j))",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

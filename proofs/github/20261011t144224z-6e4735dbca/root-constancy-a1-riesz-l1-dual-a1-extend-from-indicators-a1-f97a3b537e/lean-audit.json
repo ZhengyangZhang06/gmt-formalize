@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "df5700170639446d5dc396c5491ebe9a27f1d15640e74785904bae974a2f66a8",
+  "git_delta": {
+    "base_commit": "60b1417e3fa797feba0a171a0e0748fa62f32183",
+    "candidate_commit": "6c2f3038a34ebc3d0465d2ae32407caa15254cc8",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "constancy_riesz_eq_integral_mul_of_indicator_eq",
+    "diff_sha256": "dfe82795830670a456dcd56b1a6d5066ee52ee8c1574dab579768ce7f88a7981",
+    "source_sha256": "8e7e96b6901caa07954e0b2d385fe80d9dba5022f79278d5de0e6ba7c8d6faad",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.constancy_riesz_eq_integral_mul_of_indicator_eq",
+      "statement": "∀ {α : Type} [MeasurableSpace α] (μ : Measure α), IsFiniteMeasure μ → ∀ (F : (α → ℝ) → ℝ) (C : ℝ), (∀ f g : α → ℝ, Integrable f μ → Integrable g μ → F (f + g) = F f + F g) → (∀ (c : ℝ) (f : α → ℝ), Integrable f μ → F (c • f) = c * F f) → (∀ f : α → ℝ, Integrable f μ → |F f| ≤ C * ∫ x, |f x| ∂μ) → ∀ (θ : α → ℝ) (M : ℝ), Measurable θ → (∀ x, |θ x| ≤ M) → (∀ A : Set α, MeasurableSet A → F (A.indicator 1) = ∫ x in A, θ x ∂μ) → ∀ f : α → ℝ, Integrable f μ → F f = ∫ x, f x * θ x ∂μ",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

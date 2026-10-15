@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "85bc01dcb08cd77a38bac6d1bfb6d28c4d69f6aa560a2f003638c31d41dbf375",
+  "git_delta": {
+    "base_commit": "956d5f19d9a881b05966bd4ee2f27f228011214e",
+    "candidate_commit": "e038063b301df74d92b7018110874fc810dabcc2",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "slicing_ru_smooth_to_continuous",
+    "diff_sha256": "1182353098aaf4452ccb188062eb1961d47cf049b443a8564a19b10b8671c865",
+    "source_sha256": "0ec336dd2f0e8f0c15aeebe4c0a82ee1fc2bd08b74fec4df675b07a4a69ca209",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.slicing_ru_smooth_to_continuous",
+      "statement": "∀ (P : ℕ) (μ₁ μ₂ : Measure (Eucl P)) (g₁ g₂ : Eucl P → ℝ), Integrable g₁ μ₁ → Integrable g₂ μ₂ → ∀ O : Set (Eucl P), IsOpen O → (∀ φ : Eucl P → ℝ, ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) φ → HasCompactSupport φ → tsupport φ ⊆ O → ∫ x, φ x * g₁ x ∂μ₁ = ∫ x, φ x * g₂ x ∂μ₂) → ∀ φ : Eucl P → ℝ, Continuous φ → HasCompactSupport φ → tsupport φ ⊆ O → ∫ x, φ x * g₁ x ∂μ₁ = ∫ x, φ x * g₂ x ∂μ₂",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "820031666b93659107c553705b196864237eee9385e7c622b25724dec578a014",
+  "git_delta": {
+    "base_commit": "d770bf91a0d09bfa19f0d7aebc171ffb97122641",
+    "candidate_commit": "4f025a59c2152a3a58fffddcb8260601a284d11e",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "iwl_cr_rh_degree_zero",
+    "diff_sha256": "ab1d8d00c3bb74a26585047b415f226d6a0e843190a675a0fbb742e01be2483e",
+    "source_sha256": "ca0a956124bca88e24ad3803a680af5289a6736337e0f3d37bfc4854b74a1f8f",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.iwl_cr_rh_degree_zero",
+      "statement": "∀ (P : ℕ) (φ χ : DifferentialForm (Eucl P) 0), ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) φ → (∀ (x : Eucl P) (v : Fin 0 → Eucl P), χ x v = ∫ t in (0 : ℝ)..1, t ^ 0 * extDeriv φ (t • x) (Fin.cons x v)) → ∀ x, χ x = φ x - φ 0",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

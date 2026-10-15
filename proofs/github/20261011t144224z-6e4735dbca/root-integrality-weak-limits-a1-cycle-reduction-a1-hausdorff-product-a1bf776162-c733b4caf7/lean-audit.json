@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "a6f5831ad6b73eb3d4f233c1c6f3f6adb07fb6c91fe244bd7e5667626af07cc1",
+  "git_delta": {
+    "base_commit": "5e8fbbaea93029238a0f7bc44e354683c5a9767f",
+    "candidate_commit": "d4b1082b072071e009143017f00251487aa810d4",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "iwl_cr_hp_injective_pieces",
+    "diff_sha256": "ce523023b97dea1c37443156fbeab79da39ea4878a3d14974b619a0a2ce5277f",
+    "source_sha256": "1e93ba9fcb204c7bac0160da073ee8adc51a93a51b4ab351118b98fe3badcb80",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.iwl_cr_hp_injective_pieces",
+      "statement": "∀ (P m : ℕ) (A : Set (Eucl P)), MeasurableSet A → CountablyRectifiable m A → ∃ (G : ℕ → Eucl m → Eucl P) (B : ℕ → Set (Eucl m)), (∀ p, ∃ K : ℝ≥0, LipschitzWith K (G p)) ∧ (∀ p, MeasurableSet (B p)) ∧ (∀ p, InjOn (G p) (B p)) ∧ (∀ p, ∀ b ∈ B p, DifferentiableAt ℝ (G p) b) ∧ (∀ p, G p '' B p ⊆ A) ∧ (∀ p, MeasurableSet (G p '' B p)) ∧ Pairwise (Function.onFun Disjoint fun p => G p '' B p) ∧ (μHE[m] : Measure (Eucl P)) (A \\ ⋃ p, G p '' B p) = 0",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

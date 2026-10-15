@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.integrality_weak_limits-a1.integer_density-a1.plane_integer-a1.span_integral-a1",
+  "parent_id": "root.integrality_weak_limits-a1.integer_density-a1.plane_integer-a1",
+  "depth": 4,
+  "title": "Hausdorff measure on the span of an orthonormal frame",
+  "statement": "Let P, n ∈ ℕ, τ : Fin n → ℝ^P orthonormal, Q := span τ ⊆ ℝ^P, Hⁿ := μHE[n] on ℝ^P, and ι(a) := Σ_i a_i τ_i for a ∈ ℝⁿ = Eucl n, with Lebesgue measure da = volume on ℝⁿ. Then (i) ∫_Q h dHⁿ = ∫_{ℝⁿ} h(ι(a)) da for every function h : ℝ^P → ℝ, and (ii) (Hⁿ⌞Q)(K) < ∞ for every compact K ⊆ ℝ^P.",
+  "lean_statement": "∀ (P n : ℕ) (τ : Fin n → Eucl P), Orthonormal ℝ τ → (∀ h : Eucl P → ℝ, ∫ z in (Submodule.span ℝ (Set.range τ) : Set (Eucl P)), h z ∂(μHE[n] : Measure (Eucl P)) = ∫ a : Eucl n, h (∑ i, a i • τ i)) ∧ ∀ K : Set (Eucl P), IsCompact K → ((μHE[n] : Measure (Eucl P)).restrict (Submodule.span ℝ (Set.range τ) : Set (Eucl P))) K < ∞",
+  "lean_name": "ind_pi_span_integral",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-integrality-weak-limits-a1-integer-density-a1-plane-integer-a1-s-dd20d2b7ae-a1"
+}

@@ -1,0 +1,119 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.compactness_mass_bounds-a1`
+- Child DAG node: `root.compactness_mass_bounds-a1.weak_subseq-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: parent proof Steps 1 and 3–6 (exhaustion, countable dense families, diagonal subsequence, Cauchy extension, limit current); this is the 'Banach–Alaoglu' step of Simon 2.15. Siblings used:
+- exhaustion (cmb_exists_compactly_contained_exhaustion);
+- mass_bound (cmb_abs_apply_le_of_massOn_le);
+- testform_separable (cmb_exists_countable_dense_testForms).
+
+Notation: |α| := covectorEuclideanNorm α; ‖α‖ is the operator norm of a covector; N := #(Fin n → Fin P); D^n(U) := TestFormOn U n.
+
+0. (Norm comparison.) For every covector α, |α| ≤ √N‖α‖. Each coefficient satisfies |α(e_{I(0)},…,e_{I(n−1)})| ≤ ‖α‖·∏_j‖e_{I(j)}‖ = ‖α‖ (ContinuousAlternatingMap.le_opNorm; e_i = EuclideanSpace.basisFun (Fin P) ℝ i has norm 1), so |α|² ≤ N‖α‖².
+1. (Exhaustion.) By the sibling exhaustion there are sets W_i (i ∈ ℕ) with CompactlyContainedOpen W_i U for every i, such that every compact K ⊆ U lies in some W_i.
+2. (Uniform constants.) Let B_i := (sup_q M_{W_i}(T_q)).toReal ≥ 0. By hypothesis sup_q M_{W_i}(T_q) < ∞, so it equals ENNReal.ofReal B_i (ENNReal.ofReal_toReal), and M_{W_i}(T_q) ≤ ENNReal.ofReal B_i for every q.
+3. (Dense families.) For each i, closure(W_i) is compact, so the sibling testform_separable gives a countable E_i ⊆ D^n(U) such that tsupport η ⊆ W_i for η ∈ E_i, and such that for every ω ∈ D^n(U) with tsupport ω ⊆ W_i and every ε > 0 there is η ∈ E_i with |ω(x) − η(x)| ≤ ε for all x. Let E := ⋃_i E_i, which is countable.
+4. (Bounds on E.) Every test form η is continuous with compact support, so there is C' with ‖η(x)‖ ≤ C' for all x (Continuous.bounded_above_of_compact_support). By Step 0, |η(x)| ≤ C_η := √N·C' for all x. For η ∈ E choose i(η) with η ∈ E_{i(η)}. The sibling mass_bound, with W = W_{i(η)}, B = B_{i(η)} and C = C_η (using Step 2 and tsupport η ⊆ W_{i(η)}), gives |T_q(η)| ≤ b_η := B_{i(η)}·C_η for every q.
+5. (Diagonal subsequence.) Put x_q := (T_q(η))_{η∈E} ∈ ℝ^E. Every x_q lies in Q := ∏_{η∈E}[−b_η, b_η], which is compact by Tychonoff (isCompact_univ_pi). ℝ^E is first countable because E is countable. By sequential compactness (IsCompact.tendsto_subseq) there are a ∈ Q and a strictly increasing φ : ℕ → ℕ with x_{φ(q)} → a. By tendsto_pi_nhds this means T_{φ(q)}(η) → a_η for every η ∈ E. (This is the Bolzano–Weierstrass and Cantor diagonal step of the parent proof.)
+6. (Cauchy property on every test form.) Let ω ∈ D^n(U). tsupport ω is compact and contained in U, so tsupport ω ⊆ W_i for some i (Step 1). Let ε > 0 and ε' := ε/(3(B_i + 1)) > 0.
+- By Step 3 choose η ∈ E_i with |ω(x) − η(x)| ≤ ε' for all x.
+- Then ω − η ∈ D^n(U) and tsupport(ω − η) ⊆ tsupport ω ∪ tsupport η ⊆ W_i (tsupport_sub). So the sibling mass_bound gives |T_q(ω) − T_q(η)| = |T_q(ω − η)| ≤ B_i·ε' ≤ ε/3 for every q.
+- The convergent sequence (T_{φ(q)}(η))_q is Cauchy, so there is N₀ with |T_{φ(q)}(η) − T_{φ(N₀)}(η)| < ε/3 for all q ≥ N₀.
+- By the triangle inequality, |T_{φ(q)}(ω) − T_{φ(N₀)}(ω)| < ε/3 + ε/3 + ε/3 = ε for q ≥ N₀.
+Hence (T_{φ(q)}(ω))_q is a Cauchy sequence of reals, so it converges (cauchySeq_tendsto_of_complete). Let L(ω) be its limit.
+7. (Linearity.) Let ω, ω' ∈ D^n(U) and t ∈ ℝ. Then T_{φ(q)}(ω + ω') = T_{φ(q)}(ω) + T_{φ(q)}(ω') → L(ω) + L(ω'), and T_{φ(q)}(t•ω) = t·T_{φ(q)}(ω) → t·L(ω). By uniqueness of limits in ℝ (tendsto_nhds_unique), L(ω + ω') = L(ω) + L(ω') and L(t•ω) = t·L(ω). So L is a linear map D^n(U) → ℝ.
+8. (Sequential continuity.) Let (ω_j) satisfy TestFormOnConverges ω_j 0. Then there is a compact K ⊆ U with tsupport ω_j ⊆ K for all j such that, for every k, iteratedFDeriv ℝ k ω_j → iteratedFDeriv ℝ k 0 uniformly on K. For k = 0 the limit is 0 and ‖iteratedFDeriv ℝ 0 ω_j x‖ = ‖ω_j(x)‖ (norm_iteratedFDeriv_zero), so sup_{x∈K}‖ω_j(x)‖ → 0. Choose i with K ⊆ W_i (Step 1). Given ε > 0, let δ := ε/(2(B_i + 1)(√N + 1)) > 0.
+- For all large j, ‖ω_j(x)‖ < δ for x ∈ K, and ω_j(x) = 0 for x ∉ K. By Step 0, |ω_j(x)| ≤ √N·δ for every x.
+- The sibling mass_bound gives |T_{φ(q)}(ω_j)| ≤ B_i·√N·δ for every q.
+- Letting q → ∞ gives |L(ω_j)| ≤ B_i·√N·δ ≤ ε/2 < ε (le_of_tendsto').
+Thus L(ω_j) → 0.
+9. (Conclusion.) By Steps 7 and 8, T₀ := ⟨L, Step 8⟩ is an element of GeometricCurrentOn U n. By Step 6, T_{φ(q)}(ω) → T₀(ω) for every ω ∈ D^n(U), i.e. WeaklyConvergesOn (fun q => T (φ q)) T₀. φ is strictly increasing by Step 5. ∎
+
+## Key steps
+
+1. Exhaustion by W_i ⊂⊂ U; B_i := sup_q M_{W_i}(T_q) is finite.
+2. Countable sup-dense E_i ⊆ D_{W_i}; the mass bound gives |T_q(η)| ≤ b_η on E = ⋃E_i.
+3. Tychonoff and sequential compactness of ∏[−b_η, b_η] give φ with T_{φ(q)}(η) convergent for all η ∈ E.
+4. The mass bound and density make (T_{φ(q)}(ω)) Cauchy for every test form; L(ω) := its limit.
+5. L is linear, and |L(ω_j)| ≤ B_i√N·sup|ω_j| gives sequential continuity, so T₀ := L ∈ D_n(U) and T_{φ(q)} ⇀ T₀.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat local-references/197bdd4b88278494/manifest.json (mode local-project; project_commit d8d46c9587747dee0751a1f780fcafdba16a3886; mathlib_commit 25730c7c759d108ef87ab70af2342a196760f79d)`
+- `sha256sum project/GMT/Ch06/Contract.lean project/GMT/Ch06/Submission.lean and workspace GMT/Ch06/Contract.lean (all ea3ee0ddd08be5db60dced2b002e9f60fd87091910069abcfcbd7e34db89853d)`
+- `sed -n 240,345p book/chapter-06.txt (Simon 2.6-2.15 and the Banach-Alaoglu paragraph before 2.15)`
+- `cat simongmt Poincare/SimonGMT/Chapter06/{Mass,FormSupNorm,Currents,Forms,FormsDuality,Representation,CurrentLocalEquality,FixedSupportCurrentTopology,CurrentDistributionEquivalence}.lean`
+- `rg -n 'theorem exists_open_between_and_isCompact_closure|theorem IsCompact.tendsto_subseq|theorem dist_normed_convolution_le|theorem support_convolution_subset|theorem Integrable.bdd_mul|uniformContinuous_of_continuous' mathlib/Mathlib`
+- `rg -n 'exists_contDiff_support_eq_eq_one_iff|exists_contDiff_tsupport_subset|exists_smooth_tsupport_subset' mathlib/Mathlib`
+- `cat mathlib/Mathlib/Analysis/Calculus/BumpFunction/SmoothApprox.lean; sed -n 60,100p mathlib/Mathlib/Analysis/Calculus/BumpFunction/Convolution.lean`
+- `sed -n 60,90p mathlib/Mathlib/Topology/ContinuousMap/SecondCountableSpace.lean; rg -n 'isSeparable' mathlib/Mathlib/Topology/Bases.lean`
+- `sed -n 900,925p mathlib/Mathlib/LinearAlgebra/Alternating/Basic.lean (Module.Basis.ext_alternating)`
+- `rg -n '^theorem (continuous_infE[dD]ist|infE[dD]ist_zero_of_mem|mem_closure_iff_infE[dD]ist_zero)' mathlib/Mathlib`
+- `#synth CompleteSpace / FiniteDimensional / SecondCountableTopology / ProperSpace (Covector (Eucl P) n); BorelSpace (Eucl P); Fintype (SimonMultiIndex n P); FirstCountableTopology (E -> R) for countable E`
+- `python3 listing of dag.json lean_name values; nodes/root-federer-fleming-a1/decomposition-v1.json (should_split false)`
+- `python3 -I: verifier/lean_contract.py validate_lean_statement and gmt-compare.py contract_scope/child_modules for all 8 children`
+- `lake env lean Scratch/Ch_<key>.lean for the 8 generated NodeChallenge modules (0 errors)`
+- `lake env lean Scratch/{Stmts,ContForms,Repr,Weak,Leaves,Cov,Sep,Final}.lean; #print axioms`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/README.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/Separation/Regular.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/Sequences.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/BumpFunction/SmoothApprox.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/BumpFunction/Convolution.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/BumpFunction/FiniteDimension.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Geometry/Manifold/PartitionOfUnity.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/ContinuousMap/SecondCountableSpace.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/LinearAlgebra/Alternating/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/Bases.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/MetricSpace/HausdorffDistance.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/MetricSpace/Thickening.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/UniformSpace/HeineCantor.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Function/L1Space/Integrable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/FormsDuality.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/FormSupNorm.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Representation.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/FixedSupportCurrentTopology.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/CurrentDistributionEquivalence.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-compactness-mass-bounds-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-federer-fleming-a1/decomposition-v1.json`
+- `/tmp/cmb_decomp_scratch/Scratch/Final.lean`
+- `/tmp/cmb_decomp_scratch/Scratch/Leaves.lean`
+- `/tmp/cmb_decomp_scratch/Scratch/Cov.lean`
+- `/tmp/cmb_decomp_scratch/Scratch/Sep.lean`
+- `/tmp/cmb_decomp_scratch/Scratch/Weak.lean`
+- `/tmp/cmb_decomp_scratch/Scratch/Repr.lean`
+- `/tmp/cmb_decomp_scratch/Scratch/ContForms.lean`
+
+Snapshot: project d8d46c95, Mathlib 25730c7c. Contract and Submission are byte-identical (sha256 ea3ee0dd…). They state CompactnessUnderMassBounds over SimonGMT's GeometricCurrentOn, TestFormOn, massOn, WeaklyConvergesOn, covectorEuclideanNorm and IsMeasureRepresentation.
+
+SimonGMT provides GeometricCurrentOn.le_massOn, WeaklyConvergesOn.massOn_le_liminf (2.14), wedgeCovectors_apply_det, euclideanCovectorCoordinate and covectorEuclideanNorm_neg. It has no compactness, separability, mollification or representation-extension lemma (no match).
+
+Mathlib provides exists_open_between_and_isCompact_closure, exists_contDiff_support_eq_eq_one_iff, UniformContinuous.exists_contDiff_dist_le (SmoothApprox, needs an extra import), HasCompactSupport.uniformContinuous_of_continuous, IsCompact.tendsto_subseq, isCompact_univ_pi, ContinuousMap.instSecondCountableTopology (extra import), IsSeparable.exists_countable_dense_subset, Module.Basis.ext_alternating, AlternatingMap.map_perm, Tuple.monotone_sort, OrderEmbedding.range_inj_of_wellFoundedLT, Metric.infEDist lemmas and Integrable.bdd_mul.
+
+Covector (Eucl P) n has a CompleteSpace instance but no FiniteDimensional or SecondCountableTopology instance.
+
+In a scratch build of the frozen project:
+- all 8 exact child statements pass the validator and elaborate as comparator NodeChallenge modules;
+- each statement is proved with no sorry, each composite only from its declared siblings;
+- CompactnessUnderMassBounds follows from weak_subseq and continuous_form_conv, with axioms [propext, Classical.choice, Quot.sound].
+
+The DAG reserves only the 12 depth-1 names, so the cmb_ names are free.

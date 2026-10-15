@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "7f977656672eb8d8f6482a5fdeb1e340d27c9112c6f0f5d7afc7b1006bf3fb16",
+  "git_delta": {
+    "base_commit": "e489a3bc466620be96a9e290db5f524bb22c0b55",
+    "candidate_commit": "72b1c86589819e9500d226b06ea9228ed295adfb",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "imc_im_density_limit",
+    "diff_sha256": "64b6eaeaec0c7411b10bf3898ef05bf7ebf6c025989de486e2f0da8cf47f453f",
+    "source_sha256": "d5d408e6f2fbf03eb8b49b8c45b84e221d88d6c912a6eea0c1f79e4e707ba4ef",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.imc_im_density_limit",
+      "statement": "∀ (N k : ℕ) (M : ℕ → Set (Eucl N)) (θ : ℕ → Eucl N → ℝ) (ξ : ℕ → Eucl N → NVector (Eucl N) k), (∀ p, IsRectifiableTriple (univ : Set (Eucl N)) k (M p) (θ p) (ξ p)) → (∀ p, ∀ x ∈ M p, ∃ m : ℕ, θ p x = m) → (∑' p, ∫⁻ x, ENNReal.ofReal (Real.sqrt (∑ γ : SimonMultiIndex k N, (euclideanNVectorCoordinate ((M (p + 1)).indicator (fun y => θ (p + 1) y • ξ (p + 1) y) x - (M p).indicator (fun y => θ p y • ξ p y) x) γ) ^ 2)) ∂(μHE[k] : Measure (Eucl N))) ≠ ∞ → ∃ (M₀ : Set (Eucl N)) (θ₀ : Eucl N → ℝ) (ξ₀ : Eucl N → NVector (Eucl N) k), IsRectifiableTriple (univ : Set (Eucl N)) k M₀ θ₀ ξ₀ ∧ (∀ x ∈ M₀, ∃ m : ℕ, θ₀ x = m) ∧ ∀ ω : Eucl N → Covector (Eucl N) k, Continuous ω → HasCompactSupport ω → Tendsto (fun p => tauAction k (M p) (θ p) (ξ p) ω) atTop (𝓝 (tauAction k M₀ θ₀ ξ₀ ω))",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

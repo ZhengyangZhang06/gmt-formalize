@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "1b9711d30b4d75053dcd4def82ec825738a8496704982f1ff05926d1596ca7f5",
+  "git_delta": {
+    "base_commit": "972adbd6f40181b985a27190f0f87f66f5fccf2f",
+    "candidate_commit": "daec5514531c4ca597038dde324a44cb81df6388",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "ind_pi_constant_vector_current",
+    "diff_sha256": "2f796bb839553351741465917c9eb0ee6be152125a0b125c381efee9fe84100b",
+    "source_sha256": "e546c8e748ae99880704b75cc9139594e1dfd0b8d48ab9ea69be5517058bc296",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.ind_pi_constant_vector_current",
+      "statement": "∀ (P n : ℕ) (U : Set (Eucl P)) (μ : Measure (Eucl P)) (w : NVector (Eucl P) n), (∀ K : Set (Eucl P), IsCompact K → μ K < ∞) → ∃ T : GeometricCurrentOn U n, IsMeasureRepresentation T μ (fun _ => w)",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

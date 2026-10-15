@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "9990e761e2f66f343a4a1046a2c4ace6ef197f37b9bc278d0adb69a9d365e2c2",
+  "git_delta": {
+    "base_commit": "994fba791118ba405f470a07d0c3ae2ba4eafc54",
+    "candidate_commit": "e27012d9d09a959d93d0122da58e2159eb637dbd",
+    "target": "GMT/Ch06/Submission.lean",
+    "changed_files": [
+      "GMT/Ch06/Submission.lean"
+    ],
+    "diff_sha256": "466452a88219f1fa530765cd1e18f12e90e9cdad4795857f3a8b65459dae57c6",
+    "source_sha256": "660255248b75d021468c1bddd7cc468959a13569826284bb3dd2fea767230d0a",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.slicing_mb_smooth_approx",
+      "statement": "∀ (P : ℕ) (W : Set (Eucl P)), IsOpen W → ∀ (f : Eucl P → ℝ) (L : ℝ≥0), LipschitzOnWith L f W → ∀ LW : ℝ≥0, (∀ᵐ x ∂(volume : Measure (Eucl P)), x ∈ W → ‖fderiv ℝ f x‖₊ ≤ LW) → ∀ K : Set (Eucl P), IsCompact K → K ⊆ W → ∀ δ : ℝ, 0 < δ → ∃ g : Eucl P → ℝ, ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) g ∧ (∀ x ∈ K, |g x - f x| ≤ δ) ∧ (∀ x ∈ K, ‖fderiv ℝ g x‖₊ ≤ LW)",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

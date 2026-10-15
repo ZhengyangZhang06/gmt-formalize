@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "ebe2558095f4d691cac5271429f651d8f9ae299c402c1dd6d38704ba8092db8b",
+  "git_delta": {
+    "base_commit": "de560c469d02806243edab2d35b9c4b91028dbc8",
+    "candidate_commit": "705d3ebd6a119df07edbf2e18934a3813cc2cd56",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "dph_iprod_slice_extDeriv",
+    "diff_sha256": "21ca8d67fffb914058471f88bc6ca7eb56fa9196ed7d6ef79577c4f35e2a8ddf",
+    "source_sha256": "ffa8bce6f2553585dc7979a688c5015c991885a61febd7a8a3e4532e16afab18",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dph_iprod_slice_extDeriv",
+      "statement": "(∀ (m : ℕ) (ψ : TestFormOn (univ : Set (Eucl (m + 1))) 0) (y : Eucl (m + 1)) (v : Fin 0 → Eucl m), ((exteriorDerivativeTestOn (univ : Set (Eucl (m + 1))) 0 ψ : TestFormOn (univ : Set (Eucl (m + 1))) (0 + 1)) : DifferentialForm (Eucl (m + 1)) (0 + 1)) y (Fin.cons (EuclideanSpace.single 0 1) fun i => (EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm (Fin.cons 0 (EuclideanSpace.equiv (Fin m) ℝ (v i)))) = fderiv ℝ (ψ : DifferentialForm (Eucl (m + 1)) 0) y (EuclideanSpace.single 0 1) (fun i => (EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm (Fin.cons 0 (EuclideanSpace.equiv (Fin m) ℝ (v i))))) ∧ (∀ (m j : ℕ) (ψ : TestFormOn (univ : Set (Eucl (m + 1))) (j + 1)) (φ : TestFormOn (univ : Set (Eucl m)) j) (s : ℝ), (∀ (x : Eucl m) (w : Fin j → Eucl m), (φ : DifferentialForm (Eucl m) j) x w = (ψ : DifferentialForm (Eucl (m + 1)) (j + 1)) ((EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm (Fin.cons s (EuclideanSpace.equiv (Fin m) ℝ x))) (Fin.cons (EuclideanSpace.single 0 1) fun i => (EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm (Fin.cons 0 (EuclideanSpace.equiv (Fin m) ℝ (w i))))) → ∀ (x : Eucl m) (v : Fin (j + 1) → Eucl m), ((exteriorDerivativeTestOn (univ : Set (Eucl (m + 1))) (j + 1) ψ : TestFormOn (univ : Set (Eucl (m + 1))) (j + 1 + 1)) : DifferentialForm (Eucl (m + 1)) (j + 1 + 1)) ((EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm (Fin.cons s (EuclideanSpace.equiv (Fin m) ℝ x))) (Fin.cons (EuclideanSpace.single 0 1) fun i => (EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm (Fin.cons 0 (EuclideanSpace.equiv (Fin m) ℝ (v i)))) = fderiv ℝ (ψ : DifferentialForm (Eucl (m + 1)) (j + 1)) ((EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm (Fin.cons s (EuclideanSpace.equiv (Fin m) ℝ x))) (EuclideanSpace.single 0 1) (fun i => (EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm (Fin.cons 0 (EuclideanSpace.equiv (Fin m) ℝ (v i)))) - ((exteriorDerivativeTestOn (univ : Set (Eucl m)) j φ : TestFormOn (univ : Set (Eucl m)) (j + 1)) : DifferentialForm (Eucl m) (j + 1)) x v)",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

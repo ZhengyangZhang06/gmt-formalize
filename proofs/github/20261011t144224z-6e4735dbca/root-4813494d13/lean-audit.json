@@ -1,0 +1,28 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "58c2b6e738c6866d7a41d7e13af24e1bcb38a0841c4dde73189bc078e86ab9b7",
+  "git_delta": {
+    "base_commit": "a54722e56abd4f7ad6a79511cc31c50cfa21e8db",
+    "candidate_commit": "7b0a612821b043dd44ca4b593d53caa1eb99425d",
+    "target": "GMT/Ch06/Submission.lean",
+    "changed_files": [
+      "GMT/Ch06/Submission.lean",
+      "proofs/github/20261011t144224z-6e4735dbca/root-final-proof.md"
+    ],
+    "diff_sha256": "d8319eed0eac2a644d5f623b400d21c2234311ca636aff5b08cc6f26b9384a7f",
+    "source_sha256": "8844dc262ee305c7d301443a16525f97108a466caebf817f3e7d820abf0846f0",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "GMT.Ch06.main_theorem",
+      "statement": "CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": true,
+  "publication_proof_blob": "9aab19ebcfd04bc2e3fec462954d3595100deca6"
+}

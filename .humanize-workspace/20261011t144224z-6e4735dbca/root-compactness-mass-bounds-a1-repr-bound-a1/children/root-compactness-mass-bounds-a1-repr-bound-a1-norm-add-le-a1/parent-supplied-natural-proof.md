@@ -1,0 +1,88 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.compactness_mass_bounds-a1.repr_bound-a1`
+- Child DAG node: `root.compactness_mass_bounds-a1.repr_bound-a1.norm_add_le-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: parent proof Step 1(ii).
+
+1. Let N := Fin n → Fin P, a finite type, and b_i := EuclideanSpace.basisFun (Fin P) ℝ i. Define the coefficient-vector map c : Covector (Eucl P) n → EuclideanSpace ℝ N by c(a)_I := a(b_{I(0)}, …, b_{I(n−1)}) if I is strictly increasing and c(a)_I := 0 otherwise. In Lean: c(a) := WithLp.toLp 2 (fun I ↦ if StrictMono I then a (fun i ↦ b (I i)) else 0).
+2. For every a, covectorEuclideanNorm a = ‖c(a)‖. Indeed ‖c(a)‖ = √(Σ_I ‖c(a)_I‖²) (EuclideanSpace.norm_eq). For each I, ‖c(a)_I‖² = a(b_I)² if I is strictly increasing and = 0 otherwise. This is exactly the I-th summand in the definition of covectorEuclideanNorm a, so the two square roots agree.
+3. c is additive: c(α + γ) = c(α) + c(γ). For strictly increasing I, (α + γ)(b_I) = α(b_I) + γ(b_I), because evaluation of continuous alternating maps is additive in the map. For the other I, both sides are 0 = 0 + 0. In Lean, combine the two toLp vectors (WithLp.toLp_add) and compare coordinatewise, splitting on StrictMono I.
+4. By the triangle inequality in the normed space EuclideanSpace ℝ N (norm_add_le): covectorEuclideanNorm (α + γ) = ‖c(α) + c(γ)‖ ≤ ‖c(α)‖ + ‖c(γ)‖ = covectorEuclideanNorm α + covectorEuclideanNorm γ. ∎
+
+## Key steps
+
+1. Coefficient vector c(a) ∈ EuclideanSpace ℝ (Fin n → Fin P) with c(a)_I = [I strictly increasing]·a(b_I).
+2. covectorEuclideanNorm a = ‖c(a)‖, comparing summands under EuclideanSpace.norm_eq.
+3. c(α + γ) = c(α) + c(γ).
+4. Apply norm_add_le in EuclideanSpace ℝ (Fin n → Fin P).
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat local-references/197bdd4b88278494/manifest.json (project_commit d8d46c9587747dee0751a1f780fcafdba16a3886, mathlib_commit 25730c7c759d108ef87ab70af2342a196760f79d)`
+- `sha256sum GMT/Ch06/{Contract,Submission}.lean (both ea3ee0ddd08be5db60dced2b002e9f60fd87091910069abcfcbd7e34db89853d)`
+- `rg -n 'theorem exists_open_between_and_isCompact_closure' mathlib/Mathlib`
+- `rg -n 'theorem exists_contDiff_support_eq_eq_one_iff' mathlib/Mathlib`
+- `rg -n '^theorem Integrable.bdd_mul\b' mathlib/Mathlib`
+- `rg -n 'theorem integrableOn_iff_integrable_of_support_subset|theorem setIntegral_eq_integral_of_forall_compl_eq_zero|theorem IntegrableOn.congr_fun\b' mathlib/Mathlib`
+- `rg -n 'theorem EuclideanSpace.norm_eq|theorem EuclideanSpace.basisFun_apply' mathlib/Mathlib`
+- `rg -n 'covectorEuclideanNorm|euclideanCovectorCoordinate' simongmt/Poincare`
+- `rg -n 'covectorEuclideanNorm_add|covectorEuclideanNorm_le|abs_euclideanCovectorCoordinate|euclideanCovectorCoordinate_le|integrableOn_coeff|IntegrableOn.*euclideanNVectorCoordinate' project simongmt/Poincare (no match)`
+- `#check exists_contDiff_support_eq_eq_one_iff / Integrable.bdd_mul / integral_finsetSum / integrable_finsetSum / ContinuousAlternatingMap.apply / WithLp.toLp after import GMT.Ch06.Submission`
+- `python3 -I: dag.json lean_name scan and nodes/*/decomposition-v*.json scan for the four proposed names (no collision)`
+- `python3 -I: verifier lean_contract.validate_lean_statement and gmt-compare.contract_scope/child_modules (mode contract) for the 4 child statements`
+- `lake env lean Scratch/AB.lean, Scratch/C1.lean, Scratch/C2P.lean, Gen/*__NodeChallenge.lean, Scratch/Sol_0..4.lean with #print axioms`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/Separation/Regular.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Geometry/Manifold/PartitionOfUnity.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Function/L1Space/Integrable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/FormsDuality.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-compactness-mass-bounds-a1-repr-bound-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-compactness-mass-bounds-a1/decomposition-v1.json`
+- `/tmp/rb_decomp_XjqsL7/Scratch/AB.lean`
+- `/tmp/rb_decomp_XjqsL7/Scratch/C1.lean`
+- `/tmp/rb_decomp_XjqsL7/Scratch/C2P.lean`
+- `/tmp/rb_decomp_sol_P93Ver/GMT/Ch06/Submission.lean`
+
+Snapshot: project d8d46c95, Mathlib 25730c7c. The frozen Contract and Submission are byte-identical (sha256 ea3ee0dd…).
+
+SimonGMT provides:
+- covectorEuclideanNorm, with only the lemmas _zero, _nonneg and _neg;
+- euclideanCovectorCoordinate, euclideanNVectorCoordinate and wedgeCovectors;
+- TestFormOn, whose membership is (ContDiff ℝ ∞ ∧ HasCompactSupport) ∧ tsupport ⊆ U.
+It has no coordinate bound, triangle inequality or coefficient-integrability lemma (rg: no match in the project or in SimonGMT).
+
+The pinned Mathlib provides, all usable after `import GMT.Ch06.Submission`:
+- exists_open_between_and_isCompact_closure (Topology/Separation/Regular.lean:364);
+- exists_contDiff_support_eq_eq_one_iff (Geometry/Manifold/PartitionOfUnity.lean:789);
+- Integrable.bdd_mul (L1Space/Integrable.lean:1067);
+- IntegrableOn.congr_fun and integrableOn_iff_integrable_of_support_subset (Integral/IntegrableOn.lean);
+- setIntegral_eq_integral_of_forall_compl_eq_zero (Bochner/Set.lean:486);
+- EuclideanSpace.norm_eq (PiL2.lean:145);
+- integral_finsetSum and integrable_finsetSum.
+
+In scratch builds of the frozen project:
+- all 4 child statements validate and elaborate as comparator NodeChallenge modules;
+- each child is proved with axioms [propext, Classical.choice, Quot.sound];
+- the selected frozen type follows from the 4 children plus the frozen sibling types of mass_bound, mollify and covector_expansion, with the same axioms.
+
+The proposed cmb_rb_ names are unreserved.

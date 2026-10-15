@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.flat_iff_weak-a1.im_series-a1.series_current-a1.converges_small-a1",
+  "parent_id": "root.flat_iff_weak-a1.im_series-a1.series_current-a1",
+  "depth": 4,
+  "title": "A null sequence of test forms is uniformly small in coefficient norm, with supports in one compact set",
+  "statement": "Let P, n ∈ ℕ, U ⊆ ℝ^P any set, and ω_q ∈ TestFormOn U n (q ∈ ℕ) with TestFormOnConverges ω 0. That is, there is a compact K₀ ⊆ U with tsupport ω_q ⊆ K₀ for all q and tsupport 0 ⊆ K₀, and for every k ∈ ℕ, iteratedFDeriv ℝ k ω_q → iteratedFDeriv ℝ k 0 uniformly on K₀ as q → ∞. Then there is a compact K ⊆ U with tsupport ω_q ⊆ K for every q such that, for every ε > 0 and all sufficiently large q, covectorEuclideanNorm(ω_q(x)) ≤ ε for every x ∈ ℝ^P.",
+  "lean_statement": "∀ (P n : ℕ) (U : Set (Eucl P)) (ω : ℕ → TestFormOn U n), TestFormOnConverges ω 0 → ∃ K : Set (Eucl P), IsCompact K ∧ K ⊆ U ∧ (∀ q, tsupport ((ω q : DifferentialForm (Eucl P) n)) ⊆ K) ∧ ∀ ε : ℝ, 0 < ε → ∀ᶠ q in atTop, ∀ x, covectorEuclideanNorm ((ω q : DifferentialForm (Eucl P) n) x) ≤ ε",
+  "lean_name": "fiw_ims_sc_converges_zero_small",
+  "depends_on": [
+    "root.flat_iff_weak-a1.im_series-a1.series_current-a1.covector_norm-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.flat_iff_weak-a1.im_series-a1.series_current-a1.covector_norm-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-flat-iff-weak-a1-im-series-a1-series-current-a1-converges-small-a1-a1"
+}

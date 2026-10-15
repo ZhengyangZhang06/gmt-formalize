@@ -1,0 +1,91 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "map_euclideanHausdorffMeasure|euclideanHausdorffMeasure_eq_volume",
+        "integral_map|isClosedEmbedding|isCompact_preimage",
+        "exists_contDiff_zero_iff_one_iff_of_isClosed",
+        "lintegral_liminf_le|theorem ae_lt_top",
+        "frequently_lt_of_liminf_lt|extraction_of_frequently_atTop|norm_fderiv_le_of_lipschitz",
+        "restrictDomain|zeroRegion|support|massOn|def mass",
+        "ind_pi_",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/plane-split-audit-p0lckiw9/CheckTypes.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/plane-split-audit-p0lckiw9/Assembly.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Submission.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Geometry/Manifold/PartitionOfUnity.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/MetricSpace/Thickening.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Add.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Markov.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/FormsDuality.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-integrality-weak-limits-a1-integer-density-a1-plane-integer-a1/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-integrality-weak-limits-a1-integer-density-a1-plane-integer-a1/decomposition-v1.json",
+        "/tmp/plane-split-audit-p0lckiw9/CheckTypes.lean",
+        "/tmp/plane-split-audit-p0lckiw9/Assembly.lean",
+        "/tmp/plane-split-audit-p0lckiw9/br_weightedTangent_congr.log",
+        "/tmp/plane-split-audit-p0lckiw9/br_restrictDomain_isIntegerMultiplicity.log",
+        "/tmp/plane-split-audit-p0lckiw9/iwl_restriction_theory.log",
+        "/tmp/plane-split-audit-p0lckiw9/polyhedral_approx_restriction_tau.log",
+        "/tmp/plane-split-audit-p0lckiw9/slicing_representation_unique.log",
+        "/tmp/plane-split-audit-p0lckiw9/ltg_tau_integrable.log"
+      ],
+      "conclusion": "Verified the pinned project and Mathlib revisions and compatibility of the inspected sources. All seven statements pass lexical validation and elaborate independently with autoImplicit disabled in the exact comparator scope. Their inline constructions have the intended types; no matrix-unit construction occurs. All names are bare identifiers, with no reservation conflicts among the final 506 DAG nodes and no identical accepted child contracts found. RWL, SPF and TOP match their frozen antecedent types. Reused declarations match their accepted frozen contracts; fresh source compilation confirms only propext, Classical.choice and Quot.sound. The split is appropriate, dependencies are correctly directed and acyclic, and the supplied child proofs are complete. A fresh Lean assembly derives the exact selected ind_plane_multiplicity_integer contract from the proposed children and the already-declared ind_const_multiple_integer sibling dependency, using only the permitted axioms."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "frame_geometry",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and Lean proposition agree. Orthogonality, Pythagoras and additivity establish all coordinate and Lipschitz claims; closed-ball containment proves both compactness conclusions. The proof covers arbitrary n and negative γ, since d is nonnegative. No circular dependency occurs."
+    },
+    {
+      "key": "span_integral",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The closed isometric parametrization has exactly the stated range and pushes volume to the restricted normalized Hausdorff measure. MeasurableEmbedding.integral_map applies to arbitrary h, so no measurability or integrability hypothesis is missing. Compact preimages establish finiteness on compacts."
+    },
+    {
+      "key": "const_vector_current",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The statement correctly permits arbitrary U. The supplied proof constructs the linear functional, proves integrability, and verifies precisely the zero-sequence continuity required by GeometricCurrentOn using a common compact support and an explicit epsilon estimate. Its representation matches the Lean conclusion."
+    },
+    {
+      "key": "restriction_open_im",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Both openness hypotheses are accounted for. The accepted restriction formula gives the action on M ∩ A, and weighted tangent locality supplies the essential orientation transfer. Every remaining rectifiable-triple field and integer multiplicity is inherited as stated. No assumption A ⊆ U is needed."
+    },
+    {
+      "key": "slice_selection",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact ST and RWL hypotheses suffice. Restriction uniqueness identifies slices with boundaries; the mass measure gives domination. Fatou, removal of the countable exceptional set and subsequence extraction produce γ, κ and finite G. The final argument proves convergence to every restriction R required by the proposition."
+    },
+    {
+      "key": "localized_cycles",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All five declared dependencies are used correctly. Domain restriction preserves the needed bounds and cycle condition; the planar representation makes X its own restriction at the selected positive level. Integer multiplicity, total mass bounds, convergence and the support inclusion are each explicitly established for Z."
+    },
+    {
+      "key": "projected_limit",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The LPF and frozen SPF antecedents match the prose. Compact K′ and the open zero region establish properness despite support being only relatively closed. A common cutoff independent of k permits weak convergence; the frame identities and Hausdorff change of variables identify the limit exactly. The mass estimates give the precise TOP-ready conclusion."
+    }
+  ],
+  "required_changes": []
+}

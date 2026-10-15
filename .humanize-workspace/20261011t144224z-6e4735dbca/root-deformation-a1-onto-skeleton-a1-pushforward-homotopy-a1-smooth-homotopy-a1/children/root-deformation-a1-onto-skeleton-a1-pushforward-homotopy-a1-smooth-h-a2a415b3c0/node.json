@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.deformation-a1.onto_skeleton-a1.pushforward_homotopy-a1.smooth_homotopy-a1.slice_compatible-a1",
+  "parent_id": "root.deformation-a1.onto_skeleton-a1.pushforward_homotopy-a1.smooth_homotopy-a1",
+  "depth": 5,
+  "title": "Horizontal slices of a compatible form are compatible test forms: j_s^#(G^#ω) = (G∘j_s)^#ω",
+  "statement": "Let m, m′, q ∈ ℕ, let G : ℝ^{m+1} → ℝ^{m′} be C^∞ (ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞)), let ω be any q-form on ℝ^{m′} (ω : DifferentialForm (Eucl m′) q; no regularity is assumed), θ ∈ D^q(ℝ^{m+1}), N ⊆ ℝ^{m+1} any set and s ∈ ℝ, and assume θ(y) = ω(G(y)).compContinuousLinearMap (fderiv ℝ G y) for every y ∈ N. Then there is θ_s ∈ D^q(ℝ^m) such that (i) θ_s(x)(v) = θ(cons(s, x))(i ↦ ι(v_i)) for all x ∈ ℝ^m and v : Fin q → ℝ^m, and (ii) θ_s(x) = ω(G_s(x)).compContinuousLinearMap (fderiv ℝ G_s x) for every x ∈ ℝ^m with cons(s, x) ∈ N, where G_s := (fun x => G(cons(s, x))). Notation: ℝ^p := Eucl p = EuclideanSpace ℝ (Fin p). For s ∈ ℝ and x ∈ ℝ^m, cons(s, x) := (EuclideanSpace.equiv (Fin (m+1)) ℝ).symm (Fin.cons s (EuclideanSpace.equiv (Fin m) ℝ x)) ∈ ℝ^{m+1}; ι(v) := cons(0, v); e₀ := EuclideanSpace.single 0 1 ∈ ℝ^{m+1}; for y ∈ ℝ^{m+1}, t(y) := EuclideanSpace.equiv (Fin (m+1)) ℝ y 0 and tl(y) := (EuclideanSpace.equiv (Fin m) ℝ).symm (Fin.tail (EuclideanSpace.equiv (Fin (m+1)) ℝ y)); cyl(A) := {y : t(y) ∈ [0,1] ∧ tl(y) ∈ A}. D_q(ℝ^p) := GeometricCurrentOn univ q, D^q(ℝ^p) := TestFormOn univ q, M = mass, spt = support, |γ| := covectorEuclideanNorm γ. For X ∈ D_q(ℝ^m) and Z ∈ D_{q+1}(ℝ^{m+1}), ProdChar(X, Z) means: for every η ∈ D^{q+1}(ℝ^{m+1}) and every φ : ℝ → D^q(ℝ^m) with φ(s)(x)(v) = η(cons(s, x))(Fin.cons e₀ (i ↦ ι(v_i))) for all s ∈ [0,1], x ∈ ℝ^m and v : Fin q → ℝ^m, one has Z(η) = ∫_0^1 X(φ(s)) ds (interval integral).",
+  "lean_statement": "∀ (m m' q : ℕ) (G : Eucl (m + 1) → Eucl m') (ω : DifferentialForm (Eucl m') q) (θ : TestFormOn (univ : Set (Eucl (m + 1))) q) (N : Set (Eucl (m + 1))) (s : ℝ), ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) G → (∀ y ∈ N, (θ : DifferentialForm (Eucl (m + 1)) q) y = (ω (G y)).compContinuousLinearMap (fderiv ℝ G y)) → ∃ θs : TestFormOn (univ : Set (Eucl m)) q, (∀ (x : Eucl m) (v : Fin q → Eucl m), (θs : DifferentialForm (Eucl m) q) x v = (θ : DifferentialForm (Eucl (m + 1)) q) ((EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm (Fin.cons s (EuclideanSpace.equiv (Fin m) ℝ x))) (fun i => (EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm (Fin.cons 0 (EuclideanSpace.equiv (Fin m) ℝ (v i))))) ∧ ∀ x : Eucl m, (EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm (Fin.cons s (EuclideanSpace.equiv (Fin m) ℝ x)) ∈ N → (θs : DifferentialForm (Eucl m) q) x = (ω ((fun x : Eucl m => G ((EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm (Fin.cons s (EuclideanSpace.equiv (Fin m) ℝ x)))) x)).compContinuousLinearMap (fderiv ℝ (fun x : Eucl m => G ((EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm (Fin.cons s (EuclideanSpace.equiv (Fin m) ℝ x)))) x)",
+  "lean_name": "dph_sh_slice_compatible_testForm",
+  "depends_on": [
+    "root.integrality_weak_limits-a1.smooth_pushforward-a1.compatible_form-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.integrality_weak_limits-a1.smooth_pushforward-a1.compatible_form-a1",
+      "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-integrality-weak-limits-a1-smooth-pushforward-a1-compatible-form-a1-a1",
+      "result_commit": "fd5f1e29719e3bfa62df774678e3c6879599f8f9",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-deformation-a1-onto-skeleton-a1-pushforward-homotopy-a1-smooth-h-a2a415b3c0-a1"
+}

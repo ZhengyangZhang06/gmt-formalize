@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.rectifiability-a1.projection_null-a1.potential_form_derivative-a1.extderiv_sum_wedge-a1",
+  "parent_id": "root.rectifiability-a1.projection_null-a1.potential_form_derivative-a1",
+  "depth": 4,
+  "title": "Exterior derivative of a sum of scalar functions times constant wedges",
+  "statement": "Let P, m ∈ ℕ and let ι be a finite type. For j ∈ ι let g_j : ℝ^P → ℝ and β_j : Fin m → (ℝ^P)^*, and let x ∈ ℝ^P. Assume every g_j is differentiable at x. Let Φ be the m-form Φ(z) := Σ_{j∈ι} g_j(z)·wedgeCovectors m β_j; the covectors are constant and only the coefficients vary. Then Mathlib's exterior derivative of Φ at x is\nextDeriv Φ x = Σ_{j∈ι} wedgeCovectors (m+1) (Fin.cons (Dg_j(x)) β_j),\nthat is, dΦ(x) = Σ_j Dg_j(x)∧β_{j,0}∧⋯∧β_{j,m−1}, where Dg_j(x) = fderiv ℝ (g j) x.",
+  "lean_statement": "∀ (P m : ℕ) (ι : Type) [Fintype ι] (g : ι → Eucl P → ℝ) (β : ι → Fin m → (Eucl P →L[ℝ] ℝ)) (x : Eucl P), (∀ j, DifferentiableAt ℝ (g j) x) → extDeriv (fun z => ∑ j : ι, g j z • wedgeCovectors m (β j)) x = ∑ j : ι, wedgeCovectors (m + 1) (Fin.cons (fderiv ℝ (g j) x) (β j) : Fin (m + 1) → (Eucl P →L[ℝ] ℝ))",
+  "lean_name": "rpn_pfd_extDeriv_sum_smul_wedge",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-rectifiability-a1-projection-null-a1-potential-form-derivative-a-7ce573defd-a1"
+}

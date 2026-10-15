@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.deformation-a1.mass_restriction-a1",
+  "parent_id": "root.deformation-a1",
+  "depth": 2,
+  "title": "Mass measure, uniqueness of representation, and restriction of finite-mass currents (2.7–2.9, 2.12)",
+  "statement": "Mass measure, representation and restriction (Simon 2.7–2.9, 2.12; restriction of integer multiplicity currents). For N, k ∈ ℕ and every X ∈ D_k(ℝ^N) (GeometricCurrentOn univ k) with M(X) < ∞ there are a finite Borel measure μ and a field v of k-vectors such that: X(ω) = ∫ v(x)(ω(x)) dμ(x) with integrable integrand for every test form ω (IsMeasureRepresentation X μ v); μ(ℝ^N ∖ spt X) = 0; for every other measure representation (μ′, v′) of X, every bounded Borel set A and every k-covector α, ∫_A v′(x)(α) dμ′ = ∫_A v(x)(α) dμ; and for every Borel set A there is Y ∈ D_k(ℝ^N) with IsRestriction X A Y, Y(ω) = ∫_A v(x)(ω(x)) dμ for all ω, M_W(Y) = μ(W ∩ A) for every open W, Y′ = Y for every Y′ with IsRestriction X A Y′, and Y integer multiplicity whenever X is.",
+  "lean_statement": "∀ (N k : ℕ) (X : GeometricCurrentOn (univ : Set (Eucl N)) k), X.mass < ∞ → ∃ (μ : Measure (Eucl N)) (v : Eucl N → NVector (Eucl N) k), IsFiniteMeasure μ ∧ IsMeasureRepresentation X μ v ∧ μ X.supportᶜ = 0 ∧ (∀ (μ' : Measure (Eucl N)) (v' : Eucl N → NVector (Eucl N) k), IsMeasureRepresentation X μ' v' → ∀ A : Set (Eucl N), MeasurableSet A → Bornology.IsBounded A → ∀ α : Covector (Eucl N) k, ∫ x in A, v' x α ∂μ' = ∫ x in A, v x α ∂μ) ∧ ∀ A : Set (Eucl N), MeasurableSet A → ∃ Y : GeometricCurrentOn (univ : Set (Eucl N)) k, IsRestriction X A Y ∧ (∀ ω : TestFormOn (univ : Set (Eucl N)) k, Y ω = ∫ x in A, v x ((ω : DifferentialForm (Eucl N) k) x) ∂μ) ∧ (∀ W : Set (Eucl N), IsOpen W → Y.massOn W = μ (W ∩ A)) ∧ (∀ Y' : GeometricCurrentOn (univ : Set (Eucl N)) k, IsRestriction X A Y' → Y' = Y) ∧ (IsIntegerMultiplicity X → IsIntegerMultiplicity Y)",
+  "lean_name": "deformation_mass_restriction",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-deformation-a1-mass-restriction-a1-a1"
+}

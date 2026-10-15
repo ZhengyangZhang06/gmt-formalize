@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "095572d80c203b0d9281d179832580eb60eef48fd22cc6dbfa02f93855a2fbe6",
+  "git_delta": {
+    "base_commit": "7336a75235bd85af90cf9a1cb9fadf903c511944",
+    "candidate_commit": "e2db51a6e54a2891d5fdf798c4a4804bbc40aca0",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "rpn_pe_kernel_representation",
+    "diff_sha256": "1f3f388481d1458786a3dda41488888d1c346391c90cebf7f4eabca3c0485a33",
+    "source_sha256": "7feb9c06f199b5a0ed22fc3fa05c2757e59e1fbaebafd1ca1b6f4639dafb943f",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.rpn_pe_kernel_representation",
+      "statement": "∀ (m : ℕ) (a : Eucl (m + 1) → ℝ), ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) a → HasCompactSupport a → ∀ y : Eucl (m + 1), ∑ j : Fin (m + 1), ∫ t, t j / (((m : ℝ) + 1) * (volume (ball (0 : Eucl (m + 1)) 1)).toReal * ‖t‖ ^ (m + 1)) * fderiv ℝ a (y - t) (EuclideanSpace.single j (1 : ℝ)) = a y",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

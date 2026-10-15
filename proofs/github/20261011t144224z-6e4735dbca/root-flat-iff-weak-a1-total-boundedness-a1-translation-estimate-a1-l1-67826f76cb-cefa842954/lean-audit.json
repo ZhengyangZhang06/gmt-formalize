@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "734bdfb1b9b58fe7cb4259ba35d72a61d051467b007f4b81aec4c32f67bbbce6",
+  "git_delta": {
+    "base_commit": "798cfdf72f40aea1c31b68c949480e8c2f8c93ea",
+    "candidate_commit": "dd6b43de71c24ee243fee201b0b4f60eff209116",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "fiw_tb_te_l1d_compact_sign_approx",
+    "diff_sha256": "036a35f1310e32b084a9326790ce2d8df3820b6bce8696b0482ed4ca419a0502",
+    "source_sha256": "d04e1cc769622618f4f7423359c7fdd76abab362054e7d1f0a9d58eb12f2c192",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.fiw_tb_te_l1d_compact_sign_approx",
+      "statement": "∀ (n : ℕ) (w : Eucl n → ℝ), Integrable w → ∀ ε : ℝ, 0 < ε → ∃ K₁ K₂ : Set (Eucl n), IsCompact K₁ ∧ IsCompact K₂ ∧ Disjoint K₁ K₂ ∧ ∀ g : Eucl n → ℝ, AEStronglyMeasurable g → (∀ x, |g x| ≤ 1) → (∀ x ∈ K₁, g x = 1) → (∀ x ∈ K₂, g x = -1) → (∫ x, |w x|) < (∫ x, w x * g x) + ε",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

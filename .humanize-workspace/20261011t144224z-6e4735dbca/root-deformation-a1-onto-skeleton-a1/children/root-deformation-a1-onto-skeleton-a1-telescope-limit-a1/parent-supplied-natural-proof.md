@@ -1,0 +1,86 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.deformation-a1.onto_skeleton-a1`
+- Child DAG node: `root.deformation-a1.onto_skeleton-a1.telescope_limit-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: I.5 of the supplied proof of deformation_onto_skeleton (printed (19): M-limits), in the telescoped form in which Steps 4–6 of that proof use it: the sequences ψ_#X_ν, h_#([[(0,1)]]×X_ν), ψ_#Z′_ν, h_#([[(0,1)]]×Z′_ν) have consecutive differences ψ_#Y_ν, h_#([[(0,1)]]×Y_ν), ψ_#Z_ν, h_#([[(0,1)]]×Z_ν) whose masses are summable by (11)–(14). The integrality of the limit (3.13) is not part of this child: the parent obtains it from the sibling deformation_im_completeness, whose hypothesis is exactly the tail bound of the third conjunct below.
+
+Notation. D_k := GeometricCurrentOn univ k on ℝ^N; M = mass; for a test form ω, ‖ω‖ := sup_x |ω(x)| with |·| = covectorEuclideanNorm (finite, as ω is continuous with compact support). m_ν := M(B_ν) ∈ [0, ∞]; S := Σ_ν m_ν < ∞ by hypothesis, so every m_ν < ∞; τ_ν := Σ_μ m_{μ+ν} (the ν-th tail). Reused facts (sibling children): (F1) mass_bound (cmb_abs_apply_le_of_massOn_le): if 0 ≤ B′, M_W(Y) ≤ B′, tsupport ω ⊆ W and |ω(x)| ≤ C′ for all x, then |Y(ω)| ≤ B′C′; (F3) support_lemmas (iwl_cr_support_lemmas), part (2): weak limits of currents supported in a closed set F are supported in F (U = univ is open).
+
+1. (Pointwise bounds.) For every ν and every test form ω, |B_ν(ω)| ≤ m_ν‖ω‖ (F1 with W = univ, B′ = m_ν as a real number, C′ = ‖ω‖). Hence Σ_μ |B_μ(ω)| ≤ S‖ω‖ < ∞: the real series Σ_μ B_μ(ω) converges absolutely (summable_of_nonneg_of_le, comparison with the summable sequence m_μ‖ω‖).
+
+2. (Telescoping.) From the hypothesis A_{ν+1}(ω) = A_ν(ω) + B_ν(ω), induction on i gives, for ν ≤ i, A_i(ω) = A_ν(ω) + Σ_{ν≤μ<i} B_μ(ω); in particular A_i(ω) = A_0(ω) + Σ_{μ<i} B_μ(ω).
+
+3. (The limit functional.) Define A′(ω) := A_0(ω) + Σ_{μ=0}^∞ B_μ(ω). By Steps 1–2, A_i(ω) → A′(ω) as i → ∞ (partial sums of a convergent series). A′ is ℝ-linear in ω: A_0 and every B_μ are linear, and the sum of absolutely convergent series is linear (tsum_add, tsum_mul_left).
+
+4. (A′ is a current.) Let (ω_j) be a sequence with TestFormOnConverges ω_j 0: there is a compact K with tsupport ω_j ⊆ K for all j and iteratedFDeriv ℝ q ω_j → 0 uniformly on K for every q. For q = 0, ‖iteratedFDeriv ℝ 0 ω_j x‖ = ‖ω_j(x)‖ (operator norm of the alternating map; norm_iteratedFDeriv_zero), so ω_j → 0 uniformly on K, and ω_j = 0 off K. Every coefficient of a k-covector α satisfies |α(e_{γ_1},…,e_{γ_k})| ≤ ‖α‖ (unit basis vectors), so |α| ≤ √(N^k)·‖α‖ (the defining sum has at most N^k terms). Hence ‖ω_j‖ → 0. Then |A′(ω_j)| ≤ |A_0(ω_j)| + S‖ω_j‖ → 0, because A_0 is a current (its continuity field applied to (ω_j)) and S < ∞. So the linear map ω ↦ A′(ω) satisfies the continuity condition of GeometricCurrentOn; call this current A′. By Step 3, WeaklyConvergesOn A A′.
+
+5. (Mass of the tails.) Fix ν and any D_ν ∈ D_k with D_ν(ω) = A′(ω) − A_ν(ω) for all ω. Let ω be mass-admissible for W = univ (|ω(x)| ≤ 1 for all x). By Steps 2–3, D_ν(ω) = lim_i (A_i(ω) − A_ν(ω)) = Σ_{μ≥ν} B_μ(ω) = Σ_{μ} B_{μ+ν}(ω), so, using Step 1 with ‖ω‖ ≤ 1, D_ν(ω) ≤ Σ_μ |B_{μ+ν}(ω)| ≤ Σ_μ m_{μ+ν}. In [0, ∞]: ENNReal.ofReal(D_ν(ω)) ≤ ENNReal.ofReal(Σ_μ |B_{μ+ν}(ω)|) = Σ_μ ENNReal.ofReal |B_{μ+ν}(ω)| ≤ Σ_μ m_{μ+ν} = τ_ν (ENNReal.ofReal_tsum_of_nonneg; ofReal|B(ω)| ≤ m by Step 1). Taking the supremum over admissible ω (the definition of massOn as sSup), M(D_ν) ≤ τ_ν. This is the third conjunct.
+
+6. (Mass of the limit.) For ω mass-admissible as in Step 5: A′(ω) = A_0(ω) + Σ_μ B_μ(ω), so ENNReal.ofReal(A′(ω)) ≤ ENNReal.ofReal(A_0(ω)) + Σ_μ ENNReal.ofReal|B_μ(ω)| ≤ M(A_0) + Σ_μ m_μ (ENNReal.ofReal_add_le; ENNReal.ofReal(A_0(ω)) ≤ M(A_0) by GeometricCurrentOn.le_massOn). Taking the supremum, M(A′) ≤ M(A_0) + Σ_ν M(B_ν). (If M(A_0) = ∞ there is nothing to prove.)
+
+7. (Supports.) If F is closed and spt A_ν ⊆ F for all ν, then spt A′ ⊆ F by (F3)(2) applied with U = univ (open), K = F, Z_j = A_j, Z = A′, using WeaklyConvergesOn A A′ from Step 4.
+
+Steps 4–7 give the four conjuncts. ∎
+
+Remark (how the parent uses it). With A_ν := P_n X_{ν+3}, B_ν := P_n Y_{ν+3} (and similarly with H_n, and with P_m, H_m on Z′, Z), the sibling deformation_pushforward_homotopy gives the telescoping identity (linearity) and the summable mass bounds (11)–(14); the third conjunct with ENNReal.tendsto_sum_nat_add gives M(A′ − A_ν) → 0, which is the hypothesis of deformation_im_completeness and implies A_ν(ω) → A′(ω) uniformly on bounded forms; the second conjunct gives (24); the fourth conjunct gives the support statements (22)–(23).
+
+## Key steps
+
+1. |B_ν(ω)| ≤ M(B_ν)‖ω‖, so Σ_μ B_μ(ω) converges absolutely.
+2. Telescoping A_i = A_ν + Σ_{ν≤μ<i} B_μ; define A′(ω) := A_0(ω) + Σ_μ B_μ(ω), the pointwise limit.
+3. A′ is linear and sequentially continuous (|A′(ω)| ≤ |A_0(ω)| + S‖ω‖ and test-form convergence forces ‖ω_j‖ → 0), hence a current, and A_ν ⇀ A′.
+4. For mass-admissible ω, (A′ − A_ν)(ω) = Σ_{μ≥ν} B_μ(ω) ≤ tail, and A′(ω) ≤ M(A_0) + Σ M(B_μ); take suprema.
+5. Supports pass to weak limits in closed sets (reused support lemma).
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat local-references/197bdd4b88278494/manifest.json (mode local-project; project_commit d8d46c9587747dee0751a1f780fcafdba16a3886; mathlib_commit 25730c7c759d108ef87ab70af2342a196760f79d)`
+- `cat -n GMT/Ch06/Contract.lean (IsRectifiableTriple, tauAction, IsIntegerMultiplicity, IsMeasureRepresentation, IsRestriction, IsSlice, IsLipschitzPushforward, latticeFace, SlicingTheorem, LipschitzPushforwardIntegerMultiplicity, DeformationTheorem)`
+- `grep -n "^structure\|^def \|^instance\|^theorem" .lake/packages/simongmt/Poincare/SimonGMT/Chapter06/{Currents,Mass,CurrentLocalEquality,FormsDuality,AffineCurrentPushforward}.lean (GeometricCurrentOn has only Zero/ext, no Add; massOn = sSup over covectorEuclideanNorm ≤ 1; support = U \ zeroRegion; nVectorPushforward n L w = w.comp (covectorPullback n L); only affine push-forwards exist)`
+- `grep -n "def HasWeightedApproximateTangentSpaceAt\|def CountablyRectifiable" -A14 .lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `rg -n "theorem extDeriv_pullback|theorem extDerivWithin_pullback" local-references/.../mathlib/Mathlib/Analysis/Calculus/DifferentialForm/Basic.lean (lines 239, 259)`
+- `lake env lean Test1/Test3/Test4.lean: #check HasCompactSupport.contDiff_convolution_left, LipschitzOnWith.extend_real, norm_fderiv_le_of_lipschitz, extDeriv_pullback, LocallyFinite.isClosed_iUnion, IsCompact.exists_thickening_subset_open, ENNReal.tendsto_sum_nat_add, exists_contDiff_tsupport_subset, mul_meas_ge_le_lintegral, lintegral_eq_zero_iff, Real.volume_Ioo, norm_iteratedFDeriv_zero (all available); ContDiffBump.normed, ContDiffBump.dist_normed_convolution_le, exists_smooth_tsupport_subset (not in the import closure)`
+- `sed -n 330,560p and 1640,1900p book/chapter-06.txt (Simon 2.17-2.33 and the printed proof of 5.1, displays (1)-(33))`
+- `python3 over dag.json (544 nodes): statuses, lean_names, depends_on, statements of the deformation subtree and of push-forward/product/homotopy/cutoff/area-formula nodes in other branches`
+- `python3 over nodes/<id>/parent-child-handoff.json and isolated-comparator-result.json for the seven reused declarations (status accepted, candidate commit, comparator passed, byte-identical lean_statement)`
+- `grep over the DAG node summary and rg over project + simongmt sources for the four new names deformation_pushforward_homotopy, deformation_telescope_limit, deformation_good_radius, deformation_skeleton_isClosed (no match)`
+- `python3 -I validate_lean_statement (verifier/lean_contract.py) on all 11 lean_statements (all valid)`
+- `lake env lean /tmp/onto_skel/lean/AllStmts2.lean: all 11 statements as `theorem _root_.HumanizeNodeComparator.target_<key> : (stmt) := by sorry` in the replayed contract scope (only sorry warnings)`
+- `lake env lean /tmp/onto_skel/lean/Check2.lean: `hA (hS5full hLp)` with the sibling deformation_im_pushforward_limit statement, HEq normality discharge at degree m+1, degree m+1+1 = m+2 (no errors)`
+- `Independent adversarial subagent review of all child statements, natural proofs and the assembly (two rounds; final: no BLOCKER/MAJOR)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/GMT/Ch06/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/FormsDuality.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/AffineCurrentPushforward.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/DifferentialForm/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-deformation-a1-onto-skeleton-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-deformation-a1-im-completeness-a1/decomposition-v2.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-compactness-mass-bounds-a1-mass-bound-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-isoperimetric-a1-vanish-off-support-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-integrality-weak-limits-a1-cycle-reduction-a1-support-lemmas-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-lipschitz-pushforward-im-a1-rectifiable-support-null-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-lipschitz-pushforward-im-a1-simple-nvector-algebra-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-lipschitz-pushforward-im-a1-rectifiable-area-formula-a1-local-li-2809c506b6/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-lipschitz-pushforward-im-a1-rectifiable-area-formula-a1-fiber-sum-glue-a1/parent-child-handoff.json`
+- `/tmp/onto_skel/lean/AllStmts2.lean`
+- `/tmp/onto_skel/lean/Check2.lean`
+
+The pinned contract and SimonGMT provide currents, boundary, mass, support, restrictions and only affine push-forwards. There are no products with [[(0,1)]], no smooth or Lipschitz push-forward of normal currents and no homotopy formula, and the in-flight DAG nodes for these (iwl_cr_interval_product_im, iwl_smooth_pushforward) are unaccepted and integer-multiplicity-only. So the parent's Part I becomes the new child deformation_pushforward_homotopy. Its premise is byte-compatible with the sibling deformation_im_pushforward_limit after LipschitzPushforwardIntegerMultiplicity (checked in Lean). Mathlib supplies the analytic tools it uses: convolution smoothness, McShane extension, extDeriv_pullback, local finiteness, Markov's inequality. Seven accepted declarations are reused by name with byte-identical types: cmb_abs_apply_le_of_massOn_le, isoperimetric_apply_eq_zero_of_disjoint_support, iwl_cr_support_lemmas, lpf_rectifiable_support_null, lpf_simple_nvector_algebra, lpf_raf_local_lipschitz_area and lpf_raf_fiber_sum_glue; their dependencies are mirrored. The four new names are globally unique. All 11 statements pass lexical validation and elaborate in the comparator scope, and an adversarial review found no remaining blocker.

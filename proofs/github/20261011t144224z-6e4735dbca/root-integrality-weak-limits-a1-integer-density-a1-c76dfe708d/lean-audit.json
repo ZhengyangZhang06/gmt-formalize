@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "864b8f69c2b294e6a782b0e96b8b29b6f329786d86fd60abe9763386ac708e2e",
+  "git_delta": {
+    "base_commit": "baf71672da3862a443e7beb11fbbf4e125b9cba3",
+    "candidate_commit": "914dbf6c21ef5f6439165a549feef4ed7def6eeb",
+    "target": "GMT/Ch06/Submission.lean",
+    "changed_files": [
+      "GMT/Ch06/Submission.lean"
+    ],
+    "diff_sha256": "8cd3d7eff85bc0a22c98d2efaefd8ea0fd95027fa74238bd1926a543e8306cda",
+    "source_sha256": "3bedbb7f08331facb7470755dfc59d9618c89f0e6ab9d91ee8ea14647c19858e",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.iwl_integer_density",
+      "statement": "∀ (P m : ℕ), m + 2 ≤ P → SlicingTheorem → LipschitzPushforwardIntegerMultiplicity → ∀ (Tj : ℕ → GeometricCurrentOn (univ : Set (Eucl P)) (m + 1)) (T : GeometricCurrentOn (univ : Set (Eucl P)) (m + 1)), (∀ j, IsIntegerMultiplicity (Tj j)) → (∀ j, (Tj j).boundary = 0) → (⨆ j, (Tj j).mass) < ∞ → WeaklyConvergesOn Tj T → IsRectifiableCurrent T → IsIntegerMultiplicity T",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

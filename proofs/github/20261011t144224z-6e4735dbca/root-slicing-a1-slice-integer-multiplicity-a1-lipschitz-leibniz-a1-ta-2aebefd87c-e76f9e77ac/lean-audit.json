@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "bf43abb08b4bc2f9378415fdb438002478fb49f7425c3f447f57f71d900edb14",
+  "git_delta": {
+    "base_commit": "92b42a6dbf98c7a1b88c4b032d67632f248b6a4c",
+    "candidate_commit": "2153cd87992b26c4198365a47034491df6524438",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "slicing_im_ll_twl_partition_tendsto",
+    "diff_sha256": "ae63997a42d92c3e6132e36822517dc722383b5ee36dcb03a8f61929ba3ff849",
+    "source_sha256": "8498be6c7aecf8d70c30102ac346cc3251a276d6bc49fe40c5c4c35740de7fc6",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.slicing_im_ll_twl_partition_tendsto",
+      "statement": "∀ (X : Type) [MeasurableSpace X] (ν : Measure X) (V : ℕ → Set X) (b : X → ℝ) (F : ℕ → X → ℝ) (Flim : X → ℝ), (∀ j, MeasurableSet (V j)) → Pairwise (Function.onFun Disjoint V) → ν (⋃ j, V j)ᶜ = 0 → Integrable b ν → (∀ k, Integrable (F k) ν) → (∀ k, ∀ᵐ x ∂ν, ‖F k x‖ ≤ b x) → Integrable Flim ν → (∀ j, Tendsto (fun k => ∫ x in V j, F k x ∂ν) atTop (𝓝 (∫ x in V j, Flim x ∂ν))) → Tendsto (fun k => ∫ x, F k x ∂ν) atTop (𝓝 (∫ x, Flim x ∂ν))",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

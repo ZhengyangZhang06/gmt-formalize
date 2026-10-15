@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.rectifiability-a1",
+  "parent_id": "root",
+  "depth": 1,
+  "title": "Rectifiability theorem for currents (Simon 8.1)",
+  "statement": "For all P, m ∈ ℕ, every open U ⊆ ℝ^P and every T ∈ D_{m+1}(U) with M_W(T) + M_W(∂T) < ∞ for all W ⊂⊂ U: if some measure μ with IsMassMeasure T μ has upper density Θ*^{m+1}(μ, x) > 0 for μ-a.e. x, then T = τ(M, θ, ξ) is rectifiable (IsRectifiableCurrent T: M countably (m+1)-rectifiable and Hⁿ-measurable in U, θ > 0 locally integrable, ξ orienting the weighted approximate tangent spaces).",
+  "lean_statement": "RectifiabilityTheorem",
+  "lean_name": "rectifiability_theorem",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-rectifiability-a1-a1"
+}

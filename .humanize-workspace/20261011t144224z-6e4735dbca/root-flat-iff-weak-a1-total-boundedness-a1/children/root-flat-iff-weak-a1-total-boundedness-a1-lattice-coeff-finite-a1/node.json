@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.flat_iff_weak-a1.total_boundedness-a1.lattice_coeff_finite-a1",
+  "parent_id": "root.flat_iff_weak-a1.total_boundedness-a1",
+  "depth": 3,
+  "title": "Finitely many bounded integral coefficient vectors supported in a bounded set (G5 c)",
+  "statement": "Let n, N ∈ ℕ, ρ > 0, Y ⊆ ℝ^N bounded and A ∈ ℝ. Then the set of all β : LatticeFaceIndex n N → ℝ such that every β_F is an integer and, for every F with β_F ≠ 0, latticeFace ρ F ⊆ Y and |β_F| ≤ A, is finite.",
+  "lean_statement": "∀ (n N : ℕ) (ρ : ℝ), 0 < ρ → ∀ (Y : Set (Eucl N)), Bornology.IsBounded Y → ∀ A : ℝ, {β : LatticeFaceIndex n N → ℝ | (∀ F, ∃ k : ℤ, β F = k) ∧ ∀ F, β F ≠ 0 → latticeFace ρ F ⊆ Y ∧ |β F| ≤ A}.Finite",
+  "lean_name": "fiw_tb_lattice_coeff_finite",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-flat-iff-weak-a1-total-boundedness-a1-lattice-coeff-finite-a1-a1"
+}

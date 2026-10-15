@@ -1,0 +1,87 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.flat_iff_weak-a1.total_boundedness-a1`
+- Child DAG node: `root.flat_iff_weak-a1.total_boundedness-a1.lattice_coeff_finite-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: parent proof, preliminary (G5)(c) and the finite set 𝓑_ρ of Steps 1–2 (Simon 7.2 proof: "there are only finitely many currents P as in (2)").
+
+1. Faces inside Y. Let 𝓕 := {F : latticeFace ρ F ⊆ Y}. For F = (z, α), the point ρz := (ρ z_i)_i lies in latticeFace ρ F: for i ∈ range α, ρz_i ≤ ρz_i ≤ ρ(z_i + 1) because ρ > 0; for i ∉ range α the coordinate equals ρz_i. Y is bounded, so Y ⊆ closedBall(0, R) for some R ≥ 0. If F ∈ 𝓕 then ρz ∈ Y, so |ρ z_i| ≤ ‖ρz‖ ≤ R for every i, i.e. z_i ∈ Z_R := {k ∈ ℤ : |k| ≤ R/ρ}, a finite set (contained in Finset.Icc (−⌈R/ρ⌉) ⌈R/ρ⌉). Hence z ∈ Set.pi univ (fun _ => Z_R), a finite set (Set.Finite.pi). α ranges over SimonMultiIndex n N = (Fin n ↪o Fin N), a finite type: it injects into the finite type Fin n → Fin N via DFunLike.coe, so Finite.of_injective applies. Hence 𝓕 is contained in the finite set (Set.pi univ (fun _ => Z_R)) ×ˢ univ, and 𝓕 is finite.
+2. Allowed values. V := {(k : ℝ) : k ∈ ℤ, |k| ≤ A} ∪ {0} is finite, being contained in the image of Finset.Icc (−⌈|A|⌉) ⌈|A|⌉ under the cast ℤ → ℝ, together with 0.
+3. Injection. Let 𝓑 be the set in the statement, and for β ∈ 𝓑 let Φ(β) : 𝓕 → ℝ be the restriction F ↦ β F (𝓕 regarded as a subtype; it is a finite type by step 1).
+   (i) Φ is injective on 𝓑. Let β, β' ∈ 𝓑 agree on 𝓕, and let F ∉ 𝓕. If β F ≠ 0 then latticeFace ρ F ⊆ Y, i.e. F ∈ 𝓕, a contradiction; so β F = 0, and likewise β' F = 0. Hence β = β'.
+   (ii) Φ(𝓑) ⊆ T := {g : 𝓕 → ℝ | ∀ F, g F ∈ V}. For β ∈ 𝓑 and F ∈ 𝓕, β F is an integer, and either β F = 0 ∈ V or |β F| ≤ A, so β F ∈ V. T is finite: it is Set.pi univ (fun _ => V) over the finite type 𝓕 with finite V (Set.Finite.pi).
+4. So Φ(𝓑) ⊆ T is finite, and since Φ is injective on 𝓑, 𝓑 is finite (Set.Finite.of_finite_image). ∎
+
+## Key steps
+
+1. The vertex ρz of a face lies in the face, so faces inside the bounded set Y have z in a finite box, and α ranges over a finite type.
+2. Integers of absolute value at most A, together with 0, form a finite set V.
+3. Restricting β to the finite set of faces inside Y is injective on the set and lands in the finite set of maps into V.
+4. Hence the set of admissible β is finite.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat .humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json (local-project; project d8d46c95, Mathlib 25730c7c)`
+- `python3 scan of dag.json (235 nodes): no lean_name containing fiw_tb; frozen lean_statement of root.flat_iff_weak-a1.im_mass_formula-a1 (accepted) and im_lincomb-a1 compared textually with the MF/LC premises`
+- `git log --all --oneline -S fiw_tb_ (687 refs, no match); grep -rl fiw_tb_ .humanize/math-wiki (no match)`
+- `git show <commit>:GMT/Ch06/Submission.lean | grep -c 'theorem Submission.<name>' for the 12 cited accepted declarations (all present), including br_la_abs_apply_le_mul_mass @ d771ac3a and fiw_ims_frame_sign @ c90a4050`
+- `grep -n max_nodes /runtime/flows/gmt-claude-40bcd6e5b78a/_recursive_lean/runtime.py; read _decompose, _solve_children, _existing_lean_name_problem; swarm-configs/8d6f8e1fdf494359a56bc7f71c57d439.json (max_nodes 1000, max_children 12, max_depth 6)`
+- `grep -n 'def covectorEuclideanNorm|def massAdmissibleOn|def GeometricCurrentOn.massOn|def TestFormOnConverges|structure GeometricCurrentOn|zero_apply|boundary_apply|restrictDomain_apply|def testFormOnInclusion|def GeometricCurrentOn.zeroRegion|def GeometricCurrentOn.support|abbrev SimonMultiIndex|def CountablyRectifiable|countablyRectifiable_of_measure_zero|def blowUpMap|def HasWeightedApproximateTangentSpaceAt' in SimonGMT Chapter06/Chapter03`
+- `grep Mathlib: theorem exists_nnreal_pos_mul_lt, Finite.exists_infinite_fiber, Infinite.exists_ne_map_eq_of_mapsTo, thickening_subset_of_subset, cthickening_subset_of_subset, thickening_subset_cthickening, mul_le_mul_right`
+- `lake build GMT.Ch06.Submission in /tmp/tb5-Hq3Nws (git archive d8d46c9, packages linked)`
+- `python3 -I /tmp/tb5_tools/gen_challenges.py (verifier/gmt-compare.py child_modules mode contract + lean_contract.validate_lean_statement); lake env lean Scratch/V4/Ch_*.lean and Scratch/V4/Remaining3.lean (0 errors)`
+- `lake env lean Scratch/V4/Assembly.lean and Scratch/V4/FiniteNet.lean (#print axioms: propext, Classical.choice, Quot.sound)`
+- `sed -n 2028,2090p book/chapter-06.txt (Simon 7.2 and its proof, (1)–(3))`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-flat-iff-weak-a1-total-boundedness-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-flat-iff-weak-a1-total-boundedness-a1/decomposition-v4.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-flat-iff-weak-a1-total-boundedness-a1/decomposition-audit-v4.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/swarm-configs/8d6f8e1fdf494359a56bc7f71c57d439.json`
+- `/runtime/flows/gmt-claude-40bcd6e5b78a/_recursive_lean/runtime.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/math-wiki/submission-br-la-abs-apply-le-mul-mass.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/math-wiki/submission-fiw-ims-frame-sign.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/math-wiki/submission-fiw-im-mass-formula.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/FormsDuality.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/mathlib/Mathlib/Basic/ENNReal/Inv.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/mathlib/Mathlib/Data/Fintype/Pigeonhole.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/mathlib/Mathlib/Topology/MetricSpace/Thickening.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/mathlib/Mathlib/Algebra/Order/Monoid/Unbundled/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt`
+- `/tmp/tb5-Hq3Nws/Scratch/V4/Assembly.lean`
+- `/tmp/tb5-Hq3Nws/Scratch/V4/FiniteNet.lean`
+- `/tmp/tb5-Hq3Nws/Scratch/V4/Remaining3.lean`
+
+The snapshot (project d8d46c95, Mathlib 25730c7c) holds the frozen Ch06 contract (IsIntegerMultiplicity, IsRectifiableTriple, tauAction, latticeFace, latticeFaceAction, IsLatticeChain, DeformationTheorem). Neither the project nor SimonGMT has an integer-multiplicity calculus, a flat-norm lemma or a lattice-chain coefficient bound, so these become the 10 children.
+
+SimonGMT supplies the API used in the child proofs:
+- massOn and mass via massAdmissibleOn and covectorEuclideanNorm, and le_massOn / massOn_mono;
+- restrictDomain(_apply), testFormOnInclusion, zero_apply, boundary_apply and GeometricCurrentOn.ext;
+- zeroRegion and support = U \ zeroRegion;
+- SimonMultiIndex = Fin n ↪o Fin p, CountablyRectifiable (with countablyRectifiable_of_measure_zero and .mono), blowUpMap and HasWeightedApproximateTangentSpaceAt.
+Mathlib supplies ENNReal.exists_nnreal_pos_mul_lt and the thickening lemmas.
+
+Accepted Submission declarations, cited in the remarks as optional reuse pointers, were checked at their commits. The two new pointers are:
+- br_la_abs_apply_le_mul_mass (d771ac3a), the evaluation bound;
+- fiw_ims_frame_sign (c90a4050), the frame sign.
+
+Scratch checks:
+- all 10 child types elaborate in the comparator's exact challenge scope;
+- the parent type follows from MF, LC, fiw_tb_finite_net and fiw_tb_flat_sub;
+- fiw_tb_finite_net follows from its five siblings;
+- both derivations use only [propext, Classical.choice, Quot.sound].
