@@ -1,0 +1,103 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "dmcbrcs|lcmp_massOn_le_of_vanish_off_compact|lcmp_massOn_le_add_of_eval_eq|lcmp_imRep_measure_restrict|rsd_imrep_compact_measure_ne_top|dor_ims_action_eq_integral|dor_lmb_glc_good_radius",
+        "norm_iteratedFDeriv_smul_le|norm_iteratedFDerivWithin_le_of_bilinear_aux|exists_contDiff_support_eq_eq_one_iff|integral_withDensity_eq_integral_smul",
+        "extDeriv_eq|tsupport_iteratedFDeriv_subset|HasCompactSupport.iteratedFDeriv|exists_open_between_and_isCompact_closure|countable_meas_pos_of_disjoint_iUnion|meas_ge_le_lintegral_div",
+        "python3 /tmp/dmcbr-independent-audit/prepare.py",
+        "lake env lean /tmp/dmcbr-independent-audit/Types.lean",
+        "lake env lean /tmp/dmcbr-independent-audit/Assembly.lean",
+        "lake env lean /tmp/dmcbr-independent-audit/FrozenAllProofs.lean",
+        "lake env lean /tmp/dmcbr-independent-audit/ImportProbe.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/Bounds.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/FTaylorSeries.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Manifold/PartitionOfUnity.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/ContinuousLinearMap.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-closure-and-bou-79c745d596/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-closure-and-bou-79c745d596/decomposition-v1.json",
+        "/tmp/dmcbr-independent-audit/prepare.py",
+        "/tmp/dmcbr-independent-audit/Types.lean",
+        "/tmp/dmcbr-independent-audit/Assembly.lean",
+        "/tmp/dmcbr-independent-audit/FrozenAllProofs.lean",
+        "/tmp/dmcbr-independent-audit/FrozenAllProofs.log",
+        "/tmp/dmcbr-independent-audit/ImportProbe.log"
+      ],
+      "conclusion": "The split appropriately separates localization, cutoff extension and its analytic prerequisites. Pins and frozen contract contents match. The snapshot contains none of the proposed declarations; the import probe confirms the Leibniz estimate is unavailable under the frozen imports. All ten one-line types elaborate independently and match their prose. Names are bare identifiers; four are unreserved, and six have comparator-passed records with identical frozen types and compatible candidate declarations. Dependencies are acyclic and do not return to the selected parent. All ten actual proofs compile inside a copy of the frozen contract, without dependency stubs, and use only propext, Classical.choice and Quot.sound. The conditional assembly proves the exact selected parent type using its three authorized siblings. Every leaf insertion passes the source-delta gate. Scalar multiplication and norm constructions use the intended instances; no matrix-unit construction occurs."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "smul_leibniz",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact operator-norm inequality follows from the fully generalized bilinear induction, derivative splitting, Pascal identity and scalar-multiplication specialization. Smoothness and nonnegativity conditions are accounted for; there is no circular dependency."
+    },
+    {
+      "key": "smul_continuity",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof supplies a compact support set inside U, establishes global smallness of all required derivatives, and applies the sibling Leibniz estimate with explicit uniform bounds. No openness hypothesis on U is needed."
+    },
+    {
+      "key": "cutoff_extension",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The cutoff construction and sequential continuity establish a current for every X. All five conclusions are proved, including coefficient-norm mass bounds, the boundary identity from local agreement of forms, and compact local integrability of the extended IMRep."
+    },
+    {
+      "key": "vanish_off_mass",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Accepted reuse has an identical frozen type. The proof handles the empty compact set and constructs a cutoff making every admissible evaluation equal to one admissible in V. It requires neither openness of U nor C contained in U."
+    },
+    {
+      "key": "mass_triangle",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Accepted reuse has an identical frozen type. Admissibility of the negative form bounds the absolute evaluation of Y; the coefficient bound and ENNReal.ofReal_add_le then prove the exact local mass inequality."
+    },
+    {
+      "key": "imrep_restrict",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Accepted reuse has an identical frozen type. Absolute continuity, transferred strong measurability, restriction of weighted measures and the action formula follow from the stated fields. The density integral identity applies even to forms without regularity or integrability assumptions."
+    },
+    {
+      "key": "imrep_compact_finite",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Accepted reuse has an identical frozen type. Compact-set measurability identifies the weighted measure with the locally finite multiplicity integral; positivity of the integer multiplicity bounds the unweighted Hausdorff measure."
+    },
+    {
+      "key": "imrep_action_integral",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Accepted reuse has an identical frozen type. The proof establishes measurability and integrability using unit orientation, bounded test forms and finite weight on their compact support, then proves the integral identity by change of density."
+    },
+    {
+      "key": "good_radius",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Accepted reuse has an identical frozen type. Restricting the measure to the finite closed ball justifies countability of charged spheres without global sigma-finiteness. The Markov argument handles zero, finite positive and infinite I and proves every requested conclusion."
+    },
+    {
+      "key": "localize",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "REP, MR, IMC, SL and TOOLS are copied exactly. REP legitimately supplies boundary representations without BR(d). The proof fully constructs the subsequences and good radius, bounds total localized masses, establishes convergence and proves agreement on the ball. Together with cutoff_extension and the authorized siblings, these conclusions establish the selected parent."
+    }
+  ],
+  "required_changes": []
+}

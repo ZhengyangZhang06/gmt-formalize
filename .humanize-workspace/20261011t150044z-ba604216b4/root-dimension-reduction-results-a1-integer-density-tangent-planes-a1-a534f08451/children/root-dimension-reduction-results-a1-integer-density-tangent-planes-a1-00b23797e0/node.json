@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_off_null_set-a1.cone_class-a1.tangent_measures-a1.support_blowup-a1",
+  "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_off_null_set-a1.cone_class-a1.tangent_measures-a1",
+  "depth": 6,
+  "title": "Tangent cones at points of spt T via (DTC): blow-ups of a minimizing cycle subconverge to a minimizing cone cycle, and the rescaled weights converge vaguely (parent steps 3–5, (F7))",
+  "statement": "Assume (DTC), the contract proposition DensityAndTangentCones (Simon 7.3.1). Let n, k, ℓ ∈ ℕ with ℓ ≤ k and n ≥ 1. Let U, N ⊆ ℝ^{n+k}, with U open and N an embedded C² (n+ℓ)-dimensional submanifold with (closure N ∖ N) ∩ U = ∅. Let T ∈ 𝒟_n(U) be minimizing in U ∩ N with spt T ⊆ U ∩ N and ∂T = 0 in U (BoundaryVanishes T). Let R be an IMRep of T in U with weight μ := R.measure, let p ∈ spt T, and let λ_j > 0 (j ∈ ℕ) with λ_j → 0. Then there exist a strictly increasing sub : ℕ → ℕ, a current C ∈ 𝒟_n(ℝ^{n+k}) and an IMRep R_C of C in ℝ^{n+k} such that: C is minimizing in ℝ^{n+k}; ∂C = 0; C is a cone (IsConeCurrent C); R_C represents C; and for every continuous compactly supported f : ℝ^{n+k} → ℝ, ∫ f d(ofReal(λ_{sub(j)}^{−n})•μ.map(dilation p λ_{sub(j)})) → ∫ f dR_C.measure as j → ∞.",
+  "lean_statement": "DensityAndTangentCones → ∀ (n k ℓ : ℕ), ℓ ≤ k → ∀ (U N : Set (Euclid (n + k))) (T : GeometricCurrentOn U n) (R : IMRep U n) (p : Euclid (n + k)) (lams : ℕ → ℝ), 1 ≤ n → IsOpen U → IsEmbeddedSubmanifold 2 (n + ℓ) N → (closure N \\ N) ∩ U = ∅ → IsMinimizingIn T (U ∩ N) → T.support ⊆ U ∩ N → BoundaryVanishes T → R.Represents T → p ∈ T.support → (∀ j, 0 < lams j) → Tendsto lams atTop (𝓝 0) → ∃ (sub : ℕ → ℕ) (C : GeometricCurrentOn (univ : Set (Euclid (n + k))) n) (RC : IMRep (univ : Set (Euclid (n + k))) n), StrictMono sub ∧ IsMinimizingIn C univ ∧ BoundaryVanishes C ∧ IsConeCurrent C ∧ RC.Represents C ∧ ∀ f : Euclid (n + k) → ℝ, Continuous f → HasCompactSupport f → Tendsto (fun j => ∫ x, f x ∂(ENNReal.ofReal ((lams (sub j))⁻¹ ^ n) • R.measure.map (dilation p (lams (sub j))))) atTop (𝓝 (∫ x, f x ∂RC.measure))",
+  "lean_name": "idtp_fons_cc_tm_support_blowup",
+  "depends_on": [
+    "root.density_and_tangent_cones-a1.blowup_scaling-a1",
+    "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_point_tangent_plane-a1.blowup_limit_cycle-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.density_and_tangent_cones-a1.blowup_scaling-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-scaling-a1-a1",
+      "result_commit": "a94d596c81cfb78de36a706eb0e81f430f835418",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_point_tangent_plane-a1.blowup_limit_cycle-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-34a94daa02-a1",
+      "result_commit": "f498a8efc56f20a419c00b83bd2efcfe9a10712c",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-00b23797e0-a1"
+}

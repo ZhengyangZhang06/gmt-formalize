@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.projected_comparison-a1.competitor_mass-a1.vd_add-a1",
+  "parent_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.projected_comparison-a1.competitor_mass-a1",
+  "depth": 5,
+  "title": "A representation of a sum of two IMRep actions has the summed vector density",
+  "statement": "Let P, n ∈ ℕ, let U ⊆ ℝ^P be open, let R₁ = (M₁, θ₁, ξ₁), R₂ = (M₂, θ₂, ξ₂) and R = (M, θ, ξ) be integer multiplicity triples in U (IMRep U n, Simon Ch. 6, 3.1), and let T ∈ 𝒟_n(U) (GeometricCurrentOn U n). Write τ(R')(ω) := R'.action ω = ∫_{M'} θ'(x)ξ'(x)(ω(x)) dHⁿ(x) (Hⁿ = μHE[n]). Assume R represents T (T(ω) = τ(R)(ω) for every ω ∈ 𝒟ⁿ(U)) and T(ω) = τ(R₁)(ω) + τ(R₂)(ω) for every ω ∈ 𝒟ⁿ(U). Then for Hⁿ-a.e. x ∈ ℝ^P the n-vectors in MultiVector P n satisfy 1_M(x)θ(x)ξ(x) = 1_{M₁}(x)θ₁(x)ξ₁(x) + 1_{M₂}(x)θ₂(x)ξ₂(x) (written with Set.indicator and real scalar multiplication).",
+  "lean_statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (R₁ R₂ R : IMRep U n) (T : GeometricCurrentOn U n), IsOpen U → R.Represents T → (∀ ω : TestFormOn U n, T ω = R₁.action (ω : DifferentialForm (Euclid P) n) + R₂.action (ω : DifferentialForm (Euclid P) n)) → ∀ᵐ x ∂μHE[n], R.carrier.indicator (fun y => (R.mult y : ℝ) • R.orient y) x = R₁.carrier.indicator (fun y => (R₁.mult y : ℝ) • R₁.orient y) x + R₂.carrier.indicator (fun y => (R₂.mult y : ℝ) • R₂.orient y) x",
+  "lean_name": "dor_lmb_pc_cm_vector_density_add",
+  "depends_on": [
+    "root.regular_set_dense-a1.integer_combination-a1.combination_construction-a1",
+    "root.regular_set_dense-a1.integer_combination-a1.combination_action-a1",
+    "root.half_space_cone_lies_in_boundary-a1.imrep_measure_unique-a1.vector_density_ae_eq-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.regular_set_dense-a1.integer_combination-a1.combination_construction-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-regular-set-dense-a1-integer-combination-a1-combination-construction-a1-a1",
+      "result_commit": "0af9ed599cb8b131973221f740cf2b64fb2fe357",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.regular_set_dense-a1.integer_combination-a1.combination_action-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-regular-set-dense-a1-integer-combination-a1-combination-action-a1-a1",
+      "result_commit": "faacb9cb5caf6ce728ef10ab3b0f5bdd7a47b04d",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.half_space_cone_lies_in_boundary-a1.imrep_measure_unique-a1.vector_density_ae_eq-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-half-space-cone-lies-in-boundary-a1-imrep-measure-unique-a1-vect-8c0391929c-a1",
+      "result_commit": "2d0f5bbe8de725944c1d9c73d65c6163f6d67b07",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-limsup-mass-bound-a1-projected-co-af45c0d81e-a1"
+}

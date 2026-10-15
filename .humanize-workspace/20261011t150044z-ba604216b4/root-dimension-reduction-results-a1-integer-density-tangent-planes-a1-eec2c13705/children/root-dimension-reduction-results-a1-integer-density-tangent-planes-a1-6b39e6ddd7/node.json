@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.two_dim_cone_density-a1.planes_union_vertex_density-a1.density_of_ball_mass-a1",
+  "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.two_dim_cone_density-a1.planes_union_vertex_density-a1",
+  "depth": 5,
+  "title": "Exactly homogeneous ball masses determine the density",
+  "statement": "Let P, n ∈ ℕ, U ⊆ ℝ^P, T ∈ 𝒟_n(U), x ∈ ℝ^P, θ ∈ ℝ with θ ≥ 0, and r > 0. Suppose that M_{B_ρ(x)}(T) = ofReal(θ)·(ω_n·ofReal(ρⁿ)) in [0, ∞] for every ρ with 0 < ρ < r, where ω_n = unitBallVolume n is the volume of the unit ball of ℝⁿ. Then HasMassDensity T x θ, i.e. Θⁿ(μ_T, x) = θ.",
+  "lean_statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (x : Euclid P) (θ r : ℝ), 0 ≤ θ → 0 < r → (∀ ρ : ℝ, 0 < ρ → ρ < r → T.massOn (ball x ρ) = ENNReal.ofReal θ * (unitBallVolume n * ENNReal.ofReal (ρ ^ n))) → HasMassDensity T x θ",
+  "lean_name": "idtp_tdc_puvd_density_of_ball_mass",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-6b39e6ddd7-a1"
+}

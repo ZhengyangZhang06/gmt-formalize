@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.moving_blowups-a1.local_comparison-a1.retraction_comparison-a1.measure_subadditive-a1",
+  "parent_id": "root.dimension_reduction_results-a1.moving_blowups-a1.local_comparison-a1.retraction_comparison-a1",
+  "depth": 5,
+  "title": "Subadditivity of the mass measures of integer multiplicity currents on closed sets (step 8(b) of the parent)",
+  "statement": "Let P, n ∈ ℕ, V ⊆ ℝ^P open, X, X₁, X₂ ∈ 𝒟_n(V) (GeometricCurrentOn V n), and R, R₁, R₂ IMReps in V (contract IMRep V n) with R representing X, R₁ representing X₁ and R₂ representing X₂. Suppose X(ω) = X₁(ω) + X₂(ω) for every ω ∈ 𝒟ⁿ(V). Then for every closed set F ⊆ ℝ^P with F ⊆ V, μ_R(F) ≤ μ_{R₁}(F) + μ_{R₂}(F) in [0, ∞], where μ_{R′} := R′.measure = θ′Hⁿ⌞M′ is the weight of an IMRep R′ = (M′, θ′, ξ′) (Hⁿ = μHE[n]).",
+  "lean_statement": "∀ (P n : ℕ) (V F : Set (Euclid P)) (X X₁ X₂ : GeometricCurrentOn V n) (R R₁ R₂ : IMRep V n), IsOpen V → R.Represents X → R₁.Represents X₁ → R₂.Represents X₂ → (∀ ω : TestFormOn V n, X ω = X₁ ω + X₂ ω) → IsClosed F → F ⊆ V → R.measure F ≤ R₁.measure F + R₂.measure F",
+  "lean_name": "dimred_mbl_lc_rc_measure_le_add_of_closed",
+  "depends_on": [
+    "root.density_one_implies_regular-a1.imrep_mass_and_support-a1",
+    "root.compactness_of_minimizing_currents-a1.local_comparison-a1.mass_triangle-a1",
+    "root.compactness_of_minimizing_currents-a1.local_comparison-a1.compact_outer_bound-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.density_one_implies_regular-a1.imrep_mass_and_support-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-imrep-mass-and-support-a1-a1",
+      "result_commit": "d49dda91b75b7417d67a10053e6dc4b65d4f0312",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.compactness_of_minimizing_currents-a1.local_comparison-a1.mass_triangle-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-local-comparison-a1-mass-triangle-a1-a1",
+      "result_commit": "c7dea4b81c94f56650b6060d3bcb1e801f43d7e9",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.compactness_of_minimizing_currents-a1.local_comparison-a1.compact_outer_bound-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-local-comparison-a1-compac-a4168491cb-a1",
+      "result_commit": "bb7f0a567a77ec463f2a7135f2f0fe37047b43f2",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-moving-blowups-a1-local-compariso-7237c8df09-a1"
+}

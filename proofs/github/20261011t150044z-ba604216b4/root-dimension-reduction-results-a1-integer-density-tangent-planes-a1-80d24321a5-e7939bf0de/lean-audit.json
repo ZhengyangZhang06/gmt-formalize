@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "5f4360d4f1af678c30642d31ae3c316d17f2ec34f3761140c7cce981c94491a5",
+  "git_delta": {
+    "base_commit": "ce44912b14f9e5737052433431e6bd7d8b2e6c04",
+    "candidate_commit": "c08f74c623df4539a73d9eae66bd17ad49cd992f",
+    "target": "GMT/Ch07/Submission.lean",
+    "changed_files": [
+      "GMT/Ch07/Submission.lean"
+    ],
+    "diff_sha256": "4140203b72e7c5cfd314e30d00b148cd250381f73d9c09ceb88316ae9f3d08d8",
+    "source_sha256": "cee9b722bc39a2be31d39250bbacfa5d3d075910df29214aff91a93faf796eed",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.idtp_integer_density_off_null",
+      "statement": "∀ (n k ℓ : ℕ), ℓ ≤ k → ∀ (U N : Set (Euclid (n + k))) (T : GeometricCurrentOn U n), 1 ≤ n → IsOpen U → IsEmbeddedSubmanifold 2 (n + ℓ) N → (closure N \\ N) ∩ U = ∅ → IsMinimizingIn T (U ∩ N) → T.support ⊆ U ∩ N → BoundaryVanishes T → ∃ E : Set (Euclid (n + k)), (∀ α : ℝ, 0 < α → μH[(n : ℝ) - 3 + α] E = 0) ∧ ∀ x ∈ U \\ E, ∃ m : ℤ, HasMassDensity T x m",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

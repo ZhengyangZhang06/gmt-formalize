@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.constant_planes-a1.atoms-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.constant_planes-a1",
+  "depth": 5,
+  "title": "The lower density bound makes the transversal measure purely atomic with atoms ≥ c: ν is a countable sum of weighted parallel planes",
+  "statement": "Let P, n ∈ ℕ, c > 0, V ⊆ ℝ^P a linear subspace with dim V = n, σ a Borel measure on ℝ^P with σ(ℝ^P∖V^⊥) = 0 and σ(K) < ∞ for compact K, and ν a Borel measure on ℝ^P with ν(A) = ∫⁻_{t∈V}σ({y : t + y ∈ A}) dHⁿ(t) for every Borel A (Hⁿ = μHE[n]). Assume ofReal c ≤ liminf_{r→0+} ν(B_r(y))/(ω_n·rⁿ) for ν-a.e. y (ω_n = unitBallVolume n). Then there is a countable set Z ⊆ V^⊥ with σ({w}) ≥ ofReal c for every w ∈ Z and ν = Σ_{w∈Z}σ({w})·Hⁿ⌞{y : y − w ∈ V} (Measure.sum indexed by Z).",
+  "lean_statement": "∀ (P n : ℕ) (ν σ : Measure (Euclid P)) (V : Submodule ℝ (Euclid P)) (c : ℝ), 0 < c → Module.finrank ℝ V = n → σ (Vᗮ : Set (Euclid P))ᶜ = 0 → (∀ K : Set (Euclid P), IsCompact K → σ K < ∞) → (∀ A : Set (Euclid P), MeasurableSet A → ν A = ∫⁻ t in (V : Set (Euclid P)), σ ((fun y => t + y) ⁻¹' A) ∂μHE[n]) → (∀ᵐ y ∂ν, ENNReal.ofReal c ≤ liminf (fun r : ℝ => ν (ball y r) / (unitBallVolume n * ENNReal.ofReal (r ^ n))) (𝓝[>] 0)) → ∃ Z : Set (Euclid P), Z.Countable ∧ Z ⊆ (Vᗮ : Set (Euclid P)) ∧ (∀ w ∈ Z, ENNReal.ofReal c ≤ σ {w}) ∧ ν = Measure.sum (fun w : Z => σ {(w : Euclid P)} • (μHE[n]).restrict {y : Euclid P | y - w ∈ V})",
+  "lean_name": "cbr_ci_cp_atomic_transversal",
+  "depends_on": [
+    "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.two_dim_cone_density-a1.subspace_ball_measure-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.two_dim_cone_density-a1.subspace_ball_measure-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-661fba5cee-a1",
+      "result_commit": "a029156d2b71053da5c6d27b9abcc46011c9cfac",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-751fa659ad-a1"
+}

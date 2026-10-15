@@ -1,0 +1,70 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "dimred_tr_bc_ct_|idtp_fons_cc_tm_blowup_integrals",
+        "^(structure IMRep|def IMRep\\.|def MassMeasuresConverge|def ConvergesWeakly|def dilation|def blowUp|def IsMinimizingIn)",
+        "setIntegral_eq_integral_of_forall_compl_eq_zero",
+        "theorem restrict_map",
+        "instance.*SMul|def instSMul",
+        "theorem GeometricCurrentOn.ext|instance.*Zero|zero_apply|namespace GeometricCurrentOn",
+        "git -C . rev-parse HEAD",
+        "git -C .lake/packages/mathlib rev-parse HEAD",
+        "git show 926c111dd53ee0c9413099cd843d15fd58a6cc4d:GMT/Ch07/Submission.lean",
+        "/tmp/ct-a1/scripts/runlean2.sh /tmp/ct-independent-audit-62ci94rw/Audit.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Module.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-threshold-reduction-a1-blowup-cla-684f4122cb/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-8dcb296910/accepted-candidate.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-8dcb296910/isolated-comparator-result.json",
+        "/tmp/ct-independent-audit-62ci94rw/AcceptedCandidate.lean",
+        "/tmp/ct-independent-audit-62ci94rw/Audit.lean"
+      ],
+      "conclusion": "Project and mathlib revisions match the manifest; workspace and snapshot contracts are byte-identical. No proposed names occur in the pinned chapter sources. The four new names have no DAG reservations; the reused name belongs to the comparator-accepted declaration with an identical frozen type. Dependencies are correctly directed and acyclic. All five one-line propositions elaborate before their declarations. Independent Lean checks of the four supplied implementations, extracted accepted proof, and assembly of the exact selected parent contract succeeded using only propext, Classical.choice and Quot.sound. Instance checks returned Measure.instSMul and instZeroGeometricCurrentOn. The split is appropriate: its reusable obligations support all four cases of this selected theorem, and the assembly requires only these children and the three registered dependencies."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "zero_imrep",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and type agree for every P and n. The empty carrier satisfies all IMRep fields, including rectifiability and the almost-everywhere orientation condition; its action and weight are zero. The proof is complete and non-circular, and the bare name is unreserved."
+    },
+    {
+      "key": "uniform_mass_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All hypotheses match the type. The constants δ = r/4 and Γ are independent of b; the ball inclusions justify monotonicity and mass comparison. Finiteness and positive ENNReal factors justify the final cancellation, including n = 0. The proof is complete and the name is unreserved."
+    },
+    {
+      "key": "zero_scale_iterate",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "IBL is a verbatim leading parent hypothesis, not a circular dependency. The explicit shifted subsequence satisfies strict admissibility, positive scales, both parameter limits, and weak convergence. The prose includes every hypothesis of the exact type; the bare name is unreserved."
+    },
+    {
+      "key": "weight_convergence",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "BUI is copied verbatim as a hypothesis. The proof constructs representations on the correct varying domains, identifies their weights using measurable dilations and Measure.ext, and applies the exact definition of MassMeasuresConverge. No additional openness or scale-limit assumption is needed. The name is unreserved."
+    },
+    {
+      "key": "blowup_integrals",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The frozen type and numbered proof match the accepted handoff exactly. The homeomorphism, support containment, restriction identity, and null-ball arguments prove both clauses without continuity or integrability assumptions. Recompiling the extracted accepted proof against the pinned definitions passed with standard axioms only; reuse is valid."
+    }
+  ],
+  "required_changes": []
+}

@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.carrier_area_formula-a1.glue_pieces-a1",
+  "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.carrier_area_formula-a1",
+  "depth": 4,
+  "title": "Gluing the fibre-sum area formula over a countable disjoint Borel partition modulo a null set (parent steps 6–7, summation)",
+  "statement": "Let P, n ∈ ℕ, ι a countable type, S ⊆ ℝ^P, and S_k ⊆ S (k ∈ ι) pairwise disjoint Borel sets; let F : ℝ^P → ℝ^n and φ, h : ℝ^P → [0, ∞] be arbitrary. Assume H^n(S ∖ ⋃_k S_k) = 0 (H^n = μHE[n]) and L^n(F(S ∖ ⋃_k S_k)) = 0 (L^n = volume on ℝ^n), and that for every k the fibre-sum function y ↦ Σ_{x ∈ S_k, F(x) = y} h(x) (tsum over the subtype S_k ∩ F^{−1}{y}) is L^n-a.e. measurable with ∫ Σ_{x ∈ S_k, F(x) = y} h(x) dL^n(y) = ∫_{S_k} φ·h dH^n. Then y ↦ Σ_{x ∈ S, F(x) = y} h(x) is L^n-a.e. measurable and ∫ Σ_{x ∈ S, F(x) = y} h(x) dL^n(y) = ∫_S φ·h dH^n.",
+  "lean_statement": "∀ (P n : ℕ) (ι : Type) [Countable ι] (S : Set (Euclid P)) (pieces : ι → Set (Euclid P)) (F : Euclid P → Euclid n) (φ h : Euclid P → ℝ≥0∞), (∀ k, MeasurableSet (pieces k)) → (∀ k, pieces k ⊆ S) → Pairwise (fun k k' => Disjoint (pieces k) (pieces k')) → μHE[n] (S \\ ⋃ k, pieces k) = 0 → volume (F '' (S \\ ⋃ k, pieces k)) = 0 → (∀ k, AEMeasurable (fun y : Euclid n => ∑' x : ↥(pieces k ∩ F ⁻¹' {y}), h x) volume ∧ ∫⁻ y, (∑' x : ↥(pieces k ∩ F ⁻¹' {y}), h x) ∂volume = ∫⁻ x in pieces k, φ x * h x ∂μHE[n]) → AEMeasurable (fun y : Euclid n => ∑' x : ↥(S ∩ F ⁻¹' {y}), h x) volume ∧ ∫⁻ y, (∑' x : ↥(S ∩ F ⁻¹' {y}), h x) ∂volume = ∫⁻ x in S, φ x * h x ∂μHE[n]",
+  "lean_name": "idtp_caf_glue_pieces",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-fa8a49a815-a1"
+}

@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.projected_comparison-a1.competitor_mass-a1.pairing_add-a1",
+  "parent_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.projected_comparison-a1.competitor_mass-a1",
+  "depth": 5,
+  "title": "The a.e. identity ν_R = ν_{R₁} + ν_{R₂} integrates against bounded compactly supported covector fields",
+  "statement": "Let P, n ∈ ℕ, let U, K ⊆ ℝ^P with K compact and K ⊆ U, let R₁ = (M₁, θ₁, ξ₁), R₂ = (M₂, θ₂, ξ₂) and R = (M, θ, ξ) be IMReps in U (IMRep U n), and let B ∈ ℝ. Let F : ℝ^P → Covector (Euclid P) n (n-covectors on ℝ^P) be a.e.-strongly measurable for Hⁿ = μHE[n], with F(x) = 0 for every x ∉ K and ‖F(x)‖ ≤ B for every x (operator norm). Suppose that 1_M(x)θ(x)ξ(x) = 1_{M₁}(x)θ₁(x)ξ₁(x) + 1_{M₂}(x)θ₂(x)ξ₂(x) in MultiVector P n for Hⁿ-a.e. x ∈ ℝ^P. Then ∫_M θ(x)ξ(x)(F(x)) dHⁿ(x) = ∫_{M₁} θ₁(x)ξ₁(x)(F(x)) dHⁿ(x) + ∫_{M₂} θ₂(x)ξ₂(x)(F(x)) dHⁿ(x).",
+  "lean_statement": "∀ (P n : ℕ) (U K : Set (Euclid P)) (R₁ R₂ R : IMRep U n) (F : Euclid P → Covector (Euclid P) n) (B : ℝ), IsCompact K → K ⊆ U → AEStronglyMeasurable F μHE[n] → (∀ x, x ∉ K → F x = 0) → (∀ x, ‖F x‖ ≤ B) → (∀ᵐ x ∂μHE[n], R.carrier.indicator (fun y => (R.mult y : ℝ) • R.orient y) x = R₁.carrier.indicator (fun y => (R₁.mult y : ℝ) • R₁.orient y) x + R₂.carrier.indicator (fun y => (R₂.mult y : ℝ) • R₂.orient y) x) → ∫ x in R.carrier, (R.mult x : ℝ) * R.orient x (F x) ∂μHE[n] = ∫ x in R₁.carrier, (R₁.mult x : ℝ) * R₁.orient x (F x) ∂μHE[n] + ∫ x in R₂.carrier, (R₂.mult x : ℝ) * R₂.orient x (F x) ∂μHE[n]",
+  "lean_name": "dor_lmb_pc_cm_pairing_add_of_bounded",
+  "depends_on": [
+    "root.minimizing_implies_stationary-a1.diffeo_pushforward-a1.pushforward_current-a1.pairing_bound-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.minimizing_implies_stationary-a1.diffeo_pushforward-a1.pushforward_current-a1.pairing_bound-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-pushforwa-49ef3e5978-a1",
+      "result_commit": "5c8c6597411e77948b224fda014774beaa21ebaf",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-limsup-mass-bound-a1-projected-co-152f19825b-a1"
+}

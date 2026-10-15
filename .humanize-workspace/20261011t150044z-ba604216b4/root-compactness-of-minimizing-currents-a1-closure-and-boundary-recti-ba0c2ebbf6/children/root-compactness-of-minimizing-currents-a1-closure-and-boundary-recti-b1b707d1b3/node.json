@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.pointwise-a1.plane_unique-a1.span_le_of_det_eq-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.pointwise-a1.plane_unique-a1",
+  "depth": 6,
+  "title": "Equal mixed determinants against every frame force span inclusion of orthonormal frames",
+  "statement": "Let P, n ∈ ℕ and let x = (x_1, …, x_n) and y = (y_1, …, y_n) be orthonormal families in ℝ^P (Orthonormal ℝ x, Orthonormal ℝ y). Assume that for every family w = (w_1, …, w_n) of vectors in ℝ^P (w : Fin n → Euclid P), det(⟨x_a, w_b⟩)_{a,b} = det(⟨y_a, w_b⟩)_{a,b}. Here (⟨u_a, w_b⟩)_{a,b} is the n×n real matrix with entry ⟨u_a, w_b⟩ in row a and column b (Matrix.of fun a b => inner ℝ (u a) (w b)). Then span{y_1, …, y_n} ⊆ span{x_1, …, x_n}, i.e. Submodule.span ℝ (Set.range y) ≤ Submodule.span ℝ (Set.range x).",
+  "lean_statement": "∀ (P n : ℕ) (x y : Fin n → Euclid P), Orthonormal ℝ x → Orthonormal ℝ y → (∀ w : Fin n → Euclid P, Matrix.det (Matrix.of fun a b => inner ℝ (x a) (w b)) = Matrix.det (Matrix.of fun a b => inner ℝ (y a) (w b))) → Submodule.span ℝ (Set.range y) ≤ Submodule.span ℝ (Set.range x)",
+  "lean_name": "cbr_ci_pw_pu_span_le_of_inner_det_eq",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-b1b707d1b3-a1"
+}

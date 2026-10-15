@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_sector_endpoint_density-a1.mass_lower_bound-a1",
+  "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_sector_endpoint_density-a1",
+  "depth": 4,
+  "title": "Monotonicity lower bound for the mass of a minimizing 2-cycle in balls centred on its support",
+  "statement": "Let P ∈ ℕ and let C ∈ 𝒟_2(ℝ^P) (C : GeometricCurrentOn univ 2, ℝ^P = Euclid P) be minimizing in ℝ^P (IsMinimizingIn C univ) with ∂C = 0 (BoundaryVanishes C). Then for every y ∈ spt C and every ρ > 0, ω_2·ρ² ≤ M_{B_ρ(y)}(C), i.e. unitBallVolume 2 * ENNReal.ofReal (ρ ^ 2) ≤ C.massOn (ball y ρ).",
+  "lean_statement": "∀ (P : ℕ) (C : GeometricCurrentOn (univ : Set (Euclid P)) 2), IsMinimizingIn C univ → BoundaryVanishes C → ∀ y ∈ C.support, ∀ ρ : ℝ, 0 < ρ → unitBallVolume 2 * ENNReal.ofReal (ρ ^ 2) ≤ C.massOn (ball y ρ)",
+  "lean_name": "idtp_cse_massOn_ball_lower_bound",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-fa8e8e2b27-a1"
+}

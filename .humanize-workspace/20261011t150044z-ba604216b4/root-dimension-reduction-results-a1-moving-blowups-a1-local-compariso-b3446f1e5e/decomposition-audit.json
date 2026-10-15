@@ -1,0 +1,70 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "dimred_mbl_lc_ic_rb_massOn_le_add_incl|dimred_mbl_lc_ic_rb_measure_le_add_of_compact",
+        "theorem measure_inter_add_sdiff|theorem ofReal_add_le|theorem ofReal_mul|theorem add_lt_top|theorem IsCompact.diff|theorem IsClosed.sdiff|theorem IsOpen.sdiff|withDensity_apply|setLIntegral_mono",
+        "git diff --unified=0 b4d606db1 d49dda91b75b7417d67a10053e6dc4b65d4f0312 -- GMT/Ch07/Submission.lean",
+        "rg -n '^theorem|^axiom|^#print|sorry|admit|set_option|HumanizeNodeComparator|IsUnit|Matrix' /tmp/rb_dec_scratch/E2E.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/region_bound_independent_audit_y7j1gwsv/Audit.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Basic/ENNReal/Real.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Continuity.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-local-compariso-b3446f1e5e/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-local-compariso-b3446f1e5e/decomposition-v1.json",
+        "/tmp/rb_dec_scratch/E2E.lean",
+        "/tmp/region_bound_independent_audit_y7j1gwsv/Audit.lean",
+        "/tmp/region_bound_independent_audit_y7j1gwsv/lean.log"
+      ],
+      "conclusion": "The split appropriately isolates the repeated mass inequality and compact-set comparison. Pins and frozen definitions match. All four reused types are byte-identical to their accepted contracts, and their source hashes match comparator records. Both new names are unreserved; all six names are bare identifiers. Dependencies are correctly directed and acyclic, including the reused prerequisite closures. Independently reconstructed Lean replay exited successfully: all seven frozen types elaborated as Prop before the declarations, all comparator-style checks passed, and all six children plus the exact selected parent used only propext, Classical.choice and Quot.sound. Inclusion, negation, measure addition and ENNReal multiplication have the intended meanings; no matrix-unit construction occurs. The children establish the selected parent with b = R.measure (B \\ F)."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "vanish_off_support",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose matches the identical accepted type, including arbitrary U. Compactness gives a finite zero-region cover; the subordinate smooth partition splits the form into pieces annihilated by S. Linearity completes the non-circular proof."
+    },
+    {
+      "key": "mass_and_support",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The hypotheses and both conclusions match the accepted type. Unit-orientation duality, the integral formula and smooth approximation establish the mass identity; the zero-region argument establishes relative support. The supplied argument and verified accepted implementation are independent of the selected parent."
+    },
+    {
+      "key": "compact_outer_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The identical accepted type matches the prose. Decreasing open thickenings are compactly contained in U and have finite initial ν-measure. Continuity from above and continuity of ENNReal addition give the claimed bound, including c = ∞."
+    },
+    {
+      "key": "imrep_local_finiteness",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The identical accepted type states both finiteness conclusions precisely. Rewriting the weighted measure as the restricted lower integral applies locallyIntegrable_mult; positivity of the integer multiplicity bounds the unweighted measure by that finite integral."
+    },
+    {
+      "key": "mixed_mass_triangle",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The standalone one-line type matches every stated hypothesis. Inclusions preserve admissibility, and testing both signs bounds the absolute evaluation of Y. The supplied supremum argument gives the exact coefficient ofReal |c|, including the zero-times-infinity case, without prerequisites or circularity."
+    },
+    {
+      "key": "compact_sum_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The standalone type matches the prose. Exactly the four declared prerequisites supply open-set mass identities, local finiteness of the sum measure, the neighbourhood inequality and passage to E. Every domain and compact-containment hypothesis is justified, and the parent supplies them for E = F \\ W."
+    }
+  ],
+  "required_changes": []
+}

@@ -1,0 +1,107 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.density_and_tangent_cones-a1.blowup_compactness-a1.truncated_compactness-a1.radial_slice-a1`
+- Child DAG node: `root.density_and_tangent_cones-a1.blowup_compactness-a1.truncated_compactness-a1.radial_slice-a1.cutoff_defect-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: steps 0(c)–(d), 2 and 3 of the parent proof, i.e. Simon Ch. 6, 4.11 (chapter-06.txt lines 1378–1386: T(γ∘f dω) − T(d(γ∘f ω)) = −T(d(γ∘f) ∧ ω), combined with ∂T = 0), written for an arbitrary C^∞ function g whose support lies in the region V where ∂S vanishes. The only change from the parent proof: its pointwise bound (2.2) with the factor n (obtained from the Gram bound for the frame τ(x)) is replaced by the sharper bound |dg ∧ β| ≤ ‖Dg‖·|β| of the reused sibling wedge_norm, combined with the orientation bound |⟨α, ξ⟩| ≤ |α| of the reused sibling im_calculus. Siblings used (all comparator-accepted declarations, reused with identical frozen types): leibniz (Submission.cmcs_cd_extDeriv_smul_leibniz), wedge_norm (Submission.cmcs_wedge_norm_le), im_calculus (Submission.cmc_imRep_locality_restrict_sub, part (d)) and pairing_integrable (Submission.dpfir_imrep_pairing_continuous_integrable).
+
+Notation. n := m + 1; Hⁿ := μHE[n]; M := Rp.carrier; θ := Rp.mult, viewed in ℝ or in [0, ∞] as needed; ξ := Rp.orient; μ := Rp.measure = (Hⁿ⌞M).withDensity θ (definition IMRep.measure); b := β, viewed as the m-form ℝ^P → Covector(ℝ^P, m); db := exteriorDerivative b. For a k-covector α, |α| := covectorEuclideanNorm α. Dg(x) := fderiv ℝ g x ∈ (ℝ^P)*, with operator norm ‖Dg(x)‖. A(x) := alternatizeUncurryFin((Dg(x)).smulRight(b(x))), the (m+1)-covector dg ∧ β at x. The claim is ofReal|∫_M g·θ·ξ(db) dHⁿ| ≤ ∫⁻ ofReal(‖Dg‖·|b|) dμ.
+
+1. (The test form gβ.) Put gb(y) := g(y)·b(y). By definition of TestFormOn, IsTestForm b holds, i.e. b is C^∞ (ContDiff ℝ ∞ b) and HasCompactSupport b. Since g is C^∞, gb is C^∞ (ContDiff.smul). If b(y) = 0 then gb(y) = 0, so support gb ⊆ support b and gb has compact support (HasCompactSupport.mono). If g(y) = 0 then gb(y) = 0, so support gb ⊆ support g and tsupport gb ⊆ tsupport g (closure_mono). (Lean hint: prove these two inclusions pointwise. Do not use the generic lemmas HasCompactSupport.smul_left and tsupport_smul_subset_left: with Covector-valued functions their unification hit the 200000-heartbeat whnf limit in a test elaboration.) Hence tsupport gb ⊆ U and tsupport gb ⊆ V. Thus gb ∈ TestFormOn U m, with tsupport gb ⊆ V, and the boundary hypothesis gives S.boundary(gb) = 0.
+
+2. (Use of ∂S = 0 and of the representation.) By GeometricCurrentOn.boundary_apply, S.boundary(gb) = S(exteriorDerivativeTestOn U m gb). The underlying form of this test form is d(gb) := exteriorDerivative gb. By Rp.Represents S and the definition of IMRep.action, S(d(gb)) = ∫_M θ(x)·ξ(x)(d(gb)(x)) dHⁿ(x). Therefore
+   ∫_M θ(x)·ξ(x)(d(gb)(x)) dHⁿ(x) = 0.   (1)
+
+3. (Leibniz rule.) g and b are C^∞, hence differentiable at every x. By the sibling leibniz (with k = m and η = b), for every x:
+   d(gb)(x) = g(x)·db(x) + A(x).
+   Since ξ(x) is linear, θ(x)ξ(x)(d(gb)(x)) = θ(x)ξ(x)(g(x)·db(x)) + θ(x)ξ(x)(A(x)). Moreover θ(x)ξ(x)(g(x)·db(x)) = g(x)·(θ(x)ξ(x)(db(x))).
+
+4. (Integrability.)
+   (a) db is a test form (exteriorDerivative_isTestForm), so it is continuous and has compact support. The field x ↦ g(x)·db(x) is continuous. It vanishes where db vanishes, so it has compact support. It vanishes where g vanishes, so its tsupport lies in tsupport g ⊆ U. (Lean hint: prove both facts pointwise, as in step 1.) By the sibling pairing_integrable, I₁(x) := θ(x)ξ(x)(g(x)·db(x)) is Hⁿ⌞M-integrable.
+   (b) gb is a test form by step 1. Hence d(gb) is a test form (exteriorDerivative_isTestForm), and tsupport d(gb) ⊆ tsupport gb ⊆ U (tsupport_exteriorDerivative_subset). By pairing_integrable, I₀(x) := θ(x)ξ(x)(d(gb)(x)) is Hⁿ⌞M-integrable.
+   (c) By step 3, I₂(x) := θ(x)ξ(x)(A(x)) equals I₀(x) − I₁(x) for every x. So I₂ is Hⁿ⌞M-integrable (Integrable.sub followed by Integrable.congr). This avoids proving continuity of A.
+
+5. (The identity.) By (1), step 3 and integral_add (justified by step 4), 0 = ∫_M I₀ dHⁿ = ∫_M I₁ dHⁿ + ∫_M I₂ dHⁿ. Using the last identity of step 3,
+   ∫_M g·θ·ξ(db) dHⁿ = ∫_M I₁ dHⁿ = −∫_M θ·ξ(A) dHⁿ.   (2)
+
+6. (Passage to the lower integral.) By (2), ofReal|∫_M g θ ξ(db) dHⁿ| = ofReal|∫_M θ ξ(A) dHⁿ|. For a real-valued integral, ofReal|∫ f| = ‖∫ f‖ₑ ≤ ∫⁻ ‖f‖ₑ = ∫⁻ ofReal|f| (enorm_integral_le_lintegral_enorm and Real.enorm_eq_ofReal_abs). Hence
+   ofReal|∫_M g θ ξ(db) dHⁿ| ≤ ∫⁻_M ofReal|θ(x)ξ(x)(A(x))| dHⁿ(x).
+
+7. (Pointwise bound.) Apply part (d) of the sibling im_calculus to Rp (degree m + 1): for Hⁿ-a.e. x ∈ M, |ξ(x)(α)| ≤ |α| for every (m+1)-covector α. Apply the sibling wedge_norm with β := Dg(x), γ := b(x) and k = m: |A(x)| ≤ ‖Dg(x)‖·|b(x)| for every x. Since θ(x) ≥ 0, for Hⁿ-a.e. x ∈ M,
+   |θ(x)ξ(x)(A(x))| = θ(x)·|ξ(x)(A(x))| ≤ θ(x)·‖Dg(x)‖·|b(x)|.
+   In [0, ∞] this reads ofReal|θ(x)ξ(x)(A(x))| ≤ θ(x)·ofReal(‖Dg(x)‖·|b(x)|). Here ofReal(θ(x)) = θ(x) because θ(x) is a natural number (ENNReal.ofReal_natCast), and ofReal of a product of nonnegative reals is the product of the ofReal's (ENNReal.ofReal_mul). By lintegral_mono_ae,
+   ∫⁻_M ofReal|θξ(A)| dHⁿ ≤ ∫⁻_M θ(x)·ofReal(‖Dg(x)‖·|b(x)|) dHⁿ(x).
+
+8. (The weight μ.) By definition, μ = (Hⁿ⌞M).withDensity θ. The density x ↦ (θ(x) : [0, ∞]) is measurable (IMRep.measurable_mult composed with the cast ℕ → [0, ∞]) and finite everywhere. So lintegral_withDensity_eq_lintegral_mul_non_measurable gives ∫⁻ φ dμ = ∫⁻_M θ·φ dHⁿ for every φ : ℝ^P → [0, ∞]; no measurability of φ is needed. With φ(x) := ofReal(‖Dg(x)‖·|b(x)|), the right side of step 7 equals ∫⁻ ofReal(‖Dg‖·|b|) dμ.
+
+9. (Conclusion.) Steps 6, 7 and 8 give
+   ofReal|∫_M g(x)·(θ(x)·ξ(x)(dβ(x))) dHⁿ(x)| ≤ ∫⁻ ofReal(‖Dg(x)‖·|β(x)|) dμ(x). ∎
+
+## Key steps
+
+1. g·β is a test form in U with tsupport in tsupport g ⊆ V. So ∂S(gβ) = 0, and boundary_apply with Rp.Represents S gives ∫_M θ⟨d(gβ), ξ⟩ dHⁿ = 0.
+2. Leibniz (cmcs_cd_extDeriv_smul_leibniz): d(gβ) = g·dβ + dg∧β. The pairings θ⟨d(gβ), ξ⟩ and θ⟨g dβ, ξ⟩ are integrable by dpfir_imrep_pairing_continuous_integrable, and θ⟨dg∧β, ξ⟩ is integrable as their difference.
+3. Hence ∫_M gθ⟨dβ, ξ⟩ = −∫_M θ⟨dg∧β, ξ⟩. Also |θ⟨dg∧β, ξ⟩| ≤ θ‖Dg‖|β| Hⁿ-a.e. on M, by the orientation bound (cmc_imRep_locality_restrict_sub (d)) and cmcs_wedge_norm_le.
+4. Integrate in [0, ∞] (‖∫f‖ₑ ≤ ∫⁻‖f‖ₑ), then rewrite ∫⁻_M θ·φ dHⁿ = ∫⁻ φ dμ (lintegral_withDensity_eq_lintegral_mul_non_measurable).
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat local-references/123e8435b4a2469b/manifest.json (mode local-project, project b4d606db, mathlib 25730c7c); cmp workspace GMT/Ch07/Contract.lean against local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean and against GMT/Ch07/Submission.lean; grep rev lake-manifest.json`
+- `rg -n "theorem setIntegral_congr_fun\b|theorem ball_eq_empty|bddAbove_range_of_hasCompactSupport|theorem norm_indicator_le_norm_self|theorem indicator_of_notMem|theorem lintegral_indicator_const\b" local-references/123e8435b4a2469b/mathlib/Mathlib`
+- `rg -n "theorem lintegral_withDensity_eq_lintegral_mul_non_measurable\b|theorem enorm_integral_le_lintegral_enorm\b|theorem map_apply\b|theorem withDensity_apply\b|theorem restrict_restrict\b" local-references/123e8435b4a2469b/mathlib/Mathlib`
+- `rg -n "dtc_bc_tc_rs_" local-references/123e8435b4a2469b/project (no match); git log --all --oneline -S dtc_bc_tc_rs_ (no match); grep -rl dtc_bc_tc_rs_ GMT simongmt/Poincare (no match)`
+- `grep -n "def IsTestForm|abbrev DifferentialForm|abbrev exteriorDerivative|theorem exteriorDerivative_apply|abbrev TestFormOn|structure GeometricCurrentOn|def GeometricCurrentOn.boundary|boundary_apply|exteriorDerivative_isTestForm|tsupport_exteriorDerivative_subset|def covectorEuclideanNorm" simongmt/Poincare/SimonGMT/Chapter06/{Forms,Currents,Mass}.lean`
+- `python3 -I over dag.json (2220 nodes at the first search, 2342 at the final check): lean statements containing smoothTransition, covectorEuclideanNorm, IsUnitOrientationOf, Orthonormal, exteriorDerivative or "orient x"; lean names containing good_slice, cutoff, liminf, strip, radius, radial, lcmp_, smp_; statements combining Represents with liminf or with a locally vanishing boundary; status, candidate_commit and handoff natural proofs of the nine reused names`
+- `git show <candidate_commit>:GMT/Ch07/Submission.lean | grep "theorem Submission.<name>" for cmc_fc_good_slice, cmcs_level_cutoff, cmcs_smp_cutoff_integral_tendsto, cmcs_smp_liminf_bound, dpf_pfc_imrep_pairing_integrable_abs_le, cmcs_cd_extDeriv_smul_leibniz, cmcs_wedge_norm_le, cmc_imRep_locality_restrict_sub, dpfir_imrep_pairing_continuous_integrable (exact type string comparison)`
+- `python3 -I: verifier/gmt-compare.py layout + child_modules (contract mode) and verifier/lean_contract.py validate_lean_statement on the 12 types`
+- `lake env lean /tmp/rs_split/challenges/Combined.lean; lake env lean /tmp/rs_split/{Assembly,Radius,Defect}.lean with #print axioms`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/lake-manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/WithDensity.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Map.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/Pseudo/Defs.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Group/Indicator.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Group/Bounded.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-compactness-a1-truncated-com-77957babf4/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-compactness-a1-truncated-compactness-a1/decomposition-v3.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-flat-convergence-a1-good-slice-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-slicing-a1-level-cutoff-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-slicing-a1-mass-pointwise-78bf1bcbb0/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-slicing-a1-mass-pointwise-b96566c9ba/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-pushforwa-49ef3e5978/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-slicing-a1-cutoff-defect-a-9dbb42610d/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-slicing-a1-wedge-norm-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-im-calculus-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-image-rep-0e98a44316/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/tmp/rs_split/challenges/Combined.lean`
+- `/tmp/rs_split/Assembly.lean`
+- `/tmp/rs_split/Radius.lean`
+- `/tmp/rs_split/Defect.lean`
+
+Snapshot: mode local-project, project b4d606db, Mathlib 25730c7c. Its Ch07 Contract.lean is byte-identical to the workspace Contract.lean and Submission.lean.
+No library or snapshot declaration states the radial slicing bound or the cutoff defect estimate for a current whose boundary vanishes only on test forms supported in B_R(0) while β is a test form on ℝ^P. The closest DAG candidates do not apply directly. cmcs_cutoff_defect_bound, cmc_slice_mass_bounds and cmcs_slice_mass_pointwise need a boundary representation on all of U. dtc_bc_lc_fd_lz_cutoff_estimate (accepted at 04:37Z, during this session) needs η : TestFormOn U m with |η| ≤ 1, whereas here β : TestFormOn univ m. dtc_bc_lc_fd_lz_boundary_mass (accepted at 04:47Z) bounds the mass of ∂(S restricted to B_t) by 2·M_V(∂S) + 2·liminf. Using it would also need the IMRep restriction, a second cutoff χ to move β into TestFormOn U m, and the mass-evaluation bound, and it gives a factor 2. The direct route through cutoff_defect is shorter and is already Lean-checked. These two estimates are therefore new obligations.
+Nine accepted declarations supply the remaining steps. Each candidate commit contains theorem Submission.<name> with the identical type: cmc_fc_good_slice, cmcs_level_cutoff, cmcs_smp_cutoff_integral_tendsto, cmcs_smp_liminf_bound, dpf_pfc_imrep_pairing_integrable_abs_le, cmcs_cd_extDeriv_smul_leibniz, cmcs_wedge_norm_le, cmc_imRep_locality_restrict_sub and dpfir_imrep_pairing_continuous_integrable.
+The Mathlib lemmas named in the new proofs exist in the snapshot: WithDensity.lean:477 lintegral_withDensity_eq_lintegral_mul_non_measurable, :44 withDensity_apply; Bochner/Basic.lean:333 enorm_integral_le_lintegral_enorm; Map.lean:170 map_apply; Restrict.lean:205 restrict_restrict; Bochner/Set.lean:73 setIntegral_congr_fun; Lebesgue/Basic.lean:541 lintegral_indicator_const; Pseudo/Defs.lean:387 ball_eq_empty; Normed/Group/Indicator.lean:66 norm_indicator_le_norm_self. Normed/Group/Bounded.lean uses bddAbove_range_of_hasCompactSupport.
+dtc_bc_tc_rs_ has no match anywhere.
+All 12 types elaborate in comparator contract scope. The three Lean implications compile with only propext, Classical.choice and Quot.sound: selected ⇐ radius_bound + good_slice; radius_bound ⇐ cutoff_defect + level_cutoff + cutoff_integral_tendsto + liminf_bound + pairing_bound; cutoff_defect ⇐ leibniz + wedge_norm + im_calculus + pairing_integrable.

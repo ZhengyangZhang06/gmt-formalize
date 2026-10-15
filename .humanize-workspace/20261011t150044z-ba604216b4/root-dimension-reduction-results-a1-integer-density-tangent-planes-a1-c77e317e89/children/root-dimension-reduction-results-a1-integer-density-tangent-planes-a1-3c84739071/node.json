@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_tangent_cone_planar-a1.plane_ball_measure-a1",
+  "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_tangent_cone_planar-a1",
+  "depth": 4,
+  "title": "H^n of a ball in the span of an orthonormal n-frame equals ω_n ρ^n",
+  "statement": "For all P, n ∈ ℕ, every orthonormal family τ = (τ_1, …, τ_n) in ℝ^P := Euclid P (Orthonormal ℝ τ) with Q := span{τ_1, …, τ_n}, every y ∈ Q and every ρ > 0: H^n(B_ρ(y) ∩ Q) = ω_n·ρ^n, where H^n := μHE[n] (the normalized n-dimensional Hausdorff measure on ℝ^P), ω_n := unitBallVolume n (the Lebesgue measure of the unit ball of Euclid n) and ρ^n is read as ofReal(ρ^n) in [0, ∞].",
+  "lean_statement": "∀ (P n : ℕ) (τ : Fin n → Euclid P), Orthonormal ℝ τ → ∀ y ∈ Submodule.span ℝ (Set.range τ), ∀ ρ : ℝ, 0 < ρ → μHE[n] (ball y ρ ∩ (Submodule.span ℝ (Set.range τ) : Set (Euclid P))) = unitBallVolume n * ENNReal.ofReal (ρ ^ n)",
+  "lean_name": "idtp_cttp_span_ball_measure",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-3c84739071-a1"
+}

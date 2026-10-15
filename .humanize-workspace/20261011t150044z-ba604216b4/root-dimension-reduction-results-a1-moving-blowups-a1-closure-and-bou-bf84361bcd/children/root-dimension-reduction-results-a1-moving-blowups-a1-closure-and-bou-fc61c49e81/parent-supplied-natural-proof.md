@@ -1,0 +1,85 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.dimension_reduction_results-a1.moving_blowups-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.isodiametric_bound-a1`
+- Child DAG node: `root.dimension_reduction_results-a1.moving_blowups-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.isodiametric_bound-a1.isodiametric-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: Simon Ch. 1, Theorem 2.10 and its proof (book/chapter-01.txt lines 502–536) / parent steps 1a (reduction to compact sets) and 1g (conclusion).
+1. ω_d ≠ 0: the open unit ball is nonempty and open, so its volume is positive (Metric.measure_ball_pos).
+2. Case ediam A = ∞. Then d ≥ 1: for d = 0 every subset of the one-point space ℝ⁰ is subsingleton and has ediam 0 (ediam_subsingleton). Hence (ediam A/2)^d = (∞/2)^d = ∞ (ENNReal.top_div_of_ne_top, ENNReal.top_pow), the right-hand side is ω_d·∞ = ∞ (ENNReal.mul_top, using ω_d ≠ 0), and the inequality holds.
+3. Case ediam A < ∞ (reduction 1a). A is bounded (isBounded_iff_ediam_ne_top), so its closure Ā is compact (Bornology.IsBounded.isCompact_closure; ℝ^d is proper). Moreover ediam Ā = ediam A (Metric.ediam_closure) and L^d(A) ≤ L^d(Ā) (monotonicity, A ⊆ Ā).
+4. By the sibling Submission.dmcbr_ci_iso_exists_symmetric_replacement applied to the compact set Ā, there is a compact K with L^d(K) = L^d(Ā), ediam K ≤ ediam Ā = ediam A, and −x ∈ K for all x ∈ K.
+5. By the sibling Submission.cbr_ci_iso_volume_le_of_neg_mem, L^d(K) ≤ ω_d·(ediam K/2)^d. Since t ↦ ω_d·(t/2)^d is monotone on [0, ∞] and ediam K ≤ ediam A, ω_d·(ediam K/2)^d ≤ ω_d·(ediam A/2)^d (gcongr).
+6. Hence L^d(A) ≤ L^d(Ā) = L^d(K) ≤ ω_d·(ediam A/2)^d. ∎
+
+## Key steps
+
+1. Unbounded A: d ≥ 1 and the right-hand side is ∞.
+2. Bounded A: pass to the compact closure, which has the same ediam and at least the same measure.
+3. Replace the closure by a centrally symmetric compact set of equal measure and no larger ediam (symmetric_replacement).
+4. Apply the centrally symmetric bound (symmetric_bound) and monotonicity in ediam.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat RUN/local-references/123e8435b4a2469b/manifest.json -> mode local-project, project_commit b4d606db1da5da8fa2c0292ad4924d97de8b3c4b, mathlib_commit 25730c7c759d108ef87ab70af2342a196760f79d; git rev-parse HEAD (b4d606db1), git -C .lake/packages/mathlib rev-parse HEAD (25730c7c), git -C .lake/packages/simongmt rev-parse HEAD (2b366308); cmp SNAPSHOT/project/GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean and GMT/Ch07/Contract.lean -> identical`
+- `rg -il 'isodiametric|steiner' SNAPSHOT/mathlib/Mathlib -> no match (exit 1); rg -il 'isodiametric|steiner' SNAPSHOT/project -> only GMT/Ch01/{Contract,Submission,README} (outside the Ch07 import closure)`
+- `python3 -I scans of RUN/dag.json (2092 nodes): selected node depth 5 and status decomposing; byte-identical lean_statement search -> root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.isodiametric_bound-a1 (cbr_ci_euclideanHausdorff_le_isodiametric, speculative-ready); statuses/candidate commits of its subtree (steiner_reflect, steiner_diam, slice_usc, steiner_compact, symmetric_bound, steiner_volume.cavalieri_coordinate, steiner_volume.steiner_slice_length accepted; steiner_volume queued; symmetric_replacement, isodiametric, volume_le_hausdorff speculative-ready); lean_name search for dmcbr_ci_iso_* -> none`
+- `python3 -I diff of subproblem.natural_proof in RUN/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-3684511996/parent-child-handoff.json and this node's parent-child-handoff.json -> identical; read decomposition-v1.json and decomposition-audit-v1.json of nodes ...-3684511996 and ...-b1e99d8ae2 (acceptable=true, every child acceptable and natural_proof_acceptable)`
+- `sed -n 6557,6600p, 1810,1960p, 1660,1740p, 1388,1397p /runtime/flows/gmt-claude-b888e19cffb1/_recursive_lean/runtime.py and grep -n 'def ensure' -A 35 store.py (accepted cross-branch declarations with identical type are reused by node id; unaccepted ones are reserved; depth >= max_depth never splits); grep max_depth/max_nodes swarm-project.json -> 6 / 5000`
+- `git diff <proof_base_commit> <candidate_commit> -- GMT/Ch07/Submission.lean for the 7 accepted candidates (e06e9f22, d1066449, 5ea5286a, c7b07ef2, 710131ae, 1eb2ee70, 5af3533e) and git show of the speculative drafts 663584c2, f6a9702d, 263676f0, 36bd0b8d, 3f96a865`
+- `rg -n over SNAPSHOT/mathlib/Mathlib: le_hausdorffMeasure (MeasureTheory/Measure/Hausdorff.lean:541), isAddHaarMeasure_hausdorffMeasure (Hausdorff.lean:978), Measure.le_iff' (MeasureTheory/Measure/CompleteLattice.lean:46), Measure.euclideanHausdorffMeasure_def (Geometry/Euclidean/Volume/Measure.lean:74), EuclideanSpace.euclideanHausdorffMeasure_eq_volume (Measure.lean:187), OrthonormalBasis.volume_parallelepiped (MeasureTheory/Measure/Haar/InnerProductSpace.lean:82), Measure.coe_nnreal_smul_apply (MeasureTheory/Measure/Module.lean:182), ENNReal.mul_le_mul_iff_left (Basic/ENNReal/Operations.lean:79), ENNReal.mul_top (:187), ENNReal.top_pow (:230), ENNReal.top_div_of_ne_top (Basic/ENNReal/Inv.lean:343), ENNReal.mul_inv_cancel (:103), ENNReal.inv_mul_cancel (:108), ENNReal.div_ne_top (:218), ENNReal.div_ne_zero (:550), ENNReal.rpow_natCast (Analysis/SpecialFunctions/Pow/NNReal.lean:686), IsCompact.measurableSet (MeasureTheory/Constructions/BorelSpace/Basic.lean:262), isBounded_iff_ediam_ne_top (Topology/MetricSpace/Bounded.lean:469), Bornology.IsBounded.isCompact_closure (Bounded.lean:328), Metric.ediam_closure (Topology/Instances/ENNReal/Lemmas.lean:649), ediam_subsingleton (Topology/EMetricSpace/Diam.lean:57), measure_ball_pos (MeasureTheory/Measure/OpenPos.lean:212), measure_ball_lt_top (MeasureTheory/Measure/Typeclasses/Finite.lean:373), Measure.addHaar_closedBall (MeasureTheory/Measure/Lebesgue/EqHaar.lean:500), finrank_euclideanSpace_fin (Analysis/InnerProductSpace/PiL2.lean:205), Finset.induction_on (Data/Finset/Insert.lean:491), Function.update_comm / Function.update_idem (Logic/Function/Basic.lean:787, :792) -> all found`
+- `rg -l dmcbr_ci_iso SNAPSHOT .lake/packages/simongmt GMT -> no match (exit 1)`
+- `sed -n 495,560p /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-01.txt (Theorem 2.10 lines 502-506, proof lines 511-536, note lines 537-545, completion of 2.9 lines 547-559)`
+- `lake env lean /tmp/dmcbr_iso/out/Types.lean (10 child types + parent type as challenge theorems in the scope replayed by gmt-compare.contract_scope: only sorry warnings)`
+- `lake env lean /tmp/dmcbr_iso/out/Integrated.lean (7 accepted proofs verbatim + 3 fresh children + exact parent type + exact Submission.X targets: exit 0, no errors; #print axioms: propext, Classical.choice, Quot.sound for all 11 declarations)`
+- `python3 -I /tmp/dmcbr_iso/scripts/validate.py /runtime/flows/gmt-claude-b888e19cffb1/_recursive_lean/lean_contract.py -> all 10 statements valid and unchanged; recomputed decomposition_scope digest 485d3abe47d0ba0f96aff51ba355022a075f574112ff539330772a36bbb1c23a`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch01/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/swarm-project.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-closure-and-bou-bf84361bcd/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-closure-and-bou-bf84361bcd/parent-supplied-natural-proof.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-3684511996/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-3684511996/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-3684511996/decomposition-audit-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-b1e99d8ae2/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-b1e99d8ae2/decomposition-audit-v1.json`
+- `/runtime/flows/gmt-claude-b888e19cffb1/_recursive_lean/runtime.py`
+- `/runtime/flows/gmt-claude-b888e19cffb1/_recursive_lean/store.py`
+- `/runtime/flows/gmt-claude-b888e19cffb1/_recursive_lean/models.py`
+- `/runtime/flows/gmt-claude-b888e19cffb1/_recursive_lean/lean_contract.py`
+- `/runtime/flows/gmt-claude-b888e19cffb1/_recursive_lean/decomposition_scope.py`
+- `/runtime/flows/gmt-claude-b888e19cffb1/scripts/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/CompleteLattice.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Haar/InnerProductSpace.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Module.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Basic/ENNReal/Operations.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Basic/ENNReal/Inv.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/SpecialFunctions/Pow/NNReal.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Constructions/BorelSpace/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/Bounded.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Instances/ENNReal/Lemmas.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/EMetricSpace/Diam.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/OpenPos.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Typeclasses/Finite.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/EqHaar.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Data/Finset/Insert.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Logic/Function/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-01.txt`
+- `/tmp/dmcbr_iso/out/Types.lean`
+- `/tmp/dmcbr_iso/out/Integrated.lean`
+- `/tmp/dmcbr_iso/out/Integrated.log`
+
+The snapshot is compatible: its pins match the workspace, and its Ch07 contract is byte-identical to Submission.lean and Contract.lean. Mathlib at 25730c7c has no isodiametric inequality and no Steiner symmetrization, and the Ch01 versions lie outside the Ch07 import closure. The proof is therefore rebuilt from Mathlib API, which exists at the cited locations. The selected node's frozen type and supplied proof are byte-identical to those of the other branch's audited node cbr_ci_euclideanHausdorff_le_isodiametric. Its seven accepted descendants have byte-identical types and are reused by name. The three unaccepted ones get fresh dmcbr_ci_iso_* names, which occur nowhere in the DAG, the snapshot, SimonGMT or GMT. All 10 child types elaborate in the contract scope and pass validate_lean_statement. A complete development with no sorry proves every child and the exact frozen parent type using only propext, Classical.choice and Quot.sound.

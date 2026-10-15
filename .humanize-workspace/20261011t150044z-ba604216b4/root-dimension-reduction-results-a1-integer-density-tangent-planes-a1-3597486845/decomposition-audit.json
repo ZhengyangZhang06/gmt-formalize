@@ -1,0 +1,83 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "rg -n '^(import|namespace|open|def|abbrev|structure|theorem)|IsEmbeddedSubmanifold|tangentSpace|firstVariation|regularSet|DensityOneImpliesRegular|MinimizingImpliesStationary|IsConeCurrent|HasMassDensity' .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "rsd_constant_multiplicity_reduction rsd_ae_hasMassDensity_mult rsd_mem_support_iff_measure_ball_pos rsd_massOn_eq_measure rsd_cmr_support_eq_inter imrep_carrier_sdiff_support_null regcomp_atl_local_density_zero approxTangent_le_submanifold_tangentSpace dtc_approxTangent_of_null_diff chart_tangentSpace_eq_range_fderiv dsmc_chart_inverse_continuity dimred_rpd_submanifold_density_one imsupp_unit_orientation_ne_zero_norm_le_one cone_current_imrep_measure_smul_image dtc_restrictDomain_isIntegerMultiplicity dtc_massOn_eq_of_agreeOn dimred_cs_mi_hasMassDensity_unique dimred_regular_point_density density_one_implies_regular minimizing_implies_stationary idtp_planar_cycle_eq_const_mul",
+        "theorem integral_area_formula_of_injective_derivative|theorem ae_eq_const_of_weak_coordinate_derivatives_zero|def HasApproximateTangentSpaceAt|theorem HasApproximateTangentSpaceAt.unique|def areaJacobianAt|areaJacobianAt_eq_sqrt_det_gram",
+        "euclideanHausdorffMeasure_zero_or_top|theorem euclideanHausdorffMeasure_eq_volume|euclideanHausdorffMeasure_image|addHaar_ball_of_pos",
+        "idtp_ccd_",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/ccd_independent_audit/Assembly.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/ccd_independent_audit/LibraryAxioms.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/lake-manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/EqHaar.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/InverseFunctionTheorem/ContDiff.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-3597486845/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-3597486845/decomposition-v1.json",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter02/WeightedArea.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter02/AreaParametrization.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter08/DistributionalConstancy.lean",
+        "/tmp/ccd_independent_audit/Assembly.lean",
+        "/tmp/ccd_independent_audit/LibraryAxioms.lean",
+        "/tmp/ccd_independent_audit/reuse_checks.json",
+        "/tmp/ccd_independent_audit/name_checks.json"
+      ],
+      "conclusion": "The split is appropriate and establishes the selected local-planarity statement. Project, mathlib, and SimonGMT revisions match the pinned references. All seven exact child propositions elaborate independently of their implementations; the regenerated hypothesis-only assembly proves the exact handoff parent type and uses only propext, Classical.choice, and Quot.sound. The eight checked library results also have only these axioms. All 18 reused accepted declarations match their comparator-accepted frozen types and have passing comparator receipts. Dependency and proof-child closure checks found no circular reliance on this node or its ancestors. The three unfinished external results are existing inherited prerequisites, not claimed accepted declarations. No child name is reserved in the DAG, other node artifacts, or 804 worktree submissions. All names are bare identifiers, all statements are one-line propositions, and no problematic inline matrix-unit construction occurs."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "regular_of_const_density",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Prose and Lean hypotheses agree. The proof establishes n ≤ P, multiplicity k almost everywhere, and k > 0 before applying the accepted reduction. Every constant-sequence Allard hypothesis and the transfer back to regularSet T is supplied. The Allard prerequisite is non-circular."
+    },
+    {
+      "key": "regular_point_support",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The contract matches the prose, including local measure finiteness. Proper charts give the required local closedness; vanishing test forms prove one support inclusion, and an integrable positive bump pairing proves the other. The full proof correctly concludes nonzero evaluation for either sign of m."
+    },
+    {
+      "key": "sheet_first_variation",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof establishes both directions of almost-everywhere carrier equality, multiplicity k, and equality of tangent planes using the cited lemmas with matching hypotheses. Localization outside tsupport and the Bochner integral identities then prove the exact trace formula. Nonpositive radii cause no missing case."
+    },
+    {
+      "key": "cone_support_smul",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The representation, homogeneous measure identity, and exact dilation of balls prove positivity of every ball about t • x. This gives the stated support inclusion for every positive t, without invoking the selected parent."
+    },
+    {
+      "key": "stationary_cone_sheet_planar",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The detailed proof supplies the chart inverse, radial parametrization, admissible cutoff field, trace calculation, and Jacobian t|γ′|. The resulting distributional conservation law gives κ = 1, and Cauchy–Schwarz forces planarity. The final shrinking establishes precisely the required equality and p ∈ Q, without assuming |p| = 1 or additional smoothness."
+    },
+    {
+      "key": "planar_support_mass",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Restriction preserves integer multiplicity and vanishing boundary, with the stated support identity. The existing planar-constancy prerequisite applies on the nonempty connected planar ball. The normalized Hausdorff disc formula and density uniqueness identify |c| with k, including k = 0."
+    },
+    {
+      "key": "minimizing_stationary",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "For n ≤ P the proof correctly specializes the inherited minimizing-implies-stationary result to the ambient space and verifies tangency of every test field. For P < n it proves the Hausdorff measure vanishes, so the first variation is zero. This covers the exact unrestricted dimension quantifiers."
+    }
+  ],
+  "required_changes": []
+}

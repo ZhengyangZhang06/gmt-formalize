@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_sector_endpoint_density-a1.box_mass_limits-a1.tilt_decay-a1",
+  "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_sector_endpoint_density-a1.box_mass_limits-a1",
+  "depth": 5,
+  "title": "Tilt-excess decay at the edge point from the blow-up limit ±m[[Q]]",
+  "statement": "Let P ∈ ℕ, C ∈ 𝒟_2(ℝ^P) (GeometricCurrentOn univ 2), R an IMRep (univ, dimension 2) with R.Represents C, μ := R.measure, ξ := R.orient, Q a linear subspace of ℝ^P, a, e ∈ ℝ^P, m ∈ ℕ, and β ∈ Covector(ℝ^P, 2) with β(a, e) = 1 and |ξ(x)(β)| ≤ 1 for μ-a.e. x. Assume (BP): for every sequence λ_j > 0 with λ_j → 0 there are a strictly increasing φ, C' ∈ 𝒟_2(ℝ^P) and c ∈ ℤ with |c| = m such that blowUp C a λ_{φ(j)} ⇀ C' (ConvergesWeakly), C'(ω) = c∫_Q ω(x)(a, e) dH²(x) for every ω ∈ 𝒟²(ℝ^P), and λ_{φ(j)}^{-2}∫ g(dilation a λ_{φ(j)} x) dμ(x) → m∫_Q g dH² for every continuous compactly supported g. Then (∫⁻_{B_{3s'}(a)} ofReal(1 − |ξ(x)(β)|) dμ(x))/ofReal(s'²) → 0 as s' → 0⁺.",
+  "lean_statement": "∀ (P : ℕ) (C : GeometricCurrentOn (univ : Set (Euclid P)) 2) (R : IMRep (univ : Set (Euclid P)) 2) (Q : Submodule ℝ (Euclid P)) (a e : Euclid P) (m : ℕ) (β : Covector (Euclid P) 2), R.Represents C → β ![a, e] = 1 → (∀ᵐ x ∂R.measure, |R.orient x β| ≤ 1) → (∀ (lams : ℕ → ℝ) (hlams : ∀ j, 0 < lams j), Tendsto lams atTop (𝓝 0) → ∃ (φ : ℕ → ℕ) (C' : GeometricCurrentOn (univ : Set (Euclid P)) 2) (c : ℤ), StrictMono φ ∧ c.natAbs = m ∧ ConvergesWeakly (fun j => blowUp C a (lams (φ j)) (hlams (φ j)).ne') C' ∧ (∀ ω : TestFormOn (univ : Set (Euclid P)) 2, C' ω = (c : ℝ) * ∫ x in (Q : Set (Euclid P)), (ω : DifferentialForm (Euclid P) 2) x ![a, e] ∂μHE[2]) ∧ ∀ g : Euclid P → ℝ, Continuous g → HasCompactSupport g → Tendsto (fun j => (lams (φ j))⁻¹ ^ 2 * ∫ x, g (dilation a (lams (φ j)) x) ∂R.measure) atTop (𝓝 ((m : ℝ) * ∫ x in (Q : Set (Euclid P)), g x ∂μHE[2]))) → Tendsto (fun s' : ℝ => (∫⁻ x in ball a (3 * s'), ENNReal.ofReal (1 - |R.orient x β|) ∂R.measure) / ENNReal.ofReal (s' ^ 2)) (𝓝[>] 0) (𝓝 0)",
+  "lean_name": "idtp_cse_bml_tilt_excess_decay",
+  "depends_on": [
+    "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_sector_endpoint_density-a1.box_mass_limits-a1.subseq_criterion-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_sector_endpoint_density-a1.box_mass_limits-a1.subseq_criterion-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-b424f4de74-a1"
+}

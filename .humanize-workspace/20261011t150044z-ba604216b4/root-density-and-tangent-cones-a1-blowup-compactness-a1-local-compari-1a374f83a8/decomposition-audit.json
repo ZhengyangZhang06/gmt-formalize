@@ -1,0 +1,113 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "HasApproximateTangentSpaceAt|support_euclideanHausdorffMeasure_restrict_submodule|regular_euclideanHausdorffMeasure_restrict_submodule",
+        "integral_area_formula_of_injective_derivative|weighted_area_formula_volume_of_injective_derivative|integrableOn_image_iff_integrableOn_areaJacobian_smul|injective_area_formula_areaJacobianAt",
+        "integral_lineDeriv_mul_eq|ae_differentiableAt|measurable_fderiv",
+        "exists_hasCompactSupport_integral_sub_le|exists_contDiff_dist_le|ae_eq_of_hasFDerivWithinAt|norm_fderiv_le_of_lipschitz",
+        "inverse_continuousAt|isUnit_iff_isUnit_toLinearMap|theorem ContinuousOn.measurable_piecewise|norm_fderiv_le_of_lipschitz",
+        "dtc_bc_lc_sl_ll_|approx_grad_unique|grad_weak_limit|immersion_antilipschitz",
+        "git show 2af75d6921b01a9c889a45103692ca0af95ea394:GMT/Ch07/Submission.lean",
+        "git show e32f0ad2100627aa39dcb37b3a0772c3f6e95871:GMT/Ch07/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/ll_independent_audit_d9z88mn0/AuditAssembly.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/ll_independent_audit_d9z88mn0/LibraryChecks.lean",
+        "sed -n '1180,1300p' /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-compari-1a374f83a8/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-compari-1a374f83a8/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/Rademacher.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/ContinuousMapDense.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/BumpFunction/SmoothApprox.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/Alternating/Uncurry/Fin.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/WeightedArea.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/AreaDomain.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt",
+        "/tmp/ll_independent_audit_d9z88mn0/AuditAssembly.lean",
+        "/tmp/ll_independent_audit_d9z88mn0/LibraryChecks.lean",
+        "/tmp/ll_independent_audit_d9z88mn0/cmc_imRep_locality_restrict_sub_replay.lean",
+        "/tmp/ll_independent_audit_d9z88mn0/cmcs_cd_defect_identity_replay.lean",
+        "/tmp/ll_independent_audit_d9z88mn0/cmcs_lipschitz_smoothing_replay.lean"
+      ],
+      "conclusion": "The split is appropriate for the selected Leibniz theorem. Pinned revisions and compiler inputs agree. Required library results were located, including the area formula for arbitrary Bochner integrands; the new-name search found no matches. All eleven independently generated comparator challenges elaborate. Names are bare identifiers, with no conflicting reservations in the DAG or 438 other active decomposition files. Dependencies are correctly directed and acyclic, including inherited prerequisites. Regenerated proofs establish the exact parent and four composite children from their stated dependencies. Those proofs, the inspected library results, and replayed accepted declarations use only propext, Classical.choice and Quot.sound. Both reused child types match their accepted declarations exactly after whitespace normalization."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "grad_weak_limit",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Prose and Lean type agree. Derivative bounds establish integrability and L¹-continuity; integration by parts and uniform convergence handle smooth compactly supported fields; the supplied density construction and epsilon argument extend convergence to every integrable W. No common support hypothesis is needed."
+    },
+    {
+      "key": "approx_grad_unique",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact arbitrary-set contract is proved. The cone lies in the union of the two exceptional sets; rescaling forces its measure to vanish, contradicting tangent-measure convergence against the explicit positive bump. Eventual finiteness justifies the Bochner integral estimates without assuming A measurable."
+    },
+    {
+      "key": "immersion_antilipschitz",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All hypotheses match. Compactness supplies convergent pairs and unit secants. Distinct limiting points contradict injectivity; coincident limits contradict injectivity of the strict derivative. The argument also covers empty, singleton and zero-dimensional cases."
+    },
+    {
+      "key": "orient_interior",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The basis expansion proves the pairing identity with the stated, unnormalized alternatizeUncurryFin convention. Evaluation on the orthonormal orientation annihilates every normal covector, yielding membership in Q by double orthogonal complementation."
+    },
+    {
+      "key": "smooth_leibniz",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Representation and smoothness hypotheses match exactly. The unconditional withDensity integral identity transfers the accepted defect identity to Hausdorff integrals; reassociation and sign reversal give the required formula. The supplied assembly was independently regenerated and checked."
+    },
+    {
+      "key": "chart_pullback",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Both quantified conclusions match the prose. Positive Jacobian gives null-set transfer; the bounded measurable pseudoinverse produces integrable W. The pinned Bochner area formula permits arbitrary integrands, so no measurability hypothesis on ℓ is missing. Inversion concerns continuous linear endomorphisms with composition, not pointwise matrix multiplication."
+    },
+    {
+      "key": "piece_gradient",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Local finiteness, chart and approximate-gradient hypotheses are complete. Tangent locality, the compact anti-Lipschitz estimate and differentiability establish the chart gradient's approximate-differential condition; uniqueness then identifies H. The exact assembly checks using only the three declared dependencies."
+    },
+    {
+      "key": "piece_weak_limit",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The chart cutoff supplies globally uniformly Lipschitz compositions. Chain rule identifies approximating derivatives, while Rademacher and a.e. uniqueness of within derivatives identify the limit on Y. Pullback transfers both integrals. No measurability assumption on G is needed; the exact dependency assembly checks."
+    },
+    {
+      "key": "weak_limit",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The chart hypotheses precisely provide the pieces used by the proof. Piecewise convergence combines with the summable bound K∫_{A_j}‖w‖ and disjoint integral decomposition via Tannery's theorem. The exact assembly checks and does not assume the selected parent."
+    },
+    {
+      "key": "im_calculus",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Valid accepted reuse from commit 2af75d6921b01a9c889a45103692ca0af95ea394. All four prose clauses match the identical frozen type, including the coefficient norm in part (d). Source replay confirms only permitted axioms. Part (a) supplies the required tangent locality."
+    },
+    {
+      "key": "defect_identity",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Valid accepted reuse from commit e32f0ad2100627aa39dcb37b3a0772c3f6e95871 with identical frozen type and permitted axioms. The proof uses current linearity and representations, avoiding unjustified additivity of nonintegrable Bochner integrals. It supplies the correctly signed identity used by smooth_leibniz."
+    }
+  ],
+  "required_changes": []
+}
