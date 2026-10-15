@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.mean_curvature_monotonicity-a1.mean_curvature_formula-a1",
+  "parent_id": "root.density_one_implies_regular-a1.mean_curvature_monotonicity-a1",
+  "depth": 3,
+  "title": "First variation formula with bounded mean curvature for varifolds stationary in N (Simon Ch. 4, 2.7)",
+  "statement": "Let P, n ∈ ℕ, U, N ⊆ ℝ^P, R = (M, θ, ξ) an IMRep U n, y₀ ∈ ℝ^P, r, β ∈ ℝ with β ≥ 0 and B_{3r}(y₀) ⊆ U, and Pt : ℝ^P → L(ℝ^P, ℝ^P). Assume:\n- Pt is C¹ on B_{3r}(y₀), and Pt(y) is self-adjoint for y ∈ B_{3r}(y₀);\n- ‖DPt(y)‖ ≤ β for y ∈ B_{2r}(y₀);\n- for q ∈ N ∩ B_{3r}(y₀), Pt(q) maps ℝ^P into T_qN = tangentSpace N q and fixes T_qN pointwise;\n- μ_R-a.e. x lies in N;\n- for μ_R-a.e. x ∈ B_{3r}(y₀), approxTangentPlane n M x ⊆ T_xN;\n- x ↦ p_x (orthogonal projection onto approxTangentPlane n M x) is μ_R-AEMeasurable;\n- V = v(M, θ) is stationary in U ∩ N (R.IsStationaryAlong N).\nThen there is a μ_R-a.e. strongly measurable H : ℝ^P → ℝ^P with |H(x)| ≤ nβ for all x and δV(X) = −∫⟨X, H⟩ dμ_R for every C¹ vector field X with compact support contained in B_{2r}(y₀).",
+  "lean_statement": "∀ (P n : ℕ) (U N : Set (Euclid P)) (R : IMRep U n) (Pt : Euclid P → (Euclid P →L[ℝ] Euclid P)) (y₀ : Euclid P) (r β : ℝ), 0 ≤ β → ball y₀ (3 * r) ⊆ U → ContDiffOn ℝ 1 Pt (ball y₀ (3 * r)) → (∀ y ∈ ball y₀ (3 * r), ∀ u w : Euclid P, inner ℝ (Pt y u) w = inner ℝ u (Pt y w)) → (∀ y ∈ ball y₀ (2 * r), ‖fderiv ℝ Pt y‖ ≤ β) → (∀ q ∈ N ∩ ball y₀ (3 * r), ∀ u : Euclid P, Pt q u ∈ tangentSpace N q) → (∀ q ∈ N ∩ ball y₀ (3 * r), ∀ u ∈ tangentSpace N q, Pt q u = u) → (∀ᵐ x ∂R.measure, x ∈ N) → (∀ᵐ x ∂R.measure, x ∈ ball y₀ (3 * r) → (approxTangentPlane n R.carrier x : Set (Euclid P)) ⊆ tangentSpace N x) → AEMeasurable (fun x => (approxTangentPlane n R.carrier x).starProjection) R.measure → R.IsStationaryAlong N → ∃ H : Euclid P → Euclid P, AEStronglyMeasurable H R.measure ∧ (∀ x, ‖H x‖ ≤ (n : ℝ) * β) ∧ ∀ X : Euclid P → Euclid P, ContDiff ℝ 1 X → HasCompactSupport X → tsupport X ⊆ ball y₀ (2 * r) → R.firstVariation X = -∫ x, inner ℝ (X x) (H x) ∂R.measure",
+  "lean_name": "dsmc_firstVariation_eq_neg_meanCurvature",
+  "depends_on": [
+    "root.density_one_implies_regular-a1.mean_curvature_monotonicity-a1.first_variation_integral-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.density_one_implies_regular-a1.mean_curvature_monotonicity-a1.first_variation_integral-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-mean-curvature-monotonicity-a1-me-d75eea3825-a1"
+}

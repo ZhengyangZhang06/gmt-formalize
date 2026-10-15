@@ -1,0 +1,141 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.de_giorgi-a1.halfspace_rigidity-a1`
+- Child DAG node: `root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.de_giorgi-a1.halfspace_rigidity-a1.translation_identity-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source. This is step 1 (translation identity) of the parent-supplied proof of `codim1_rdo_dg_halfspace_rigidity`, which makes rigorous Simon Ch. 3, 4.3 (8)–(9) (chapter-03.txt lines 664–690; the printed text there only says “it follows that”, so the argument is the parent's step 1 with the details filled in). Here the identity is stated for arbitrary n, a Borel set F, a vector w and t ∈ ℝ.
+
+Notation.
+- E := ℝⁿ, L := Lⁿ (Lebesgue measure on E).
+- K := tsupport ζ, compact by hypothesis.
+- I := [min(0,t), max(0,t)] (Mathlib `Set.uIcc 0 t`) and J := (min(0,t), max(0,t)] (Mathlib `Set.uIoc 0 t`); J ⊆ I.
+- G(s, z) := Dζ(z − s w)(w) for (s, z) ∈ ℝ × E.
+- Interval integrals are oriented: ∫_0^t h = −∫_t^0 h when t < 0.
+
+1. Dζ is continuous, bounded, and vanishes off K.
+   - ζ is C¹, so z ↦ Dζ(z) is continuous (Mathlib `ContDiff.continuous_fderiv`, using 1 ≠ 0).
+   - If z ∉ K, then ζ vanishes on the open neighbourhood E ∖ K of z, so Dζ(z) = 0 (Mathlib `support_fderiv_subset`: support Dζ ⊆ tsupport ζ = K).
+   - A continuous function vanishing off a compact set is bounded; let M := sup_{y∈E} ‖Dζ(y)‖ < ∞.
+   - Consequently G is continuous on ℝ × E (composition of (s, z) ↦ z − s w, of Dζ, and of evaluation at w), |G(s, z)| ≤ M‖w‖ for all (s, z), and G(s, z) = 0 whenever z − s w ∉ K.
+
+2. A compact set carrying all supports.
+   - Let K' := {y + s w : y ∈ K, s ∈ I}. It is the image of the compact set K × I under the continuous map (y, s) ↦ y + s w, so K' is compact and L(K') < ∞.
+   - If s ∈ I and z ∉ K', then z − s w ∉ K (otherwise z = (z − s w) + s w ∈ K'), so G(s, z) = 0 and ζ(z − s w) = 0.
+
+3. Fundamental theorem of calculus at a fixed point.
+   - Fix z ∈ E and set φ(s) := ζ(z − s w) for s ∈ ℝ.
+   - The map s ↦ z − s w has derivative −w at every s. By the chain rule (Mathlib `HasFDerivAt.comp_hasDerivAt`), φ has derivative Dζ(z − s w)(−w) = −G(s, z) at every s.
+   - s ↦ −G(s, z) is continuous by step 1, hence interval integrable on every interval (Mathlib `Continuous.intervalIntegrable`).
+   - By the fundamental theorem of calculus for interval integrals (Mathlib `intervalIntegral.integral_eq_sub_of_hasDerivAt`, valid for both orientations):
+     ζ(z − t w) − ζ(z) = φ(t) − φ(0) = ∫_0^t (−G(s, z)) ds = −∫_0^t G(s, z) ds.
+
+4. Joint integrability.
+   - Let ν := (Lebesgue measure on ℝ restricted to J) ⊗ (L restricted to F). Both factors are s-finite.
+   - G is continuous, hence strongly measurable on ℝ × E.
+   - For ν-almost every (s, z) we have s ∈ J ⊆ I, hence |G(s, z)| ≤ M‖w‖·1_{K'}(z) by steps 1–2.
+   - The bound (s, z) ↦ M‖w‖·1_{K'}(z) is ν-integrable: it is a constant times the product of the constant 1 in s (integrable for the finite measure on J, of total mass |t|) and 1_{K'}(z) (integrable for L restricted to F, since L(F ∩ K') ≤ L(K') < ∞) (Mathlib `Integrable.mul_prod`); its integral is M‖w‖·|t|·L(F ∩ K') < ∞.
+   - By domination (Mathlib `Integrable.mono'`), G is ν-integrable.
+
+5. Splitting the left-hand side. The functions z ↦ ζ(z − t w) and z ↦ ζ(z) are continuous with compact supports (contained in K + t w and K), hence integrable on F (Mathlib `Continuous.integrable_of_hasCompactSupport`). Therefore
+   ∫_F (ζ(z − t w) − ζ(z)) dz = ∫_F ζ(z − t w) dz − ∫_F ζ(z) dz.
+
+6. Integration over F and Fubini.
+   - Integrate the identity of step 3 over z ∈ F and use step 5 (the integral of −h is −∫h):
+     ∫_F ζ(z − t w) dz − ∫_F ζ(z) dz = −∫_F ( ∫_0^t G(s, z) ds ) dz.
+   - By Fubini's theorem for an interval integral against a measure (Mathlib `MeasureTheory.intervalIntegral_integral_swap`, applied with μ := L restricted to F; its hypothesis is exactly the ν-integrability of step 4):
+     ∫_0^t ( ∫_F G(s, z) dz ) ds = ∫_F ( ∫_0^t G(s, z) ds ) dz.
+   - Hence ∫_F ζ(z − t w) dz − ∫_F ζ(z) dz = −∫_0^t ( ∫_F Dζ(z − s w)(w) dz ) ds.
+
+7. Conclusion. Adding ∫_F ζ(z) dz to both sides of the last display gives
+   ∫_F ζ(z − t w) dz = ∫_F ζ(z) dz − ∫_0^t ( ∫_F Dζ(z − s w)(w) dz ) ds. ∎
+
+## Key steps
+
+1. Dζ is continuous and vanishes off the compact K = tsupport ζ, so G(s,z) := Dζ(z − s w)(w) is continuous, bounded by M‖w‖, and for s ∈ I = [min(0,t), max(0,t)] vanishes off the compact K' = K + I·w.
+2. Pointwise FTC along s ↦ ζ(z − s w) (chain rule, derivative −G(s,z)): ζ(z − t w) − ζ(z) = −∫_0^t G(s,z) ds.
+3. G is integrable for (Lebesgue|uIoc 0 t) ⊗ (L|F), dominated by M‖w‖·1_{K'}(z); ζ(· − t w) and ζ are integrable on F.
+4. Integrate over F, swap the order with intervalIntegral_integral_swap, and rearrange.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat local-references/123e8435b4a2469b/manifest.json; git rev-parse HEAD; git -C .lake/packages/mathlib rev-parse HEAD; git -C .lake/packages/simongmt rev-parse HEAD; sha256sum <snapshot>/project/GMT/Ch07/Contract.lean GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean`
+- `sha256sum of snapshot vs .lake/packages/mathlib for AEEqOfIntegralContDiff.lean, AEEqOfIntegral.lean, Besicovitch.lean, EqHaar.lean, PartitionOfUnity.lean, Integral/Prod.lean, FDeriv/Const.lean (all SAME)`
+- `rg -n "theorem ae_eq_of_integral_contDiff_smul_eq|theorem ae_eq_zero_of_integral_contDiff_smul_eq_zero|theorem ae_nonneg_of_forall_setIntegral_nonneg|theorem ae_le_of_forall_setIntegral_le|theorem ae_nonneg_of_forall_setIntegral_nonneg_of|theorem ae_eq_zero_of_forall_setIntegral_isCompact|isCompact.*nonneg|theorem ae_nonneg_restrict_of_forall_setIntegral_nonneg" mathlib/Mathlib`
+- `sed -n 60,215p mathlib/Mathlib/Analysis/Distribution/AEEqOfIntegralContDiff.lean; sed -n 120,215p and 340,430p mathlib/Mathlib/MeasureTheory/Function/AEEqOfIntegral.lean`
+- `rg -n --glob '*.lean' "theorem .*(halfspace|half_space|halfSpace)" project mathlib/Mathlib/Analysis mathlib/Mathlib/MeasureTheory`
+- `rg -n --glob '*.lean' "theorem .*(ae_nonneg_of_integral|integral_contDiff.*nonneg|nonneg_of_integral_contDiff|ae_translate|translate_invariant|ae_add_right_invariant)" project mathlib/Mathlib (no match)`
+- `rg -n --glob '*.lean' "theorem .*(halfspace|half_space|translat|ae_nonneg|density_point|lebesgue_density|integral_contDiff)" lake-packages-25730c7c/simongmt (no match)`
+- `rg -n "theorem ae_tendsto_measure_inter_div_of_measurableSet|theorem addHaar_affineSubspace|intervalIntegral_integral_swap|theorem exists_contMDiff_support_eq_eq_one_iff|theorem support_fderiv_subset" mathlib/Mathlib`
+- `python3 scans of dag.json: status counts (1010 nodes), lean_name hits for the five codim1_rdo_dg_hr_* names (none), identical frozen types (none), similar statements (fderiv+HasCompactSupport+∀ᵐ, symmDiff, 0 ≤ ∫+ContDiff); scan of 925 nodes/*/decomposition-v*.json and decomposition-review-retry.json for the names (only this node's never-activated decomposition-v1.json)`
+- `cat nodes/<this node>/{decomposition-v1.json,decomposition-audit-v1.json,decomposition-review-receipt-v1.json,decomposition-scope-v1.json,parent-child-handoff.json}`
+- `sed -n 1000,1100p, 1388,1640p, 1800,1990p, 2760,2900p, 6532,6590p runtime.py (_decompose, _solve_children node bound, _install_speculative_assumptions, _existing_lean_name_problem); grep 'Unknown identifier .Euclid' nodes/*/speculative-process-v*.log`
+- `sed -n 655,692p book/chapter-03.txt (Simon Ch. 3, 4.3 (7)-(9))`
+- `lake env lean -DautoImplicit=false /tmp/hr-split-v2/Types.lean (5 child types + parent frozen type proved from them; #print axioms)`
+- `lake env lean /tmp/hr-split-v2/Stub.lean and /tmp/hr-split-v2/StubAssembly.lean (replica of controller speculative stub; parent proved against stub axioms)`
+- `lake env lean /tmp/hr-split-v2/{Parse,Avail,Avail2,Avail3,Inst}.lean (rfl parse checks; availability of every cited lemma; ContDiffBump.normed and ContDiffBump.ae_convolution_tendsto_right_of_locallyIntegrable unknown; instances for general n)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Distribution/AEEqOfIntegralContDiff.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/AEEqOfIntegral.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Covering/Besicovitch.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/EqHaar.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Manifold/PartitionOfUnity.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Prod.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Const.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/swarm-project.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-03acf74a7a/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-03acf74a7a/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-03acf74a7a/decomposition-audit-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-abstract-dimension-reduction-a1/speculative-process-v1.log`
+- `/runtime/flows/gmt-claude-d253855dab51/_recursive_lean/runtime.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-03.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt`
+- `/tmp/hr-split-v2/Types.lean`
+- `/tmp/hr-split-v2/Stub.lean`
+- `/tmp/hr-split-v2/StubAssembly.lean`
+- `/tmp/hr-split-v2/Parse.lean`
+- `/tmp/hr-split-v2/Avail.lean`
+- `/tmp/hr-split-v2/Avail2.lean`
+- `/tmp/hr-split-v2/Avail3.lean`
+- `/tmp/hr-split-v2/Inst.lean`
+
+Pins and identity checks:
+- Snapshot manifest: project b4d606db, Mathlib 25730c7c. Both match the workspace HEAD and .lake/packages/mathlib. SimonGMT is pinned at 2b366308.
+- Snapshot Contract.lean, workspace Contract.lean and Submission.lean are byte-identical (sha256 e4148e7f…).
+- Every cited Mathlib file in the snapshot is byte-identical to the workspace package.
+
+Library results used by the children:
+- Besicovitch.ae_tendsto_measure_inter_div_of_measurableSet (Besicovitch.lean:1089)
+- Measure.addHaar_affineSubspace (EqHaar.lean:199)
+- exists_contMDiff_support_eq_eq_one_iff (PartitionOfUnity.lean:755)
+- intervalIntegral_integral_swap (Integral/Prod.lean:483)
+- support_fderiv_subset (FDeriv/Const.lean:379)
+- ae_eq_of_integral_contDiff_smul_eq (AEEqOfIntegralContDiff.lean:195)
+- MeasurableSet.exists_lt_isCompact_of_ne_top, integral_pos_iff_support_of_nonneg, measure_preimage_add_right, integral_add_right_eq_self
+
+What is missing:
+- There is no nonnegative-test version of the fundamental lemma. AEEqOfIntegral.lean:130 requires global integrability.
+- No translation identity, half-space rigidity or density-trichotomy lemma exists in Mathlib, the project or SimonGMT (rg found no match).
+- ContDiffBump.normed and the mollifier convergence lemma are not in the import closure of GMT.Ch07.Submission.
+
+Lean checks:
+- All 5 child types elaborate after `import GMT.Ch07.Submission`, both in GMT.Ch07 scope and in the replicated speculative stub (root namespace Submission, regex-selected opens).
+- Children use EuclideanSpace ℝ (Fin n) because speculative logs show `Euclid` failing in the stub.
+- The parent's exact frozen type is proved from the children, with step 4 formalized. #print axioms gives propext, sorryAx, Classical.choice, Quot.sound; against stub axioms it gives only those three plus the three consumer-child axioms.
+
+Names and reuse:
+- The five codim1_rdo_dg_hr_* names occur in no DAG node (1010 nodes). The only file containing them is this node's never-activated decomposition-v1.json, which carries the identical audited split.
+- No accepted node has an identical frozen type, so nothing is reused.
+
+Source: the printed Simon Ch. 3, 4.3 (8)–(9) text is confirmed at chapter-03.txt lines 664–690.
