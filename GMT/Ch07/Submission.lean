@@ -451,6 +451,123 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Degenerate case `P < n` of the cone splitting** (step 0 of the parent proof of Simon 7.3.5;
+the book assumes `n ≤ P`).  An alternating `n`-form on `ℝᴾ` vanishes when `n > P`, so every test
+`n`-form is `0` and `S = 0`; hence `S` and all its blow-ups vanish, giving the cone property and the
+invariance under translations along `L`.  For the splitting take `S₀ := 0`: the zero current is
+integer multiplicity (empty carrier), has zero mass, so it is minimizing, it is a cone with
+`∂S₀ = 0` and empty support, and it has density `θ` at a point iff `θ = 0`, in every degree. -/
+theorem Submission.dimred_cs_high_degree_case : ∀ (P n : ℕ) (S : GeometricCurrentOn (univ : Set (Euclid P)) n) (L : Submodule ℝ (Euclid P)), P < n → IsConeCurrent S ∧ (∀ v ∈ L, ∀ ω : TestFormOn (univ : Set (Euclid P)) n, currentEval (blowUp S (-v) 1 one_ne_zero) (ω : DifferentialForm (Euclid P) n) = S ω) ∧ ∃ S₀ : GeometricCurrentOn (univ : Set (Euclid P)) (n - Module.finrank ℝ L), IsMinimizingIn S₀ univ ∧ BoundaryVanishes S₀ ∧ IsConeCurrent S₀ ∧ S₀.support ⊆ (Lᗮ : Set (Euclid P)) ∧ (∀ t ∈ L, ∀ y ∈ Lᗮ, (t + y ∈ S.support ↔ y ∈ S₀.support)) ∧ ∀ t ∈ L, ∀ y ∈ Lᗮ, ∀ θ : ℝ, (HasMassDensity S (t + y) θ ↔ HasMassDensity S₀ y θ) := by
+  intro P n S L hPn
+  -- an alternating `k`-form on `ℝᴾ`, `k > P`, vanishes: `k` vectors in `ℝᴾ` are dependent
+  have covector_eq_zero : ∀ {k : ℕ}, P < k → ∀ α : Covector (Euclid P) k, α = 0 := by
+    intro k hk α
+    ext v
+    have hdep : ¬ LinearIndependent ℝ v := by
+      intro hli
+      have := hli.fintype_card_le_finrank
+      simp only [Fintype.card_fin, finrank_euclideanSpace] at this
+      omega
+    exact α.toAlternatingMap.map_linearDependent v hdep
+  -- hence every test `k`-form is `0`, and so is every `k`-current
+  have current_eq_zero : ∀ {k : ℕ} {U : Set (Euclid P)} (T : GeometricCurrentOn U k), P < k →
+      T = 0 := by
+    intro k U T hk
+    ext ω
+    have hω : ω = 0 := by
+      apply Subtype.ext
+      funext x
+      exact covector_eq_zero hk _
+    rw [hω, GeometricCurrentOn.zero_apply]
+    exact T.toCurrent.map_zero
+  -- the zero current in an arbitrary degree `j`: zero mass
+  have zero_mass : ∀ {j : ℕ} (W : Set (Euclid P)),
+      (0 : GeometricCurrentOn (univ : Set (Euclid P)) j).massOn W = 0 := by
+    intro j W
+    apply le_antisymm _ zero_le
+    apply sSup_le
+    rintro _ ⟨ω, _, rfl⟩
+    simp
+  -- integer multiplicity, represented by the empty carrier
+  have zero_im : ∀ {j : ℕ},
+      IsIntegerMultiplicity (0 : GeometricCurrentOn (univ : Set (Euclid P)) j) := by
+    intro j
+    refine ⟨{ carrier := ∅
+              mult := fun _ => 0
+              orient := fun _ => 0
+              measurableSet_carrier := MeasurableSet.empty
+              carrier_subset := empty_subset _
+              rectifiable :=
+                Poincare.SimonGMT.Chapter03.countablyRectifiable_of_measure_zero measure_empty
+              measurable_mult := measurable_const
+              mult_pos := fun x hx => absurd hx (notMem_empty x)
+              locallyIntegrable_mult := fun K _ _ => by simp
+              aestronglyMeasurable_orient := aestronglyMeasurable_const
+              orients := by simp }, ?_⟩
+    intro ω
+    simp [IMRep.action]
+  -- minimizing: its mass `0` is below that of every competitor
+  have zero_min : ∀ {j : ℕ},
+      IsMinimizingIn (0 : GeometricCurrentOn (univ : Set (Euclid P)) j) univ := by
+    intro j
+    refine ⟨zero_im, fun W S' _ _ _ _ _ _ => ?_⟩
+    rw [zero_mass]
+    exact zero_le
+  -- `∂0 = 0`
+  have zero_bdry : ∀ {j : ℕ},
+      BoundaryVanishes (0 : GeometricCurrentOn (univ : Set (Euclid P)) j) := by
+    intro j
+    cases j with
+    | zero => trivial
+    | succ j => exact GeometricCurrentOn.ext fun ω => rfl
+  -- every blow-up of `0` evaluates to `0`, so `0` is a cone
+  have eval_blowUp_zero : ∀ {j : ℕ} (x : Euclid P) (lam : ℝ) (h : lam ≠ 0)
+      (ω : DifferentialForm (Euclid P) j),
+      currentEval (blowUp (0 : GeometricCurrentOn (univ : Set (Euclid P)) j) x lam h) ω = 0 := by
+    intro j x lam h ω
+    unfold currentEval
+    split_ifs <;> rfl
+  have zero_cone : ∀ {j : ℕ}, IsConeCurrent (0 : GeometricCurrentOn (univ : Set (Euclid P)) j) := by
+    intro j lam hlam ω
+    rw [eval_blowUp_zero]
+    rfl
+  -- empty support: `0` vanishes on the relatively compact ball `B₁(x)`
+  have zero_support : ∀ {j : ℕ},
+      (0 : GeometricCurrentOn (univ : Set (Euclid P)) j).support = ∅ := by
+    intro j
+    apply eq_empty_of_forall_notMem
+    intro x hx
+    apply hx.2
+    refine mem_sUnion.2 ⟨ball x 1, ⟨isOpen_ball, ?_, subset_univ _, fun ω _ => rfl⟩,
+      mem_ball_self one_pos⟩
+    exact (isCompact_closedBall x 1).of_isClosed_subset isClosed_closure
+      closure_ball_subset_closedBall
+  -- density: the ratios are all `0`, and `𝓝[>] 0` is nontrivial
+  have zero_density : ∀ {j : ℕ} (x : Euclid P) (θ : ℝ),
+      HasMassDensity (0 : GeometricCurrentOn (univ : Set (Euclid P)) j) x θ ↔ θ = 0 := by
+    intro j x θ
+    simp only [HasMassDensity, zero_mass, ENNReal.zero_div]
+    rw [tendsto_const_nhds_iff]
+    constructor
+    · rintro ⟨h0, h⟩
+      have := ENNReal.ofReal_eq_zero.1 h.symm
+      linarith
+    · rintro rfl
+      exact ⟨le_rfl, by simp⟩
+  -- assembly with `S = 0` and `S₀ := 0`
+  obtain rfl : S = 0 := current_eq_zero S hPn
+  refine ⟨zero_cone, ?_, 0, zero_min, zero_bdry, zero_cone, ?_, ?_, ?_⟩
+  · intro v _ ω
+    rw [eval_blowUp_zero]
+    rfl
+  · rw [zero_support]
+    exact empty_subset _
+  · intro t _ y _
+    rw [zero_support, zero_support]
+    simp
+  · intro t _ y _ θ
+    rw [zero_density, zero_density]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
