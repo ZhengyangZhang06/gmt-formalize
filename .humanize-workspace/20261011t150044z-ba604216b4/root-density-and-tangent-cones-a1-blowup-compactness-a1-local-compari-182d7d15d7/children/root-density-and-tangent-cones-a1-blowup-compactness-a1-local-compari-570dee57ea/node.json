@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.pushforward-a1.pf_integer-a1.orient_algebra-a1",
+  "parent_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.pushforward-a1.pf_integer-a1",
+  "depth": 6,
+  "title": "Algebra of unit orientations: sign uniqueness, the bound |ξ(β)| ≤ ‖β‖, and the normalized orientation A_#e/J_A of range A",
+  "statement": "For all P, n ∈ ℕ: (a) if ξ and ξ' are unit orientations of the same linear subspace T ⊆ ℝ^P (IsUnitOrientationOf), then ξ' = ξ or ξ' = −ξ; (b) if ξ is a unit orientation of some subspace, then |ξ(β)| ≤ ‖β‖ for every n-covector β (operator norm); (c) if A : ℝⁿ → ℝ^P is an injective continuous linear map, e_k := EuclideanSpace.single k 1 and J_A := (det[⟨Ae_k, Ae_l⟩]_{k,l})^{1/2}, then J_A > 0 and the n-vector J_A⁻¹·A_#e, i.e. β ↦ J_A⁻¹·β(Ae_1, …, Ae_n), is a unit orientation of range A; (d) if A : ℝⁿ → ℝ^P is a continuous linear map that is not injective, then β(Ae_1, …, Ae_n) = 0 for every n-covector β.",
+  "lean_statement": "∀ (P n : ℕ), (∀ (ξ ξ' : MultiVector P n) (T : Submodule ℝ (Euclid P)), IsUnitOrientationOf ξ T → IsUnitOrientationOf ξ' T → ξ' = ξ ∨ ξ' = -ξ) ∧ (∀ (ξ : MultiVector P n) (T : Submodule ℝ (Euclid P)), IsUnitOrientationOf ξ T → ∀ β : Covector (Euclid P) n, |ξ β| ≤ ‖β‖) ∧ (∀ A : Euclid n →L[ℝ] Euclid P, Injective A → 0 < Real.sqrt (Matrix.det (Matrix.of fun k l : Fin n => inner ℝ (A (EuclideanSpace.single k 1)) (A (EuclideanSpace.single l 1)))) ∧ IsUnitOrientationOf ((Real.sqrt (Matrix.det (Matrix.of fun k l : Fin n => inner ℝ (A (EuclideanSpace.single k 1)) (A (EuclideanSpace.single l 1)))))⁻¹ • ContinuousAlternatingMap.apply ℝ (Euclid P) ℝ (fun k : Fin n => A (EuclideanSpace.single k 1))) (LinearMap.range (A : Euclid n →ₗ[ℝ] Euclid P))) ∧ ∀ A : Euclid n →L[ℝ] Euclid P, ¬ Injective A → ∀ β : Covector (Euclid P) n, β (fun k : Fin n => A (EuclideanSpace.single k 1)) = 0",
+  "lean_name": "dtc_bc_lc_pfi_unitOrientation_algebra",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-compari-570dee57ea-a1"
+}

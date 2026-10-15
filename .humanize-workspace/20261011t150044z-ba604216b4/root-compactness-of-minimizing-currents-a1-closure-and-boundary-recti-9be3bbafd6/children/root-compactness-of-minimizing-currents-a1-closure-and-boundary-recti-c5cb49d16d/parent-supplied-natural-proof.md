@@ -1,0 +1,90 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.constant_planes-a1.translation-a1`
+- Child DAG node: `root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.constant_planes-a1.translation-a1.smooth_ext-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: steps 6–7 of the selected parent proof (dominated convergence from C_c^∞ to C_c, then uniqueness of regular measures), stated for two arbitrary measures finite on compact sets; in the parent, μ = τ_#ν. Uses the sibling smooth_approx.
+1. (Regularity.) ℝ^P is a locally compact, σ-compact metric space with its Borel σ-algebra.
+ - Since μ(K) < ∞ for every compact K, μ is finite on compact sets (IsFiniteMeasureOnCompacts μ).
+ - Every point has a compact neighbourhood (a closed ball), so μ is locally finite (isLocallyFiniteMeasure_of_isFiniteMeasureOnCompacts).
+ - A locally finite Borel measure on a σ-compact metric space is regular (Measure.Regular.of_sigmaCompactSpace_of_isLocallyFiniteMeasure).
+The same holds for ν.
+2. (Reduction to C_c.) Two regular Borel measures on a locally compact Hausdorff space that give the same integral to every continuous compactly supported real function are equal. This is Riesz uniqueness (Measure.ext_of_integral_eq_on_compactlySupported). By step 1 it therefore suffices to prove ∫f dμ = ∫f dν for every continuous f : ℝ^P → ℝ with compact support. Fix such an f.
+3. (Approximants.) Apply the sibling smooth_approx to g = f. It gives a compact K, a constant C and C^∞ functions u_k (k ∈ ℕ) such that u_k(x) = 0 for x ∉ K, |u_k(x)| ≤ C for all k and x, and u_k(x) → f(x) for every x.
+4. (Equality for the approximants.) Each u_k is C^∞ and has compact support, since it vanishes outside the compact set K (HasCompactSupport.intro). By hypothesis, ∫u_k dμ = ∫u_k dν for every k.
+5. (Dominated convergence.) Let m be μ or ν; then m(K) < ∞. Put b := C·1_K, the indicator of K times the constant C.
+ (a) b is m-integrable. K is compact, hence closed and Borel; b equals the constant C on K and 0 off K; and ∫|b| dm = |C|·m(K) < ∞.
+ (b) For every k and x, |u_k(x)| ≤ b(x). If x ∈ K, this is |u_k(x)| ≤ C. If x ∉ K, then u_k(x) = 0 and both sides are 0.
+ (c) Each u_k is continuous, hence measurable.
+ (d) u_k(x) → f(x) for every x.
+By the dominated convergence theorem (tendsto_integral_of_dominated_convergence), ∫u_k dm → ∫f dm as k → ∞.
+6. (Equality for f.) By step 4 the real sequences (∫u_k dμ)_k and (∫u_k dν)_k coincide. By step 5 the first converges to ∫f dμ and the second to ∫f dν. Limits in ℝ are unique (tendsto_nhds_unique), so ∫f dμ = ∫f dν.
+7. (Conclusion.) Steps 2 and 6 give μ = ν. ∎
+Formalization notes, checked in a scratch compile against import GMT.Ch07.Submission at default heartbeats, using Submission.cbr_ci_cp_tr_smooth_approx_of_continuous:
+- After `have : IsFiniteMeasureOnCompacts μ := ⟨fun K hK => hμ K hK⟩` (and the same for ν), `refine Measure.ext_of_integral_eq_on_compactlySupported fun f => ?_` finds the Regular instances automatically.
+- Apply the sibling to f, f.continuous and f.hasCompactSupport.
+- The dominating function is K.indicator fun _ => C, integrable by (integrableOn_const h.ne).integrable_indicator hK.measurableSet.
+- Rewrite one Tendsto with the funext equality of step 4, then use tendsto_nhds_unique.
+
+## Key steps
+
+1. μ and ν are finite on compact sets, hence locally finite and regular on the σ-compact metric space ℝ^P. By Riesz uniqueness it suffices to compare the integrals of continuous compactly supported f.
+2. Approximate f using the sibling smooth_approx: C^∞ functions u_k vanishing off a compact K, with |u_k| ≤ C and u_k → f pointwise. Each u_k is a C_c^∞ test function, so ∫u_k dμ = ∫u_k dν.
+3. Dominated convergence with the integrable bound C·1_K gives ∫u_k dμ → ∫f dμ and ∫u_k dν → ∫f dν. Uniqueness of limits yields ∫f dμ = ∫f dν, hence μ = ν.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json (mode local-project, project_commit b4d606db1da5da8fa2c0292ad4924d97de8b3c4b, mathlib_commit 25730c7c759d108ef87ab70af2342a196760f79d); cmp snapshot project/GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean (identical); cmp GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean (identical); git rev-parse HEAD = b4d606db…; lake-manifest.json mathlib rev 25730c7c…`
+- `grep -n in snapshot mathlib/Mathlib: 'theorem hasDerivAt_integral_of_dominated_loc_of_deriv_le' (Analysis/Calculus/ParametricIntegral.lean:286), 'theorem exists_contDiff_tsupport_subset' (Analysis/Calculus/BumpFunction/FiniteDimension.lean:45), 'is_const_of_deriv_eq_zero' (Analysis/Calculus/MeanValue.lean:750), 'theorem dist_convolution_le' (Analysis/Convolution.lean:814), 'contDiff_convolution_left' (Analysis/Calculus/ContDiff/Convolution.lean:427), 'ext_of_integral_eq_on_compactlySupported' (MeasureTheory/Integral/RieszMarkovKakutani/Real.lean:412, NNReal.lean:76), 'of_sigmaCompactSpace_of_isLocallyFiniteMeasure' (MeasureTheory/Measure/Regular.lean:1183), 'isLocallyFiniteMeasure_of_isFiniteMeasureOnCompacts' (MeasureTheory/Measure/Typeclasses/Finite.lean:401)`
+- `grep -rn 'theorem.*ext_of_integral\|lemma.*ext_of_integral' Mathlib/ and grep '^theorem' Analysis/Distribution/AEEqOfIntegralContDiff.lean: only C_c (RMK), bounded-continuous product and characteristic-function ext lemmas plus ae_eq_zero_of_integral_contDiff_smul_eq_zero; no lemma deciding equality of two measures from smooth test functions`
+- `python3 -I scans of dag.json (1545 nodes) lean_statement for 'convolution', 'lsmul', 'mollif', '(fun x => v + x)', '∫ y, φ (v + y)', 'Continuous g → HasCompactSupport g → ∃ … ContDiff', measure-equality conclusions: found accepted dgcr_stc_exists_normalized_mollifier (candidate 376e5f482d73f6f48d00a4945533b15f784859d5), cmcs_ls_mollify_lipschitz, cmcs_lipschitz_smoothing (Lipschitz g only), dpf_smooth_approx_compact_perturbation (C¹ maps equal to id off K); no accepted C_c smooth-approximation, smooth-test measure-uniqueness or smooth-translation lemma; lean_name scan: cbr_ci_cp_tr_smooth_translate_integral_eq, cbr_ci_cp_tr_smooth_approx_of_continuous, cbr_ci_cp_tr_measure_eq_of_smooth_integral_eq unused`
+- `rg -n 'cbr_ci_cp_tr_' in the snapshot project and in workspace GMT/ (no match); git log --all -S'cbr_ci_cp_tr_' (no match)`
+- `sed of /runtime/flows/gmt-claude-b888e19cffb1/_recursive_lean/runtime.py (_decompose: depth 5 < max_depth 6 so children at depth 6 are leaves; _existing_lean_name_problem and _accepted_checkpoint: an accepted node with candidate_commit may be shared only under an identical lean_statement) and leaf_verification.py check_source_delta (a leaf appends exactly one theorem; helper declarations, set_option and sorry are forbidden)`
+- `git show 376e5f482d73f6f48d00a4945533b15f784859d5:GMT/Ch07/Submission.lean (accepted proof of Submission.dgcr_stc_exists_normalized_mollifier via ContDiffBump rIn = r/2, rOut = r); git show 00c458d8b5f0043b634cbdd0b8d43d20d1d7deb6:GMT/Ch07/Submission.lean (leaf theorems are appended as `theorem Submission.X` inside namespace GMT.Ch07); sed of nodes/root-density-one-implies-regular-a1-epsilon-regularity-a1-graph-cycle-786dd02ecc/parent-supplied-natural-proof.md (accepted mollifier proof text)`
+- `lake env lean /tmp/tr-decomp/Names.lean after import GMT.Ch07.Submission: hasDerivAt_integral_of_dominated_loc_of_deriv_le, is_const_of_deriv_eq_zero, exists_contDiff_tsupport_subset, Continuous.integral_pos_of_hasCompactSupport_nonneg_nonzero, HasCompactSupport.contDiff_convolution_left, dist_convolution_le, Measure.ext_of_integral_eq_on_compactlySupported, Measure.Regular.of_sigmaCompactSpace_of_isLocallyFiniteMeasure, isLocallyFiniteMeasure_of_isFiniteMeasureOnCompacts, tendsto_integral_of_dominated_convergence, fderiv_comp_add_right, HasCompactSupport.fderiv, Continuous.bounded_above_of_compact_support, integral_map, HasCompactSupport.intro all reachable`
+- `lake env lean /tmp/tr-decomp/Exact.lean (hypothesis-only assembly of the exact parent type from the smooth_translate and smooth_ext types), /tmp/tr-decomp/Ext.lean, Approx.lean, Translate.lean (each new child proved as one theorem), /tmp/tr-decomp/Full.lean (accepted mollifier proof + three new children under their exact Submission names and frozen types + exact parent theorem): all compile at default heartbeats; #print axioms Submission.cbr_ci_cp_translation_invariant_of_fderiv: propext, Classical.choice, Quot.sound`
+- `python3 -I /tmp/tr-decomp/scripts/check.py: verifier/lean_contract.py validate_lean_statement passes for all four lean_statement strings; reused mollifier type byte-identical to its accepted DAG node; key/lean_name regexes; sibling dependencies acyclic (mollifier, smooth_translate, smooth_approx, smooth_ext); forbidden-token regex of check_source_delta finds nothing in the test proofs`
+- `WebSearch (standard): 'Radon measure uniquely determined by integrals of smooth compactly supported functions mollifier approximation' -> https://en.wikipedia.org/wiki/Radon_measure (Riesz uniqueness); 'Evans Gariepy … mollifiers … uniformly on compact sets' -> https://timorohner.com/files/mollifiers.pdf (mollifier convergence for continuous functions)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/lake-manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-9be3bbafd6/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-9be3bbafd6/parent-supplied-natural-proof.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-6c861e5511/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-epsilon-regularity-a1-graph-cycle-786dd02ecc/parent-supplied-natural-proof.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ParametricIntegral.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/MeanValue.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/BumpFunction/FiniteDimension.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/BumpFunction/SmoothApprox.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Convolution.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/Convolution.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/RieszMarkovKakutani/Real.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/RieszMarkovKakutani/NNReal.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Regular.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Typeclasses/Finite.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Distribution/AEEqOfIntegralContDiff.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Haar/Extension.lean`
+- `/runtime/flows/gmt-claude-b888e19cffb1/_recursive_lean/runtime.py`
+- `/runtime/flows/gmt-claude-b888e19cffb1/_recursive_lean/leaf_verification.py`
+- `/runtime/flows/gmt-claude-b888e19cffb1/_recursive_lean/parent_verification.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/tmp/tr-decomp/Names.lean`
+- `/tmp/tr-decomp/Exact.lean`
+- `/tmp/tr-decomp/Ext.lean`
+- `/tmp/tr-decomp/Approx.lean`
+- `/tmp/tr-decomp/Translate.lean`
+- `/tmp/tr-decomp/Full.lean`
+- `/tmp/tr-decomp/scripts/check.py`
+
+The snapshot contract is byte-identical to the workspace Contract.lean and Submission.lean (project b4d606db, Mathlib 25730c7c). Mathlib has no lemma saying that measures with equal integrals of smooth compactly supported functions are equal. The ready-made C_c smoothing lemmas (ContDiffBump.normed and the SmoothApprox file) lie outside the import closure. So the smooth-approximation child (smooth_approx) and the smooth-test uniqueness child (smooth_ext) are genuinely new. The mollifier step is exactly the accepted DAG theorem dgcr_stc_exists_normalized_mollifier, reused with its byte-identical type. The three new names cbr_ci_cp_tr_* are fresh in the DAG, the snapshot and the git history. Every cited Mathlib tool is reachable from import GMT.Ch07.Submission. Each new child was proved as a single leaf-compliant theorem. The exact frozen parent type compiles end-to-end from the children, using only the axioms propext, Classical.choice and Quot.sound.

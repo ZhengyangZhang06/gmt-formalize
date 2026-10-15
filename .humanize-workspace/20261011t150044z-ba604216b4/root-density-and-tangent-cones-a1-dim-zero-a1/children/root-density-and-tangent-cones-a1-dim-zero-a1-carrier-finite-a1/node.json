@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_and_tangent_cones-a1.dim_zero-a1.carrier_finite-a1",
+  "parent_id": "root.density_and_tangent_cones-a1.dim_zero-a1",
+  "depth": 3,
+  "title": "Zero-dimensional integer multiplicity carriers are locally finite",
+  "statement": "Let P ∈ ℕ, U ⊆ ℝ^P an arbitrary set, K ⊆ ℝ^P a compact set with K ⊆ U, and R = (M, θ, ξ) ∈ IMRep U 0. Here IMRep U 0 is a 0-dimensional integer multiplicity triple in U (Simon Ch. 6, 3.1, as frozen in the contract):\n- M = R.carrier is a Borel set with M ⊆ U that is countably 0-rectifiable;\n- θ = R.mult : ℝ^P → ℕ is measurable, with θ(x) > 0 for x ∈ M;\n- ∫⁻_{M∩K'} θ dH⁰ < ∞ for every compact K' ⊆ U, where H⁰ = μHE[0];\n- ξ = R.orient is the orientation.\nThen M ∩ K is a finite set.",
+  "lean_statement": "∀ (P : ℕ) (U K : Set (Euclid P)) (R : IMRep U 0), IsCompact K → K ⊆ U → (R.carrier ∩ K).Finite",
+  "lean_name": "dtc_dim_zero_carrier_finite",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-dim-zero-a1-carrier-finite-a1-a1"
+}

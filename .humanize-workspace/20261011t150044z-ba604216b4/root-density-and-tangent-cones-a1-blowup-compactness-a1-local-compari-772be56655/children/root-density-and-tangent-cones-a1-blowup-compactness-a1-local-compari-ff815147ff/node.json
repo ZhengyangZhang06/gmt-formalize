@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.slicing-a1.coarea-a1.density_gradient_bound-a1",
+  "parent_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.slicing-a1.coarea-a1",
+  "depth": 6,
+  "title": "Differential bound |DF(y)e| ≤ L|Dψ(y)e| at a Lebesgue density point of a set on which F = f∘ψ with f L-Lipschitz",
+  "statement": "Let d, P ∈ ℕ, L ≥ 0, f : ℝ^P → ℝ L-Lipschitz, ψ : ℝ^d → ℝ^P, F : ℝ^d → ℝ, and Y ⊆ ℝ^d an arbitrary set with f(ψ(z)) = F(z) for every z ∈ Y. Let y ∈ Y be a point at which ψ and F are differentiable and which is a Lebesgue density point of Y: L^d(Y ∩ B̄_r(y))/L^d(B̄_r(y)) → 1 as r ↓ 0 (L^d = volume on ℝ^d = Euclid d, as an outer measure; B̄_r(y) = closedBall y r; quotient in [0, ∞]). Then |DF(y)e| ≤ L|Dψ(y)e| for every e ∈ ℝ^d.",
+  "lean_statement": "∀ (d P : ℕ) (f : Euclid P → ℝ) (L : NNReal) (ψ : Euclid d → Euclid P) (F : Euclid d → ℝ) (Y : Set (Euclid d)) (y : Euclid d), LipschitzWith L f → y ∈ Y → DifferentiableAt ℝ ψ y → DifferentiableAt ℝ F y → (∀ z ∈ Y, f (ψ z) = F z) → Tendsto (fun r => volume (Y ∩ closedBall y r) / volume (closedBall y r)) (𝓝[>] 0) (𝓝 1) → ∀ e : Euclid d, |fderiv ℝ F y e| ≤ L * ‖fderiv ℝ ψ y e‖",
+  "lean_name": "dtc_bc_lc_sl_co_density_gradient_bound",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-compari-ff815147ff-a1"
+}

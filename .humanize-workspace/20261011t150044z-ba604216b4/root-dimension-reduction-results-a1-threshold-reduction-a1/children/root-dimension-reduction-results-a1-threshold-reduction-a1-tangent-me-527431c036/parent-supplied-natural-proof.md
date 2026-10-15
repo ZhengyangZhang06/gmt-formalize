@@ -1,0 +1,103 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.dimension_reduction_results-a1.threshold_reduction-a1`
+- Child DAG node: `root.dimension_reduction_results-a1.threshold_reduction-a1.tangent_measure_homogeneous-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: Simon 7.3.1(2) and its printed proof (chapter-07.txt lines 302–309 and 325–360), followed by the homogeneity of cone weights of parent step 3(vii) (Simon 7.4.5, proof line 698, chapter-07.txt lines 697–699). This is exactly the content for which parent step 2(e) cites density_and_tangent_cones (2). The printed proof is followed step by step, and every result it cites is either a hypothesis of this child or a registered sibling:
+– the compactness theorem 2.4 applied to the blow-ups (lines 333–336): hypothesis (MB), the frozen type of the selected parent's registered dependency moving_blowups, used with constant centres;
+– existence of Θⁿ(T, x) (part (1), lines 325–327): hypothesis (MON)(iii), the frozen type of the registered dependency monotonicity;
+– displays (1) and (4) and the sentence after (4) (lines 329–347): the reused sibling blowup_density (Submission.dtc_blowUp_density);
+– stationarity of V_C by Lemma 1.2 (lines 339–340): the reused sibling stationarity (Submission.stationaryAlong_of_minimizing_in_submanifold, Simon 7.1.2);
+– the monotonicity formula 3.6 of Ch. 4, x ∧ C⃗ = 0 and Lemma 2.33 of Ch. 6 (lines 347–355): the reused sibling cone_of_constant_density (Submission.dtc_cone_of_constant_density);
+– homogeneity of cone weights (parent 3(vii)): the reused sibling cone_measure_homogeneous (Submission.cone_current_imrep_measure_smul_image).
+The four siblings are accepted declarations of other DAG branches, reused at their exact frozen types and listed in depends_on, so their accepted candidates are overlaid into this child's worktree. The two leading hypotheses are verbatim the frozen types of Submission.dimred_minimizing_monotonicity and Submission.dimred_blowup_limit_moving_centres; the selected parent discharges them with its registered dependencies. Nothing else is used.
+Notation: P := n + k, ℝ^P = Euclid P, η_{x,λ}(y) = λ⁻¹(y − x) (dilation x λ), blowUp T x λ = η_{x,λ#}T, ω_n = unitBallVolume n, Hⁿ = μHE[n].
+1. (x ∈ U.) x ∈ spt T ⊆ U ∩ N, so x ∈ U.
+2. (Compactness; book lines 333–336.) Apply (MB) to (n, k, ℓ, U, N, T): its hypotheses ℓ ≤ k, 1 ≤ n, U open, N an embedded C² (n+ℓ)-submanifold with (closure N ∖ N) ∩ U = ∅, T minimizing in U ∩ N, spt T ⊆ U ∩ N and ∂T = 0 in U are hypotheses of the statement. Use the point x ∈ U (step 1), the constant sequence of centres x_j := x (which converges to x) and the scales λ_j > 0, λ_j → 0. (MB) gives a strictly increasing φ : ℕ → ℕ and C ∈ 𝒟_n(ℝ^P) such that, with λ′_j := λ_{φ(j)}: η_{x,λ′_j#}T ⇀ C in ℝ^P (ConvergesWeakly); MassMeasuresConverge (fun j ↦ blowUp T x λ′_j) C; C is minimizing in ℝ^P; and ∂C = 0 (BoundaryVanishes C). In particular C is integer multiplicity, the first conjunct of IsMinimizingIn C univ.
+3. (Θⁿ(T, x) exists; book lines 325–327.) Apply (MON) with P := n + k, d := n + ℓ (1 ≤ n ≤ n + ℓ ≤ n + k because ℓ ≤ k) and the remaining data of the statement. Its part (iii) gives Θ : ℝ^P → ℝ with HasMassDensity T y (Θ(y)) for every y ∈ U. Put θ := Θ(x); then HasMassDensity T x θ, and θ ≥ 0.
+4. (Constant density ratio of C; book displays (1) and (4).) The scales λ′_j are positive and tend to 0, since λ_j → 0 and φ(j) → ∞ (φ is strictly increasing). U is open, 0 < n, x ∈ U, T is integer multiplicity (the first conjunct of IsMinimizingIn T (U ∩ N)), C is integer multiplicity (step 2), HasMassDensity T x θ (step 3), and MassMeasuresConverge (fun j ↦ blowUp T x λ′_j) C (step 2). These are the hypotheses of the sibling blowup_density (Submission.dtc_blowUp_density) for the sequence λ′_j. Its first conclusion is M_{B_ρ(0)}(C) = ω_nρⁿθ, i.e. C.massOn (ball 0 ρ) = unitBallVolume n · ofReal(ρⁿ) · ofReal θ, for every ρ > 0.
+5. (V_C is stationary; book lines 339–340, Lemma 1.2.) ℝ^P is an embedded C² (n+k)-dimensional submanifold of itself: at every point take V = W = ℝ^P and ψ = id. Then V and W are open, ψ is C^∞ and injective, ψ(V) = W ∩ ℝ^P, V ∩ ψ⁻¹(K) = K is compact for every compact K, and Dψ(z) = id is injective. Moreover (closure ℝ^P ∖ ℝ^P) ∩ ℝ^P = ∅, C is minimizing in ℝ^P ∩ ℝ^P = ℝ^P, and ∂C = 0 (step 2). Let R be any IMRep of C in ℝ^P; then Hⁿ(R.carrier ∖ ℝ^P) = Hⁿ(∅) = 0. The sibling stationarity (Submission.stationaryAlong_of_minimizing_in_submanifold), applied with (P, n, d, U, N, T, R) := (n + k, n, n + k, ℝ^P, ℝ^P, C, R), gives R.IsStationaryAlong ℝ^P. So the varifold of every representation of C is stationary in ℝ^P.
+6. (C is a cone; book lines 347–355.) We have 0 < n; C is integer multiplicity and ∂C = 0 (step 2); every IMRep of C is stationary along ℝ^P (step 5); and C.massOn (ball 0 ρ) = unitBallVolume n · ofReal(ρⁿ) · ofReal θ for every ρ > 0 (step 4). These are the hypotheses of the sibling cone_of_constant_density (Submission.dtc_cone_of_constant_density) with θ₀ := θ. It gives IsConeCurrent C, i.e. η_{0,λ#}C = C for every λ > 0.
+7. (Cone weights are n-homogeneous; parent step 3(vii).) Let R be an IMRep of C in ℝ^P, λ > 0 and A ⊆ ℝ^P Borel. The sibling cone_measure_homogeneous (Submission.cone_current_imrep_measure_smul_image), applied to C, R and the cone property of step 6, gives R.measure((fun x ↦ λ • x) '' A) = ENNReal.ofReal(λⁿ)·R.measure(A).
+8. (Conclusion.) φ and C satisfy StrictMono φ, ConvergesWeakly (fun j ↦ blowUp T x λ_{φ(j)}) C, MassMeasuresConverge (fun j ↦ blowUp T x λ_{φ(j)}) C and IsMinimizingIn C univ (step 2), and every IMRep R of C has n-homogeneous weight (step 7). This is the statement. ∎
+Lean check (context, not part of the proof). A scratch file posits only the four reused declarations, at their exact dag.json types, and proves this child's exact lean_statement by steps 1–8 (centres fun _ ↦ x; Θ from (MON) with d = n + ℓ; the identity chart for ℝ^P). #print axioms lists propext, Classical.choice, Quot.sound and those four declarations, which the overlay of the reused accepted candidates discharges.
+
+## Key steps
+
+1. (MB) with constant centres x_j = x gives a subsequence of blow-ups converging weakly, with mass-measure convergence, to C minimizing in ℝ^P with ∂C = 0 (book: compactness theorem 2.4).
+2. (MON)(iii) gives θ = Θⁿ(T, x); the reused blowup_density (book (1), (4)) gives M_{B_ρ(0)}(C) = ω_nρⁿθ for every ρ > 0.
+3. The reused stationarity (Lemma 1.2 = Simon 7.1.2, with U = N = ℝ^P and the identity chart) makes the varifold of every representation of C stationary.
+4. The reused cone_of_constant_density (monotonicity identity, x ∧ C⃗ = 0, Lemma 2.33) gives IsConeCurrent C; the reused cone_measure_homogeneous gives R.measure(λA) = λⁿR.measure(A).
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json; git rev-parse HEAD; git -C .lake/packages/mathlib rev-parse HEAD; git -C .lake/packages/simongmt rev-parse HEAD`
+- `sha256sum GMT/Ch07/Submission.lean GMT/Ch07/Contract.lean .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `grep -n 'theorem hausdorffMeasure_image_le' <snapshot>/mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean`
+- `grep -n 'addHaarScalarFactor_volume_hausdorffMeasure_ne_zero\|theorem euclideanHausdorffMeasure_def' <snapshot>/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean`
+- `rg -c dimred_tr_ <snapshot>/project (exit 1, no match); rg -l dimred_tr_ GMT .lake/packages/simongmt/Poincare --glob '*.lean' (exit 1, no match)`
+- `grep -n 'def HasApproximateTangentSpaceAt' -A 14 and grep -n 'def blowUpMap' -A 5 .lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `sed -n 85,125p .lake/packages/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean (VanishesOn, zeroRegion, support)`
+- `python3 inspection of dag.json: status, candidate_commit and lean_statement of the selected node, of its registered dependencies im_mass_measure, monotonicity and moving_blowups, of root.abstract_dimension_reduction-a1 and of the six reused nodes; string comparison of the children's leading premises with these frozen types`
+- `python3 /tmp/tr-a7/scripts/check_reuse_types.py dag.json (git show <candidate>:GMT/Ch07/Submission.lean, declared type vs dag.json up to whitespace, sorry occurrences); git cat-file -e <candidate>^{commit}; isolated-comparator-result.json and comparator-v1.log of the six reused nodes`
+- `python3 /tmp/tr-a7/scripts/graph_check.py decomposition-v6.json dag.json 5000 12 (replica of _dependency_problem, _existing_lean_name_problem and the max_nodes bound)`
+- `lake env lean /tmp/tr-a7/lean/Types.lean; lake env lean /tmp/tr-a7/lean/Assembly.lean; lake env lean /tmp/tr-a7/lean/TangentCheck.lean`
+- `python3 reading of decomposition-v1..v6.json, decomposition-audit-v*.json, decomposition-review-receipt-v*.json and decomposition-scope-v*.json of the selected node; grep -l 'threshold_reduction' cluster-state/logs/gmt-ch07/*.log; max_nodes in .humanize/swarm-configs/9619fab3de46466e954c3c0e22455dff.json and 53f9bac0ca76443b9b296465895cebc9.json`
+- `gh api repos/humanfia/math-lean-flow/contents/_recursive_lean/{runtime,store,github_runtime,decomposition_scope}.py?ref=feature/humanize-api-update-claude; grep -n '_decompose\|_solve_children\|_existing_lean_name_problem\|_overlay_accepted_children\|_reference_use_problem\|def ensure' on the fetched copies`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-threshold-reduction-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-threshold-reduction-a1/decomposition-v6.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-threshold-reduction-a1/decomposition-audit-v6.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-threshold-reduction-a1/decomposition-review-receipt-v5.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-threshold-reduction-a1/decomposition-scope-v6.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-abstract-dimension-reduction-a1/isolated-comparator-result.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-stationary-of-minimizing-a1/isolated-comparator-result.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-density-a1/isolated-comparator-result.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-cone-a1/isolated-comparator-result.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-half-space-cone-lies-in-boundary-a1-cone-measure-homogeneous-a1/isolated-comparator-result.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-scaling-a1-rep-pushforward-a1/isolated-comparator-result.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/swarm-configs/9619fab3de46466e954c3c0e22455dff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/swarm-configs/53f9bac0ca76443b9b296465895cebc9.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/logs/gmt-ch07/9619fab3de46466e954c3c0e22455dff.log`
+- `/tmp/tr-a7/lean/Types.lean`
+- `/tmp/tr-a7/lean/Assembly.lean`
+- `/tmp/tr-a7/lean/TangentCheck.lean`
+- `/tmp/tr-a7/scripts/graph_check.py`
+- `/tmp/tr-a7/scripts/check_reuse_types.py`
+- `/tmp/tr7-mlf/runtime.py`
+
+Pins match. The snapshot manifest records project b4d606d and mathlib 25730c7c, equal to the workspace HEAD and to .lake/packages/mathlib; simongmt is 2b36630 as pinned in lakefile.toml. The snapshot Contract.lean, the workspace Contract.lean and Submission.lean are byte-identical (sha256 e4148e7f…).
+
+Library facts the children use exist where cited:
+- The snapshot mathlib has LipschitzWith.hausdorffMeasure_image_le (Hausdorff.lean:745), used in the parent assembly.
+- It has addHaarScalarFactor_volume_hausdorffMeasure_ne_zero (Measure.lean:96), used for the normalization Hⁿ = c_n·μH[n].
+- SimonGMT's HasApproximateTangentSpaceAt (Rectifiable.lean:102) and support = U ∖ zeroRegion are as the children's proofs use them. zeroRegion is a union of open sets with compact closure in U on which the current vanishes (CurrentLocalEquality.lean:99–117).
+
+No dimred_tr_ identifier exists in the snapshot project, GMT, SimonGMT or dag.json.
+
+The six reused declarations are accepted, and their candidate commits are present. Their dag.json types equal the children's lean_statements and the candidates' declarations (up to whitespace). Each candidate's only sorry is the frozen main_theorem, and each isolated comparator result passed.
+
+Lean checks:
+- All 12 child types elaborate after import GMT.Ch07.Submission.
+- The parent assembly compiles from exactly the three registered dependencies, abstract_dimension_reduction and the three new children it uses, with no sorryAx.
+- The tangent child compiles from exactly its four reused siblings.
+
+The graph and name replica passes against the current 2327-node DAG, with room for 6 new nodes under max_nodes = 5000.
+
+Attempt 6 was audited acceptable. It failed activation only because the old worker's max_nodes was 1000, below the DAG size, so it is resubmitted unchanged.

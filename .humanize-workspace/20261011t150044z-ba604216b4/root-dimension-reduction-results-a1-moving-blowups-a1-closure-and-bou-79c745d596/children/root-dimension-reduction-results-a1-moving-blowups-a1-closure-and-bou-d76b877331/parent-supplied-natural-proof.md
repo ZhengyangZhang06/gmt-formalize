@@ -1,0 +1,148 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.dimension_reduction_results-a1.moving_blowups-a1.closure_and_boundary_rectifiability-a1.closure_succ-a1`
+- Child DAG node: `root.dimension_reduction_results-a1.moving_blowups-a1.closure_and_boundary_rectifiability-a1.closure_succ-a1.smul_leibniz-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: the Leibniz rule for higher derivatives of a bilinear expression, in the form proved in Mathlib/Analysis/Calculus/ContDiff/Bounds.lean (ContinuousLinearMap.norm_iteratedFDerivWithin_le_of_bilinear_aux, then norm_iteratedFDeriv_smul_le). It is needed for step 4 of the extension in the parent-supplied proof of dmcbr_closure_succ ("multiplication by ζ preserves test-form convergence"). That module is outside the frozen import closure of GMT.Ch07.Submission (`#check @norm_iteratedFDeriv_smul_le` fails after `import GMT.Ch07.Submission`), and the leaf gate forbids new imports, so the argument is reproduced; every ingredient named below is available after `import GMT.Ch07.Submission`. Notation: for a set s with unique derivatives, D^i_s h(x) = iteratedFDerivWithin ℝ i h s x; D^i_univ = D^i (iteratedFDerivWithin_univ).
+1. (General claim.) For n ∈ ℕ let (C_n) be: for all real normed spaces D, E, F, G in the universe Type, every continuous bilinear map B : E →L F →L G, all f : D → E and g : D → F that are C^n on a set s with UniqueDiffOn ℝ s, and every x ∈ s, ‖D^n_s(y ↦ B(f y)(g y))(x)‖ ≤ ‖B‖·Σ_{i=0}^{n} C(n,i)‖D^i_s f(x)‖‖D^{n−i}_s g(x)‖. We prove (C_n) for all n by induction on n, for all D, E, F, G, B, f, g, s, x simultaneously (the spaces must be generalized because the induction step changes F and G).
+2. (n = 0.) The 0-th iterated derivative has the norm of the value (norm_iteratedFDerivWithin_zero), so the claim is ‖B(f x)(g x)‖ ≤ ‖B‖‖f x‖‖g x‖, which is the operator-norm bound for bilinear maps (ContinuousLinearMap.le_opNorm₂); the right side of (C_0) is exactly ‖B‖·(C(0,0)‖f x‖‖g x‖).
+3. (Derivative of a bilinear expression.) Assume (C_n) and let f, g be C^{n+1} on s, x ∈ s. Put B_R := B.precompR D : E →L (D →L F) →L (D →L G), B_R(u)(φ) = (v ↦ B(u)(φ v)), and B_L := B.precompL D : (D →L E) →L F →L (D →L G), B_L(ψ)(w) = (v ↦ B(ψ v)(w)). Both are continuous bilinear with ‖B_R‖ ≤ ‖B‖ and ‖B_L‖ ≤ ‖B‖ (ContinuousLinearMap.norm_precompR_le, norm_precompL_le). For y ∈ s, f and g are differentiable within s at y (n + 1 ≥ 1), so the derivative within s of h(y) := B(f y)(g y) is D_s h(y) = B_R(f y)(D_s g(y)) + B_L(D_s f(y))(g y) (ContinuousLinearMap.fderivWithin_of_bilinear). Hence D^n_s(D_s h)(x) = D^n_s(y ↦ B_R(f y)(D_s g y) + B_L(D_s f y)(g y))(x) (iteratedFDerivWithin_congr, the two functions agree on s).
+4. (Splitting.) ‖D^{n+1}_s h(x)‖ = ‖D^n_s(D_s h)(x)‖ (norm_iteratedFDerivWithin_fderivWithin). The two summands are C^n on s: each is a bounded bilinear map composed with a pair of C^n maps (IsBoundedBilinearMap.contDiff composed via ContDiff.comp₂_contDiffOn; f and g are C^n, and D_s f, D_s g are C^n on s by ContDiffOn.fderivWithin, as f, g are C^{n+1}). So D^n_s of the sum is the sum of the D^n_s (fun_iteratedFDerivWithin_add_apply), and the triangle inequality gives ‖D^{n+1}_s h(x)‖ ≤ ‖D^n_s(B_R(f)(D_s g))(x)‖ + ‖D^n_s(B_L(D_s f)(g))(x)‖.
+5. (Induction hypothesis.) By (C_n) for B_R with the pair (f, D_s g) and ‖B_R‖ ≤ ‖B‖: ‖D^n_s(B_R(f)(D_s g))(x)‖ ≤ ‖B‖Σ_{i=0}^{n} C(n,i)‖D^i_s f(x)‖‖D^{n−i}_s(D_s g)(x)‖ = ‖B‖Σ_{i=0}^{n} C(n,i)‖D^i_s f(x)‖‖D^{n+1−i}_s g(x)‖, using ‖D^{n−i}_s(D_s g)(x)‖ = ‖D^{n−i+1}_s g(x)‖ (norm_iteratedFDerivWithin_fderivWithin) and n − i + 1 = n + 1 − i for i ≤ n. Likewise, by (C_n) for B_L with (D_s f, g): ‖D^n_s(B_L(D_s f)(g))(x)‖ ≤ ‖B‖Σ_{i=0}^{n} C(n,i)‖D^{i+1}_s f(x)‖‖D^{n−i}_s g(x)‖. (Multiplying by ‖B_R‖ ≤ ‖B‖ and ‖B_L‖ ≤ ‖B‖ is legitimate because the sums are nonnegative.)
+6. (Pascal's rule.) With a_i := ‖D^i_s f(x)‖ and b_j := ‖D^j_s g(x)‖, Σ_{i=0}^{n} C(n,i)a_i b_{n+1−i} + Σ_{i=0}^{n} C(n,i)a_{i+1}b_{n−i} = Σ_{i=0}^{n+1} C(n+1,i)a_i b_{n+1−i} (Finset.sum_choose_succ_mul). Combining steps 4–6 gives (C_{n+1}).
+7. (Specialization.) Apply (C_n) with D := ℝ^P, E := ℝ, F = G := Λ^k(ℝ^P), B := lsmul (B(c)(α) = c•α, with ‖B‖ ≤ 1 by ContinuousLinearMap.opNorm_lsmul_le), s := ℝ^P (UniqueDiffOn ℝ univ, and D^i_univ = D^i by iteratedFDerivWithin_univ), and f, g, which are C^∞ and hence C^n on ℝ^P. This gives ‖D^n(f·g)(x)‖ ≤ ‖B‖·Σ ≤ Σ_{i=0}^{n} C(n,i)‖D^i f(x)‖‖D^{n−i} g(x)‖, since the sum is nonnegative and ‖B‖ ≤ 1. ∎
+Lean note: with the project's default maxSynthPendingDepth (1), the norm instance on the three-level space E →L (D →L F) →L (D →L G) is not found when ‖B.precompR D‖ is written explicitly; the appendix therefore never writes that norm and obtains it only through the induction hypothesis and norm_precompR_le / norm_precompL_le (a `set_option` is forbidden by the leaf gate).
+
+Appendix (verified Lean realization of the numbered proof above; not part of the proof). The declaration below was compiled in the decomposition session of dmcbr_closure_succ with Lean v4.35.0-rc3, Mathlib 25730c7c and SimonGMT 2b366308 inside a copy of GMT/Ch07/Contract.lean (namespace GMT.Ch07, after the `noncomputable section ... end` block, before `main_theorem`), i.e. under the frozen imports only, with default options (no `set_option`), as one theorem with local `have`s and no helper declaration. It has no dependencies. `#print axioms` reports propext, Classical.choice and Quot.sound. The runtime's leaf source-delta checker (_recursive_lean/leaf_verification.check_source_delta) accepts the insertion.
+
+```lean
+theorem Submission.dmcbrcs_norm_iteratedFDeriv_smul_le : ∀ (P k : ℕ) (f : Euclid P → ℝ) (g : Euclid P → Covector (Euclid P) k), ContDiff ℝ (⊤ : ℕ∞) f → ContDiff ℝ (⊤ : ℕ∞) g → ∀ (n : ℕ) (x : Euclid P), ‖iteratedFDeriv ℝ n (fun y => f y • g y) x‖ ≤ ∑ i ∈ Finset.range (n + 1), (n.choose i : ℝ) * ‖iteratedFDeriv ℝ i f x‖ * ‖iteratedFDeriv ℝ (n - i) g x‖ := by
+  have aux : ∀ (n : ℕ) {Du Eu Fu Gu : Type} [NormedAddCommGroup Du] [NormedSpace ℝ Du]
+      [NormedAddCommGroup Eu] [NormedSpace ℝ Eu] [NormedAddCommGroup Fu] [NormedSpace ℝ Fu]
+      [NormedAddCommGroup Gu] [NormedSpace ℝ Gu]
+      (B : Eu →L[ℝ] Fu →L[ℝ] Gu) {f : Du → Eu} {g : Du → Fu} {s : Set Du} {x : Du},
+      ContDiffOn ℝ n f s → ContDiffOn ℝ n g s → UniqueDiffOn ℝ s → x ∈ s →
+      ‖iteratedFDerivWithin ℝ n (fun y => B (f y) (g y)) s x‖ ≤
+        ‖B‖ * ∑ i ∈ Finset.range (n + 1), (n.choose i : ℝ) * ‖iteratedFDerivWithin ℝ i f s x‖ *
+          ‖iteratedFDerivWithin ℝ (n - i) g s x‖ := by
+    intro n
+    induction n with
+    | zero =>
+      intro Du Eu Fu Gu _ _ _ _ _ _ _ _ B f g s x _ _ _ _
+      simp only [norm_iteratedFDerivWithin_zero, zero_add, Finset.range_one,
+        Finset.sum_singleton, Nat.choose_self, Nat.cast_one, one_mul, Nat.sub_zero, ← mul_assoc]
+      apply B.le_opNorm₂
+    | succ n IH =>
+      intro Du Eu Fu Gu _ _ _ _ _ _ _ _ B f g s x hf hg hs hx
+      have In : ((n : ℕ) : WithTop ℕ∞) + 1 ≤ ((n.succ : ℕ) : WithTop ℕ∞) := by
+        simp only [Nat.cast_succ, le_refl]
+      have hsum0 : ∀ (a : ℕ → ℝ), (∀ i, 0 ≤ a i) → 0 ≤ ∑ i ∈ Finset.range (n + 1), a i :=
+        fun a ha => Finset.sum_nonneg fun i _ => ha i
+      have I1 :
+          ‖iteratedFDerivWithin ℝ n (fun y : Du => B.precompR Du (f y) (fderivWithin ℝ g s y)) s x‖ ≤
+            ‖B‖ * ∑ i ∈ Finset.range (n + 1), n.choose i * ‖iteratedFDerivWithin ℝ i f s x‖ *
+              ‖iteratedFDerivWithin ℝ (n + 1 - i) g s x‖ := by
+        refine (IH (B.precompR Du) (hf.of_le (Nat.cast_le.2 (Nat.le_succ n)))
+          (hg.fderivWithin hs In) hs hx).trans ?_
+        refine (mul_le_mul_of_nonneg_right (B.norm_precompR_le Du)
+          (hsum0 _ fun i => by positivity)).trans (le_of_eq ?_)
+        congr 1
+        apply Finset.sum_congr rfl fun i hi => ?_
+        rw [Nat.succ_sub (Nat.lt_succ_iff.1 (Finset.mem_range.1 hi)),
+          ← norm_iteratedFDerivWithin_fderivWithin hs hx]
+      have I2 :
+          ‖iteratedFDerivWithin ℝ n (fun y : Du => B.precompL Du (fderivWithin ℝ f s y) (g y)) s x‖ ≤
+          ‖B‖ * ∑ i ∈ Finset.range (n + 1), n.choose i * ‖iteratedFDerivWithin ℝ (i + 1) f s x‖ *
+            ‖iteratedFDerivWithin ℝ (n - i) g s x‖ := by
+        refine (IH (B.precompL Du) (hf.fderivWithin hs In)
+          (hg.of_le (Nat.cast_le.2 (Nat.le_succ n))) hs hx).trans ?_
+        refine (mul_le_mul_of_nonneg_right (B.norm_precompL_le Du)
+          (hsum0 _ fun i => by positivity)).trans (le_of_eq ?_)
+        congr 1
+        apply Finset.sum_congr rfl fun i _ => ?_
+        rw [← norm_iteratedFDerivWithin_fderivWithin hs hx]
+      have J : iteratedFDerivWithin ℝ n
+          (fun y : Du => fderivWithin ℝ (fun y : Du => B (f y) (g y)) s y) s x =
+            iteratedFDerivWithin ℝ n (fun y => B.precompR Du (f y)
+              (fderivWithin ℝ g s y) + B.precompL Du (fderivWithin ℝ f s y) (g y)) s x := by
+        apply iteratedFDerivWithin_congr (fun y hy => ?_) hx
+        exact B.fderivWithin_of_bilinear (hf.differentiableOn (by positivity) y hy)
+          (hg.differentiableOn (by positivity) y hy) (hs y hy)
+      rw [← norm_iteratedFDerivWithin_fderivWithin hs hx, J]
+      have A : ContDiffOn ℝ n (fun y => B.precompR Du (f y) (fderivWithin ℝ g s y)) s :=
+        (B.precompR Du).isBoundedBilinearMap.contDiff.comp₂_contDiffOn
+          (hf.of_le (Nat.cast_le.2 (Nat.le_succ n))) (hg.fderivWithin hs In)
+      have A' : ContDiffOn ℝ n (fun y => B.precompL Du (fderivWithin ℝ f s y) (g y)) s :=
+        (B.precompL Du).isBoundedBilinearMap.contDiff.comp₂_contDiffOn (hf.fderivWithin hs In)
+          (hg.of_le (Nat.cast_le.2 (Nat.le_succ n)))
+      rw [fun_iteratedFDerivWithin_add_apply (A.contDiffWithinAt hx) (A'.contDiffWithinAt hx) hs hx]
+      apply (norm_add_le _ _).trans ((add_le_add I1 I2).trans (le_of_eq ?_))
+      simp_rw [← mul_add, mul_assoc]
+      congr 1
+      exact (Finset.sum_choose_succ_mul
+        (fun i j => ‖iteratedFDerivWithin ℝ i f s x‖ * ‖iteratedFDerivWithin ℝ j g s x‖) n).symm
+  intro P k f g hf hg n x
+  have h := aux n (ContinuousLinearMap.lsmul ℝ ℝ : ℝ →L[ℝ] Covector (Euclid P) k →L[ℝ] Covector (Euclid P) k)
+    (f := f) (g := g) (s := univ) (x := x) (hf.contDiffOn.of_le (by exact_mod_cast le_top))
+    (hg.contDiffOn.of_le (by exact_mod_cast le_top)) uniqueDiffOn_univ (mem_univ x)
+  simp only [iteratedFDerivWithin_univ] at h
+  refine h.trans (mul_le_of_le_one_left (by positivity) ContinuousLinearMap.opNorm_lsmul_le)
+```
+
+## Key steps
+
+1. Prove the bilinear Leibniz bound (C_n) for all normed spaces in Type by induction on n, generalizing the target spaces.
+2. n = 0 is the operator-norm bound ‖B(u)(v)‖ ≤ ‖B‖‖u‖‖v‖.
+3. Step: D_s(B(f, g)) = B.precompR(f, D_s g) + B.precompL(D_s f, g) (fderivWithin_of_bilinear); ‖precompR‖, ‖precompL‖ ≤ ‖B‖.
+4. Apply (C_n) to both summands, rewrite ‖D^{n−i}(D_s g)‖ = ‖D^{n+1−i} g‖, and combine with Pascal's rule (Finset.sum_choose_succ_mul).
+5. Specialize to B = lsmul (‖B‖ ≤ 1), s = univ, f, g C^∞.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `python3 over RUN/dag.json: selected node, siblings convergence_tools/im_local/closure_compact (types byte-identical to the twin cbr_* nodes), twin node root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.closure_succ-a1 (type byte-identical), its decomposition-v2/audit-v2, status and candidate commits of the six reused declarations, and absence of the names dmcbrcs_norm_iteratedFDeriv_smul_le, dmcbrcs_testFormOnConverges_smul, dmcbrcs_cutoff_extension, dmcbrcs_localize_at_point`
+- `rg -c dmcbrcs SNAPSHOT (no match, exit 1); grep -c dmcbrcs GMT/Ch07/Submission.lean (0); cmp SNAPSHOT/project/GMT/Ch07/Contract.lean GMT/Ch07/Contract.lean; cmp GMT/Ch07/Submission.lean GMT/Ch07/Contract.lean; git rev-parse HEAD (b4d606d), mathlib 25730c7c, simongmt 2b366308`
+- `rg -n -F in SNAPSHOT/mathlib/Mathlib: exists_contDiff_support_eq_eq_one_iff, norm_iteratedFDeriv_smul_le, Filter.EventuallyEq.extDeriv_eq, exists_open_between_and_isCompact_closure, support_iteratedFDeriv_subset, tsupport_iteratedFDeriv_subset, HasCompactSupport.iteratedFDeriv, iteratedFDeriv_fun_zero, bounded_above_of_compact_support, eventually_all_finset, tendstoUniformlyOn_iff, setIntegral_congr_fun, lintegral_mono_set, tsupport_smul_subset_left/right, ContDiff.smul, extraction_of_frequently_atTop, frequently_lt_of_liminf_lt, limsup_comp, setIntegral_eq_integral_of_forall_compl_eq_zero, enorm_integral_le_lintegral_enorm, LipschitzWith.dist_left; sed of Mathlib/Analysis/Calculus/ContDiff/Bounds.lean lines 36-260 (Leibniz proofs and imports)`
+- `lake env lean availability probe after `import GMT.Ch07.Submission`: #check norm_iteratedFDeriv_smul_le and ContinuousLinearMap.norm_iteratedFDeriv_le_of_bilinear (unknown), exists_contDiff_support_eq_eq_one_iff, EventuallyEq.extDeriv_eq, ContinuousLinearMap.precompR/precompL, norm_precompR_le, fderivWithin_of_bilinear, norm_iteratedFDerivWithin_fderivWithin, Finset.sum_choose_succ_mul (available); Norm instance on three-level CLM spaces needs maxSynthPendingDepth 3 when written explicitly`
+- `git log --all -G '^import ' -- GMT/Ch07/Submission.lean and -S 'set_option maxHeartbeats' (import additions and set_option reverted by the leaf gate: fa0865963, d5ba41d68, fe5f15468, 410955ec1); grep set_option in _recursive_lean/*.py (leaf_verification.check_source_delta forbidden-token rule)`
+- `sed of SimonGMT Chapter06 Currents.lean (TestFormOnConverges, GeometricCurrentOn, WeaklyConvergesOn, boundary), Mass.lean (covectorEuclideanNorm, massAdmissibleOn, massOn, le_massOn, massOn_le_liminf), CurrentLocalEquality.lean (testFormOnInclusion, restrictDomain, zeroRegion, support), Forms.lean (exteriorDerivative = extDeriv); book/chapter-06.txt lines 2280-2345 (Simon 8.2, Remark 8.3(1), printed p. 176)`
+- `lake env lean on /tmp/dmcbr-succ-dec/lean/{Types,Assembly,Localize,LocalizeHyp,LocalizeFinal,Challenges}.lean, /tmp/dmcbr-succ-dec/proto/{Leibniz3,Cont3,Cutoff}.lean and /tmp/dmcbr-succ-dec/final/FromJSON.lean; leaf_verification.check_source_delta on each appendix insertion; lean_contract.validate_lean_statement on all child types`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/Bounds.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Manifold/PartitionOfUnity.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/DifferentialForm/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/FTaylorSeries.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Separation/Regular.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/Pseudo/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Order/Filter/Finite.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Group/Bounded.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-closure-and-bou-79c745d596/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-932152a15b/decomposition-v2.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-932152a15b/decomposition-audit-v2.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-f9e8023a0d/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/runtime/flows/gmt-claude-b888e19cffb1/_recursive_lean/leaf_verification.py`
+- `/runtime/flows/gmt-claude-b888e19cffb1/_recursive_lean/runtime.py`
+- `/tmp/dmcbr-succ-dec/lean/Assembly.lean`
+- `/tmp/dmcbr-succ-dec/lean/LocalizeHyp.lean`
+- `/tmp/dmcbr-succ-dec/final/FromJSON.lean`
+
+Pins match: HEAD b4d606d is the snapshot project commit, with Mathlib 25730c7c and SimonGMT 2b366308, and Submission.lean is byte-identical to the frozen contract. The snapshot has no dmcbrcs declaration and no closure or extension theorem; its Chapter 6 matches are definitions only. Every Mathlib name cited by the child proofs exists in the pinned sources. One cited name, norm_iteratedFDeriv_smul_le from Mathlib.Analysis.Calculus.ContDiff.Bounds, is outside the frozen import closure, so the Leibniz bound becomes the child smul_leibniz, transcribed from that file and verified. The six reused declarations are accepted, with byte-identical declarations in their candidate commits. All child types elaborate, and the hypothesis-only assembly proves the exact parent type with propext, Classical.choice and Quot.sound. Every new child's appendix compiles under default options and passes the leaf source-delta gate.

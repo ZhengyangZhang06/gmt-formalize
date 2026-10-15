@@ -1,0 +1,84 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.dimension_reduction_results-a1.moving_blowups-a1.pushforward-a1.pf_integer-a1`
+- Child DAG node: `root.dimension_reduction_results-a1.moving_blowups-a1.pushforward-a1.pf_integer-a1.orient_piece-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: step 4 of the parent proof (tangent planes of M along a parametrized piece and the orientation (★)), with the parent's combination 'Lemma T + (TL)' supplied by the sibling piece_tangent, and the null-set transfer through the bi-Lipschitz piece supplied by the sibling piece_pullback.
+Notation: Hⁿ := μHE[n]; Lⁿ := volume on ℝⁿ; M := R.carrier, θ := R.mult, ξ := R.orient.
+1. M is locally Hⁿ-finite in U. For compact C ⊆ U: θ ≥ 1 on M (R.mult_pos), so Hⁿ(M ∩ C) = ∫_{M∩C} 1 dHⁿ ≤ ∫_{M∩C} θ dHⁿ < ∞ (R.locallyIntegrable_mult). Also M is Borel and M ⊆ U.
+2. Tangent planes along the piece. By sibling piece_tangent applied to (U, Y := M, F, B, L, m) — its hypotheses are step 1, the Lipschitz and lower bounds, the differentiability and injectivity of DF on B, and F(B) ⊆ M — for Lⁿ-a.e. b ∈ B, M has the approximate tangent space range DF(b) at F(b).
+3. Orientation at image points. By R.orients, for Hⁿ⌞M-a.e. x there is a subspace Q_x with HasApproximateTangentSpaceAt n M x Q_x and IsUnitOrientationOf (ξ x) Q_x. Since F(B) ⊆ M, the same holds for Hⁿ⌞F(B)-a.e. x (ae_restrict_of_ae_restrict_of_subset). By sibling piece_pullback (second part), it holds at x = F(b) for Lⁿ-a.e. b ∈ B.
+4. Identification. For b in the intersection of the conull sets of steps 2 and 3, M has the approximate tangent spaces Q_{F(b)} and range DF(b) at F(b); approximate tangent spaces are unique (SimonGMT HasApproximateTangentSpaceAt.unique), so Q_{F(b)} = range DF(b) and ξ(F(b)) is a unit orientation of range DF(b). This is the second claim.
+5. Measurability. ξ is a.e. strongly measurable for Hⁿ⌞M (R.aestronglyMeasurable_orient); let ξ̃ be strongly measurable with ξ = ξ̃ Hⁿ⌞M-a.e. (AEStronglyMeasurable.mk). Restricting to F(B) ⊆ M and applying piece_pullback, ξ(F(b)) = ξ̃(F(b)) for Lⁿ-a.e. b ∈ B. The map b ↦ ξ̃(F(b)) is strongly measurable (ξ̃ strongly measurable, F continuous hence measurable; StronglyMeasurable.comp_measurable). So b ↦ ξ(F(b)) is a.e. equal on B to a strongly measurable map, i.e. a.e. strongly measurable for Lⁿ⌞B. ∎
+
+Lean reference implementation. A complete Lean proof of exactly this frozen type, following the steps above, is stored as theorem Submission.dimred_mbl_pfi_imrep_orient_along_piece in /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Scratch/dimred_mbl_pfi_decomposition/Reference.lean (all new children and the parent assembly, in dependency order), and the same proof is checked stand-alone (siblings as hypotheses) in /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Scratch/dimred_mbl_pfi_decomposition/OrientAlongPiece.lean. It uses exactly the sibling declarations Submission.dpf_approxTangent_ae_bilipschitz_piece, Submission.ptd_piece_image_measurable_ae_pullback. It was kernel-checked in this decomposition session (Lean v4.35.0-rc3, Mathlib 25730c7c, SimonGMT 2b366308) as a declaration of GMT/Ch07/Submission.lean inside namespace GMT.Ch07 with the contract's opens, after import GMT.Ch07.Submission alone (no extra import is needed). With these sibling declarations taken as hypotheses, #print axioms gives propext, Classical.choice, Quot.sound only. It may be copied verbatim.
+
+## Key steps
+
+1. The carrier M is Borel and locally Hⁿ-finite (θ ≥ 1, θ locally integrable).
+2. Sibling piece_tangent: M has the approximate tangent space range DF(b) at F(b) for a.e. b ∈ B.
+3. R.orients restricted to F(B) ⊆ M and pulled back by sibling piece_pullback: for a.e. b, ξ(F(b)) orients some approximate tangent space of M at F(b).
+4. Uniqueness of approximate tangent spaces identifies that space with range DF(b).
+5. A strongly measurable version ξ̃ of ξ, pulled back by piece_pullback, shows that b ↦ ξ(F(b)) is a.e. strongly measurable on B.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat RUN/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-pushforward-a1-d9628d89ea/parent-child-handoff.json and parent-supplied-plan.md (frozen type, supplied proof, no resolved dependencies)`
+- `cmp GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean; cat RUN/local-references/123e8435b4a2469b/manifest.json (project b4d606d, Mathlib 25730c7c)`
+- `python3 scans of RUN/dag.json: accepted nodes whose lean_statement mentions IsUnitOrientationOf, bilipschitz, compContinuousLinearMap (fderiv, adjoint/.det, Injective (fderiv; children of im_series-a1, diffeo_pushforward-a1, piece_tangent_density-a1, graph_orientation_jacobian-a1; lean_name collision check for dimred_mbl_pfi_* (no match)`
+- `grep -n '_existing_lean_name_problem|_accepted_checkpoint|_overlay_accepted_children|max_children' /runtime/flows/gmt-claude-b888e19cffb1/_recursive_lean/runtime.py`
+- `grep -rn 'theorem integral_area_formula_of_injective_derivative|theorem weighted_area_formula_volume_of_injective_derivative|theorem areaJacobianAt_eq_sqrt_det_adjoint_comp|theorem weighted_area_formula_lipschitz_injOn|theorem HasApproximateTangentSpaceAt.unique|theorem countablyRectifiable_range|euclideanHausdorffMeasure_image_le_of_lipschitzOn' lake-packages-25730c7c/simongmt/Poincare/SimonGMT`
+- `grep -rnF (one name at a time) in RUN/local-references/123e8435b4a2469b/mathlib/Mathlib for: theorem exists_partition_approximatesLinearOn_of_hasFDerivWithinAt, theorem LinearMap.exists_antilipschitzWith, theorem exists_contDiff_support_eq_eq_one_iff, theorem euclideanHausdorffMeasure_image, theorem _root_.ContinuousLinearMap.normDet_sq, theorem continuous_compContinuousLinearMapCLM, theorem ContinuousLinearMap.continuous_det, theorem hasSum_integral_iUnion, theorem HasProd.prod_fiberwise, theorem setIntegral_eq_of_subset_of_ae_sdiff_eq_zero; rg -n 'stronglyMeasurable_extend' (found as _root_.MeasurableEmbedding.stronglyMeasurable_extend)`
+- `git show <candidate>:GMT/Ch07/Submission.lean for a2ba78f, c9573f9, a216804, bed5b84, 329e383, fe95347 (declaration present, type identical to dag.json, only sorry = main_theorem; auxiliary accepted declarations present)`
+- `python3 index of cluster-state/verification/results/*/*/result.json by node_id (latest comparator status passed; comparator-config permitted_axioms propext, Quot.sound, Classical.choice)`
+- `lake env lean GMT/Scratch/dimred_mbl_pfi_decomposition/Types.lean (12 child types + parent type elaborate)`
+- `lake env lean GMT/Scratch/dimred_mbl_pfi_decomposition/Assembly.lean (exact parent type from the 12 child types as hypotheses; #print axioms)`
+- `lake env lean on Cutoff.lean, Partition.lean, JacobianAlgebra.lean, OrientAlongPiece.lean, PieceIMRep.lean, ParamSeries.lean (conditional proofs, #print axioms) and Reference.lean (Submission-form reference implementations)`
+- `python3 -I verifier/lean_contract.py validate_lean_statement on all 12 child types; topological sort of depends_on`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-pushforward-a1-d9628d89ea/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-pushforward-a1/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-bilipschi-4344c8c0d8/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-im-38ac66b3de/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-piece-tan-680a7024c9/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-piece-tan-e483a373f0/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-epsilon-regularity-a1-graph-cycle-b87b86ed4f/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-regular-set-dense-a1-integer-combination-a1-orientation-sign-a1/parent-child-handoff.json`
+- `/runtime/flows/gmt-claude-b888e19cffb1/_recursive_lean/runtime.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/WeightedArea.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/Area.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaDomain.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaLipschitz.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/Jacobian.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/NormDet.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Manifold/PartitionOfUnity.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/Alternating/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/StronglyMeasurable/Lemmas.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/StronglyMeasurable/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/FiniteDimension.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/InfiniteSum/Constructions.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Scratch/dimred_mbl_pfi_decomposition/Types.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Scratch/dimred_mbl_pfi_decomposition/Assembly.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Scratch/dimred_mbl_pfi_decomposition/Reference.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Scratch/dimred_mbl_pfi_decomposition/Cutoff.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Scratch/dimred_mbl_pfi_decomposition/Partition.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Scratch/dimred_mbl_pfi_decomposition/JacobianAlgebra.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Scratch/dimred_mbl_pfi_decomposition/OrientAlongPiece.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Scratch/dimred_mbl_pfi_decomposition/PieceIMRep.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Scratch/dimred_mbl_pfi_decomposition/ParamSeries.lean`
+
+Pins match: HEAD b4d606d, Mathlib 25730c7c and SimonGMT 2b366308. Submission.lean is byte-identical to the frozen contract. Neither the contract nor SimonGMT contains a non-affine push-forward integrality theorem, so the obligation is genuine. SimonGMT does supply the injective Lipschitz area formulas (lintegral and Bochner) and HasApproximateTangentSpaceAt.unique, and Mathlib supplies the partition lemma, smooth Urysohn functions, normDet and the linear area formula. Six accepted declarations are reused with byte-identical frozen types: dpf_rectifiable_bilipschitz_pieces, cmcdt_ims_imrep_tsum, dpf_approxTangent_ae_bilipschitz_piece, ptd_piece_image_measurable_ae_pullback, dgoj_unitOrientation_of_injective and rsdic_unitOrientation_eq_or_eq_neg. Their candidate commits are present and their comparator results passed under the three-axiom policy. The six new dimred_mbl_pfi_* names are unreserved. All 12 child types and the parent type elaborate. A conditional assembly proves the exact frozen parent type from the child types, and every new child has a kernel-checked reference proof from its listed siblings, all with axioms propext, Classical.choice and Quot.sound.

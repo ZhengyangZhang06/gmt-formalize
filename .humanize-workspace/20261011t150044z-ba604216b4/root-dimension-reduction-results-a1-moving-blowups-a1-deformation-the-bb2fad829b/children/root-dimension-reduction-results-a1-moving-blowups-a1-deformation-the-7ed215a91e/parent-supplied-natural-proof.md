@@ -1,0 +1,97 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.dimension_reduction_results-a1.moving_blowups-a1.deformation_theorem-a1.face_replacement-a1.face_integral_current-a1`
+- Child DAG node: `root.dimension_reduction_results-a1.moving_blowups-a1.deformation_theorem-a1.face_replacement-a1.face_integral_current-a1.support_faces-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: Simon, Ch. 6, proof of Theorem 5.1 (book/chapter-06.txt lines 1840–1910). The argument is step 5 of the supplied proof of the selected node dimred_mbl_dtfr_face_integral_current.
+
+Notation.
+- Q₁ := {y : ∀ i, 0 < y_i < 1} and Cⁿ := {y : ∀ i, 0 ≤ y_i ≤ 1}.
+- Φ_p(y) := WithLp.toLp 2 (i ↦ (p.2 i : ℝ)) + Σ_j y_j • e_{p.1(j)} and E_p := (j ↦ e_{p.1(j)}), with e_l := EuclideanSpace.single l 1.
+
+1. Setup by contradiction. Let x ∈ spt D. Suppose that x ≠ Φ_p(y) for every p ∈ s with ∫_{Q₁}|w_p| ≠ 0 and every y ∈ Cⁿ. Put s* := {p ∈ s : ∫_{Q₁}|w_p| ≠ 0} (Finset.filter) and Z := ⋃_{p∈s*} Φ_p(Cⁿ). The assumption says exactly that x ∉ Z.
+2. Z is compact.
+ - Cⁿ is the image of the compact box Π_i [0,1] ⊆ (Fin n → ℝ) (isCompact_univ_pi, isCompact_Icc) under the continuous map WithLp.toLp 2 (PiLp.continuous_toLp). So Cⁿ is compact (IsCompact.image).
+ - Each Φ_p is continuous: it is a constant plus a finite sum of the maps y ↦ y_j • e_{p.1(j)}, and y ↦ y_j is continuous by PiLp.continuous_apply. So Φ_p(Cⁿ) is compact.
+ - The finite union Z is therefore compact (Finset.isCompact_biUnion).
+ Hence Z is closed and its complement is an open set containing x. So there is r > 0 with ball(x, r) ⊆ Zᶜ (Metric.isOpen_iff applied to IsClosed.isOpen_compl).
+3. D vanishes on W := ball(x, r). Let ω be a test n-form with tsupport ω ⊆ W. By the formula, D(ω) = Σ_{p∈s} I_p with I_p := ∫_{Q₁} w_p(y)·ω(Φ_p(y))(E_p) dy. We show I_p = 0 for every p ∈ s, which gives D(ω) = 0 by Finset.sum_eq_zero.
+ (a) Case ∫_{Q₁}|w_p| = 0. The function |w_p| is nonnegative and integrable on Q₁ (Integrable.abs), so its zero integral forces |w_p| = 0 almost everywhere for volume restricted to Q₁ (integral_eq_zero_iff_of_nonneg). Then w_p(y) = 0, so the integrand w_p(y)·ω(Φ_p y)(E_p) vanishes, for a.e. y ∈ Q₁. Hence I_p = 0 (integral_eq_zero_of_ae).
+ (b) Case ∫_{Q₁}|w_p| ≠ 0. Then p ∈ s*. For y ∈ Q₁ we have 0 < y_i < 1, so y ∈ Cⁿ and Φ_p(y) ∈ Z. Since W ∩ Z = ∅ and tsupport ω ⊆ W, Φ_p(y) ∉ tsupport ω, so ω(Φ_p(y)) = 0 (image_eq_zero_of_notMem_tsupport). So the integrand is 0 at every y ∈ Q₁, and I_p = 0 (setIntegral_eq_zero_of_forall_eq_zero).
+ Thus D(ω) = 0 for every test form supported in W, i.e. D vanishes on W (GeometricCurrentOn.VanishesOn W).
+4. W witnesses x ∈ zeroRegion D.
+ - W is open (isOpen_ball).
+ - Its closure is contained in closedBall(x, r) (closure_ball_subset_closedBall). That ball is compact because Euclid P is a proper space (isCompact_closedBall). So closure W is a closed subset of a compact set, hence compact (IsCompact.of_isClosed_subset with isClosed_closure).
+ - Trivially closure W ⊆ univ.
+ - D vanishes on W by step 3, and x ∈ W because r > 0 (mem_ball_self).
+ By definition of zeroRegion D (the union of all open W with compact closure contained in univ on which D vanishes), x ∈ zeroRegion D.
+5. Contradiction. But x ∈ spt D = univ ∖ zeroRegion D, so x ∉ zeroRegion D. Therefore the assumption of step 1 is false: there are p ∈ s with ∫_{Q₁}|w_p| ≠ 0 and y ∈ Cⁿ (0 ≤ y_i ≤ 1 for all i) with Φ_p(y) = x. ∎
+
+## Key steps
+
+1. If not, x ∉ Z := ⋃_{p∈s*} Φ_p([0,1]ⁿ), where s* = {p ∈ s : ∫_{Q₁}|w_p| ≠ 0}.
+2. Z is compact (compact cube, continuous Φ_p, finite union), hence closed; pick ball(x, r) disjoint from Z.
+3. Faces with ∫_{Q₁}|w_p| = 0 contribute 0, since w_p = 0 a.e. on Q₁. Faces in s* map Q₁ into Z, where every test form supported in the ball vanishes. So D vanishes on the ball.
+4. The ball is open with compact closure in univ, so x ∈ zeroRegion D, contradicting x ∈ spt D.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat RUN/local-references/123e8435b4a2469b/manifest.json (project_commit b4d606db, mathlib_commit 25730c7c); git -C SNAPSHOT/mathlib rev-parse HEAD -> 25730c7c759d108ef87ab70af2342a196760f79d; cmp SNAPSHOT/project/GMT/Ch07/Contract.lean GMT/Ch07/Contract.lean (identical); cmp GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean (identical); git -C lake-packages-25730c7c/simongmt rev-parse HEAD -> 2b3663083f3f`
+- `rg -n 'dimred_mbl_dtfric_' SNAPSHOT/project SNAPSHOT/mathlib/Mathlib lake-packages-25730c7c/simongmt GMT/Ch07 -g '*.lean' (exit 1, no match); python3 -I scan of RUN/dag.json lean_name fields (2102 nodes): none contains 'dtfric', no duplicate names`
+- `python3 -I scan of RUN/dag.json for lean_statement equal to each child type: current_exists = cmcdtfrfic_current_exists (rlcr-lean, unaccepted, other parent), support_faces = cmcdtfrfic_support_faces (rlcr-lean, unaccepted), mass_le no match; scan of the 1286 accepted nodes for face-map statements: only cmcdtfr_face_geometry, cmcdtfr_finite_family, cmcdtfrfg_face_separation (different content)`
+- `python3/cat of twin node nodes/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-fac-902b6d9bdb/decomposition-v1.json and decomposition-audit-v1.json (identical frozen type; 4-child split, all acceptable) and its children's decomposition-v1.json (61db3a3b06, 1aabc92d33, 426e8f0761, c5035a4b1c: each atomic, with scratch proofs); parent nodes/...-bca4c27bf8/decomposition-v1.json (face_divergence and current_calculus types)`
+- `dag.json lookup of accepted cmc_fc_sc_current_of_coeff_bound, cmc_fc_sc_testForm_coeff_bound and regcomp_covector_eval_orthonormal_le (accepted, candidate commits b7846b63/3c4f7632/827f2b91 present); grep of runtime.py _decompose (max_depth: depth 5 < 6, so the children become leaves), _existing_lean_name_problem and _solve_children (cross-branch reuse only for accepted identical types)`
+- `sed/grep of SimonGMT Chapter06 Currents.lean (TestFormOnConverges, GeometricCurrentOn, exteriorDerivativeTestOn, GeometricCurrentOn.boundary_apply), Mass.lean (covectorEuclideanNorm, massAdmissibleOn, massOn, mass), CurrentLocalEquality.lean (VanishesOn, zeroRegion, support) and Forms.lean (Covector, DifferentialForm, IsSmoothForm = ContDiff ℝ ∞, exteriorDerivative_apply)`
+- `rg -n on SNAPSHOT/mathlib/Mathlib: Integrable.mul_bdd (MeasureTheory/Function/L1Space/Integrable.lean:1072); le_opNorm (Analysis/Normed/Module/Alternating/Basic.lean:212); norm_iteratedFDeriv_zero (Analysis/Calculus/ContDiff/FTaylorSeries.lean:823); integral_eq_zero_iff_of_nonneg and norm_integral_le_of_norm_le (MeasureTheory/Integral/Bochner/Basic.lean:772, 985); setIntegral_eq_zero_of_forall_eq_zero (Bochner/Set.lean:357); Metric.tendstoUniformlyOn_iff (Topology/MetricSpace/Pseudo/Basic.lean:142); Real.abs_le_sqrt (Analysis/Real/Sqrt.lean:245); EuclideanSpace.basisFun_apply (Analysis/InnerProductSpace/PiL2.lean:806)`
+- `sed -n 1840,1930p book/chapter-06.txt (Simon Thm 5.1 proof, displays (26)-(38))`
+- `lake env lean GMT/Scratch/dimred_mbl_dtfric_decision/{Types,Assembly,CurrentExists,MassLe,SupportFaces,E2E}.lean; validate_lean_statement from the flow lean_contract.py (byte-identical to verifier/lean_contract.py) on the three child types`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/L1Space/Integrable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/Alternating/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/FTaylorSeries.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/Pseudo/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Real/Sqrt.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-deformation-the-bb2fad829b/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-deformation-the-bca4c27bf8/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-fac-902b6d9bdb/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-fac-902b6d9bdb/decomposition-audit-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-fac-61db3a3b06/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-fac-1aabc92d33/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Scratch/cmcdtfrfic_support_faces_decision/WithProof.lean`
+- `/runtime/flows/gmt-claude-b888e19cffb1/_recursive_lean/runtime.py`
+- `/runtime/flows/gmt-claude-b888e19cffb1/_recursive_lean/lean_contract.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Scratch/dimred_mbl_dtfric_decision/Types.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Scratch/dimred_mbl_dtfric_decision/Assembly.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Scratch/dimred_mbl_dtfric_decision/CurrentExists.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Scratch/dimred_mbl_dtfric_decision/MassLe.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Scratch/dimred_mbl_dtfric_decision/SupportFaces.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Scratch/dimred_mbl_dtfric_decision/E2E.lean`
+
+Pins match: project b4d606db, Mathlib 25730c7c, SimonGMT 2b36630. Submission.lean is byte-identical to the frozen contract.
+
+Neither the snapshot project nor Mathlib contains face currents, so the three child obligations are new. The twin's cmcdtfrfic_current_exists and cmcdtfrfic_support_faces have exactly the child types, but they are unaccepted nodes under another parent, so fresh dimred_mbl_dtfric_* names are required. These names collide with nothing in the DAG, the snapshot, Mathlib or SimonGMT.
+
+The accepted lemmas cmc_fc_sc_current_of_coeff_bound, cmc_fc_sc_testForm_coeff_bound and regcomp_covector_eval_orthonormal_le were considered and not reused: they would change the supplied route and save no node.
+
+Every Mathlib and SimonGMT name cited in the child proofs resolves under the frozen imports. All three child types elaborate in the comparator's scope and pass validate_lean_statement unchanged. The Lean assembly proves the exact selected type from face_divergence's type and the three child types, with axioms propext, Classical.choice and Quot.sound only. Complete scratch proofs of all three children compile with the same axioms, so each depth-6 leaf is provable as frozen.
