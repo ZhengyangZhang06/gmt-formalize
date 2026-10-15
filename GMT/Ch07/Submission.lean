@@ -51135,4 +51135,168 @@ theorem Submission.dor_minimizing_limsup_mass_bound : ∀ (n k ℓ : ℕ), ℓ �
   rw [mul_zero, add_zero, add_zero] at hlim'
   exact (limsup_le_limsup (Eventually.of_forall hbound)).trans_eq hlim'.limsup_eq
 
+/-- **Simon 7.4.3** (with `Nᵢ = N`; chapter-07.txt lines 617–631), the book's appeal to Allard's
+theorem made quantitative.  By 7.1.2 every representation of `Tⱼ` and of `T` is stationary in
+`U ∩ N`.  The ε-regularity criterion at `y` (radius `r₀`, excess `δ`) makes a support point `z`
+with `|z − y| < r₀` regular once `M_{B_ρ(z)} ≤ (1 + δ)ωₙρⁿ` for some `ρ ≤ r₀`.  For `y` this
+follows from `Θⁿ(μ_T, y) = 1`, which also gives `y ∈ spt T`.  For `yⱼ`, fix `η > 0` with
+`(1 + η)(1 + 2η)ⁿ < 1 + δ` and a small `ρ`: the upper mass bound in the limit gives
+`limsup M_{B_{(1+η)ρ}(y)}(Tⱼ) ≤ (1 + c(1+η)ρ)ⁿ M_{B_{(1+2η)ρ}(y)}(T) + c₁((1+η)ρ)ⁿ⁺¹`, which is
+`< (1 + δ)ωₙρⁿ`, and `B_ρ(yⱼ) ⊆ B_{(1+η)ρ}(y)` once `|yⱼ − y| < ηρ`.  For `n = 0` a minimizing
+current does not meet `U ∩ N`, so this case is vacuous. -/
+theorem Submission.density_one_implies_regular : DensityOneImpliesRegular := by
+  intro n k ℓ hℓk U N Ts T ys y hU hN hNcl hTsmin hTmin hTsN hTN hTsb hTb hmass hconv hy hdens
+    hys hysspt
+  -- `Θⁿ(μ_T, y) = 1` forces `y ∈ spt T`: otherwise `T` vanishes on a ball about `y`, where the
+  -- density ratios are then `0`.
+  have hyT : y ∈ T.support := by
+    by_contra hnot
+    have hyZ : y ∈ T.zeroRegion := by
+      by_contra hyZ
+      exact hnot (show y ∈ U \ T.zeroRegion from ⟨hy.2, hyZ⟩)
+    obtain ⟨W, ⟨hWo, -, -, hWv⟩, hyW⟩ := mem_sUnion.1 hyZ
+    obtain ⟨ε, hε, hεW⟩ := Metric.isOpen_iff.1 hWo y hyW
+    have h0 : Tendsto (fun ρ : ℝ => T.massOn (ball y ρ) /
+        (unitBallVolume n * ENNReal.ofReal (ρ ^ n))) (𝓝[>] 0) (𝓝 0) := by
+      apply tendsto_nhds_of_eventually_eq
+      filter_upwards [Ioo_mem_nhdsGT hε] with ρ hρ
+      have hm : T.massOn (ball y ρ) = 0 := by
+        refine le_antisymm (sSup_le ?_) zero_le
+        rintro r ⟨ω, hω, rfl⟩
+        exact (ENNReal.ofReal_eq_zero.2
+          (hWv ω (hω.1.trans ((ball_subset_ball hρ.2.le).trans hεW))).le).le
+      rw [hm, ENNReal.zero_div]
+    have h1 := tendsto_nhds_unique hdens.2 h0
+    rw [ENNReal.ofReal_one] at h1
+    exact one_ne_zero h1
+  rcases Nat.eq_zero_or_pos n with rfl | hn
+  · -- `n = 0`: a minimizing `0`-current does not meet `U ∩ N`.
+    have hmem : y ∈ T.support ∩ (U ∩ N) := ⟨hyT, hy.2, hy.1⟩
+    rw [Submission.dor_zero_dim_minimizing_support_disjoint _ U (U ∩ N) T hU hTmin] at hmem
+    exact absurd hmem (notMem_empty y)
+  -- 7.1.2: representations of minimizing cycles supported in `N` are stationary in `U ∩ N`.
+  have hstat : ∀ S : GeometricCurrentOn U n, S.support ⊆ N → IsMinimizingIn S (U ∩ N) →
+      BoundaryVanishes S → ∀ R : IMRep U n, R.Represents S → R.IsStationaryAlong N :=
+    fun S hSN hSmin hSb R hR => (Submission.minimizing_implies_stationary n k ℓ hℓk U N S hU hN
+      hNcl hSN (by rwa [inter_comm]) hSb R hR).1
+  obtain ⟨r₀, δ, hr₀, hδ, hreg⟩ :=
+    Submission.dor_stationary_cycle_epsilon_regularity n k ℓ hℓk hn U N y hU hN hNcl hy
+  obtain ⟨r₁, c, c₁, hr₁, hc, hc₁, hlim⟩ :=
+    Submission.dor_minimizing_limsup_mass_bound n k ℓ hℓk hn U N Ts T y hU hN hNcl hTsmin
+      hTmin.1 hTsN hTsb hTb (fun j => hstat (Ts j) (hTsN j) (hTsmin j) (hTsb j)) hmass hconv hy
+  -- `ωₙ ∈ (0, ∞)`.
+  obtain ⟨ωr, hωr, hωeq⟩ : ∃ ωr : ℝ, 0 < ωr ∧ unitBallVolume n = ENNReal.ofReal ωr := by
+    have h0 : unitBallVolume n ≠ 0 :=
+      (measure_ball_pos (volume : Measure (Euclid n)) (0 : Euclid n) one_pos).ne'
+    have htop : unitBallVolume n ≠ ∞ :=
+      (measure_ball_lt_top (μ := (volume : Measure (Euclid n))) (x := 0) (r := 1)).ne
+    exact ⟨_, ENNReal.toReal_pos h0 htop, (ENNReal.ofReal_toReal htop).symm⟩
+  have hbd : ∀ ρ : ℝ, ENNReal.ofReal (1 + δ) * unitBallVolume n * ENNReal.ofReal (ρ ^ n) =
+      ENNReal.ofReal ((1 + δ) * (ωr * ρ ^ n)) := by
+    intro ρ
+    rw [hωeq, ENNReal.ofReal_mul (by linarith : (0 : ℝ) ≤ 1 + δ), ENNReal.ofReal_mul hωr.le,
+      mul_assoc]
+  -- Density ratios at `y` below `a > 1` bound the mass of small balls about `y`.
+  have hD : ∀ a : ℝ, 1 < a → ∀ᶠ s in 𝓝[>] (0 : ℝ),
+      T.massOn (ball y s) < ENNReal.ofReal (a * (ωr * s ^ n)) := by
+    intro a ha
+    have hlt : ENNReal.ofReal 1 < ENNReal.ofReal a :=
+      (ENNReal.ofReal_lt_ofReal_iff (by linarith)).2 ha
+    filter_upwards [hdens.2.eventually (eventually_lt_nhds hlt), self_mem_nhdsWithin]
+      with s hs (hs0 : 0 < s)
+    have hpos : (0 : ℝ) < ωr * s ^ n := by positivity
+    rw [hωeq, ← ENNReal.ofReal_mul hωr.le, ENNReal.div_lt_iff
+      (Or.inl (ENNReal.ofReal_pos.2 hpos).ne') (Or.inl ENNReal.ofReal_ne_top)] at hs
+    rwa [ENNReal.ofReal_mul (by linarith : (0 : ℝ) ≤ a)]
+  refine ⟨?_, ?_⟩
+  · -- `y ∈ reg T`: the density bound at a small scale `ρ ≤ r₀`.
+    obtain ⟨RT, hRT⟩ := hTmin.1
+    obtain ⟨ρ, hρ, hρ0, hρr₀⟩ := ((hD (1 + δ) (by linarith)).and (Ioo_mem_nhdsGT hr₀)).exists
+    refine hreg T RT hRT hTN hTb (hstat T hTN hTmin hTb RT hRT) y hyT (by rwa [dist_self]) ρ hρ0
+      hρr₀.le ?_
+    rw [hbd]
+    exact hρ.le
+  · -- `yⱼ ∈ reg Tⱼ` for all large `j`.  First fix `η > 0` with `(1 + η)(1 + 2η)ⁿ < 1 + δ`.
+    have hg : Tendsto (fun x : ℝ => (1 + x) * (1 + 2 * x) ^ n) (𝓝 0) (𝓝 1) := by
+      have hcont : Continuous fun x : ℝ => (1 + x) * (1 + 2 * x) ^ n := by fun_prop
+      simpa using hcont.tendsto 0
+    have h1δ : (1 : ℝ) < 1 + δ := by linarith
+    have hηev : ∀ᶠ x in 𝓝[>] (0 : ℝ), (1 + x) * (1 + 2 * x) ^ n < 1 + δ ∧ 0 < x := by
+      filter_upwards [(hg.eventually (eventually_lt_nhds h1δ)).filter_mono nhdsWithin_le_nhds,
+        self_mem_nhdsWithin] with x hx hx0
+      exact ⟨hx, hx0⟩
+    obtain ⟨η, hηg, hη0⟩ := hηev.exists
+    -- Then a scale `ρ`: small enough for both children, with the limit bound below
+    -- `(1 + δ)ωₙρⁿ` (as `ρ ↓ 0` the normalized bound tends to `(1 + η)(1 + 2η)ⁿ`).
+    have hh : Tendsto (fun ρ : ℝ => (1 + c * ((1 + η) * ρ)) ^ n * ((1 + η) * (1 + 2 * η) ^ n * ωr) +
+        c₁ * (1 + η) ^ (n + 1) * ρ) (𝓝 0) (𝓝 ((1 + η) * (1 + 2 * η) ^ n * ωr)) := by
+      have hcont : Continuous fun ρ : ℝ => (1 + c * ((1 + η) * ρ)) ^ n *
+          ((1 + η) * (1 + 2 * η) ^ n * ωr) + c₁ * (1 + η) ^ (n + 1) * ρ := by fun_prop
+      simpa using hcont.tendsto 0
+    have hlin : Tendsto (fun ρ : ℝ => (1 + η) * ρ) (𝓝 0) (𝓝 0) := by
+      have hcont : Continuous fun ρ : ℝ => (1 + η) * ρ := by fun_prop
+      simpa using hcont.tendsto 0
+    have hmap : Tendsto (fun ρ : ℝ => (1 + η) * ρ + η * ρ) (𝓝[>] 0) (𝓝[>] 0) := by
+      refine tendsto_nhdsWithin_iff.2 ⟨?_, ?_⟩
+      · have hcont : Continuous fun ρ : ℝ => (1 + η) * ρ + η * ρ := by fun_prop
+        simpa using (hcont.tendsto 0).mono_left nhdsWithin_le_nhds
+      · filter_upwards [self_mem_nhdsWithin] with ρ (hρ : 0 < ρ)
+        show 0 < (1 + η) * ρ + η * ρ
+        positivity
+    have hρev : ∀ᶠ ρ in 𝓝[>] (0 : ℝ), 0 < ρ ∧ ρ < r₀ ∧ (1 + η) * ρ < r₁ ∧
+        (1 + c * ((1 + η) * ρ)) ^ n * ((1 + η) * (1 + 2 * η) ^ n * ωr) +
+          c₁ * (1 + η) ^ (n + 1) * ρ < (1 + δ) * ωr ∧
+        T.massOn (ball y ((1 + η) * ρ + η * ρ)) <
+          ENNReal.ofReal ((1 + η) * (ωr * ((1 + η) * ρ + η * ρ) ^ n)) := by
+      filter_upwards [self_mem_nhdsWithin,
+        (eventually_lt_nhds hr₀).filter_mono nhdsWithin_le_nhds,
+        (hlin.eventually (eventually_lt_nhds hr₁)).filter_mono nhdsWithin_le_nhds,
+        (hh.eventually (eventually_lt_nhds (mul_lt_mul_of_pos_right hηg hωr))).filter_mono
+          nhdsWithin_le_nhds,
+        hmap.eventually (hD (1 + η) (by linarith))] with ρ h1 h2 h3 h4 h5
+      exact ⟨h1, h2, h3, h4, h5⟩
+    obtain ⟨ρ, hρ0, hρr₀, hρr₁, hρh, hρD⟩ := hρev.exists
+    have hηρ : 0 < η * ρ := mul_pos hη0 hρ0
+    have hlimρ := hlim ((1 + η) * ρ) (η * ρ) hηρ (by nlinarith) hρr₁
+    have hreal : (1 + c * ((1 + η) * ρ)) ^ n * ((1 + η) * (ωr * ((1 + η) * ρ + η * ρ) ^ n)) +
+        c₁ * ((1 + η) * ρ) ^ (n + 1) < (1 + δ) * (ωr * ρ ^ n) := by
+      have hs : (1 + η) * ρ + η * ρ = (1 + 2 * η) * ρ := by ring
+      calc (1 + c * ((1 + η) * ρ)) ^ n * ((1 + η) * (ωr * ((1 + η) * ρ + η * ρ) ^ n)) +
+            c₁ * ((1 + η) * ρ) ^ (n + 1)
+          = ((1 + c * ((1 + η) * ρ)) ^ n * ((1 + η) * (1 + 2 * η) ^ n * ωr) +
+              c₁ * (1 + η) ^ (n + 1) * ρ) * ρ ^ n := by
+            rw [hs, mul_pow, mul_pow, pow_succ ρ n]
+            ring
+        _ < (1 + δ) * ωr * ρ ^ n := mul_lt_mul_of_pos_right hρh (pow_pos hρ0 n)
+        _ = (1 + δ) * (ωr * ρ ^ n) := mul_assoc _ _ _
+    have hA : (0 : ℝ) ≤ (1 + c * ((1 + η) * ρ)) ^ n := by positivity
+    have hX : (0 : ℝ) ≤ (1 + η) * (ωr * ((1 + η) * ρ + η * ρ) ^ n) := by positivity
+    have hB : (0 : ℝ) ≤ c₁ * ((1 + η) * ρ) ^ (n + 1) := by positivity
+    have hbound : limsup (fun j => (Ts j).massOn (ball y ((1 + η) * ρ))) atTop <
+        ENNReal.ofReal ((1 + δ) * (ωr * ρ ^ n)) :=
+      calc limsup (fun j => (Ts j).massOn (ball y ((1 + η) * ρ))) atTop
+          ≤ ENNReal.ofReal ((1 + c * ((1 + η) * ρ)) ^ n) *
+              T.massOn (ball y ((1 + η) * ρ + η * ρ)) +
+              ENNReal.ofReal (c₁ * ((1 + η) * ρ) ^ (n + 1)) := hlimρ
+        _ ≤ ENNReal.ofReal ((1 + c * ((1 + η) * ρ)) ^ n) *
+              ENNReal.ofReal ((1 + η) * (ωr * ((1 + η) * ρ + η * ρ) ^ n)) +
+              ENNReal.ofReal (c₁ * ((1 + η) * ρ) ^ (n + 1)) := by
+            gcongr
+        _ = ENNReal.ofReal ((1 + c * ((1 + η) * ρ)) ^ n *
+              ((1 + η) * (ωr * ((1 + η) * ρ + η * ρ) ^ n)) +
+              c₁ * ((1 + η) * ρ) ^ (n + 1)) := by
+            rw [ENNReal.ofReal_add (mul_nonneg hA hX) hB, ENNReal.ofReal_mul hA]
+        _ < ENNReal.ofReal ((1 + δ) * (ωr * ρ ^ n)) :=
+            (ENNReal.ofReal_lt_ofReal_iff (by positivity)).2 hreal
+    -- Eventually `|yⱼ − y| < min(ηρ, r₀)` and `M_{B_{(1+η)ρ}(y)}(Tⱼ) < (1 + δ)ωₙρⁿ`.
+    filter_upwards [eventually_lt_of_limsup_lt hbound, hys.eventually (ball_mem_nhds y hηρ),
+      hys.eventually (ball_mem_nhds y hr₀)] with j hj hjη hjr₀
+    obtain ⟨Rj, hRj⟩ := (hTsmin j).1
+    refine hreg (Ts j) Rj hRj (hTsN j) (hTsb j) (hstat (Ts j) (hTsN j) (hTsmin j) (hTsb j) Rj hRj)
+      (ys j) (hysspt j) hjr₀ ρ hρ0 hρr₀.le ?_
+    rw [hbd]
+    refine ((Ts j).massOn_mono (ball_subset_ball' ?_)).trans hj.le
+    have hd : dist (ys j) y < η * ρ := hjη
+    linarith
+
 end GMT.Ch07
