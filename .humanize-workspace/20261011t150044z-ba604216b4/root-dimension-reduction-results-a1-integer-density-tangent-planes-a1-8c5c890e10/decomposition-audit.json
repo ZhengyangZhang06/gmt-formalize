@@ -1,0 +1,58 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "idtp_tpf_pse|support_of_mass_formula|isAddHaarMeasure_euclideanHausdorffMeasure|euclideanHausdorffMeasure_preimage|euclideanHausdorffMeasure_image",
+        "HasApproximateTangentSpaceAt|ae_eq_const_of_weak_coordinate_derivatives_zero|WeakDerivativesZero.ae_eq_const|theorem ae_eq_const",
+        "euclideanHausdorffMeasure_eq_volume|Submodule.convex|isOpen_iff",
+        "git -C .lake/packages/mathlib rev-parse HEAD",
+        "git -C .lake/packages/simongmt rev-parse HEAD",
+        "git show 1a4666d518e818e04da514547ded5bdcb7703bbf:GMT/Ch07/Submission.lean",
+        "rg -n -F 'idtp_tpf_pse_support_of_mass_formula' .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "python3 /tmp/pse_independent_audit_6mwcl8jv/run_check.py PlainCheck",
+        "python3 /tmp/pse_independent_audit_6mwcl8jv/run_check.py RealCheck"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/OpenPos.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Dimension/Constructions.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Orthonormal.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Convex/PathConnected.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/Isometry.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter08/DistributionalConstancy.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-8c5c890e10/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-77d7be4677/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification/results/hoa57/20261013T193358Z-ch07-root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.planar_con-ia4khpon/input-identity.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification/results/hoa57/20261013T193358Z-ch07-root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.planar_con-ia4khpon/comparator-config.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification/results/hoa57/20261013T193358Z-ch07-root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.planar_con-ia4khpon/comparator.log",
+        "/tmp/pse_independent_audit_6mwcl8jv/src/GMT/Ch07/Submission.lean",
+        "/tmp/pse_independent_audit_6mwcl8jv/PlainCheck.lean",
+        "/tmp/pse_independent_audit_6mwcl8jv/RealCheck.lean"
+      ],
+      "conclusion": "The workspace contract matches the snapshot; project, mathlib and SimonGMT pins agree, and inspected library files match their pinned sources. The cited rank, Haar positivity, isometry, support, mass and distributional-constancy results support the supplied arguments. No support_of_mass_formula declaration was found in the searched snapshot, and its proposed name is unreserved in the DAG. The constancy child exactly matches its accepted handoff, frozen type and comparator-checked candidate; its 39-node dependency closure is accepted, acyclic and independent of the selected parent and its ancestors. Both fresh Lean checks exited 0: the exact child propositions elaborate, the support proof works independently of constancy, and the accepted constancy declaration plus that proof establishes the exact selected parent type. Axiom checks report only propext, Classical.choice and Quot.sound. This is an appropriate split into accepted constancy reuse and a separate support criterion."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "planar_constancy",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and standalone one-line Lean proposition agree, including every hypothesis and both conclusions. Independently checked all eight proof steps: mass/support equivalence localizes the representation to Q; approximate tangents and orthonormality identify the orientation up to sign; the signed density is locally integrable and integer-valued almost everywhere; the explicit test extension and boundary calculation give zero weak derivatives; connectedness gives a constant, nonemptiness makes it an integer, and substitution yields both identities. These steps contain no reliance on the selected parent. The bare identifier is valid exact-type reuse of the comparator-accepted declaration, preserving its acceptance gate. Specializing V to univ supplies the mass formula needed by the selected parent."
+    },
+    {
+      "key": "support_of_mass_formula",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and standalone one-line Lean proposition match exactly. The supplied proof establishes nonzero multiplicity, finrank Q = n, positive measure of every plane ball, and the zero-region contradiction using the actual mass supremum definition. The induced metric/Borel structure, Haar instance, subtype isometry and ENNReal multiplication were verified by Lean; the argument also covers n = 0. Neither integer multiplicity nor boundary vanishing is needed here. The bare identifier is unreserved, and empty dependencies are correct because the mass formula is an explicit hypothesis. Applying the first child on the connected span in univ and then this child proves the exact selected parent without additional assumptions or circularity."
+    }
+  ],
+  "required_changes": []
+}
