@@ -1,0 +1,99 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "rg -n -i 'shell|dyadic|good_radius|goodRadius' .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT -g '*.lean'",
+        "theorem integral_withDensity_eq_integral_smul|theorem integral_add_compl|theorem setIntegral_sdiff|theorem summable_toReal|theorem measure_iUnion|theorem tendsto_pow_atTop_nhds_zero_of_lt_one|theorem restrict_withDensity|theorem withDensity_absolutelyContinuous",
+        "massAdmissibleOn|def massOn|def mass |massOn_mono|le_massOn",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean GMT/Scratch/dimred_mbl_dtsd_shell_decomposition_decomposition/EndToEnd.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean GMT/Scratch/dimred_mbl_dtsd_shell_decomposition_decomposition/AssemblyAx.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/ContinuousLinearMap.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/WithDensity.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/InfiniteSum/ENNReal.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-deformation-the-303188e8d1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-deformation-the-303188e8d1/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Scratch/dimred_mbl_dtsd_shell_decomposition_decomposition/EndToEnd.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Scratch/dimred_mbl_dtsd_shell_decomposition_decomposition/AssemblyAx.lean",
+        "/tmp/shell-decomposition-independent-audit-56ddf50c/assembly.lean",
+        "/tmp/shell-decomposition-independent-audit-56ddf50c/shell_series.lean"
+      ],
+      "conclusion": "Verified the pinned project, Mathlib and SimonGMT revisions and matching contract definitions. The snapshot project contains no shell/dyadic/good-radius declaration. The split is appropriate: its obligations assemble into the exact selected parent contract, whose binding digest was independently reproduced. All ten types are standalone one-line propositions matching their prose; each elaborated before its implementation, and all isolated proofs compiled with only declared sibling axioms and standard axioms. Dependencies are acyclic and correctly directed. Seven new names are unreserved bare identifiers; the three reused names have accepted, identical frozen types and compatible proofs. End-to-end compilation succeeds, with only the parent's existing support-calculus and good-radius dependencies remaining as nonstandard axioms. Current subtraction and measure instances match the intended constructions; no matrix-unit construction occurs."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "null_off_support",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and type match. The support complement is the open zero region on univ; VO makes every admissible evaluation vanish, so its mass and measure are zero. No undeclared dependency is needed."
+    },
+    {
+      "key": "im_mass_measure",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All seven conclusions follow from the stated VO/MR/IMC antecedents and declared siblings. The proof establishes finiteness, transfers a.e. properties by absolute continuity, and identifies each Borel restriction with an IMRep action without circularity."
+    },
+    {
+      "key": "finite_mass_measure",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Mass monotonicity verifies REP's local-finiteness hypothesis. Applying its open-set identity to univ gives a finite measure, and null_off_support supplies concentration. The proof establishes precisely the six stated conclusions."
+    },
+    {
+      "key": "shell_series",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof supplies integrability before subtracting integrals, handles half-open endpoints correctly, proves absolute summability and telescoping convergence, and derives all support and mass bounds. No atom-free radius assumption or hidden dependency is required."
+    },
+    {
+      "key": "dyadic_radii",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "GR is an explicit antecedent matching the parent's dependency. Choice, dyadic interval arithmetic, measure monotonicity and finite ENNReal factors establish every conclusion, including both limits and the exact factor 4."
+    },
+    {
+      "key": "slice_boundary_mass",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The degree-zero case is correctly separated. In positive degree, SL applies to ∂T with zero data for ∂∂T; extensionality identifies its restricted current with B and yields exactly the claimed boundary-mass estimate."
+    },
+    {
+      "key": "boundary_mass_calculus",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The degree split matches boundaryMassOn's definition. Boundary linearity, the declared mass_sub sibling, vanishing of the double boundary and zero-current mass prove both conclusions for arbitrary U and G."
+    },
+    {
+      "key": "imrep_restriction",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Accepted reuse has an identical frozen type and compatible standard-axiom proof. Absolute continuity and restriction-with-density identities establish the result; the pinned Bochner density theorem supports arbitrary forms without an integrability hypothesis."
+    },
+    {
+      "key": "mass_sub",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Accepted reuse has an identical frozen type and compatible standard-axiom proof. Negating an admissible form preserves admissibility; linearity, ofReal subadditivity and the mass supremum give the stated inequality without openness assumptions."
+    },
+    {
+      "key": "eval_mass_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Accepted reuse has an identical frozen type and compatible standard-axiom proof. The proof establishes norm homogeneity and r ≥ 0, uses both signed rescalings and finite mass, then passes ε to zero, covering r = 0."
+    }
+  ],
+  "required_changes": []
+}

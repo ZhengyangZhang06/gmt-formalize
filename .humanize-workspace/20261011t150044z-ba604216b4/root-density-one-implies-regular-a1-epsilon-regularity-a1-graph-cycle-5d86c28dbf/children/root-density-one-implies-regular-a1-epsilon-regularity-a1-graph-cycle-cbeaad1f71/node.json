@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.graph_cycle_regular-a1.boundary_weak_derivatives-a1.normal_cutoff-a1",
+  "parent_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.graph_cycle_regular-a1.boundary_weak_derivatives-a1",
+  "depth": 5,
+  "title": "Smooth cutoff equal to one near a compact subset of an open ball",
+  "statement": "Let k ∈ ℕ, h > 0 and K ⊆ ℝ^k compact with K ⊆ B_h(0). Then there is a C^∞ function η : ℝ^k → ℝ (ContDiff ℝ (⊤ : ℕ∞) η) with compact support and tsupport η ⊆ B_h(0) such that every w ∈ K has a neighbourhood on which η ≡ 1 (∀ᶠ y in 𝓝 w, η y = 1).",
+  "lean_statement": "∀ (k : ℕ) (K : Set (Euclid k)) (h : ℝ), 0 < h → IsCompact K → K ⊆ ball (0 : Euclid k) h → ∃ η : Euclid k → ℝ, ContDiff ℝ (⊤ : ℕ∞) η ∧ HasCompactSupport η ∧ tsupport η ⊆ ball (0 : Euclid k) h ∧ ∀ w ∈ K, ∀ᶠ y in 𝓝 w, η y = 1",
+  "lean_name": "dgcr_bwd_normal_cutoff",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-graph-cycle-cbeaad1f71-a1"
+}

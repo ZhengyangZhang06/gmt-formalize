@@ -1,0 +1,73 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "def IsUnitOrientationOf|abbrev MultiVector|def IsIntegerMultiplicity|dmcbr_ci_pw|cbr_ci_pw_pu",
+        "tendsto_of_subseq_tendsto|liminf_const_mul_of_ne_top|absolutelyContinuous_smul|ofReal_div_of_pos|div_le_of_le_mul\\x27",
+        "detRowAlternating",
+        "cramer_apply",
+        "cramer_one",
+        "def mkContinuous",
+        "dmcbr_ci_pw_approxTangent_of_subseq|dmcbr_ci_pw_blowup_lower_density|dmcbr_ci_pw_single_plane_of_unit_weights",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/dmcbr_ci_pw/lean/Assembly.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/dmcbr_ci_pw/lean/Leaves.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/dmcbr_ci_pw_independent_audit/ReuseAndTypes.lean > /tmp/dmcbr_ci_pw_independent_audit/ReuseAndTypes.log 2>&1"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Matrix/Defs.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Matrix/Determinant/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Matrix/Adjugate.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Order/Filter/AtTopBot/CountablyGenerated.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Order/Filter/ENNReal.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/AbsolutelyContinuous.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-closure-and-bou-633427cd9f/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-0a389bb9c9/accepted-candidate.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-b1b707d1b3/accepted-candidate.json",
+        "/tmp/dmcbr_ci_pw/lean/Assembly.lean",
+        "/tmp/dmcbr_ci_pw/lean/Leaves.lean",
+        "/tmp/dmcbr_ci_pw_independent_audit/ReuseAndTypes.lean",
+        "/tmp/dmcbr_ci_pw_independent_audit/ReuseAndTypes.log"
+      ],
+      "conclusion": "Pins and frozen context are compatible. Searches found no fresh child declarations in the snapshot, workspace or SimonGMT; their names are also unused in the DAG. Both reused declarations have comparator-accepted checkpoints with byte-identical frozen types. All five standalone proposition types elaborate before their implementations. Independently rerun proofs and conditional parent assembly compile using only propext, Classical.choice and Quot.sound. The assembly's conclusion matches the selected frozen type exactly, and its prerequisite types match the four declared dependencies. The split is appropriate: all children contribute genuine obligations, their empty dependency lists are correct, and the dependency graph is acyclic."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "inner_det_covector",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Prose and standalone one-line type match. The linear row map, alternating determinant, explicit factorial norm bound and continuity construction prove the conclusion, including n = 0. Matrix.of is used correctly. The bare name validly reuses accepted commit 94a835746765 with an identical frozen type."
+    },
+    {
+      "key": "span_le_of_det_eq",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Both orthonormality hypotheses and the universal determinant equality are stated exactly. The residual is orthogonal to x; the replacement-column determinant forces its pairing with y_i to vanish, hence the residual is zero. This proves the stated inclusion without circularity, including the empty-frame case. Matrix constructions use ordinary matrix instances. The identical type is accepted at commit 43170d96a710."
+    },
+    {
+      "key": "tangent_subseq",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The statement matches the pinned approximate-tangent definition. Eventual positivity permits shifting each sequence; the supplied subsequence convergence then satisfies the countably generated filter criterion for every compactly supported continuous test function. No additional measurability hypothesis is needed. The bare name is unreserved."
+    },
+    {
+      "key": "limit_density",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The expanded LD and ISP premises match the prose exactly. The proof verifies every LD premise for ofReal θ₀ • ν, transfers the almost-everywhere conclusion by absolute continuity, and rescales the liminf using a finite positive constant. Division is valid for every real η₀; no unstated positivity assumption is used. The proof is complete and non-circular, and the bare name is unreserved."
+    },
+    {
+      "key": "single_plane",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All hypotheses appear in both statements. The zero-offset witness supplies an index; two distinct indices contradict the total-weight bound. The unique weight therefore equals one, and the measure sum reduces exactly to m restricted to V. No finiteness or additional measure hypotheses are needed. The bare name is unreserved."
+    }
+  ],
+  "required_changes": []
+}
