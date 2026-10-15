@@ -1,0 +1,60 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "dorag_tes_gt_|hsNormSq|graph_measure|bounded_transfer|columns_sq|rows_sq",
+        "fderiv_zero_of_not_differentiableAt|norm_fderiv_le_of_lipschitz|theorem measurable_fderiv|toDual_symm_apply|theorem norm_eq|inner_single_right",
+        "theorem withDensity_apply|theorem restrict_withDensity|theorem lintegral_withDensity_eq_lintegral_mul|image_of_continuousOn_injOn|theorem lintegral_inter_add_sdiff|theorem integral_inter_add_sdiff|theorem norm_setIntegral_le_of_norm_le_const|theorem setIntegral_mono_set|theorem integrableOn_of_bounded",
+        "rg -n 'dorag_tes_gt_' .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes --glob 'decomposition-v*.json' --glob 'parent-child-handoff.json'",
+        ". /tmp/gt-v2/env.sh\n\"$LEAN\" /tmp/gt-independent-audit-pmy0gzo6/ExactAssembly.lean",
+        ". /tmp/gt-v2/env.sh\n\"$LEAN\" /tmp/gt-independent-audit-pmy0gzo6/ChallengeTypes.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch05/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Measurable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Dual.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/WithDensity.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Constructions/Polish/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-2560155dcc/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-2560155dcc/decomposition-v2.json",
+        "/tmp/gt-independent-audit-pmy0gzo6/ExactAssembly.lean",
+        "/tmp/gt-independent-audit-pmy0gzo6/ChallengeTypes.lean",
+        "/tmp/gt-v2/lean/Inst.lean"
+      ],
+      "conclusion": "Verified the pinned revisions and workspace contract compatibility. The project search found hsNormSq definitions, but no proposed-name or transfer-lemma matches. The inspected Mathlib declarations support the supplied arguments. All three exact child types independently elaborate with their implementation names absent. Rechecked proofs and the selected parent assembly use only propext, Classical.choice and Quot.sound, with graph_area an explicit assembly parameter. The derivative norm selects ContinuousLinearMap.hasOpNorm; no Matrix/IsUnit construction occurs. All names are bare identifiers and unreserved across the eight DAGs; child dependencies are empty and the inherited graph_area dependency is acyclic. The split is appropriate: exceptional_set and graph_area produce the measure comparison, jacobian_row_norms converts its weight, and bounded_transfer yields both exact parent conclusions."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "jacobian_row_norms",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and one-line Lean type match exactly, including arbitrary f and zero dimensions. The Riesz representation calculation and chain rule establish equality in the differentiable case; the zero-fderiv convention establishes the remaining inequality. Equality is only an intermediate proof fact. The proof is complete, non-circular, and uses the intended operator norm."
+    },
+    {
+      "key": "exceptional_set",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All hypotheses and conclusions match, including arbitrary W and a. The proof establishes compact-ball finiteness, converts multiplicity-exception μ-nullness to Hausdorff nullness using θ ≥ 1, constructs measurable Z, bounds its image by the three exceptional pieces, and proves the density integral identity. It requires neither orthogonality nor the area formula. Its conclusions suffice for the parent assembly without needing Z ⊆ D in the contract."
+    },
+    {
+      "key": "bounded_transfer",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and exact type agree, including Nonempty X, arbitrary S, and local integrability of s. The proof justifies weighted integrability and finite lower-integral conversion before comparing Bochner integrals. Splitting D into D ∩ Z and D ∖ Z gives clause (a); the positive/negative decomposition gives precisely G(a + c∫_D s), with subtraction outside both integrals. No measurability assumption on S or circular reliance is hidden."
+    }
+  ],
+  "required_changes": []
+}

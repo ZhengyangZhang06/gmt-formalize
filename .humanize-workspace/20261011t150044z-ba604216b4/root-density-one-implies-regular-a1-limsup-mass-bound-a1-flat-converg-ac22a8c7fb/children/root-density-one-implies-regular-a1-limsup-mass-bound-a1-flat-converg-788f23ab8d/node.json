@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.flat_convergence-a1.im_series-a1.ae_limit-a1",
+  "parent_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.flat_convergence-a1.im_series-a1",
+  "depth": 5,
+  "title": "Hⁿ-a.e. limits of integer multiplicity densities with locally bounded weights are integer multiplicity densities",
+  "statement": "Conventions: ℝ^P = Euclid P and Hⁿ = μHE[n]. Λ_n(ℝ^P) = MultiVector P n is the space of continuous linear functionals on n-covectors (Covector (Euclid P) n), with its operator norm ‖·‖ and the induced topology. An IMRep R = (M, θ, ξ) in U is the contract structure IMRep U n (M = R.carrier Borel, M ⊆ U, countably n-rectifiable; θ = R.mult : ℝ^P → ℕ measurable, θ ≥ 1 on M, locally Hⁿ-integrable on M in U; ξ = R.orient : ℝ^P → Λ_n(ℝ^P), Hⁿ⌞M-a.e. strongly measurable and Hⁿ⌞M-a.e. a unit orientation (IsUnitOrientationOf) of an approximate tangent space of M). Its density is D_R(x) := 1_M(x)θ(x)ξ(x) ∈ Λ_n(ℝ^P) (Lean: R.carrier.indicator (fun y => (R.mult y : ℝ) • R.orient y) x), its weight is μ_R := θ·Hⁿ⌞M (R.measure), and its action on an n-form ω is R.action(ω) = ∫_M θ(x)·ξ(x)(ω(x)) dHⁿ(x). 𝒟ⁿ(U) = TestFormOn U n (smooth n-forms on ℝ^P with compact support contained in U). Let P, n ∈ ℕ, U ⊆ ℝ^P open, R_q (q ∈ ℕ) IMReps in U and η : ℝ^P → Λ_n(ℝ^P) such that D_{R_q}(x) → η(x) in Λ_n(ℝ^P) for Hⁿ-a.e. x ∈ ℝ^P, and such that for every compact K ⊆ U there is C_K ∈ [0, ∞) with μ_{R_q}(K) ≤ C_K for all q. Then there is an IMRep R' in U with D_{R'} = η Hⁿ-a.e. on ℝ^P and R'.action(ω) = ∫ η(x)(ω(x)) dHⁿ(x) for every n-form ω on ℝ^P (DifferentialForm (Euclid P) n); both sides are Bochner integrals, and since the integrands agree Hⁿ-a.e. the identity holds whether or not they are integrable.",
+  "lean_statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (R : ℕ → IMRep U n) (η : Euclid P → MultiVector P n), IsOpen U → (∀ᵐ x ∂μHE[n], Tendsto (fun q => (R q).carrier.indicator (fun y => ((R q).mult y : ℝ) • (R q).orient y) x) atTop (𝓝 (η x))) → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → ∃ C : ℝ≥0∞, C ≠ ∞ ∧ ∀ q, (R q).measure K ≤ C) → ∃ R' : IMRep U n, (∀ᵐ x ∂μHE[n], R'.carrier.indicator (fun y => (R'.mult y : ℝ) • R'.orient y) x = η x) ∧ ∀ ω : DifferentialForm (Euclid P) n, R'.action ω = ∫ x, η x (ω x) ∂μHE[n]",
+  "lean_name": "dor_lmb_fc_ims_ae_limit_imrep",
+  "depends_on": [
+    "root.compactness_of_minimizing_currents-a1.im_calculus-a1",
+    "root.density_one_implies_regular-a1.imrep_mass_and_support-a1.unit_orientation_duality-a1",
+    "root.regular_set_dense-a1.integer_combination-a1.orientation_sign-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.compactness_of_minimizing_currents-a1.im_calculus-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-im-calculus-a1-a1",
+      "result_commit": "2af75d6921b01a9c889a45103692ca0af95ea394",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.density_one_implies_regular-a1.imrep_mass_and_support-a1.unit_orientation_duality-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-imrep-mass-and-support-a1-unit-or-24edf309fb-a1",
+      "result_commit": "9c8432cb0101c6d41f824c0d8191b92a92dbdd80",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.regular_set_dense-a1.integer_combination-a1.orientation_sign-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-regular-set-dense-a1-integer-combination-a1-orientation-sign-a1-a1",
+      "result_commit": "fe95347baaed6a2cf2ecde4455e2b32f361fde51",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-limsup-mass-bound-a1-flat-converg-788f23ab8d-a1"
+}

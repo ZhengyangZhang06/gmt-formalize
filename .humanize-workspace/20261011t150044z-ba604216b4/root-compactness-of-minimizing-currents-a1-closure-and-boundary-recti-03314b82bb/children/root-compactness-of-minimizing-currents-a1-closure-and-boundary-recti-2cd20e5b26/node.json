@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.weight_ge_one-a1.mollified_uniform-a1.uniform_of_equilipschitz-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.weight_ge_one-a1.mollified_uniform-a1",
+  "depth": 6,
+  "title": "Pointwise convergence plus an eventual uniform Lipschitz bound on a compact set gives uniform convergence",
+  "statement": "Let n ∈ ℕ, K ⊆ ℝⁿ (= Euclid n) compact, F_k : ℝⁿ → ℝ (k ∈ ℕ) arbitrary functions, and a, L ∈ ℝ. Assume (i) F_k(x) → a as k → ∞ for every x ∈ K, and (ii) for all sufficiently large k, |F_k(x) − F_k(x')| ≤ L·dist(x, x') for all x, x' ∈ K. Then F_k converges to the constant function a uniformly on K.",
+  "lean_statement": "∀ (n : ℕ) (K : Set (Euclid n)) (F : ℕ → Euclid n → ℝ) (a L : ℝ), IsCompact K → (∀ x ∈ K, Tendsto (fun k => F k x) atTop (𝓝 a)) → (∀ᶠ k in atTop, ∀ x ∈ K, ∀ x' ∈ K, |F k x - F k x'| ≤ L * dist x x') → TendstoUniformlyOn F (fun _ => a) atTop K",
+  "lean_name": "cbr_ci_pw_mu_uniform_of_equilipschitz",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-2cd20e5b26-a1"
+}

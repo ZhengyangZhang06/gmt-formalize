@@ -1,0 +1,77 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.density_one_implies_regular-a1.limsup_mass_bound-a1.flat_convergence-a1.deformation-a1.skeleton_deformation-a1`
+- Child DAG node: `root.density_one_implies_regular-a1.limsup_mass_bound-a1.flat_convergence-a1.deformation-a1.skeleton_deformation-a1.series_limit-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: step 7 of the parent proof (Simon (19)–(21), (25): IM limits via (IMS), the identity T − Q = ∂R₁ + S₁, and lower semicontinuity of mass for M(∂Q)), and step 8 (vanishing of the limits). Dependency: zero_neg; (IMS) is the antecedent.
+1. Finiteness: c·M(T) ≠ ∞ and c·M(∂T) ≠ ∞ (ENNReal.mul_ne_top), hence Σ_j M(V_j), Σ_j M(H_j) and Σ_j M(E′_j) are finite.
+2. Q: (IMS) with U = univ, degree m + 1 and X_r = V_r gives an IM Q with HasSum (V_j(ω))_j (Q(ω)) for every ω ∈ 𝒟^{m+1} and M(Q) ≤ Σ_j M(V_j) ≤ c·M(T).
+3. R₁: by zero_neg, 0 − H_j is IM and M(0 − H_j) = M(H_j), so Σ_j M(0 − H_j) = Σ_j M(H_j) < ∞. (IMS) in degree (m + 1) + 1 = m + 2 (instantiate its m with m + 1) gives an IM R₁ with HasSum ((0 − H_j)(η))_j (R₁(η)), i.e. HasSum (−H_j(η))_j (R₁(η)), for every η ∈ 𝒟^{m+2}, and M(R₁) ≤ Σ_j M(H_j) ≤ c·M(T).
+4. S₁: in the same way with 0 − E′_j in degree m + 1: S₁ is IM, HasSum (−E′_j(ω))_j (S₁(ω)) for every ω, and M(S₁) ≤ Σ_j M(E′_j) ≤ c·M(∂T).
+5. Currents of small mass are weakly small: if X_N ∈ 𝒟_{m+1} and M(X_N) → 0, then X_N(ω) → 0 for each ω. Indeed, ω is continuous with compact support, so there is s > 0 with |ω(x)| ≤ s for all x (the covector norm of ω is continuous with compact support — prove the compact support by HasCompactSupport.mono' — and Continuous.bddAbove_range_of_hasCompactSupport); M(X_N) < ∞ for large N; by zero_neg (d), |X_N(ω)| ≤ s·M(X_N).toReal, which tends to 0 (ENNReal.tendsto_toReal at 0); conclude by squeeze_zero_norm'. Apply this to A_N and to K_N.
+6. Identity (21): fix ω ∈ 𝒟^{m+1} and put η := exteriorDerivativeTestOn univ (m+1) ω, so ∂H_j(ω) = H_j(η) and ∂R₁(ω) = R₁(η). As N → ∞ (HasSum.tendsto_sum_nat composed with N ↦ N + 1): Σ_{j≤N} V_j(ω) → Q(ω) (step 2); Σ_{j≤N} ∂H_j(ω) → −∂R₁(ω) (negate the HasSum of step 3 at η); Σ_{j≤N} E′_j(ω) → −S₁(ω) (step 4); A_N(ω) → 0 and K_N(ω) → 0 (step 5). Both sides of (h1) converge, so by uniqueness of limits Q(ω) − T(ω) + 0 + ∂R₁(ω) = −S₁(ω) − 0, i.e. T(ω) − Q(ω) = ∂R₁(ω) + S₁(ω).
+7. Boundary mass (25), the lower semicontinuity argument written out for one admissible form: M(∂Q) is the supremum of ofReal(∂Q(ω)) over ω ∈ massAdmissibleOn univ m univ. For such ω, ∂Q(ω) = Q(dω) = lim_N Σ_{j≤N} V_j(dω) = lim_N Σ_{j≤N} ∂V_j(ω), and by (h2) Σ_{j≤N} ∂V_j(ω) = Σ_{j≤N} Y_j(ω) − L_N(ω). Now ofReal(Σ_{j≤N} Y_j(ω) + (−L_N(ω))) ≤ Σ_{j≤N} ofReal(Y_j(ω)) + ofReal(−L_N(ω)) (ENNReal.ofReal_add_le and Finset.le_sum_of_subadditive); ofReal(Y_j(ω)) ≤ M(Y_j) (le_massOn); ofReal(−L_N(ω)) = ofReal((0 − L_N)(ω)) ≤ M(0 − L_N) = M(L_N) (zero_neg (c)); and Σ_{j≤N} M(Y_j) ≤ Σ_j M(Y_j) ≤ c·M(∂T) (ENNReal.sum_le_tsum). So ofReal(Σ_{j≤N} ∂V_j(ω)) ≤ c·M(∂T) + M(L_N). Letting N → ∞ (continuity of ofReal; M(L_N) → 0), le_of_tendsto_of_tendsto' gives ofReal(∂Q(ω)) ≤ c·M(∂T); taking the supremum (sSup_le), M(∂Q) ≤ c·M(∂T). This is WeaklyConvergesOn.massOn_le_liminf for the partial sums, unrolled.
+8. Vanishing: if tsupport ω ∩ F₁ = ∅ then V_j(ω) = 0 for every j, so HasSum (fun _ => 0) 0 and uniqueness of sums give Q(ω) = 0. If tsupport η ∩ F₂ = ∅ then (0 − H_j)(η) = −H_j(η) = 0 for all j, so R₁(η) = 0; likewise S₁(ω) = 0 whenever tsupport ω ∩ F₂ = ∅.
+9. Steps 2–8 give all conclusions. ∎
+
+## Key steps
+
+1. (IMS) applied to V_j, 0 − H_j and 0 − E′_j gives IM Q, R₁, S₁ with the pointwise series and the mass bounds (zero_neg for integrality and M(0 − X) = M(X)).
+2. Small mass implies small values (zero_neg (d)), so A_N(ω), K_N(ω) → 0; passing to the limit in (h1) gives T − Q = ∂R₁ + S₁.
+3. For admissible ω, ∂Q(ω) = lim(Σ Y_j(ω) − L_N(ω)) ≤ c·M(∂T); hence M(∂Q) ≤ c·M(∂T).
+4. Pointwise sums of currents vanishing off F₁ or F₂ vanish off the same sets.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat local-references/123e8435b4a2469b/manifest.json (mode local-project, project b4d606db, mathlib 25730c7c)`
+- `cmp local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean GMT/Ch07/Contract.lean; diff GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean (both identical)`
+- `rg -n "theorem LipschitzOnWith.extend_real|theorem LipschitzOnWith.extend_pi" mathlib/Mathlib`
+- `rg -n "theorem mul_meas_ge_le_lintegral₀|theorem meas_ge_le_lintegral_div|theorem lintegral_eq_zero_iff'" mathlib/Mathlib`
+- `rg -n "theorem integral_inter_add_sdiff|theorem lipschitz_infDist_pt|theorem mem_cthickening_of_dist_le|theorem tprod_eq_zero_mul'" mathlib/Mathlib`
+- `rg -n "tsum_geometric |theorem one_sub_inv_two|le_sum_of_subadditive|bddAbove_range_of_hasCompactSupport|theorem setLIntegral_le_lintegral|theorem ae_restrict_iff'" mathlib/Mathlib`
+- `rg -n "dor_lmb_fcd_sd_|skeleton_deformation|good_slice|shell" project -g "*.lean" (no match)`
+- `grep -n "^def |^theorem |^structure |^instance" .lake/packages/simongmt/Poincare/SimonGMT/Chapter06/{Currents,Mass,FormSupNorm,CurrentLocalEquality,Forms}.lean and Chapter03/Rectifiable.lean (GeometricCurrentOn, ext, Zero, boundary, exteriorDerivativeTestOn, tsupport_exteriorDerivative_subset, WeaklyConvergesOn.boundary, massAdmissibleOn, massOn, le_massOn, WeaklyConvergesOn.massOn_le_liminf, covectorEuclideanNorm_neg, countablyRectifiable_of_measure_zero)`
+- `python3 -I scans of dag.json: frozen types of dor_lmb_fcd_good_center, dor_lmb_fcd_retraction, dor_lmb_fcd_pushforward_homotopy (decomposing siblings), dor_imrep_massOn_eq_measure_and_support and cmc_imRep_locality_restrict_sub (accepted, byte-identical types), accepted helpers cmc_fc_cs_massOn_sub_le, cmc_fc_sc_abs_le_mul_mass, dor_lmb_imrep_restrict_current; freshness of the ten dor_lmb_fcd_sd_* names`
+- `sed -n 1651,1860p book/chapter-06.txt (Simon 5.1 proof, displays (1)-(25)); sed of runtime.py (_decompose depth check, _overlay_accepted_children, _existing_lean_name_problem) and verifier/gmt-compare.py (contract_scope, child_modules)`
+- `lake env lean /tmp/skd-decomp/final/AllChallenges.lean (12 exact challenge types), /tmp/skd-decomp/Assembly.lean (parent frozen type from children + GC/RET/PF/C1 stand-ins), CoreCheck, SeriesCheck, TeleCheck, GSCheck, SHCheck, ICCheck, Leaf, Bound2 with #print axioms`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/Lipschitz.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Markov.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/HausdorffDistance.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/Thickening.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/InfiniteSum/NatInt.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/SpecificLimits/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Basic/ENNReal/Inv.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Algebra/Order/BigOperators/Group/Finset.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/FormSupNorm.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-limsup-mass-bound-a1-flat-converg-f2406f5f27/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-limsup-mass-bound-a1-flat-converg-cab3e79dc1/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt`
+- `/runtime/flows/gmt-claude-9a0895c8c5e1/_recursive_lean/runtime.py`
+- `/runtime/flows/gmt-claude-9a0895c8c5e1/_recursive_lean/prompts.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/tmp/skd-decomp/Assembly.lean`
+- `/tmp/skd-decomp/CoreCheck.lean`
+- `/tmp/skd-decomp/final/AllChallenges.lean`
+
+Snapshot project b4d606db / mathlib 25730c7c; its Ch07 Contract.lean is byte-identical to the workspace Contract.lean and Submission.lean. No project file contains a skeleton deformation, good-slice or shell lemma (no match for dor_lmb_fcd_sd_*, skeleton_deformation, good_slice, shell). SimonGMT supplies the current API used by the children (GeometricCurrentOn with ext and Zero, boundary via exteriorDerivativeTestOn whose underlying form is exteriorDerivative ω by definition, tsupport_exteriorDerivative_subset, massAdmissibleOn/massOn/le_massOn, WeaklyConvergesOn.massOn_le_liminf, covectorEuclideanNorm_neg, countablyRectifiable_of_measure_zero) but no Lipschitz push-forward, homotopy, slicing or restriction lemma, so those enter through the DAG siblings (GC, RET, PF) and the reused accepted (C1) dor_imrep_massOn_eq_measure_and_support and (IMC) cmc_imRep_locality_restrict_sub (byte-identical frozen types). Every Mathlib lemma cited in the child proofs exists in the pinned snapshot: LipschitzOnWith.extend_real (Lipschitz.lean:308), lintegral_eq_zero_iff', setLIntegral_le_lintegral, integral_inter_add_sdiff (Bochner/Set.lean:114), lipschitz_infDist_pt, mem_cthickening_of_dist_le, tsum_eq_zero_add' (to_additive of tprod_eq_zero_mul'), ENNReal.tsum_geometric, ENNReal.one_sub_inv_two, Finset.le_sum_of_subadditive, ae_restrict_iff', Continuous.bddAbove_range_of_hasCompactSupport. Lean: all 12 child types elaborate as exact comparator challenges; the parent frozen type compiles from the four used children plus stand-ins for GC, RET, PF and C1 with no sorry in the assembly body; core compiles from telescoping and series_limit, series_limit from zero_neg, telescoping from (IMC) and zero_neg, good_slice from markov_point, im_concentrated and (C1), shells from im_restrict, im_concentrated from (C1) (axioms propext, Classical.choice, Quot.sound, plus sorryAx only from the stand-ins).

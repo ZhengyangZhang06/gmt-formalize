@@ -1,0 +1,123 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "rg -n -i 'latticeFace|deformation|skeleton|polyhedral' .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project -g '*.lean'",
+        "map_euclideanHausdorffMeasure|euclideanHausdorffMeasure_eq_volume|euclideanHausdorffMeasure_image",
+        "MeasurableEmbedding.integral_map|MeasurableEmbedding.integrable_map_iff|theorem restrict_restrict|lemma restrict_restrict|theorem finsetSum_iSup|hausdorffMeasure_zero_or_top|hausdorffMeasure_pi_real",
+        "alternatization_apply_apply|def alternatization",
+        "finsetSum_iSup",
+        "extDeriv_apply|removeNth",
+        "eq_smul_basis_det|det_to_matrix_orthonormalBasis_real|integral_pos_of_hasCompactSupport_nonneg_nonzero",
+        "sed -n '25,240p' /tmp/fr-decomp/lean/Assembly.lean",
+        "#print axioms FRAudit.assembly",
+        "#print axioms FRAudit.coordinate",
+        "#print axioms GMT.Ch07.Submission.dor_imrep_massOn_eq_measure_and_support",
+        "#print axioms GMT.Ch07.Submission.cmc_imRep_locality_restrict_sub"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch06/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Module/Alternating/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Basic/ENNReal/BigOperators.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-limsup-mass-bound-a1-flat-converg-ab5ee960d0/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-limsup-mass-bound-a1-flat-converg-ab5ee960d0/decomposition-v2.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-imrep-mass-and-support-a1/accepted-candidate.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-im-calculus-a1/accepted-candidate.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt",
+        "/tmp/fr-independent-audit-xfyxw23w/Types.lean",
+        "/tmp/fr-independent-audit-xfyxw23w/Assembly.lean",
+        "/tmp/fr-independent-audit-xfyxw23w/Coordinate.lean",
+        "/tmp/fr-independent-audit-xfyxw23w/imrep-mass-axioms.log",
+        "/tmp/fr-independent-audit-xfyxw23w/im-calculus-axioms.log"
+      ],
+      "conclusion": "Verified the pinned project/mathlib revisions and matching contract/build inputs. The snapshot supplies the required primitive definitions and measure/form lemmas; its Chapter 6 contract supplies no usable proved face-replacement theorem. All 12 exact, one-line propositions independently elaborate. The reconstructed assembly proves the selected frozen type from the proposed contracts and inherited cube-Poincare dependency. The assembly, supplied coordinate-covector proof, and both reused candidate declarations compile with only propext, Classical.choice and Quot.sound. The split is appropriate; dependencies are correctly directed and acyclic, including inherited dependency closures. All names are bare identifiers; the ten new names are unreserved in the live DAG, and both reused types are identical to their accepted contracts. No problematic matrix-unit construction occurs; the Euclidean norms, covector norm and derivative trace have the intended types."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "face_geometry",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All nine conclusions match the Lean proposition. Coordinate identities establish the isometry and separation; measure transport proves the normalization and integral formula. MeasurableEmbedding.integral_map justifies the formula even for nonintegrable or nonmeasurable functions."
+    },
+    {
+      "key": "skeleton_cells",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The supplied coordinate-plane covering proves lower-skeleton nullity locally without invoking the reserved declaration. Bounded integer corners, closed coordinate conditions and fractional parts establish the finite family, thickening and almost-everywhere covering with all stated hypotheses."
+    },
+    {
+      "key": "plane_orientation",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The separating compactly supported function forces the tangent plane into the coordinate plane; equal dimensions give equality. The orthonormal change-of-basis determinant supplies a single sign valid for every covector, including degree zero. No measurability hypothesis on A is needed."
+    },
+    {
+      "key": "imrep_mass",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Valid exact-type reuse of the comparator-accepted declaration at d49dda91b75b7417d67a10053e6dc4b65d4f0312. Its candidate recompiles with standard axioms only, and its dependency closure does not reach the selected parent."
+    },
+    {
+      "key": "im_calculus",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All four prose clauses match the accepted frozen type at 2af75d6921b01a9c889a45103692ca0af95ea394. Recompilation confirms standard axioms only. Reuse is non-circular and supplies precisely the locality and subtraction facts needed."
+    },
+    {
+      "key": "coordinate_covectors",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Alternatization gives the stated duality without a factorial normalization error. Injectivity justifies the coefficient-square sum, including empty-index cases. The supplied Lean proof independently compiles against the exact proposed type with standard axioms."
+    },
+    {
+      "key": "face_representation",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof establishes carrier concentration, applies tangent locality with the required local finiteness, and constructs a Borel orientation sign. The densities are integer-valued everywhere and integrable on the cube; disjointness and transport prove both the mass inequality and action formula."
+    },
+    {
+      "key": "divergence_form",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The explicit normal cutoff gives smoothness, compact support and the required distance bound. Coordinate-covector duality proves the Euclidean coefficient-norm estimate, and the exterior-derivative signs cancel to give the exact trace. The construction also covers m = 0 and full-dimensional faces."
+    },
+    {
+      "key": "boundary_variation",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Disjoint neighbourhoods and compact separation isolate each face. Truncating negative evaluations and using directed admissible families rigorously justify the sum of local masses. The evaluation identity requires no integrability assumption on u; boundary-mass finiteness justifies conversion to real bounds."
+    },
+    {
+      "key": "chain_current",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Bounded continuous evaluation factors prove integrability and linearity. Uniform convergence of zeroth derivatives on the common compact support proves the contract's sequential continuity. The coordinate coefficient bound yields the stated mass estimate for every current satisfying the formula."
+    },
+    {
+      "key": "local_plane_tangent",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "For each compactly supported test function, sufficiently small blow-ups agree with V wherever the function can be nonzero. Restriction to a measurable ball justifies equality of integrals even for arbitrary N, proving the exact tangent predicate."
+    },
+    {
+      "key": "lattice_chain_im",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The explicit triple on nonzero-coefficient open faces satisfies every IMRep field, including rectifiability, positive multiplicity and local integrability. Local agreement with the face plane supplies tangents and orientations; measure transport verifies representation. Empty chains are covered."
+    }
+  ],
+  "required_changes": []
+}
