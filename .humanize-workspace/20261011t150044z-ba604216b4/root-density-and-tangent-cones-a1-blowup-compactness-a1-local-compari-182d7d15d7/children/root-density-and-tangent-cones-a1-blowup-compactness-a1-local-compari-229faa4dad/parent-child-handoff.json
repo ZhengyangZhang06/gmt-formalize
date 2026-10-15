@@ -1,0 +1,72 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat local-references/123e8435b4a2469b/manifest.json (project b4d606d, mathlib 25730c7c); read GMT/Ch07/Contract.lean, GMT/Ch07/README.md and this node's parent-child-handoff.json (proof identical to the selected one)",
+        "python3 -I scans of dag.json (1538 nodes): lean_name / lean_statement matching IsIntegerMultiplicity, bilipschitz, area, Real.sqrt (Matrix.det, normDet, approxTangent, imrep, int_density, pieces; status and candidate_commit of dpf_rectifiable_bilipschitz_pieces, dpf_approxTangent_ae_bilipschitz_piece, ptd_piece_image_approxTangent_ae, ptd_piece_image_measurable_ae_pullback, codim1_lura_gram_area_formula, codim1_lurpt_piece_area_jacobian, codim1_zsl_ga_linear_area, cmcdt_ims_imrep_of_int_density, dpfir_integral_eq_of_area_lintegral, dpf_unitOrientation_map_gramNormalized, dgoj_covector_eq_det_mul_of_mem_span, rsd_isIntegerMultiplicity_int_combination, regcomp_ims_imrep_of_signed_pieces, dpf_raf_piece_area_formula_gram; sibling nodes dimred_mbl_pf_* and dor_lmb_pc_* (decomposing, no decomposition files)",
+        "read nodes/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-compari-a685b45291/decomposition-v1.json (the parent's 12-child split) and the parent-child-handoff.json / parent-supplied-natural-proof.md of the four reused nodes",
+        "git show <candidate_commit>:GMT/Ch07/Submission.lean | grep 'theorem Submission.<name>' for a2ba78f, a216804, d5ba41d, c48b246 (types identical); git show b18a413 (accepted dpf_imrep_bilipschitz_image_rep: continuous_compContinuousLinearMapCLM, clm_apply measurability pattern); git log --all --oneline -S'<each new name>' (no match)",
+        "grep -n in /runtime/flows/gmt-claude-9a0895c8c5e1/_recursive_lean: max_depth, _existing_lean_name_problem, _accepted_checkpoint, _overlay_accepted_children, leaf_verification.check_source_delta",
+        "rg in .lake/packages/simongmt/Poincare/SimonGMT: weighted_area_formula_lipschitz_injOn, areaJacobianAt, area_image_criticalSet_eq_zero, linear_area_formula (Chapter02, not imported by GMT.Ch07.Submission), CountablyRectifiable.mono, countablyRectifiable_range, countablyRectifiable_iUnion, HasApproximateTangentSpaceAt.unique (Chapter03/Rectifiable.lean), Covector, TestFormOn, covectorEuclideanNorm (Chapter06)",
+        "grep in Mathlib at the pin: normDet (NormDet.lean, not imported), euclideanHausdorffMeasure_image_eq_normDet_mul_volume, hausdorffMeasure_image_le, exists_partition_approximatesLinearOn_of_hasFDerivWithinAt, MeasurableSet.image_of_continuousOn_injOn, LinearMap.exists_antilipschitzWith, continuous_clm_apply, Measurable.find, integral_tsum, integral_iUnion, lintegral_iUnion, Measurable.nnreal_tsum, ContinuousAlternatingMap.apply, exists_contDiff_support_eq_eq_one_iff, singularValues (no opNorm bound), Hadamard (none)",
+        "lake env lean /tmp/pfint_decomp/check/{Check1..Check6,Types,Assembly}.lean (imports, instances, lemma names, child types, assembly with #print axioms)",
+        "python3 -I /tmp/pfint_decomp/scripts/{scope.py,validate.py}: contract_scope replay and lean_contract.validate_lean_statement on all 12 strings"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/README.md",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-compari-182d7d15d7/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-compari-a685b45291/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-bilipschi-4344c8c0d8/parent-supplied-natural-proof.md",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-piece-tan-680a7024c9/parent-supplied-natural-proof.md",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-im-74efcb8c6f/parent-supplied-natural-proof.md",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-db95546c3f/parent-supplied-natural-proof.md",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/AreaLipschitz.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/mathlib/Mathlib/Analysis/InnerProductSpace/NormDet.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/mathlib/Mathlib/Topology/Algebra/Module/Alternating/Topology.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/mathlib/Mathlib/Geometry/Manifold/PartitionOfUnity.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py",
+        "/runtime/flows/gmt-claude-9a0895c8c5e1/_recursive_lean/runtime.py",
+        "/runtime/flows/gmt-claude-9a0895c8c5e1/_recursive_lean/leaf_verification.py",
+        "/tmp/pfint_decomp/check/Types.lean",
+        "/tmp/pfint_decomp/check/Assembly.lean"
+      ],
+      "conclusion": "The pinned project has no push-forward of integer multiplicity currents by C¹ maps. It has four comparator-accepted declarations that are exactly steps 2, 3+(TL), the area formula and step 11 of the supplied proof: dpf_rectifiable_bilipschitz_pieces, dpf_approxTangent_ae_bilipschitz_piece, codim1_lura_gram_area_formula and cmcdt_ims_imrep_of_int_density. They are reused with byte-identical types. LinearMap.normDet and the SimonGMT Chapter02 area files are not in the import closure of GMT.Ch07.Submission, so the new statements use the Gram-determinant Jacobian, as the accepted area formula does. The eight new statements have globally unique names, elaborate in the comparator scope and pass validate_lean_statement. A sorry-free Lean assembly derives the exact frozen parent type from the 12 child types using only propext, Classical.choice and Quot.sound."
+    }
+  ],
+  "parent_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.pushforward-a1.pf_integer-a1",
+  "child_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.pushforward-a1.pf_integer-a1.cutoff-a1",
+  "subproblem": {
+    "key": "cutoff",
+    "title": "C¹ cut-off: a globally C¹, Lipschitz map agreeing with f to first order on K",
+    "statement": "Let P ∈ ℕ, O ⊆ ℝ^P open, K ⊆ ℝ^P compact with K ⊆ O, and f : ℝ^P → ℝ^P of class C¹ on O (ContDiffOn ℝ 1 f O). Then there are φ : ℝ^P → ℝ^P of class C¹ on all of ℝ^P (ContDiff ℝ 1 φ) and Λ ∈ ℝ≥0 such that φ is Λ-Lipschitz and, for every x ∈ K, φ(x) = f(x) and Dφ(x) = Df(x) (D = fderiv ℝ).",
+    "lean_statement": "∀ (P : ℕ) (O K : Set (Euclid P)) (f : Euclid P → Euclid P), IsOpen O → IsCompact K → K ⊆ O → ContDiffOn ℝ 1 f O → ∃ (φ : Euclid P → Euclid P) (Λ : NNReal), ContDiff ℝ 1 φ ∧ LipschitzWith Λ φ ∧ ∀ x ∈ K, φ x = f x ∧ fderiv ℝ φ x = fderiv ℝ f x",
+    "lean_name": "dtc_bc_lc_pfi_c1_cutoff_lipschitz",
+    "depends_on": [],
+    "natural_proof": "Source: step 1(b) of the parent proof (cut-off of f), carried out in full.\n1. Margin. By IsCompact.exists_cthickening_subset_open (K compact, O open, K ⊆ O) there is ε > 0 with cthickening ε K ⊆ O. Put δ := ε/3 > 0, W₀ := thickening δ K (open), W₁ := cthickening δ K (closed) and V := thickening (2δ) K (open). Then K ⊆ W₀ ⊆ W₁ ⊆ V (Metric.self_subset_thickening for δ > 0, thickening_subset_cthickening, and cthickening δ K ⊆ thickening (2δ) K since δ < 2δ), and closure V ⊆ cthickening (2δ) K ⊆ cthickening ε K ⊆ O. The set cthickening (2δ) K is compact (IsCompact.cthickening; ℝ^P is proper), so closure V is a compact subset of O. (If K = ∅ all these sets are empty and the construction below gives φ = id.)\n2. Smooth cut-off. By exists_contDiff_support_eq_eq_one_iff (V open, W₁ closed, W₁ ⊆ V) there is χ : ℝ^P → ℝ with ContDiff ℝ ⊤ χ (in particular C¹), range χ ⊆ [0, 1], support χ = V and χ(x) = 1 ⟺ x ∈ W₁. Hence tsupport χ = closure V is compact and contained in O, and χ = 1 on the open set W₀ ⊇ K.\n3. Definition. φ(x) := x + χ(x)·(f(x) − x).\n4. φ is C¹. Let x ∈ ℝ^P. If x ∈ O, then f is C¹ at x (ContDiffOn on the open set O gives ContDiffAt ℝ 1 f x), so x ↦ x + χ(x)(f(x) − x) is ContDiffAt ℝ 1 at x (sums and products of C¹ functions). If x ∉ tsupport χ, the open set (tsupport χ)ᶜ is a neighbourhood of x on which χ = 0, so φ = id near x and φ is ContDiffAt ℝ 1 at x (ContDiffAt.congr_of_eventuallyEq). As tsupport χ ⊆ O, every x falls under one of the two cases, so ContDiff ℝ 1 φ (contDiff_iff_contDiffAt).\n5. First-order agreement on K. For x ∈ K, W₀ is an open neighbourhood of x on which χ = 1, i.e. φ = f on W₀. Hence φ(x) = f(x) and φ =ᶠ[𝓝 x] f, so fderiv ℝ φ x = fderiv ℝ f x (Filter.EventuallyEq.fderiv_eq).\n6. Lipschitz bound. Dφ is continuous (ContDiff.continuous_fderiv, order 1 ≠ 0), so ‖Dφ‖ ≤ C on the compact set tsupport χ for some C ≥ 0 (IsCompact.exists_bound_of_continuousOn). For x ∉ tsupport χ, φ = id near x, so Dφ(x) = id and ‖Dφ(x)‖ ≤ 1. Thus ‖Dφ(x)‖ ≤ Λ := max(1, C) (as an element of ℝ≥0) for every x. φ is differentiable on the convex set ℝ^P, so the mean value inequality lipschitzWith_of_nnnorm_fderiv_le gives that φ is Λ-Lipschitz.\n7. Steps 4–6 give ContDiff ℝ 1 φ, LipschitzWith Λ φ and φ(x) = f(x), Dφ(x) = Df(x) for x ∈ K. ∎",
+    "proof_key_steps": [
+      "Choose δ > 0 with cthickening(3δ, K) ⊆ O and a smooth χ ∈ [0,1] equal to 1 exactly on cthickening(δ, K) with support thickening(2δ, K).",
+      "φ := id + χ·(f − id) is C¹: near points of O because f is C¹ there, near points off tsupport χ because φ = id there.",
+      "φ = f on the open set thickening(δ, K) ⊇ K, so φ and Dφ agree with f and Df on K.",
+      "Dφ is continuous and equal to id off the compact tsupport χ, hence bounded by Λ; the mean value inequality makes φ Λ-Lipschitz."
+    ]
+  },
+  "audit": {
+    "key": "cutoff",
+    "acceptable": true,
+    "natural_proof_acceptable": true,
+    "reason": "The compact margin and smooth cutoff give a globally C¹ map agreeing with f on a neighborhood of K. Its derivative is bounded on the compact support and equals the identity outside, yielding the claimed Lipschitz bound and first-order agreement."
+  },
+  "resolved_dependencies": [],
+  "plan_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-compari-229faa4dad/parent-supplied-plan.md",
+  "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-compari-229faa4dad/parent-supplied-natural-proof.md",
+  "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-compari-229faa4dad/parent-supplied-natural-proof.json"
+}

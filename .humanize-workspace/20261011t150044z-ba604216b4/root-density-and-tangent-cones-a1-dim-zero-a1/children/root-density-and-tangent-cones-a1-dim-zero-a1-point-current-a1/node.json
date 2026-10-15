@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_and_tangent_cones-a1.dim_zero-a1.point_current-a1",
+  "parent_id": "root.density_and_tangent_cones-a1.dim_zero-a1",
+  "depth": 3,
+  "title": "Point currents ω ↦ ζ(ω(p)) and their support",
+  "statement": "Let P, n ∈ ℕ, let U ⊆ ℝ^P be open, let p ∈ ℝ^P, and let ζ ∈ Λₙ(ℝ^P) (MultiVector P n, i.e. a continuous linear functional on n-covectors). Then there is X ∈ 𝒟ₙ(U) (GeometricCurrentOn U n: a linear functional on 𝒟ⁿ(U) that is sequentially continuous for test-form convergence) such that:\n- X(ω) = ζ(ω(p)) for every ω ∈ 𝒟ⁿ(U); and\n- spt X ⊆ {p}.\nHere spt X is U minus the union of all open V with compact closure contained in U on which X vanishes.",
+  "lean_statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (p : Euclid P) (ζ : MultiVector P n), IsOpen U → ∃ X : GeometricCurrentOn U n, (∀ ω : TestFormOn U n, X ω = ζ ((ω : DifferentialForm (Euclid P) n) p)) ∧ X.support ⊆ {p}",
+  "lean_name": "dtc_point_current",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-dim-zero-a1-point-current-a1-a1"
+}

@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.pushforward-a1.pf_integer-a1.cutoff-a1",
+  "parent_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.pushforward-a1.pf_integer-a1",
+  "depth": 6,
+  "title": "C¹ cut-off: a globally C¹, Lipschitz map agreeing with f to first order on K",
+  "statement": "Let P ∈ ℕ, O ⊆ ℝ^P open, K ⊆ ℝ^P compact with K ⊆ O, and f : ℝ^P → ℝ^P of class C¹ on O (ContDiffOn ℝ 1 f O). Then there are φ : ℝ^P → ℝ^P of class C¹ on all of ℝ^P (ContDiff ℝ 1 φ) and Λ ∈ ℝ≥0 such that φ is Λ-Lipschitz and, for every x ∈ K, φ(x) = f(x) and Dφ(x) = Df(x) (D = fderiv ℝ).",
+  "lean_statement": "∀ (P : ℕ) (O K : Set (Euclid P)) (f : Euclid P → Euclid P), IsOpen O → IsCompact K → K ⊆ O → ContDiffOn ℝ 1 f O → ∃ (φ : Euclid P → Euclid P) (Λ : NNReal), ContDiff ℝ 1 φ ∧ LipschitzWith Λ φ ∧ ∀ x ∈ K, φ x = f x ∧ fderiv ℝ φ x = fderiv ℝ f x",
+  "lean_name": "dtc_bc_lc_pfi_c1_cutoff_lipschitz",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-compari-229faa4dad-a1"
+}

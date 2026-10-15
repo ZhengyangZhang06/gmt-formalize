@@ -1,0 +1,74 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "continuous_compContinuousLinearMapCLM|norm_compContinuousLinearMap_le|theorem le_opNorm",
+        "ContinuousOn.aestronglyMeasurable",
+        "TestFormOnConverges|structure GeometricCurrentOn|abbrev CurrentOn|def zeroRegion|def support|isOpen_zeroRegion|def Covector|abbrev Covector|def DifferentialForm|abbrev DifferentialForm",
+        "dimred_mbl_pfc_pullback_integrand_bound",
+        "git -C .lake/packages/mathlib status --short; git -C .lake/packages/simongmt status --short",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/pfcd/T4.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/Alternating/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/Defs.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/FTaylorSeries.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/StronglyMeasurable/AEStronglyMeasurable.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-pushforward-a1-9eb1427eef/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-pushforward-a1-9eb1427eef/decomposition-v1.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-pushforwa-b8bbc130ca/accepted-candidate.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-pushforwa-49ef3e5978/accepted-candidate.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-slicing-a1-restrict-curren-7244aadae8/accepted-candidate.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-regular-set-dense-a1-constant-multiplicity-reduction-a1-support-a67ad69f81/accepted-candidate.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification/results/hoa34/20261013T054240Z-ch07-root.minimizing_implies_stationary-a1.diffeo_pushforward-a1.pushforward_current--ajvyofmg/result.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification/results/hoa47/20261013T055846Z-ch07-root.minimizing_implies_stationary-a1.diffeo_pushforward-a1.pushforward_current--nsmbzjm6/result.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification/results/hoa15/20261013T092435Z-ch07-root.compactness_of_minimizing_currents-a1.slicing-a1.restrict_current-a1.order_-k4hp8_7w/result.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification/results/hoa24/20261012T135810Z-ch07-root.regular_set_dense-a1.constant_multiplicity_reduction-a1.support_of_vanishin-17gpkxm1/result.json",
+        "/tmp/pfcd/T4.lean"
+      ],
+      "conclusion": "The split is appropriate for the selected push-forward current theorem. The pinned project and dependencies match; all four reused declarations have identical accepted frozen types and successful kernel records. The new name has no DAG match. Every child has a bare identifier and a standalone one-line proposition without implementation-dependent aliases or placeholders. The dependencies are correctly directed and acyclic. Operator norms, continuous-linear-map evaluation, restricted measures and localized measurability agree with the intended constructions; no matrix-instance ambiguity occurs. Independently rerunning T4.lean succeeded: its child types and parent type exactly match the supplied contracts, and the assembly establishes the integral formula, continuity, compact support and inclusion in f(K). The parent and new integrand theorem depend only on propext, Classical.choice and Quot.sound."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "orient_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Prose and Lean type agree. R.orients supplies a common almost-everywhere set with signed evaluation on an orthonormal frame. The operator-norm inequality proves the bound for every covector, including degree zero. The proof is complete and non-circular; exact-type accepted reuse is verified."
+    },
+    {
+      "key": "pairing_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All hypotheses match. Local integrability makes B·1_Cθ integrable; continuous evaluation supplies measurability, and orient_bound supplies domination. The restriction identity and nonnegative-integral formula give the stated toReal estimate. Only the declared prerequisite is used. Exact-type accepted reuse is verified."
+    },
+    {
+      "key": "integrand_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The statement and type match exactly. The proof constructs a uniform derivative bound, establishes continuity and measurability of the localized pullback, and derives B ≥ 0 from the bound at zero. Applying pairing_bound and transferring along almost-everywhere equality proves both conclusions with A independent of ω and B. No global regularity of f is assumed. The new name is unreserved."
+    },
+    {
+      "key": "order_zero_current",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type matches the prose and the actual sequential current definition. Order-zero uniform convergence and common compact support give global smallness. The choice δ/(|c|+1) proves continuity without an unstated sign assumption on c. The constructor preserves L's evaluations. Exact-type accepted reuse is verified."
+    },
+    {
+      "key": "support_of_vanishing",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Prose and type agree. Half-radius balls have compact closure inside U minus K and satisfy the zero-region definition. This proves support inclusion; support = K minus zeroRegion then proves compactness. No unjustified ambient closedness assumption is used. The proof is complete, independent and verified for exact-type reuse."
+    }
+  ],
+  "required_changes": []
+}

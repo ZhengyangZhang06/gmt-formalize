@@ -1,0 +1,87 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "WeaklyConvergesOn|CompactnessUnderMassBounds|weak_compactness|truncated_compactness",
+        "Banach|Alaoglu|SecondCountableTopology|IsSeparable|diagonal|extraction",
+        "extraction_forall_of_eventually|exists_countable_dense_subset",
+        "integral_withDensity_eq_integral_smul|extDeriv_eq|eventuallyEq_one_of_mem_ball",
+        "git -C .lake/packages/mathlib rev-parse HEAD",
+        "git -C .lake/packages/simongmt rev-parse HEAD",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/tc-independent-audit-6sgs18jc/Types.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/tc-independent-audit-6sgs18jc/assembly.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch06/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/ContinuousMap/SecondCountableSpace.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/ContinuousLinearMap.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/BumpFunction/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-truncated-compactness-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-truncated-compactness-a1/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-mass-representation-a1-eva-463e096c91/accepted-candidate.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-mass-representation-a1-cov-64249b6f60/accepted-candidate.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-im-calculus-a1/accepted-candidate.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-local-comparison-a1-imrep-1bd5f15878/accepted-candidate.json",
+        "/tmp/tc-independent-audit-6sgs18jc/Types.lean",
+        "/tmp/tc-independent-audit-6sgs18jc/imrep_restriction.lean",
+        "/tmp/tc-independent-audit-6sgs18jc/truncation.lean",
+        "/tmp/tc-independent-audit-6sgs18jc/weak_compactness.lean",
+        "/tmp/tc-independent-audit-6sgs18jc/limit_transfer.lean",
+        "/tmp/tc-independent-audit-6sgs18jc/assembly.lean"
+      ],
+      "conclusion": "The split is appropriate. Pinned definitions match the contracts; the project compactness search finds an unproved Ch06 specification, not a reusable proof, and the SimonGMT compactness search has no relevant match. All seven one-line propositions elaborate without child implementations. The four reused types are byte-identical to comparator-accepted contracts; their verification records use compatible pinned revisions and permitted axioms. All names are bare identifiers, and the three new names are unreserved. The reachable dependency graph, including reuse, is acyclic. Independently compiled supplied proofs for imrep_restriction and the three new children, plus the exact conditional parent assembly, depend only on propext, Classical.choice and Quot.sound. The assembly establishes this selected contract from the children and declared parent prerequisites. No problematic matrix-unit construction is present."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "eval_mass_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Prose and exact accepted type agree, including arbitrary U and W. Rescaling both signs by r+ε proves the bound and handles r=0 without an extra hypothesis or circular reliance."
+    },
+    {
+      "key": "covector_equiv",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Exact accepted type is reused. The coefficient map, sorting argument for injectivity, orthonormal identification of its range, and finite-dimensional continuity prove the claimed continuous linear equivalence."
+    },
+    {
+      "key": "im_calculus",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All four prose clauses match the accepted conjunction. The supplied density argument establishes locality; restriction transfers every representation field; differences handle overlap, signs and cancellation; Cauchy–Binet proves the orientation bound. These arguments are non-circular."
+    },
+    {
+      "key": "imrep_restriction",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Exact accepted type is reused. Absolute continuity, restriction of densities, and the unconditional Bochner density identity prove every clause, including the action formula for arbitrary forms. The supplied Lean proof independently compiles."
+    },
+    {
+      "key": "truncation",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All hypotheses and conclusions match. Compact containment supplies global local integrability; agreement justifies currentEval; derivative locality on Bρ and the cutoff give the boundary bound. Local boundary vanishing follows from the stated hypothesis. The proof compiles from precisely the listed siblings."
+    },
+    {
+      "key": "weak_compactness",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact proposition requires only uniformly bounded local mass. The supplied countable approximation, compact-product extraction, Cauchy estimates, linearity and sequential-continuity argument construct the required current. The proof compiles with the listed siblings and stated Mathlib import."
+    },
+    {
+      "key": "limit_transfer",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proposition correctly allows arbitrary domains. Compact support and radii tending to infinity yield eventual agreement and boundary vanishing; weak convergence and uniqueness of real limits prove both conclusions. The supplied proof compiles without sibling assumptions."
+    }
+  ],
+  "required_changes": []
+}
