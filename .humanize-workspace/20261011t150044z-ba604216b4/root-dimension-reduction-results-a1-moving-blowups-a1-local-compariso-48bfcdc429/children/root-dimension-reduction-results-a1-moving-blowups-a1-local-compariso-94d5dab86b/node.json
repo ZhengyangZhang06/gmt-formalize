@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.moving_blowups-a1.local_comparison-a1.retraction_comparison-a1.push_add-a1",
+  "parent_id": "root.dimension_reduction_results-a1.moving_blowups-a1.local_comparison-a1.retraction_comparison-a1",
+  "depth": 5,
+  "title": "Additivity of a push-forward map that is linear on integer multiplicity currents with compact supports in O (step 4 of the parent)",
+  "statement": "Let P, n ∈ ℕ, O ⊆ ℝ^P any set, and push : 𝒟_n(ℝ^P) → 𝒟_n(ℝ^P) any map (𝒟_n(ℝ^P) = GeometricCurrentOn univ n) such that push(X₁ − X₂) = push X₁ − push X₂ for all integer multiplicity X₁, X₂ ∈ 𝒟_n(ℝ^P) (contract IsIntegerMultiplicity) whose supports spt X₁, spt X₂ (GeometricCurrentOn.support, Simon 6.2.11) are compact and contained in O; here − is the contract's difference of currents, (X₁ − X₂)(ω) = X₁(ω) − X₂(ω). Let X, Y ∈ 𝒟_n(ℝ^P) be integer multiplicity with spt X and spt Y compact and contained in O. Then there is an integer multiplicity S ∈ 𝒟_n(ℝ^P) such that S(ω) = X(ω) + Y(ω) for every ω ∈ 𝒟ⁿ(ℝ^P), spt S ⊆ spt X ∪ spt Y, spt S is compact, and push S(ω) = push X(ω) + push Y(ω) for every ω ∈ 𝒟ⁿ(ℝ^P).",
+  "lean_statement": "∀ (P n : ℕ) (O : Set (Euclid P)) (push : GeometricCurrentOn (univ : Set (Euclid P)) n → GeometricCurrentOn (univ : Set (Euclid P)) n) (X Y : GeometricCurrentOn (univ : Set (Euclid P)) n), (∀ X₁ X₂ : GeometricCurrentOn (univ : Set (Euclid P)) n, IsIntegerMultiplicity X₁ → IsIntegerMultiplicity X₂ → IsCompact X₁.support → X₁.support ⊆ O → IsCompact X₂.support → X₂.support ⊆ O → push (X₁ - X₂) = push X₁ - push X₂) → IsIntegerMultiplicity X → IsIntegerMultiplicity Y → IsCompact X.support → X.support ⊆ O → IsCompact Y.support → Y.support ⊆ O → ∃ S : GeometricCurrentOn (univ : Set (Euclid P)) n, IsIntegerMultiplicity S ∧ (∀ ω : TestFormOn (univ : Set (Euclid P)) n, S ω = X ω + Y ω) ∧ S.support ⊆ X.support ∪ Y.support ∧ IsCompact S.support ∧ ∀ ω : TestFormOn (univ : Set (Euclid P)) n, push S ω = push X ω + push Y ω",
+  "lean_name": "dimred_mbl_lc_rc_push_add",
+  "depends_on": [
+    "root.compactness_of_minimizing_currents-a1.im_calculus-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.compactness_of_minimizing_currents-a1.im_calculus-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-im-calculus-a1-a1",
+      "result_commit": "2af75d6921b01a9c889a45103692ca0af95ea394",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-moving-blowups-a1-local-compariso-94d5dab86b-a1"
+}

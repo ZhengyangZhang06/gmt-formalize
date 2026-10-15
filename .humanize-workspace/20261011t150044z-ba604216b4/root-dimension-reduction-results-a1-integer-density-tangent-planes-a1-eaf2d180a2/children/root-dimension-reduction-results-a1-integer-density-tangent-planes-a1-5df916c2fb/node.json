@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_off_null_set-a1.cone_splitting-a1.subspace_projection-a1",
+  "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_off_null_set-a1.cone_splitting-a1",
+  "depth": 5,
+  "title": "Minimizing in a subspace containing the support implies minimizing (Simon 7.3.1, footnote 2) (fresh-named registered obligation)",
+  "statement": "Let P, m ∈ ℕ with m ≥ 1, V ⊆ ℝ^P a linear subspace and T ∈ 𝒟_m(ℝ^P) minimizing in V (IsMinimizingIn T V: T is integer multiplicity and M_W(T) ≤ M_W(S) whenever W ⊂⊂ ℝ^P is open and S is an integer multiplicity current with ∂S = ∂T and spt(S − T) a compact subset of V ∩ W) with spt T ⊆ V. Then T is minimizing in ℝ^P (IsMinimizingIn T univ).",
+  "lean_statement": "∀ (P m : ℕ) (T : GeometricCurrentOn (univ : Set (Euclid P)) m) (V : Submodule ℝ (Euclid P)), 0 < m → IsMinimizingIn T (V : Set (Euclid P)) → T.support ⊆ (V : Set (Euclid P)) → IsMinimizingIn T univ",
+  "lean_name": "idtp_fons_cs_minimizing_of_minimizing_in_subspace",
+  "depends_on": [
+    "root.dimension_reduction_results-a1.im_mass_measure-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.dimension_reduction_results-a1.im_mass_measure-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-im-mass-measure-a1-a1",
+      "result_commit": "01ae2c59e8d725f9f3839402fe6fe9bf93c32c3a",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-5df916c2fb-a1"
+}

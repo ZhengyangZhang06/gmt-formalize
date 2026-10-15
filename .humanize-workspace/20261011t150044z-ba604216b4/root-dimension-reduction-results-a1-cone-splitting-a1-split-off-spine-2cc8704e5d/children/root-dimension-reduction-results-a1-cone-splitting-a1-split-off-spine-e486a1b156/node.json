@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.cone_splitting-a1.split_off_spine-a1.cone_filling_subspace-a1.radial_homotopy-a1",
+  "parent_id": "root.dimension_reduction_results-a1.cone_splitting-a1.split_off_spine-a1.cone_filling_subspace-a1",
+  "depth": 5,
+  "title": "Radial homotopy operator: K beta is smooth and beta = d(K beta) + K(d beta)",
+  "statement": "Let P, q ∈ ℕ and let β : ℝ^P → Λ^{q+1}(ℝ^P) be a C^∞ (q+1)-form (β : DifferentialForm (Euclid P) (q+1) with ContDiff ℝ ⊤ β). For x ∈ ℝ^P put (Kβ)(x) := ∫_0^1 t^q·ι_x(β(t x)) dt, where ι_xα := α.curryLeft x, i.e. (ι_xα)(v_1, …, v_q) = α(x, v_1, …, v_q). The integral is an interval integral in the finite-dimensional normed space Λ^q(ℝ^P) = Covector (Euclid P) q of continuous alternating q-forms. Then:\n(1) Kβ : ℝ^P → Λ^q(ℝ^P) is C^∞;\n(2) for every x ∈ ℝ^P, d(Kβ)(x) + ∫_0^1 t^{q+1}·ι_x((dβ)(t x)) dt = β(x), where d is the exterior derivative (SimonGMT exteriorDerivative = Mathlib extDeriv).\nThis is the homotopy formula β = d K_{q+1}β + K_{q+2} dβ of the Poincaré lemma for the radial contraction (Simon Ch. 6, 2.25–2.26; steps 1–2 of the parent proof).",
+  "lean_statement": "∀ (P q : ℕ) (β : DifferentialForm (Euclid P) (q + 1)), ContDiff ℝ (⊤ : ℕ∞) β → ContDiff ℝ (⊤ : ℕ∞) (fun x : Euclid P => ∫ t in (0 : ℝ)..1, t ^ q • (β (t • x)).curryLeft x) ∧ ∀ x : Euclid P, exteriorDerivative (fun y : Euclid P => ∫ t in (0 : ℝ)..1, t ^ q • (β (t • y)).curryLeft y) x + (∫ t in (0 : ℝ)..1, t ^ (q + 1) • (exteriorDerivative β (t • x)).curryLeft x) = β x",
+  "lean_name": "dimred_cs_sos_cfs_radial_homotopy",
+  "depends_on": [
+    "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.lipschitz_pushforward-a1.operators-a1.slice-a1.param_integral-a1",
+    "root.density_and_tangent_cones-a1.cone-a1.euler_cartan-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.lipschitz_pushforward-a1.operators-a1.slice-a1.param_integral-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-lip-9310c84433-a1",
+      "result_commit": "445fb9017470896594b24d5d23bf892b8796493b",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.density_and_tangent_cones-a1.cone-a1.euler_cartan-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-cone-a1-euler-cartan-a1-a1",
+      "result_commit": "77ba6718296797531c46092c9edeed99a93d1890",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-cone-splitting-a1-split-off-spine-e486a1b156-a1"
+}
