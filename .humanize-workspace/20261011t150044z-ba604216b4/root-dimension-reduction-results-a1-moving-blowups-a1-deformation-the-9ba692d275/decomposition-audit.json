@@ -1,0 +1,75 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "dimred_mbl_dtfrbv|cmcdtfrbv_face_covectors|cmr_cc_det_covector",
+        "covectorEuclideanNorm|massAdmissibleOn|def massOn|def mass |massOn_mono|le_massOn",
+        "TestFormOn|tsupport_exteriorDerivative_subset|exteriorDerivativeTestOn|boundary_apply|def boundary",
+        "closure_thickening_subset_cthickening|exists_cthickening_subset_open|IsCompact.cthickening|self_subset_thickening",
+        "theorem.*det_transpose|def detRowAlternating|theorem.*det_eq_zero_of_row_eq_zero|def mkContinuous"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Manifold/PartitionOfUnity.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/Thickening.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Matrix/Determinant/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/Alternating/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-deformation-the-9ba692d275/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-deformation-the-9ba692d275/decomposition-v2.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-fac-488f890568/accepted-candidate.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-mass-representation-a1-coo-498906c61d/accepted-candidate.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-mass-representation-a1-coo-40c536ad5f/accepted-candidate.json",
+        "/tmp/bv-independent-audit-fj4edmri/Contracts.lean",
+        "/tmp/bv-independent-audit-fj4edmri/Obligations.lean",
+        "/tmp/bv-independent-audit-fj4edmri/Assembly.lean"
+      ],
+      "conclusion": "The split is appropriate for this selected boundary-variation theorem. Pinned revisions and contract contents match. The declaration-name search found no matches in the snapshot project or Mathlib. All three fresh names are unreserved; all three reused declarations have byte-identical accepted types and compatible comparator passes permitting only standard axioms. All six propositions independently elaborate without their implementations, and their prose includes the required hypotheses. The dependency graph is acyclic and correctly directed. Regenerated checks of the supplied proof bodies and assembly compile with only propext, Classical.choice and Quot.sound. The children, together with the four declared siblings, establish the exact selected parent contract while retaining VO. Smoothness orders, coefficient norms and Matrix.of constructions agree with their intended meanings."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "face_neighbourhoods",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and exact type match. The explicit open-ball union contains each open face. Separation excludes other closed faces; applying separation in both directions and the triangle inequality proves disjointness. The proof includes k = 0 and uses only its stated separation hypothesis."
+    },
+    {
+      "key": "mass_disjoint_sum",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The statement and type match for arbitrary U and support regions. The proof correctly controls topological support of the finite sum and its pointwise coefficient norm. Near-optimal forms, the finite-mass reduction and the limit argument establish the ENNReal inequality, including empty-family and infinite-mass cases."
+    },
+    {
+      "key": "det_covector_exists",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Valid reuse of the identical comparator-accepted type. Coordinate projection, the alternating determinant, transposition and the explicit factorial product bound construct the required continuous covector. No injectivity assumption is needed, and n = 0 is covered."
+    },
+    {
+      "key": "det_covector_kronecker",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Valid reuse of the identical accepted type. Injectivity gives the identity matrix when I = J. Otherwise finite range cardinalities and strict monotonicity yield a missing coordinate and hence a zero row. The proof establishes exactly the stated conditional value without circular dependence."
+    },
+    {
+      "key": "face_covectors",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The accepted frozen type matches the prose and proposed reuse exactly. Distinct increasing deletion tuples give signed Kronecker evaluations; summing their squared coefficients proves the specified Euclidean norm identity. Both declared determinant dependencies are correctly directed, and m = 0 is covered."
+    },
+    {
+      "key": "face_test_form",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and exact type match. The smooth affine left inverse and compact-image cutoff give a test form supported in N with coefficient norm at most one. The signed identity holds for every y: the cutoff equals one on the image of tsupport g, and g vanishes elsewhere. Only the declared face_covectors dependency is needed."
+    }
+  ],
+  "required_changes": []
+}

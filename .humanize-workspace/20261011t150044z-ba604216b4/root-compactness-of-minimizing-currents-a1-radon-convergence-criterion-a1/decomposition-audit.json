@@ -1,0 +1,51 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "theorem Integrable.integral_eq_integral_meas_lt|countable_meas_level_set_pos|theorem tendsto_integral_filter_of_dominated_convergence|theorem tendsto_of_le_liminf_of_limsup_le|theorem tendsto_toReal|theorem Continuous.integrable_of_hasCompactSupport",
+        "integrableOn_iff_integrable_of_support_subset|bounded_above_of_compact_support|eventually_lt_of_limsup_lt|lemma limsup_le_limsup|theorem limsup_le_limsup|theorem HasCompactSupport.mono|theorem restrict_eq_self|theorem restrict_apply_univ",
+        "cmc_rcc|superlevel|layer_cake|tendsto_integral_of",
+        "cmc_rcc_ae_tendsto_measure_superlevel",
+        "cmc_rcc_tendsto_integral_of_ae_tendsto_superlevel",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/rcc-decomp/lean/Types.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/rcc-decomp/lean/Assembly.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/rcc-decomp/lean/Full.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Typeclasses/SFinite.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Layercake.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/DominatedConvergence.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/LocallyIntegrable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Order/LiminfLimsup.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Instances/ENNReal/Lemmas.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-radon-convergence-criterion-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-radon-convergence-criterion-a1/decomposition-v1.json",
+        "/tmp/rcc-decomp/lean/Types.lean",
+        "/tmp/rcc-decomp/lean/Assembly.lean",
+        "/tmp/rcc-decomp/lean/Full.lean"
+      ],
+      "conclusion": "The split appropriately separates superlevel-measure convergence from the layer-cake transfer; the supplied signed reduction establishes the exact selected parent contract. The manifest pins project b4d606db1da5da8fa2c0292ad4924d97de8b3c4b and Mathlib 25730c7c759d108ef87ab70af2342a196760f79d. The workspace contract matches the snapshot, and inspected core library files match the pinned build. Snapshot-project searches found no matching convergence declaration. Scanning all 518 DAG records and decomposition files found no competing reservation or identical accepted child contract. Both names are bare identifiers. Both frozen types are standalone one-line propositions, byte-identical to the inspected proof declarations, without aliases or self-reference. Independent compilation of Types.lean, Assembly.lean and Full.lean succeeded. The conditional assembly, both children and assembled parent depend only on propext, Classical.choice and Quot.sound."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "superlevel_convergence",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and Lean type match, including arbitrary U, all three measure hypotheses, and Lebesgue-a.e. convergence on Ioi 0 in ℝ≥0∞. The proof correctly obtains a finite restricted measure on tsupport g, proves countability of positive-mass levels, transfers the null exceptional set to the restricted Lebesgue measure, and uses t > 0 to place both superlevel sets inside the support. Their equal μ-measures give the stated limsup/liminf squeeze. No global finiteness, nonnegativity of g, or openness of U is assumed implicitly. The proof is complete, non-circular and directly formalizable; its empty dependency list is correct."
+    },
+    {
+      "key": "layer_cake_convergence",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and Lean type include exactly the continuity, compact-support, nonnegativity, finite target mass, finite limsup and a.e. convergence hypotheses used. The proof supplies an eventual uniform finite mass bound, establishes integrability through finite restrictions, applies the applicable Bochner layer-cake identity, proves measurability before converting measures to real numbers, and constructs an integrable dominating indicator. Finiteness of the limiting superlevel measure justifies continuity of toReal. Filter dominated convergence and eventual equality handle potentially nonintegrable initial terms. The proof is complete and non-circular. Superlevel convergence is an explicit hypothesis, so no sibling dependency is required; the parent supplies it using the first child for f⁺ and f⁻, then subtracts their eventually valid integral identities."
+    }
+  ],
+  "required_changes": []
+}

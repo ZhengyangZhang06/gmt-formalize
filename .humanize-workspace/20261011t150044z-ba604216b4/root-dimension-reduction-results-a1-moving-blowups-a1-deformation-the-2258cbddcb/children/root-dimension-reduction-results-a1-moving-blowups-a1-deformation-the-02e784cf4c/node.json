@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.moving_blowups-a1.deformation_theorem-a1.skeleton_retraction-a1.face_induction-a1",
+  "parent_id": "root.dimension_reduction_results-a1.moving_blowups-a1.deformation_theorem-a1.skeleton_retraction-a1",
+  "depth": 5,
+  "title": "Pointwise Lipschitz bound by induction over the face dimension (parent step 5 and its Remark)",
+  "statement": "Let P, m ∈ ℕ. There is c > 0, depending only on P and m, with the following property. Let a ∈ ℝ^P (Euclid P) with |a_i − 1/2| < 1/4 for all i. For b ∈ ℤ^P and a finite set J of coordinate indices put F(b, J) := {x : b_i ≤ x_i ≤ b_i + 1 (i ∈ J), x_i = b_i (i ∉ J)} and, for J ≠ ∅, N_{b,J}(x) := max_{k ∈ J} max((x_k − b_k − a_k)/(1 − a_k), (b_k + a_k − x_k)/a_k). Let Ψ_k : ℝ^P → ℝ^P (k ∈ ℕ) be maps with Ψ_{m+1} = id satisfying the recursion: for every j with m + 2 ≤ j ≤ P, every b ∈ ℤ^P, every nonempty J with |J| = j, every x ∈ F(b, J) and every y with y_i = b_i + a_i + (x_i − b_i − a_i)/N_{b,J}(x) (i ∈ J), y_i = x_i (i ∉ J), Ψ_j(x) = Ψ_{j−1}(y). Then for every j with m + 2 ≤ j ≤ P, every b ∈ ℤ^P, every J with |J| = j, every x ∈ F(b, J), and every ρ > 0 such that at most m + 1 indices i ∈ J satisfy |x_i − b_i − a_i| < ρ: (A) Ψ_j(x) ∈ F(b, J); (B) there is a set s of coordinate indices with P ≤ m + 1 + |s| and Ψ_j(x)_i ∈ ℤ for all i ∈ s; (C) for all y ∈ F(b, J) sufficiently close to x, |Ψ_j(y) − Ψ_j(x)| ≤ (c/ρ)|y − x|. Division by 0 is read as 0 (as in Lean); this only matters at the centre a_F, where N_{b,J} = 0 and the formula gives y = x.",
+  "lean_statement": "∀ (P m : ℕ), ∃ c : ℝ, 0 < c ∧ ∀ a : Euclid P, (∀ i, |a i - 1 / 2| < 1 / 4) → ∀ Ψ : ℕ → Euclid P → Euclid P, (∀ x, Ψ (m + 1) x = x) → (∀ j, m + 2 ≤ j → j ≤ P → ∀ (b : Fin P → ℤ) (J : Finset (Fin P)) (hJ : J.Nonempty), J.card = j → ∀ x : Euclid P, (∀ i, (i ∈ J → (b i : ℝ) ≤ x i ∧ x i ≤ b i + 1) ∧ (i ∉ J → x i = b i)) → ∀ y : Euclid P, (∀ i, y i = if i ∈ J then (b i : ℝ) + a i + (x i - b i - a i) / J.sup' hJ (fun k => max ((x k - b k - a k) / (1 - a k)) ((b k + a k - x k) / a k)) else x i) → Ψ j x = Ψ (j - 1) y) → ∀ j, m + 2 ≤ j → j ≤ P → ∀ (b : Fin P → ℤ) (J : Finset (Fin P)), J.card = j → ∀ x : Euclid P, (∀ i, (i ∈ J → (b i : ℝ) ≤ x i ∧ x i ≤ b i + 1) ∧ (i ∉ J → x i = b i)) → ∀ ρ : ℝ, 0 < ρ → (J.filter (fun i => |x i - b i - a i| < ρ)).card ≤ m + 1 → (∀ i, (i ∈ J → (b i : ℝ) ≤ Ψ j x i ∧ Ψ j x i ≤ b i + 1) ∧ (i ∉ J → Ψ j x i = b i)) ∧ (∃ s : Finset (Fin P), P ≤ m + 1 + s.card ∧ ∀ i ∈ s, ∃ z : ℤ, Ψ j x i = z) ∧ ∀ᶠ y in 𝓝[{w : Euclid P | ∀ i, (i ∈ J → (b i : ℝ) ≤ w i ∧ w i ≤ b i + 1) ∧ (i ∉ J → w i = b i)}] x, dist (Ψ j y) (Ψ j x) ≤ c / ρ * dist y x",
+  "lean_name": "dimred_mbl_dtsr_face_count_induction",
+  "depends_on": [
+    "root.dimension_reduction_results-a1.moving_blowups-a1.deformation_theorem-a1.skeleton_retraction-a1.face_radial-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.dimension_reduction_results-a1.moving_blowups-a1.deformation_theorem-a1.skeleton_retraction-a1.face_radial-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-moving-blowups-a1-deformation-the-02e784cf4c-a1"
+}

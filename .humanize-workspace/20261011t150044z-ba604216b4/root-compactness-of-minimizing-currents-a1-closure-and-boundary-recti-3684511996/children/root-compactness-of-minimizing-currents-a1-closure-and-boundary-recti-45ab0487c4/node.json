@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.isodiametric_bound-a1.slice_usc-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.isodiametric_bound-a1",
+  "depth": 5,
+  "title": "Upper semicontinuity of the slice length (Simon's note to 2.10)",
+  "statement": "Let d ∈ ℕ, j ∈ Fin d and let A ⊆ ℝ^d = EuclideanSpace ℝ (Fin d) be compact. For y ∈ ℝ^d let λ(y) := (L¹({t ∈ ℝ : y[j↦t] ∈ A})).toReal, where y[j↦t] is y with its j-th coordinate replaced by t (Lean: WithLp.toLp 2 (Function.update y.ofLp j t)) and L¹ is Lebesgue measure on ℝ. Then λ : ℝ^d → ℝ is upper semicontinuous: for every x ∈ ℝ^d and every real r > λ(x) there is a neighbourhood N of x with λ(y) < r for all y ∈ N.",
+  "lean_statement": "∀ (d : ℕ) (j : Fin d) (A : Set (Euclid d)), IsCompact A → UpperSemicontinuous (fun y : Euclid d => (volume {t : ℝ | WithLp.toLp 2 (Function.update y.ofLp j t) ∈ A}).toReal)",
+  "lean_name": "cbr_ci_iso_slice_length_usc",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-45ab0487c4-a1"
+}

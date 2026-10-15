@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.moving_blowups-a1.deformation_theorem-a1.face_replacement-a1.polyhedral_im-a1.local_plane_tangent-a1",
+  "parent_id": "root.dimension_reduction_results-a1.moving_blowups-a1.deformation_theorem-a1.face_replacement-a1.polyhedral_im-a1",
+  "depth": 6,
+  "title": "A set that coincides with x + V near x has approximate tangent space V at x",
+  "statement": "Let P, n ∈ ℕ, let M ⊆ Euclid P be an arbitrary set, x ∈ Euclid P, V a linear subspace of Euclid P with finrank V = n, and δ > 0. Suppose that every z ∈ Euclid P with dist(z, x) < δ satisfies z ∈ M ⟺ z − x ∈ V. Then V is the approximate tangent space of M at x in the sense of Simon Ch. 3, 1.4, as formalized by SimonGMT's HasApproximateTangentSpaceAt n M x V. That is, finrank V = n, and for every f ∈ C_c(Euclid P, ℝ), ∫_{η_{x,r}(M)} f dHⁿ → ∫_V f dHⁿ as r → 0⁺, where η_{x,r}(y) = blowUpMap x r y = r⁻¹(y − x) and Hⁿ = μHE[n].",
+  "lean_statement": "∀ (P n : ℕ) (M : Set (Euclid P)) (x : Euclid P) (V : Submodule ℝ (Euclid P)) (δ : ℝ), Module.finrank ℝ V = n → 0 < δ → (∀ z : Euclid P, dist z x < δ → (z ∈ M ↔ z - x ∈ V)) → HasApproximateTangentSpaceAt n M x V",
+  "lean_name": "dimred_mbl_dtfrpi_local_plane_tangent",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-moving-blowups-a1-deformation-the-67d77f9eb9-a1"
+}
