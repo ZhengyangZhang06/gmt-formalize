@@ -167341,4 +167341,677 @@ theorem Submission.dimred_threshold_reduction : ∀ (n k ℓ : ℕ), ℓ ≤ k �
       exact ((hfin0 (by omega) μ₀ hμ₀ (1 / 2) (by norm_num)).image _).subset
         (hZ (r / 2) (1 / 2) (by norm_num) (by ring))
 
+/-- **Simon 7.4.4 (Theorem, p. 194).**  If `T` is minimizing in `U ∩ N`, `spt T ⊆ U ∩ N`,
+`∂T = 0` in `U`, `ξ ∈ spt T` and `Θⁿ(μ_T, ξ) = θ < 2`, then for some `ρ > 0`,
+`H^{n−2+α}(sing T ∩ B_ρ(ξ)) = 0` for every `α > 0`.
+
+For `n = 0`, `T = 0` (`dimred_zero_dim_minimizing_eq_zero`).  For `n ≥ 1` fix `θ < θ' < 2`.
+Upper semicontinuity of `Θ` and the monotonicity formula (`dimred_minimizing_monotonicity`),
+with a finite cover, give `σ > 0` such that `Θ < θ'` on `B_{2σ}(ξ)` and
+`μ_T(B_ρ(y)) ≤ θ'ωₙρⁿ` for `y ∈ B_{2σ}(ξ)` and small `ρ`.  Since
+`M_{B_ρ(w)}(η_{x,λ#}T) ≤ λ⁻ⁿ M_{B_{λρ}(x+λw)}(T)`, every weak limit `S` of blow-ups centred in
+`B_σ(ξ)` with scales `λᵢ → 0` has all densities `≤ θ'`.  With `δ` from the cone density gap
+(`dimred_cone_density_gap`), a point `x ∈ spt T` with `Θ(x) < 1 + δ` has a tangent cone of
+density `Θ(x)` (`density_and_tangent_cones`), which is a cycle, so `Θ(x) = 1` and
+`x ∈ reg T` (`density_one_implies_regular`; the book cites Allard's theorem here); regular points
+have integer density (`dimred_regular_point_density`).  Hence
+`sing T ∩ B_σ(ξ) = {x ∈ B_σ(ξ) : Θ(x) ≥ 1 + δ}`, and dimension reduction
+(`dimred_threshold_reduction`, `c = 1 + δ`, `d₀ = n − 1`) gives the claim with `ρ = σ`: a
+limit whose density is invariant under an at least `(n−1)`-dimensional subspace `L` splits off a
+one-dimensional minimizing cone (`dimred_invariant_cone_splitting`,
+`dimred_one_dim_minimizing_cone`), so its density at `0 ∈ L` is an integer in `[1 + δ, θ']`,
+which is impossible; this covers both multiplicity-`c'` planes and `L`-invariant limits. -/
+theorem Submission.dimred_singular_set_density_below_two :
+    SingularSetSmallWhereDensityBelowTwo := by
+  -- densities are unique
+  have density_unique {P n : ℕ} {U : Set (Euclid P)} {T : GeometricCurrentOn U n}
+      {x : Euclid P} {a b : ℝ} (ha : HasMassDensity T x a) (hb : HasMassDensity T x b) :
+      a = b :=
+    (ENNReal.ofReal_eq_ofReal_iff ha.1 hb.1).1 (tendsto_nhds_unique ha.2 hb.2)
+  -- the zero current on an open set has empty support
+  have support_zero {P n : ℕ} {U : Set (Euclid P)} (hU : IsOpen U) :
+      (0 : GeometricCurrentOn U n).support = ∅ := by
+    ext x
+    simp only [GeometricCurrentOn.support, Set.mem_sdiff, mem_empty_iff_false, iff_false,
+      not_and, not_not]
+    intro hx
+    obtain ⟨ε, hε, hεU⟩ := Metric.isOpen_iff.1 hU x hx
+    refine ⟨ball x (ε / 2), ⟨isOpen_ball, ?_, ?_, ?_⟩, mem_ball_self (by linarith)⟩
+    · exact (isCompact_closedBall x (ε / 2)).of_isClosed_subset isClosed_closure
+        closure_ball_subset_closedBall
+    · exact closure_ball_subset_closedBall.trans
+        ((closedBall_subset_ball (by linarith)).trans hεU)
+    · intro ω _
+      rfl
+  -- a blow-up of a cycle vanishes on exact forms
+  have blowUp_exterior_eq_zero {P n' : ℕ} {U : Set (Euclid P)}
+      (T : GeometricCurrentOn U (n' + 1)) (hTb : T.boundary = 0) (x : Euclid P) (lam : ℝ)
+      (hlam : lam ≠ 0) (ω : DifferentialForm (Euclid P) n')
+      (hω : IsTestForm ω ∧ tsupport ω ⊆ dilation x lam '' U)
+      (h : IsTestForm (exteriorDerivative ω) ∧
+        tsupport (exteriorDerivative ω) ⊆ dilation x lam '' U) :
+      blowUp T x lam hlam ⟨exteriorDerivative ω, h⟩ = 0 := by
+    have h1 : (⟨exteriorDerivative ω, h⟩ : TestFormOn (dilation x lam '' U) (n' + 1)) =
+        exteriorDerivativeTestOn (dilation x lam '' U) n' ⟨ω, hω⟩ := Subtype.ext rfl
+    rw [h1]
+    unfold blowUp
+    rw [GeometricCurrentOn.affinePushforward_apply, affinePullbackTestOn_exteriorDerivative,
+      GeometricCurrentOn.restrictDomain_apply]
+    have h2 : ∀ (W : Set (Euclid P)) (hWU : W ⊆ U) (β : TestFormOn W n'),
+        testFormOnInclusion hWU (n' + 1) (exteriorDerivativeTestOn W n' β) =
+          exteriorDerivativeTestOn U n' (testFormOnInclusion hWU n' β) :=
+      fun _ _ _ => Subtype.ext rfl
+    rw [h2, ← GeometricCurrentOn.boundary_apply, hTb]
+    rfl
+  -- weak limits of blow-ups of a cycle, with centres converging in `U`, are cycles
+  have blowUp_limit_boundary {P n : ℕ} {U : Set (Euclid P)} (T : GeometricCurrentOn U n)
+      (x : Euclid P) (xs : ℕ → Euclid P) (lams : ℕ → ℝ) (hlams : ∀ j, 0 < lams j)
+      (C : GeometricCurrentOn (univ : Set (Euclid P)) n) (hU : IsOpen U) (hx : x ∈ U)
+      (hbd : BoundaryVanishes T) (hxs : Tendsto xs atTop (𝓝 x))
+      (hlams0 : Tendsto lams atTop (𝓝 0))
+      (hconv : ConvergesWeakly (fun j => blowUp T (xs j) (lams j) (hlams j).ne') C) :
+      BoundaryVanishes C := by
+    cases n with
+    | zero => trivial
+    | succ n' =>
+      show C.boundary = 0
+      have hTb : T.boundary = 0 := hbd
+      apply GeometricCurrentOn.ext
+      intro ω
+      rw [GeometricCurrentOn.boundary_apply, GeometricCurrentOn.zero_apply]
+      have hlim := hconv (exteriorDerivativeTestOn univ n' ω)
+      obtain ⟨ε, hε, hεU⟩ := Metric.isOpen_iff.1 hU x hx
+      obtain ⟨R, hR⟩ : ∃ R, tsupport (ω : DifferentialForm (Euclid P) n') ⊆ closedBall 0 R :=
+        (ω.property.1.2.isCompact.isBounded).subset_closedBall 0
+      have h1 : ∀ᶠ j in atTop, dist (xs j) x < ε / 2 := hxs (ball_mem_nhds x (by linarith))
+      have h2 : ∀ᶠ j in atTop, lams j * (|R| + 1) < ε / 2 := by
+        have : Tendsto (fun j => lams j * (|R| + 1)) atTop (𝓝 (0 * (|R| + 1))) :=
+          hlams0.mul_const _
+        rw [zero_mul] at this
+        exact this (Iio_mem_nhds (by linarith))
+      -- eventually `spt ω ⊆ η_{xⱼ,λⱼ}(U)`, and then the blow-up vanishes on `dω`
+      have hev : ∀ᶠ j in atTop, currentEval (blowUp T (xs j) (lams j) (hlams j).ne')
+          ((exteriorDerivativeTestOn univ n' ω : TestFormOn univ (n' + 1)) :
+            DifferentialForm (Euclid P) (n' + 1)) = 0 := by
+        filter_upwards [h1, h2] with j hj1 hj2
+        have hsub0 : tsupport (ω : DifferentialForm (Euclid P) n') ⊆
+            dilation (xs j) (lams j) '' U := by
+          refine hR.trans ?_
+          intro v hv
+          have hv' : ‖v‖ ≤ |R| := (mem_closedBall_zero_iff.1 hv).trans (le_abs_self R)
+          refine ⟨xs j + lams j • v, hεU ?_, ?_⟩
+          · rw [mem_ball]
+            calc dist (xs j + lams j • v) x ≤ dist (xs j + lams j • v) (xs j) + dist (xs j) x :=
+                  dist_triangle _ _ _
+              _ = lams j * ‖v‖ + dist (xs j) x := by
+                  rw [dist_eq_norm, add_sub_cancel_left, norm_smul,
+                    Real.norm_of_nonneg (hlams j).le]
+              _ < ε := by
+                  have : lams j * ‖v‖ ≤ lams j * (|R| + 1) :=
+                    mul_le_mul_of_nonneg_left (by linarith) (hlams j).le
+                  linarith
+          · simp only [dilation, dilationCLM, smul_apply, ContinuousLinearMap.id_apply,
+              smul_add, smul_smul, inv_mul_cancel₀ (hlams j).ne', one_smul]
+            abel
+        have hsub' : IsTestForm (exteriorDerivative (ω : DifferentialForm (Euclid P) n')) ∧
+            tsupport (exteriorDerivative (ω : DifferentialForm (Euclid P) n')) ⊆
+              dilation (xs j) (lams j) '' U :=
+          ⟨exteriorDerivative_isTestForm ω.property.1,
+            (tsupport_exteriorDerivative_subset _).trans hsub0⟩
+        have hsub : IsTestForm ((exteriorDerivativeTestOn univ n' ω : TestFormOn univ (n' + 1)) :
+              DifferentialForm (Euclid P) (n' + 1)) ∧
+            tsupport ((exteriorDerivativeTestOn univ n' ω : TestFormOn univ (n' + 1)) :
+              DifferentialForm (Euclid P) (n' + 1)) ⊆ dilation (xs j) (lams j) '' U := hsub'
+        unfold currentEval
+        rw [dite_eq_left hsub]
+        exact blowUp_exterior_eq_zero T hTb (xs j) (lams j) (hlams j).ne' _
+          ⟨ω.property.1, hsub0⟩ hsub'
+      exact tendsto_nhds_unique hlim (tendsto_const_nhds.congr' (hev.mono fun j hj => hj.symm))
+  -- `α ∘ (c • id) = cⁿ • α` for an `n`-covector `α`
+  have covector_comp_smul_id {P n : ℕ} (α : Covector (Euclid P) n) (c : ℝ) :
+      α.compContinuousLinearMap (c • ContinuousLinearMap.id ℝ (Euclid P)) = c ^ n • α := by
+    ext v
+    simp only [ContinuousAlternatingMap.compContinuousLinearMap_apply,
+      ContinuousAlternatingMap.smul_apply, smul_eq_mul]
+    have h1 : ((c • ContinuousLinearMap.id ℝ (Euclid P) : Euclid P →L[ℝ] Euclid P) ∘ v) =
+        fun i => c • v i := by
+      funext i; simp
+    rw [h1]
+    have := α.toMultilinearMap.map_smul_univ (fun _ => c) v
+    simpa [Finset.prod_const, Finset.card_univ, Fintype.card_fin] using this
+  -- a test form `β = λ⁻ⁿ • (ω ∘ g)` with `‖ω‖ ≤ 1` and `spt β ⊆ W` has `T(β) ≤ λ⁻ⁿ M_W(T)`
+  have eval_le_massOn {P n : ℕ} {U : Set (Euclid P)} (T : GeometricCurrentOn U n) (lam : ℝ)
+      (hlam : 0 < lam) (W : Set (Euclid P)) (β : TestFormOn U n) (g : Euclid P → Euclid P)
+      (ω : DifferentialForm (Euclid P) n)
+      (hβ : ∀ y, (β : DifferentialForm (Euclid P) n) y = (lam⁻¹ ^ n) • ω (g y))
+      (hnorm : ∀ y, covectorEuclideanNorm (ω y) ≤ 1)
+      (hsupp : tsupport (β : DifferentialForm (Euclid P) n) ⊆ W) :
+      ENNReal.ofReal (T β) ≤ ENNReal.ofReal (lam⁻¹ ^ n) * T.massOn W := by
+    set ω' : TestFormOn U n := (lam ^ n) • β with hω'
+    have hββ : β = (lam⁻¹ ^ n) • ω' := by
+      rw [hω', smul_smul, ← mul_pow, inv_mul_cancel₀ hlam.ne', one_pow, one_smul]
+    have hω'val : ∀ y, (ω' : DifferentialForm (Euclid P) n) y = ω (g y) := by
+      intro y
+      change (lam ^ n) • (β : DifferentialForm (Euclid P) n) y = ω (g y)
+      rw [hβ y, smul_smul, ← mul_pow, mul_inv_cancel₀ hlam.ne', one_pow, one_smul]
+    have hadm : ω' ∈ massAdmissibleOn U n W := by
+      refine ⟨?_, fun y => by rw [hω'val y]; exact hnorm (g y)⟩
+      exact (tsupport_smul_subset_right (fun _ : Euclid P => lam ^ n)
+        (β : DifferentialForm (Euclid P) n)).trans hsupp
+    have hTβ : T β = lam⁻¹ ^ n * T ω' := by
+      conv_lhs => rw [hββ]
+      rw [map_smul, smul_eq_mul]
+    rw [hTβ, ENNReal.ofReal_mul (by positivity)]
+    gcongr
+    exact T.le_massOn hadm
+  -- mass scaling of blow-ups: for `ω` admissible in `B_ρ(w)`,
+  -- `η_{x,λ#}T(ω) ≤ λ⁻ⁿ M_{B_{λρ}(x+λw)}(T)`
+  have blowUp_eval_le {P n : ℕ} {U : Set (Euclid P)} (T : GeometricCurrentOn U n)
+      (x w : Euclid P) (lam ρ : ℝ) (hlam : 0 < lam) (ω : TestFormOn (dilation x lam '' U) n)
+      (hω : ω ∈ massAdmissibleOn (dilation x lam '' U) n (ball w ρ)) :
+      ENNReal.ofReal (blowUp T x lam hlam.ne' ω) ≤
+        ENNReal.ofReal (lam⁻¹ ^ n) * T.massOn (ball (x + lam • w) (lam * ρ)) := by
+    unfold blowUp
+    rw [GeometricCurrentOn.affinePushforward_apply, GeometricCurrentOn.restrictDomain_apply]
+    apply eval_le_massOn T lam hlam _ _ (dilation x lam) (ω : DifferentialForm (Euclid P) n)
+    · intro y
+      simp only [testFormOnInclusion_coe, affinePullbackTestOn_coe, affinePullbackForm]
+      rw [show dilationCLM P lam = lam⁻¹ • ContinuousLinearMap.id ℝ (Euclid P) from rfl,
+        covector_comp_smul_id]
+      rfl
+    · exact hω.2
+    · simp only [testFormOnInclusion_coe, affinePullbackTestOn_coe]
+      refine (tsupport_affinePullbackForm_subset _ _ _).trans ?_
+      intro y hy
+      have hy' : -(lam⁻¹ • x) + dilationCLM P lam y ∈ ball w ρ := hω.1 hy
+      rw [mem_ball, dist_eq_norm] at hy' ⊢
+      have hrw : y - (x + lam • w) = lam • (-(lam⁻¹ • x) + dilationCLM P lam y - w) := by
+        simp only [dilationCLM, smul_apply, ContinuousLinearMap.id_apply, smul_sub, smul_add,
+          smul_neg, smul_smul, mul_inv_cancel₀ hlam.ne', one_smul]
+        abel
+      rw [hrw, norm_smul, Real.norm_of_nonneg hlam.le]
+      exact mul_lt_mul_of_pos_left hy' hlam
+  -- a bound `μ_T(B_ρ(y)) ≤ c ωₙ ρⁿ` (`y ∈ B_s(z)`, `ρ < ρ₀`) bounds by `c` the densities of
+  -- every weak limit of blow-ups centred in `B_r(z)`, `r < s`, with scales tending to `0`
+  have blowUp_limit_density_le {P n : ℕ} {U : Set (Euclid P)} (T : GeometricCurrentOn U n)
+      (z : Euclid P) (r s c ρ₀ : ℝ) (hrs : r < s) (hc : 0 ≤ c) (hρ₀ : 0 < ρ₀)
+      (hzsU : ball z s ⊆ U)
+      (hmass : ∀ y ∈ ball z s, ∀ ρ : ℝ, 0 < ρ → ρ < ρ₀ →
+        T.massOn (ball y ρ) ≤ ENNReal.ofReal c * unitBallVolume n * ENNReal.ofReal (ρ ^ n))
+      (S : GeometricCurrentOn (univ : Set (Euclid P)) n) (xs : ℕ → Euclid P) (lams : ℕ → ℝ)
+      (hlams : ∀ i, 0 < lams i) (hxs : ∀ i, xs i ∈ ball z r)
+      (hlam0 : Tendsto lams atTop (𝓝 0))
+      (hconv : ConvergesWeakly (fun i => blowUp T (xs i) (lams i) (hlams i).ne') S)
+      (w : Euclid P) (θ : ℝ) (hθ : HasMassDensity S w θ) : θ ≤ c := by
+    have hmassS : ∀ ρ : ℝ, 0 < ρ →
+        S.massOn (ball w ρ) ≤ ENNReal.ofReal c * unitBallVolume n * ENNReal.ofReal (ρ ^ n) := by
+      intro ρ hρ
+      apply sSup_le
+      rintro _ ⟨ω, hω, rfl⟩
+      have h1 : ∀ᶠ i in atTop, lams i * (‖w‖ + ρ) < s - r := by
+        have : Tendsto (fun i => lams i * (‖w‖ + ρ)) atTop (𝓝 (0 * (‖w‖ + ρ))) :=
+          hlam0.mul_const _
+        rw [zero_mul] at this
+        exact this (Iio_mem_nhds (by linarith))
+      have h2 : ∀ᶠ i in atTop, lams i * ρ < ρ₀ := by
+        have : Tendsto (fun i => lams i * ρ) atTop (𝓝 (0 * ρ)) := hlam0.mul_const _
+        rw [zero_mul] at this
+        exact this (Iio_mem_nhds hρ₀)
+      have hev : ∀ᶠ i in atTop,
+          ENNReal.ofReal (currentEval (blowUp T (xs i) (lams i) (hlams i).ne')
+            (ω : DifferentialForm (Euclid P) n)) ≤
+            ENNReal.ofReal c * unitBallVolume n * ENNReal.ofReal (ρ ^ n) := by
+        filter_upwards [h1, h2] with i hi1 hi2
+        have hli := hlams i
+        have hmem : ∀ v : Euclid P, ‖v‖ ≤ ‖w‖ + ρ → xs i + lams i • v ∈ ball z s := by
+          intro v hv
+          rw [mem_ball]
+          calc dist (xs i + lams i • v) z ≤ dist (xs i + lams i • v) (xs i) + dist (xs i) z :=
+                dist_triangle _ _ _
+            _ = lams i * ‖v‖ + dist (xs i) z := by
+                rw [dist_eq_norm, add_sub_cancel_left, norm_smul, Real.norm_of_nonneg hli.le]
+            _ < s := by
+                have h3 : lams i * ‖v‖ ≤ lams i * (‖w‖ + ρ) :=
+                  mul_le_mul_of_nonneg_left hv hli.le
+                have h4 := mem_ball.1 (hxs i)
+                linarith
+        -- `spt ω ⊆ B_ρ(w) ⊆ η_{xᵢ,λᵢ}(U)`
+        have hsub : tsupport (ω : DifferentialForm (Euclid P) n) ⊆
+            dilation (xs i) (lams i) '' U := by
+          intro v hv
+          have hvw : v ∈ ball w ρ := hω.1 hv
+          refine ⟨xs i + lams i • v, hzsU (hmem v ?_), ?_⟩
+          · have := norm_le_norm_add_norm_sub' v w
+            rw [mem_ball, dist_eq_norm] at hvw
+            linarith
+          · simp only [dilation, dilationCLM, smul_apply, ContinuousLinearMap.id_apply,
+              smul_add, smul_smul, inv_mul_cancel₀ hli.ne', one_smul]
+            abel
+        have hsub' : IsTestForm (ω : DifferentialForm (Euclid P) n) ∧
+            tsupport (ω : DifferentialForm (Euclid P) n) ⊆ dilation (xs i) (lams i) '' U :=
+          ⟨ω.property.1, hsub⟩
+        have hce : currentEval (blowUp T (xs i) (lams i) (hlams i).ne')
+            (ω : DifferentialForm (Euclid P) n) =
+            blowUp T (xs i) (lams i) (hlams i).ne'
+              ⟨(ω : DifferentialForm (Euclid P) n), hsub'⟩ := by
+          unfold currentEval
+          rw [dite_eq_left hsub']
+        rw [hce]
+        have hadm : (⟨(ω : DifferentialForm (Euclid P) n), hsub'⟩ :
+            TestFormOn (dilation (xs i) (lams i) '' U) n) ∈
+            massAdmissibleOn (dilation (xs i) (lams i) '' U) n (ball w ρ) := hω
+        refine (blowUp_eval_le T (xs i) w (lams i) ρ hli _ hadm).trans ?_
+        have hT := hmass _ (hmem w (by linarith)) (lams i * ρ) (mul_pos hli hρ) hi2
+        calc ENNReal.ofReal ((lams i)⁻¹ ^ n) * T.massOn (ball (xs i + lams i • w) (lams i * ρ))
+            ≤ ENNReal.ofReal ((lams i)⁻¹ ^ n) *
+                (ENNReal.ofReal c * unitBallVolume n * ENNReal.ofReal ((lams i * ρ) ^ n)) := by
+              gcongr
+          _ = ENNReal.ofReal c * unitBallVolume n *
+                (ENNReal.ofReal ((lams i)⁻¹ ^ n) * ENNReal.ofReal ((lams i * ρ) ^ n)) := by ring
+          _ = ENNReal.ofReal c * unitBallVolume n * ENNReal.ofReal (ρ ^ n) := by
+              rw [← ENNReal.ofReal_mul (by positivity), ← mul_pow, ← mul_assoc,
+                inv_mul_cancel₀ hli.ne', one_mul]
+      exact le_of_tendsto (ENNReal.tendsto_ofReal (hconv ω)) hev
+    have hle : ∀ᶠ ρ in 𝓝[>] (0 : ℝ),
+        S.massOn (ball w ρ) / (unitBallVolume n * ENNReal.ofReal (ρ ^ n)) ≤ ENNReal.ofReal c := by
+      filter_upwards [self_mem_nhdsWithin] with ρ hρ
+      apply ENNReal.div_le_of_le_mul
+      rw [← mul_assoc]
+      exact hmassS ρ hρ
+    exact (ENNReal.ofReal_le_ofReal_iff hc).1 (le_of_tendsto hθ.2 hle)
+  -- a finite family of positive reals has a positive lower bound
+  have finset_pos_min {α : Type} (t : Finset α) (f : α → ℝ) (hf : ∀ x ∈ t, 0 < f x) :
+      ∃ m : ℝ, 0 < m ∧ ∀ x ∈ t, m ≤ f x := by
+    classical
+    induction t using Finset.induction_on with
+    | empty => exact ⟨1, one_pos, by simp⟩
+    | insert a t ha ih =>
+      obtain ⟨m, hm, hmt⟩ := ih (fun x hx => hf x (Finset.mem_insert_of_mem hx))
+      refine ⟨min m (f a), lt_min hm (hf a (Finset.mem_insert_self a t)), ?_⟩
+      intro x hx
+      rcases Finset.mem_insert.1 hx with rfl | hx
+      · exact min_le_right _ _
+      · exact (min_le_left _ _).trans (hmt x hx)
+  have unitBallVolume_ne_zero (n : ℕ) : unitBallVolume n ≠ 0 :=
+    (measure_ball_pos volume (0 : Euclid n) one_pos).ne'
+  have unitBallVolume_ne_top (n : ℕ) : unitBallVolume n ≠ ⊤ :=
+    (measure_ball_lt_top (μ := volume) (x := (0 : Euclid n)) (r := 1)).ne
+  -- local form of the uniform density bound (book (1)): if `Θ(y) = a < θ₁ < θ'` and the
+  -- monotonicity of `e^{Λρ}ρ⁻ⁿμ_T(B_ρ(y'))` holds on balls in `K''`, then
+  -- `μ_T(B_ρ(y')) ≤ θ'ωₙρⁿ` for `y'` near `y` and `ρ` small
+  have local_density_bound {P n : ℕ} {U : Set (Euclid P)} (T : GeometricCurrentOn U n)
+      (K'' : Set (Euclid P)) (Λ : ℝ) (hΛ : 0 ≤ Λ)
+      (hmono : ∀ (y : Euclid P) (R : ℝ), closedBall y R ⊆ K'' →
+        MonotoneOn (fun ρ : ℝ => ENNReal.ofReal (Real.exp (Λ * ρ) / ρ ^ n) * T.massOn (ball y ρ))
+          (Ioo 0 R))
+      (y : Euclid P) (a θ₁ θ' σ : ℝ) (ha : HasMassDensity T y a) (haθ₁ : a < θ₁)
+      (hθ₁θ' : θ₁ < θ') (hσ : 0 < σ)
+      (hcont : ∀ y' ∈ ball y σ, ∀ ρ : ℝ, ρ < σ → closedBall y' ρ ⊆ K'') :
+      ∃ τ R : ℝ, 0 < τ ∧ 0 < R ∧ ∀ y' ∈ ball y τ, ∀ ρ : ℝ, 0 < ρ → ρ < R →
+        T.massOn (ball y' ρ) ≤ ENNReal.ofReal θ' * unitBallVolume n * ENNReal.ofReal (ρ ^ n) := by
+    have ha0 : 0 ≤ a := ha.1
+    have hθ₁0 : 0 < θ₁ := by linarith
+    set θ₃ := (a + θ₁) / 2 with hθ₃
+    have hθ₃a : a < θ₃ := by linarith
+    have hθ₃θ₁ : θ₃ < θ₁ := by linarith
+    have hθ₃0 : 0 < θ₃ := by linarith
+    set A := unitBallVolume n with hAdef
+    have hA0 : A ≠ 0 := unitBallVolume_ne_zero n
+    have hAtop : A ≠ ⊤ := unitBallVolume_ne_top n
+    -- choose `ρ_y < σ` with `μ_T(B_{ρ_y}(y)) < θ₃ωₙρ_yⁿ` and `e^{Λρ_y}θ₃ < θ₁`
+    have e1 : ∀ᶠ t in 𝓝[>] (0 : ℝ),
+        T.massOn (ball y t) / (A * ENNReal.ofReal (t ^ n)) < ENNReal.ofReal θ₃ :=
+      ha.2 (Iio_mem_nhds ((ENNReal.ofReal_lt_ofReal_iff hθ₃0).2 hθ₃a))
+    have e2 : ∀ᶠ t in 𝓝[>] (0 : ℝ), Real.exp (Λ * t) * θ₃ < θ₁ := by
+      have hc : Tendsto (fun t : ℝ => Real.exp (Λ * t) * θ₃) (𝓝[>] 0)
+          (𝓝 (Real.exp (Λ * 0) * θ₃)) :=
+        ((Real.continuous_exp.comp (continuous_const.mul continuous_id)).mul
+          continuous_const).continuousAt.tendsto.mono_left nhdsWithin_le_nhds
+      rw [mul_zero, Real.exp_zero, one_mul] at hc
+      exact hc (Iio_mem_nhds hθ₃θ₁)
+    have e3 : ∀ᶠ t in 𝓝[>] (0 : ℝ), t ∈ Ioo 0 σ := Ioo_mem_nhdsGT hσ
+    obtain ⟨ρy, h1, h2, h3⟩ := (e1.and (e2.and e3)).exists
+    have hρy0 : 0 < ρy := h3.1
+    have hρyσ : ρy < σ := h3.2
+    have hAρ0 : A * ENNReal.ofReal (ρy ^ n) ≠ 0 :=
+      mul_ne_zero hA0 (by rw [Ne, ENNReal.ofReal_eq_zero, not_le]; positivity)
+    have hAρtop : A * ENNReal.ofReal (ρy ^ n) ≠ ⊤ := ENNReal.mul_ne_top hAtop ENNReal.ofReal_ne_top
+    have hm1 : T.massOn (ball y ρy) < ENNReal.ofReal θ₃ * (A * ENNReal.ofReal (ρy ^ n)) :=
+      (ENNReal.div_lt_iff (Or.inl hAρ0) (Or.inl hAρtop)).1 h1
+    have h61 : ENNReal.ofReal (Real.exp (Λ * ρy)) * T.massOn (ball y ρy) ≤
+        ENNReal.ofReal θ₁ * A * ENNReal.ofReal (ρy ^ n) := by
+      calc ENNReal.ofReal (Real.exp (Λ * ρy)) * T.massOn (ball y ρy)
+          ≤ ENNReal.ofReal (Real.exp (Λ * ρy)) *
+              (ENNReal.ofReal θ₃ * (A * ENNReal.ofReal (ρy ^ n))) := by
+            gcongr
+        _ = ENNReal.ofReal (Real.exp (Λ * ρy) * θ₃) * A * ENNReal.ofReal (ρy ^ n) := by
+            rw [ENNReal.ofReal_mul (Real.exp_pos _).le]; ring
+        _ ≤ ENNReal.ofReal θ₁ * A * ENNReal.ofReal (ρy ^ n) := by
+            gcongr
+    -- choose `τ < ρ_y` with `θ₁ρ_yⁿ < θ'(ρ_y − τ)ⁿ`
+    have e4 : ∀ᶠ τ in 𝓝[>] (0 : ℝ), θ₁ * ρy ^ n < θ' * (ρy - τ) ^ n := by
+      have hc : Tendsto (fun τ : ℝ => θ' * (ρy - τ) ^ n) (𝓝[>] 0) (𝓝 (θ' * (ρy - 0) ^ n)) :=
+        ((continuous_const.mul ((continuous_const.sub continuous_id).pow n)).continuousAt.tendsto
+          ).mono_left nhdsWithin_le_nhds
+      rw [sub_zero] at hc
+      have hlt : θ₁ * ρy ^ n < θ' * ρy ^ n := mul_lt_mul_of_pos_right hθ₁θ' (by positivity)
+      exact hc (Ioi_mem_nhds hlt)
+    have e5 : ∀ᶠ τ in 𝓝[>] (0 : ℝ), τ ∈ Ioo 0 ρy := Ioo_mem_nhdsGT hρy0
+    obtain ⟨τ, h4, h5⟩ := (e4.and e5).exists
+    have hτ0 : 0 < τ := h5.1
+    have hτρ : τ < ρy := h5.2
+    set R := ρy - τ with hRdef
+    have hR0 : 0 < R := by linarith
+    have hRρ : R < ρy := by linarith
+    refine ⟨τ, R, hτ0, hR0, ?_⟩
+    intro y' hy' ρ hρ0 hρR
+    -- monotonicity at `y'` and `B_R(y') ⊆ B_{ρ_y}(y)`
+    have hcb : closedBall y' ρy ⊆ K'' := hcont y' (ball_subset_ball (by linarith) hy') ρy hρyσ
+    have hgρ : ENNReal.ofReal (Real.exp (Λ * ρ) / ρ ^ n) * T.massOn (ball y' ρ) ≤
+        ENNReal.ofReal (Real.exp (Λ * R) / R ^ n) * T.massOn (ball y' R) :=
+      hmono y' ρy hcb ⟨hρ0, by linarith⟩ ⟨hR0, hRρ⟩ hρR.le
+    have hball : ball y' R ⊆ ball y ρy := by
+      intro z hz
+      rw [mem_ball] at hz hy' ⊢
+      calc dist z y ≤ dist z y' + dist y' y := dist_triangle _ _ _
+        _ < R + τ := add_lt_add hz hy'
+        _ = ρy := by rw [hRdef]; ring
+    have hmR : T.massOn (ball y' R) ≤ T.massOn (ball y ρy) := T.massOn_mono hball
+    have hexp : Real.exp (Λ * R) ≤ Real.exp (Λ * ρy) :=
+      Real.exp_le_exp.2 (mul_le_mul_of_nonneg_left hRρ.le hΛ)
+    have hgR : ENNReal.ofReal (Real.exp (Λ * R) / R ^ n) * T.massOn (ball y' R) ≤
+        ENNReal.ofReal θ' * A := by
+      calc ENNReal.ofReal (Real.exp (Λ * R) / R ^ n) * T.massOn (ball y' R)
+          ≤ ENNReal.ofReal (Real.exp (Λ * ρy) / R ^ n) * T.massOn (ball y ρy) := by
+            gcongr
+        _ = ENNReal.ofReal (1 / R ^ n) *
+              (ENNReal.ofReal (Real.exp (Λ * ρy)) * T.massOn (ball y ρy)) := by
+            rw [← mul_assoc, ← ENNReal.ofReal_mul (by positivity)]
+            congr 2
+            ring
+        _ ≤ ENNReal.ofReal (1 / R ^ n) * (ENNReal.ofReal θ₁ * A * ENNReal.ofReal (ρy ^ n)) := by
+            gcongr
+        _ = ENNReal.ofReal (θ₁ * ρy ^ n / R ^ n) * A := by
+            rw [show θ₁ * ρy ^ n / R ^ n = 1 / R ^ n * θ₁ * ρy ^ n by ring,
+              ENNReal.ofReal_mul (by positivity), ENNReal.ofReal_mul (by positivity)]
+            ring
+        _ ≤ ENNReal.ofReal θ' * A := by
+            gcongr
+            rw [div_le_iff₀ (by positivity)]
+            exact h4.le
+    have hd : ENNReal.ofReal (1 / ρ ^ n) * T.massOn (ball y' ρ) ≤ ENNReal.ofReal θ' * A := by
+      refine le_trans ?_ (hgρ.trans hgR)
+      gcongr
+      exact Real.one_le_exp (mul_nonneg hΛ hρ0.le)
+    have hone : ENNReal.ofReal (ρ ^ n) * ENNReal.ofReal (1 / ρ ^ n) = 1 := by
+      rw [← ENNReal.ofReal_mul (by positivity), mul_one_div_cancel (by positivity),
+        ENNReal.ofReal_one]
+    calc T.massOn (ball y' ρ) = ENNReal.ofReal (ρ ^ n) *
+          (ENNReal.ofReal (1 / ρ ^ n) * T.massOn (ball y' ρ)) := by
+          rw [← mul_assoc, hone, one_mul]
+      _ ≤ ENNReal.ofReal (ρ ^ n) * (ENNReal.ofReal θ' * A) := by gcongr
+      _ = ENNReal.ofReal θ' * A * ENNReal.ofReal (ρ ^ n) := by ring
+  -- a minimizing cycle `S` whose densities are invariant under `w ↦ y + λw` (`y ∈ L`, `λ > 0`),
+  -- with `n ≤ dim L + 1`, has integer density at `0`: split off an `(n−1)`-dimensional
+  -- subspace of `L` and classify the remaining one-dimensional cone
+  have invariant_density_nat {P n : ℕ} (S : GeometricCurrentOn (univ : Set (Euclid P)) n)
+      (L : Submodule ℝ (Euclid P)) (hn : 1 ≤ n) (hnL : n ≤ Module.finrank ℝ L + 1)
+      (hmin : IsMinimizingIn S univ) (hbd : BoundaryVanishes S)
+      (hinv : ∀ y ∈ L, ∀ lam : ℝ, 0 < lam → ∀ (w : Euclid P) (θ : ℝ),
+        HasMassDensity S w θ → HasMassDensity S (y + lam • w) θ)
+      (θ : ℝ) (hθ : HasMassDensity S 0 θ) : ∃ m : ℕ, θ = m := by
+    obtain ⟨L', hL'L, hL'⟩ : ∃ L' : Submodule ℝ (Euclid P), L' ≤ L ∧
+        Module.finrank ℝ L' = n - 1 := by
+      let b := Module.finBasis ℝ L
+      have hle : n - 1 ≤ Module.finrank ℝ L := by omega
+      refine ⟨Submodule.span ℝ
+        (Set.range (fun i : Fin (n - 1) => (b (Fin.castLE hle i) : Euclid P))), ?_, ?_⟩
+      · rw [Submodule.span_le]
+        rintro _ ⟨i, rfl⟩
+        exact (b (Fin.castLE hle i)).2
+      · have hli : LinearIndependent ℝ
+            (fun i : Fin (n - 1) => (b (Fin.castLE hle i) : Euclid P)) :=
+          (b.linearIndependent.comp (Fin.castLE hle) (Fin.castLE_injective hle)).map'
+            L.subtype (Submodule.ker_subtype L)
+        rw [finrank_span_eq_card hli]
+        simp
+    obtain ⟨-, -, S₀, hS₀min, hS₀bd, hS₀cone, -, -, hS₀dens⟩ :=
+      Submission.dimred_invariant_cone_splitting P n S L' (by omega) hmin hbd
+        (fun y hy => hinv y (hL'L hy))
+    have hS₀θ : HasMassDensity S₀ 0 θ := by
+      have h00 := (hS₀dens 0 L'.zero_mem 0 (Submodule.zero_mem _) θ).1
+      rw [add_zero] at h00
+      exact h00 hθ
+    -- `S₀` has degree `n − (n − 1) = 1`
+    have key : ∃ S₁ : GeometricCurrentOn (univ : Set (Euclid P)) (n - Module.finrank ℝ L'),
+        IsMinimizingIn S₁ univ ∧ BoundaryVanishes S₁ ∧ IsConeCurrent S₁ ∧
+          HasMassDensity S₁ 0 θ :=
+      ⟨S₀, hS₀min, hS₀bd, hS₀cone, hS₀θ⟩
+    rw [show n - Module.finrank ℝ L' = 1 by omega] at key
+    obtain ⟨S₁, hS₁min, hS₁bd, hS₁cone, hS₁θ⟩ := key
+    obtain ⟨e, m, -, -, hm⟩ :=
+      Submission.dimred_one_dim_minimizing_cone P S₁ hS₁min hS₁bd hS₁cone
+    exact ⟨m, density_unique hS₁θ (hm 0 (Submodule.zero_mem _))⟩
+  intro n k ℓ hℓ U N T hU hN hcl hmin hspt hbd ξ hξ θ hθ hθ2
+  -- Step 0: for `n = 0`, `T = 0` has empty support
+  rcases Nat.eq_zero_or_pos n with rfl | hn
+  · have hT0 := Submission.dimred_zero_dim_minimizing_eq_zero (0 + k) U (U ∩ N) T hU hmin hspt
+    subst hT0
+    rw [support_zero hU] at hξ
+    exact absurd hξ (notMem_empty _)
+  have hn1 : 1 ≤ n := hn
+  have hbs : boundarySupport T = ∅ := by
+    obtain ⟨n', rfl⟩ : ∃ n', n = n' + 1 := ⟨n - 1, by omega⟩
+    show T.boundary.support = ∅
+    have h0 : T.boundary = 0 := hbd
+    rw [h0]
+    exact support_zero hU
+  have hξU : ξ ∈ U := (hspt hξ).1
+  obtain ⟨hmonoK, -, ⟨Θ, hΘ, hΘusc⟩, hΘ1⟩ := Submission.dimred_minimizing_monotonicity (n + k)
+    n (n + ℓ) U N T hn1 (by omega) (by omega) hU hN hcl hmin hspt hbd
+  -- Step 1 (book (1)): `σ > 0` with `Θ < θ' < 2` on `B_{2σ}(ξ)` and `μ_T(B_ρ(y)) ≤ θ'ωₙρⁿ`
+  -- for `y ∈ B_{2σ}(ξ)`, `ρ < ρ₀`
+  obtain ⟨θ', hθθ', hθ'2⟩ : ∃ θ' : ℝ, θ < θ' ∧ θ' < 2 := ⟨(θ + 2) / 2, by linarith, by linarith⟩
+  have hθ'0 : 0 ≤ θ' := by linarith [hθ.1]
+  obtain ⟨θ₁, hθθ₁, hθ₁θ'⟩ : ∃ θ₁ : ℝ, θ < θ₁ ∧ θ₁ < θ' :=
+    ⟨(θ + θ') / 2, by linarith, by linarith⟩
+  have hΘξ : Θ ξ = θ := density_unique (hΘ ξ hξU) hθ
+  have hev : ∀ᶠ y in 𝓝 ξ, Θ y < θ₁ ∧ y ∈ U := by
+    have h1 := hΘusc ξ hξU θ₁ (by show Θ ξ < θ₁; rw [hΘξ]; exact hθθ₁)
+    rw [nhdsWithin_eq_nhds.2 (hU.mem_nhds hξU)] at h1
+    exact h1.and (hU.mem_nhds hξU)
+  obtain ⟨ε, hε, hεprop⟩ := Metric.eventually_nhds_iff.1 hev
+  set σ := ε / 5 with hσdef
+  have hσ : 0 < σ := by positivity
+  set K'' := closedBall ξ (4 * σ) with hK''
+  have hK''ε : ∀ y ∈ K'', dist y ξ < ε := by
+    intro y hy
+    have := mem_closedBall.1 hy
+    linarith
+  have hK''U : K'' ⊆ U := fun y hy => (hεprop (hK''ε y hy)).2
+  have hΘK'' : ∀ y ∈ K'', Θ y < θ₁ := fun y hy => (hεprop (hK''ε y hy)).1
+  obtain ⟨Λ, hΛ, hmono⟩ := hmonoK K'' (isCompact_closedBall _ _) hK''U
+  have hloc : ∀ y ∈ closedBall ξ (2 * σ), ∃ τ R : ℝ, 0 < τ ∧ 0 < R ∧
+      ∀ y' ∈ ball y τ, ∀ ρ : ℝ, 0 < ρ → ρ < R →
+        T.massOn (ball y' ρ) ≤ ENNReal.ofReal θ' * unitBallVolume n * ENNReal.ofReal (ρ ^ n) := by
+    intro y hy
+    have hyK'' : y ∈ K'' := closedBall_subset_closedBall (by linarith) hy
+    refine local_density_bound T K'' Λ hΛ hmono y (Θ y) θ₁ θ' σ (hΘ y (hK''U hyK''))
+      (hΘK'' y hyK'') hθ₁θ' hσ ?_
+    intro y' hy' ρ hρ z hz
+    rw [mem_closedBall] at hz ⊢
+    have h1 := mem_closedBall.1 hy
+    have h2 := mem_ball.1 hy'
+    calc dist z ξ ≤ dist z y' + dist y' y + dist y ξ := dist_triangle4 _ _ _ _
+      _ ≤ 4 * σ := by linarith
+  choose! τf Rf hτf hRf hbound using hloc
+  obtain ⟨t, ht⟩ := (isCompact_closedBall ξ (2 * σ)).elim_nhds_subcover (fun y => ball y (τf y))
+    (fun y hy => ball_mem_nhds y (hτf y hy))
+  obtain ⟨ρ₀, hρ₀, hρ₀le⟩ := finset_pos_min t Rf (fun y hy => hRf y (ht.1 y hy))
+  have hcb : closedBall ξ (2 * σ) ⊆ U :=
+    fun y hy => hK''U (closedBall_subset_closedBall (by linarith) hy)
+  have hdens : ∀ y ∈ ball ξ (2 * σ), ∀ θ'' : ℝ, HasMassDensity T y θ'' → θ'' < 2 := by
+    intro y hy θ'' hθ''
+    have hyK'' : y ∈ K'' := closedBall_subset_closedBall (by linarith) (ball_subset_closedBall hy)
+    rw [density_unique hθ'' (hΘ y (hK''U hyK''))]
+    exact ((hΘK'' y hyK'').trans hθ₁θ').trans hθ'2
+  have hmass : ∀ y ∈ ball ξ (2 * σ), ∀ ρ : ℝ, 0 < ρ → ρ < ρ₀ →
+      T.massOn (ball y ρ) ≤ ENNReal.ofReal θ' * unitBallVolume n * ENNReal.ofReal (ρ ^ n) := by
+    intro y hy ρ hρ hρρ₀
+    obtain ⟨yi, hyit, hyyi⟩ := mem_iUnion₂.1 (ht.2 (ball_subset_closedBall hy))
+    exact hbound yi (ht.1 yi hyit) y hyyi ρ hρ (lt_of_lt_of_le hρρ₀ (hρ₀le yi hyit))
+  -- Step 2: the densities of zero-scale limits of blow-ups centred in `B_σ(ξ)` are `≤ θ'`
+  have hlim : ∀ (S : GeometricCurrentOn (univ : Set (Euclid (n + k))) n)
+      (xs : ℕ → Euclid (n + k)) (lams : ℕ → ℝ) (hlams : ∀ i, 0 < lams i),
+      (∀ i, xs i ∈ ball ξ σ) → Tendsto lams atTop (𝓝 0) →
+      ConvergesWeakly (fun i => blowUp T (xs i) (lams i) (hlams i).ne') S →
+      ∀ (w : Euclid (n + k)) (θ₀ : ℝ), HasMassDensity S w θ₀ → θ₀ ≤ θ' :=
+    fun S xs lams hlams hxs hl hc =>
+      blowUp_limit_density_le T ξ σ (2 * σ) θ' ρ₀ (by linarith) hθ'0 hρ₀
+        (ball_subset_closedBall.trans hcb) hmass S xs lams hlams hxs hl hc
+  -- Step 3 (book (8)): `sing T ∩ B_σ(ξ) = {x ∈ B_σ(ξ) : Θ(x) ≥ 1 + δ}`
+  obtain ⟨δ, hδ, hgap⟩ := Submission.dimred_cone_density_gap (n + k) n hn1
+  -- a point of density `< 1 + δ` has a tangent cone, a minimizing cone cycle of the same
+  -- density, so its density is `1` and it is regular
+  have hreg : ∀ x ∈ T.support, ∀ θ₀ : ℝ, HasMassDensity T x θ₀ → θ₀ < 1 + δ →
+      x ∈ regularSet T := by
+    intro x hx θ₀ hθ₀ hθ₀δ
+    have hxU : x ∈ U := (hspt hx).1
+    have hxsb : x ∈ T.support \ boundarySupport T := by
+      rw [hbs]; exact ⟨hx, notMem_empty x⟩
+    obtain ⟨-, htc⟩ := Submission.density_and_tangent_cones n k ℓ hℓ U N T hU hN hcl hmin hspt
+    let lams : ℕ → ℝ := fun j => 1 / ((j : ℝ) + 1)
+    have hlams : ∀ j, 0 < lams j := fun j => by positivity
+    have hlams0 : Tendsto lams atTop (𝓝 0) := tendsto_one_div_add_atTop_nhds_zero_nat
+    obtain ⟨φ, C, hφ, hconv, -, hCmin, hCcone, θ₂, hθ₂T, hθ₂C⟩ := htc x hxsb lams hlams hlams0
+    rw [← density_unique hθ₀ hθ₂T] at hθ₂C
+    have hCbd : BoundaryVanishes C :=
+      blowUp_limit_boundary T x (fun _ => x) (fun j => lams (φ j)) (fun j => hlams (φ j)) C hU
+        hxU hbd tendsto_const_nhds (hlams0.comp hφ.tendsto_atTop) hconv
+    have hθ₀1 : θ₀ = 1 :=
+      le_antisymm (hgap C θ₀ hCmin hCbd hCcone hθ₂C hθ₀δ) (hΘ1 x hx θ₀ hθ₀)
+    rw [hθ₀1] at hθ₀
+    -- `T`, as a constant sequence, has locally bounded mass
+    obtain ⟨R, hR⟩ := hmin.1
+    have hmassfin : ∀ W : Set (Euclid (n + k)), IsOpen W → CompactlyContained W U →
+        ⨆ _j : ℕ, T.massOn W < ∞ := by
+      intro W hW hWU
+      rw [ciSup_const, (Submission.dimred_im_mass_measure (n + k) n U T R hU hR).1 W hW
+        (subset_closure.trans hWU.2)]
+      calc R.measure W ≤ R.measure (closure W) := measure_mono subset_closure
+        _ = ∫⁻ y in R.carrier ∩ closure W, (R.mult y : ℝ≥0∞) ∂μHE[n] := by
+          rw [IMRep.measure, withDensity_apply _ isClosed_closure.measurableSet,
+            Measure.restrict_restrict isClosed_closure.measurableSet, Set.inter_comm]
+        _ < ∞ := lt_top_iff_ne_top.2 (R.locallyIntegrable_mult _ hWU.1 hWU.2)
+    have hNs : T.support ⊆ N := hspt.trans inter_subset_right
+    exact (Submission.density_one_implies_regular n k ℓ hℓ U N (fun _ => T) T (fun _ => x) x hU
+      hN hcl (fun _ => hmin) hmin (fun _ => hNs) hNs (fun _ => hbd) hbd hmassfin
+      (fun _ => tendsto_const_nhds) ⟨(hspt hx).2, hxU⟩ hθ₀ tendsto_const_nhds (fun _ => hx)).1
+  have hσU : ball ξ σ ⊆ U :=
+    (ball_subset_ball (by linarith)).trans (ball_subset_closedBall.trans hcb)
+  have hsing : singularSet T ∩ ball ξ σ =
+      {x | x ∈ ball ξ σ ∧ ∃ θ₀ : ℝ, 1 + δ ≤ θ₀ ∧ HasMassDensity T x θ₀} := by
+    ext x
+    simp only [mem_inter_iff, Set.mem_ofPred_eq, singularSet, Set.mem_sdiff]
+    constructor
+    · rintro ⟨⟨hxs, hxr⟩, hxb⟩
+      refine ⟨hxb, Θ x, ?_, hΘ x (hσU hxb)⟩
+      by_contra hlt
+      exact hxr (hreg x hxs (Θ x) (hΘ x (hσU hxb)) (not_le.1 hlt))
+    · rintro ⟨hxb, θ₀, hθ₀c, hθ₀⟩
+      -- off `spt T` the density is `0 < 1 + δ`
+      have hxs : x ∈ T.support := by
+        by_contra hxs
+        have hxz : x ∈ T.zeroRegion := by
+          by_contra h
+          exact hxs ⟨hσU hxb, h⟩
+        obtain ⟨W, ⟨hWo, -, -, hWv⟩, hxW⟩ := hxz
+        obtain ⟨ε', hε', hεW⟩ := Metric.isOpen_iff.1 hWo x hxW
+        have hzero : ∀ ρ, ρ ≤ ε' → T.massOn (ball x ρ) = 0 := by
+          intro ρ hρ
+          refine le_antisymm (sSup_le ?_) zero_le
+          rintro _ ⟨ω, hω, rfl⟩
+          show ENNReal.ofReal (T ω) ≤ 0
+          rw [hWv ω (hω.1.trans ((ball_subset_ball hρ).trans hεW))]
+          simp
+        have hlim0 : Tendsto (fun ρ : ℝ => T.massOn (ball x ρ) /
+            (unitBallVolume n * ENNReal.ofReal (ρ ^ n))) (𝓝[>] 0) (𝓝 0) := by
+          apply tendsto_const_nhds.congr'
+          filter_upwards [Ioo_mem_nhdsGT hε'] with ρ hρ
+          rw [hzero ρ hρ.2.le, ENNReal.zero_div]
+        have h0 := tendsto_nhds_unique hθ₀.2 hlim0
+        rw [ENNReal.ofReal_eq_zero] at h0
+        linarith
+      -- a regular point has integer density, which cannot lie in `[1 + δ, 2)`
+      refine ⟨⟨hxs, fun hxr => ?_⟩, hxb⟩
+      obtain ⟨m, ρ, hm1, hρ, hm⟩ :=
+        Submission.dimred_regular_point_density (n + k) n U T x hU hxr
+      have heq := density_unique hθ₀ (hm x ⟨hxs, mem_ball_self hρ⟩)
+      have h2 := hdens x (ball_subset_ball (by linarith) hxb) θ₀ hθ₀
+      have h1' : 1 < m := by exact_mod_cast (show (1 : ℝ) < m by linarith)
+      have h2' : m < 2 := by exact_mod_cast (show (m : ℝ) < 2 by linarith)
+      omega
+  -- Step 4 (book, proof of 7.4.4): dimension reduction with `c = 1 + δ`, `d₀ = n − 1`.  A
+  -- zero-scale limit whose densities are invariant under a subspace `L` with
+  -- `n ≤ dim L + 1` has integer density at `0`, which cannot lie in `[1 + δ, θ']`
+  have hnat : ∀ (S : GeometricCurrentOn (univ : Set (Euclid (n + k))) n)
+      (xs : ℕ → Euclid (n + k)) (lams : ℕ → ℝ) (hlams : ∀ i, 0 < lams i)
+      (L : Submodule ℝ (Euclid (n + k))) (θ₀ : ℝ), (∀ i, xs i ∈ ball ξ σ) →
+      Tendsto lams atTop (𝓝 0) →
+      ConvergesWeakly (fun i => blowUp T (xs i) (lams i) (hlams i).ne') S →
+      IsMinimizingIn S univ → BoundaryVanishes S → n ≤ Module.finrank ℝ L + 1 →
+      (∀ y ∈ L, ∀ lam : ℝ, 0 < lam → ∀ (w : Euclid (n + k)) (θ : ℝ),
+        HasMassDensity S w θ → HasMassDensity S (y + lam • w) θ) →
+      HasMassDensity S 0 θ₀ → 1 + δ ≤ θ₀ → False := by
+    intro S xs lams hlams L θ₀ hxs hl hc hSmin hSbd hnL hinv hθ₀ hθ₀c
+    obtain ⟨m, hm⟩ := invariant_density_nat S L hn1 hnL hSmin hSbd hinv θ₀ hθ₀
+    have hθ₀le := hlim S xs lams hlams hxs hl hc 0 θ₀ hθ₀
+    have h1 : 1 < m := by exact_mod_cast (show (1 : ℝ) < m by linarith)
+    have h2 : m < 2 := by exact_mod_cast (show (m : ℝ) < 2 by linarith)
+    omega
+  have hTR := Submission.dimred_threshold_reduction n k ℓ hℓ U N T hn1 hU hN hcl hmin hspt hbd
+    (1 + δ) (n - 1) ξ σ (by linarith) hσ hcb ?H1 ?H2
+  case H1 =>
+    -- a multiplicity-`c'` plane `Q`: its density `c'·1_Q` is `Q`-invariant
+    intro S xs lams hlams Q c' hxs hl hc hSmin hSbd hQ hc' hdS
+    have hQ0 : HasMassDensity S 0 c' := by
+      have h0 := hdS 0
+      rwa [Set.indicator_of_mem
+        (show (0 : Euclid (n + k)) ∈ (Q : Set (Euclid (n + k))) from Q.zero_mem)] at h0
+    refine hnat S xs lams hlams Q c' hxs hl hc hSmin hSbd (by omega) ?_ hQ0 hc'
+    intro y hy lam hlam w θ₀ hw
+    have hmem : y + lam • w ∈ Q ↔ w ∈ Q := by
+      constructor
+      · intro h
+        have h2 : lam • w ∈ Q := by
+          have h3 := Q.sub_mem h hy
+          rwa [add_sub_cancel_left] at h3
+        have h4 := Q.smul_mem lam⁻¹ h2
+        rwa [smul_smul, inv_mul_cancel₀ hlam.ne', one_smul] at h4
+      · intro h
+        exact Q.add_mem hy (Q.smul_mem lam h)
+    have h3 : Set.indicator (Q : Set (Euclid (n + k))) (fun _ => c') (y + lam • w) =
+        Set.indicator (Q : Set (Euclid (n + k))) (fun _ => c') w := by
+      by_cases hw' : w ∈ Q
+      · rw [Set.indicator_of_mem (show y + lam • w ∈ (Q : Set (Euclid (n + k))) from
+            hmem.2 hw'), Set.indicator_of_mem (show w ∈ (Q : Set (Euclid (n + k))) from hw')]
+      · rw [Set.indicator_of_notMem (show y + lam • w ∉ (Q : Set (Euclid (n + k))) from
+            fun h => hw' (hmem.1 h)),
+          Set.indicator_of_notMem (show w ∉ (Q : Set (Euclid (n + k))) from hw')]
+    rw [density_unique hw (hdS w), ← h3]
+    exact hdS (y + lam • w)
+  case H2 =>
+    -- an `L`-invariant limit with `{Θ_S ≥ 1 + δ} = L ∋ 0`, `dim L ≥ n − 1`
+    intro S xs lams hlams L hxs hl hc hSmin hSbd hdL hLn hinv hiff
+    obtain ⟨θ₀, hθ₀c, hθ₀⟩ := (hiff 0).2 L.zero_mem
+    exact hnat S xs lams hlams L θ₀ hxs hl hc hSmin hSbd (by omega) hinv hθ₀ hθ₀c
+  -- Step 5: `((n − 1 : ℕ) : ℝ) − 1 + α = n − 2 + α`; take `ρ = σ`
+  obtain ⟨hZ, -, -⟩ := hTR
+  refine ⟨σ, hσ, fun α hα => ?_⟩
+  rw [hsing]
+  have hcast : ((n - 1 : ℕ) : ℝ) - 1 + α = (n : ℝ) - 2 + α := by
+    rw [Nat.cast_sub hn1]; push_cast; ring
+  rw [← hcast]
+  exact hZ α hα
+
 end GMT.Ch07
