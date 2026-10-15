@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.minimizing_implies_stationary-a1.diffeo_pushforward-a1.piece_tangent_density-a1.piece_image_tangent-a1.rescaled_area_formula-a1",
+  "parent_id": "root.minimizing_implies_stationary-a1.diffeo_pushforward-a1.piece_tangent_density-a1.piece_image_tangent-a1",
+  "depth": 5,
+  "title": "Rescaled area formula for blow-ups of a Lipschitz image",
+  "statement": "Let P, n ∈ ℕ, F : ℝ^n → ℝ^P continuous, B ⊆ ℝ^n Borel, and J : ℝ^n → ℝ Borel with J ≥ 0. Write H^n = μHE[n] and λ for Lebesgue measure on ℝ^n. Assume the weighted area formula ∫⁻_{F(B)} g dH^n = ∫⁻_B ofReal(J(x))·g(F(x)) dλ(x) holds for every g : ℝ^P → [0,∞]. Let b ∈ ℝ^n, r > 0 and f : ℝ^P → ℝ continuous. Then ∫_{η_{F(b),r}(F(B))} f dH^n = ∫_{ℝ^n} 1_B(b + rc)·J(b + rc)·f(r^{-1}(F(b + rc) − F(b))) dλ(c), where η_{F(b),r} = blowUpMap (F b) r and 1_B·J = B.indicator J.",
+  "lean_statement": "∀ (P n : ℕ) (F : Euclid n → Euclid P) (B : Set (Euclid n)) (J : Euclid n → ℝ) (b : Euclid n) (r : ℝ) (f : Euclid P → ℝ), Continuous F → MeasurableSet B → Measurable J → (∀ a, 0 ≤ J a) → (∀ g : Euclid P → ℝ≥0∞, ∫⁻ y in F '' B, g y ∂μHE[n] = ∫⁻ x in B, ENNReal.ofReal (J x) * g (F x) ∂volume) → 0 < r → Continuous f → ∫ z in Poincare.SimonGMT.Chapter03.blowUpMap (F b) r '' (F '' B), f z ∂μHE[n] = ∫ c, B.indicator J (b + r • c) * f (r⁻¹ • (F (b + r • c) - F b)) ∂volume",
+  "lean_name": "pit_blowUp_image_setIntegral_eq_rescaled",
+  "depends_on": [
+    "root.minimizing_implies_stationary-a1.diffeo_pushforward-a1.piece_tangent_density-a1.piece_image_tangent-a1.blowup_scaling-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.minimizing_implies_stationary-a1.diffeo_pushforward-a1.piece_tangent_density-a1.piece_image_tangent-a1.blowup_scaling-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-piece-tan-96e209f8f6-a1"
+}
