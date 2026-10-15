@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.moving_blowups-a1.deformation_theorem-a1.lipschitz_pushforward-a1.im_cylinder-a1.piece_measure-a1",
+  "parent_id": "root.dimension_reduction_results-a1.moving_blowups-a1.deformation_theorem-a1.lipschitz_pushforward-a1.im_cylinder-a1",
+  "depth": 6,
+  "title": "Product formula for one injective Lipschitz piece: Ψ_*(L¹⌞(0,1) ⊗ Hⁿ⌞G(A)) = H^{n+1}⌞Ψ((0,1) × G(A)) (parent step 5, one piece)",
+  "statement": "Let N, n ∈ ℕ, G : ℝⁿ → ℝ^N L-Lipschitz, A ⊆ ℝⁿ Borel with G injective on A and differentiable at every point of A, and Hⁿ(G(A)) < ∞ (Hᵈ := μHE[d]). Put Ψ(t, x) := (t, x_1, …, x_N) ∈ ℝ^{N+1} (WithLp.toLp 2 (Fin.cons t (WithLp.ofLp x))). Then the image under Ψ of the product measure (Lebesgue measure on (0, 1)) ⊗ (Hⁿ restricted to G(A)) equals H^{n+1} restricted to Ψ((0, 1) × G(A)): Measure.map Ψ ((volume.restrict (Ioo 0 1)).prod (μHE[n].restrict (G '' A))) = μHE[n+1].restrict (Ψ '' (Ioo 0 1 ×ˢ G '' A)).",
+  "lean_statement": "∀ (N n : ℕ) (G : Euclid n → Euclid N) (A : Set (Euclid n)) (L : NNReal), LipschitzWith L G → MeasurableSet A → InjOn G A → (∀ a ∈ A, DifferentiableAt ℝ G a) → μHE[n] (G '' A) ≠ ∞ → Measure.map (fun p : ℝ × Euclid N => (WithLp.toLp 2 (Fin.cons p.1 (WithLp.ofLp p.2)) : Euclid (N + 1))) (((volume : Measure ℝ).restrict (Ioo 0 1)).prod (μHE[n].restrict (G '' A))) = μHE[n + 1].restrict ((fun p : ℝ × Euclid N => (WithLp.toLp 2 (Fin.cons p.1 (WithLp.ofLp p.2)) : Euclid (N + 1))) '' (Ioo (0 : ℝ) 1 ×ˢ (G '' A)))",
+  "lean_name": "dimred_mbl_dt_lp_imc_piece_measure",
+  "depends_on": [
+    "root.dimension_reduction_results-a1.moving_blowups-a1.deformation_theorem-a1.lipschitz_pushforward-a1.im_cylinder-a1.suspension-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.dimension_reduction_results-a1.moving_blowups-a1.deformation_theorem-a1.lipschitz_pushforward-a1.im_cylinder-a1.suspension-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-moving-blowups-a1-deformation-the-2082c44f10-a1"
+}

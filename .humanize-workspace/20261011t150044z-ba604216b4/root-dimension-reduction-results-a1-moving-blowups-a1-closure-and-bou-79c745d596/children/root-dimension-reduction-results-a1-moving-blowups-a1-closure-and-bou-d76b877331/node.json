@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.moving_blowups-a1.closure_and_boundary_rectifiability-a1.closure_succ-a1.smul_leibniz-a1",
+  "parent_id": "root.dimension_reduction_results-a1.moving_blowups-a1.closure_and_boundary_rectifiability-a1.closure_succ-a1",
+  "depth": 5,
+  "title": "Leibniz estimate for the iterated derivatives of f·g (smooth function times smooth k-form) under the frozen imports",
+  "statement": "Let P, k ∈ ℕ, let f : ℝ^P → ℝ be C^∞ and let g : ℝ^P → Λ^k(ℝ^P) be C^∞, where Λ^k(ℝ^P) = Covector (Euclid P) k is the space of continuous alternating k-linear forms with its operator norm; C^∞ means ContDiff ℝ (⊤ : ℕ∞). Then for every n ∈ ℕ and every x ∈ ℝ^P, ‖D^n(f·g)(x)‖ ≤ Σ_{i=0}^{n} C(n, i)·‖D^i f(x)‖·‖D^{n−i} g(x)‖, where f·g is x ↦ f(x)•g(x), D^i = iteratedFDeriv ℝ i, and ‖·‖ is the operator norm of continuous multilinear maps. (This is Mathlib's norm_iteratedFDeriv_smul_le, whose module Mathlib.Analysis.Calculus.ContDiff.Bounds is not in the frozen import closure of GMT.Ch07.Submission, so it must be proved here.)",
+  "lean_statement": "∀ (P k : ℕ) (f : Euclid P → ℝ) (g : Euclid P → Covector (Euclid P) k), ContDiff ℝ (⊤ : ℕ∞) f → ContDiff ℝ (⊤ : ℕ∞) g → ∀ (n : ℕ) (x : Euclid P), ‖iteratedFDeriv ℝ n (fun y => f y • g y) x‖ ≤ ∑ i ∈ Finset.range (n + 1), (n.choose i : ℝ) * ‖iteratedFDeriv ℝ i f x‖ * ‖iteratedFDeriv ℝ (n - i) g x‖",
+  "lean_name": "dmcbrcs_norm_iteratedFDeriv_smul_le",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-moving-blowups-a1-closure-and-bou-d76b877331-a1"
+}

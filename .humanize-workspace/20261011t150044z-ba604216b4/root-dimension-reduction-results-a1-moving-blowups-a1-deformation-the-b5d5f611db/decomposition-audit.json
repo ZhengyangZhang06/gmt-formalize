@@ -1,0 +1,69 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "mollif|convolution",
+        "hasFDerivAt_convolution_left|contDiff_convolution_left|contDiff_convolution_right",
+        "normed_neg|integral_normed|support_normed_eq|contDiff_normed|hasCompactSupport_normed",
+        "exists_hasCompactSupport_lintegral_sub_le|exists_hasCompactSupport_integral_sub_le",
+        "trace_smulRight",
+        "toDual_symm_apply|def toDual|norm_apply_le",
+        "dimred_mbl_dt_cbm_sa_|codim1_rdo_dg_sp_mollifier_adjoint",
+        "git show ae0277d4bed94a51b60fb4c7470fe259ed625e37:GMT/Ch07/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/smooth-approx-independent-audit-1iygrqw_/ChallengeTypes.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/smooth-approx-independent-audit-1iygrqw_/InlineConstructions.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/smooth-approx-independent-audit-1iygrqw_/SuppliedProofs.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Convolution.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/Convolution.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/BumpFunction/Normed.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/ContinuousMapDense.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Trace.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Dual.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Lp/PiLp.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-deformation-the-b5d5f611db/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-deformation-the-b5d5f611db/decomposition-v1.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-a9900b6593/isolated-comparator-result.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-a9900b6593/lean-audit-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-02.txt",
+        "/tmp/smooth-approx-independent-audit-1iygrqw_/ChallengeTypes.lean",
+        "/tmp/smooth-approx-independent-audit-1iygrqw_/InlineConstructions.lean",
+        "/tmp/smooth-approx-independent-audit-1iygrqw_/SuppliedProofs.lean"
+      ],
+      "conclusion": "The split is appropriate and establishes the exact selected parent. I independently recomputed the supplied contract digest. The snapshot pins match the compiler dependencies, and the inspected Mathlib files match the installed sources. No mollification/convolution lemma was found in the snapshot project. The required convolution calculus, normalized even bump, density, trace and Riesz lemmas exist. All four frozen types elaborate before any child implementation. Independent checks confirm scalar/vector convolution, Euclidean operator norms, trace coercions and measure instances; no matrix-unit construction occurs. The supplied proofs and exact parent assembly compile with only propext, Classical.choice and Quot.sound. All names are bare identifiers. The three new names are unreserved; the adjoint name belongs to a comparator-accepted declaration with a byte-identical frozen type. Dependencies are precisely mollify_adjoint and smoothed_field into grad_bound, followed by grad_bound and mollify_l1 into the parent. The normalized even bumps satisfy every child hypothesis, and the L¹ estimate yields the required convergence for every δ > 0."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "mollify_adjoint",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The standalone one-line type matches the prose, including evenness, C¹ compact support and both integrability hypotheses. Steps 0–5 justify bounded kernel derivatives, derivative oddness, differentiation of both convolutions, the rank-one trace identity and Fubini using C‖s(x)‖|u(z)|. These give the exact sign and identity without circular reliance. Accepted-declaration reuse has the identical frozen type and verified standard axioms."
+    },
+    {
+      "key": "smoothed_field",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type includes every stated hypothesis and all four conclusions. Bounded a.e.-strongly measurable s is locally integrable, giving smooth convolution. Nonnegativity and normalization give the unit bound. Coordinate estimates place support in the closed bounded box P inside Q₁; taking closure proves both compact support and the required tsupport inclusion. The proof also covers empty Q_δ and uses no sibling or parent theorem."
+    },
+    {
+      "key": "grad_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact type matches the prose, including kernel evenness and the original test-field hypothesis. The proof establishes measurability and integrability of the normalized Riesz field, including its zero-gradient case, and its pairing with Df equals the indicated operator norm. Both declared dependencies apply with all hypotheses verified. Testing −G and applying the adjoint identity gives the desired bound, including empty cubes. Dependencies are correctly directed and non-circular."
+    },
+    {
+      "key": "mollify_l1",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The standalone type exactly states the uniform ε–r claim with an extended-valued L¹ integral. Tonelli and translation invariance prove contraction; density supplies the first error bound. Uniform continuity and compact support give a radius independent of ρ and the second error bound. Convolution existence justifies linearity, and the three ε/4 bounds prove the conclusion. The proof covers n = 0, has no sibling dependencies and requires no further planning."
+    }
+  ],
+  "required_changes": []
+}
