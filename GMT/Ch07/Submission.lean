@@ -142576,4 +142576,35 @@ theorem Submission.idtp_tdc_planes_union_vertex_density : ∀ (P q : ℕ) (C : G
   rw [hc i _ hm inter_subset_right, hset, measure_sdiff_null hH0,
     Submission.idtp_tdc_subspace_ball_measure P 2 (Ps i) 0 ρ (h2 i) (Ps i).zero_mem hρ]
 
+/-- **Simon, proof of 7.3.3(1), the 2-dimensional cones** (chapter-07.txt lines 497–510): a
+2-dimensional minimizing cone `C` with `∂C = 0` has integer density at the vertex.  Off `0` the
+density of `C` is locally constant (`idtp_tdc_density_locally_constant`), so `spt C` is locally a
+2-plane there (`idtp_cone_constant_density_planar`).  Being closed and dilation invariant
+(`idtp_tdc_cone_dilation`), `spt C ∖ {0}` lies in finitely many 2-planes `Pᵢ` with
+`Pᵢ ∩ Pⱼ = {0}` (`idtp_tdc_cone_set_finite_planes`, the classification the book cites from
+[Whi82]), and constancy on each plane gives `Θ²(μ_C, 0) ∈ ℕ`
+(`idtp_tdc_planes_union_vertex_density`). -/
+theorem Submission.idtp_two_dim_cone_integer_density : ∀ (P : ℕ) (C : GeometricCurrentOn (univ : Set (Euclid P)) 2), IsMinimizingIn C univ → BoundaryVanishes C → IsConeCurrent C → ∃ m : ℕ, HasMassDensity C 0 m := by
+  intro P C hmin hbd hcone
+  have hIM : IsIntegerMultiplicity C := hmin.1
+  -- `spt C = ℝᴾ ∖ (zero region)` is closed
+  have hclosed : IsClosed C.support := isClosed_univ.sdiff C.isOpen_zeroRegion
+  -- `spt C` is invariant under the dilations `x ↦ s • x`, `s > 0`
+  have hdil : ∀ x ∈ C.support, ∀ s : ℝ, 0 < s → s • x ∈ C.support := fun x hx s hs =>
+    ((Submission.idtp_tdc_cone_dilation P 2 C hIM hcone s hs).2.1 x).2 hx
+  -- off `0`, the density is locally constant, so `spt C` is locally a 2-plane
+  have hplanar : ∀ p ∈ C.support, p ≠ 0 → ∃ (δ : ℝ) (Q : Submodule ℝ (Euclid P)), 0 < δ ∧
+      Module.finrank ℝ Q = 2 ∧ C.support ∩ ball p δ = (Q : Set (Euclid P)) ∩ ball p δ := by
+    intro p hp hp0
+    obtain ⟨δ, k, hδ, hk⟩ :=
+      Submission.idtp_tdc_density_locally_constant P C hmin hbd hcone p hp hp0
+    obtain ⟨δ', Q, hδ', hQ, -, hspt, -⟩ :=
+      Submission.idtp_cone_constant_density_planar P C p k δ hmin hbd hcone hp hp0 hδ hk
+    exact ⟨δ', Q, hδ', hQ, hspt⟩
+  -- the classification: `spt C ∖ {0}` lies in finitely many 2-planes meeting only at `0`
+  obtain ⟨q, Ps, hPs, hdisj, hcover⟩ :=
+    Submission.idtp_tdc_cone_set_finite_planes P C.support hclosed hdil hplanar
+  -- constancy on each plane: `Θ²(μ_C, 0) = Σᵢ |cᵢ|`
+  exact Submission.idtp_tdc_planes_union_vertex_density P q C Ps hIM hbd hPs hdisj hcover
+
 end GMT.Ch07
