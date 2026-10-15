@@ -78773,4 +78773,138 @@ theorem Submission.density_and_tangent_cones : DensityAndTangentCones := by
     Submission.dtc_cone_of_constant_density (n + k) n C (Θ x) hn hCmin.1 hCbd hCstat hCball,
     Θ x, hxΘ, hCdens⟩
 
+/-- **Simon 7.3.3(2), corrected (13)**: a point of `spt T` that is flat at arbitrarily small scales
+has a tangent plane.  Take scales `ρⱼ < 1/(j+1)` and `n`-planes `Qⱼ` with
+`|q_{Qⱼ}(y − x)| < 2⁻ʲρⱼ` on `spt T ∩ B_{ρⱼ}(x)`; along a subsequence `Qⱼ → Q = span τ`.  By
+7.3.1(2) a further subsequence of the blow-ups `η_{x,ρⱼ#}T` converges to a minimizing cone `C` with
+`Θⁿ(μ_C, 0) = Θⁿ(μ_T, x) ≥ 1`, and `∂C = 0`.  In `B₁(0)` the blow-up supports lie in slabs of width
+`2⁻ʲ` around `Qⱼ`, so a ball `B_δ(v)` with `|v| < 1`, `v ∉ Q` eventually lies in the blow-up domains
+and misses their supports, hence misses `spt C`.  So `spt C ∩ B₁(0) ⊆ Q`, and `spt C ⊆ Q` because
+the support of a cone is dilation invariant.  As `C ≠ 0`, `spt C = Q`, an `n`-plane. -/
+theorem Submission.idtp_tangent_plane_of_flat : ∀ (n k ℓ : ℕ), ℓ ≤ k → ∀ (U N : Set (Euclid (n + k))) (T : GeometricCurrentOn U n), 1 ≤ n → IsOpen U → IsEmbeddedSubmanifold 2 (n + ℓ) N → (closure N \ N) ∩ U = ∅ → IsMinimizingIn T (U ∩ N) → T.support ⊆ U ∩ N → BoundaryVanishes T → ∀ x ∈ T.support, (∀ β : ℝ, 0 < β → ∀ R : ℝ, 0 < R → ∃ ρ : ℝ, 0 < ρ ∧ ρ < R ∧ ∃ Q : Submodule ℝ (Euclid (n + k)), Module.finrank ℝ Q = n ∧ ∀ y ∈ T.support, dist y x < ρ → ‖(y - x) - Q.starProjection (y - x)‖ < β * ρ) → HasTangentPlaneAt T x := by
+  intro n k ℓ hℓ U N T hn hU hN hNU hmin hspt hbd x hx hflat
+  have hxU : x ∈ U := (hspt hx).1
+  -- `x ∉ spt ∂T`: `∂T = 0` (`n ≥ 1`), and every point of the open `U` is in the zero region of `0`
+  have hxbd : x ∈ T.support \ boundarySupport T := by
+    refine ⟨hx, ?_⟩
+    obtain ⟨m, rfl⟩ : ∃ m, n = m + 1 := ⟨n - 1, by omega⟩
+    change T.boundary = 0 at hbd
+    change x ∉ T.boundary.support
+    rw [hbd]
+    refine fun hx0 => hx0.2 ?_
+    obtain ⟨ε, hε, hεU⟩ := Metric.isOpen_iff.1 hU x hxU
+    refine mem_sUnion_of_mem (mem_ball_self (half_pos hε))
+      ⟨isOpen_ball, ?_, ?_, fun ω _ => GeometricCurrentOn.zero_apply ω⟩
+    · exact (isCompact_closedBall x _).of_isClosed_subset isClosed_closure
+        closure_ball_subset_closedBall
+    · exact closure_ball_subset_closedBall.trans
+        ((closedBall_subset_ball (half_lt_self hε)).trans hεU)
+  -- flat scales `ρ j < 1/(j+1)`, with tilt `2⁻ʲ` relative to the `n`-plane `Qs j`
+  choose ρ hρ hρR Qs hQs hflatj using fun j : ℕ =>
+    hflat ((1 / 2) ^ j) (by positivity) (1 / ((j : ℝ) + 1)) (by positivity)
+  have hρ0 : Tendsto ρ atTop (𝓝 0) :=
+    squeeze_zero (fun j => (hρ j).le) (fun j => (hρR j).le) tendsto_one_div_add_atTop_nhds_zero_nat
+  -- along `js` the planes `Qs j` converge to `Q = span τ`
+  obtain ⟨js, τ, κ, hjs, hτ, hκ, hproj⟩ := Submission.idtp_tpf_plane_subseq_limit (n + k) n Qs hQs
+  set Q : Submodule ℝ (Euclid (n + k)) := Submodule.span ℝ (Set.range τ) with hQ
+  -- a tangent cone `C` along a further subsequence `φ` of the scales `ρ (js i)`
+  obtain ⟨φ, C, hφ, hconv, -, hCmin, hCcone, θ, hTθ, hCθ⟩ :=
+    (Submission.density_and_tangent_cones n k ℓ hℓ U N T hU hN hNU hmin hspt).2 x hxbd
+      (fun i => ρ (js i)) (fun i => hρ (js i)) (hρ0.comp hjs.tendsto_atTop)
+  have hσ0 : Tendsto (fun i => ρ (js (φ i))) atTop (𝓝 0) :=
+    (hρ0.comp hjs.tendsto_atTop).comp hφ.tendsto_atTop
+  -- `∂C = 0`
+  have hCbd : BoundaryVanishes C :=
+    Submission.idtp_tpf_blowUp_limit_boundaryVanishes (n + k) n U T x (fun i => ρ (js (φ i)))
+      (fun i => hρ (js (φ i))) C hU hxU hbd hσ0 hconv
+  -- `spt C ∩ B₁(0) ⊆ Q`
+  have hball : ∀ v ∈ C.support, ‖v‖ < 1 → v ∈ Q := by
+    intro v hvC hv1
+    by_contra hvQ
+    -- `w − p_Q w` is the projection of `w` onto `Qᗮ`, so `‖w − p_Q w‖ ≤ ‖w‖`
+    have hq : ∀ w : Euclid (n + k), ‖w - Q.starProjection w‖ ≤ ‖w‖ := fun w => by
+      rw [← Submodule.starProjection_orthogonal_val]
+      exact Submodule.norm_starProjection_apply_le _ w
+    have hd : 0 < ‖v - Q.starProjection v‖ :=
+      norm_pos_iff.2 (sub_ne_zero.2 fun h => hvQ (h ▸ Q.starProjection_apply_mem v))
+    obtain ⟨δ, hδ, hδd, hδv⟩ : ∃ δ : ℝ, 0 < δ ∧ δ ≤ ‖v - Q.starProjection v‖ / 2 ∧
+        δ ≤ (1 - ‖v‖) / 2 :=
+      ⟨min (‖v - Q.starProjection v‖ / 2) ((1 - ‖v‖) / 2), lt_min (by linarith) (by linarith),
+        min_le_left _ _, min_le_right _ _⟩
+    -- on `B_δ(v)`: `‖u‖ < 1` and `‖u − p_Q u‖ ≥ ‖v − p_Q v‖ / 2`
+    have hu1 : ∀ u ∈ ball v δ, ‖u‖ < 1 := fun u hu => by
+      have h1 : ‖u - v‖ < δ := by rw [← dist_eq_norm]; exact mem_ball.1 hu
+      have h2 := norm_sub_norm_le u v
+      linarith
+    have huQ : ∀ u ∈ ball v δ, ‖v - Q.starProjection v‖ / 2 ≤ ‖u - Q.starProjection u‖ :=
+      fun u hu => by
+        have h1 : ‖v - u‖ < δ := by rw [← dist_eq_norm, dist_comm]; exact mem_ball.1 hu
+        have h2 : v - Q.starProjection v =
+            (u - Q.starProjection u) + ((v - u) - Q.starProjection (v - u)) := by
+          rw [map_sub]; abel
+        have h3 := norm_add_le (u - Q.starProjection u) ((v - u) - Q.starProjection (v - u))
+        rw [← h2] at h3
+        have h4 := hq (v - u)
+        linarith
+    -- eventually the tilt `2^{-js (φ i)}` and the plane error `|κ (φ i)|` are small
+    have hsmall : ∀ᶠ i in atTop,
+        (1 / 2 : ℝ) ^ js (φ i) + |κ (φ i)| < ‖v - Q.starProjection v‖ / 2 := by
+      have h1 : Tendsto (fun i => (1 / 2 : ℝ) ^ js (φ i)) atTop (𝓝 0) :=
+        (tendsto_pow_atTop_nhds_zero_of_lt_one (r := (1 / 2 : ℝ)) (by norm_num) (by norm_num)).comp
+          (hjs.comp hφ).tendsto_atTop
+      have h2 : Tendsto (fun i => |κ (φ i)|) atTop (𝓝 0) := by
+        have h := (hκ.comp hφ.tendsto_atTop).abs
+        rwa [abs_zero] at h
+      have h3 := h1.add h2
+      rw [add_zero] at h3
+      exact h3.eventually_lt_const (half_pos hd)
+    -- so `B_δ(v)` eventually lies in the blow-up domains and misses the blow-up supports
+    have hev : ∀ᶠ i in atTop, ball v δ ⊆ dilation x (ρ (js (φ i))) '' U ∧
+        Disjoint (ball v δ) (blowUp T x (ρ (js (φ i))) (hρ (js (φ i))).ne').support := by
+      filter_upwards [Submission.idtp_tpf_blowUp_domain_eventually (n + k) U x
+        (fun i => ρ (js (φ i))) hU hxU (fun i => hρ (js (φ i))) hσ0 (ball v δ) isBounded_ball,
+        hsmall] with i hdom hi
+      refine ⟨hdom, Set.disjoint_left.2 fun u hu huS => ?_⟩
+      have h1 := Submission.idtp_tpf_blowUp_support_slab (n + k) n U T x (ρ (js (φ i)))
+        ((1 / 2) ^ js (φ i)) (hρ (js (φ i))) (Qs (js (φ i))) (hflatj (js (φ i))) u huS (hu1 u hu)
+      have h2 := hproj (φ i) u
+      have h3 := norm_sub_le_norm_sub_add_norm_sub u ((Qs (js (φ i))).starProjection u)
+        (Q.starProjection u)
+      have h4 : κ (φ i) * ‖u‖ ≤ |κ (φ i)| :=
+        (mul_le_mul_of_nonneg_right (le_abs_self _) (norm_nonneg u)).trans
+          (mul_le_of_le_one_right (abs_nonneg _) (hu1 u hu).le)
+      linarith [huQ u hu]
+    exact Set.disjoint_left.1 (Submission.idtp_tpf_weak_limit_support_disjoint (n + k) n _ _ C
+      (ball v δ) hconv isOpen_ball hev) (mem_ball_self hδ) hvC
+  -- `spt C ⊆ Q`, since `spt C` is invariant under the dilations `v ↦ λv`, `λ > 0`
+  have hsub : C.support ⊆ (Q : Set (Euclid (n + k))) := by
+    intro v hv
+    have hc : (0 : ℝ) < 2 * ‖v‖ + 1 := by positivity
+    have h1 := Submission.idtp_tpf_cone_support_smul (n + k) n C hCcone (2 * ‖v‖ + 1)⁻¹
+      (inv_pos.2 hc) v hv
+    have h2 : ‖(2 * ‖v‖ + 1)⁻¹ • v‖ < 1 := by
+      rw [norm_smul, Real.norm_of_nonneg (inv_nonneg.2 hc.le), inv_mul_lt_iff₀ hc]
+      linarith [norm_nonneg v]
+    have h3 := Q.smul_mem (2 * ‖v‖ + 1) (hball _ h1 h2)
+    rw [smul_inv_smul₀ hc.ne'] at h3
+    exact h3
+  -- `C ≠ 0`: its density at `0` is `Θⁿ(μ_T, x) ≥ 1`
+  have hθ : 1 ≤ θ :=
+    (Submission.dimred_minimizing_monotonicity (n + k) n (n + ℓ) U N T hn (Nat.le_add_right n ℓ)
+      (Nat.add_le_add_left hℓ n) hU hN hNU hmin hspt hbd).2.2.2 x hx θ hTθ
+  have hW : ∃ W : Set (Euclid (n + k)), IsOpen W ∧ C.massOn W ≠ 0 := by
+    by_contra h
+    have h0 : ∀ r : ℝ, C.massOn (ball 0 r) = 0 := fun r => by
+      by_contra hne
+      exact h ⟨_, isOpen_ball, hne⟩
+    have h1 := hCθ.2
+    simp only [h0, ENNReal.zero_div] at h1
+    have h2 := tendsto_nhds_unique h1 tendsto_const_nhds
+    rw [ENNReal.ofReal_eq_zero] at h2
+    linarith
+  -- `spt C = Q`, an `n`-plane
+  refine ⟨C, ⟨fun i => ρ (js (φ i)), fun i => hρ (js (φ i)), hσ0, hconv⟩, Q, ?_,
+    Submission.idtp_tpf_planar_support_eq (n + k) n C τ hn hτ hCmin.1 hCbd hsub hW⟩
+  rw [hQ, finrank_span_eq_card hτ.linearIndependent, Fintype.card_fin]
+
 end GMT.Ch07
