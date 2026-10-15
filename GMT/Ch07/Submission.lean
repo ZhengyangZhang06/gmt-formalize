@@ -70130,4 +70130,67 @@ theorem Submission.dtc_bc_local_comparison : ∀ (P m : ℕ) (Us As : ℕ → Se
     rwa [one_mul, tsub_self, zero_mul, add_zero] at h3
   exact ge_of_tendsto hg (eventually_nhdsWithin_of_forall fun η hη => hlim_eta η hη)
 
+/-- **Compactness of blow-ups** (Lemma BC in the proof of Simon 7.3.1(2); chapter-07.txt lines
+302–309, lines 326–345 of the proof and footnote 2, lines 361–364).  If `T` is minimizing in
+`U ∩ N`, `spt T ⊆ U ∩ N`, `x ∈ spt T \ spt ∂T` and `Θⁿ(μ_T, x) = θ`, then for `λⱼ > 0`, `λⱼ → 0`,
+a subsequence of the blow-ups `Sⱼ = η_{x,λⱼ#}T` converges weakly to an integer multiplicity
+`C ∈ 𝒟ₙ(ℝ^{n+k})` with `∂C = 0` that is minimizing in `ℝ^{n+k}`, and `μ_{Sⱼ} → μ_C` for all
+representations.  This is the proof of 7.2.4 (lines 157–161 and 176–288) run on the blow-ups, as
+in Remark 7.2.5(2) (lines 166–175) with `Nⱼ = η_{x,λⱼ}(N)`.
+
+For `k = 0` this is `dtc_bc_codim_zero` along the whole sequence.  For `k ≥ 1` and `n = m + 1`,
+the blow-ups have open exhausting domains, are minimizing in `η_{x,λⱼ}(U ∩ N)` and supported
+there, have `M_{B_R(0)}(Sⱼ)` bounded and `∂Sⱼ = 0` in `B_R(0)` for large `j`, and carry
+retractions onto `η_{x,λⱼ}(U ∩ N)` with Lipschitz constants tending to `1`
+(`dtc_bc_blowUp_hypotheses`, steps 0 and 3).  Truncating at good slicing radii and applying
+Federer–Fleming compactness gives `φ`, `C` (integer multiplicity, `∂C = 0`, `S_{φ(j)} ⇀ C`) and the
+truncations `Ŝⱼ` (`dtc_bc_truncated_compactness`, step 2).  These hypotheses persist along `φ`, and
+comparison with retracted competitors gives, along a further subsequence of any subsequence,
+`limsup M_W(S_{φ(j)}) ≤ M_W(S)` for every competitor `S` of `C` near a compact set
+(`dtc_bc_local_comparison`, step 4).  This yields the minimality of `C` in `ℝ^{n+k}` and
+`μ_{S_{φ(j)}} → μ_C` (`dtc_bc_minimizing_of_local_comparison`, steps 5–6). -/
+theorem Submission.dtc_blowUp_compactness : ∀ (n k ℓ : ℕ), ℓ ≤ k → 0 < n → ∀ (U N : Set (Euclid (n + k))) (T : GeometricCurrentOn U n) (x : Euclid (n + k)) (θ : ℝ), IsOpen U → IsEmbeddedSubmanifold 2 (n + ℓ) N → (closure N \ N) ∩ U = ∅ → IsMinimizingIn T (U ∩ N) → T.support ⊆ U ∩ N → x ∈ T.support \ boundarySupport T → HasMassDensity T x θ → ∀ (lams : ℕ → ℝ) (hlams : ∀ j, 0 < lams j), Tendsto lams atTop (𝓝 0) → ∃ (φ : ℕ → ℕ) (C : GeometricCurrentOn (univ : Set (Euclid (n + k))) n), StrictMono φ ∧ ConvergesWeakly (fun j => blowUp T x (lams (φ j)) (hlams (φ j)).ne') C ∧ MassMeasuresConverge (fun j => blowUp T x (lams (φ j)) (hlams (φ j)).ne') C ∧ IsMinimizingIn C univ ∧ BoundaryVanishes C := by
+  intro n k ℓ _ hn U N T x θ hU hN _ hmin hspt hx hθ lams hlams hlim
+  rcases Nat.eq_zero_or_pos k with rfl | hk
+  · -- step 1: codimension zero, along the whole sequence (`Euclid (n + 0)` is `Euclid n`)
+    obtain ⟨C, hconv, hmeas, hCmin, hCbd⟩ := Submission.dtc_bc_codim_zero n U T x hn hU hmin.1
+      (hspt hx.1).1 hx.2 lams hlams hlim
+    exact ⟨id, C, strictMono_id, hconv, hmeas, hCmin, hCbd⟩
+  obtain ⟨m, rfl⟩ : ∃ m, n = m + 1 := ⟨n - 1, by omega⟩
+  -- steps 0 and 3: the blow-ups `Sⱼ = η_{x,λⱼ#}T` satisfy the hypotheses of the abstract argument
+  obtain ⟨hUo, hUex, hSmin, hSspt, hSmass, hSbd, hπ⟩ :=
+    Submission.dtc_bc_blowUp_hypotheses m k ℓ U N T x θ hU hN hmin hspt hx hθ lams hlams hlim
+  -- step 2: truncations `Ŝⱼ` and Federer–Fleming compactness give `φ` and `C`
+  obtain ⟨φ, C, Ŝ, ρ, hφ, hCim, hCbd, hconv, hŜim, hŜbd, hŜC, hρ, hρU, hŜS⟩ :=
+    Submission.dtc_bc_truncated_compactness (m + 1 + k) m (fun j => dilation x (lams j) '' U)
+      (fun j => blowUp T x (lams j) (hlams j).ne') (by omega) hUo hUex (fun j => (hSmin j).1)
+      hSmass hSbd
+  -- the eventual hypotheses persist along `φ`
+  have hφ' : Tendsto φ atTop atTop := hφ.tendsto_atTop
+  have hmass : ∀ R : ℝ, ∃ c : ℝ≥0∞, c ≠ ∞ ∧ ∀ᶠ j in atTop,
+      (blowUp T x (lams (φ j)) (hlams (φ j)).ne').massOn (ball 0 R) ≤ c := by
+    intro R
+    obtain ⟨c, hc, hev⟩ := hSmass R
+    exact ⟨c, hc, hφ'.eventually hev⟩
+  have hret : ∀ G : ℝ, 0 < G → ∃ πs : ℕ → Euclid (m + 1 + k) → Euclid (m + 1 + k),
+      (∀ᶠ j in atTop, ContDiffOn ℝ 1 (πs j) (ball 0 G) ∧
+        MapsTo (πs j) (ball 0 G) (dilation x (lams (φ j)) '' (U ∩ N)) ∧
+        (∀ y ∈ dilation x (lams (φ j)) '' (U ∩ N) ∩ ball 0 G, πs j y = y) ∧
+        ∀ y ∈ ball 0 G, ‖πs j y‖ ≤ 2 * ‖y‖) ∧
+      ∀ η : ℝ, 0 < η → ∀ᶠ j in atTop, ∀ y ∈ ball 0 G, ∀ z ∈ ball 0 G,
+        ‖πs j y - πs j z‖ ≤ (1 + η) * ‖y - z‖ := by
+    intro G hG
+    obtain ⟨πs, hev, hlip⟩ := hπ G hG
+    exact ⟨fun j => πs (φ j), hφ'.eventually hev, fun η hη => hφ'.eventually (hlip η hη)⟩
+  -- step 4: comparison with retracted competitors along subsequences of `S_{φ(j)}`
+  have hcomp := Submission.dtc_bc_local_comparison (m + 1 + k) m
+    (fun j => dilation x (lams (φ j)) '' U) (fun j => dilation x (lams (φ j)) '' (U ∩ N))
+    (fun j => blowUp T x (lams (φ j)) (hlams (φ j)).ne') Ŝ C ρ (by omega) (fun j => hUo (φ j))
+    (fun j => hSmin (φ j)) (fun j => hSspt (φ j)) hmass hret hCim hŜim hŜbd hŜC hρ hρU hŜS
+  -- steps 5–6: `C` is minimizing in `ℝ^{n+k}` and `μ_{S_{φ(j)}} → μ_C`
+  obtain ⟨hCmin, hmeas⟩ := Submission.dtc_bc_minimizing_of_local_comparison (m + 1 + k) (m + 1)
+    (fun j => dilation x (lams (φ j)) '' U) (fun j => blowUp T x (lams (φ j)) (hlams (φ j)).ne')
+    C (fun j => hUo (φ j)) (fun R => hφ'.eventually (hUex R)) hCim hconv hcomp
+  exact ⟨φ, C, hφ, hconv, hmeas, hCmin, hCbd⟩
+
 end GMT.Ch07
