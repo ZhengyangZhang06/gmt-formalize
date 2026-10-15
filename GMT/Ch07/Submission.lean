@@ -628,6 +628,46 @@ theorem Submission.idtp_cse_fc_tsum_count_arith : ∀ (ι : Type) (θ : ι → �
   have hmN' : m < ∑ i, θ i := by exact_mod_cast (ENNReal.mul_lt_mul_iff_left hτ0 hτ).mp hmN
   exact_mod_cast hmN'
 
+/-- Pointwise fibre count for the density at the edge of a planar sector of a `2`-dimensional
+minimizing cone (part of the classification of such cones used in the proof of Simon 7.3.3(1),
+which the book cites to [Whi82]).  Let `p = (t, α)` with `|t − 1| < s`, `|α| < s ≤ 1/4`, let `X(p) = M ∩ Z_s ∩ F̃⁻¹{p}` be the fibre of
+`F̃(x) = (|x|, arctan(⟨x, e⟩/⟨x, a⟩))` and weight its points by `w(x) = |p_{TₓM}(Ax)|`,
+`Ax = ⟨x, a⟩e − ⟨x, e⟩a`.  Every fibre point has `|x| = t` and `w(x) ≤ |πx| ≤ t`, so
+`Σ θ w = mt` forces `Σ θ ≥ m`.  If `x_Q(p) = t(cos α a + sin α e) ∈ M` has multiplicity `k` and
+`T_{x_Q(p)}M = Q`, it is a fibre point of weight `t` and every other fibre point has weight `< t`,
+so `k ≤ m`, and `Σ θ ≥ m + 1` if `k < m`.  The planar facts are
+`idtp_cse_fc_planar_fibre_geometry`; the counting is `idtp_cse_fc_tsum_count_arith`. -/
+theorem Submission.idtp_cse_fc_fibre_pointwise : ∀ (P : ℕ) (R : IMRep (univ : Set (Euclid P)) 2) (Q : Submodule ℝ (Euclid P)) (a e : Euclid P) (s : ℝ) (m k : ℕ) (p : ℝ × ℝ), Module.finrank ℝ Q = 2 → a ∈ Q → e ∈ Q → ‖a‖ = 1 → ‖e‖ = 1 → inner ℝ a e = 0 → 0 < s → s ≤ 1 / 4 → |p.1 - 1| < s → |p.2| < s → ∑' x : ↥(R.carrier ∩ {x : Euclid P | 0 < inner ℝ x a ∧ |‖x‖ - 1| < s ∧ |Real.arctan (inner ℝ x e / inner ℝ x a)| < s ∧ ‖x - Q.starProjection x‖ < s * ‖x‖} ∩ (fun x : Euclid P => (‖x‖, Real.arctan (inner ℝ x e / inner ℝ x a))) ⁻¹' {p}), (R.mult x : ℝ≥0∞) * ENNReal.ofReal ‖(approxTangentPlane 2 R.carrier (x : Euclid P)).starProjection (inner ℝ (x : Euclid P) a • e - inner ℝ (x : Euclid P) e • a)‖ = ENNReal.ofReal ((m : ℝ) * p.1) → (m : ℝ≥0∞) ≤ ∑' x : ↥(R.carrier ∩ {x : Euclid P | 0 < inner ℝ x a ∧ |‖x‖ - 1| < s ∧ |Real.arctan (inner ℝ x e / inner ℝ x a)| < s ∧ ‖x - Q.starProjection x‖ < s * ‖x‖} ∩ (fun x : Euclid P => (‖x‖, Real.arctan (inner ℝ x e / inner ℝ x a))) ⁻¹' {p}), (R.mult x : ℝ≥0∞) ∧ ((p.1 • (Real.cos p.2 • a + Real.sin p.2 • e)) ∈ R.carrier → R.mult (p.1 • (Real.cos p.2 • a + Real.sin p.2 • e)) = k → approxTangentPlane 2 R.carrier (p.1 • (Real.cos p.2 • a + Real.sin p.2 • e)) = Q → k ≤ m ∧ (k < m → (m : ℝ≥0∞) + 1 ≤ ∑' x : ↥(R.carrier ∩ {x : Euclid P | 0 < inner ℝ x a ∧ |‖x‖ - 1| < s ∧ |Real.arctan (inner ℝ x e / inner ℝ x a)| < s ∧ ‖x - Q.starProjection x‖ < s * ‖x‖} ∩ (fun x : Euclid P => (‖x‖, Real.arctan (inner ℝ x e / inner ℝ x a))) ⁻¹' {p}), (R.mult x : ℝ≥0∞))) := by
+  intro P R Q a e s m k p hQ haQ heQ ha he hae hs hs4 hp1 hp2 hH
+  obtain ⟨hA, hB⟩ := Submission.idtp_cse_fc_planar_fibre_geometry P Q a e hQ haQ heQ ha he hae
+  -- `t = p.1 > 0` and `|α| = |p.2| < 1/4 < π/2`
+  have ht : 0 < p.1 := by linarith [(abs_lt.mp hp1).1]
+  have hα : |p.2| < Real.pi / 2 := by linarith [Real.two_le_pi]
+  obtain ⟨⟨hx0a, hx0n, hx0f, hx0Q, hx0w⟩, hlt⟩ := hB p.1 p.2 ht hα
+  -- a fibre point `x` has `|x| = t` and `f(x) = α`, hence weight `w(x) ≤ |πx| ≤ t`
+  have hfib : ∀ x : Euclid P, (‖x‖, Real.arctan (inner ℝ x e / inner ℝ x a)) = p →
+      ‖x‖ = p.1 ∧ Real.arctan (inner ℝ x e / inner ℝ x a) = p.2 := fun x hx =>
+    ⟨congrArg Prod.fst hx, congrArg Prod.snd hx⟩
+  have hw : ∀ i : ↥(R.carrier ∩ {x : Euclid P | 0 < inner ℝ x a ∧ |‖x‖ - 1| < s ∧ |Real.arctan (inner ℝ x e / inner ℝ x a)| < s ∧ ‖x - Q.starProjection x‖ < s * ‖x‖} ∩ (fun x : Euclid P => (‖x‖, Real.arctan (inner ℝ x e / inner ℝ x a))) ⁻¹' {p}),
+      ‖(approxTangentPlane 2 R.carrier (i : Euclid P)).starProjection
+        (inner ℝ (i : Euclid P) a • e - inner ℝ (i : Euclid P) e • a)‖ ≤ p.1 := fun i =>
+    ((hA (approxTangentPlane 2 R.carrier i) i).1.trans (hA Q i).2).trans (hfib i i.2.2).1.le
+  -- `m ≤ N(p)`
+  obtain ⟨hmN, hcount⟩ := Submission.idtp_cse_fc_tsum_count_arith _ _ _ p.1 m ht hw hH
+  refine ⟨hmN, fun hx0M hx0k hx0T => ?_⟩
+  -- `x_Q(p)` is a fibre point of weight `t`, every other fibre point has weight `< t`
+  refine hcount ⟨p.1 • (Real.cos p.2 • a + Real.sin p.2 • e), ⟨hx0M, hx0a, ?_, ?_, ?_⟩, ?_⟩ k
+    (fun i => R.mult_pos _ i.2.1.1) hx0k ?_ fun i hi => ?_
+  · rw [hx0n]; exact hp1
+  · rw [hx0f]; exact hp2
+  · rw [hx0Q, sub_self, norm_zero, hx0n]; exact mul_pos hs ht
+  · exact Prod.ext hx0n hx0f
+  · show ‖(approxTangentPlane 2 R.carrier _).starProjection _‖ = p.1
+    rw [hx0T]; exact hx0w
+  · obtain ⟨hin, hif⟩ := hfib i i.2.2
+    exact (hA (approxTangentPlane 2 R.carrier i) i).1.trans_lt
+      (hlt i i.2.1.2.1 hin hif fun h => hi (Subtype.ext h))
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
