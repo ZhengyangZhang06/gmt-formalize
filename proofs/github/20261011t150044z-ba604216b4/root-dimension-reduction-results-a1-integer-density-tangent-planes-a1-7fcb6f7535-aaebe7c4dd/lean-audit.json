@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "107c4e6f40dfefe477c386b547c2ec90c0395bc79e7ca18e20802b55fd0a750b",
+  "git_delta": {
+    "base_commit": "534e10be23699ef1e13a4427cf2ea5d80f73c84d",
+    "candidate_commit": "b795115e13837ec2ab7150fa39226593a0349b15",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "idtp_tdc_dlc_ld_piece_mass_bound",
+    "diff_sha256": "5f654734c264882c4cde73e3b32a1d00f9bc8ff64440d177b05c5eae9e646b4d",
+    "source_sha256": "f1d61f833157a66a2617241e0db8b78b923f98572f18c3259f65ee82edf9c809",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.idtp_tdc_dlc_ld_piece_mass_bound",
+      "statement": "∀ (P : ℕ) (C : GeometricCurrentOn (univ : Set (Euclid P)) 2) (Q : Submodule ℝ (Euclid P)) (x : Euclid P) (k : ℕ) (ε : ℝ), IsMinimizingIn C univ → BoundaryVanishes C → IsConeCurrent C → 1 ≤ k → x ∈ Q → x ≠ 0 → 0 < ε → C.support ∩ ball x ε = (Q : Set (Euclid P)) ∩ ball x ε → (∀ y ∈ C.support, y ∈ ball x ε → HasMassDensity C y k) → ∃ ε' : ℝ, 0 < ε' ∧ C.support ∩ ball x ε' = (Q : Set (Euclid P)) ∩ ball x ε' ∧ (∀ y ∈ C.support, y ∈ ball x ε' → HasMassDensity C y k) ∧ ∀ W : Set (Euclid P), IsOpen W → W ⊆ ball x ε' → μHE[2] (W ∩ (Q : Set (Euclid P))) ≤ C.massOn W",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
