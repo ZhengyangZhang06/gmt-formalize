@@ -1,0 +1,68 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "dorag_aa_|finrank.*approxTangentPlane|approxTangentPlane.*finrank",
+        "measure_biUnion_finset|measure_compl_support|withDensity_absolutelyContinuous|lintegral_finsetSum|lintegral_const_mul|setLIntegral_const|lintegral_mono_set|exists_nat_mul_gt|starProjection_orthogonal_val|norm_starProjection_apply_le|aestronglyMeasurable_comp₂",
+        "def approxTangentPlane|def IMRep.firstVariation|sorry|axiom|^namespace|^end",
+        "dorag_aa_finite_separated_net",
+        "dorag_aa_ae_finrank_approxTangentPlane",
+        "dorag_aa_exists_low_height_point",
+        "dorag_aa_height_bounds_of_net",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/affapprox-decomp/work/AllChecks.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Basic/ENNReal/Inv.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/WithDensity.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Support.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Add.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/StronglyMeasurable/Lemmas.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Projection/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-9e10fe2792/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-9e10fe2792/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces",
+        "/tmp/affapprox-decomp/work/AllChecks.lean",
+        "/tmp/affine-approximation-independent-audit-ol809_p0/Challenge_separated_net.lean",
+        "/tmp/affine-approximation-independent-audit-ol809_p0/Challenge_tangent_dimension.lean",
+        "/tmp/affine-approximation-independent-audit-ol809_p0/Challenge_low_height_point.lean",
+        "/tmp/affine-approximation-independent-audit-ol809_p0/Challenge_height_bounds.lean",
+        "/tmp/affine-approximation-independent-audit-ol809_p0/Challenge_PARENT.lean"
+      ],
+      "conclusion": "Verified the pinned revisions, relevant definitions and cited APIs; the snapshot contract is byte-identical to workspace Submission. No matching child declarations were found in the snapshot, and scans of eight workspace DAGs and 1,490 decomposition files found no conflicting name reservations. All four names are bare identifiers. Independently generated comparator challenges for all children and the exact parent elaborate. Recompilation of the four exact-type child proofs and conditional parent assembly succeeded, with only propext, Classical.choice and Quot.sound as axioms. The split is appropriate: packing, tangent dimension, point selection and height propagation are independent obligations. Their conclusions, together with the three frozen sibling contracts, establish both selected parent estimates with the stated constants and radius restrictions. Dependency directions are correct and acyclic; no declaration reuse or circular reliance is involved."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "separated_net",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Prose and the standalone one-line Lean proposition match, including arbitrary K and A and the possibility a = ∞. Disjoint measurable balls give the counting bound; positive a and finite container measure bound all separated-family cardinalities. A maximum-cardinality family therefore covers K. The supplied proof is complete and needs no omitted compactness or measurability hypothesis."
+    },
+    {
+      "key": "tangent_dimension",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact proposition follows directly from the pinned definitions. R.orients supplies approximate tangent existence almost everywhere for the restricted Hausdorff measure; absolute continuity transfers this to R.measure. The chosen tangent satisfies the predicate's dimension conjunct. The proof is complete, independent and valid for every stated P and n."
+    },
+    {
+      "key": "low_height_point",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All hypotheses and conclusions match the independent Lean type. Continuous-linear-map evaluation gives the required a.e. measurability. The weighted comparison handles x = y, including m = 0; finite summation gives the integral bound. Failure of selection would force the opposite of the strict ENNReal mass inequality. No unstated positivity, finite-measure or measurability assumption on Q is needed."
+    },
+    {
+      "key": "height_bounds",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and exact Lean type agree. The complementary orthogonal projection is additive and contractive, so the three-term decomposition gives 2s + L. Support is conull for any measure on finite-dimensional Euclidean space. The pointwise bound supplies the nonnegativity needed for squaring wherever used, and lower-integral monotonicity proves the stated L² estimate. The proof is complete and non-circular."
+    }
+  ],
+  "required_changes": []
+}

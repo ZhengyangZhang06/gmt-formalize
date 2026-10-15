@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.minimizing_implies_stationary-a1.diffeo_pushforward-a1.pushforward_boundary-a1.pullback_integral_limit-a1",
+  "parent_id": "root.minimizing_implies_stationary-a1.diffeo_pushforward-a1.pushforward_boundary-a1",
+  "depth": 4,
+  "title": "Dominated convergence for pulled-back covector integrals against an integer multiplicity triple",
+  "statement": "Let P, n ∈ ℕ and U, K' ⊆ ℝ^P with K' compact and K' ⊆ U. Let R = (M, θ, ξ) be an integer multiplicity triple in U (IMRep U n). Let α be an n-form on ℝ^P that is continuous, has compact support, and satisfies tsupport α ⊆ U. Let ψ_k : ℝ^P → ℝ^P (k ∈ ℕ) be C¹ maps with ψ_k(x) = x for all k and all x ∉ K', and let C ∈ ℝ satisfy ‖Dψ_k(x)‖ ≤ C (operator norm) for all k and x. Let φ : ℝ^P → ℝ^P be any map such that, for every x, ψ_k(x) → φ(x) and Dψ_k(x) → Dφ(x), where Dφ(x) := fderiv ℝ φ x. Then ∫_M θ(x) ξ(x)(α(ψ_k(x))∘Dψ_k(x)) dH^n(x) → ∫_M θ(x) ξ(x)(α(φ(x))∘Dφ(x)) dH^n(x) as k → ∞.",
+  "lean_statement": "∀ (P n : ℕ) (U K' : Set (Euclid P)) (R : IMRep U n) (α : DifferentialForm (Euclid P) n) (ψ : ℕ → Euclid P → Euclid P) (φ : Euclid P → Euclid P) (C : ℝ), IsCompact K' → K' ⊆ U → Continuous α → HasCompactSupport α → tsupport α ⊆ U → (∀ k, ContDiff ℝ 1 (ψ k)) → (∀ k x, x ∉ K' → ψ k x = x) → (∀ k x, ‖fderiv ℝ (ψ k) x‖ ≤ C) → (∀ x, Tendsto (fun k => ψ k x) atTop (𝓝 (φ x))) → (∀ x, Tendsto (fun k => fderiv ℝ (ψ k) x) atTop (𝓝 (fderiv ℝ φ x))) → Tendsto (fun k => ∫ x in R.carrier, (R.mult x : ℝ) * R.orient x ((α (ψ k x)).compContinuousLinearMap (fderiv ℝ (ψ k) x)) ∂μHE[n]) atTop (𝓝 (∫ x in R.carrier, (R.mult x : ℝ) * R.orient x ((α (φ x)).compContinuousLinearMap (fderiv ℝ φ x)) ∂μHE[n]))",
+  "lean_name": "dpf_pb_imrep_pullback_integral_tendsto",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-pushforwa-e64ae346b4-a1"
+}

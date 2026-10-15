@@ -1,0 +1,71 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "DensityOneImpliesRegular|IsEmbeddedSubmanifold|IsStationaryAlong|regularSet|HasMassDensity|sorry|axiom|dor_imrep|dor_zero_dim|dor_stationary|dor_minimizing",
+        "measure_compl_support|mem_support_iff|hausdorffMeasure_zero_singleton|euclideanHausdorffMeasure_zero",
+        "^(theorem|lemma|def|structure).*([Aa]llard|[Cc]onstancy|[Ss]lice|[Ss]licing|[Ff]lat|[Pp]ushforward)",
+        "dor_imrep_massOn_eq_measure_and_support|dor_zero_dim_minimizing_support_disjoint|dor_stationary_mean_curvature_monotonicity|dor_minimizing_limsup_mass_bound|dor_stationary_cycle_epsilon_regularity",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/ch07-dor-independent-audit/Check.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch05/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch06/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Support.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter04/MeanCurvature.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter05/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/AffineCurrentPushforward.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-05.txt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-07.txt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1/parent-child-handoff.json",
+        "/tmp/ch07-dor-independent-audit/Check.lean",
+        "/tmp/ch07-dor-decomp/Assembly2.lean"
+      ],
+      "conclusion": "The snapshot contract matches the workspace contract and submission byte-for-byte. All five exact one-line propositions independently elaborate as Prop inside namespace Submission without declaring any child. The frozen definitions report only standard axioms. All five names are bare identifiers, with no collisions in the DAG or searched Lean sources; no comparator-accepted declaration is reused. Dependencies are correctly directed and acyclic. The split appropriately proves the selected DensityOneImpliesRegular contract: the zero-dimensional child handles n = 0, while the limsup estimate and epsilon regularity, together with the existing stationarity dependency, establish both regularity conclusions. Support and counting-measure lemmas are available. Allard, current constancy, slicing, flat convergence, and general current push-forward remain cited mathematical inputs rather than verified reusable Lean results; neighboring contract sorries were not used. Final auxiliary compiler reruns were stopped after filesystem reads stalled; the independent exact-type check had already succeeded."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "imrep_mass_and_support",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and Lean type agree, including arbitrary open W and the relative support U ∩ spt μ_R. Cauchy–Binet establishes the correct Euclidean coefficient-norm duality; local integrability justifies the integral formula; Lusin, extension, and mollification prove the lower mass bound. The support argument then follows without circularity."
+    },
+    {
+      "key": "zero_dim_minimizing_trivial",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The arbitrary constraint set A is correctly retained. Counting measure and positive multiplicity give a locally finite carrier. Deleting a support point in A produces an integer multiplicity competitor with compact singleton difference support and strictly smaller finite local mass. The degree-zero boundary condition is correctly vacuous. Only the declared mass/support dependency is used."
+    },
+    {
+      "key": "mean_curvature_monotonicity",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The constants are chosen independently of T and R. The support identity places the measure in N; the tangent inclusion and tangential/normal decomposition establish the stated mean-curvature identity and bound. Radial variation gives the positive-exponent monotonicity inequality for open balls, including the stated endpoints. The C² nearest-projection input is supported by [Leobacher–Steinicke](https://arxiv.org/html/1811.10578v4)."
+    },
+    {
+      "key": "limsup_mass_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type matches the prose, including the weaker assumptions on the limit T and explicit stationarity of sequence representations. Flat convergence and slicing provide vanishing errors; the projected cycle has compact support in N ∩ G and is an admissible competitor. The finite-mass subtraction, uniform monotonicity bound, and subsequence argument yield precisely the claimed open-ball limsup estimate."
+    },
+    {
+      "key": "epsilon_regularity",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The radius reduction correctly converts the open-ball mass hypothesis into Allard's closed-ball hypotheses, with p = 2n and uniform curvature control. The graph construction supplies the required embedded manifold, continuous orientation, and finite local measure. Constancy is applied after restricting the current's domain to the cylinder; projection and push-forward recover a nonzero integer multiple of the graph current. This proves the exact regularSet conclusion without assuming parent regularity."
+    }
+  ],
+  "required_changes": []
+}

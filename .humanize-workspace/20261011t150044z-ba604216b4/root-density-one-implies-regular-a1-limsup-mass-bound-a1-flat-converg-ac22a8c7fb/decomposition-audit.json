@@ -1,0 +1,116 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "rg -n 'structure IMRep|def MultiVector|abbrev MultiVector|def IsUnitOrientationOf|def covectorEuclideanNorm|def Represents|def action|def measure|def IsIntegerMultiplicity' .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean .lake/packages/simongmt/Poincare/SimonGMT/Chapter06",
+        "rg -n 'countablyRectifiable_of_measure_zero|CountablyRectifiable.mono|countablyRectifiable_iUnion|HasApproximateTangentSpaceAt.unique' .lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "rg -n 'hasSum_integral_of_dominated_convergence|integrable_toReal_of_lintegral_ne_top|aestronglyMeasurable_of_tendsto_ae|lintegral_liminf_le|theorem lintegral_tsum' .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/StronglyMeasurable/AEStronglyMeasurable.lean",
+        "sed -n '885,940p' /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt",
+        "git -C .lake/packages/mathlib rev-parse HEAD",
+        "git -C .lake/packages/simongmt rev-parse HEAD",
+        "rg -l -F 'dor_lmb_fc_ims_' .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/decomposition-reopenings -g 'decomposition*.json' -g 'parent-child-handoff.json'",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/ims-independent-audit-q2hsi694/Challenges.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/ims-independent-audit-q2hsi694/density_series.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/ims-independent-audit-q2hsi694/partial_sums.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/ims-independent-audit-q2hsi694/ae_limit.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/ims-independent-audit-q2hsi694/Assembly.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/ims-independent-audit-q2hsi694/Instances.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/DominatedConvergence.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Add.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/StronglyMeasurable/AEStronglyMeasurable.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "GMT/Ch07/Contract.lean",
+        "GMT/Ch07/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-limsup-mass-bound-a1-flat-converg-ac22a8c7fb/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-limsup-mass-bound-a1-flat-converg-ac22a8c7fb/decomposition-v1.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-imrep-mass-and-support-a1/accepted-candidate.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-im-calculus-a1/accepted-candidate.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-imrep-mass-and-support-a1-unit-or-24edf309fb/accepted-candidate.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-half-space-cone-lies-in-boundary-a1-imrep-measure-unique-a1-orie-c3a822a8f5/accepted-candidate.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-regular-set-dense-a1-integer-combination-a1-combination-construction-a1/accepted-candidate.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-limsup-mass-bound-a1-int-combinat-1f7fa9f5db/accepted-candidate.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-regular-set-dense-a1-integer-combination-a1-orientation-sign-a1/accepted-candidate.json",
+        "/tmp/ims-independent-audit-q2hsi694/Challenges.lean",
+        "/tmp/ims-independent-audit-q2hsi694/density_series.lean",
+        "/tmp/ims-independent-audit-q2hsi694/partial_sums.lean",
+        "/tmp/ims-independent-audit-q2hsi694/ae_limit.lean",
+        "/tmp/ims-independent-audit-q2hsi694/Assembly.lean",
+        "/tmp/ims-independent-audit-q2hsi694/Instances.lean"
+      ],
+      "conclusion": "The split is appropriate for the selected dor_lmb_fc_im_series contract. The three new obligations establish density convergence, finite-sum representations, and preservation of integer multiplicity under the required a.e. limit. Their supplied assembly proves the exact frozen parent, including HasSum and the mass bound. Independently extracted child proofs and assembly compile conditional only on their stated prerequisites, with axioms [propext, Classical.choice, Quot.sound]. All ten propositions elaborate independently and match their prose. Multivector operator-norm, scalar-action, completeness, and topology checks pass; no matrix-unit construction occurs. The seven reused declarations have byte-identical accepted types, matching pinned project/package revisions, and successful comparator records permitting only the standard axioms. All names are bare identifiers; the three new names have no other reservations. The reachable dependency graph, including existing prerequisites, is acyclic. Snapshot definitions and the inspected integration and rectifiability lemmas support the supplied proofs."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "density_series",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proposition matches both conclusions for arbitrary U. The proof establishes measurable summable bounds, a.e. absolute convergence, and every hypothesis of dominated convergence for series. Indicator integration identifies the actions. No openness or sigma-finiteness assumption is silently introduced. The supplied implementation independently compiles using only orientation_norm."
+    },
+    {
+      "key": "partial_sums",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact density identity and measure inequality match the prose. The empty IMRep proves the base case; integer combination and its measure bound prove the successor case. Openness is supplied where required. The proof compiles using exactly the two listed dependencies."
+    },
+    {
+      "key": "ae_limit",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof supplies the Borel representative and null exceptional set, integer stabilization, Fatou bounds, and every IMRep field. Local finiteness is established before tangent locality is invoked. Tangent uniqueness and the closed two-point orientation set justify the limiting orientation. Eventual vanishing proves the density identity outside the carrier; integral_congr_ae covers arbitrary forms without integrability assumptions. The exact supplied proof independently compiles."
+    },
+    {
+      "key": "imrep_mass",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Verified unchanged comparator-accepted reuse with the identical frozen type and compatible axioms. Its hypotheses and both conclusions match the prose. Applying its mass formula with W = U supplies the measure summability needed for the selected parent."
+    },
+    {
+      "key": "im_calculus",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All four clauses match the independently verified accepted conjunction. Reuse is non-circular. Tangent locality supplies ae_limit, while restriction with E = univ constructs the represented current required by the parent assembly."
+    },
+    {
+      "key": "unit_orientation_dual",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Verified accepted reuse preserves the continuous linear map, quantifiers, and all three conclusions. Its evaluation identity correctly yields the continuous multiplicity functional used in ae_limit. No dependency reaches the selected parent."
+    },
+    {
+      "key": "orientation_norm",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The accepted frozen type uses the intended continuous-linear-map operator norm, matching the prose. The supplied orthonormal evaluation argument supports the bound used in density_series. Exact-type reuse and comparator axiom compatibility are verified."
+    },
+    {
+      "key": "int_combination",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Verified accepted reuse has precisely the open-domain hypothesis and ambient a.e. weighted-density identity stated in prose. Specializing both integer coefficients to one establishes the induction step in partial_sums without assuming the series theorem."
+    },
+    {
+      "key": "combination_mass",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The arbitrary-domain hypothesis, a.e. identity, and ENNReal-scaled measure inequality exactly match the accepted contract. The supplied reuse is complete and non-circular; coefficients one give the required finite-sum measure bound."
+    },
+    {
+      "key": "orientation_sign",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact accepted statement concludes w = v or w = -v for orientations of the same plane. Its reuse is verified and provides precisely the closed two-point set needed after tangent-plane identification in ae_limit."
+    }
+  ],
+  "required_changes": []
+}

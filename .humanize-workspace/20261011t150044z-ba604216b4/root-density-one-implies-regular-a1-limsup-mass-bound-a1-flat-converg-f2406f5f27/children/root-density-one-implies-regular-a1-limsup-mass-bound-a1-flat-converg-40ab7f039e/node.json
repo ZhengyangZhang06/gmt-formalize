@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.flat_convergence-a1.deformation-a1.skeleton_deformation-a1.im_concentrated-a1",
+  "parent_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.flat_convergence-a1.deformation-a1.skeleton_deformation-a1",
+  "depth": 6,
+  "title": "Mass of an integer multiplicity current concentrates on any closed set off which it vanishes",
+  "statement": "Let P, k ∈ ℕ, X ∈ 𝒟_k(ℝ^P) (GeometricCurrentOn univ k) and R an IMRep in univ of degree k representing X. Let F ⊆ ℝ^P be closed such that X vanishes off F, i.e. X(ω) = 0 for every ω ∈ 𝒟^k(ℝ^P) whose tsupport is disjoint from F. Then μ_R(ℝ^P ∖ F) = 0 (R.measure Fᶜ = 0), and M(X) ≤ M_W(X) for every open W ⊇ F.",
+  "lean_statement": "∀ (P k : ℕ) (X : GeometricCurrentOn (univ : Set (Euclid P)) k) (R : IMRep (univ : Set (Euclid P)) k) (F : Set (Euclid P)), R.Represents X → IsClosed F → (∀ ω : TestFormOn (univ : Set (Euclid P)) k, Disjoint (tsupport (ω : DifferentialForm (Euclid P) k)) (F) → X ω = 0) → R.measure Fᶜ = 0 ∧ ∀ W : Set (Euclid P), IsOpen W → F ⊆ W → X.mass ≤ X.massOn W",
+  "lean_name": "dor_lmb_fcd_sd_im_concentrated",
+  "depends_on": [
+    "root.density_one_implies_regular-a1.imrep_mass_and_support-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.density_one_implies_regular-a1.imrep_mass_and_support-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-imrep-mass-and-support-a1-a1",
+      "result_commit": "d49dda91b75b7417d67a10053e6dc4b65d4f0312",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-limsup-mass-bound-a1-flat-converg-40ab7f039e-a1"
+}

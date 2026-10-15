@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.rectifiable_density_one-a1.c1_piece_tangent-a1",
+  "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.rectifiable_density_one-a1",
+  "depth": 5,
+  "title": "Approximate tangent planes of a C¹ piece with a lower Lipschitz bound (proof of Simon Ch. 3, 1.6 '⇒')",
+  "statement": "Let P, n ∈ ℕ, g : ℝ^n → ℝ^P a C¹ map, c ∈ ℝ^n, r ∈ ℝ and m > 0 with m|a − b| ≤ |g(a) − g(b)| for all a, b in the open ball B := B_r(c). Then for every z ∈ B, the set N := g(B) has approximate tangent space T := Dg(z)(ℝ^n) = range(fderiv ℝ g z) at g(z) in the sense of Simon Ch. 3, Definition 1.4 (HasApproximateTangentSpaceAt n N (g z) T): dim T = n, and ∫_{η_{g(z),s}(N)} f dH^n → ∫_T f dH^n as s ↓ 0 for every f ∈ C_c(ℝ^P). Here η_{w,s}(y) = s^{-1}(y − w) and H^n = μHE[n].",
+  "lean_statement": "∀ (P n : ℕ) (g : Euclid n → Euclid P) (c : Euclid n) (r m : ℝ), ContDiff ℝ 1 g → 0 < m → (∀ a ∈ ball c r, ∀ b ∈ ball c r, m * ‖a - b‖ ≤ ‖g a - g b‖) → ∀ z ∈ ball c r, HasApproximateTangentSpaceAt n (g '' ball c r) (g z) (LinearMap.range (fderiv ℝ g z : Euclid n →ₗ[ℝ] Euclid P))",
+  "lean_name": "codim1_rdo_c1_piece_approxTangent",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-18e8208cd7-a1"
+}

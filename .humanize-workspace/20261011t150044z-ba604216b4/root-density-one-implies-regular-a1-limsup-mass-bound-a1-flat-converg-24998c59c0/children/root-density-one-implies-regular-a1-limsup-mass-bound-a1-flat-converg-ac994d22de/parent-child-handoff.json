@@ -1,0 +1,88 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat local-references/123e8435b4a2469b/manifest.json (project b4d606db, mathlib 25730c7c); cmp snapshot project/GMT/Ch07/Contract.lean with workspace GMT/Ch07/Contract.lean and Submission.lean (identical)",
+        "cat nodes/root-density-one-implies-regular-a1-limsup-mass-bound-a1-flat-converg-24998c59c0/{parent-child-handoff.json,parent-supplied-plan.md,parent-supplied-natural-proof.md}",
+        "sed -n 470,670p book/chapter-02.txt (Simon 2.1-2.7: BV definition, Lemma 2.5 mollification, Lemma 2.7 Poincare and its printed proof)",
+        "python3 -I scans of dag.json: nodes matching oincar|median|mollif|BV; the cube_bv_median branch (cmcdt_cbm_* all decomposing, so not reusable); accepted helpers and frozen types of codim1_rdo_dg_sp_mollifier_adjoint, rsd_mw_tfa_smooth_cutoff, dgcr_stc_exists_normalized_mollifier, codim1_rdo_dg_sp_sobolev_limit, cutoff lemmas; freshness of dor_lmb_fcd_cp_* names; node depths (selected node depth 5)",
+        "grep runtime.py (_decompose max_depth, _existing_lean_name_problem, _accepted_checkpoint), leaf_verification.check_source_delta (single theorem insertion, no imports), parent_verification.check_parent_git_delta; verifier/gmt-compare.py contract_scope and child_modules (comparator scope)",
+        "git show ae0277d4 / b04a0309 (accepted adjoint and cutoff declarations, byte-identical types), 4c5953a5 and bff81d31e (non-leaf parents adding Mathlib imports, incl. Mathlib.Analysis.Calculus.BumpFunction.Convolution), ebf61002 (children proof base: frozen imports only)",
+        "rg in snapshot mathlib: ae_convolution_tendsto_right_of_locallyIntegrable (BumpFunction/Convolution.lean:103), normed_neg/integral_normed/support_normed_eq/contDiff_normed/hasCompactSupport_normed (BumpFunction/Normed.lean), measurePreserving_arrowProdEquivProdArrow (Constructions/Pi.lean:751), volume_preserving_piFinSuccAbove (:818), measurePreserving_pi (:907), PiLp.volume_preserving_ofLp/toLp (Haar/InnerProductSpace.lean:134,139), tendsto_measure_iUnion_atTop, tendsto_setIntegral_of_monotone, lintegral_liminf_le', exists_contDiff_support_eq_eq_one_iff",
+        "rg -i 'poincar[eé] inequality|median|mollif|bounded variation' in snapshot project/GMT and .lake/packages/simongmt/Poincare (only the sorry-frozen Ch02/Ch04 contract docstrings, SimonGMT Chapter02/BV.lean basics and Chapter08 mollifier convergence outside the Ch07 import closure; no proved BV Poincare)",
+        "lake env lean /tmp/cp-decomp/Avail{,2,3}.lean (#check membership of ~120 declarations in the GMT.Ch07.Submission import closure)",
+        "lake env lean /tmp/cp-decomp/lean/Challenge_*.lean (13 exact comparator challenges), Assembly.lean (parent from sorried children, #print axioms), Iface.lean (interface proofs), LeafCheck.lean and proofs/{Mixed2,Slice2,Grad}.lean, Snippets.lean",
+        "python3 -I /tmp/cp-decomp/num/check2.py (Monte Carlo sanity check of the coordinate-step and smooth Poincare constants)"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch02/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/BumpFunction/Convolution.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/BumpFunction/Normed.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Constructions/Pi.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Haar/InnerProductSpace.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Continuity.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Add.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Average.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Manifold/PartitionOfUnity.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/BV.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/DistributionalConstancy.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter04/Poincare.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-limsup-mass-bound-a1-flat-converg-24998c59c0/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-limsup-mass-bound-a1-flat-converg-24998c59c0/parent-supplied-natural-proof.md",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-limsup-mass-bound-a1-flat-converg-cab3e79dc1/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-a9900b6593/parent-supplied-natural-proof.md",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-regular-set-dense-a1-mass-eq-weight-a1-test-form-approx-a1-smooth-cutoff-a1/parent-supplied-natural-proof.md",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-02.txt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+        "/runtime/flows/gmt-claude-9a0895c8c5e1/_recursive_lean/runtime.py",
+        "/runtime/flows/gmt-claude-9a0895c8c5e1/_recursive_lean/leaf_verification.py",
+        "/runtime/flows/gmt-claude-9a0895c8c5e1/_recursive_lean/parent_verification.py",
+        "/tmp/cp-decomp/lean/Assembly.lean",
+        "/tmp/cp-decomp/lean/Iface.lean",
+        "/tmp/cp-decomp/lean/LeafCheck.lean",
+        "/tmp/cp-decomp/proofs/Mixed2.lean",
+        "/tmp/cp-decomp/proofs/Slice2.lean",
+        "/tmp/cp-decomp/proofs/Grad.lean"
+      ],
+      "conclusion": "Snapshot (project b4d606db, Mathlib 25730c7c): Ch07 Contract.lean equals the workspace Contract.lean and Submission.lean. No proved BV Poincare inequality exists anywhere. The snapshot's Ch02 Lemma 2.7 and Ch04 5.6 are sorry-frozen contracts of other chapters. SimonGMT Chapter02/BV.lean has only variation basics. SimonGMT's mollifier a.e.-convergence (Chapter08) and Mathlib's ContDiffBump.normed and ae_convolution_tendsto_right_of_locallyIntegrable are outside the import closure of GMT.Ch07.Submission. The closure does contain convolution smoothness and support lemmas, Lebesgue differentiation, Fubini/Tonelli, piFinSuccAbove, arrowProdEquivProdArrow, measurePreserving_pi, PiLp.volume_preserving_ofLp/toLp, Fatou and the smooth Urysohn lemma. Reuse: rsd_mw_tfa_smooth_cutoff and codim1_rdo_dg_sp_mollifier_adjoint are accepted with byte-identical frozen types, so they are taken as children. The analogous cmcdt_cbm_* nodes are only decomposing, so fresh dor_lmb_fcd_cp_* names are used; all ten are unused in dag.json. Lean checks: all 12 child types and the parent type elaborate as exact comparator challenges. The parent's frozen type follows from the sorried children with the extra parent import Mathlib.Analysis.Calculus.BumpFunction.Convolution (precedent: accepted depth-5 parent codim1_rdo_dg_sobolev_perimeter). Interface proofs compile. The mixed-point and slice identities have complete leaf-form proofs using only propext, Classical.choice and Quot.sound."
+    }
+  ],
+  "parent_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.flat_convergence-a1.deformation-a1.cube_poincare-a1",
+  "child_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.flat_convergence-a1.deformation-a1.cube_poincare-a1.smooth_poincare-a1",
+  "subproblem": {
+    "key": "smooth_poincare",
+    "title": "Poincaré inequality on the cube Q_δ for C¹ functions, double-integral form (parent step 3)",
+    "statement": "Let m ∈ ℕ, v : Euclid (m + 1) → ℝ of class C¹, 0 ≤ δ < 1/2 and Q_δ := {y : δ < y_i < 1 − δ for all i}. Then ∫_{Q_δ} ∫_{Q_δ} |v(x) − v(y)| dy dx ≤ (m + 1)·(1 − 2δ)·volume(Q_δ)·∫_{Q_δ} ‖Dv(x)‖ dx.",
+    "lean_statement": "∀ (m : ℕ) (v : Euclid (m + 1) → ℝ) (δ : ℝ), ContDiff ℝ 1 v → 0 ≤ δ → δ < 1 / 2 → ∫ x in {y : Euclid (m + 1) | ∀ i, δ < y i ∧ y i < 1 - δ}, ∫ y in {y : Euclid (m + 1) | ∀ i, δ < y i ∧ y i < 1 - δ}, |v x - v y| ≤ ((m : ℝ) + 1) * (1 - 2 * δ) * (volume {y : Euclid (m + 1) | ∀ i, δ < y i ∧ y i < 1 - δ}).toReal * ∫ x in {y : Euclid (m + 1) | ∀ i, δ < y i ∧ y i < 1 - δ}, ‖fderiv ℝ v x‖",
+    "lean_name": "dor_lmb_fcd_cp_smooth_poincare",
+    "depends_on": [
+      "coordinate_step"
+    ],
+    "natural_proof": "Source: parent proof, step 3 (smooth Poincaré inequality on cubes, by coordinate paths): for a cube Q of side s = 1 − 2δ, ∫_Q∫_Q|v(x) − v(y)| ≤ Σ_i s·Lⁿ(Q)·∫_Q|∂_i v| ≤ n·s·Lⁿ(Q)·∫_Q|Dv|, with n = m + 1.\nDependency: sibling coordinate_step (Submission.dor_lmb_fcd_cp_coordinate_step).\nNotation: E := Euclid (m + 1), Q := Q_δ, e_k := EuclideanSpace.single k 1. For k ∈ Fin (m + 1), a_k and b_k are as in coordinate_step.\n\n1. Telescoping (coordinate paths). For x, y ∈ E and r ∈ {0, …, m + 1}, let W_r(x, y) := WithLp.toLp 2 (j ↦ y_j if (j : ℕ) < r else x_j).\n – W_0 = x, because no j has j < 0.\n – W_{m+1} = y, because every j ∈ Fin (m + 1) has j < m + 1.\n – For k ∈ Fin (m + 1): W_k = a_k(x, y), since (j : ℕ) < (k : ℕ) ⟺ j < k. Also W_{k+1} = b_k(x, y), since (j : ℕ) < k + 1 ⟺ j ≤ k.\n Hence (Finset.sum_range_sub' after Fin.sum_univ_eq_sum_range)\n v(x) − v(y) = Σ_{r=0}^{m} (v(W_r) − v(W_{r+1})) = Σ_{k ∈ Fin (m+1)} (v(a_k(x, y)) − v(b_k(x, y))),\n and so |v(x) − v(y)| ≤ Σ_k |v(a_k(x, y)) − v(b_k(x, y))|.\n\n2. Integrability. v is continuous and Q̄ is compact; for x, y ∈ Q every W_r(x, y) lies in Q. So all functions (x, y) ↦ |v(x) − v(y)| and (x, y) ↦ |v(a_k) − v(b_k)| are continuous and bounded on Q × Q. Since volume(Q) < ∞ (Q is bounded), they are integrable for (volume⌞Q) ⊗ (volume⌞Q). Their partial integrals in y are integrable in x (Fubini). Hence the iterated integrals are monotone and additive over the finite sum (integral_finset_sum, applied to the inner and then to the outer integral).\n\n3. Integrating step 1 and applying the sibling coordinate_step for each k (hypotheses: v is C¹, 0 ≤ δ < 1/2):\n ∫_Q∫_Q|v(x) − v(y)| ≤ Σ_k ∫_Q∫_Q|v(a_k) − v(b_k)| ≤ Σ_k (1 − 2δ)·volume(Q)·∫_Q|Dv(x)e_k| dx.\n\n4. Directional derivatives. For every x and k: |Dv(x)e_k| ≤ ‖Dv(x)‖·‖e_k‖ = ‖Dv(x)‖, since ‖e_k‖ = 1 (ContinuousLinearMap.le_opNorm). Both functions are continuous, hence integrable on Q, so ∫_Q|Dv(x)e_k| ≤ ∫_Q‖Dv‖ for each of the m + 1 indices k. The factor (1 − 2δ)·volume(Q) is ≥ 0 (δ < 1/2). Therefore\n ∫_Q∫_Q|v(x) − v(y)| dy dx ≤ (m + 1)·(1 − 2δ)·volume(Q)·∫_Q‖Dv(x)‖ dx. ∎\n\nCompiled Lean check of the telescoping identity of step 1 (against `import GMT.Ch07.Submission`, comparator scope):\n```lean\nexample (m : ℕ) (v : Euclid (m + 1) → ℝ) (x y : Euclid (m + 1)) :\n    v x - v y = ∑ k : Fin (m + 1),\n      (v (WithLp.toLp 2 (fun j => if j < k then y j else x j)) -\n        v (WithLp.toLp 2 (fun j => if j ≤ k then y j else x j))) := by\n  set W : ℕ → Euclid (m + 1) := fun n => WithLp.toLp 2 (fun j => if (j : ℕ) < n then y j else x j)\n    with hW\n  have h0 : W 0 = x := by\n    simp [hW]\n  have hN : W (m + 1) = y := by\n    have hlt : ∀ j : Fin (m + 1), (j : ℕ) < m + 1 := fun j => j.is_lt\n    simp only [hW, hlt, ite_true]\n  have hk : ∀ k : Fin (m + 1),\n      v (WithLp.toLp 2 (fun j => if j < k then y j else x j)) -\n        v (WithLp.toLp 2 (fun j => if j ≤ k then y j else x j)) = v (W k) - v (W (k + 1)) := by\n    intro k\n    have e1 : (fun j : Fin (m + 1) => if j < k then y j else x j) =\n        (fun j : Fin (m + 1) => if (j : ℕ) < (k : ℕ) then y j else x j) := by\n      funext j\n      simp only [Fin.lt_def]\n    have e2 : (fun j : Fin (m + 1) => if j ≤ k then y j else x j) =\n        (fun j : Fin (m + 1) => if (j : ℕ) < (k : ℕ) + 1 then y j else x j) := by\n      funext j\n      simp only [Fin.le_iff_val_le_val, Nat.lt_succ_iff]\n    rw [e1, e2]\n  rw [Finset.sum_congr rfl (fun k _ => hk k)]\n  rw [Fin.sum_univ_eq_sum_range (fun n => v (W n) - v (W (n + 1))) (m + 1)]\n  rw [Finset.sum_range_sub', h0, hN]\n```",
+    "proof_key_steps": [
+      "Telescope along the coordinate path W_0 = x, …, W_{m+1} = y with W_k = a_k(x, y), W_{k+1} = b_k(x, y).",
+      "All integrands are continuous and bounded on Q_δ × Q_δ, so the iterated integrals are additive and monotone.",
+      "Apply sibling coordinate_step to each of the m + 1 terms.",
+      "|Dv(x)e_k| ≤ ‖Dv(x)‖ and sum over k: factor (m + 1)(1 − 2δ)volume(Q_δ)."
+    ]
+  },
+  "audit": {
+    "key": "smooth_poincare",
+    "acceptable": true,
+    "natural_proof_acceptable": true,
+    "reason": "The coordinate path telescopes correctly. Finite-sum integration, coordinate_step and the unit coordinate-vector norm yield exactly the factor m + 1 and the operator-norm integral. The supplied telescoping proof also independently compiled."
+  },
+  "resolved_dependencies": [
+    "root.density_one_implies_regular-a1.limsup_mass_bound-a1.flat_convergence-a1.deformation-a1.cube_poincare-a1.coordinate_step-a1"
+  ],
+  "plan_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-limsup-mass-bound-a1-flat-converg-ac994d22de/parent-supplied-plan.md",
+  "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-limsup-mass-bound-a1-flat-converg-ac994d22de/parent-supplied-natural-proof.md",
+  "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-limsup-mass-bound-a1-flat-converg-ac994d22de/parent-supplied-natural-proof.json"
+}
