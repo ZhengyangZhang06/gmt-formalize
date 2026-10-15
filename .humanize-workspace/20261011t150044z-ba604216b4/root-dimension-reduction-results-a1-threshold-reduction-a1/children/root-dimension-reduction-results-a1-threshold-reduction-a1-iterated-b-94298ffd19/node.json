@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.threshold_reduction-a1.iterated_blowup_limit-a1",
+  "parent_id": "root.dimension_reduction_results-a1.threshold_reduction-a1",
+  "depth": 3,
+  "title": "Iterated blow-up limits are blow-up limits (diagonal selection with the countable-test criterion) (with the countable-test criterion proved inside)",
+  "statement": "Let P, n ∈ ℕ, U ⊆ ℝ^P open, T ∈ 𝒟_n(U), x ∈ U, x_i ∈ ℝ^P with x_i → x, λ_i > 0 with λ_i → 0, y ∈ ℝ^P, s_k > 0 with s_k → 0, and S, C ∈ 𝒟_n(ℝ^P). Assume: (a) there are δ > 0 and Γ ∈ ℝ with M_{B_ρ(x′)}(T) ≤ ofReal(Γρⁿ) for all x′ ∈ B_δ(x) and 0 < ρ < δ; (b) η_{x_i,λ_i#}T ⇀ S in ℝ^P (ConvergesWeakly (fun i ↦ blowUp T x_i λ_i) S); (c) η_{y,s_k#}S ⇀ C in ℝ^P. Then there is a strictly increasing φ : ℕ → ℕ with η_{x_{φ(k)}+λ_{φ(k)}y, λ_{φ(k)}s_k #}T ⇀ C in ℝ^P, i.e. ConvergesWeakly (fun k ↦ blowUp T (x_{φ(k)} + λ_{φ(k)}•y) (λ_{φ(k)}·s_k)) C.",
+  "lean_statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (x : Euclid P) (xs : ℕ → Euclid P) (lams : ℕ → ℝ) (hlams : ∀ i, 0 < lams i) (S : GeometricCurrentOn (univ : Set (Euclid P)) n) (y : Euclid P) (ss : ℕ → ℝ) (hss : ∀ k, 0 < ss k) (C : GeometricCurrentOn (univ : Set (Euclid P)) n), IsOpen U → x ∈ U → Tendsto xs atTop (𝓝 x) → Tendsto lams atTop (𝓝 0) → Tendsto ss atTop (𝓝 0) → (∃ δ Γ : ℝ, 0 < δ ∧ ∀ x' ∈ ball x δ, ∀ ρ : ℝ, 0 < ρ → ρ < δ → T.massOn (ball x' ρ) ≤ ENNReal.ofReal (Γ * ρ ^ n)) → ConvergesWeakly (fun i => blowUp T (xs i) (lams i) (hlams i).ne') S → ConvergesWeakly (fun k => blowUp S y (ss k) (hss k).ne') C → ∃ φ : ℕ → ℕ, StrictMono φ ∧ ConvergesWeakly (fun k => blowUp T (xs (φ k) + lams (φ k) • y) (lams (φ k) * ss k) (mul_pos (hlams (φ k)) (hss k)).ne') C",
+  "lean_name": "dimred_tr_iterated_blowup_limit",
+  "depends_on": [
+    "root.dimension_reduction_results-a1.threshold_reduction-a1.blowup_calculus-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.dimension_reduction_results-a1.threshold_reduction-a1.blowup_calculus-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-threshold-reduction-a1-iterated-b-94298ffd19-a1"
+}

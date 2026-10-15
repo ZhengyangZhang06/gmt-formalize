@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.moving_blowups-a1.pushforward-a1.pf_integer-a1.orient_piece-a1",
+  "parent_id": "root.dimension_reduction_results-a1.moving_blowups-a1.pushforward-a1.pf_integer-a1",
+  "depth": 5,
+  "title": "The orientation of an integer multiplicity triple along a bi-Lipschitz parametrized piece of its carrier",
+  "statement": "Let P, n ∈ ℕ, U ⊆ ℝ^P open and R = (M, θ, ξ) an integer multiplicity triple in U (IMRep U n). Let F : ℝⁿ → ℝ^P be L-Lipschitz, B ⊆ ℝⁿ Borel and m > 0 with m|a − a'| ≤ |F(a) − F(a')| for a, a' ∈ B, F differentiable with injective derivative at every point of B, and F(B) ⊆ M. Then the map b ↦ ξ(F(b)) is a.e. strongly measurable for Lebesgue measure restricted to B, and for Lebesgue-a.e. b ∈ B, ξ(F(b)) is a unit orientation of the n-plane range DF(b) (IsUnitOrientationOf (R.orient (F b)) (range (fderiv ℝ F b))).",
+  "lean_statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (R : IMRep U n) (F : Euclid n → Euclid P) (B : Set (Euclid n)) (L : NNReal) (m : ℝ), IsOpen U → LipschitzWith L F → MeasurableSet B → 0 < m → (∀ a ∈ B, ∀ a' ∈ B, m * ‖a - a'‖ ≤ ‖F a - F a'‖) → (∀ a ∈ B, DifferentiableAt ℝ F a ∧ Injective (fderiv ℝ F a)) → F '' B ⊆ R.carrier → AEStronglyMeasurable (fun b => R.orient (F b)) (volume.restrict B) ∧ ∀ᵐ b ∂(volume.restrict B), IsUnitOrientationOf (R.orient (F b)) (LinearMap.range (fderiv ℝ F b : Euclid n →ₗ[ℝ] Euclid P))",
+  "lean_name": "dimred_mbl_pfi_imrep_orient_along_piece",
+  "depends_on": [
+    "root.minimizing_implies_stationary-a1.diffeo_pushforward-a1.piece_tangent_density-a1",
+    "root.minimizing_implies_stationary-a1.diffeo_pushforward-a1.piece_tangent_density-a1.piece_pullback-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.minimizing_implies_stationary-a1.diffeo_pushforward-a1.piece_tangent_density-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-piece-tan-680a7024c9-a1",
+      "result_commit": "a21680472b6919972de04d02dc3e1395a15d4171",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.minimizing_implies_stationary-a1.diffeo_pushforward-a1.piece_tangent_density-a1.piece_pullback-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-piece-tan-e483a373f0-a1",
+      "result_commit": "bed5b8494a351297a2be8f0a0b63079868d53507",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-moving-blowups-a1-pushforward-a1-f85faa971a-a1"
+}

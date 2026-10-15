@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.threshold_reduction-a1.measure_class_reduction-a1.eventually_near-a1",
+  "parent_id": "root.dimension_reduction_results-a1.threshold_reduction-a1.measure_class_reduction-a1",
+  "depth": 4,
+  "title": "Subsequential closedness in B_1(0) gives eventual ε-neighbourhood inclusion (compactness step of parent (A.3)(3))",
+  "statement": "Let P ∈ ℕ, S ⊆ ℝ^P and S_k ⊆ ℝ^P (k ∈ ℕ). Assume that whenever sub : ℕ → ℕ is strictly increasing, z_k ∈ B_1(0) ∩ S_{sub(k)} for every k, and z_k → x in ℝ^P, then x ∈ S. Then for every ε > 0 there is k₀ ∈ ℕ such that B_1(0) ∩ S_k ⊆ {x : there is z ∈ S with |x − z| < ε} for every k ≥ k₀ (open unit ball B_1(0), Euclidean distance).",
+  "lean_statement": "∀ (P : ℕ) (S : Set (Euclid P)) (Ss : ℕ → Set (Euclid P)), (∀ (sub : ℕ → ℕ) (z : ℕ → Euclid P) (x : Euclid P), StrictMono sub → (∀ k, z k ∈ ball (0 : Euclid P) 1 ∩ Ss (sub k)) → Tendsto z atTop (𝓝 x) → x ∈ S) → ∀ ε : ℝ, 0 < ε → ∃ k₀ : ℕ, ∀ k ≥ k₀, ball (0 : Euclid P) 1 ∩ Ss k ⊆ {x | ∃ z ∈ S, dist x z < ε}",
+  "lean_name": "dimred_tr_mcr_eventually_near",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-threshold-reduction-a1-measure-cl-1855270541-a1"
+}

@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.moving_blowups-a1.local_comparison-a1.index_comparison-a1.mass_zero_off_support-a1",
+  "parent_id": "root.dimension_reduction_results-a1.moving_blowups-a1.local_comparison-a1.index_comparison-a1",
+  "depth": 5,
+  "title": "Local mass vanishes on a set that misses the support (parent step 1 and preliminary (p1))",
+  "statement": "Let P, n ∈ ℕ, let U, V ⊆ ℝ^P be arbitrary sets and let T ∈ 𝒟_n(U) be a current in U (SimonGMT GeometricCurrentOn U n). Suppose V ∩ spt T = ∅, where spt T = GeometricCurrentOn.support T is U minus the union of the open sets W with closure(W) compact, closure(W) ⊆ U and T(η) = 0 for every η ∈ 𝒟ⁿ(U) with tsupport η ⊆ W. Then M_V(T) = 0. Here M_V(T) = T.massOn V is the supremum in [0, ∞] of ofReal(T(ω)) over the forms ω ∈ 𝒟ⁿ(U) with tsupport ω ⊆ V and Euclidean coefficient norm |ω(x)| ≤ 1 for every x.",
+  "lean_statement": "∀ (P n : ℕ) (U V : Set (Euclid P)) (T : GeometricCurrentOn U n), Disjoint V T.support → T.massOn V = 0",
+  "lean_name": "dimred_mbl_lc_ic_massOn_eq_zero_of_disjoint",
+  "depends_on": [
+    "root.density_and_tangent_cones-a1.vanish_off_support-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.density_and_tangent_cones-a1.vanish_off_support-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-vanish-off-support-a1-a1",
+      "result_commit": "44ef61f79e2168134f8a5a6d6520baba56052d67",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-moving-blowups-a1-local-compariso-083c2a4f79-a1"
+}
