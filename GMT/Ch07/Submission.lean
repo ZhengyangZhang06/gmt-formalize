@@ -45640,4 +45640,125 @@ theorem Submission.dimred_mbl_flat_convergence : ∀ (P m : ℕ) (U : Set (Eucli
   exact ⟨R, S, hRS, tendsto_of_tendsto_of_tendsto_of_le_of_le tendsto_const_nhds hdg
     (fun j => zero_le) hle⟩
 
+/-- **Simon 7.2.4 (1)–(11), Remark 7.2.5(2)** (local comparison along a subsequence).  The
+`κⱼ = μ_{S_{ψ(j)}}` are eventually finite on balls (hypothesis (2) and Simon 6.3.2(3)), so
+`dimred_mbl_lc_slice_decomposition`, applied to `Ŝ_{ψ(j)} ⇀ C` with flat convergence, slicing and
+boundary rectifiability in `ℝᴾ`, fixes `W`, a compact `F ⊇ W`, `φ'`, `eᵢ → 0` and the cycles
+`Ŷᵢ` before the competitor `S`.  Take `F ⊆ B_G`, the retractions `πⱼ` for `B_{2G}`,
+`G₃ = max(G', 2G) + 1` and the mass bound `c` on `B_{G₃}`; `‖Dπⱼ‖ ≤ 1 + η` follows from the
+Lipschitz bound (`norm_fderiv_le_of_lip'`).  For large `i`, `j = ψ(φ'(i))` has
+`B̄_{G₃} ⊆ B̄_{ρⱼ} ⊆ Uⱼ` and `Ŝⱼ = Sⱼ` on forms supported in `W ⊆ B_G`, so
+`dimred_mbl_lc_index_comparison` gives
+`M_W(Sⱼ) ≤ (1 + η)ⁿ (M_W(S) + 2eᵢ) + ((1 + η)ⁿ − 1) c`.  Let `i → ∞`, then `η ↓ 0`. -/
+theorem Submission.dimred_mbl_local_comparison : ∀ (P m : ℕ) (Us As : ℕ → Set (Euclid P)) (Ss : (j : ℕ) → GeometricCurrentOn (Us j) (m + 1)) (Ŝ : ℕ → GeometricCurrentOn (univ : Set (Euclid P)) (m + 1)) (C : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1)) (ρ : ℕ → ℝ), (∀ j, IsOpen (Us j)) → (∀ j, IsMinimizingIn (Ss j) (As j)) → (∀ j, (Ss j).support ⊆ As j) → (∀ R : ℝ, ∃ c : ℝ≥0∞, c ≠ ∞ ∧ ∀ᶠ j in atTop, (Ss j).massOn (ball 0 R) ≤ c) → (∀ G : ℝ, 0 < G → ∃ (πs : ℕ → Euclid P → Euclid P) (G' : ℝ), (∀ᶠ j in atTop, As j ∩ ball 0 G = ∅ ∨ (ContDiffOn ℝ 1 (πs j) (ball 0 G) ∧ MapsTo (πs j) (ball 0 G) (As j ∩ ball 0 G') ∧ ∀ y ∈ As j ∩ ball 0 G, πs j y = y)) ∧ ∀ η : ℝ, 0 < η → ∀ᶠ j in atTop, As j ∩ ball 0 G = ∅ ∨ ∀ y ∈ ball 0 G, ∀ z ∈ ball 0 G, ‖πs j y - πs j z‖ ≤ (1 + η) * ‖y - z‖) → IsIntegerMultiplicity C → (∀ j, IsIntegerMultiplicity (Ŝ j)) → (∀ W : Set (Euclid P), IsOpen W → Bornology.IsBounded W → ⨆ j, ((Ŝ j).massOn W + (Ŝ j).boundary.massOn W) < ∞) → WeaklyConvergesOn Ŝ C → Tendsto ρ atTop atTop → (∀ j, closedBall (0 : Euclid P) (ρ j) ⊆ Us j) → (∀ (j : ℕ) (ω : TestFormOn (univ : Set (Euclid P)) (m + 1)), tsupport (ω : DifferentialForm (Euclid P) (m + 1)) ⊆ ball 0 (ρ j) → Ŝ j ω = currentEval (Ss j) (ω : DifferentialForm (Euclid P) (m + 1))) → ∀ (K : Set (Euclid P)) (ε : ℝ), IsCompact K → 0 < ε → ∀ ψ : ℕ → ℕ, StrictMono ψ → ∃ W : Set (Euclid P), IsOpen W ∧ K ⊆ W ∧ W ⊆ thickening ε K ∧ ∃ φ' : ℕ → ℕ, StrictMono φ' ∧ ∀ S : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1), IsIntegerMultiplicity S → SameBoundary S C → (S - C).support ⊆ K → limsup (fun j => (Ss (ψ (φ' j))).massOn W) atTop ≤ S.massOn W := by
+  intro P m Us As Ss Ŝ C ρ hUo hmin hsptA hmass hretr hCim hŜim hŜbd hŜC hρ hρU hŜS K ε hK hε ψ hψ
+  -- integer multiplicity representations `Sⱼ = τ(Mⱼ, θⱼ, ξⱼ)`; `M_V(Sⱼ) = μⱼ(V)` for open `V`
+  have hIM : ∀ j, ∃ R : IMRep (Us j) (m + 1), R.Represents (Ss j) := fun j => (hmin j).1
+  choose Rs hRs using hIM
+  have hMR : ∀ j (V : Set (Euclid P)), IsOpen V → (Ss j).massOn V = (Rs j).measure V := fun j =>
+    (Submission.dor_imrep_massOn_eq_measure_and_support P (m + 1) (Us j) (Ss j) (Rs j) (hUo j)
+      (hRs j)).1
+  have hψt : Tendsto ψ atTop atTop := hψ.tendsto_atTop
+  -- `κⱼ = μ_{S_{ψ(j)}}` is eventually finite on every ball (hypothesis (2))
+  have hκ : ∀ r : ℝ, ∀ᶠ j in atTop, (Rs (ψ j)).measure (ball 0 r) ≠ ∞ := by
+    intro r
+    obtain ⟨c, hc, hcj⟩ := hmass r
+    filter_upwards [hψt.eventually hcj] with j hj
+    rw [← hMR (ψ j) _ isOpen_ball]
+    exact ne_top_of_le_ne_top hc hj
+  -- Steps 2 and 4–6: slice decomposition of `C − Ŝ_{ψ(j)}`, from flat convergence of the
+  -- subsequence `Ŝ_{ψ(j)} ⇀ C`, slicing and boundary rectifiability in `ℝᴾ`
+  obtain ⟨W, F, φ', e, Ŷ, Sr, hWo, hFc, hKW, hWF, hWε, hφ', he, hi⟩ :=
+    Submission.dimred_mbl_lc_slice_decomposition P m C (fun j => Ŝ (ψ j))
+      (fun j => (Rs (ψ j)).measure) K ε hCim (fun j => hŜim (ψ j))
+      (fun W₀ hW₀ hW₀c => Submission.dimred_mbl_flat_convergence P m univ (fun j => Ŝ (ψ j)) C
+        isOpen_univ (fun j => hŜim (ψ j)) hCim
+        (fun V hV hVc => lt_of_le_of_lt
+          (iSup_comp_le (fun j => (Ŝ j).massOn V + (Ŝ j).boundary.massOn V) ψ)
+          (hŜbd V hV (hVc.1.isBounded.subset subset_closure)))
+        (fun ω => (hŜC ω).comp hψt) W₀ hW₀ hW₀c)
+      (fun T μ μ' ξ ξ' f L hμ hμ' hξ hξ' hξb hξ'b hT hT' hf => by
+        obtain ⟨A, B, h1, h2, h3, h4, -⟩ := Submission.dimred_mbl_slice_mass_bounds P (m + 1) univ
+          T μ μ' ξ ξ' f L isOpen_univ (fun K' hK' _ => hμ K' hK') (fun K' hK' _ => hμ' K' hK') hξ
+          hξ' hξb hξ'b hT hT' hf
+        exact ⟨A, B, h1, h2, h3, h4⟩)
+      (fun R hR hRb => Submission.dimred_mbl_closure_and_boundary_rectifiability.2 P (m + 1) univ R
+        isOpen_univ hR hRb)
+      hκ hK hε
+  refine ⟨W, hWo, hKW, hWε, φ', hφ', fun S hSim hSB hSK => ?_⟩
+  have hSB' : S.boundary = C.boundary := hSB
+  -- Step 3: `F ⊆ B_G`, the retractions for `B_{2G}`, `G₃ = max(G', 2G) + 1` and the mass bound
+  -- `c` on `B_{G₃}`
+  obtain ⟨G, hG0, hFG⟩ := hFc.isBounded.subset_ball_lt 0 (0 : Euclid P)
+  obtain ⟨πs, G', hπ, hπlip⟩ := hretr (2 * G) (by positivity)
+  obtain ⟨G₃, hG₃⟩ : ∃ G₃ : ℝ, G₃ = max G' (2 * G) + 1 := ⟨_, rfl⟩
+  have hG'G₃ : G' ≤ G₃ := by have := le_max_left G' (2 * G); linarith
+  have h2GG₃ : 2 * G ≤ G₃ := by have := le_max_right G' (2 * G); linarith
+  obtain ⟨c, hc, hcj⟩ := hmass G₃
+  have hψφ : Tendsto (fun i => ψ (φ' i)) atTop atTop := hψt.comp hφ'.tendsto_atTop
+  -- Steps 7–8: for `η > 0` and large `i`, the comparison at the index `j = ψ(φ'(i))`
+  have hkey : ∀ η : ℝ, 0 < η → limsup (fun i => (Ss (ψ (φ' i))).massOn W) atTop ≤
+      ENNReal.ofReal ((1 + η) ^ (m + 1)) * S.massOn W +
+        ENNReal.ofReal ((1 + η) ^ (m + 1) - 1) * c := by
+    intro η hη
+    have hev : ∀ᶠ i in atTop, (Ss (ψ (φ' i))).massOn W ≤
+        ENNReal.ofReal ((1 + η) ^ (m + 1)) * (S.massOn W + 2 * e i) +
+          ENNReal.ofReal ((1 + η) ^ (m + 1) - 1) * c := by
+      filter_upwards [hψφ.eventually (hπ.and ((hπlip η hη).and
+        ((hρ.eventually_ge_atTop G₃).and hcj)))] with i hgood
+      obtain ⟨h1, h2, h3, h4⟩ := hgood
+      obtain ⟨hŶim, hŶb, hŶF, hSr, hŶR, hκ0, hdec⟩ := hi i
+      -- `πⱼ` retracts `B_{2G}` into `Aⱼ ∩ B_{G₃}` with `‖Dπⱼ‖ ≤ 1 + η` (Lipschitz bound)
+      have hretr' : As (ψ (φ' i)) ∩ ball 0 (2 * G) = ∅ ∨
+          (ContDiffOn ℝ 1 (πs (ψ (φ' i))) (ball 0 (2 * G)) ∧
+            MapsTo (πs (ψ (φ' i))) (ball 0 (2 * G)) (As (ψ (φ' i)) ∩ ball 0 G₃) ∧
+            (∀ y ∈ As (ψ (φ' i)) ∩ ball 0 (2 * G), πs (ψ (φ' i)) y = y) ∧
+            ∀ y ∈ ball (0 : Euclid P) (2 * G), ‖fderiv ℝ (πs (ψ (φ' i))) y‖ ≤ 1 + η) := by
+        rcases h1 with h1 | ⟨hcd, hmaps, hfix⟩
+        · exact Or.inl h1
+        rcases h2 with h2 | hlip
+        · exact Or.inl h2
+        refine Or.inr ⟨hcd, fun y hy => ⟨(hmaps hy).1, ball_subset_ball hG'G₃ (hmaps hy).2⟩,
+          hfix, fun y hy => norm_fderiv_le_of_lip' ℝ (by linarith) ?_⟩
+        filter_upwards [isOpen_ball.mem_nhds hy] with x hx
+        exact hlip x hx y hy
+      -- `C = Sⱼ + Ŷᵢ + Srᵢ` on forms supported in `W ⊆ B_G ⊆ B_{ρⱼ}`
+      have hdec' : ∀ ω : TestFormOn (univ : Set (Euclid P)) (m + 1),
+          tsupport (ω : DifferentialForm (Euclid P) (m + 1)) ⊆ W →
+          C ω = currentEval (Ss (ψ (φ' i))) (ω : DifferentialForm (Euclid P) (m + 1)) + Ŷ i ω +
+            Sr i ω := by
+        intro ω hω
+        rw [hdec ω hω, hŜS (ψ (φ' i)) ω
+          (hω.trans (hWF.trans (hFG.trans (ball_subset_ball (by linarith)))))]
+      have hidx := Submission.dimred_mbl_lc_index_comparison P m (Us (ψ (φ' i)))
+        (As (ψ (φ' i))) W F (Ss (ψ (φ' i))) (Rs (ψ (φ' i))) C S (Ŷ i) (Sr i) (πs (ψ (φ' i))) G
+        G₃ (1 + η) (e i) (hUo _) (hmin _) (hsptA _) (hRs _) hG0 h2GG₃
+        ((closedBall_subset_closedBall h3).trans (hρU _)) (ne_top_of_le_ne_top hc h4)
+        (by linarith) hretr' hWo hFc hWF hFG hκ0 hCim hSim hSB' (hSK.trans hKW) hŶim hŶb hŶF
+        hŶR hSr hdec' (Submission.dimred_mbl_pushforward P m)
+      calc (Ss (ψ (φ' i))).massOn W ≤ _ := hidx
+        _ ≤ _ := by gcongr
+    -- let `i → ∞`: `eᵢ → 0`
+    have hlim : Tendsto (fun i => ENNReal.ofReal ((1 + η) ^ (m + 1)) * (S.massOn W + 2 * e i) +
+        ENNReal.ofReal ((1 + η) ^ (m + 1) - 1) * c) atTop
+        (𝓝 (ENNReal.ofReal ((1 + η) ^ (m + 1)) * S.massOn W +
+          ENNReal.ofReal ((1 + η) ^ (m + 1) - 1) * c)) := by
+      have h2e : Tendsto (fun i => S.massOn W + 2 * e i) atTop (𝓝 (S.massOn W)) := by
+        simpa using tendsto_const_nhds.add (ENNReal.Tendsto.const_mul he (Or.inr (by simp)))
+      exact (ENNReal.Tendsto.const_mul h2e (Or.inr ENNReal.ofReal_ne_top)).add tendsto_const_nhds
+    exact (limsup_le_limsup hev).trans hlim.limsup_eq.le
+  -- Step 8(f): let `η ↓ 0`
+  have hcont : Tendsto (fun η : ℝ => (1 + η) ^ (m + 1)) (𝓝[>] 0) (𝓝 1) := by
+    have h : Continuous (fun η : ℝ => (1 + η) ^ (m + 1)) := by fun_prop
+    simpa using (h.tendsto 0).mono_left nhdsWithin_le_nhds
+  have hlimη : Tendsto (fun η : ℝ => ENNReal.ofReal ((1 + η) ^ (m + 1)) * S.massOn W +
+      ENNReal.ofReal ((1 + η) ^ (m + 1) - 1) * c) (𝓝[>] 0) (𝓝 (S.massOn W)) := by
+    have ha : Tendsto (fun η : ℝ => ENNReal.ofReal ((1 + η) ^ (m + 1))) (𝓝[>] 0) (𝓝 1) := by
+      simpa using ENNReal.tendsto_ofReal hcont
+    have hb : Tendsto (fun η : ℝ => ENNReal.ofReal ((1 + η) ^ (m + 1) - 1)) (𝓝[>] 0) (𝓝 0) := by
+      simpa using ENNReal.tendsto_ofReal (hcont.sub_const 1)
+    simpa using (ENNReal.Tendsto.mul_const ha (Or.inl one_ne_zero)).add
+      (ENNReal.Tendsto.mul_const hb (Or.inr hc))
+  exact ge_of_tendsto hlimη (eventually_nhdsWithin_of_forall fun η hη => hkey η hη)
+
 end GMT.Ch07
