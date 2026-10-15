@@ -79070,9 +79070,6 @@ theorem Submission.idtp_pc_boundary_weak_derivative : ∀ (P n : ℕ) (V : Set (
   simp only
   rw [← hd x]
   rfl
-/-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
-theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
-
 theorem Submission.dgcr_bwd_coordinate_form : ∀ (m : ℕ) (a : Euclid (m + 1) → ℝ) (j : Fin (m + 1)), ContDiff ℝ (⊤ : ℕ∞) a → ∃ ψ : DifferentialForm (Euclid (m + 1)) m, IsSmoothForm ψ ∧ tsupport ψ ⊆ tsupport a ∧ ∀ x : Euclid (m + 1), exteriorDerivative ψ x (fun i => EuclideanSpace.single i (1 : ℝ)) = fderiv ℝ a x (EuclideanSpace.single j (1 : ℝ)) := by
   intro m a j ha
   obtain ⟨β, hβ⟩ := Submission.dgcr_bwd_coordinate_covector m j
