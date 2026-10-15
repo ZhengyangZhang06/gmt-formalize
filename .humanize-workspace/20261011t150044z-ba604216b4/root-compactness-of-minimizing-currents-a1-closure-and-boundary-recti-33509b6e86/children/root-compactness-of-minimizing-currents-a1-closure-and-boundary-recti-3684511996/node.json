@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.isodiametric_bound-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1",
+  "depth": 4,
+  "title": "Isodiametric normalisation: μHE[n] ≤ (ω_n/2ⁿ)·μH[n]",
+  "statement": "For all P, n ∈ ℕ, the Euclidean Hausdorff measure μHE[n] on ℝ^P (Mathlib: μHE[n] = c_n·μH[n] with c_n = addHaarScalarFactor(volume on ℝⁿ, μH[n])) satisfies μHE[n] ≤ (ω_n/2ⁿ)·μH[n] as measures (setwise), where ω_n = unitBallVolume n is the Lebesgue measure of the unit ball of ℝⁿ and μH[n] is Mathlib's Hausdorff measure with weight diamⁿ. Equivalently c_n ≤ ω_n/2ⁿ, i.e. Hⁿ = μHE[n] is dominated by Simon's normalisation ω_n(diam/2)ⁿ (Simon Ch. 1, 2.1–2.2).",
+  "lean_statement": "∀ (P n : ℕ), (μHE[n] : Measure (Euclid P)) ≤ (unitBallVolume n / 2 ^ n) • (μH[(n : ℝ)] : Measure (Euclid P))",
+  "lean_name": "cbr_ci_euclideanHausdorff_le_isodiametric",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-3684511996-a1"
+}
