@@ -1,0 +1,88 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat local-references/123e8435b4a2469b/manifest.json (mode local-project, project b4d606db, mathlib 25730c7c)",
+        "cmp local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean GMT/Ch07/Contract.lean; diff GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean (both identical)",
+        "rg -n \"theorem LipschitzOnWith.extend_real|theorem LipschitzOnWith.extend_pi\" mathlib/Mathlib",
+        "rg -n \"theorem mul_meas_ge_le_lintegral₀|theorem meas_ge_le_lintegral_div|theorem lintegral_eq_zero_iff'\" mathlib/Mathlib",
+        "rg -n \"theorem integral_inter_add_sdiff|theorem lipschitz_infDist_pt|theorem mem_cthickening_of_dist_le|theorem tprod_eq_zero_mul'\" mathlib/Mathlib",
+        "rg -n \"tsum_geometric |theorem one_sub_inv_two|le_sum_of_subadditive|bddAbove_range_of_hasCompactSupport|theorem setLIntegral_le_lintegral|theorem ae_restrict_iff'\" mathlib/Mathlib",
+        "rg -n \"dor_lmb_fcd_sd_|skeleton_deformation|good_slice|shell\" project -g \"*.lean\" (no match)",
+        "grep -n \"^def |^theorem |^structure |^instance\" .lake/packages/simongmt/Poincare/SimonGMT/Chapter06/{Currents,Mass,FormSupNorm,CurrentLocalEquality,Forms}.lean and Chapter03/Rectifiable.lean (GeometricCurrentOn, ext, Zero, boundary, exteriorDerivativeTestOn, tsupport_exteriorDerivative_subset, WeaklyConvergesOn.boundary, massAdmissibleOn, massOn, le_massOn, WeaklyConvergesOn.massOn_le_liminf, covectorEuclideanNorm_neg, countablyRectifiable_of_measure_zero)",
+        "python3 -I scans of dag.json: frozen types of dor_lmb_fcd_good_center, dor_lmb_fcd_retraction, dor_lmb_fcd_pushforward_homotopy (decomposing siblings), dor_imrep_massOn_eq_measure_and_support and cmc_imRep_locality_restrict_sub (accepted, byte-identical types), accepted helpers cmc_fc_cs_massOn_sub_le, cmc_fc_sc_abs_le_mul_mass, dor_lmb_imrep_restrict_current; freshness of the ten dor_lmb_fcd_sd_* names",
+        "sed -n 1651,1860p book/chapter-06.txt (Simon 5.1 proof, displays (1)-(25)); sed of runtime.py (_decompose depth check, _overlay_accepted_children, _existing_lean_name_problem) and verifier/gmt-compare.py (contract_scope, child_modules)",
+        "lake env lean /tmp/skd-decomp/final/AllChallenges.lean (12 exact challenge types), /tmp/skd-decomp/Assembly.lean (parent frozen type from children + GC/RET/PF/C1 stand-ins), CoreCheck, SeriesCheck, TeleCheck, GSCheck, SHCheck, ICCheck, Leaf, Bound2 with #print axioms"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/Lipschitz.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Markov.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/HausdorffDistance.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/Thickening.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/InfiniteSum/NatInt.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/SpecificLimits/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Basic/ENNReal/Inv.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Algebra/Order/BigOperators/Group/Finset.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/FormSupNorm.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-limsup-mass-bound-a1-flat-converg-f2406f5f27/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-limsup-mass-bound-a1-flat-converg-cab3e79dc1/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt",
+        "/runtime/flows/gmt-claude-9a0895c8c5e1/_recursive_lean/runtime.py",
+        "/runtime/flows/gmt-claude-9a0895c8c5e1/_recursive_lean/prompts.py",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+        "/tmp/skd-decomp/Assembly.lean",
+        "/tmp/skd-decomp/CoreCheck.lean",
+        "/tmp/skd-decomp/final/AllChallenges.lean"
+      ],
+      "conclusion": "Snapshot project b4d606db / mathlib 25730c7c; its Ch07 Contract.lean is byte-identical to the workspace Contract.lean and Submission.lean. No project file contains a skeleton deformation, good-slice or shell lemma (no match for dor_lmb_fcd_sd_*, skeleton_deformation, good_slice, shell). SimonGMT supplies the current API used by the children (GeometricCurrentOn with ext and Zero, boundary via exteriorDerivativeTestOn whose underlying form is exteriorDerivative ω by definition, tsupport_exteriorDerivative_subset, massAdmissibleOn/massOn/le_massOn, WeaklyConvergesOn.massOn_le_liminf, covectorEuclideanNorm_neg, countablyRectifiable_of_measure_zero) but no Lipschitz push-forward, homotopy, slicing or restriction lemma, so those enter through the DAG siblings (GC, RET, PF) and the reused accepted (C1) dor_imrep_massOn_eq_measure_and_support and (IMC) cmc_imRep_locality_restrict_sub (byte-identical frozen types). Every Mathlib lemma cited in the child proofs exists in the pinned snapshot: LipschitzOnWith.extend_real (Lipschitz.lean:308), lintegral_eq_zero_iff', setLIntegral_le_lintegral, integral_inter_add_sdiff (Bochner/Set.lean:114), lipschitz_infDist_pt, mem_cthickening_of_dist_le, tsum_eq_zero_add' (to_additive of tprod_eq_zero_mul'), ENNReal.tsum_geometric, ENNReal.one_sub_inv_two, Finset.le_sum_of_subadditive, ae_restrict_iff', Continuous.bddAbove_range_of_hasCompactSupport. Lean: all 12 child types elaborate as exact comparator challenges; the parent frozen type compiles from the four used children plus stand-ins for GC, RET, PF and C1 with no sorry in the assembly body; core compiles from telescoping and series_limit, series_limit from zero_neg, telescoping from (IMC) and zero_neg, good_slice from markov_point, im_concentrated and (C1), shells from im_restrict, im_concentrated from (C1) (axioms propext, Classical.choice, Quot.sound, plus sorryAx only from the stand-ins)."
+    }
+  ],
+  "parent_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.flat_convergence-a1.deformation-a1.skeleton_deformation-a1",
+  "child_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.flat_convergence-a1.deformation-a1.skeleton_deformation-a1.good_slice-a1",
+  "subproblem": {
+    "key": "good_slice",
+    "title": "A good slice in a prescribed interval of levels (Markov choice of the slicing radius)",
+    "statement": "Let P, m ∈ ℕ, T ∈ 𝒟_{m+1}(ℝ^P) (domain univ) represented by an IMRep RT = (M, θ, ξ) in univ, RB = (M', θ', ξ') an IMRep in univ of degree m, f : ℝ^P → ℝ continuous, L ∈ ℝ≥0, P_t ∈ 𝒟_m(ℝ^P) for t ∈ ℝ, and real numbers a < b. Assume (H1) for every open W ⊆ ℝ^P, t ↦ M_W(P_t) is a.e.-measurable and ∫_ℝ M_W(P_t) dt ≤ L·M_W(T); (H2) for L¹-a.e. t: P_t is integer multiplicity, P_t vanishes off f⁻¹(t) (P_t(ω) = 0 whenever tsupport ω ∩ f⁻¹(t) = ∅), and P_t(ω) = ∫_{M∩{f<t}} θ⟨dω, ξ⟩ dH^{m+1} − ∫_{M'∩{f<t}} θ'⟨ω, ξ'⟩ dH^m for every ω ∈ 𝒟^m(ℝ^P). Then there is t ∈ (a, b) such that P_t is integer multiplicity, P_t vanishes off f⁻¹(t), P_t satisfies the formula of (H2), and (b − a)·M(P_t) ≤ 2·(L·μ_RT({x : a < f(x) < b})) in [0, ∞] (b − a via ENNReal.ofReal, μ_RT = RT.measure).",
+    "lean_statement": "∀ (P m : ℕ) (T : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1)) (RT : IMRep (univ : Set (Euclid P)) (m + 1)) (RB : IMRep (univ : Set (Euclid P)) m) (f : Euclid P → ℝ) (L : NNReal) (Ps : ℝ → GeometricCurrentOn (univ : Set (Euclid P)) m) (a b : ℝ), RT.Represents T → Continuous f → a < b → (∀ W : Set (Euclid P), IsOpen W → AEMeasurable (fun t => (Ps t).massOn W) ∧ ∫⁻ t, (Ps t).massOn W ≤ (L : ℝ≥0∞) * T.massOn W) → (∀ᵐ t, IsIntegerMultiplicity (Ps t) ∧ (∀ ω : TestFormOn (univ : Set (Euclid P)) m, Disjoint (tsupport (ω : DifferentialForm (Euclid P) m)) (f ⁻¹' {t}) → Ps t ω = 0) ∧ ∀ ω : TestFormOn (univ : Set (Euclid P)) m, Ps t ω = (∫ x in RT.carrier ∩ {x | f x < t}, (RT.mult x : ℝ) * RT.orient x (exteriorDerivative (ω : DifferentialForm (Euclid P) m) x) ∂μHE[m + 1]) - ∫ x in RB.carrier ∩ {x | f x < t}, (RB.mult x : ℝ) * RB.orient x ((ω : DifferentialForm (Euclid P) m) x) ∂μHE[m]) → ∃ t ∈ Ioo a b, IsIntegerMultiplicity (Ps t) ∧ (∀ ω : TestFormOn (univ : Set (Euclid P)) m, Disjoint (tsupport (ω : DifferentialForm (Euclid P) m)) (f ⁻¹' {t}) → Ps t ω = 0) ∧ (∀ ω : TestFormOn (univ : Set (Euclid P)) m, Ps t ω = (∫ x in RT.carrier ∩ {x | f x < t}, (RT.mult x : ℝ) * RT.orient x (exteriorDerivative (ω : DifferentialForm (Euclid P) m) x) ∂μHE[m + 1]) - ∫ x in RB.carrier ∩ {x | f x < t}, (RB.mult x : ℝ) * RB.orient x ((ω : DifferentialForm (Euclid P) m) x) ∂μHE[m]) ∧ ENNReal.ofReal (b - a) * (Ps t).mass ≤ 2 * ((L : ℝ≥0∞) * RT.measure {x | a < f x ∧ f x < b})",
+    "lean_name": "dor_lmb_fcd_sd_good_slice",
+    "depends_on": [
+      "markov_point",
+      "im_concentrated",
+      "imrep_mass"
+    ],
+    "natural_proof": "Source: step 4 of the parent proof (good radii, Simon (8)–(10) and 4.10), for the strip W = {a < f < b}. Dependencies: markov_point, im_concentrated, imrep_mass (C1).\n1. W := {x | a < f x ∧ f x < b} = f⁻¹((a, b)) is open (isOpen_lt with f continuous, intersected).\n2. By (H1) for this W, g(t) := M_W(P_t) is a.e.-measurable and ∫⁻ g ≤ L·M_W(T). By (C1) for T and RT (univ is open), M_W(T) = μ_RT(W). Put I := L·μ_RT(W). Then ∫⁻_{Ioo a b} g ≤ ∫⁻_ℝ g ≤ I (setLIntegral_le_lintegral).\n3. Let p(t) be the conjunction in (H2): P_t is IM, P_t vanishes off f⁻¹{t}, and the formula holds for all ω. By (H2), p holds for a.e. t. Apply markov_point to g, p, a < b and I: there is t ∈ Ioo a b with p(t) and ENNReal.ofReal(b − a)·g(t) ≤ 2·I.\n4. Fix this t. By p(t), P_t is IM, so some IMRep R_t in univ represents it, and P_t vanishes off F := f⁻¹{t}, which is closed (preimage of a point under the continuous f). Since a < t < b, F ⊆ W. By im_concentrated (X = P_t, R = R_t, F, and the open set W ⊇ F), M(P_t) ≤ M_W(P_t) = g(t).\n5. Hence ENNReal.ofReal(b − a)·M(P_t) ≤ ENNReal.ofReal(b − a)·g(t) ≤ 2·(L·μ_RT(W)) (monotonicity of multiplication in [0, ∞]), and W = {x | a < f x ∧ f x < b}. Together with p(t) this gives every clause of the conclusion. ∎\nRemark: in the parent text the inequality M(P_t) ≤ M_W(P_t) is obtained with a smooth Urysohn cut-off; step 4 obtains the same inequality from (C1) through im_concentrated, which only needs that P_t is IM for the chosen t.",
+    "proof_key_steps": [
+      "W = {a < f < b} is open and ∫_{(a,b)} M_W(P_t) dt ≤ L·M_W(T) = L·μ_RT(W) by (H1) and (C1).",
+      "markov_point gives t ∈ (a,b) in the a.e. set of (H2) with (b − a)·M_W(P_t) ≤ 2L·μ_RT(W).",
+      "P_t is IM and vanishes off the closed level set f⁻¹(t) ⊆ W, so im_concentrated gives M(P_t) ≤ M_W(P_t)."
+    ]
+  },
+  "audit": {
+    "key": "good_slice",
+    "acceptable": true,
+    "natural_proof_acceptable": true,
+    "reason": "The open-strip integral bound, Markov selection, and concentration on the closed level set supply every conclusion with the correct constant. No boundary-representation hypothesis on RB is needed beyond the explicitly assumed slice formula."
+  },
+  "resolved_dependencies": [
+    "root.density_one_implies_regular-a1.limsup_mass_bound-a1.flat_convergence-a1.deformation-a1.skeleton_deformation-a1.markov_point-a1",
+    "root.density_one_implies_regular-a1.limsup_mass_bound-a1.flat_convergence-a1.deformation-a1.skeleton_deformation-a1.im_concentrated-a1",
+    "root.density_one_implies_regular-a1.imrep_mass_and_support-a1"
+  ],
+  "plan_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-limsup-mass-bound-a1-flat-converg-a976660f88/parent-supplied-plan.md",
+  "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-limsup-mass-bound-a1-flat-converg-a976660f88/parent-supplied-natural-proof.md",
+  "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-limsup-mass-bound-a1-flat-converg-a976660f88/parent-supplied-natural-proof.json"
+}

@@ -1,0 +1,74 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "abbrev MultiVector|def IsUnitOrientationOf|structure IMRep|def approxTangentPlane|def IMRep.measure|def IMRep.action|^import|^open|^namespace",
+        "coarea|co-area|ae_forall_compact|coarea_ae_transfer|slice_orientation_field",
+        "alternatizeUncurryFin_(apply|add|smul)|norm_alternatizeUncurryFin_le",
+        "toContinuousLinearMap|isBoundedBilinearMap_comp",
+        "integral_eq_lintegral_pos_part_sub_lintegral_neg_part|theorem integral_toReal|theorem integrable_toReal_of_lintegral_ne_top|ae_lt_top",
+        "exists_thickening_subset_open",
+        "theorem HasApproximateTangentSpaceAt.unique|def HasApproximateTangentSpaceAt",
+        "git show 533617d27b3abcf7aac464798fdc2118b21e9d82:GMT/Ch07/Submission.lean",
+        "git show 0325970d8b47298803106a41abbcdb3c8c9ac103:GMT/Ch07/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/dor-si-independent-audit-b7b20u1n/Evidence.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/Alternating/Uncurry/Fin.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Operator/BoundedLinearMaps.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/L1Space/Integrable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/Thickening.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-limsup-mass-bound-a1-slicing-a1-s-7a19fe4708/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-limsup-mass-bound-a1-slicing-a1-s-7a19fe4708/decomposition-v1.json",
+        "/tmp/dor-si-independent-audit-b7b20u1n/Evidence.lean"
+      ],
+      "conclusion": "The pinned contract matches the workspace contract and submission byte-for-byte; inspected mathlib files match revision 25730c7c. The project search found co-area propositions in Ch02 and Ch03, but no matching proved utility replacing the proposed children. All six frozen types passed validation and standalone comparator-scope elaboration. All embedded proofs compiled against a freshly elaborated snapshot contract. The exact selected parent follows from these six children and its already-declared wedge_orientation sibling, supplied as a hypothesis; child and assembly axiom reports contain only propext, Classical.choice and Quot.sound. The split is appropriate, dependencies are acyclic, and every child contributes to this selected statement. All names are bare identifiers; the four new names are unreserved, and both reused names have identical accepted frozen types and implementations."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "coarea_ae_transfer",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Prose and Lean type agree. The measurable null hull, indicator identity and a.e.-measurable zero-lintegral argument prove transfer for arbitrary predicates. No measurability of w or p is needed, and no circular dependency occurs."
+    },
+    {
+      "key": "coarea_signed_integral",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All measurability and weighted-finiteness hypotheses match. Positive and negative parts establish slice integrability almost everywhere, integrability of slice integrals and the stated identity. The w = ∞ case is correctly handled by forcing q = 0 almost everywhere there."
+    },
+    {
+      "key": "ae_forall_compact",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The compact exhaustion is contained in U and cofinal among its compact subsets, including empty and whole-space cases. Countable intersection followed by monotonicity proves exactly the stated quantifier exchange without additional measurability assumptions."
+    },
+    {
+      "key": "slice_orientation_field",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The bounded bilinear construction has the intended continuous-linear-map types and operator norms. Continuous composition proves strong measurability; normalization, the explicit zero case and the wedge bound establish all three pointwise conclusions. The proof is complete and independent."
+    },
+    {
+      "key": "orient_approx_tangent_plane",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "R.orients supplies an approximate tangent space, and uniqueness identifies it with the chosen approxTangentPlane. No extra openness or finiteness hypothesis is required. The reused declaration and proof match the accepted candidate exactly."
+    },
+    {
+      "key": "orientation_norm_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The multilinear operator-norm estimate on an orthonormal family handles both orientation signs and n = 0, then bounds the dual operator norm. Prose and type agree; reuse matches the accepted frozen declaration exactly."
+    }
+  ],
+  "required_changes": []
+}

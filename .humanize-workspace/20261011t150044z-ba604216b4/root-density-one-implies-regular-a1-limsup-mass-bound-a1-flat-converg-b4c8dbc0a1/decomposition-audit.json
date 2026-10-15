@@ -1,0 +1,79 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "isometric_pushforward|cutoff_pullback|projected_cell|cube_chain|deformation_top",
+        "map_euclideanHausdorffMeasure|euclideanHausdorffMeasure_image|euclideanHausdorffMeasure_eq_volume",
+        "restrict_map|restrict_restrict_of_subset",
+        "MeasurableEmbedding.integral_map|aestronglyMeasurable_map_iff",
+        "norm_iteratedFDeriv_smul_le",
+        "tsupport_iteratedFDeriv_subset",
+        "TestFormOnConverges|structure GeometricCurrentOn|def affinePushforward|boundary_affinePushforward|iteratedFDeriv_affinePullbackForm|affinePullbackJet|exteriorDerivative_affinePullbackForm|covectorEuclideanNorm",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/dtop-independent-audit/Assembly.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch06/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/Bounds.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/AffineCurrentPushforward.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-limsup-mass-bound-a1-flat-converg-b4c8dbc0a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-limsup-mass-bound-a1-flat-converg-b4c8dbc0a1/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification/results/hoa53/20261013T003759Z-ch07-root.density_one_implies_regular-a1.imrep_mass_and_support-a1-7q74w0y4/comparator-config.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification/results/hoa53/20261013T003759Z-ch07-root.density_one_implies_regular-a1.imrep_mass_and_support-a1-7q74w0y4/comparator.log",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification/results/hoa23/20261013T053553Z-ch07-root.compactness_of_minimizing_currents-a1.im_calculus-a1-wyz0xcys/comparator-config.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification/results/hoa23/20261013T053553Z-ch07-root.compactness_of_minimizing_currents-a1.im_calculus-a1-wyz0xcys/comparator.log",
+        "/tmp/dtop-independent-audit/Assembly.lean"
+      ],
+      "conclusion": "Verified pinned revisions and contract compatibility. The project keyword search found no matching implementations of the four new obligations; Ch06 provides a positive-codimension deformation contract. The cited measure-transport and derivative lemmas support the supplied proofs. All six exact types independently elaborate as comparator challenges. Reconstructing the assembly with the frozen child hypotheses, existing deformation dependency, and exact selected conclusion compiles without sorry, using only propext, Classical.choice and Quot.sound. The split is appropriate; dependencies are correctly directed and acyclic. All names are bare identifiers, the four new names remain unreserved, and both accepted reuses have identical frozen types and compatible comparator/axiom evidence. No matrix-unit constructions occur. Supplementary mathematical cross-check: the scaled deformation estimates agree with [Simon, Chapter 6 §5.3](https://math.stanford.edu/~lms/ntu-gmt-text.pdf)."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "isometric_pushforward",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Prose and type agree for arbitrary P, Q and d. The proof establishes restricted-measure transport, tangent and orientation transport, every image IMRep field, and representation of the affine push-forward. The accepted mass dependency then proves mass equality. Properness and domain coercions are valid; no circular reliance occurs."
+    },
+    {
+      "key": "cutoff_pullback",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The bump construction proves every stated clause. The coefficient partition establishes the Euclidean covector-norm bound in all degrees, while fixed compact support and the Leibniz estimate establish precisely TestFormOnConverges. The one-line type includes all required hypotheses and matches the prose."
+    },
+    {
+      "key": "projected_cells",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Vertical integrands vanish through a zero argument. A strictly increasing horizontal index is castSucc, giving an explicit affine isometry between the cube and cell and the required lifting property. MeasurableEmbedding.integral_map justifies arbitrary Bochner integrands. The proof covers N = 0 and every real ρ."
+    },
+    {
+      "key": "cube_chain_im",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof constructs signed cube IMReps with positive natural multiplicities, verifies their tangent, measurability and local-integrability conditions, obtains represented currents through the accepted restriction theorem, and combines them using subtraction. Extensionality proves the exact conclusion for X. The dependency is correctly directed."
+    },
+    {
+      "key": "imrep_mass",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Valid reuse of the independently accepted declaration. Its retained comparator challenge is identical to this frozen type, with compatible contract definitions and only permitted axioms. The supplied proof explicitly invokes that established result; openness and representation hypotheses match."
+    },
+    {
+      "key": "im_calculus",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Valid exact-type reuse, independently verified against retained comparator inputs, successful kernel evidence and permitted axioms. All four prose clauses match the proposition. Its established restriction and subtraction conclusions supply the required cube-chain and parent obligations without a dependency cycle."
+    }
+  ],
+  "required_changes": []
+}

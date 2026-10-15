@@ -1,0 +1,123 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "structure IMRep|def IsIntegerMultiplicity|def Represents|def measure|def action|IsUnitSimple|mult_|orient|locally",
+        "latticeFace|DeformationTheorem|IsLatticeChain|skeleton|homotopy|pushforward",
+        "def HasApproximateTangentSpaceAt|def CountablyRectifiable|blowUpMap|area_image_criticalSet_eq_zero|injective_area_formula_lipschitz|def.*massOn|def.*support",
+        "homotopy|lipschitz.*push|push.*lipschitz|theorem.*product|def.*product",
+        "dor_imrep_massOn_eq_measure_and_support",
+        "cmc_imRep_locality_restrict_sub",
+        "dor_lmb_fc_im_series",
+        "dor_lmb_slicing_lipschitz",
+        "sed -n '584,688p' /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-02.txt",
+        "sed -n '1820,1965p' /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/gmt-decomp-audit-c3ecc206/Types.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/gmt-decomp-audit-c3ecc206/Assembly.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/gmt-decomp-audit-c3ecc206/UnitAssembly.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch06/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/Rademacher.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/AreaLipschitz.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/AffineCurrentPushforward.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-02.txt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-limsup-mass-bound-a1-flat-converg-cab3e79dc1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-limsup-mass-bound-a1-flat-converg-cab3e79dc1/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification/results/hoa53/20261013T003759Z-ch07-root.density_one_implies_regular-a1.imrep_mass_and_support-a1-7q74w0y4/comparator.log",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification/results/hoa23/20261013T053553Z-ch07-root.compactness_of_minimizing_currents-a1.im_calculus-a1-wyz0xcys/comparator.log",
+        "/tmp/gmt-decomp-audit-c3ecc206/Types.lean",
+        "/tmp/gmt-decomp-audit-c3ecc206/Assembly.lean",
+        "/tmp/gmt-decomp-audit-c3ecc206/UnitAssembly.lean"
+      ],
+      "conclusion": "Verified snapshot revisions b4d606db1da5da8fa2c0292ad4924d97de8b3c4b and 25730c7c759d108ef87ab70af2342a196760f79d; the snapshot Ch07 contract is byte-identical to the workspace contract and submission. The cited analytic infrastructure exists, but the inspected current library provides no general Lipschitz push-forward or interval-product homotopy theorem, supporting the proposed split. All 12 exact child propositions independently elaborate; these checks establish type correctness, not their proofs. Both conditional assemblies, additionally checked against the supplied exact types, compile with only propext, Classical.choice and Quot.sound. The selected parent follows from unit_deformation, dilation and its inherited IMS dependency. All names are bare identifiers; the ten new names are unreserved, and both reused names have identical comparator-accepted types and kernel-acceptance evidence. Proposed dependencies are acyclic, and inherited dependencies do not lead back to the selected node. No child contains a matrix-unit construction. Splitting this selected deformation theorem is appropriate."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "retraction",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proposition matches the coordinatewise centre hypothesis and both stated conclusions. The closed-form construction, periodic compatibility, distance comparison and segment argument establish the uniform c/r bound independently of the parent and the erroneous printed similarity argument."
+    },
+    {
+      "key": "good_center",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type matches the two finite-measure statement, including r = 1/4. The covering argument correctly proves translated-cylinder disjointness, controls exceptional sets for both measures, and handles zero measures and the endpoint by continuity from below."
+    },
+    {
+      "key": "jacobian_weak_continuity",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact weighted-integral conclusion follows from the supplied induction on minors. Mollification justifies the Lipschitz integration-by-parts identity; uniform derivative bounds and L1 approximation extend convergence to the required weights. The zero-dimensional case is covered."
+    },
+    {
+      "key": "im_pushforward",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The finite-measure hypothesis suffices without a boundary-mass assumption. The proof constructs parameter-domain actions, identifies smooth limits using the declared weak-continuity dependency, proves locality at density points, and obtains integrality through summable image-piece currents using the exact IMS antecedent. Degree zero is treated separately."
+    },
+    {
+      "key": "pushforward_calculus",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type faithfully states all operator properties. The supplied product representation and cutoff homotopy yield the required characterizations; these establish locality, subtraction, mass and support bounds. Boundary commutation and the correctly signed homotopy formula follow from smooth identities and passage to limits."
+    },
+    {
+      "key": "skeleton_deformation",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Both antecedents match their frozen types. The proof supplies good radii, compactly supported shells, compatible Lipschitz extensions and valid telescoping identities. IMS is used only in positive degrees; boundary mass follows from weak lower semicontinuity. All stated mass and vanishing clauses follow."
+    },
+    {
+      "key": "cube_poincare",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type matches the distributional variation hypothesis and integer-median conclusion. Testing with zero and opposite vector fields supplies nonnegativity and two-sided control. The median, shrinking, mollification and coordinate-path estimates prove both bounds with c = 10(m + 1)."
+    },
+    {
+      "key": "face_replacement",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The face formula and all hypotheses match the prose. The proof establishes signed integer face densities, local variation bounds using admissible forms, and summability over disjoint neighbourhoods. Cube Poincaré then gives the coefficients; the explicit difference representation proves integrality, mass control and support enlargement."
+    },
+    {
+      "key": "dilation",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The explicit pullback proves all eight clauses with the correct degree-dependent scaling. Transported IMReps preserve tangent orientations under positive dilation. The measurable-equivalence change-of-variables argument supports the quantified arbitrary sets and functions; no missing measurability hypothesis is required."
+    },
+    {
+      "key": "unit_deformation",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof correctly derives finite masses, applies skeleton deformation and face replacement, and forms S using the contract subtraction. The constant c_s(1 + c_f) and successive thickenings establish every conclusion. An independent exact-type conditional Lean assembly confirms this implication."
+    },
+    {
+      "key": "imrep_mass",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Valid reuse: the frozen type is byte-identical to the accepted declaration. Retained comparator evidence confirms kernel acceptance under the standard axiom policy. Invoking that existing theorem proves this exact child without circular reliance."
+    },
+    {
+      "key": "im_calculus",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Valid reuse: all four prose clauses match the identical accepted frozen type. The retained comparator and kernel evidence supports reuse, and its dependency closure does not involve the selected deformation theorem."
+    }
+  ],
+  "required_changes": []
+}

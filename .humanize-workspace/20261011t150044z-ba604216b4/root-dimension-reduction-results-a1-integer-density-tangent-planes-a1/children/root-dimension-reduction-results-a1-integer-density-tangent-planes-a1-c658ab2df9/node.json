@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.weak_limit_mass_bound-a1",
+  "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1",
+  "depth": 3,
+  "title": "Mass bounds pass to ConvergesWeakly-limits of currents on varying domains",
+  "statement": "For all P, n ∈ ℕ, all sets U_j ⊆ ℝ^P (j ∈ ℕ) and V ⊆ ℝ^P, all currents T_j ∈ 𝒟_n(U_j) and S ∈ 𝒟_n(V), every set W ⊆ ℝ^P and every B ∈ [0, ∞]: if T_j ⇀ S in the sense of ConvergesWeakly (currentEval(T_j, ω) → S(ω) for every ω ∈ 𝒟^n(V)) and, for all sufficiently large j, W ⊆ U_j and M_W(T_j) ≤ B, then M_W(S) ≤ B. Here M_W = massOn is the supremum of ofReal(T(ω)) over test forms ω of the current's domain with tsupport ω ⊆ W and Euclidean coefficient norm ≤ 1 everywhere.",
+  "lean_statement": "∀ (P n : ℕ) (Us : ℕ → Set (Euclid P)) (V : Set (Euclid P)) (Ts : (j : ℕ) → GeometricCurrentOn (Us j) n) (S : GeometricCurrentOn V n) (W : Set (Euclid P)) (B : ℝ≥0∞), ConvergesWeakly Ts S → (∀ᶠ j in atTop, W ⊆ Us j ∧ (Ts j).massOn W ≤ B) → S.massOn W ≤ B",
+  "lean_name": "idtp_convergesWeakly_massOn_le",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-c658ab2df9-a1"
+}

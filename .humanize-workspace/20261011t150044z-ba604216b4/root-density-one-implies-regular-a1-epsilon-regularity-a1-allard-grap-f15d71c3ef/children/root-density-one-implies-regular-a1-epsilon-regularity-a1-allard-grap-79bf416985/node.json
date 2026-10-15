@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.harmonic_approximation-a1.interior_estimates-a1.fderiv_apply_harmonic-a1",
+  "parent_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.harmonic_approximation-a1.interior_estimates-a1",
+  "depth": 6,
+  "title": "Directional derivatives of a smooth harmonic function are smooth and harmonic",
+  "statement": "Let n ∈ ℕ, let U ⊆ ℝⁿ (ℝⁿ = Euclid n) be open, and let h : ℝⁿ → ℝ satisfy ContDiffOn ℝ m h U for every m ∈ ℕ and Δh(y) := Σ_{i<n} D²h(y)(e_i, e_i) = 0 for every y ∈ U. Here D²f(y)(a, b) := iteratedFDeriv ℝ 2 f y ![a, b] and e_i := EuclideanSpace.single i 1. Fix e ∈ ℝⁿ and put u_e(y) := Dh(y)e = fderiv ℝ h y e. Then (i) u_e is C^m on U (ContDiffOn ℝ m u_e U) for every m ∈ ℕ, and (ii) Δu_e(y) = Σ_i D²u_e(y)(e_i, e_i) = 0 for every y ∈ U.",
+  "lean_statement": "∀ (n : ℕ) (U : Set (Euclid n)) (h : Euclid n → ℝ) (e : Euclid n), IsOpen U → (∀ m : ℕ, ContDiffOn ℝ m h U) → (∀ y ∈ U, ∑ i : Fin n, iteratedFDeriv ℝ 2 h y ![EuclideanSpace.single i (1 : ℝ), EuclideanSpace.single i (1 : ℝ)] = 0) → (∀ m : ℕ, ContDiffOn ℝ m (fun y => fderiv ℝ h y e) U) ∧ ∀ y ∈ U, ∑ i : Fin n, iteratedFDeriv ℝ 2 (fun z => fderiv ℝ h z e) y ![EuclideanSpace.single i (1 : ℝ), EuclideanSpace.single i (1 : ℝ)] = 0",
+  "lean_name": "dorag_ha_ie_fderiv_apply_harmonic",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-79bf416985-a1"
+}
