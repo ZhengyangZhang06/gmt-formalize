@@ -1,0 +1,124 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "rg -n 'dmcbr_ci_bl_|cbr_ci_bl_blowUp_restrict_scaling|cmcs_restrict_current' .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project",
+        "integral_withDensity_eq_integral_toReal_smul",
+        "MeasurableEmbedding.lintegral_map",
+        "limsup_const_mul_of_ne_top",
+        "tendsto_measure_cthickening_of_isClosed",
+        "euclideanHausdorffMeasure_smul₀|euclideanHausdorffMeasure_image",
+        "map_perm|map_sum|monotone_sort",
+        "hasOpNorm|le_opENorm|le_opNorm",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/dmcbr_bl_independent_audit/Challenges.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/dmcbr_bl_independent_audit/Assembly.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/Alternating/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Operator/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Map.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/ContinuousLinearMap.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Order/Filter/ENNReal.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Constructions/BorelSpace/Metric.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-closure-and-bou-e02ee74e03/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-closure-and-bou-e02ee74e03/decomposition-v1.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-92df5214ba/accepted-candidate.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-slicing-a1-restrict-current-a1/accepted-candidate.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification/results/hoa0/20261014T000531Z-ch07-root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a-vnhqx_kc/comparator-config.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification/results/hoa0/20261014T000531Z-ch07-root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a-vnhqx_kc/comparator.log",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification/results/hoa47/20261013T104516Z-ch07-root.compactness_of_minimizing_currents-a1.slicing-a1.restrict_current-a1-qzr23x8l/comparator-config.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification/results/hoa47/20261013T104516Z-ch07-root.compactness_of_minimizing_currents-a1.slicing-a1.restrict_current-a1-qzr23x8l/comparator.log",
+        "/tmp/dmcbr_bl_independent_audit/Challenges.lean",
+        "/tmp/dmcbr_bl_independent_audit/Assembly.lean"
+      ],
+      "conclusion": "The split appropriately separates the selected blow-up-limit proof into twelve useful obligations. Independently recomputed the supplied contract digest. Project/mathlib revisions match the snapshot; the contract is unchanged. No proposed names occur in the snapshot project. The ten new names are unreserved in the DAG; both reused declarations are comparator-accepted with identical frozen types and permitted standard axioms. All twelve one-line propositions independently elaborate without child implementations and match their prose hypotheses and conclusions. Norm instances are the intended operator norms; no matrix-unit construction occurs. Dependencies, including reused declarations' dependencies, are acyclic and do not return to the selected parent. The reconstructed assembly compiles against the exact frozen child and registered sibling contracts, proving the exact selected parent type with no sorry or additional axioms beyond those assumptions and propext, Classical.choice, Quot.sound."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "covector_norm",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Sorting index tuples bounds every basis coefficient. Multilinear expansion, coordinate bounds and counting P^n terms prove the exact operator-norm estimate, including the degenerate dimensions."
+    },
+    {
+      "key": "blowup_measure",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The homeomorphism, Hausdorff scaling and density transport arguments establish all three conjuncts. The reused accepted declaration has the identical frozen type and passes the recorded axiom checks."
+    },
+    {
+      "key": "restrict_current",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Restriction domination applies to arbitrary E. Compact-support bounds establish integrability, linearity and the required sequential continuity for arbitrary U. Identical-type accepted reuse is valid and non-circular."
+    },
+    {
+      "key": "blowup_scale",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The dilation-calculus inputs are explicit hypotheses. Pulled-back test forms, density conversion and blowup_measure establish every stated conclusion; no unlisted sibling result or parent conclusion is assumed."
+    },
+    {
+      "key": "density_bounds",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The norming covector and covector_norm give the required weight estimate. Integration and the three eventual density inequalities yield both bounds with justified positive denominators and finite ENNReal cancellation."
+    },
+    {
+      "key": "scale_identities",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The assumed measure identity, ball preimages and embedding change of variables prove all four identities. Arbitrary M and nonmeasurable integrands are supported by the cited restriction and lower-integral lemmas."
+    },
+    {
+      "key": "null_seq_transfer",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Positivity upgrades convergence to the right-neighborhood filter. Eventual upper bounds control the subsequential limsup, and finite constant multiplication preserves both conclusions, including C = 0."
+    },
+    {
+      "key": "compact_sup_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "A containing ball controls the tail; the finite sum of initial total masses controls the remaining indices. Their finite maximum bounds the exact supremum in the conclusion."
+    },
+    {
+      "key": "pairing_error",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Continuous evaluation gives measurable error pairing. Its lower-integral bound establishes integrability before splitting the Bochner integral, and the finite-error hypothesis justifies conversion to toReal."
+    },
+    {
+      "key": "pairing_tendsto",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Compact support supplies a common ball and norm bound. The error becomes finite eventually and tends to zero by pairing_error; the assumed scalar C_c convergence supplies the main term."
+    },
+    {
+      "key": "mass_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof correctly uses massOn's supremum of ofReal evaluations. It handles infinite error separately, applies pairing_error to admissible forms, and bounds the constant pairing using finite measure of G."
+    },
+    {
+      "key": "limsup_thickening",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Compact thickenings supply the main-term limsup bound; vanishing errors preserve it. Finite measure of one thickening permits continuity as its radius decreases to zero, proving the exact conclusion."
+    }
+  ],
+  "required_changes": []
+}

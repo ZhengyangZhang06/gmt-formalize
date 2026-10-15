@@ -1,0 +1,59 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "dimred_mbl_dtfrpo|dtfrpo_approxTangent|dtfrpo_orthonormal",
+        "eq_smul_basis_det|det_to_matrix_orthonormalBasis_real|toBasis_toOrthonormalBasis|orthonormal_single",
+        "setIntegral_eq_zero_of_forall_eq_zero|integral_pos_iff_support_of_nonneg|theorem Continuous.integrable_of_hasCompactSupport|mem_support_iff_forall|class Regular ",
+        "orthonormal_span|Orthonormal.codRestrict",
+        "sed -n '1,230p' ../../lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "sed -n '1,44p' ../../lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        "../../toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/plane-orientation-audit-ueiaj61y/tangent_le_plane_Challenge.lean",
+        "../../toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/plane-orientation-audit-ueiaj61y/frame_sign_Challenge.lean",
+        "../../toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/plane-orientation-audit-ueiaj61y/Review.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Determinant.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Subspace.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/LocallyIntegrable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Support.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Regular.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-deformation-the-b895663c5c/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-deformation-the-b895663c5c/decomposition-v1.json",
+        "/tmp/dmpo-scratch/ChildA.lean",
+        "/tmp/dmpo-scratch/ChildB.lean",
+        "/tmp/dmpo-scratch/Assembly.lean",
+        "/tmp/plane-orientation-audit-ueiaj61y/tangent_le_plane_Challenge.lean",
+        "/tmp/plane-orientation-audit-ueiaj61y/frame_sign_Challenge.lean",
+        "/tmp/plane-orientation-audit-ueiaj61y/Review.lean"
+      ],
+      "conclusion": "The project and Mathlib revisions match the manifest; inspected library sources match the compiler packages. Name searches found no collisions, and the current DAG reserves neither proposed bare identifier. Both exact one-line propositions pass validation and elaborate as standalone comparator challenges before either child is declared. Recompilation of the supplied direct proofs and the exact parent assembly succeeds using only propext, Classical.choice and Quot.sound. The split appropriately separates independent analytic and multilinear obligations; their empty dependency lists are acyclic. The coordinate-span argument, dimension equality and combination of signs establish precisely the selected parent contract. Submodule inner-product and measure instances are valid; neither contract contains an inline matrix-unit construction."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "tangent_le_plane",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and Lean type match all hypotheses and the conclusion. Each proof step is justified: blow-ups remain in V; finite-dimensional closedness supplies positive separation; the compactly supported bump vanishes on every blow-up without measurability of A; uniqueness of the right-hand limit forces zero integral on Q. The dimension hypothesis supplies full support and regularity of the restricted plane measure, making that same integral strictly positive. This proves containment non-circularly, including n = 0, with sufficient formalization detail."
+    },
+    {
+      "key": "frame_sign",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and Lean type require both orthonormality hypotheses and equal spans, with the disjunction correctly outside the universal covector quantifier. Restriction to the common span yields α(τ) = α(e)·c with c independent of α. Both frames give orthonormal bases there, so the cited determinant theorem gives c = ±1. The proof therefore establishes one global sign, includes n = 0, and has no circular reliance or missing construction."
+    }
+  ],
+  "required_changes": []
+}

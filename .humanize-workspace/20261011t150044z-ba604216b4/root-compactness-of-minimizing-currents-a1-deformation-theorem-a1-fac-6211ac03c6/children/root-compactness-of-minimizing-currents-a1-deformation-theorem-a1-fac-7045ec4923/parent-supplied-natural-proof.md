@@ -1,0 +1,95 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.face_replacement-a1.boundary_variation-a1`
+- Child DAG node: `root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.face_replacement-a1.boundary_variation-a1.cutoff_field-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: the supplied proof of cmcdtfr_boundary_variation, step 5 (the cut-off χ) and step 6 (the divergence on F̆_p). G := χ·(g∘π) is the vector field whose coordinates are the coefficients of the test form built in step 5.
+
+Notation. e_l := EuclideanSpace.single l 1 ∈ ℝ^P and ê_a := EuclideanSpace.single a 1 ∈ Euclid n, with coordinates (e_l)_{l'} = [l' = l]. Define L : ℝ^P → Euclid n by L(x) := (x_{ι(j)})_j (Lean: WithLp.toLp 2 (fun j => x (ι j))), c₀ := (b_{ι(j)})_j, and π(x) := L(x) − c₀. L is linear, hence continuous linear (finite dimension). So π is C^∞ with Dπ(x) = L for every x. Smooth means ContDiff ℝ (⊤ : ℕ∞), i.e. of order ∞.
+
+1. Facts on π.
+- (i) L(e_{ι(a)}) = ê_a for every a: L(e_{ι(a)})_j = (e_{ι(a)})_{ι(j)} = [ι(j) = ι(a)] = [j = a], because ι is injective.
+- (ii) π(Φ_p y) = y for every y: (Φ_p y)_{ι(j)} = b_{ι(j)} + Σ_k y_k·[ι(k) = ι(j)] = b_{ι(j)} + y_j.
+2. The compact set K := Φ_p(tsupport g). tsupport g is compact (HasCompactSupport g). Φ_p is continuous (a constant plus the finite sum of y ↦ y_j e_{ι(j)}). So K is compact (IsCompact.image). Since tsupport g ⊆ Q₁ and Φ_p(Q₁) ⊆ N, K ⊆ N.
+3. A margin. By IsCompact.exists_cthickening_subset_open (K compact, N open, K ⊆ N) there is δ > 0 with cthickening(δ, K) ⊆ N. Put r := δ/3 > 0.
+4. The cut-off χ.
+- thickening(2r, K) is open (isOpen_thickening) and cthickening(r, K) is closed (isClosed_cthickening).
+- cthickening(r, K) ⊆ thickening(2r, K) (cthickening_subset_thickening', with 0 < 2r and r < 2r).
+- So exists_contDiff_support_eq_eq_one_iff applies (ℝ^P is finite-dimensional; order ⊤ : ℕ∞). It gives a C^∞ function χ : ℝ^P → ℝ with range χ ⊆ [0, 1], support χ = thickening(2r, K), and χ(x) = 1 for x ∈ cthickening(r, K).
+- tsupport χ = closure(thickening(2r, K)) ⊆ cthickening(2r, K) (closure_thickening_subset_cthickening) ⊆ cthickening(δ, K) (cthickening_mono, 2r ≤ δ) ⊆ N.
+- cthickening(2r, K) is compact (IsCompact.cthickening; ℝ^P is a proper space).
+5. Definition and basic properties. Put G(x) := χ(x)·g(π(x)).
+- (a) G is C^∞: g∘π is C^∞ (ContDiff.comp), χ is C^∞, and a scalar product of C^∞ maps is C^∞ (ContDiff.smul).
+- (b) Support: if χ(x) = 0 then G(x) = 0. So support G ⊆ support χ and tsupport G ⊆ tsupport χ ⊆ cthickening(2r, K) ⊆ N. In particular tsupport G is a closed subset of a compact set, so G has compact support.
+- (c) Bound: ‖G(x)‖ = |χ(x)|·‖g(π x)‖ ≤ 1·1 = 1, since 0 ≤ χ(x) ≤ 1 and ‖g‖ ≤ 1.
+6. Local agreement with g∘π. Let y ∈ Q₁ and x₀ := Φ_p(y), so that π(x₀) = y by 1(ii). We show that G and g∘π agree on a neighbourhood of x₀. There are two cases.
+- Case A, y ∈ tsupport g. Then x₀ ∈ K ⊆ thickening(r, K) (self_subset_thickening, r > 0). This set is open and lies in cthickening(r, K) (thickening_subset_cthickening), where χ = 1. On it, G = g∘π.
+- Case B, y ∉ tsupport g. O := (tsupport g)ᶜ is an open neighbourhood of y on which g = 0 (image_eq_zero_of_notMem_tsupport). As π is continuous with π(x₀) = y, π⁻¹(O) is an open neighbourhood of x₀. On it g∘π = 0 and G = χ·0 = 0.
+7. Derivative of each coordinate. Fix a ∈ Fin n. By step 6, x ↦ G(x)_a and x ↦ g(π x)_a agree near x₀, so they have the same derivative at x₀ (Filter.EventuallyEq.fderiv_eq). Apply the chain rule: g is differentiable at π(x₀) = y, Dπ(x₀) = L, and v ↦ v_a is continuous linear. This gives D(G_a)(x₀)(v) = (Dg(y)(L v))_a for all v. With v := e_{ι(a)} and step 1(i), D(G_a)(Φ_p y)(e_{ι(a)}) = (Dg(y)(ê_a))_a.
+8. Trace. For a linear map A : Euclid n → Euclid n, trace A = Σ_a (A ê_a)_a. Indeed, use LinearMap.trace_eq_matrix_trace with the basis EuclideanSpace.basisFun, whose vectors are the ê_a and whose coordinate functionals are v ↦ v_a (basisFun_repr). Then trace A = Σ_a (toMatrix A)_{a,a} = Σ_a (A ê_a)_a (LinearMap.toMatrix_apply). Now sum step 7 over a, with A := Dg(y): Σ_a D(G_a)(Φ_p y)(e_{ι(a)}) = Σ_a (Dg(y) ê_a)_a = trace(Dg(y)).
+9. Steps 5 and 8 give all required properties. If g = 0, then K = ∅, χ = 0 and G = 0; Case B always applies and both sides in step 8 are 0. ∎
+
+## Key steps
+
+1. π(x) := (x_{ι(j)} − b_{ι(j)})_j is affine with linear part L, L(e_{ι(a)}) = ê_a and π∘Φ_p = id.
+2. K := Φ_p(tsupport g) is a compact subset of N. A smooth cut-off χ with values in [0,1] equals 1 on cthickening(r, K) and has tsupport χ ⊆ cthickening(2r, K) ⊆ N (smooth Urysohn lemma).
+3. G := χ·(g∘π) is smooth, compactly supported in N, satisfies ‖G‖ ≤ 1, and coincides with g∘π near every Φ_p(y), y ∈ Q₁.
+4. By the chain rule, D(G_a)(Φ_p y)(e_{ι(a)}) = (Dg(y) ê_a)_a. Summing over a gives trace Dg(y).
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cmp local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean GMT/Ch07/Contract.lean (identical); cmp GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean (identical); git -C local-references/123e8435b4a2469b/mathlib rev-parse HEAD (25730c7c759d108ef87ab70af2342a196760f79d, matches manifest)`
+- `rg -n 'cmcdtfrbv' project mathlib/Mathlib -g '*.lean' (no match)`
+- `python3 scan of runs/20261011T150044Z-ba604216b4/dag.json lean_name/lean_statement over 1598 nodes: no cmcdtfrbv_* names; patterns LinearMap.trace|removeNth|PairwiseDisjoint|massOn A + massOn B|boundary.support ⊆|0 < T.massOn over accepted nodes (found cmr_cc_det_covector_exists, cmr_cc_det_covector_basis_kronecker, cmr_coordinate_divergence_form, dgcr_bwd_coordinate_covector, dgcr_bwd_extDeriv_smul_const, codim1_zsl_fl_divergence_lift, subadditive lcmp_massOn_le_add_of_eval_eq/cmc_fcl_massOn_le_add, codim1_rdo_massOn_pos_of_mem_support)`
+- `rg -n 'theorem exists_contDiff_support_eq_eq_one_iff' mathlib/Mathlib (Geometry/Manifold/PartitionOfUnity.lean:789)`
+- `rg -n 'exists_cthickening_subset_open|theorem cthickening_subset_thickening|theorem closure_thickening_subset_cthickening|theorem self_subset_thickening' mathlib/Mathlib/Topology/MetricSpace/Thickening.lean (:426, :261, :293, :309)`
+- `rg -n 'theorem trace_eq_matrix_trace' mathlib/Mathlib/LinearAlgebra (Trace.lean:87); rg -n 'theorem basisFun_apply|theorem basisFun_repr' mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean (:806, :810); rg -n 'def removeNth' mathlib/Mathlib/Data/Fin/Tuple/Basic.lean (:845); rg -n 'theorem fderiv_const_mul' mathlib/Mathlib/Analysis/Calculus/FDeriv/Mul.lean (:379)`
+- `rg -n 'support_sum|mulSupport_prod' mathlib/Mathlib/Algebra/BigOperators (Group/Finset/Lemmas.lean:56 mulSupport_prod, additive Finset.support_sum); rg -n 'theorem setIntegral_eq_zero_of_forall_eq_zero|theorem setIntegral_congr_fun ' mathlib/Mathlib/MeasureTheory (Integral/Bochner/Set.lean:73)`
+- `grep -n in lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06: Forms.lean:119 exteriorDerivative_apply; Currents.lean:182 tsupport_exteriorDerivative_subset, :193 exteriorDerivativeTestOn, :325/:333 GeometricCurrentOn.boundary(_apply); Mass.lean:30 covectorEuclideanNorm, :57 massAdmissibleOn, :68 massOn, :74 mass, :81 massOn_mono, :90 le_massOn; CurrentLocalEquality.lean:101/:108/:115 VanishesOn, zeroRegion, support`
+- `grep -n 'def _existing_lean_name_problem' -A 40; sed -n 1820,1860p and 4370,4395p /runtime/flows/gmt-claude-d253855dab51/_recursive_lean/runtime.py (accepted declarations are reused by identical lean_name and stripped lean_statement)`
+- `lake env lean /tmp/bvdecomp/lean/Types.lean (8 child types plus the selected type, each wrapped as verifier/gmt-compare.py child_modules does after the replayed contract scope; only sorry warnings)`
+- `python3 -I /tmp/bvdecomp/scripts/validate.py (verifier/lean_contract.py validate_lean_statement: all 8 valid; new names unused; reused names accepted with identical statements)`
+- `lake env lean /tmp/bvdecomp/lean/Assembly.lean (BVAsm.check, BVAsm.c4_of, BVAsm.c3_of; #print axioms: propext, Classical.choice, Quot.sound)`
+- `lake env lean /tmp/bvdecomp/lean/Probe.lean, Probe2.lean, Probe3.lean (#check of every lemma cited by the child proofs after import GMT.Ch07.Submission; Function.support_finset_sum is unknown, so Finset.support_sum is cited instead)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Manifold/PartitionOfUnity.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/Thickening.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Trace.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Data/Fin/Tuple/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Mul.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Algebra/BigOperators/Group/Finset/Lemmas.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-fac-6211ac03c6/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-fac-6211ac03c6/parent-supplied-plan.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-mass-representation-a1-coo-498906c61d/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-mass-representation-a1-coo-498906c61d/parent-supplied-natural-proof.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-mass-representation-a1-coo-40c536ad5f/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-mass-representation-a1-coo-40c536ad5f/parent-supplied-natural-proof.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-mass-representation-a1/decomposition-v1.json`
+- `/runtime/flows/gmt-claude-d253855dab51/_recursive_lean/runtime.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/tmp/bvdecomp/lean/Types.lean`
+- `/tmp/bvdecomp/lean/Assembly.lean`
+- `/tmp/bvdecomp/lean/Probe.lean`
+- `/tmp/bvdecomp/lean/Probe2.lean`
+- `/tmp/bvdecomp/lean/Probe3.lean`
+
+The snapshot (project b4d606db, Mathlib 25730c7c) has the same Ch07 contract as the workspace, and Submission.lean equals the contract. Neither the snapshot nor the DAG contains a cmcdtfrbv_ declaration, so all six new names are free. The DAG holds the accepted declarations cmr_cc_det_covector_exists and cmr_cc_det_covector_basis_kronecker. They give the determinant covectors dx^J and their Kronecker property with exactly the needed frozen types, so they are reused, which the controller's reuse rule permits. No accepted node matches the other children. Only subadditive mass lemmas exist, not superadditivity over disjoint regions. Nothing localizes spt ∂Q₀. cmr_coordinate_divergence_form has a norm bound K instead of 1, dgcr_bwd_coordinate_covector is limited to P = m + 1, and codim1_zsl_fl_divergence_lift carries a factor K⁻¹. These therefore become new children. The import closure of GMT.Ch07.Submission supplies every tool cited by the child proofs. From Mathlib: the smooth Urysohn lemma, the cthickening/thickening lemmas, trace_eq_matrix_trace with basisFun, Fin.removeNth/succAbove lemmas, fderiv_const_mul, Finset.support_sum and the set-integral lemmas. From SimonGMT: exteriorDerivative_apply, tsupport_exteriorDerivative_subset, massAdmissibleOn/massOn/le_massOn/massOn_mono and support/zeroRegion. In Lean, all eight types elaborate in the comparator scope and pass validation. Three implications compile with only propext, Classical.choice and Quot.sound: (1) the frozen face_geometry type plus face_neighbourhoods, boundary_support_faces, divergence_test_form and mass_disjoint_sum imply the selected frozen type; (2) face_covectors and cutoff_field imply divergence_test_form; (3) the two reused types imply face_covectors.
