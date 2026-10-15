@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.moving_blowups-a1.deformation_theorem-a1.skeleton_deformation-a1.shell_decomposition-a1.boundary_mass_calculus-a1",
+  "parent_id": "root.dimension_reduction_results-a1.moving_blowups-a1.deformation_theorem-a1.skeleton_deformation-a1.shell_decomposition-a1",
+  "depth": 6,
+  "title": "boundaryMassOn is subadditive on differences and vanishes on boundaries",
+  "statement": "Let P, m ∈ ℕ and U, G ⊆ ℝ^P be arbitrary sets. Then (a) boundaryMassOn (X − Y) G ≤ boundaryMassOn X G + boundaryMassOn Y G for all X, Y ∈ 𝒟_m(U); and (b) boundaryMassOn (∂X) G = 0 for every X ∈ 𝒟_{m+1}(U). Conventions (as in the frozen contract and SimonGMT Chapter06): ℝ^P = Euclid P (EuclideanSpace ℝ (Fin P)). For U ⊆ ℝ^P, 𝒟^k(U) = TestFormOn U k (smooth k-forms on ℝ^P whose compact tsupport lies in U) and 𝒟_k(U) = GeometricCurrentOn U k; X(ω) is the value of X on ω; X − Y is the contract subtraction, (X − Y)(ω) = X(ω) − Y(ω) (definitional); 0 is the zero current; ∂X = X.boundary with ∂X(η) = X(dη) (GeometricCurrentOn.boundary_apply); currents with equal values are equal (GeometricCurrentOn.ext). Λ_k = MultiVector P k (continuous linear functionals on k-covectors) and |α| = covectorEuclideanNorm α (Euclidean coefficient norm of a covector). M_G(X) = X.massOn G ∈ [0, ∞] is the supremum of ENNReal.ofReal X(ω) over the ω ∈ 𝒟^k(U) with tsupport ω ⊆ G and |ω(x)| ≤ 1 for all x (massAdmissibleOn U k G); M(X) = X.mass = M_U(X); boundaryMassOn X G = M_G(∂X) if k ≥ 1 and 0 if k = 0. spt X = X.support = U \\ X.zeroRegion, where X.zeroRegion is the union of the open W with compact closure contained in U on which X vanishes (X(ω) = 0 whenever tsupport ω ⊆ W). Integrals ∫_E g dμ are Bochner integrals over μ⌞E; {d < t} abbreviates {x : d(x) < t}.",
+  "lean_statement": "∀ (P m : ℕ) (U G : Set (Euclid P)), (∀ X Y : GeometricCurrentOn U m, boundaryMassOn (X - Y) G ≤ boundaryMassOn X G + boundaryMassOn Y G) ∧ ∀ X : GeometricCurrentOn U (m + 1), boundaryMassOn X.boundary G = 0",
+  "lean_name": "dimred_mbl_dtsd_sh_boundaryMassOn_calculus",
+  "depends_on": [
+    "root.compactness_of_minimizing_currents-a1.flat_convergence-a1.cauchy_subseq-a1.mass_sub_le-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.compactness_of_minimizing_currents-a1.flat_convergence-a1.cauchy_subseq-a1.mass_sub_le-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-flat-convergence-a1-cauchy-117cbe2a8e-a1",
+      "result_commit": "ea5c1199c9160b359cf351e442ec9e8b76e9a258",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-moving-blowups-a1-deformation-the-090ddb3074-a1"
+}

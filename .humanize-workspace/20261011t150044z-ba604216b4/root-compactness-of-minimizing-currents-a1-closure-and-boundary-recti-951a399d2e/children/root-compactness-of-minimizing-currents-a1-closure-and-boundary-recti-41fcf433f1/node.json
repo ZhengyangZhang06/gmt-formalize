@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.weight_ge_one-a1.covector_bounds-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.weight_ge_one-a1",
+  "depth": 5,
+  "title": "Coefficient-norm bounds for evaluation on, and pull-back by, an orthonormal frame",
+  "statement": "Let P, n ∈ ℕ, let v = (v_0, …, v_{n−1}) be an orthonormal family in ℝ^P = Euclid P and let pL : ℝ^P → ℝⁿ be a continuous linear map with (pL x)_i = ⟨v_i, x⟩ for all x ∈ ℝ^P and i ∈ Fin n. Then (a) |β(v_0, …, v_{n−1})| ≤ |β| for every n-covector β on ℝ^P, and (b) for every l ∈ ℕ and every l-covector γ on ℝⁿ, the pulled-back covector γ∘pL (i.e. γ.compContinuousLinearMap pL, (γ∘pL)(u_1, …, u_l) = γ(pL u_1, …, pL u_l)) satisfies |γ∘pL| ≤ |γ|. Here |·| = covectorEuclideanNorm on Covector (Euclid P) _ resp. Covector (Euclid n) _.",
+  "lean_statement": "∀ (P n : ℕ) (v : Fin n → Euclid P) (pL : Euclid P →L[ℝ] Euclid n), Orthonormal ℝ v → (∀ (x : Euclid P) (i : Fin n), pL x i = inner ℝ (v i) x) → (∀ β : Covector (Euclid P) n, |β v| ≤ covectorEuclideanNorm β) ∧ ∀ (l : ℕ) (γ : Covector (Euclid n) l), covectorEuclideanNorm (γ.compContinuousLinearMap pL) ≤ covectorEuclideanNorm γ",
+  "lean_name": "cbr_ci_pw_orthonormal_covector_bounds",
+  "depends_on": [
+    "root.regular_components_are_minimizing-a1.imrep_mass_formula-a1.covector_sq_sum-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.regular_components_are_minimizing-a1.imrep_mass_formula-a1.covector_sq_sum-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-regular-components-are-minimizing-a1-imrep-mass-formula-a1-covec-c35871b74d-a1",
+      "result_commit": "16144a475b272196ba8b2bd15f104028282dbcfc",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-41fcf433f1-a1"
+}

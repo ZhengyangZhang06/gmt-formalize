@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.lower_density-a1.cone-a1.coeff_lipschitz-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.lower_density-a1.cone-a1",
+  "depth": 5,
+  "title": "Test forms are Lipschitz in the Euclidean coefficient norm",
+  "statement": "Let P, k ∈ ℕ, let U ⊆ ℝ^P be any set and let ω ∈ 𝒟^k(U) (TestFormOn U k: a C^∞ k-form on ℝ^P with compact support and tsupport ω ⊆ U). For a k-covector β write |β| := covectorEuclideanNorm β, the Euclidean coefficient norm of Simon 6.1.15. Then there is a real number c ≥ 0 such that |ω(x) − ω(y)| ≤ c·dist(x, y) for all x, y ∈ ℝ^P.",
+  "lean_statement": "∀ (P k : ℕ) (U : Set (Euclid P)) (ω : TestFormOn U k), ∃ c : ℝ, 0 ≤ c ∧ ∀ x y : Euclid P, covectorEuclideanNorm ((ω : DifferentialForm (Euclid P) k) x - (ω : DifferentialForm (Euclid P) k) y) ≤ c * dist x y",
+  "lean_name": "cbrld_cone_testForm_coeff_lipschitz",
+  "depends_on": [
+    "root.regular_set_dense-a1.mass_eq_weight-a1.test_form_approx-a1.norm_props-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.regular_set_dense-a1.mass_eq_weight-a1.test_form_approx-a1.norm_props-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-regular-set-dense-a1-mass-eq-weight-a1-test-form-approx-a1-norm-props-a1-a1",
+      "result_commit": "f492ba4a003c8f1324077e050d48667ae23c7100",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-f66fd8b98d-a1"
+}
