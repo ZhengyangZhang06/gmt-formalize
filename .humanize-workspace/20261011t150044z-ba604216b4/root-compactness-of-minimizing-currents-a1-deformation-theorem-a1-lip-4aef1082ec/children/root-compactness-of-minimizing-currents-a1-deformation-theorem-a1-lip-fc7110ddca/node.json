@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.lipschitz_pushforward-a1.operators-a1.slice-a1.end_form-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.lipschitz_pushforward-a1.operators-a1.slice-a1",
+  "depth": 6,
+  "title": "Part (b): the end slice ρ(x) = ω(ι(s, x)) ∘ J is a test form",
+  "statement": "Let N, k ∈ ℕ, s ∈ ℝ and ω ∈ 𝒟^k(ℝ^{N+1}) (ω : TestFormOn univ k). Write ι(t, x) := (t, x_1, …, x_N) = WithLp.toLp 2 (Fin.cons t (WithLp.ofLp x)) and Jv := ι(0, v). Then there exists ρ ∈ 𝒟^k(ℝ^N) (ρ : TestFormOn univ k) with ρ(x)(v_1, …, v_k) = ω(ι(s, x))(Jv_1, …, Jv_k) for all x ∈ ℝ^N and v ∈ (ℝ^N)^k.",
+  "lean_statement": "∀ (N k : ℕ) (s : ℝ) (ω : TestFormOn (univ : Set (Euclid (N + 1))) k), ∃ ρ : TestFormOn (univ : Set (Euclid N)) k, ∀ (x : Euclid N) (v : Fin k → Euclid N), (ρ : DifferentialForm (Euclid N) k) x v = (ω : DifferentialForm (Euclid (N + 1)) k) (WithLp.toLp 2 (Fin.cons s (WithLp.ofLp x))) (fun i => WithLp.toLp 2 (Fin.cons 0 (WithLp.ofLp (v i))))",
+  "lean_name": "cmcdt_lpo_slice_end_form",
+  "depends_on": [
+    "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.lipschitz_pushforward-a1.operators-a1.slice-a1.coords-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.lipschitz_pushforward-a1.operators-a1.slice-a1.coords-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-lip-fc7110ddca-a1"
+}

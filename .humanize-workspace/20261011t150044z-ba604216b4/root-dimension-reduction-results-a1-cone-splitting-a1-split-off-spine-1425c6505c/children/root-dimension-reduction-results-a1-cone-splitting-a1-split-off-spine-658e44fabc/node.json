@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.cone_splitting-a1.split_off_spine-a1.minimality_transfer-a1.face_currents-a1.box_face-a1",
+  "parent_id": "root.dimension_reduction_results-a1.cone_splitting-a1.split_off_spine-a1.minimality_transfer-a1.face_currents-a1",
+  "depth": 6,
+  "title": "One face current: the product of the closed box Q_r(f) with the translate τ_wY is integer multiplicity, with mass (2r)^k μ_Y(ℝ^P) and the face action",
+  "statement": "Let P, k, m', n' ∈ ℕ with m' > 0 and h : n' = k + m'. Let f : Fin k → ℝ^P be orthonormal with span F := span{f_1, …, f_k}, and let w ∈ F^⊥. Let Y ∈ 𝒟_{m'}(ℝ^P) have an integer multiplicity representation R_Y (IMRep univ m', R_Y.Represents Y) whose measure is carried by F^⊥, i.e. R_Y.measure(ℝ^P ∖ F^⊥) = 0. Let r > 0, Q := {s ∈ F : |⟨f_c, s⟩| ≤ r for all c} and H^k := μHE[k]. Then there is an integer multiplicity current B ∈ 𝒟_{n'}(ℝ^P) with mass M(B) = ENNReal.ofReal((2r)^k)·R_Y.measure(ℝ^P) such that, for every map flat : Λ^{n'} → Λ^{m'} with flat α v = α(Fin.append f v ∘ Fin.cast h) for all α and v, and every test n'-form ω, B(ω) = ∫_Q currentEval Y (y ↦ flat(ω(s + w + y))) dH^k(s). (B is [[Q]] ×_f τ_wY.)",
+  "lean_statement": "∀ (P k m' n' : ℕ) (f : Fin k → Euclid P) (h : n' = k + m') (w : Euclid P) (Y : GeometricCurrentOn (univ : Set (Euclid P)) m') (RY : IMRep (univ : Set (Euclid P)) m') (r : ℝ), 0 < m' → Orthonormal ℝ f → w ∈ (Submodule.span ℝ (Set.range f))ᗮ → RY.Represents Y → RY.measure ((Submodule.span ℝ (Set.range f))ᗮ : Set (Euclid P))ᶜ = 0 → 0 < r → ∃ B : GeometricCurrentOn (univ : Set (Euclid P)) n', IsIntegerMultiplicity B ∧ B.mass = ENNReal.ofReal ((2 * r) ^ k) * RY.measure univ ∧ ∀ flat : Covector (Euclid P) n' → Covector (Euclid P) m', (∀ (α : Covector (Euclid P) n') (v : Fin m' → Euclid P), flat α v = α (Fin.append f v ∘ Fin.cast h)) → ∀ ω : TestFormOn (univ : Set (Euclid P)) n', B ω = ∫ s in {s | s ∈ Submodule.span ℝ (Set.range f) ∧ ∀ c, |inner ℝ (f c) s| ≤ r}, currentEval Y (fun y => flat ((ω : DifferentialForm (Euclid P) n') (s + w + y))) ∂μHE[k]",
+  "lean_name": "dimred_cs_sos_mt_fc_box_face",
+  "depends_on": [
+    "root.dimension_reduction_results-a1.cone_splitting-a1.split_off_spine-a1.minimality_transfer-a1.face_currents-a1.translate_imrep-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.dimension_reduction_results-a1.cone_splitting-a1.split_off_spine-a1.minimality_transfer-a1.face_currents-a1.translate_imrep-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-cone-splitting-a1-split-off-spine-658e44fabc-a1"
+}

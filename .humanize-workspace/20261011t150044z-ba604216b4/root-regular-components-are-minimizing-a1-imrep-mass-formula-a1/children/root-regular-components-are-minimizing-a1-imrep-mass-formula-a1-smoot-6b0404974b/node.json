@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.regular_components_are_minimizing-a1.imrep_mass_formula-a1.smooth_form_approx-a1",
+  "parent_id": "root.regular_components_are_minimizing-a1.imrep_mass_formula-a1",
+  "depth": 3,
+  "title": "Smooth admissible approximation in L¹ of a finite measure (density of C_c, cutoff, radial retraction, mollification)",
+  "statement": "Let ν be a finite measure on ℝ^P, O ⊆ ℝ^P open, K ⊆ O compact and g : ℝ^P → Covector (Euclid P) n ν-a.e. strongly measurable with |g(x)|_E ≤ 1 for all x and g(x) = 0 for all x ∉ K. Then for every ε > 0 there is a smooth compactly supported n-form h (IsTestForm h) with tsupport h ⊆ O, |h(z)|_E ≤ 1 for all z, and ∫⁻ ofReal(|h(x) − g(x)|_E) dν(x) < ofReal(ε).",
+  "lean_statement": "∀ (P n : ℕ) (ν : Measure (Euclid P)) (O K : Set (Euclid P)) (g : Euclid P → Covector (Euclid P) n), IsFiniteMeasure ν → IsOpen O → IsCompact K → K ⊆ O → AEStronglyMeasurable g ν → (∀ x, covectorEuclideanNorm (g x) ≤ 1) → (∀ x, x ∉ K → g x = 0) → ∀ ε : ℝ, 0 < ε → ∃ h : DifferentialForm (Euclid P) n, IsTestForm h ∧ tsupport h ⊆ O ∧ (∀ z, covectorEuclideanNorm (h z) ≤ 1) ∧ ∫⁻ x, ENNReal.ofReal (covectorEuclideanNorm (h x - g x)) ∂ν < ENNReal.ofReal ε",
+  "lean_name": "regcomp_exists_smooth_unit_form_approx",
+  "depends_on": [
+    "root.regular_components_are_minimizing-a1.imrep_mass_formula-a1.covector_eval_le-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.regular_components_are_minimizing-a1.imrep_mass_formula-a1.covector_eval_le-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-regular-components-are-minimizing-a1-imrep-mass-formula-a1-smoot-6b0404974b-a1"
+}

@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.cone_splitting-a1.split_off_spine-a1.cone_filling_subspace-a1",
+  "parent_id": "root.dimension_reduction_results-a1.cone_splitting-a1.split_off_spine-a1",
+  "depth": 4,
+  "title": "Cone filling inside a subspace: an integer multiplicity cycle with compact support in a linear subspace V bounds an integer multiplicity current with compact support in V",
+  "statement": "Let P, m ∈ ℕ with m ≥ 1, let V ⊆ ℝ^P be a linear subspace, and let X ∈ 𝒟_m(ℝ^P) (GeometricCurrentOn univ m) satisfy:\n- X is integer multiplicity;\n- ∂X = 0 (BoundaryVanishes X);\n- spt X is compact and spt X ⊆ V.\nThen there is Y ∈ 𝒟_{m+1}(ℝ^P) such that:\n- Y is integer multiplicity and ∂Y = X (Y.boundary = X);\n- spt Y is compact and spt Y ⊆ V.\n(Y is the cone 0 ⨯ X of Simon Ch. 6, 2.26 and 2.30–2.31, which is integer multiplicity by Ch. 6, 3.10; spt Y ⊆ {sx : s ∈ [0, 1], x ∈ spt X} ⊆ V.)",
+  "lean_statement": "∀ (P m : ℕ) (X : GeometricCurrentOn (univ : Set (Euclid P)) m) (V : Submodule ℝ (Euclid P)), 0 < m → IsIntegerMultiplicity X → BoundaryVanishes X → IsCompact X.support → X.support ⊆ (V : Set (Euclid P)) → ∃ Y : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1), IsIntegerMultiplicity Y ∧ Y.boundary = X ∧ IsCompact Y.support ∧ Y.support ⊆ (V : Set (Euclid P))",
+  "lean_name": "dimred_cs_sos_cone_filling_in_subspace",
+  "depends_on": [
+    "root.dimension_reduction_results-a1.cone_splitting-a1.split_off_spine-a1.lipschitz_tangent-a1",
+    "root.minimizing_implies_stationary-a1.support_null-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.dimension_reduction_results-a1.cone_splitting-a1.split_off_spine-a1.lipschitz_tangent-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.minimizing_implies_stationary-a1.support_null-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-minimizing-implies-stationary-a1-support-null-a1-a1",
+      "result_commit": "d15b5cf486116871dce9295932632b12f0af96e0",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-cone-splitting-a1-split-off-spine-2cc8704e5d-a1"
+}

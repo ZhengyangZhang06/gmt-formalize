@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_tangent_cone_planar-a1.blowup_translation_invariance-a1.blowup_translate_integral-a1",
+  "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_tangent_cone_planar-a1.blowup_translation_invariance-a1",
+  "depth": 5,
+  "title": "A translate along p of a blow-up at p of an n-homogeneous measure is a rescaling",
+  "statement": "Let P, n ∈ ℕ, let μ, ν be Borel measures on ℝ^P = Euclid P, p ∈ ℝ^P, λ > 0 and t ∈ ℝ with s := 1 + λt > 0. Assume two things. First, μ is n-homogeneous: μ(c·A) = c^n μ(A) for every c > 0 and every Borel A. Second, ν is the blow-up of μ at p with scale λ: ν(B) = λ^{-n} μ(η^{-1}(B)) for every Borel B, where η := dilation p λ, η(y) = λ^{-1}(y − p). Then for every continuous f : ℝ^P → ℝ, ∫ f(y − tp) dν(y) = s^n ∫ f(s·y) dν(y). Here ∫ is the Bochner integral, which is 0 for non-integrable functions; the identity holds in that sense too.",
+  "lean_statement": "∀ (P n : ℕ) (μ ν : Measure (Euclid P)) (p : Euclid P) (lam t : ℝ), 0 < lam → 0 < 1 + lam * t → (∀ c : ℝ, 0 < c → ∀ A : Set (Euclid P), MeasurableSet A → μ ((fun x => c • x) '' A) = ENNReal.ofReal (c ^ n) * μ A) → (∀ B : Set (Euclid P), MeasurableSet B → ν B = ENNReal.ofReal (lam⁻¹ ^ n) * μ (dilation p lam ⁻¹' B)) → ∀ f : Euclid P → ℝ, Continuous f → ∫ y, f (y - t • p) ∂ν = (1 + lam * t) ^ n * ∫ y, f ((1 + lam * t) • y) ∂ν",
+  "lean_name": "idtp_cttp_bti_blowup_translate_integral",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-7524e7da5d-a1"
+}

@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.minimizing_implies_stationary-a1.diffeo_pushforward-a1.orientation_pushforward-a1.gram_schmidt_frame-a1",
+  "parent_id": "root.minimizing_implies_stationary-a1.diffeo_pushforward-a1.orientation_pushforward-a1",
+  "depth": 4,
+  "title": "Gram–Schmidt frame: det G(v) = (det A)², det A ≠ 0, |det A| ≤ ∏|v_a|",
+  "statement": "Let P, n ∈ ℕ and let v = (v_1, …, v_n) (indexed by Fin n) be a linearly independent family in ℝ^P (Euclid P). Then there is an orthonormal family σ = (σ_1, …, σ_n) in ℝ^P with span{σ_1, …, σ_n} = span{v_1, …, v_n} such that, for the n×n real matrix A with entries A_{ab} := ⟨σ_a, v_b⟩: (i) det(⟨v_a, v_b⟩)_{a,b} = (det A)²; (ii) det A ≠ 0; (iii) |det A| ≤ ∏_a |v_a|. Here ⟨·,·⟩ and |·| are the Euclidean inner product and norm.",
+  "lean_statement": "∀ (P n : ℕ) (v : Fin n → Euclid P), LinearIndependent ℝ v → ∃ σ : Fin n → Euclid P, Orthonormal ℝ σ ∧ Submodule.span ℝ (Set.range σ) = Submodule.span ℝ (Set.range v) ∧ Matrix.det (Matrix.of fun i j => inner ℝ (v i) (v j)) = Matrix.det (Matrix.of fun i j => inner ℝ (σ i) (v j)) ^ 2 ∧ Matrix.det (Matrix.of fun i j => inner ℝ (σ i) (v j)) ≠ 0 ∧ |Matrix.det (Matrix.of fun i j => inner ℝ (σ i) (v j))| ≤ ∏ i, ‖v i‖",
+  "lean_name": "dpf_exists_orthonormal_frame_det_gram",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-orientati-ce923d2f7f-a1"
+}
