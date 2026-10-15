@@ -9,188 +9,188 @@ import Poincare.SimonGMT.Chapter06.AffineCurrentPushforward
 import Poincare.SimonGMT.Chapter02.AreaLipschitz
 import Mathlib.Analysis.Calculus.BumpFunction.Convolution
 import Poincare.SimonGMT.Chapter03.SubmanifoldCover
-
-/-!
-# Simon, *Introduction to Geometric Measure Theory*, Chapter 7 "Area Minimizing Currents"
-(printed pp. 181–204)
-
-Frozen contract.  Currents, boundary, mass, support and weak convergence are the clean SimonGMT
-objects of `Poincare.SimonGMT.Chapter06`: `GeometricCurrentOn U n` (Simon 6.2.1), `T.boundary`
-(6.2.3), `T.massOn W` = `M_W(T)` (6.2.5, Euclidean coefficient norm), `T.mass` (6.2.4),
-`T.support` (6.2.11), `WeaklyConvergesOn` (6.2.13), and the proper affine push-forward
-`GeometricCurrentOn.affinePushforward` (6.2.23).  Everything else (integer multiplicity currents,
-minimizing currents, densities, blow-ups, tangent cones, `reg T`, `sing T`, the associated
-varifold) is defined below from primitive data.  `Hⁿ` is Mathlib's normalized `μHE[n]`; null-set
-statements use Mathlib's `μH[s]` (same null sets as Simon's `Hˢ`).
-
-**Conventions.**  The ambient space is `ℝ^{n+k}` (`Euclid (n + k)`); when a submanifold `N` is
-present it has dimension `n + ℓ`, `ℓ ≤ k` (Simon writes `N^{n+ℓ} ⊂ ℝ^{n+ℓ}`, `ℓ ≤ k`, a
-misprint for `ℝ^{n+k}`; `N = ℝ^{n+k}` is the case `ℓ = k`).  For an `n`-current, `∂T = 0`,
-`∂S = ∂T`, `spt ∂T`, `M_W(∂T)` are read with Simon's convention `∂T = 0` if `n = 0` (6.2.3).
--/
-
-
-/-!
-# Simon, *Introduction to Geometric Measure Theory*, Chapter 7 "Area Minimizing Currents"
-(printed pp. 181–204)
-
-Frozen contract.  Currents, boundary, mass, support and weak convergence are the clean SimonGMT
-objects of `Poincare.SimonGMT.Chapter06`: `GeometricCurrentOn U n` (Simon 6.2.1), `T.boundary`
-(6.2.3), `T.massOn W` = `M_W(T)` (6.2.5, Euclidean coefficient norm), `T.mass` (6.2.4),
-`T.support` (6.2.11), `WeaklyConvergesOn` (6.2.13), and the proper affine push-forward
-`GeometricCurrentOn.affinePushforward` (6.2.23).  Everything else (integer multiplicity currents,
-minimizing currents, densities, blow-ups, tangent cones, `reg T`, `sing T`, the associated
-varifold) is defined below from primitive data.  `Hⁿ` is Mathlib's normalized `μHE[n]`; null-set
-statements use Mathlib's `μH[s]` (same null sets as Simon's `Hˢ`).
-
-**Conventions.**  The ambient space is `ℝ^{n+k}` (`Euclid (n + k)`); when a submanifold `N` is
-present it has dimension `n + ℓ`, `ℓ ≤ k` (Simon writes `N^{n+ℓ} ⊂ ℝ^{n+ℓ}`, `ℓ ≤ k`, a
-misprint for `ℝ^{n+k}`; `N = ℝ^{n+k}` is the case `ℓ = k`).  For an `n`-current, `∂T = 0`,
-`∂S = ∂T`, `spt ∂T`, `M_W(∂T)` are read with Simon's convention `∂T = 0` if `n = 0` (6.2.3).
--/
-
-
-/-!
-# Simon, *Introduction to Geometric Measure Theory*, Chapter 7 "Area Minimizing Currents"
-(printed pp. 181–204)
-
-Frozen contract.  Currents, boundary, mass, support and weak convergence are the clean SimonGMT
-objects of `Poincare.SimonGMT.Chapter06`: `GeometricCurrentOn U n` (Simon 6.2.1), `T.boundary`
-(6.2.3), `T.massOn W` = `M_W(T)` (6.2.5, Euclidean coefficient norm), `T.mass` (6.2.4),
-`T.support` (6.2.11), `WeaklyConvergesOn` (6.2.13), and the proper affine push-forward
-`GeometricCurrentOn.affinePushforward` (6.2.23).  Everything else (integer multiplicity currents,
-minimizing currents, densities, blow-ups, tangent cones, `reg T`, `sing T`, the associated
-varifold) is defined below from primitive data.  `Hⁿ` is Mathlib's normalized `μHE[n]`; null-set
-statements use Mathlib's `μH[s]` (same null sets as Simon's `Hˢ`).
-
-**Conventions.**  The ambient space is `ℝ^{n+k}` (`Euclid (n + k)`); when a submanifold `N` is
-present it has dimension `n + ℓ`, `ℓ ≤ k` (Simon writes `N^{n+ℓ} ⊂ ℝ^{n+ℓ}`, `ℓ ≤ k`, a
-misprint for `ℝ^{n+k}`; `N = ℝ^{n+k}` is the case `ℓ = k`).  For an `n`-current, `∂T = 0`,
-`∂S = ∂T`, `spt ∂T`, `M_W(∂T)` are read with Simon's convention `∂T = 0` if `n = 0` (6.2.3).
--/
-
-
-/-!
-# Simon, *Introduction to Geometric Measure Theory*, Chapter 7 "Area Minimizing Currents"
-(printed pp. 181–204)
-
-Frozen contract.  Currents, boundary, mass, support and weak convergence are the clean SimonGMT
-objects of `Poincare.SimonGMT.Chapter06`: `GeometricCurrentOn U n` (Simon 6.2.1), `T.boundary`
-(6.2.3), `T.massOn W` = `M_W(T)` (6.2.5, Euclidean coefficient norm), `T.mass` (6.2.4),
-`T.support` (6.2.11), `WeaklyConvergesOn` (6.2.13), and the proper affine push-forward
-`GeometricCurrentOn.affinePushforward` (6.2.23).  Everything else (integer multiplicity currents,
-minimizing currents, densities, blow-ups, tangent cones, `reg T`, `sing T`, the associated
-varifold) is defined below from primitive data.  `Hⁿ` is Mathlib's normalized `μHE[n]`; null-set
-statements use Mathlib's `μH[s]` (same null sets as Simon's `Hˢ`).
-
-**Conventions.**  The ambient space is `ℝ^{n+k}` (`Euclid (n + k)`); when a submanifold `N` is
-present it has dimension `n + ℓ`, `ℓ ≤ k` (Simon writes `N^{n+ℓ} ⊂ ℝ^{n+ℓ}`, `ℓ ≤ k`, a
-misprint for `ℝ^{n+k}`; `N = ℝ^{n+k}` is the case `ℓ = k`).  For an `n`-current, `∂T = 0`,
-`∂S = ∂T`, `spt ∂T`, `M_W(∂T)` are read with Simon's convention `∂T = 0` if `n = 0` (6.2.3).
--/
-
-
-/-!
-# Simon, *Introduction to Geometric Measure Theory*, Chapter 7 "Area Minimizing Currents"
-(printed pp. 181–204)
-
-Frozen contract.  Currents, boundary, mass, support and weak convergence are the clean SimonGMT
-objects of `Poincare.SimonGMT.Chapter06`: `GeometricCurrentOn U n` (Simon 6.2.1), `T.boundary`
-(6.2.3), `T.massOn W` = `M_W(T)` (6.2.5, Euclidean coefficient norm), `T.mass` (6.2.4),
-`T.support` (6.2.11), `WeaklyConvergesOn` (6.2.13), and the proper affine push-forward
-`GeometricCurrentOn.affinePushforward` (6.2.23).  Everything else (integer multiplicity currents,
-minimizing currents, densities, blow-ups, tangent cones, `reg T`, `sing T`, the associated
-varifold) is defined below from primitive data.  `Hⁿ` is Mathlib's normalized `μHE[n]`; null-set
-statements use Mathlib's `μH[s]` (same null sets as Simon's `Hˢ`).
-
-**Conventions.**  The ambient space is `ℝ^{n+k}` (`Euclid (n + k)`); when a submanifold `N` is
-present it has dimension `n + ℓ`, `ℓ ≤ k` (Simon writes `N^{n+ℓ} ⊂ ℝ^{n+ℓ}`, `ℓ ≤ k`, a
-misprint for `ℝ^{n+k}`; `N = ℝ^{n+k}` is the case `ℓ = k`).  For an `n`-current, `∂T = 0`,
-`∂S = ∂T`, `spt ∂T`, `M_W(∂T)` are read with Simon's convention `∂T = 0` if `n = 0` (6.2.3).
--/
-
-
-/-!
-# Simon, *Introduction to Geometric Measure Theory*, Chapter 7 "Area Minimizing Currents"
-(printed pp. 181–204)
-
-Frozen contract.  Currents, boundary, mass, support and weak convergence are the clean SimonGMT
-objects of `Poincare.SimonGMT.Chapter06`: `GeometricCurrentOn U n` (Simon 6.2.1), `T.boundary`
-(6.2.3), `T.massOn W` = `M_W(T)` (6.2.5, Euclidean coefficient norm), `T.mass` (6.2.4),
-`T.support` (6.2.11), `WeaklyConvergesOn` (6.2.13), and the proper affine push-forward
-`GeometricCurrentOn.affinePushforward` (6.2.23).  Everything else (integer multiplicity currents,
-minimizing currents, densities, blow-ups, tangent cones, `reg T`, `sing T`, the associated
-varifold) is defined below from primitive data.  `Hⁿ` is Mathlib's normalized `μHE[n]`; null-set
-statements use Mathlib's `μH[s]` (same null sets as Simon's `Hˢ`).
-
-**Conventions.**  The ambient space is `ℝ^{n+k}` (`Euclid (n + k)`); when a submanifold `N` is
-present it has dimension `n + ℓ`, `ℓ ≤ k` (Simon writes `N^{n+ℓ} ⊂ ℝ^{n+ℓ}`, `ℓ ≤ k`, a
-misprint for `ℝ^{n+k}`; `N = ℝ^{n+k}` is the case `ℓ = k`).  For an `n`-current, `∂T = 0`,
-`∂S = ∂T`, `spt ∂T`, `M_W(∂T)` are read with Simon's convention `∂T = 0` if `n = 0` (6.2.3).
--/
-
-
-/-!
-# Simon, *Introduction to Geometric Measure Theory*, Chapter 7 "Area Minimizing Currents"
-(printed pp. 181–204)
-
-Frozen contract.  Currents, boundary, mass, support and weak convergence are the clean SimonGMT
-objects of `Poincare.SimonGMT.Chapter06`: `GeometricCurrentOn U n` (Simon 6.2.1), `T.boundary`
-(6.2.3), `T.massOn W` = `M_W(T)` (6.2.5, Euclidean coefficient norm), `T.mass` (6.2.4),
-`T.support` (6.2.11), `WeaklyConvergesOn` (6.2.13), and the proper affine push-forward
-`GeometricCurrentOn.affinePushforward` (6.2.23).  Everything else (integer multiplicity currents,
-minimizing currents, densities, blow-ups, tangent cones, `reg T`, `sing T`, the associated
-varifold) is defined below from primitive data.  `Hⁿ` is Mathlib's normalized `μHE[n]`; null-set
-statements use Mathlib's `μH[s]` (same null sets as Simon's `Hˢ`).
-
-**Conventions.**  The ambient space is `ℝ^{n+k}` (`Euclid (n + k)`); when a submanifold `N` is
-present it has dimension `n + ℓ`, `ℓ ≤ k` (Simon writes `N^{n+ℓ} ⊂ ℝ^{n+ℓ}`, `ℓ ≤ k`, a
-misprint for `ℝ^{n+k}`; `N = ℝ^{n+k}` is the case `ℓ = k`).  For an `n`-current, `∂T = 0`,
-`∂S = ∂T`, `spt ∂T`, `M_W(∂T)` are read with Simon's convention `∂T = 0` if `n = 0` (6.2.3).
--/
-
-
-/-!
-# Simon, *Introduction to Geometric Measure Theory*, Chapter 7 "Area Minimizing Currents"
-(printed pp. 181–204)
-
-Frozen contract.  Currents, boundary, mass, support and weak convergence are the clean SimonGMT
-objects of `Poincare.SimonGMT.Chapter06`: `GeometricCurrentOn U n` (Simon 6.2.1), `T.boundary`
-(6.2.3), `T.massOn W` = `M_W(T)` (6.2.5, Euclidean coefficient norm), `T.mass` (6.2.4),
-`T.support` (6.2.11), `WeaklyConvergesOn` (6.2.13), and the proper affine push-forward
-`GeometricCurrentOn.affinePushforward` (6.2.23).  Everything else (integer multiplicity currents,
-minimizing currents, densities, blow-ups, tangent cones, `reg T`, `sing T`, the associated
-varifold) is defined below from primitive data.  `Hⁿ` is Mathlib's normalized `μHE[n]`; null-set
-statements use Mathlib's `μH[s]` (same null sets as Simon's `Hˢ`).
-
-**Conventions.**  The ambient space is `ℝ^{n+k}` (`Euclid (n + k)`); when a submanifold `N` is
-present it has dimension `n + ℓ`, `ℓ ≤ k` (Simon writes `N^{n+ℓ} ⊂ ℝ^{n+ℓ}`, `ℓ ≤ k`, a
-misprint for `ℝ^{n+k}`; `N = ℝ^{n+k}` is the case `ℓ = k`).  For an `n`-current, `∂T = 0`,
-`∂S = ∂T`, `spt ∂T`, `M_W(∂T)` are read with Simon's convention `∂T = 0` if `n = 0` (6.2.3).
--/
-
-
-/-!
-# Simon, *Introduction to Geometric Measure Theory*, Chapter 7 "Area Minimizing Currents"
-(printed pp. 181–204)
-
-Frozen contract.  Currents, boundary, mass, support and weak convergence are the clean SimonGMT
-objects of `Poincare.SimonGMT.Chapter06`: `GeometricCurrentOn U n` (Simon 6.2.1), `T.boundary`
-(6.2.3), `T.massOn W` = `M_W(T)` (6.2.5, Euclidean coefficient norm), `T.mass` (6.2.4),
-`T.support` (6.2.11), `WeaklyConvergesOn` (6.2.13), and the proper affine push-forward
-`GeometricCurrentOn.affinePushforward` (6.2.23).  Everything else (integer multiplicity currents,
-minimizing currents, densities, blow-ups, tangent cones, `reg T`, `sing T`, the associated
-varifold) is defined below from primitive data.  `Hⁿ` is Mathlib's normalized `μHE[n]`; null-set
-statements use Mathlib's `μH[s]` (same null sets as Simon's `Hˢ`).
-
-**Conventions.**  The ambient space is `ℝ^{n+k}` (`Euclid (n + k)`); when a submanifold `N` is
-present it has dimension `n + ℓ`, `ℓ ≤ k` (Simon writes `N^{n+ℓ} ⊂ ℝ^{n+ℓ}`, `ℓ ≤ k`, a
-misprint for `ℝ^{n+k}`; `N = ℝ^{n+k}` is the case `ℓ = k`).  For an `n`-current, `∂T = 0`,
-`∂S = ∂T`, `spt ∂T`, `M_W(∂T)` are read with Simon's convention `∂T = 0` if `n = 0` (6.2.3).
--/
-
 import Poincare.SimonGMT.Chapter02.WeightedArea
 import Poincare.SimonGMT.Chapter08.DistributionalConstancy
+
+/-!
+# Simon, *Introduction to Geometric Measure Theory*, Chapter 7 "Area Minimizing Currents"
+(printed pp. 181–204)
+
+Frozen contract.  Currents, boundary, mass, support and weak convergence are the clean SimonGMT
+objects of `Poincare.SimonGMT.Chapter06`: `GeometricCurrentOn U n` (Simon 6.2.1), `T.boundary`
+(6.2.3), `T.massOn W` = `M_W(T)` (6.2.5, Euclidean coefficient norm), `T.mass` (6.2.4),
+`T.support` (6.2.11), `WeaklyConvergesOn` (6.2.13), and the proper affine push-forward
+`GeometricCurrentOn.affinePushforward` (6.2.23).  Everything else (integer multiplicity currents,
+minimizing currents, densities, blow-ups, tangent cones, `reg T`, `sing T`, the associated
+varifold) is defined below from primitive data.  `Hⁿ` is Mathlib's normalized `μHE[n]`; null-set
+statements use Mathlib's `μH[s]` (same null sets as Simon's `Hˢ`).
+
+**Conventions.**  The ambient space is `ℝ^{n+k}` (`Euclid (n + k)`); when a submanifold `N` is
+present it has dimension `n + ℓ`, `ℓ ≤ k` (Simon writes `N^{n+ℓ} ⊂ ℝ^{n+ℓ}`, `ℓ ≤ k`, a
+misprint for `ℝ^{n+k}`; `N = ℝ^{n+k}` is the case `ℓ = k`).  For an `n`-current, `∂T = 0`,
+`∂S = ∂T`, `spt ∂T`, `M_W(∂T)` are read with Simon's convention `∂T = 0` if `n = 0` (6.2.3).
+-/
+
+
+/-!
+# Simon, *Introduction to Geometric Measure Theory*, Chapter 7 "Area Minimizing Currents"
+(printed pp. 181–204)
+
+Frozen contract.  Currents, boundary, mass, support and weak convergence are the clean SimonGMT
+objects of `Poincare.SimonGMT.Chapter06`: `GeometricCurrentOn U n` (Simon 6.2.1), `T.boundary`
+(6.2.3), `T.massOn W` = `M_W(T)` (6.2.5, Euclidean coefficient norm), `T.mass` (6.2.4),
+`T.support` (6.2.11), `WeaklyConvergesOn` (6.2.13), and the proper affine push-forward
+`GeometricCurrentOn.affinePushforward` (6.2.23).  Everything else (integer multiplicity currents,
+minimizing currents, densities, blow-ups, tangent cones, `reg T`, `sing T`, the associated
+varifold) is defined below from primitive data.  `Hⁿ` is Mathlib's normalized `μHE[n]`; null-set
+statements use Mathlib's `μH[s]` (same null sets as Simon's `Hˢ`).
+
+**Conventions.**  The ambient space is `ℝ^{n+k}` (`Euclid (n + k)`); when a submanifold `N` is
+present it has dimension `n + ℓ`, `ℓ ≤ k` (Simon writes `N^{n+ℓ} ⊂ ℝ^{n+ℓ}`, `ℓ ≤ k`, a
+misprint for `ℝ^{n+k}`; `N = ℝ^{n+k}` is the case `ℓ = k`).  For an `n`-current, `∂T = 0`,
+`∂S = ∂T`, `spt ∂T`, `M_W(∂T)` are read with Simon's convention `∂T = 0` if `n = 0` (6.2.3).
+-/
+
+
+/-!
+# Simon, *Introduction to Geometric Measure Theory*, Chapter 7 "Area Minimizing Currents"
+(printed pp. 181–204)
+
+Frozen contract.  Currents, boundary, mass, support and weak convergence are the clean SimonGMT
+objects of `Poincare.SimonGMT.Chapter06`: `GeometricCurrentOn U n` (Simon 6.2.1), `T.boundary`
+(6.2.3), `T.massOn W` = `M_W(T)` (6.2.5, Euclidean coefficient norm), `T.mass` (6.2.4),
+`T.support` (6.2.11), `WeaklyConvergesOn` (6.2.13), and the proper affine push-forward
+`GeometricCurrentOn.affinePushforward` (6.2.23).  Everything else (integer multiplicity currents,
+minimizing currents, densities, blow-ups, tangent cones, `reg T`, `sing T`, the associated
+varifold) is defined below from primitive data.  `Hⁿ` is Mathlib's normalized `μHE[n]`; null-set
+statements use Mathlib's `μH[s]` (same null sets as Simon's `Hˢ`).
+
+**Conventions.**  The ambient space is `ℝ^{n+k}` (`Euclid (n + k)`); when a submanifold `N` is
+present it has dimension `n + ℓ`, `ℓ ≤ k` (Simon writes `N^{n+ℓ} ⊂ ℝ^{n+ℓ}`, `ℓ ≤ k`, a
+misprint for `ℝ^{n+k}`; `N = ℝ^{n+k}` is the case `ℓ = k`).  For an `n`-current, `∂T = 0`,
+`∂S = ∂T`, `spt ∂T`, `M_W(∂T)` are read with Simon's convention `∂T = 0` if `n = 0` (6.2.3).
+-/
+
+
+/-!
+# Simon, *Introduction to Geometric Measure Theory*, Chapter 7 "Area Minimizing Currents"
+(printed pp. 181–204)
+
+Frozen contract.  Currents, boundary, mass, support and weak convergence are the clean SimonGMT
+objects of `Poincare.SimonGMT.Chapter06`: `GeometricCurrentOn U n` (Simon 6.2.1), `T.boundary`
+(6.2.3), `T.massOn W` = `M_W(T)` (6.2.5, Euclidean coefficient norm), `T.mass` (6.2.4),
+`T.support` (6.2.11), `WeaklyConvergesOn` (6.2.13), and the proper affine push-forward
+`GeometricCurrentOn.affinePushforward` (6.2.23).  Everything else (integer multiplicity currents,
+minimizing currents, densities, blow-ups, tangent cones, `reg T`, `sing T`, the associated
+varifold) is defined below from primitive data.  `Hⁿ` is Mathlib's normalized `μHE[n]`; null-set
+statements use Mathlib's `μH[s]` (same null sets as Simon's `Hˢ`).
+
+**Conventions.**  The ambient space is `ℝ^{n+k}` (`Euclid (n + k)`); when a submanifold `N` is
+present it has dimension `n + ℓ`, `ℓ ≤ k` (Simon writes `N^{n+ℓ} ⊂ ℝ^{n+ℓ}`, `ℓ ≤ k`, a
+misprint for `ℝ^{n+k}`; `N = ℝ^{n+k}` is the case `ℓ = k`).  For an `n`-current, `∂T = 0`,
+`∂S = ∂T`, `spt ∂T`, `M_W(∂T)` are read with Simon's convention `∂T = 0` if `n = 0` (6.2.3).
+-/
+
+
+/-!
+# Simon, *Introduction to Geometric Measure Theory*, Chapter 7 "Area Minimizing Currents"
+(printed pp. 181–204)
+
+Frozen contract.  Currents, boundary, mass, support and weak convergence are the clean SimonGMT
+objects of `Poincare.SimonGMT.Chapter06`: `GeometricCurrentOn U n` (Simon 6.2.1), `T.boundary`
+(6.2.3), `T.massOn W` = `M_W(T)` (6.2.5, Euclidean coefficient norm), `T.mass` (6.2.4),
+`T.support` (6.2.11), `WeaklyConvergesOn` (6.2.13), and the proper affine push-forward
+`GeometricCurrentOn.affinePushforward` (6.2.23).  Everything else (integer multiplicity currents,
+minimizing currents, densities, blow-ups, tangent cones, `reg T`, `sing T`, the associated
+varifold) is defined below from primitive data.  `Hⁿ` is Mathlib's normalized `μHE[n]`; null-set
+statements use Mathlib's `μH[s]` (same null sets as Simon's `Hˢ`).
+
+**Conventions.**  The ambient space is `ℝ^{n+k}` (`Euclid (n + k)`); when a submanifold `N` is
+present it has dimension `n + ℓ`, `ℓ ≤ k` (Simon writes `N^{n+ℓ} ⊂ ℝ^{n+ℓ}`, `ℓ ≤ k`, a
+misprint for `ℝ^{n+k}`; `N = ℝ^{n+k}` is the case `ℓ = k`).  For an `n`-current, `∂T = 0`,
+`∂S = ∂T`, `spt ∂T`, `M_W(∂T)` are read with Simon's convention `∂T = 0` if `n = 0` (6.2.3).
+-/
+
+
+/-!
+# Simon, *Introduction to Geometric Measure Theory*, Chapter 7 "Area Minimizing Currents"
+(printed pp. 181–204)
+
+Frozen contract.  Currents, boundary, mass, support and weak convergence are the clean SimonGMT
+objects of `Poincare.SimonGMT.Chapter06`: `GeometricCurrentOn U n` (Simon 6.2.1), `T.boundary`
+(6.2.3), `T.massOn W` = `M_W(T)` (6.2.5, Euclidean coefficient norm), `T.mass` (6.2.4),
+`T.support` (6.2.11), `WeaklyConvergesOn` (6.2.13), and the proper affine push-forward
+`GeometricCurrentOn.affinePushforward` (6.2.23).  Everything else (integer multiplicity currents,
+minimizing currents, densities, blow-ups, tangent cones, `reg T`, `sing T`, the associated
+varifold) is defined below from primitive data.  `Hⁿ` is Mathlib's normalized `μHE[n]`; null-set
+statements use Mathlib's `μH[s]` (same null sets as Simon's `Hˢ`).
+
+**Conventions.**  The ambient space is `ℝ^{n+k}` (`Euclid (n + k)`); when a submanifold `N` is
+present it has dimension `n + ℓ`, `ℓ ≤ k` (Simon writes `N^{n+ℓ} ⊂ ℝ^{n+ℓ}`, `ℓ ≤ k`, a
+misprint for `ℝ^{n+k}`; `N = ℝ^{n+k}` is the case `ℓ = k`).  For an `n`-current, `∂T = 0`,
+`∂S = ∂T`, `spt ∂T`, `M_W(∂T)` are read with Simon's convention `∂T = 0` if `n = 0` (6.2.3).
+-/
+
+
+/-!
+# Simon, *Introduction to Geometric Measure Theory*, Chapter 7 "Area Minimizing Currents"
+(printed pp. 181–204)
+
+Frozen contract.  Currents, boundary, mass, support and weak convergence are the clean SimonGMT
+objects of `Poincare.SimonGMT.Chapter06`: `GeometricCurrentOn U n` (Simon 6.2.1), `T.boundary`
+(6.2.3), `T.massOn W` = `M_W(T)` (6.2.5, Euclidean coefficient norm), `T.mass` (6.2.4),
+`T.support` (6.2.11), `WeaklyConvergesOn` (6.2.13), and the proper affine push-forward
+`GeometricCurrentOn.affinePushforward` (6.2.23).  Everything else (integer multiplicity currents,
+minimizing currents, densities, blow-ups, tangent cones, `reg T`, `sing T`, the associated
+varifold) is defined below from primitive data.  `Hⁿ` is Mathlib's normalized `μHE[n]`; null-set
+statements use Mathlib's `μH[s]` (same null sets as Simon's `Hˢ`).
+
+**Conventions.**  The ambient space is `ℝ^{n+k}` (`Euclid (n + k)`); when a submanifold `N` is
+present it has dimension `n + ℓ`, `ℓ ≤ k` (Simon writes `N^{n+ℓ} ⊂ ℝ^{n+ℓ}`, `ℓ ≤ k`, a
+misprint for `ℝ^{n+k}`; `N = ℝ^{n+k}` is the case `ℓ = k`).  For an `n`-current, `∂T = 0`,
+`∂S = ∂T`, `spt ∂T`, `M_W(∂T)` are read with Simon's convention `∂T = 0` if `n = 0` (6.2.3).
+-/
+
+
+/-!
+# Simon, *Introduction to Geometric Measure Theory*, Chapter 7 "Area Minimizing Currents"
+(printed pp. 181–204)
+
+Frozen contract.  Currents, boundary, mass, support and weak convergence are the clean SimonGMT
+objects of `Poincare.SimonGMT.Chapter06`: `GeometricCurrentOn U n` (Simon 6.2.1), `T.boundary`
+(6.2.3), `T.massOn W` = `M_W(T)` (6.2.5, Euclidean coefficient norm), `T.mass` (6.2.4),
+`T.support` (6.2.11), `WeaklyConvergesOn` (6.2.13), and the proper affine push-forward
+`GeometricCurrentOn.affinePushforward` (6.2.23).  Everything else (integer multiplicity currents,
+minimizing currents, densities, blow-ups, tangent cones, `reg T`, `sing T`, the associated
+varifold) is defined below from primitive data.  `Hⁿ` is Mathlib's normalized `μHE[n]`; null-set
+statements use Mathlib's `μH[s]` (same null sets as Simon's `Hˢ`).
+
+**Conventions.**  The ambient space is `ℝ^{n+k}` (`Euclid (n + k)`); when a submanifold `N` is
+present it has dimension `n + ℓ`, `ℓ ≤ k` (Simon writes `N^{n+ℓ} ⊂ ℝ^{n+ℓ}`, `ℓ ≤ k`, a
+misprint for `ℝ^{n+k}`; `N = ℝ^{n+k}` is the case `ℓ = k`).  For an `n`-current, `∂T = 0`,
+`∂S = ∂T`, `spt ∂T`, `M_W(∂T)` are read with Simon's convention `∂T = 0` if `n = 0` (6.2.3).
+-/
+
+
+/-!
+# Simon, *Introduction to Geometric Measure Theory*, Chapter 7 "Area Minimizing Currents"
+(printed pp. 181–204)
+
+Frozen contract.  Currents, boundary, mass, support and weak convergence are the clean SimonGMT
+objects of `Poincare.SimonGMT.Chapter06`: `GeometricCurrentOn U n` (Simon 6.2.1), `T.boundary`
+(6.2.3), `T.massOn W` = `M_W(T)` (6.2.5, Euclidean coefficient norm), `T.mass` (6.2.4),
+`T.support` (6.2.11), `WeaklyConvergesOn` (6.2.13), and the proper affine push-forward
+`GeometricCurrentOn.affinePushforward` (6.2.23).  Everything else (integer multiplicity currents,
+minimizing currents, densities, blow-ups, tangent cones, `reg T`, `sing T`, the associated
+varifold) is defined below from primitive data.  `Hⁿ` is Mathlib's normalized `μHE[n]`; null-set
+statements use Mathlib's `μH[s]` (same null sets as Simon's `Hˢ`).
+
+**Conventions.**  The ambient space is `ℝ^{n+k}` (`Euclid (n + k)`); when a submanifold `N` is
+present it has dimension `n + ℓ`, `ℓ ≤ k` (Simon writes `N^{n+ℓ} ⊂ ℝ^{n+ℓ}`, `ℓ ≤ k`, a
+misprint for `ℝ^{n+k}`; `N = ℝ^{n+k}` is the case `ℓ = k`).  For an `n`-current, `∂T = 0`,
+`∂S = ∂T`, `spt ∂T`, `M_W(∂T)` are read with Simon's convention `∂T = 0` if `n = 0` (6.2.3).
+-/
+
 
 /-!
 # Simon, *Introduction to Geometric Measure Theory*, Chapter 7 "Area Minimizing Currents"
@@ -26844,44 +26844,6 @@ theorem Submission.dor_lmbsf_io_adapted_frame : ∀ (P n : ℕ) (Q : Submodule �
   · simp [hνσ j', (Fin.succ_ne_zero j').symm]
   · simp [real_inner_comm, hνσ i', Fin.succ_ne_zero i']
   · simp [hσ i' j']
-/-- Step 3(i) of the Jacobian identity for the orientation of a `C¹` graph (Simon 7.4.3, via
-Allard's theorem; `n`-covectors as in Ch. 6, §1): if `τ` is an orthonormal `n`-frame and every
-`bⱼ` lies in `L = span τ`, then `α(b₁, …, bₙ) = det(⟨τᵢ, bⱼ⟩) α(τ₁, …, τₙ)` for every
-`n`-covector `α`.  The restriction of `α` to `L` is `α(τ) det_τ`, and the coordinates of `bⱼ` in
-the basis `τ` of `L` are `⟨τᵢ, bⱼ⟩`. -/
-theorem Submission.dgoj_covector_eq_det_mul_of_mem_span : ∀ (P n : ℕ) (τ b : Fin n → Euclid P), Orthonormal ℝ τ → (∀ j, b j ∈ Submodule.span ℝ (Set.range τ)) → ∀ α : Covector (Euclid P) n, α b = (Matrix.of fun i j => inner ℝ (τ i) (b j)).det * α τ := by
-  intro P n τ b hτ hb α
-  set L := Submodule.span ℝ (Set.range τ)
-  -- `τ` is a basis `e` of `L`
-  let e : Module.Basis (Fin n) ℝ L := Module.Basis.span hτ.linearIndependent
-  have he : ∀ i, (e i : Euclid P) = τ i := fun i => by
-    rw [Module.Basis.span_apply hτ.linearIndependent i]
-  -- the restriction `α_L` of `α` to `L`
-  let αL : L [⋀^Fin n]→ₗ[ℝ] ℝ := α.toAlternatingMap.compLinearMap L.subtype
-  let b' : Fin n → L := fun j => ⟨b j, hb j⟩
-  have h1 : α b = αL b' := rfl
-  have h2 : α τ = αL e := by
-    show α τ = α (fun i => (e i : Euclid P))
-    congr 1
-    funext i
-    exact (he i).symm
-  -- coordinates of `b'` in `e` are the inner products with `τ`
-  have hrepr : ∀ i j, e.repr (b' j) i = inner ℝ (τ i) (b j) := by
-    intro i j
-    have hs : (b j : Euclid P) = ∑ l, e.repr (b' j) l • τ l := by
-      have := congrArg (Subtype.val) (e.sum_repr (b' j))
-      simp only [Submodule.coe_sum, Submodule.coe_smul, he] at this
-      exact this.symm
-    rw [hs, hτ.inner_right_fintype]
-  have hmat : e.toMatrix b' = Matrix.of fun i j => inner ℝ (τ i) (b j) := by
-    ext i j
-    rw [Module.Basis.toMatrix_apply, hrepr, Matrix.of_apply]
-  -- `α_L = α_L(e) • det_e`
-  have h3 : αL b' = αL e * e.det b' := by
-    conv_lhs => rw [AlternatingMap.eq_smul_basis_det e αL]
-    rfl
-  rw [h1, h2, h3, Module.Basis.det_apply, hmat, mul_comm]
-
 /-- Sign lemma for unit orientations (Simon 6.1.1; used for the slice orientation
 `ξ ⌞ ∇^M f/|∇^M f|` of 6.4.3 in the slicing step of the proof of 7.4.3): if
 `ζ = ±τ₁ ∧ ⋯ ∧ τₘ` is a unit orientation of `Q` and `ρ` is an orthonormal `m`-frame in `Q`, then
@@ -26964,25 +26926,6 @@ theorem Submission.dor_lmbsf_interior_product_orientation : ∀ (P n : ℕ) (ζ 
   rcases Submission.dor_lmbsf_io_orientation_frame_sign P (n + 1) ζ Q _ hζ hνσo hνσQ with h | h
   · exact Or.inl fun α => by rw [hζ' α, h, hwedge]
   · exact Or.inr fun α => by rw [hζ' α, h, hwedge]
-/-- **Normalized mollifier** (step 2 of the smooth-to-`C¹` test reduction): for `r > 0` there is
-a `C^∞` function `ρ ≥ 0` on `ℝⁿ` with compact support in `B_r(0)` and `∫ ρ = 1`.  Take the
-`ContDiffBump` `B` centred at `0` with `rIn = r/2`, `rOut = r`, so `support B = B_r(0)`; its
-integral `I` is positive since `B ≥ 0` and `volume (B_r(0)) > 0`, and `ρ = I⁻¹ B`.  (Mathlib's
-`ContDiffBump.normed` is outside the import closure, so the normalization is done by hand.) -/
-theorem Submission.dgcr_stc_exists_normalized_mollifier : ∀ (n : ℕ) (r : ℝ), 0 < r → ∃ ρ : Euclid n → ℝ, ContDiff ℝ (⊤ : ℕ∞) ρ ∧ HasCompactSupport ρ ∧ (∀ x, 0 ≤ ρ x) ∧ ∫ x, ρ x = 1 ∧ support ρ ⊆ ball (0 : Euclid n) r := by
-  intro n r hr
-  -- the bump `B` with `rIn = r/2`, `rOut = r`
-  let B : ContDiffBump (0 : Euclid n) := ⟨r / 2, r, half_pos hr, half_lt_self hr⟩
-  have hBs : HasCompactSupport B := B.hasCompactSupport
-  have hBi : Integrable B := B.continuous.integrable_of_hasCompactSupport hBs
-  -- `I = ∫ B > 0`: `B ≥ 0` and `support B = B_r(0)` has positive measure
-  have hI : 0 < ∫ x, B x := by
-    rw [integral_pos_iff_support_of_nonneg (fun x => B.nonneg' x) hBi, B.support_eq]
-    exact measure_ball_pos volume 0 hr
-  refine ⟨fun x => (∫ y, B y)⁻¹ * B x, contDiff_const.mul B.contDiff, hBs.mul_left,
-    fun x => mul_nonneg (inv_nonneg.2 hI.le) (B.nonneg' x), ?_, ?_⟩
-  · rw [integral_const_mul, inv_mul_cancel₀ hI.ne']
-  · exact (support_mul_subset_right _ _).trans B.support_eq.subset
 /-- **Mollification preserves the Lipschitz constant** (step 4 of the Lipschitz smoothing): if
 `ψ ≥ 0` is continuous with compact support and `∫ ψ = 1`, and `g` is `K`-Lipschitz, then
 `G x = ∫ ψ(y) g(x - y) dy` is `K`-Lipschitz.  Indeed `G x - G x'` is the integral of
@@ -27753,204 +27696,6 @@ theorem Submission.ptd_tl_ae_excess_le : ∀ (P n : ℕ) (U A B : Set (Euclid P)
         _ = (ε + (1 - ε)) * β := by rw [add_tsub_cancel_of_le hε1.le, one_mul]
         _ = ε * β + (1 - ε) * β := add_mul _ _ _
     exact ENNReal.le_of_add_le_add_right (ENNReal.mul_ne_top (by simp) hβtop) h1
-
-/-- **Upper density theorem for `Hⁿ` off a Borel set of finite measure** (Simon Ch. 1, 3.3 and
-3.6, with the crude covering constant `6ⁿ`; chapter-01.txt lines 602–721).  If `S ⊆ ℝᴾ` is Borel
-with `Hⁿ(S) < ∞`, then for `Hⁿ`-a.e. `x ∉ S`, `Hⁿ(S ∩ B̄_ρ(x)) / ρⁿ → 0` as `ρ ↓ 0`.  A failure
-at `x` puts `x` in a threshold set `{x ∉ S : Hⁿ(S ∩ B̄_ρ(x)) > t ρⁿ frequently as ρ ↓ 0}` with
-`t = (k + 1)⁻¹`.  Vitali's lemma (factor `2`, enlarged radius `3ρ`) and separability give
-`t · μH[n](E) ≤ 6ⁿ Hⁿ(G)` whenever each `x ∈ E` has arbitrarily small `ρ` with
-`t ρⁿ ≤ Hⁿ(G ∩ B̄_ρ(x))`.  Taking `G = S \ F` for a closed `F ⊆ S` with `Hⁿ(S \ F)` small (weak
-regularity of the finite measure `Hⁿ⌞S`), which agrees with `S` near `x ∉ F`, every threshold set
-is `μH[n]`-null, hence `Hⁿ`-null. -/
-theorem Submission.regcomp_atl_upper_density_zero : ∀ (P n : ℕ) (S : Set (Euclid P)), MeasurableSet S → μHE[n] S ≠ ∞ → ∀ᵐ x ∂(μHE[n] : Measure (Euclid P)), x ∉ S → Tendsto (fun ρ : ℝ => μHE[n] (S ∩ closedBall x ρ) / ENNReal.ofReal ρ ^ n) (𝓝[>] 0) (𝓝 0) := by
-  intro P n S hS hfin
-  -- Step 2, Vitali selection (Simon 1.3.4): a countable disjoint subfamily whose
-  -- 3-fold enlargements cover the centres.
-  have vitali : ∀ (E : Set (Euclid P)) (p : Euclid P → ℝ → Prop) (δ : ℝ),
-      (∀ x ∈ E, ∃ ρ : ℝ, 0 < ρ ∧ ρ < δ ∧ p x ρ) →
-      ∃ u : Set (Euclid P × ℝ), u.Countable ∧ (∀ a ∈ u, a.1 ∈ E ∧ 0 < a.2 ∧ a.2 < δ ∧ p a.1 a.2) ∧
-        u.PairwiseDisjoint (fun a => closedBall a.1 a.2) ∧
-        E ⊆ ⋃ a ∈ u, closedBall a.1 (3 * a.2) := by
-    intro E p δ hE
-    obtain ⟨u, huT, hdisj, hcov⟩ := Vitali.exists_disjoint_subfamily_covering_enlargement
-      (fun a : Euclid P × ℝ => closedBall a.1 a.2)
-      {a : Euclid P × ℝ | a.1 ∈ E ∧ 0 < a.2 ∧ a.2 < δ ∧ p a.1 a.2} (fun a => a.2) 2 (by norm_num)
-      (fun a ha => ha.2.1.le) δ (fun a ha => ha.2.2.1.le)
-      (fun a ha => nonempty_closedBall.2 ha.2.1.le)
-    refine ⟨u, ?_, fun a ha => huT ha, hdisj, ?_⟩
-    · apply hdisj.countable_of_nonempty_interior
-      intro a ha
-      refine ⟨a.1, interior_mono ball_subset_closedBall ?_⟩
-      rw [isOpen_ball.interior_eq]
-      exact mem_ball_self (huT ha).2.1
-    · intro x hx
-      obtain ⟨ρ, hρ0, hρδ, hp⟩ := hE x hx
-      obtain ⟨b, hbu, ⟨w, hw1, hw2⟩, hle⟩ := hcov (x, ρ) ⟨hx, hρ0, hρδ, hp⟩
-      refine mem_iUnion₂.2 ⟨b, hbu, ?_⟩
-      rw [mem_closedBall]
-      have h1 : dist w x ≤ ρ := hw1
-      have h2 : dist w b.1 ≤ b.2 := hw2
-      have hle' : ρ ≤ 2 * b.2 := hle
-      calc dist x b.1 ≤ dist x w + dist w b.1 := dist_triangle _ _ _
-        _ ≤ ρ + b.2 := add_le_add (by rw [dist_comm]; exact h1) h2
-        _ ≤ 3 * b.2 := by linarith
-  -- Step 2, comparison (Simon 1.3.3 with the crude constant 6 ^ n).
-  have comparison : ∀ (t : ℝ≥0∞) (E G : Set (Euclid P)), t ≠ 0 → t ≠ ∞ → MeasurableSet G →
-      (∀ x ∈ E, ∀ δ : ℝ, 0 < δ → ∃ ρ : ℝ, 0 < ρ ∧ ρ < δ ∧
-        t * ENNReal.ofReal ρ ^ n ≤ μHE[n] (G ∩ closedBall x ρ)) →
-      t * μH[(n : ℝ)] E ≤ 6 ^ n * μHE[n] G := by
-    intro t E G ht0 httop hG hE
-    have hfam : ∀ j : ℕ, ∃ u : Set (Euclid P × ℝ), u.Countable ∧
-        (∀ a ∈ u, a.1 ∈ E ∧ 0 < a.2 ∧ a.2 < 1 / ((j : ℝ) + 1) ∧
-          t * ENNReal.ofReal a.2 ^ n ≤ μHE[n] (G ∩ closedBall a.1 a.2)) ∧
-        u.PairwiseDisjoint (fun a => closedBall a.1 a.2) ∧
-        E ⊆ ⋃ a ∈ u, closedBall a.1 (3 * a.2) :=
-      fun j => vitali E (fun c ρ => t * ENNReal.ofReal ρ ^ n ≤ μHE[n] (G ∩ closedBall c ρ))
-        (1 / ((j : ℝ) + 1)) (fun x hx => hE x hx _ (by positivity))
-    choose u hucount hu hdisj hcover using hfam
-    have : ∀ j, Countable (u j) := fun j => (hucount j).to_subtype
-    -- packing estimate
-    have hsum : ∀ j, t * ∑' a : u j, ENNReal.ofReal (a : Euclid P × ℝ).2 ^ n ≤ μHE[n] G := by
-      intro j
-      rw [← ENNReal.tsum_mul_left]
-      calc ∑' a : u j, t * ENNReal.ofReal (a : Euclid P × ℝ).2 ^ n
-          ≤ ∑' a : u j, μHE[n] (G ∩ closedBall (a : Euclid P × ℝ).1 (a : Euclid P × ℝ).2) :=
-            ENNReal.tsum_le_tsum fun a => (hu j a a.2).2.2.2
-        _ = μHE[n] (⋃ a ∈ u j, G ∩ closedBall a.1 a.2) :=
-            (measure_biUnion (hucount j) ((hdisj j).mono fun a => inter_subset_right)
-              fun a _ => hG.inter measurableSet_closedBall).symm
-        _ ≤ μHE[n] G := measure_mono (iUnion₂_subset fun a _ => inter_subset_left)
-    -- diameter estimate
-    have hdiam : ∀ j (a : u j), ediam (closedBall (a : Euclid P × ℝ).1 (3 * (a : Euclid P × ℝ).2))
-        ≤ ENNReal.ofReal (6 * (a : Euclid P × ℝ).2) := by
-      intro j a
-      apply ediam_le_of_forall_dist_le
-      intro y hy z hz
-      rw [mem_closedBall] at hy hz
-      calc dist y z ≤ dist y (a : Euclid P × ℝ).1 + dist z (a : Euclid P × ℝ).1 :=
-            dist_triangle_right _ _ _
-        _ ≤ 6 * (a : Euclid P × ℝ).2 := by linarith
-    have hterm : ∀ j, t * ∑' a : u j,
-        ediam (closedBall (a : Euclid P × ℝ).1 (3 * (a : Euclid P × ℝ).2)) ^ (n : ℝ) ≤
-          6 ^ n * μHE[n] G := by
-      intro j
-      calc t * ∑' a : u j, ediam (closedBall (a : Euclid P × ℝ).1 (3 * (a : Euclid P × ℝ).2)) ^ (n : ℝ)
-          ≤ t * ∑' a : u j, 6 ^ n * ENNReal.ofReal (a : Euclid P × ℝ).2 ^ n := by
-            gcongr with a
-            rw [ENNReal.rpow_natCast]
-            calc ediam (closedBall (a : Euclid P × ℝ).1 (3 * (a : Euclid P × ℝ).2)) ^ n
-                ≤ ENNReal.ofReal (6 * (a : Euclid P × ℝ).2) ^ n := by gcongr; exact hdiam j a
-              _ = 6 ^ n * ENNReal.ofReal (a : Euclid P × ℝ).2 ^ n := by
-                rw [ENNReal.ofReal_mul (show (0 : ℝ) ≤ 6 by norm_num), mul_pow]
-                norm_num
-        _ = 6 ^ n * (t * ∑' a : u j, ENNReal.ofReal (a : Euclid P × ℝ).2 ^ n) := by
-            rw [ENNReal.tsum_mul_left]; ring
-        _ ≤ 6 ^ n * μHE[n] G := by gcongr; exact hsum j
-    have hH := MeasureTheory.Measure.hausdorffMeasure_le_liminf_tsum (X := Euclid P)
-      (ι := fun j => (u j)) (n : ℝ) E (l := atTop)
-      (fun j : ℕ => ENNReal.ofReal (6 * (1 / ((j : ℝ) + 1))))
-      (by
-        rw [← ENNReal.ofReal_zero]
-        apply ENNReal.tendsto_ofReal
-        have := tendsto_one_div_add_atTop_nhds_zero_nat (𝕜 := ℝ)
-        simpa using this.const_mul 6)
-      (fun j a => closedBall (a : Euclid P × ℝ).1 (3 * (a : Euclid P × ℝ).2))
-      (Eventually.of_forall fun j a => (hdiam j a).trans (ENNReal.ofReal_le_ofReal (by
-        have := (hu j a a.2).2.2.1
-        linarith)))
-      (Eventually.of_forall fun j x hx => by
-        obtain ⟨a, ha, hxa⟩ := mem_iUnion₂.1 (hcover j hx)
-        exact mem_iUnion.2 ⟨⟨a, ha⟩, hxa⟩)
-    have hbound : ∀ j, ∑' a : u j,
-        ediam (closedBall (a : Euclid P × ℝ).1 (3 * (a : Euclid P × ℝ).2)) ^ (n : ℝ) ≤
-          6 ^ n * μHE[n] G / t := by
-      intro j
-      rw [ENNReal.le_div_iff_mul_le (Or.inl ht0) (Or.inl httop), mul_comm]
-      exact hterm j
-    have hlim : μH[(n : ℝ)] E ≤ 6 ^ n * μHE[n] G / t :=
-      hH.trans (liminf_le_of_frequently_le' (Frequently.of_forall hbound))
-    calc t * μH[(n : ℝ)] E ≤ t * (6 ^ n * μHE[n] G / t) := by gcongr
-      _ = 6 ^ n * μHE[n] G := ENNReal.mul_div_cancel ht0 httop
-  -- Step 3, each threshold set is null (Simon 1.3.6).
-  have threshold : ∀ t : ℝ≥0∞, t ≠ 0 → t ≠ ∞ →
-      μHE[n] {x : Euclid P | x ∉ S ∧ ∃ᶠ ρ in 𝓝[>] (0 : ℝ),
-        t < μHE[n] (S ∩ closedBall x ρ) / ENNReal.ofReal ρ ^ n} = 0 := by
-    intro t ht0 httop
-    set N := {x : Euclid P | x ∉ S ∧ ∃ᶠ ρ in 𝓝[>] (0 : ℝ),
-      t < μHE[n] (S ∩ closedBall x ρ) / ENNReal.ofReal ρ ^ n} with hN
-    have key : ∀ ε : ℝ≥0∞, ε ≠ 0 → μH[(n : ℝ)] N < ε := by
-      intro ε hε
-      have : IsFiniteMeasure ((μHE[n] : Measure (Euclid P)).restrict S) :=
-        ⟨by rw [Measure.restrict_apply_univ]; exact hfin.lt_top⟩
-      have : ((μHE[n] : Measure (Euclid P)).restrict S).WeaklyRegular :=
-        Measure.WeaklyRegular.of_pseudoMetrizableSpace_of_isFiniteMeasure _
-      have hpos : t * ε / 6 ^ n ≠ 0 := by
-        apply ENNReal.div_ne_zero.2
-        exact ⟨mul_ne_zero ht0 hε, ENNReal.pow_ne_top (by norm_num)⟩
-      obtain ⟨F, hFS, hFc, hFlt⟩ := hS.exists_isClosed_sdiff_lt
-        (μ := (μHE[n] : Measure (Euclid P)).restrict S)
-        (by rw [Measure.restrict_apply hS, inter_self]; exact hfin) hpos
-      have hG : MeasurableSet (S \ F) := hS.diff hFc.measurableSet
-      have hμG : μHE[n] (S \ F) < t * ε / 6 ^ n := by
-        rwa [Measure.restrict_apply hG, inter_eq_left.2 sdiff_subset] at hFlt
-      have hhyp : ∀ x ∈ N, ∀ δ : ℝ, 0 < δ → ∃ ρ : ℝ, 0 < ρ ∧ ρ < δ ∧
-          t * ENNReal.ofReal ρ ^ n ≤ μHE[n] ((S \ F) ∩ closedBall x ρ) := by
-        intro x hx δ hδ
-        obtain ⟨hxS, hfreq⟩ := hx
-        have hxF : x ∉ F := fun h => hxS (hFS h)
-        obtain ⟨r₁, hr₁, hball⟩ := Metric.isOpen_iff.1 hFc.isOpen_compl x hxF
-        have hev : ∀ᶠ ρ in 𝓝[>] (0 : ℝ), ρ ∈ Ioo 0 (min δ (r₁ / 2)) :=
-          Ioo_mem_nhdsGT (by positivity)
-        obtain ⟨ρ, hρq, hρ⟩ := (hfreq.and_eventually hev).exists
-        refine ⟨ρ, hρ.1, lt_of_lt_of_le hρ.2 (min_le_left _ _), ?_⟩
-        have hρpos : ENNReal.ofReal ρ ^ n ≠ 0 :=
-          pow_ne_zero _ (ENNReal.ofReal_pos.2 hρ.1).ne'
-        have hρtop : ENNReal.ofReal ρ ^ n ≠ ∞ := ENNReal.pow_ne_top ENNReal.ofReal_ne_top
-        have h1 : t * ENNReal.ofReal ρ ^ n < μHE[n] (S ∩ closedBall x ρ) :=
-          (ENNReal.lt_div_iff_mul_lt (Or.inl hρpos) (Or.inl hρtop)).1 hρq
-        have h2 : S ∩ closedBall x ρ = (S \ F) ∩ closedBall x ρ := by
-          ext y
-          constructor
-          · rintro ⟨hyS, hyB⟩
-            refine ⟨⟨hyS, fun hyF => hball ?_ hyF⟩, hyB⟩
-            rw [mem_ball]
-            have := mem_closedBall.1 hyB
-            have := hρ.2
-            have := min_le_right δ (r₁ / 2)
-            linarith
-          · rintro ⟨⟨hyS, _⟩, hyB⟩
-            exact ⟨hyS, hyB⟩
-        rw [← h2]
-        exact h1.le
-      have hcomp := comparison t N (S \ F) ht0 httop hG hhyp
-      have h6 : (6 : ℝ≥0∞) ^ n ≠ 0 := pow_ne_zero _ (by norm_num)
-      have h6' : (6 : ℝ≥0∞) ^ n ≠ ∞ := ENNReal.pow_ne_top (by norm_num)
-      have hlt : t * μH[(n : ℝ)] N < t * ε := by
-        calc t * μH[(n : ℝ)] N ≤ 6 ^ n * μHE[n] (S \ F) := hcomp
-          _ < 6 ^ n * (t * ε / 6 ^ n) := ENNReal.mul_lt_mul_right h6 h6' hμG
-          _ = t * ε := ENNReal.mul_div_cancel h6 h6'
-      exact (ENNReal.mul_lt_mul_iff_right ht0 httop).1 hlt
-    have hH : μH[(n : ℝ)] N = 0 := by
-      by_contra h
-      exact lt_irrefl _ (key _ h)
-    rw [Measure.euclideanHausdorffMeasure_def, Measure.smul_apply, hH, smul_zero]
-  -- Steps 1 and 4, every failure of convergence lies in a threshold set.
-  rw [ae_iff]
-  apply measure_mono_null (t := ⋃ k : ℕ, {x : Euclid P | x ∉ S ∧ ∃ᶠ ρ in 𝓝[>] (0 : ℝ),
-    ((k : ℝ≥0∞) + 1)⁻¹ < μHE[n] (S ∩ closedBall x ρ) / ENNReal.ofReal ρ ^ n})
-  · intro x hx
-    simp only [mem_ofPred_eq, Classical.not_imp] at hx
-    obtain ⟨hxS, hnt⟩ := hx
-    rw [ENNReal.tendsto_nhds_zero] at hnt
-    push Not at hnt
-    obtain ⟨ε, hε, hfreq⟩ := hnt
-    obtain ⟨k, hk⟩ := ENNReal.exists_inv_nat_lt hε.ne'
-    refine mem_iUnion.2 ⟨k, hxS, hfreq.mono fun ρ hρ => ?_⟩
-    calc ((k : ℝ≥0∞) + 1)⁻¹ ≤ (k : ℝ≥0∞)⁻¹ := ENNReal.inv_le_inv.2 le_self_add
-      _ < ε := hk
-      _ < _ := hρ
-  · exact measure_iUnion_null fun k => threshold _ (by simp) (by simp)
 
 /-- **Upper density theorem for `Hⁿ` off a Borel set of locally finite measure in `U`** (Simon
 Ch. 1, Remark 3.7(2); chapter-01.txt lines 705–711).  If `U ⊆ ℝᴾ` is open and `S` is Borel with
@@ -31837,25 +31582,6 @@ theorem Submission.dor_lmbs_slice_identity_of_averages : ∀ (P n : ℕ) (U : Se
       (fun x hx => image_eq_zero_of_notMem_tsupport fun h => hx (hωK h))
       (fun j x hx => image_eq_zero_of_notMem_tsupport fun h => hx (hωsK j h)) hconv)
   exact tendsto_nhds_unique hA (hB.congr fun j => (ht (ωs j) (hωsD j)).symm)
-/-- Local finiteness of an integer multiplicity representation `(M, θ, ξ)` in `U` (Simon Ch. 6,
-Definition 3.1).  For compact `K ⊆ U`, `μ_R(K) = ∫_{M ∩ K} θ dHⁿ < ∞` by the local integrability
-of `θ`, and `Hⁿ(M ∩ K) = ∫_{M ∩ K} 1 dHⁿ ≤ ∫_{M ∩ K} θ dHⁿ < ∞` since `θ ≥ 1` on `M`. -/
-theorem Submission.rsd_imrep_compact_measure_ne_top : ∀ (P n : ℕ) (U : Set (Euclid P)) (R : IMRep U n) (K : Set (Euclid P)), IsCompact K → K ⊆ U → μHE[n] (R.carrier ∩ K) ≠ ∞ ∧ R.measure K ≠ ∞ := by
-  intro P n U R K hK hKU
-  have hint := R.locallyIntegrable_mult K hK hKU
-  -- `μ_R(K) = ∫_K θ d(Hⁿ⌞M) = ∫_{M ∩ K} θ dHⁿ`, `K` being closed, hence Borel
-  have hmeas : R.measure K = ∫⁻ x in R.carrier ∩ K, (R.mult x : ℝ≥0∞) ∂μHE[n] := by
-    rw [IMRep.measure, withDensity_apply _ hK.measurableSet,
-      Measure.restrict_restrict hK.measurableSet, inter_comm]
-  refine ⟨?_, by rw [hmeas]; exact hint⟩
-  refine ne_top_of_le_ne_top hint ?_
-  -- `Hⁿ(M ∩ K) = ∫_{M ∩ K} 1 dHⁿ ≤ ∫_{M ∩ K} θ dHⁿ`, as `1 ≤ θ` on `M`
-  calc μHE[n] (R.carrier ∩ K) = ∫⁻ _ in R.carrier ∩ K, (1 : ℝ≥0∞) ∂μHE[n] := by
-        rw [setLIntegral_one]
-    _ ≤ ∫⁻ x in R.carrier ∩ K, (R.mult x : ℝ≥0∞) ∂μHE[n] := by
-        refine setLIntegral_mono (measurable_from_nat.comp R.measurable_mult) ?_
-        intro x hx
-        exact_mod_cast R.mult_pos x hx.1
 /-- Restricting an integer multiplicity triple `R = (C, θ, ξ)` to a Borel sub-carrier `C' ⊆ C`
 with multiplicity `0 < θ' ≤ θ` on `C'`, keeping the orientation `ξ`, gives again a triple in `U`,
 provided `Hⁿ`-a.e. point of `C'` inherits the approximate tangent spaces of `C` (Simon Ch. 6, 3.1).
@@ -32295,168 +32021,6 @@ theorem Submission.rsdic_tl_blowUp_measure_scaling : ∀ (P n : ℕ) (x : Euclid
       euclideanHausdorffMeasure_homothety_image n x (inv_ne_zero hr.ne') T, ENNReal.smul_def,
       smul_eq_mul, ENNReal.coe_pow, nnnorm_inv, ENNReal.coe_inv (nnnorm_ne_zero_iff.mpr hr.ne'),
       Real.nnnorm_of_nonneg hr.le, ← ENNReal.ofReal_eq_coe_nnreal hr.le]
-  rw [hset, hscale]
-
-/-- Comparison of blow-up integrals (proof of Simon 3.1.6): for Borel `A ⊆ B`, `r > 0` and a
-continuous `f` with `|f| ≤ C` vanishing off `B̄_R(0)`,
-`|∫_{η_{x,r}(B)} f dHⁿ − ∫_{η_{x,r}(A)} f dHⁿ| ≤ C Hⁿ(η_{x,r}(B \ A) ∩ B̄_R(0))`.  Since `η_{x,r}` is
-injective, `η_{x,r}(B)` is the disjoint union of `η_{x,r}(A)` and `η_{x,r}(B \ A)`, both Borel
-(`η_{x,r}(T)` is the preimage of `T` under `y ↦ x + ry`); the difference of the integrals is the
-integral over `η_{x,r}(B \ A)`, which equals the integral over `η_{x,r}(B \ A) ∩ B̄_R(0)`. -/
-theorem Submission.regcomp_atl_pc_blowUp_setIntegral_sub_le : ∀ (P n : ℕ) (A B : Set (Euclid P)) (x : Euclid P) (r R C : ℝ) (f : Euclid P → ℝ), Continuous f → MeasurableSet A → MeasurableSet B → A ⊆ B → 0 < r → μHE[n] (Poincare.SimonGMT.Chapter03.blowUpMap x r '' B ∩ closedBall 0 R) ≠ ∞ → (∀ y : Euclid P, ‖f y‖ ≤ C) → (∀ y : Euclid P, y ∉ closedBall (0 : Euclid P) R → f y = 0) → ‖(∫ y in Poincare.SimonGMT.Chapter03.blowUpMap x r '' B, f y ∂μHE[n]) - ∫ y in Poincare.SimonGMT.Chapter03.blowUpMap x r '' A, f y ∂μHE[n]‖ ≤ C * (μHE[n] (Poincare.SimonGMT.Chapter03.blowUpMap x r '' (B \ A) ∩ closedBall 0 R)).toReal := by
-  intro P n A B x r R C f hf hA hB hAB hr hfin hC hzero
-  -- Step 1: `η = η_{x,r}` is injective
-  have hinj : Injective (Poincare.SimonGMT.Chapter03.blowUpMap x r : Euclid P → Euclid P) := by
-    intro z w h
-    have h' : z - x = w - x :=
-      smul_right_injective (Euclid P) (inv_ne_zero hr.ne') h
-    simpa using h'
-  -- Step 2: `η(T) = g⁻¹(T)` for `g y = x + r • y`, so `η` maps Borel sets to Borel sets
-  have himage : ∀ T : Set (Euclid P),
-      Poincare.SimonGMT.Chapter03.blowUpMap x r '' T = (fun y : Euclid P => x + r • y) ⁻¹' T := by
-    intro T
-    ext y
-    constructor
-    · rintro ⟨z, hz, rfl⟩
-      simpa [Poincare.SimonGMT.Chapter03.blowUpMap, smul_smul, mul_inv_cancel₀ hr.ne'] using hz
-    · intro hy
-      refine ⟨x + r • y, hy, ?_⟩
-      simp [Poincare.SimonGMT.Chapter03.blowUpMap, smul_smul, inv_mul_cancel₀ hr.ne']
-  have hmeas : ∀ T : Set (Euclid P), MeasurableSet T →
-      MeasurableSet (Poincare.SimonGMT.Chapter03.blowUpMap x r '' T) := by
-    intro T hT
-    rw [himage T]
-    exact (by fun_prop : Continuous fun y : Euclid P => x + r • y).measurable hT
-  -- Step 3: `f` is integrable on `η(T)` for Borel `T ⊆ B`
-  have hint : ∀ T : Set (Euclid P), MeasurableSet T → T ⊆ B →
-      IntegrableOn f (Poincare.SimonGMT.Chapter03.blowUpMap x r '' T) μHE[n] := by
-    intro T hT hTB
-    have hfinT : μHE[n] (Poincare.SimonGMT.Chapter03.blowUpMap x r '' T ∩ closedBall 0 R) ≠ ∞ :=
-      ne_top_of_le_ne_top hfin (measure_mono (inter_subset_inter_left _ (image_mono hTB)))
-    exact (Measure.integrableOn_of_bounded hfinT hf.aestronglyMeasurable
-      (Eventually.of_forall hC)).of_forall_sdiff_eq_zero (hmeas T hT)
-      fun y hy => hzero y fun h => hy.2 ⟨hy.1, h⟩
-  -- Step 4: `∫_{η(B)} f − ∫_{η(A)} f = ∫_{η(B∖A)} f`
-  have hBA : MeasurableSet (B \ A) := hB.diff hA
-  have hunion : ∫ y in Poincare.SimonGMT.Chapter03.blowUpMap x r '' B, f y ∂μHE[n] =
-      (∫ y in Poincare.SimonGMT.Chapter03.blowUpMap x r '' A, f y ∂μHE[n]) +
-        ∫ y in Poincare.SimonGMT.Chapter03.blowUpMap x r '' (B \ A), f y ∂μHE[n] := by
-    rw [← setIntegral_union ((disjoint_image_iff hinj).mpr disjoint_sdiff_right) (hmeas _ hBA)
-      (hint A hA hAB) (hint _ hBA sdiff_subset), ← image_union, union_sdiff_cancel hAB]
-  -- Step 5: localization to `B̄_R(0)`
-  have hloc : ∫ y in Poincare.SimonGMT.Chapter03.blowUpMap x r '' (B \ A), f y ∂μHE[n] =
-      ∫ y in Poincare.SimonGMT.Chapter03.blowUpMap x r '' (B \ A) ∩ closedBall 0 R, f y ∂μHE[n] :=
-    setIntegral_eq_of_subset_of_forall_sdiff_eq_zero (hmeas _ hBA) inter_subset_left
-      fun y hy => hzero y fun h => hy.2 ⟨hy.1, h⟩
-  -- Step 6: the estimate
-  have hfinS : μHE[n] (Poincare.SimonGMT.Chapter03.blowUpMap x r '' (B \ A) ∩ closedBall 0 R) < ∞ :=
-    (measure_mono (inter_subset_inter_left _ (image_mono sdiff_subset))).trans_lt hfin.lt_top
-  rw [hunion, add_sub_cancel_left, hloc, ← measureReal_def]
-  exact norm_setIntegral_le_of_norm_le_const hfinS fun y _ => hC y
-/-- Rescaling a vanishing `n`-density quotient (the final limit in the proof of Simon 3.1.6): if
-`g(ρ)/ρⁿ → 0` as `ρ ↓ 0` and `R > 0`, then `r⁻ⁿ g(rR) → 0` as `r ↓ 0`.  The substitution
-`ρ = rR` maps `𝓝[>] 0` to itself, multiplying by the finite constant `Rⁿ` keeps the limit `0`,
-and `Rⁿ · g(rR)/(rR)ⁿ = r⁻ⁿ g(rR)` for `r > 0`. -/
-theorem Submission.regcomp_atl_pc_density_rescale_tendsto : ∀ (n : ℕ) (g : ℝ → ℝ≥0∞) (R : ℝ), 0 < R → Tendsto (fun ρ : ℝ => g ρ / ENNReal.ofReal ρ ^ n) (𝓝[>] 0) (𝓝 0) → Tendsto (fun r : ℝ => (ENNReal.ofReal r)⁻¹ ^ n * g (r * R)) (𝓝[>] 0) (𝓝 0) := by
-  intro n g R hR hg
-  -- Step 1: `r ↦ r * R` maps `𝓝[>] 0` to `𝓝[>] 0`
-  have hmap : Tendsto (fun r : ℝ => r * R) (𝓝[>] 0) (𝓝[>] 0) := by
-    refine tendsto_nhdsWithin_of_tendsto_nhds_of_eventually_within _ ?_ ?_
-    · exact ((continuous_mul_const R).tendsto' 0 0 (zero_mul R)).mono_left nhdsWithin_le_nhds
-    · filter_upwards [self_mem_nhdsWithin] with r (hr : 0 < r)
-      exact mul_pos hr hR
-  -- Step 2: `g (r * R) / ofReal (r * R) ^ n → 0`
-  have hcomp : Tendsto (fun r : ℝ => g (r * R) / ENNReal.ofReal (r * R) ^ n) (𝓝[>] 0) (𝓝 0) :=
-    hg.comp hmap
-  -- Step 3: multiplication by the finite constant `ofReal R ^ n`
-  have hbtop : ENNReal.ofReal R ^ n ≠ ∞ := ENNReal.pow_ne_top ENNReal.ofReal_ne_top
-  have hconst : Tendsto
-      (fun r : ℝ => ENNReal.ofReal R ^ n * (g (r * R) / ENNReal.ofReal (r * R) ^ n))
-      (𝓝[>] 0) (𝓝 0) := by
-    have h := ENNReal.Tendsto.const_mul hcomp (Or.inr hbtop)
-    rwa [mul_zero] at h
-  -- Step 4: for `r > 0`, `Rⁿ · g(rR)/(rR)ⁿ = r⁻ⁿ g(rR)`
-  have heq : (fun r : ℝ => ENNReal.ofReal R ^ n * (g (r * R) / ENNReal.ofReal (r * R) ^ n))
-      =ᶠ[𝓝[>] 0] fun r : ℝ => (ENNReal.ofReal r)⁻¹ ^ n * g (r * R) := by
-    filter_upwards [self_mem_nhdsWithin] with r (hr : 0 < r)
-    have ha0 : ENNReal.ofReal r ^ n ≠ 0 := ENNReal.pow_ne_zero (ENNReal.ofReal_pos.mpr hr).ne' n
-    have hatop : ENNReal.ofReal r ^ n ≠ ∞ := ENNReal.pow_ne_top ENNReal.ofReal_ne_top
-    have hb0 : ENNReal.ofReal R ^ n ≠ 0 := ENNReal.pow_ne_zero (ENNReal.ofReal_pos.mpr hR).ne' n
-    calc ENNReal.ofReal R ^ n * (g (r * R) / ENNReal.ofReal (r * R) ^ n)
-        = ENNReal.ofReal R ^ n *
-            ((ENNReal.ofReal r ^ n)⁻¹ * (ENNReal.ofReal R ^ n)⁻¹ * g (r * R)) := by
-          rw [ENNReal.ofReal_mul hr.le, mul_pow, ENNReal.div_eq_inv_mul,
-            ENNReal.mul_inv (Or.inl ha0) (Or.inl hatop)]
-      _ = ENNReal.ofReal R ^ n * (ENNReal.ofReal R ^ n)⁻¹ *
-            ((ENNReal.ofReal r ^ n)⁻¹ * g (r * R)) := by ring
-      _ = (ENNReal.ofReal r)⁻¹ ^ n * g (r * R) := by
-          rw [ENNReal.mul_inv_cancel hb0 hbtop, one_mul, ENNReal.inv_pow]
-  -- Step 5: the two functions agree eventually along `𝓝[>] 0`
-  exact hconst.congr' heq
-/-- Asymptotically equal blow-up integrals give equal approximate tangent spaces (Simon Ch. 3,
-Definition 1.4; last step of the proof of 3.1.6).  With `η_r = η_{x,r}`, `I(r) = ∫_{η_r(M)} f dHⁿ`,
-`I'(r) = ∫_{η_r(M')} f dHⁿ` and `I(r) − I'(r) → 0` as `r ↓ 0` for every `f ∈ C_c(ℝᴾ)`:
-`I' = I − (I − I')` and `I = I' + (I − I')` have the same limit `∫_Q f dHⁿ` as `I`, resp. `I'`,
-while the condition `dim Q = n` does not involve `M`, `M'`. -/
-theorem Submission.regcomp_atl_pc_tangent_iff_of_integral_sub_tendsto : ∀ (P n : ℕ) (M M' : Set (Euclid P)) (x : Euclid P), (∀ f : CompactlySupportedContinuousMap (Euclid P) ℝ, Tendsto (fun r : ℝ => (∫ y in Poincare.SimonGMT.Chapter03.blowUpMap x r '' M, f y ∂μHE[n]) - ∫ y in Poincare.SimonGMT.Chapter03.blowUpMap x r '' M', f y ∂μHE[n]) (𝓝[>] 0) (𝓝 0)) → ∀ Q : Submodule ℝ (Euclid P), HasApproximateTangentSpaceAt n M x Q ↔ HasApproximateTangentSpaceAt n M' x Q := by
-  intro P n M M' x hD Q
-  constructor
-  · -- (⇒) `I' = I − (I − I') → L − 0 = L`
-    rintro ⟨hQ, hM⟩
-    refine ⟨hQ, fun f => ?_⟩
-    have h := (hM f).sub (hD f)
-    rw [sub_zero] at h
-    exact h.congr fun r => sub_sub_cancel _ _
-  · -- (⇐) `I = I' + (I − I') → L + 0 = L`
-    rintro ⟨hQ, hM'⟩
-    refine ⟨hQ, fun f => ?_⟩
-    have h := (hM' f).add (hD f)
-    rw [add_zero] at h
-    exact h.congr fun r => add_sub_cancel _ _
-/-- Scaling of `Hⁿ` under the blow-up `η_{x,r}(z) = r⁻¹(z − x)`, `r > 0` (proof of Simon 3.1.6):
-`Hⁿ(η_{x,r}(S) ∩ B̄_R(0)) = r⁻ⁿ Hⁿ(S ∩ B̄_{rR}(x))`.  Since `‖η_{x,r}(z)‖ = r⁻¹‖z − x‖`, the left
-side is `Hⁿ(η_{x,r}(S ∩ B̄_{rR}(x)))`; `η_{x,r}` is the homothety of centre `x` and ratio `r⁻¹`
-followed by the translation by `−x`, which preserves `Hⁿ`, while the homothety multiplies it by
-`‖r⁻¹‖₊ⁿ = r⁻ⁿ`. -/
-theorem Submission.regcomp_atl_blowUp_measure_scaling : ∀ (P n : ℕ) (x : Euclid P) (r R : ℝ) (S : Set (Euclid P)), 0 < r → μHE[n] (Poincare.SimonGMT.Chapter03.blowUpMap x r '' S ∩ closedBall 0 R) = (ENNReal.ofReal r)⁻¹ ^ n * μHE[n] (S ∩ closedBall x (r * R)) := by
-  intro P n x r R S hr
-  -- `‖η(z)‖ = r⁻¹‖z − x‖`
-  have hnorm : ∀ z : Euclid P,
-      ‖Poincare.SimonGMT.Chapter03.blowUpMap x r z‖ = r⁻¹ * ‖z - x‖ := by
-    intro z
-    rw [Poincare.SimonGMT.Chapter03.blowUpMap, norm_smul, Real.norm_eq_abs,
-      abs_of_pos (inv_pos.mpr hr)]
-  -- Step 1: `η(S) ∩ B̄(0, R) = η(S ∩ B̄(x, rR))`
-  have hset : Poincare.SimonGMT.Chapter03.blowUpMap x r '' S ∩ closedBall 0 R =
-      Poincare.SimonGMT.Chapter03.blowUpMap x r '' (S ∩ closedBall x (r * R)) := by
-    ext y
-    constructor
-    · rintro ⟨⟨z, hz, rfl⟩, hy⟩
-      refine ⟨z, ⟨hz, ?_⟩, rfl⟩
-      rw [mem_closedBall_zero_iff, hnorm] at hy
-      rw [mem_closedBall, dist_eq_norm]
-      calc ‖z - x‖ = r * (r⁻¹ * ‖z - x‖) := by field_simp
-        _ ≤ r * R := mul_le_mul_of_nonneg_left hy hr.le
-    · rintro ⟨z, ⟨hz, hzx⟩, rfl⟩
-      refine ⟨⟨z, hz, rfl⟩, ?_⟩
-      rw [mem_closedBall, dist_eq_norm] at hzx
-      rw [mem_closedBall_zero_iff, hnorm]
-      calc r⁻¹ * ‖z - x‖ ≤ r⁻¹ * (r * R) := mul_le_mul_of_nonneg_left hzx (inv_pos.mpr hr).le
-        _ = R := by field_simp
-  -- Step 2: `η = τ ∘ h` with `h = homothety x r⁻¹` and `τ y = y + (-x)`
-  have hcomp : Poincare.SimonGMT.Chapter03.blowUpMap x r =
-      (fun y : Euclid P => y + -x) ∘ AffineMap.homothety x r⁻¹ := by
-    funext z
-    simp [Poincare.SimonGMT.Chapter03.blowUpMap, AffineMap.homothety_apply]
-  -- Step 3: `μ(η(T)) = (ENNReal.ofReal r)⁻¹ ^ n * μ(T)`
-  have hscale : ∀ T : Set (Euclid P), μHE[n] (Poincare.SimonGMT.Chapter03.blowUpMap x r '' T) =
-      (ENNReal.ofReal r)⁻¹ ^ n * μHE[n] T := by
-    intro T
-    rw [hcomp, Set.image_comp, (isometry_add_right (-x)).euclideanHausdorffMeasure_image,
-      euclideanHausdorffMeasure_homothety_image n x (inv_ne_zero hr.ne') T, ENNReal.smul_def,
-      smul_eq_mul, ENNReal.coe_pow, nnnorm_inv, ENNReal.coe_inv (nnnorm_ne_zero_iff.mpr hr.ne'),
-      Real.nnnorm_of_nonneg hr.le, ← ENNReal.ofReal_eq_coe_nnreal hr.le]
-  -- Step 4: conclusion
   rw [hset, hscale]
 
 /-- **Simon Ch. 3, Remark 1.5(2)** (locality of approximate tangent spaces): if `A ⊆ B` are Borel,
@@ -45253,63 +44817,6 @@ theorem Submission.dor_lmb_projected_competitor_comparison : (∀ (P n : ℕ) (U
     _ ≤ _ := by
         gcongr
         exact sdiff_subset
-/-- **Bounded mean curvature and monotonicity for a varifold stationary in `U ∩ N`** (Simon Ch. 4,
-2.5–2.7 and 3.14–3.17; step 2 of the proof of 7.4.3).  `dsmc_tangent_projection_field` gives `r₀`,
-`β` and a `C¹` field `Pt` of tangent projections of `N` near `y₀`; put `κ = nβ`.  For
-`T = τ(M, θ, ξ)` with `spt T ⊆ N`, `μ_R` is carried by `U ∩ spt μ_R = spt T ⊆ N`
-(`dor_imrep_massOn_eq_measure_and_support`, `M ⊆ U`); as `θ ≥ 1` on `M`, `Hⁿ(M \ N) = 0`, so
-`TₓM ⊆ TₓN` at `μ_R`-a.e. `x` (`dsmc_approxTangentPlane_subset_tangentSpace`).  Then
-`dsmc_firstVariation_eq_neg_meanCurvature` gives (a), and `dsmc_exp_ball_mass_monotone` on
-`B̄_{r₀}(z) ⊆ U`, `B_{r₀}(z) ⊆ B_{2r₀}(y₀)` gives (b). -/
-theorem Submission.dor_stationary_mean_curvature_monotonicity : ∀ (n k ℓ : ℕ), ℓ ≤ k → 0 < n → ∀ (U N : Set (Euclid (n + k))) (y₀ : Euclid (n + k)), IsOpen U → IsEmbeddedSubmanifold 2 (n + ℓ) N → (closure N \ N) ∩ U = ∅ → y₀ ∈ N ∩ U → ∃ r₀ κ : ℝ, 0 < r₀ ∧ 0 ≤ κ ∧ closedBall y₀ (3 * r₀) ⊆ U ∧ ∀ (T : GeometricCurrentOn U n) (R : IMRep U n), R.Represents T → T.support ⊆ N → R.IsStationaryAlong N → (∃ H : Euclid (n + k) → Euclid (n + k), AEStronglyMeasurable H R.measure ∧ (∀ x, ‖H x‖ ≤ κ) ∧ ∀ X : Euclid (n + k) → Euclid (n + k), ContDiff ℝ 1 X → HasCompactSupport X → tsupport X ⊆ ball y₀ (2 * r₀) → R.firstVariation X = -∫ x, inner ℝ (X x) (H x) ∂R.measure) ∧ ∀ z ∈ ball y₀ r₀, ∀ σ ρ : ℝ, 0 < σ → σ ≤ ρ → ρ ≤ r₀ → ENNReal.ofReal (Real.exp (κ * σ) / σ ^ n) * R.measure (ball z σ) ≤ ENNReal.ofReal (Real.exp (κ * ρ) / ρ ^ n) * R.measure (ball z ρ) := by
-  intro n k ℓ _ _ U N y₀ hU hN _ hy₀
-  -- Step 1: a `C¹` field `Pt` of tangent projections of `N` near `y₀`; `r₀ = r` and `κ = nβ`
-  obtain ⟨r, β, Pt, hr, hβ, hcl, hPt, hsym, hDPt, hPtT, hPtfix⟩ :=
-    Submission.dsmc_tangent_projection_field (n + k) (n + ℓ) U N y₀ hU hN hy₀
-  refine ⟨r, n * β, hr, by positivity, hcl, fun T R hRT hTN hstat => ?_⟩
-  -- Step 2: `μ_R ≪ Hⁿ⌞M` with `M ⊆ U`, and `U ∩ spt μ_R = spt T ⊆ N`, so `μ_R(ℝᴾ \ N) = 0`
-  have hac : R.measure ≪ μHE[n].restrict R.carrier := withDensity_absolutelyContinuous _ _
-  have hU0 : R.measure Uᶜ = 0 := by
-    refine hac ?_
-    rw [Measure.restrict_apply' R.measurableSet_carrier]
-    exact measure_mono_null (fun x hx => (hx.1 (R.carrier_subset hx.2)).elim) measure_empty
-  have hspt := (Submission.dor_imrep_massOn_eq_measure_and_support (n + k) n U T R hU hRT).2
-  have hN0 : R.measure Nᶜ = 0 := by
-    refine measure_mono_null (fun x hxN => ?_)
-      (measure_union_null hU0 (Measure.measure_compl_support (μ := R.measure)))
-    by_contra hx
-    simp only [mem_union, mem_compl_iff, not_or, not_not] at hx hxN
-    exact hxN (hTN (by rw [hspt]; exact hx))
-  have hNae : ∀ᵐ x ∂R.measure, x ∈ N := mem_ae_iff.2 hN0
-  -- `θ ≥ 1` on `M`, so `Hⁿ⌞M ≪ μ_R` and `Hⁿ(M \ N) = 0`
-  have hθ : Measurable fun x => (R.mult x : ℝ≥0∞) := measurable_from_nat.comp R.measurable_mult
-  have hac' : μHE[n].restrict R.carrier ≪ R.measure := by
-    refine withDensity_absolutelyContinuous' hθ.aemeasurable ?_
-    filter_upwards [ae_restrict_mem R.measurableSet_carrier] with x hx
-    exact_mod_cast (R.mult_pos x hx).ne'
-  have hMN : μHE[n] (R.carrier \ N) = 0 := by
-    have h := hac' hN0
-    rwa [Measure.restrict_apply' R.measurableSet_carrier, inter_comm, ← Set.sdiff_eq] at h
-  -- Step 3: `TₓM ⊆ TₓN` at `μ_R`-a.e. `x`, `TₓM` being an approximate tangent plane there
-  have hTM : ∀ᵐ x ∂R.measure, x ∈ ball y₀ (3 * r) →
-      (approxTangentPlane n R.carrier x : Set (Euclid (n + k))) ⊆ tangentSpace N x := by
-    filter_upwards [hac.ae_le R.orients, hNae] with x hx hxN _
-    obtain ⟨Q, hQ, -⟩ := hx
-    have h : ∃ Q, HasApproximateTangentSpaceAt n R.carrier x Q := ⟨Q, hQ⟩
-    rw [approxTangentPlane, dite_eq_left h]
-    exact Submission.dsmc_approxTangentPlane_subset_tangentSpace (n + k) n 2 (n + ℓ) R.carrier N
-      x h.choose (by norm_num) hN hxN hMN h.choose_spec
-  have hpm := Submission.dsmc_approxTangentPlane_starProjection_aemeasurable (n + k) n U R hU
-  -- Step 4: (a), the generalized mean curvature `H` of `V` in `B_{2r₀}(y₀)`, `|H| ≤ nβ`
-  obtain ⟨H, hHm, hHb, hHfv⟩ := Submission.dsmc_firstVariation_eq_neg_meanCurvature (n + k) n U N
-    R Pt y₀ r β hβ (ball_subset_closedBall.trans hcl) hPt hsym hDPt hPtT hPtfix hNae hTM hpm hstat
-  refine ⟨⟨H, hHm, hHb, hHfv⟩, fun z hz σ ρ hσ hσρ hρ => ?_⟩
-  -- Step 5: (b) in `B_{r₀}(z)`, as `B̄_{r₀}(z) ⊆ B̄_{3r₀}(y₀)` and `B_{r₀}(z) ⊆ B_{2r₀}(y₀)`
-  have hz' : dist z y₀ < r := hz
-  exact Submission.dsmc_exp_ball_mass_monotone (n + k) n U R H (n * β) z r
-    ((closedBall_subset_closedBall' (by linarith)).trans hcl) hpm hHm hHb
-    (fun X hX hXc hXs => hHfv X hX hXc (hXs.trans (ball_subset_ball' (by linarith)))) σ ρ hσ hσρ hρ
-
 theorem Submission.dgcr_bwd_coordinate_form : ∀ (m : ℕ) (a : Euclid (m + 1) → ℝ) (j : Fin (m + 1)), ContDiff ℝ (⊤ : ℕ∞) a → ∃ ψ : DifferentialForm (Euclid (m + 1)) m, IsSmoothForm ψ ∧ tsupport ψ ⊆ tsupport a ∧ ∀ x : Euclid (m + 1), exteriorDerivative ψ x (fun i => EuclideanSpace.single i (1 : ℝ)) = fderiv ℝ a x (EuclideanSpace.single j (1 : ℝ)) := by
   intro m a j ha
   obtain ⟨β, hβ⟩ := Submission.dgcr_bwd_coordinate_covector m j
