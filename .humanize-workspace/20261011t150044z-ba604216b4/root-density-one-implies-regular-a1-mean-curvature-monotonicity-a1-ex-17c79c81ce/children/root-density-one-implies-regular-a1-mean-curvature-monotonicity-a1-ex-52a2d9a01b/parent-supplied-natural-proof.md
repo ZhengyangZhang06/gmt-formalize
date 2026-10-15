@@ -1,0 +1,114 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.density_one_implies_regular-a1.mean_curvature_monotonicity-a1.exp_monotonicity-a1`
+- Child DAG node: `root.density_one_implies_regular-a1.mean_curvature_monotonicity-a1.exp_monotonicity-a1.cutoff_first_variation-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: steps 0(a)–(c), 2 and 3 of the parent proof (Simon Ch. 4, 3.1–3.3 with the bounded generalized mean curvature of 3.14–3.16; sign convention δV(X) = −∫X·H). The radial field is written with the squared radius ratio: X(x) = η(|x − z|²/s²)(x − z) is the parent's φ_s(x)(x − z) with γ(τ) = η(τ²) for τ ≥ 0 (only τ = ϱ/s ≥ 0 occurs). Then the parent's ψ_s = (ϱ/s)γ′(ϱ/s) equals 2u_sη′(u_s), the identity div_M X = nφ_s + ψ_s q becomes step 3 below, and (★) becomes the claim. Steps 5–6 prove inline the special case of the sibling first_variation_integral (Submission.dsmc_firstVariation_eq_integral) that the parent proof cites in step 3(a). This child therefore has no dependencies.
+Fix s with 0 < s < r. Write μ := R.measure, M := R.carrier, θ := R.mult, u(x) := u_s(x) = |x − z|²/s² ≥ 0 and η′ := deriv η.
+0. Preliminaries.
+ (a) κ ≥ 0, because 0 ≤ |H(0)| ≤ κ.
+ (b) μ(B̄_r(z)) < ∞. The closed ball B̄_r(z) is compact, measurable and contained in U, and μ(B̄_r(z)) = ∫⁻_{M ∩ B̄_r(z)} θ dHⁿ (withDensity_apply, Measure.restrict_restrict). This is ≠ ∞ by R.locallyIntegrable_mult. Hence μ(B_r(z)) < ∞, and c·1_{B_r(z)} is μ-integrable for every constant c.
+ (c) η′ is continuous and η′(u) = 0 for u ≥ 1. For u > 1, η vanishes on the neighbourhood (1, ∞) of u, and η′(1) = 0 follows by continuity of η′. Choose C, M₀ ≥ 0 with |η| ≤ C and |η′| ≤ M₀ on [0, 1] (compactness). If x ∉ B_s(z), then u(x) ≥ 1, so η(u(x)) = η′(u(x)) = 0. If x ∈ B_s(z), then 0 ≤ u(x) ≤ 1. In particular, η(u(x)) ≠ 0 implies |x − z| < s.
+ (d) The functions x ↦ η(u(x)) and x ↦ 2u(x)η′(u(x)) are continuous, are bounded by C·1_{B_r(z)} and 2M₀·1_{B_r(z)} respectively (by (c), since B_s(z) ⊆ B_r(z)), and are therefore μ-integrable by (b).
+1. The radial field. Let X(x) := η(u(x))·(x − z). As a product of C¹ maps, X is C¹; no case distinction at x = z is needed, because u is a polynomial in x. Since Du(x)v = (2/s²)⟨x − z, v⟩, the product and chain rules give DX(x)v = η(u(x))·v + η′(u(x))·(2/s²)·⟨x − z, v⟩·(x − z). By (c), X(x) = 0 for x ∉ B_s(z). So tsupport X ⊆ B̄_s(z), X has compact support, and tsupport X ⊆ B̄_s(z) ⊆ B_r(z) because s < r. The hypothesis therefore applies: R.firstVariation X = −∫⟨X, H⟩ dμ.
+2. Orthonormal frames a.e. By R.orients, for Hⁿ⌞M-a.e. x there is a subspace Q with HasApproximateTangentSpaceAt n M x Q and IsUnitOrientationOf (ξ(x)) Q. The latter gives an orthonormal family τ = (τ₁, …, τₙ) with span{τᵢ} = Q. For such x, approxTangentPlane n M x = Q. Indeed, by definition approxTangentPlane n M x is a chosen Q′ with HasApproximateTangentSpaceAt n M x Q′, and approximate tangent spaces are unique (HasApproximateTangentSpaceAt.unique). Hence p_x = Σᵢ τᵢ⟨τᵢ, ·⟩: expand the orthogonal projection onto span{τᵢ} in the orthonormal basis τ (OrthonormalBasis.starProjection_eq_sum_rankOne). Because μ = (Hⁿ⌞M).withDensity θ ≪ Hⁿ⌞M (withDensity_absolutelyContinuous), this representation holds for μ-a.e. x.
+3. The divergence. Let x be as in step 2. The trace of τ⟨τ, ·⟩ ∘ L is ⟨τ, Lτ⟩, so div_M X(x) = trace(p_x ∘ DX(x)) = Σᵢ ⟨τᵢ, DX(x)τᵢ⟩. Using |τᵢ| = 1, this equals Σᵢ [η(u(x)) + η′(u(x))(2/s²)⟨x − z, τᵢ⟩²] = n·η(u(x)) + η′(u(x))·(2/s²)·Σᵢ⟨τᵢ, x − z⟩².
+4. Two-sided bound. By Bessel's inequality, 0 ≤ Σᵢ⟨τᵢ, x − z⟩² ≤ |x − z|². The coefficient η′(u(x))·(2/s²) is ≤ 0, and (2/s²)|x − z|² = 2u(x). Hence for μ-a.e. x:
+ n·η(u(x)) + 2u(x)·η′(u(x)) ≤ div_M X(x) ≤ n·η(u(x)).
+5. Integrability of div_M X.
+ Measurability: x ↦ p_x is μ-AEMeasurable by hypothesis, with values in the finite-dimensional normed space L(ℝ^P, ℝ^P), so it is AEStronglyMeasurable. x ↦ DX(x) is continuous because X is C¹. The map (A, B) ↦ trace(A ∘ B) is continuous on L(ℝ^P, ℝ^P)², so div_M X = trace(p_x ∘ DX(x)) is AEStronglyMeasurable.
+ Bound: for μ-a.e. x ∈ B_s(z), step 4 together with u(x) ≤ 1, |η| ≤ C and |η′| ≤ M₀ gives |div_M X(x)| ≤ n·C + 2M₀. For μ-a.e. x ∉ B_s(z), both bounds in step 4 vanish because η(u(x)) = η′(u(x)) = 0, so div_M X(x) = 0. Thus |div_M X| ≤ (nC + 2M₀)·1_{B_r(z)} μ-a.e., which is integrable by 0(b).
+6. First variation as a μ-integral. For every f : ℝ^P → ℝ, ∫ f dμ = ∫_M θ·f dHⁿ. This is integral_withDensity_eq_integral_smul with the measurable ℝ≥0-valued density θ, and it holds without any integrability assumption on f. With f = div_M X it gives ∫ div_M X dμ = R.firstVariation X.
+7. Lower bound. By 0(d), ∫(nη(u) + 2uη′(u)) dμ = n∫η(u) dμ + ∫2uη′(u) dμ. By step 4, step 5 and integral_mono_ae, followed by steps 6 and 1:
+ n∫η(u) dμ + ∫2uη′(u) dμ ≤ ∫ div_M X dμ = R.firstVariation X = −∫⟨X, H⟩ dμ.
+8. Mean curvature term. −∫⟨X, H⟩ dμ ≤ |∫⟨X, H⟩ dμ| ≤ ∫|⟨X, H⟩| dμ (norm_integral_le_integral_norm, valid even if ⟨X, H⟩ is not integrable). Pointwise, if η(u(x)) = 0 then X(x) = 0. Otherwise |x − z| < s by 0(c), and since η ≥ 0 and κ ≥ 0, |⟨X(x), H(x)⟩| ≤ |X(x)|·|H(x)| ≤ η(u(x))·|x − z|·κ ≤ κ·s·η(u(x)). As |⟨X, H⟩| ≥ 0 and κ·s·η(u) is integrable (0(d)), integral_mono_of_nonneg gives ∫|⟨X, H⟩| dμ ≤ κ·s·∫η(u) dμ. No measurability of H is used.
+9. Combining steps 7 and 8: n·∫η(u_s) dμ + ∫2u_sη′(u_s) dμ ≤ κ·s·∫η(u_s) dμ.
+Lean remark (optional aid; the proof above is complete without it): during decomposition, a warning-free, kernel-checked proof of exactly this frozen type was written. It uses only the axioms propext, Classical.choice and Quot.sound, and it follows steps 0–9 and reuses tactics from the accepted proof of Submission.regcomp_monotonicity_mass_bound for the frame, trace, Bessel and withDensity steps. Scratch copies, which may no longer exist: /tmp/dsmc-em-decomp/C3.lean, and /tmp/dsmc-em-decomp/Full.lean (all four children plus the parent assembly).
+
+## Key steps
+
+1. Preliminaries: κ ≥ 0; μ(B̄_r(z)) < ∞ from R.locallyIntegrable_mult; η′ continuous and vanishing on [1, ∞), so the integrands vanish off B_s(z) and are integrable.
+2. X = η(|x − z|²/s²)(x − z) is C¹ with tsupport in B̄_s(z) ⊆ B_r(z), and DX(x)v = η(u)v + η′(u)(2/s²)⟨x − z, v⟩(x − z).
+3. For μ-a.e. x, R.orients and uniqueness of approximate tangent spaces give p_x = Σᵢτᵢ⟨τᵢ, ·⟩ with τ orthonormal of size n, so div_M X = nη(u) + η′(u)(2/s²)Σᵢ⟨τᵢ, x − z⟩².
+4. Bessel and η′ ≤ 0 give nη(u) + 2uη′(u) ≤ div_M X ≤ nη(u) a.e., so div_M X is integrable; integrate and use ∫div_M X dμ = R.firstVariation X (withDensity).
+5. −∫⟨X, H⟩ dμ ≤ ∫|⟨X, H⟩| dμ ≤ κs∫η(u) dμ, because |X| ≤ η(u)·s where η(u) ≠ 0.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat nodes/root-density-one-implies-regular-a1-mean-curvature-monotonicity-a1-ex-17c79c81ce/{parent-child-handoff.json,parent-supplied-plan.md,parent-supplied-natural-proof.json}`
+- `python3 -I over dag.json: list every node id, lean_name and status; print statements and lean_statements of the siblings under mean_curvature_monotonicity-a1 and of the related monotonicity nodes (dimred monotonicity, dorag monotonicity, dtc cone monotonicity_identity, regcomp monotonicity_mass_bound)`
+- `cat GMT/Ch07/Submission.lean (IMRep, IMRep.measure, approxTangentPlane, tangentialDivergence, IMRep.firstVariation)`
+- `cmp local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean GMT/Ch07/Contract.lean; cmp GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean (both identical)`
+- `rg -n 'smoothTransition|monotoneOn_of_deriv_nonneg|hasDerivAt_integral_of_dominated|exp_monotone|cutoff' local-references/123e8435b4a2469b/project --glob '*.lean' (no match: the snapshot project contains only the frozen contract)`
+- `rg -n 'ofReal_measureReal|monotoneOn_of_deriv_nonneg|continuousOn_of_dominated|hasDerivAt_integral_of_dominated_loc_of_deriv_le|Antitone.deriv_nonpos|Monotone.deriv_nonneg|interior_Ioc|tendsto_integral_of_dominated_convergence' local-references/123e8435b4a2469b/mathlib/Mathlib`
+- `rg -n 'theorem integral_indicator_one|theorem integral_withDensity_eq_integral_smul|theorem starProjection_eq_sum_rankOne' local-references/123e8435b4a2469b/mathlib/Mathlib; rg the smoothTransition API (zero_of_nonpos, one_of_one_le, nonneg, le_one, contDiff, monotone) in Mathlib/Analysis/SpecialFunctions/SmoothTransition.lean`
+- `grep -n 'def HasApproximateTangentSpaceAt' -A 25 simongmt Chapter03/Rectifiable.lean (finrank = n conjunct, .finrank_eq, .unique)`
+- `grep -n '^theorem' simongmt Chapter04/MeanCurvature.lean; sed -n 1,130p (RectifiableVarifold monotonicity; module not imported by the contract)`
+- `sed -n 452,1105p .swarm-worktrees/5a60867de71e532024b6/gmt-ch07/GMT/Ch07/Submission.lean (accepted Submission.regcomp_monotonicity_mass_bound at commit 67f6a7b)`
+- `sed -n 200,440p book/chapter-04.txt (Simon Ch. 4, 3.1–3.17)`
+- `python3 -I: verifier/gmt-compare.py contract_scope + child_modules to generate the exact NodeChallenge/NodeSolution text for the four child types`
+- `lake env lean /tmp/dsmc-em-decomp/{Stmts,Assembly,C1,C2,C3,C4,Full,FullSol,AllChallenges}.lean, each with #print axioms`
+- `rg -l --fixed-strings dsmc_em_ in dag.json, GMT/, .swarm-worktrees (*.lean) and lake-packages simongmt (name-collision check: no match)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-mean-curvature-monotonicity-a1-ex-17c79c81ce/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-mean-curvature-monotonicity-a1-ex-17c79c81ce/parent-supplied-plan.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-mean-curvature-monotonicity-a1-ex-17c79c81ce/parent-supplied-natural-proof.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Real.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/Deriv/MeanValue.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ParametricIntegral.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/Deriv/Slope.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Order/DenselyOrdered.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/DominatedConvergence.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/SpecialFunctions/SmoothTransition.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/ContinuousLinearMap.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter04/MeanCurvature.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/.swarm-worktrees/5a60867de71e532024b6/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-04.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/tmp/dsmc-em-decomp/Stmts.lean`
+- `/tmp/dsmc-em-decomp/Assembly.lean`
+- `/tmp/dsmc-em-decomp/C1.lean`
+- `/tmp/dsmc-em-decomp/C2.lean`
+- `/tmp/dsmc-em-decomp/C3.lean`
+- `/tmp/dsmc-em-decomp/C4.lean`
+- `/tmp/dsmc-em-decomp/Full.lean`
+- `/tmp/dsmc-em-decomp/FullSol.lean`
+- `/tmp/dsmc-em-decomp/AllChallenges.lean`
+- `/tmp/dsmc-em-decomp/statements.json`
+
+Snapshot: project b4d606d, mathlib 25730c7c. The snapshot Contract.lean is byte-identical to the workspace Contract.lean and Submission.lean.
+
+The snapshot project holds only the frozen contract, so it contains no declaration for any child; no rg match. Mathlib in the snapshot provides every library fact the children use:
+- monotoneOn_of_deriv_nonneg, interior_Ioc;
+- continuousOn_of_dominated, hasDerivAt_integral_of_dominated_loc_of_deriv_le, tendsto_integral_of_dominated_convergence;
+- Antitone.deriv_nonpos, the Real.smoothTransition API;
+- integral_indicator_one, integral_withDensity_eq_integral_smul, OrthonormalBasis.starProjection_eq_sum_rankOne, ofReal_measureReal.
+
+SimonGMT supplies the following:
+- HasApproximateTangentSpaceAt includes finrank = n, and approximate tangent spaces are unique (.unique).
+- Chapter04/MeanCurvature.lean has the same monotonicity, but only for its RectifiableVarifold and not imported by the contract, so it was used only as a reference.
+
+The accepted proof of Submission.regcomp_monotonicity_mass_bound provided proven tactic patterns: the a.e. frame from R.orients, trace of ∑ rankOne, Bessel, the withDensity integral conversion, and smoothTransition cutoffs.
+
+Results in Lean:
+- All four proposed child types elaborate in the exact comparator scope. The challenge modules were generated by the verifier's own code.
+- Each child type was fully proved in scratch files.
+- The parent's frozen type dsmc_exp_ball_mass_monotone was proved from the four children.
+- #print axioms shows only propext, Classical.choice and Quot.sound.
+- The bare names dsmc_em_* do not collide with any DAG node, worktree or library declaration.

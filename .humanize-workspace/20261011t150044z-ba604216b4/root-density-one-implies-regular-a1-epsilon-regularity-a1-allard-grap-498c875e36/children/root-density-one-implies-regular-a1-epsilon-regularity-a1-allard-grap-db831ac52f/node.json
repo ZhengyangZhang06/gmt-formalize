@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.density_bounds-a1.localized_density-a1",
+  "parent_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.density_bounds-a1",
+  "depth": 5,
+  "title": "Localized Besicovitch density theorem in an open set",
+  "statement": "Let P ∈ ℕ, W ⊆ ℝ^P open, s ⊆ ℝ^P Borel, and ν a Borel measure on ℝ^P with ν(K) < ∞ for every compact K ⊆ W. Then for ν⌞s-almost every x ∈ ℝ^P (ν⌞s = ν.restrict s) the following holds: if x ∈ W, then for every real a < 1 there is t₀ > 0 with a·ν(B_t(x)) ≤ ν(s ∩ B_t(x)) for all t ∈ (0, t₀). Here B_t(x) is the closed ball and a is entered via ENNReal.ofReal.",
+  "lean_statement": "∀ (P : ℕ) (W s : Set (Euclid P)) (ν : Measure (Euclid P)), IsOpen W → MeasurableSet s → (∀ K : Set (Euclid P), IsCompact K → K ⊆ W → ν K ≠ ∞) → ∀ᵐ x ∂ν.restrict s, x ∈ W → ∀ a : ℝ, a < 1 → ∀ᶠ t in 𝓝[>] (0 : ℝ), ENNReal.ofReal a * ν (closedBall x t) ≤ ν (s ∩ closedBall x t)",
+  "lean_name": "dorag_dbs_localized_density_point",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-db831ac52f-a1"
+}

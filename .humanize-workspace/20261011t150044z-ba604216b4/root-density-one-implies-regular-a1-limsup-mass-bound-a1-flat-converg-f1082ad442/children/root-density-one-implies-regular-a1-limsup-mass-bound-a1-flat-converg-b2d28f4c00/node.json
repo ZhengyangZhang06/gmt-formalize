@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.flat_convergence-a1.total_bounded-a1.extend_boundary-a1",
+  "parent_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.flat_convergence-a1.total_bounded-a1",
+  "depth": 5,
+  "title": "Extension by zero to ℝ^P of an integer multiplicity current with integer multiplicity boundary vanishing off a compact K ⊆ U (parent step 3)",
+  "statement": "Let P, m ∈ ℕ, let U ⊆ ℝ^P be open, let K ⊆ U be compact, and let A ∈ 𝒟_{m+1}(U) be integer multiplicity, with ∂A integer multiplicity and A vanishing off K. Then there is Y ∈ 𝒟_{m+1}(ℝ^P) (domain univ) such that Y and ∂Y are integer multiplicity, Y⌞U = A (Y.restrictDomain (subset_univ U) = A), Y vanishes off K, M(Y) ≤ M(A) and M(∂Y) ≤ M(∂A) (masses in [0, ∞]). Conventions: ℝ^P = Euclid P and Hᵈ = μHE[d]. For D ⊆ ℝ^P, 𝒟^d(D) = TestFormOn D d (smooth d-forms on ℝ^P with compact support contained in D) and 𝒟_d(D) = GeometricCurrentOn D d; ∂X = X.boundary (∂X(ω) = X(dω)). For G ⊆ ℝ^P, M_G(X) = X.massOn G is the supremum of ofReal(X(ω)) over ω ∈ 𝒟^d(D) with tsupport ω ⊆ G and covectorEuclideanNorm(ω(x)) ≤ 1 for all x; M(X) = X.mass = M_D(X). An IMRep R = (M, θ, ξ) in D is the contract structure IMRep D d; R.action(ω) = ∫_M θ(x) ξ(x)(ω(x)) dHᵈ(x); R represents X when X(ω) = R.action(ω) for every ω ∈ 𝒟^d(D); μ_R = R.measure = (Hᵈ⌞M).withDensity θ; X is integer multiplicity (IM, IsIntegerMultiplicity X) if some IMRep in D represents it. For V ⊆ D, ι = testFormOnInclusion regards ω ∈ 𝒟^d(V) as an element of 𝒟^d(D) with the same underlying form, and X⌞V = X.restrictDomain (V ⊆ D) ∈ 𝒟_d(V) is given by X⌞V(ω) = X(ιω). X vanishes off a set K if X(ω) = 0 for every test form ω whose tsupport is disjoint from K.",
+  "lean_statement": "∀ (P m : ℕ) (U K : Set (Euclid P)) (A : GeometricCurrentOn U (m + 1)), IsOpen U → IsCompact K → K ⊆ U → IsIntegerMultiplicity A → IsIntegerMultiplicity A.boundary → (∀ ω : TestFormOn U (m + 1), Disjoint (tsupport (ω : DifferentialForm (Euclid P) (m + 1))) K → A ω = 0) → ∃ Y : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1), IsIntegerMultiplicity Y ∧ IsIntegerMultiplicity Y.boundary ∧ Y.restrictDomain (subset_univ U) = A ∧ (∀ ω : TestFormOn (univ : Set (Euclid P)) (m + 1), Disjoint (tsupport (ω : DifferentialForm (Euclid P) (m + 1))) K → Y ω = 0) ∧ Y.mass ≤ A.mass ∧ Y.boundary.mass ≤ A.boundary.mass",
+  "lean_name": "dor_lmb_fc_tb_extend_univ_boundary",
+  "depends_on": [
+    "root.density_one_implies_regular-a1.limsup_mass_bound-a1.flat_convergence-a1.total_bounded-a1.extend_univ-a1",
+    "root.density_one_implies_regular-a1.limsup_mass_bound-a1.flat_convergence-a1.total_bounded-a1.eq_of_vanish_off-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.flat_convergence-a1.total_bounded-a1.extend_univ-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.flat_convergence-a1.total_bounded-a1.eq_of_vanish_off-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-limsup-mass-bound-a1-flat-converg-b2d28f4c00-a1"
+}

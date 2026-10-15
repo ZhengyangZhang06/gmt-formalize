@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.monotonicity-a1.radial_variation-a1",
+  "parent_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.monotonicity-a1",
+  "depth": 5,
+  "title": "Radial first-variation identity for a varifold with generalized mean curvature",
+  "statement": "Let P, n ∈ ℕ, U ⊆ ℝ^P any set, R = (M, θ, ξ) an integer multiplicity triple in U (IMRep U n) with μ := R.measure = θHⁿ⌞M (Hⁿ = μHE[n]), W ⊆ U open, and H : ℝ^P → ℝ^P any map, such that x ↦ p_x is μ-a.e. strongly measurable, where p_x is the orthogonal projection onto T_xM := approxTangentPlane n M x, and R.firstVariation X = −∫⟨X, H⟩dμ for every C¹ compactly supported X : ℝ^P → ℝ^P with tsupport X ⊆ W. Let y ∈ ℝ^P and A, τ ∈ ℝ with τ > 0 and B̄_{Aτ}(y) ⊆ W (closed ball), and let φ : ℝ → ℝ be C¹ with φ(u) = 1 for u ≤ 1 and φ(u) = 0 for u ≥ A. Write r(x) := |x − y|, φ' := deriv φ and N(x) := |(x − y) − p_x(x − y)|²/|x − y|² (= 0 at x = y by 0/0 = 0). Then n∫φ(r/τ)dμ + ∫(r/τ)φ'(r/τ)(1 − N)dμ = −∫φ(r/τ)⟨x − y, H(x)⟩dμ (Bochner integrals).",
+  "lean_statement": "∀ (P n : ℕ) (U W : Set (Euclid P)) (R : IMRep U n) (H : Euclid P → Euclid P), IsOpen W → W ⊆ U → AEStronglyMeasurable (fun x => (approxTangentPlane n R.carrier x).starProjection) R.measure → (∀ X : Euclid P → Euclid P, ContDiff ℝ 1 X → HasCompactSupport X → tsupport X ⊆ W → R.firstVariation X = -∫ x, inner ℝ (X x) (H x) ∂R.measure) → ∀ (y : Euclid P) (φ : ℝ → ℝ) (A τ : ℝ), ContDiff ℝ 1 φ → (∀ u, u ≤ 1 → φ u = 1) → (∀ u, A ≤ u → φ u = 0) → 0 < τ → closedBall y (A * τ) ⊆ W → (n : ℝ) * (∫ x, φ (‖x - y‖ / τ) ∂R.measure) + (∫ x, ‖x - y‖ / τ * deriv φ (‖x - y‖ / τ) * (1 - ‖(x - y) - (approxTangentPlane n R.carrier x).starProjection (x - y)‖ ^ 2 / ‖x - y‖ ^ 2) ∂R.measure) = -∫ x, φ (‖x - y‖ / τ) * inner ℝ (x - y) (H x) ∂R.measure",
+  "lean_name": "doragm_radial_first_variation",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-240d390605-a1"
+}

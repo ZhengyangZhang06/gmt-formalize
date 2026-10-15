@@ -1,0 +1,100 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "C1Approx|c1_approx|rectifiable.*ae.*(Tangent|density)|HasApproximateTangentSpaceAt",
+        "measurableSet_of_differentiableAt|measurable_fderiv|ae_differentiableAt|tendstoUniformlyOn_of_ae_tendsto|norm_fderiv_le_of_lipschitz",
+        "C¹|approximation|only if|theorem |exists_isClosed|HasWhitneyC1Compatibility",
+        "codim1_rdo_c1_approximation",
+        "codim1_rdo_rectifiable_c1_cover",
+        "codim1_rdo_c1_piece_approxTangent",
+        "codim1_rdo_rectifiable_ae_approxTangent",
+        "git show 422e346ed7d2fe5411cb5400351e6936cc4d69fe:GMT/Ch07/Submission.lean",
+        "git show dbef2c15948a21d9574315bea458a9edb4f708e3:GMT/Ch07/Submission.lean",
+        "git show c3ca64f29e6259bb0947d084036f55b096f91e3f:GMT/Ch07/Submission.lean",
+        "python3 /tmp/rdo-independent-audit-tkswc5w1/run_lean.py /tmp/rdo-independent-audit-tkswc5w1/Types.lean",
+        "python3 /tmp/rdo-independent-audit-tkswc5w1/run_lean.py /tmp/rdo-independent-audit-tkswc5w1/Assembly.lean",
+        "python3 /tmp/rdo-independent-audit-tkswc5w1/run_lean.py /tmp/rdo-independent-audit-tkswc5w1/Reuse_tangent_transfer.lean",
+        "python3 /tmp/rdo-independent-audit-tkswc5w1/run_lean.py /tmp/rdo-independent-audit-tkswc5w1/Reuse_closed_ball_density.lean",
+        "python3 /tmp/rdo-independent-audit-tkswc5w1/run_lean.py /tmp/rdo-independent-audit-tkswc5w1/Reuse_open_ball_density.lean",
+        "python3 /tmp/rdo-independent-audit-tkswc5w1/run_lean.py /tmp/rdo-independent-audit-tkswc5w1/Library.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/lake-manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Measurable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/Egorov.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Regular.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/SubmanifoldCover.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/Lusin.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/WhitneyJet.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/WhitneyExtension.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaCritical.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/WeightedArea.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-96d3c5f21c/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-96d3c5f21c/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-01.txt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-02.txt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-03.txt",
+        "/tmp/rdo-independent-audit-tkswc5w1/Types.lean",
+        "/tmp/rdo-independent-audit-tkswc5w1/Assembly.lean",
+        "/tmp/rdo-independent-audit-tkswc5w1/Reuse_tangent_transfer.lean",
+        "/tmp/rdo-independent-audit-tkswc5w1/Reuse_closed_ball_density.lean",
+        "/tmp/rdo-independent-audit-tkswc5w1/Reuse_open_ball_density.lean",
+        "/tmp/rdo-independent-audit-tkswc5w1/Library.lean"
+      ],
+      "conclusion": "The split is appropriate for the selected density-one theorem. Project b4d606db, Mathlib 25730c7c and SimonGMT 2b366308 match the pins; the snapshot and workspace contracts are byte-identical. The inspected APIs support the supplied arguments, including the exact compact-uniform Whitney condition and the Bochner area formula. Simon's cited proofs agree with the decomposition. All seven frozen types independently elaborate with autoImplicit=false, without implementing the children. The supplied ae assembly and the exact selected parent conclusion compile from explicit child hypotheses. All names are bare identifiers; the four new names have no DAG reservations. The three reused declarations are accepted with byte-identical frozen types. Their dependency closures are accepted, acyclic and do not reach the selected parent. Fresh compilation of these declarations and the checked Lusin, Whitney, critical-image and area-formula lemmas reports only propext, Classical.choice and Quot.sound, with no sorryAx in those targets. WhitneyExtension lacks its package olean, but its copied source compiles as anticipated. No Matrix/IsUnit construction occurs; the derivative-range coercion and measure instances elaborate as intended."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "c1_approximation",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line type exactly matches value-and-derivative approximation. The proof handles n=0 and infinite epsilon, establishes measurability of the remainder suprema, and uses locally finite closed shell pieces correctly. Egoroff yields the compact-uniform estimate required by the checked Whitney theorem. The exceptional-set bounds prove the strict inequality without circularity."
+    },
+    {
+      "key": "c1_cover",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type includes all claimed quantitative, measurability, finiteness and covering properties. Coordinatewise approximation, null critical images and the derivative estimate establish the countable cover. Compact exhaustion proves Borelness and finite measure. Empty-ball padding handles missing regular pieces, including n>P. Its sole sibling dependency is correctly directed."
+    },
+    {
+      "key": "c1_piece_tangent",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The derivative-range type matches the stated tangent plane. The lower Lipschitz bound proves injective derivatives and dimension n, and localizes the rescaled integrals to a fixed compact ball. The checked area formula, dominated convergence and linear area formula establish the exact tangent predicate. No rectifiable-density or parent conclusion is assumed."
+    },
+    {
+      "key": "tangent_transfer",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "This is valid reuse of the accepted declaration with an identical frozen type. The countable localization supplies one exceptional null set independent of test functions and planes. Local finiteness justifies integrability; vanishing densities of both differences force the blow-up integral differences to vanish. The resulting equivalence has exactly the stated quantifiers."
+    },
+    {
+      "key": "ae_approx_tangent",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and type agree, including Borelness and compact-local finiteness. The three declared dependencies supply the cover, piece tangents and transfer on overlaps. A countable union of exceptional null sets proves the restricted-measure statement; disjointness is unnecessary. The supplied Lean assembly independently compiles from these exact hypotheses."
+    },
+    {
+      "key": "closed_ball_density",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The accepted declaration is reused with its identical type. Plane-ball normalization, similarity scaling and both cutoffs give matching bounds. Local finiteness supplies the required integrability and finite-real conversions. The proof also covers n=0 and does not silently require M to be Borel: restriction is evaluated on measurable closed balls."
+    },
+    {
+      "key": "open_ball_density",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The accepted declaration and frozen type are identical. Ball inclusion gives the upper bound; positive dilation and ENNReal cancellation give the lower bound. The order-topology argument remains valid for theta=0, theta=infinity and n=0, without any unstated finiteness assumption on the measure."
+    }
+  ],
+  "required_changes": []
+}

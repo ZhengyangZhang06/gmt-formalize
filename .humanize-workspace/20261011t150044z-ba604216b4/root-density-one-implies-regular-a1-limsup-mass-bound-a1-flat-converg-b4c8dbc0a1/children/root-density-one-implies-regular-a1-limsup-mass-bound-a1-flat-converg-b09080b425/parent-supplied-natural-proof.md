@@ -1,0 +1,95 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.density_one_implies_regular-a1.limsup_mass_bound-a1.flat_convergence-a1.deformation_top-a1`
+- Child DAG node: `root.density_one_implies_regular-a1.limsup_mass_bound-a1.flat_convergence-a1.deformation_top-a1.projected_cells-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: steps 5(c) and 9 of the parent-supplied proof (if P ∈ range ι_p one of the vectors is p(e_P) = 0 and the term vanishes; otherwise range ι_p = {0, …, P − 1}, p e_{ι_p(k)} = e_k, and p maps F̃_p isometrically onto the cube G_{z'}, so the two integrals agree; and G_{z'} = p(F̃_p)). Tools: Mathlib ContinuousMultilinearMap.map_coord_zero (via the alternating map ω(py)), Isometry.map_euclideanHausdorffMeasure (μHE[N].map j = μHE[N].restrict (range j) for an isometry j : ℝ^N → ℝ^{N+1}), Isometry.isClosedEmbedding, Topology.IsClosedEmbedding.measurableEmbedding, MeasurableEmbedding.restrict_map and MeasurableEmbedding.integral_map.
+1. The images of the basis vectors. For j ∈ Fin (N+1) and i ∈ Fin N, (p e_j)_i = (e_j)_{castSucc i}, which is 1 if j = castSucc i and 0 otherwise. Hence p e_{castSucc k} = e_k for k ∈ Fin N, and p e_last = 0 because castSucc i ≠ last for all i.
+2. Part (a). Let ι(k₀) = last. Then the k₀-th argument of the tuple (pe_{ι(0)}, …, pe_{ι(N−1)}) is p e_last = 0 (step 1), so for every y the multilinear map ω(py) vanishes on this tuple (map_coord_zero). The integrand is the zero function on ℝ^{N+1}, and the integral is 0.
+3. Part (b), ι = castSucc. Assume last ∉ range ι. If N = 0, then ι = castSucc trivially (both are the empty map Fin 0 → Fin 1); F̃ is then the single point with last coordinate ρz_last, G = ℝ⁰ is a point, and steps 4–5 below apply unchanged. For N ≥ 1, a strictly increasing ι : Fin N → Fin (N+1) satisfies ι(k) ≥ k (induction on k). Moreover ι(N−1) ≤ N, and ι(N−1) ≠ N = last, so ι(N−1) ≤ N − 1; and for k < N − 1, ι(k) < ι(k+1) gives by downward induction ι(k) ≤ k. Hence ι(k) = k for all k, i.e. ι = castSucc. Consequently range ι = {j : j ≠ last}, the integrand is y ↦ h(y) := ω(py)(e_0, …, e_{N−1}) by step 1, and F̃ = {y : ρz_{castSucc i} ≤ y_{castSucc i} ≤ ρ(z_{castSucc i} + 1) for all i ∈ Fin N, and y_last = ρz_last}.
+4. The isometric embedding. Define j : ℝ^N → ℝ^{N+1} by j(x)_{castSucc i} := x_i (i ∈ Fin N) and j(x)_last := ρz_last. Then |j(x) − j(x')|² = Σ_i (x_i − x'_i)² = |x − x'|², so j is an isometry, hence a closed embedding and a measurable embedding; and p(j(x)) = x by the defining formula of p. By the description of F̃ in step 3, j(G) ⊆ F̃; conversely, if y ∈ F̃ then x := py satisfies x_i = y_{castSucc i}, so x ∈ G, and y = j(x) because the coordinates castSucc i agree and y_last = ρz_last. Thus j(G) = F̃. In particular every x ∈ G equals p(j(x)) with j(x) ∈ F̃, which is the last claim of (b).
+5. Change of variables. By Isometry.map_euclideanHausdorffMeasure, μHE[N].map j = μHE[N].restrict (range j); with MeasurableEmbedding.restrict_map and the injectivity of j, (μHE[N].restrict G).map j = (μHE[N].map j).restrict (j(G)) = μHE[N].restrict (j(G) ∩ range j) = μHE[N].restrict (j(G)). Hence, by MeasurableEmbedding.integral_map (valid for every function), ∫_{F̃} h dHᴺ = ∫_{j(G)} h dHᴺ = ∫_G h∘j dHᴺ = ∫_G ω(p(j(x)))(e_0, …, e_{N−1}) dHᴺ(x) = ∫_G ω(x)(e_0, …, e_{N−1}) dHᴺ(x). ∎
+
+## Key steps
+
+1. p e_{castSucc k} = e_k and p e_last = 0.
+2. Vertical cells: a zero argument makes the integrand vanish identically.
+3. Horizontal cells: a strictly increasing ι avoiding last is castSucc, and F̃ = j(G) for the isometric embedding j(x) = (x, ρz_last) with p∘j = id.
+4. Isometry.map_euclideanHausdorffMeasure turns ∫_{j(G)} h dHᴺ into ∫_G h∘j dHᴺ; p∘j = id gives the cube integral and G = p(F̃).
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json (project b4d606db1da5da8fa2c0292ad4924d97de8b3c4b, mathlib 25730c7c759d108ef87ab70af2342a196760f79d)`
+- `cmp <snapshot>/project/GMT/Ch07/Contract.lean <workspace>/GMT/Ch07/Submission.lean (identical)`
+- `rg -n "affinePushforward|Isometry|isometr" <snapshot>/project/GMT --glob '*.lean' (only the contract's blowUp and Ch05 rotated-plane docs; no IM push-forward by an isometric embedding)`
+- `rg -n -i "cube|latticeFace|deformation" <snapshot>/project/GMT/Ch07 <snapshot>/project/GMT/Ch06 --glob '*.lean' (Ch06 latticeFace/latticeFaceAction/DeformationTheorem with hypothesis 1 ≤ ℓ, sorry-frozen and not imported by GMT.Ch07.Submission; nothing for the top-dimensional case)`
+- `rg -n "theorem Isometry.map_euclideanHausdorffMeasure|theorem Isometry.euclideanHausdorffMeasure_image|theorem EuclideanSpace.euclideanHausdorffMeasure_eq_volume" <snapshot>/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean`
+- `rg -n "theorem norm_iteratedFDeriv_smul_le" ContDiff/Bounds.lean; "theorem map_linearDependent" LinearAlgebra/Alternating/Basic.lean; "IsCompact.cthickening|mem_cthickening_iff|self_subset_cthickening" Topology/MetricSpace/Thickening.lean; "IsClosedEmbedding.isProperMap" Topology/Maps/Proper/Basic.lean; "isClosedEmbedding" Topology/MetricSpace/Isometry.lean (all in the snapshot mathlib)`
+- `rg -n "structure ContDiffBump|one_of_mem_closedBall|tsupport_eq|le_one|nonneg" BumpFunction/Basic.lean; "prod_fiberwise_of_maps_to|Int.natAbs_sum_le" Algebra/BigOperators/Group/Finset/Basic.lean; "restrict_map|restrict_restrict_of_subset|ae_map_iff" MeasureTheory/Measure/Restrict.lean; "MeasurableEmbedding.integral_map" Integral/Bochner/Basic.lean; "aestronglyMeasurable_map_iff" StronglyMeasurable/AEStronglyMeasurable.lean; "Filter.EventuallyEq.extDeriv_eq" Calculus/DifferentialForm/Basic.lean; "Filter.EventuallyEq.fderiv_eq" FDeriv/Congr.lean; "def apply" Module/Alternating/Topology.lean; "def infEDist|le_infEDist|infEDist_le_edist_of_mem" MetricSpace/HausdorffDistance.lean (namespace Metric)`
+- `grep -n declarations in <workspace>/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/{AffineCurrentPushforward,Currents,Mass,Forms}.lean and Chapter03/Rectifiable.lean (affinePushforward_apply, boundary_affinePushforward, affinePullbackTestOn, tsupport_affinePullbackForm_subset, exteriorDerivative_affinePullbackForm, iteratedFDeriv_affinePullbackForm, affinePullbackJet, TestFormOnConverges, GeometricCurrentOn.continuous', exteriorDerivativeTestOn, covectorEuclideanNorm, massAdmissibleOn, le_massOn, HasApproximateTangentSpaceAt, blowUpMap, hasApproximateTangentSpaceAt_submodule, countablyRectifiable_of_measure_zero, countablyRectifiable_range)`
+- `python3 -I scans of the run's dag.json: statuses and frozen types of dor_lmb_fc_deformation (decomposing), dor_imrep_massOn_eq_measure_and_support and cmc_imRep_locality_restrict_sub (accepted, identical types); searches for accepted IM push-forward/cutoff/projection lemmas (only dtc_blowUp_imrep for similarities of ℝ^P and cmcs_cd_smul_mem_testFormOn; nothing for isometric embeddings, cut-off pull-backs along projections or cube chains); name-collision check of the four new dor_lmb_fc_dtop_* names (none)`
+- `git show 047b3402ecebcae7b968f8ca435cbbb0b9ed036f:GMT/Ch07/Submission.lean (accepted dtc_blowUp_imrep/dtc_approxTangent_dilation/dtc_hausdorff_dilation: template for transporting an IMRep under a similarity)`
+- `sed -n 1405,1500p and 2020,2110p book/chapter-06.txt (Deformation Theorem 5.1/5.3 for n, ℓ ≥ 1; proof of 7.2; no printed treatment of n = P)`
+- `python3 -I gmt-compare.py contract_scope replay; lean_contract.validate_lean_statement on all six lean_statements; lake env lean /tmp/dt-top-decomp/lean/Challenge_*.lean (6 files, 0 errors) and /tmp/dt-top-decomp/lean/Assembly.lean (0 errors; #print axioms [propext, Classical.choice, Quot.sound])`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch06/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/Bounds.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Alternating/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/Thickening.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Maps/Proper/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/Isometry.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/BumpFunction/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Algebra/BigOperators/Group/Finset/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/StronglyMeasurable/AEStronglyMeasurable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/DifferentialForm/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Congr.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Module/Alternating/Topology.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/HausdorffDistance.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/AffineCurrentPushforward.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-limsup-mass-bound-a1-flat-converg-b4c8dbc0a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-limsup-mass-bound-a1-flat-convergence-a1/decomposition-v2.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/tmp/dt-top-decomp/lean/Assembly.lean`
+- `/tmp/dt-top-decomp/lean/Sanity.lean`
+
+Snapshot: project b4d606db and Mathlib 25730c7c. Its Ch07 Contract.lean is byte-identical to the workspace Submission.lean.
+
+No-match results:
+- Neither the snapshot project nor SimonGMT has a push-forward of IM currents by isometric embeddings into a higher-dimensional space, a cut-off pull-back along a projection, or a top-dimensional deformation or cube-chain IM lemma.
+- The Ch06 contract's DeformationTheorem requires 1 ≤ ℓ, is sorry-frozen, and is not imported.
+- The only related accepted DAG work is dtc_blowUp_imrep, which transports an IMRep under similarities of ℝ^P. It is used as a template for the isometric_pushforward proof.
+
+So these four obligations become new children. They cite only Mathlib basics that are present in the snapshot:
+- Isometry.map_euclideanHausdorffMeasure and Isometry.euclideanHausdorffMeasure_image;
+- the MeasurableEmbedding API;
+- ContDiffBump and norm_iteratedFDeriv_smul_le;
+- Filter.EventuallyEq.extDeriv_eq;
+- AlternatingMap.map_linearDependent;
+- IsCompact.cthickening and IsClosedEmbedding.isProperMap;
+- Finset.sum_fiberwise_of_maps_to and Int.natAbs_sum_le.
+
+From SimonGMT they use the affine pull-back API (affinePushforward_apply, boundary_affinePushforward, exteriorDerivative_affinePullbackForm, iteratedFDeriv_affinePullbackForm) and hasApproximateTangentSpaceAt_submodule.
+
+The accepted dor_imrep_massOn_eq_measure_and_support and cmc_imRep_locality_restrict_sub are reused with byte-identical types. The sibling dor_lmb_fc_deformation (decomposing) stays a DAG dependency of the selected node.
+
+Lean: all six child types compile as exact comparator challenges. The conditional assembly of the exact selected type compiles with only propext, Classical.choice and Quot.sound.

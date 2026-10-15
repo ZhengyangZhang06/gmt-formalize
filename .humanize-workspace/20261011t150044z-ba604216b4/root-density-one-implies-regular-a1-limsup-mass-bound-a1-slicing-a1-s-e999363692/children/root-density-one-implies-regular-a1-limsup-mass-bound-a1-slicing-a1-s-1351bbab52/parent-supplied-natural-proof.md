@@ -1,0 +1,106 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.density_one_implies_regular-a1.limsup_mass_bound-a1.slicing-a1.slice_family-a1`
+- Child DAG node: `root.density_one_implies_regular-a1.limsup_mass_bound-a1.slicing-a1.slice_family-a1.c1_cover-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: Simon Ch. 3, proof of Lemma 1.2, “only if” part (chapter-03.txt lines 22–60), using the C¹ Approximation Theorem (sibling c1_approx, Lean dor_lmbsf_lipschitz_c1_approx) and the area formula of Ch. 2, §3. Notation: H^m = μHE[m]. On ℝ^m = Euclid m, H^m = L^m = volume (Mathlib EuclideanSpace.euclideanHausdorffMeasure_eq_volume). For a C¹ map G : ℝ^m → ℝ^P let Crit(G) := {y : DG(y) is not injective}.
+
+[Imports: SimonGMT Chapter02.AreaCritical (critical images) and Chapter02.Lipschitz (Lipschitz images).]
+
+1. By definition, M ⊆ M₀ ∪ ⋃_{j∈ℕ} F_j(ℝ^m), H^m(M₀) = 0, F_j : ℝ^m → ℝ^P K_j-Lipschitz.
+
+2. Vector C¹ approximation. Fix j and i ≥ 1. If P = 0 put G_{ij} := F_j (a constant map, C¹). If P ≥ 1, each coordinate F_j^p := ⟨F_j, e_p⟩ (p = 1, …, P) is K_j-Lipschitz, so the sibling c1_approx (with ε = 1/(iP)) gives C¹ functions G_{ij}^p with L^m({F_j^p ≠ G_{ij}^p}) < 1/(iP). Let G_{ij} : ℝ^m → ℝ^P have coordinates G_{ij}^p; it is C¹ and {F_j ≠ G_{ij}} ⊆ ⋃_p {F_j^p ≠ G_{ij}^p} has L^m-measure < 1/i.
+
+3. Z_j := ⋂_{i≥1} {F_j ≠ G_{ij}} has L^m(Z_j) ≤ 1/i for all i, so L^m(Z_j) = 0, and E_j := F_j(Z_j) satisfies H^m(E_j) ≤ K_j^m L^m(Z_j) = 0 (Lipschitz images: SimonGMT euclideanHausdorffMeasure_image_le_of_lipschitzOn). Every y ∉ Z_j has F_j(y) = G_{ij}(y) for some i, so F_j(ℝ^m) ⊆ E_j ∪ ⋃_i G_{ij}(ℝ^m). Hence
+   M ⊆ M₀ ∪ ⋃_j E_j ∪ ⋃_{i,j} G_{ij}(ℝ^m).   (1)
+
+4. Critical images are null. For C¹ G, H^m(G(Crit(G))) = 0. This is the area formula of Ch. 2, 3.2 (H^m(G(A)) ≤ ∫_A JG dL^m, with JG = 0 exactly on Crit(G)). In SimonGMT it is Chapter02.area_image_criticalSet_eq_zero: μHE[finrank ℝ E] (G '' {x | DifferentiableAt ℝ G x ∧ ¬ Injective (fderiv ℝ G x)}) = 0. Here E = Euclid m, so finrank ℝ E = m (finrank_euclideanSpace_fin), and every point is a differentiability point because G is C¹.
+
+5. Regular points give embedded submanifolds. Let G be C¹ and x ∉ Crit(G). Put c := min_{|v|=1} |DG(x)v| > 0 if m ≥ 1, and c := 1 if m = 0. (For m = 0, ℝ^0 is a point, the annulus below is empty and W = ℝ^P.) Choose ρ > 0 with ‖DG(z) − DG(x)‖ ≤ c/2 for |z − x| ≤ 2ρ. By the mean value inequality on the convex ball B̄_{2ρ}(x), |G(a) − G(b) − DG(x)(a − b)| ≤ (c/2)|a − b| for a, b ∈ B̄_{2ρ}(x), hence |G(a) − G(b)| ≥ (c/2)|a − b|. So G is injective on B̄_{2ρ}(x), and DG(z) is injective for |z − x| ≤ 2ρ. Let N := G(B_ρ(x)). For every point of N use V := B_ρ(x), W := ℝ^P ∖ G(B̄_{2ρ}(x) ∖ B_ρ(x)) and ψ := G:
+   - W is open, since B̄_{2ρ}(x) ∖ B_ρ(x) is compact and G is continuous;
+   - N ⊆ W by injectivity of G on B̄_{2ρ}(x), so ψ(V) = N = W ∩ N, and every point of N lies in W;
+   - ψ is C¹ on V, injective on V, and Dψ(z) is injective for z ∈ V;
+   - properness: for compact K ⊆ W, V ∩ G⁻¹(K) = B̄_ρ(x) ∩ G⁻¹(K), because points of the sphere ∂B_ρ(x) ⊆ B̄_{2ρ}(x) ∖ B_ρ(x) are mapped outside W ⊇ K; this is a closed subset of the compact ball B̄_ρ(x), hence compact.
+   Thus IsEmbeddedSubmanifold 1 m N (this is Simon's “G_{ij}(B_δ(x)) is an n-dimensional C¹ submanifold”).
+
+6. Lindelöf. The set ℝ^m ∖ Crit(G) is covered by the open balls B_ρ(x) of step 5. ℝ^m is second countable, so every subset is Lindelöf, and countably many of these balls, B_{ρ_s}(x_s) (s ∈ ℕ), cover it. Hence G(ℝ^m) ⊆ G(Crit(G)) ∪ ⋃_s G(B_{ρ_s}(x_s)).
+
+7. Conclusion. Apply steps 4–6 to every G_{ij}. Put N₀ := M₀ ∪ ⋃_j E_j ∪ ⋃_{i,j} G_{ij}(Crit(G_{ij})); it is a countable union of H^m-null sets, so H^m(N₀) = 0. Enumerate the countably many sets G_{ij}(B_{ρ_s}(x_s)) as N_l, l ∈ ℕ (padding with N_l := ∅, which satisfies IsEmbeddedSubmanifold 1 m vacuously). By (1) and step 6, M ⊆ N₀ ∪ ⋃_l N_l. ∎
+
+## Key steps
+
+1. Write M ⊆ M₀ ∪ ⋃ F_j(ℝ^m) with Lipschitz F_j.
+2. Coordinatewise c1_approx gives C¹ maps G_{ij} with L^m({F_j ≠ G_{ij}}) < 1/i.
+3. Z_j = ⋂_i {F_j ≠ G_{ij}} is null and F_j(Z_j) is H^m-null, so M ⊆ null ∪ ⋃ G_{ij}(ℝ^m).
+4. Images of the critical sets Crit(G_{ij}) are H^m-null (area formula; SimonGMT area_image_criticalSet_eq_zero).
+5. Near a regular point, G(B_ρ(x)) is an embedded C¹ m-submanifold (injective on B̄_{2ρ}, W = ℝ^P ∖ G(annulus), properness).
+6. Lindelöf: countably many such balls cover ℝ^m ∖ Crit(G). Collect the null sets into N₀ and enumerate the submanifolds.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cmp local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean GMT/Ch07/Contract.lean; cmp GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean (both identical)`
+- `python3 -I transitive import scan of the Contract's Poincare.SimonGMT imports (public import ...)`
+- `grep -n '^theorem |^def ' simongmt Chapter03/Rectifiable.lean, Chapter02/{AreaFormula,WeightedArea,AreaCritical,AreaLipschitz,AreaDomain,CoareaProjection,CoareaLinear,WhitneyExtension,WhitneyJet,Lipschitz}.lean, Chapter03/{SubmanifoldCover,DisjointCover,Differential}.lean, Chapter06/{Forms,Currents}.lean`
+- `grep -rn 'HasApproximateTangentSpaceAt.unique|exists_contDiff_one_extension_of_whitney|HasWhitneyC1Compatibility|area_image_criticalSet_eq_zero|integral_area_formula_of_injective_derivative|weighted_area_formula_of_injective_derivative|map_withDensity_areaJacobian_eq|integrableOn_image_iff_integrableOn_areaJacobian_smul|exists_isClosed_continuousOn_of_measurable|countablyRectifiable_iUnion' simongmt`
+- `grep -rn 'ae_tendsto_measure_inter_div_of_measurableSet|LipschitzWith.integral_lineDeriv_mul_eq|Lp.dense_hasCompactSupport_contDiff|tendsto_tsum_of_dominated_convergence|alternatizeUncurryFin_apply|AlternatingMap.eq_smul_basis_det|det_to_matrix_orthonormalBasis_real|volume_preserving_piFinSuccAbove|PiLp.volume_preserving_ofLp|Measurable.lintegral_prod_right|exists_cthickening_subset_open|tendstoUniformlyOn_of_ae_tendsto|euclideanHausdorffMeasure_eq_volume|norm_alternatizeUncurryFin_le' mathlib`
+- `#check probes in contract scope: ContinuousAlternatingMap.alternatizeUncurryFin, innerSL, ContinuousLinearMap.smulRight, (ℝ ∙ v)ᗮ, ‖v‖ₑ, GeometricCurrentOn.boundary, exists_measurable_superset_of_null`
+- `dag.json scans: regex 'co-?area|area formula|Rademacher|tangential gradient|C¹ approx|Lusin|Jacobian|implicit function' over node statements; lean_name collision check for dor_lmbsf_* (1022 nodes, none)`
+- `git grep dor_lmbsf_ over all local branches (no match)`
+- `python3 -I verifier lean_contract.validate_lean_statement and gmt-compare.child_modules on the 12 statements; lake env lean /tmp/dor-sf-decomp/v2/All.lean (#print axioms DorSf.parent_from_children)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-limsup-mass-bound-a1-slicing-a1-s-e999363692/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-limsup-mass-bound-a1-slicing-a1/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaFormula.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/WeightedArea.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaCritical.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/WhitneyExtension.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/WhitneyJet.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/Lipschitz.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/Lusin.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Covering/Besicovitch.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/Alternating/Uncurry/Fin.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Haar/InnerProductSpace.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-02.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-03.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/tmp/dor-sf-decomp/v2/All.lean`
+
+Snapshot: project b4d606d, mathlib 25730c7c, simongmt 2b36630. The snapshot Contract.lean is byte-identical to the workspace Contract.lean and Submission.lean, and the snapshot mathlib matches the package tree.
+
+No existing declaration states a rectifiable co-area formula, a tangential gradient of a Lipschitz function, a slice family or the Lipschitz-cut-off Leibniz limit. Related nodes in other branches are unaccepted, reserved and have different types:
+- codim1_rdo_c1_approximation;
+- codim1_rdo_c1_piece_approxTangent;
+- codim1_lur_rectifiable_area_formula;
+- dimred_cs_sos_spine_coarea.
+So all 12 children get fresh dor_lmbsf_ names.
+
+Reusable library facts for the child proofs:
+- SimonGMT Chapter02: injective area formulas in lintegral, Bochner and measure form (WeightedArea, AreaFormula); critical images null (AreaCritical); Whitney C¹ extension (WhitneyExtension/WhitneyJet); Rademacher and Lipschitz images (Lipschitz).
+- SimonGMT Chapter01.Lusin.
+- SimonGMT Chapter03: HasApproximateTangentSpaceAt.unique, countablyRectifiable_iUnion.
+- Mathlib: Besicovitch density theorem, LipschitzWith.integral_lineDeriv_mul_eq, Lp.dense_hasCompactSupport_contDiff, Tannery's theorem, alternatizeUncurryFin_apply, volume-preserving coordinate splits.
+- Some of these need extra imports, which are listed in the child proofs.
+
+Lean checks:
+- All 12 child types pass validate_lean_statement and elaborate in the exact comparator scope.
+- The Lean assembly of the exact frozen parent type from tangential_gradient, slice_imreps and lipschitz_leibniz compiles with only propext, Classical.choice and Quot.sound.
+- Interface checks (chart_pieces → piece lemmas; Besicovitch → density_directions) compile.
+- MultiVector lacks SecondCountable/FiniteDimensional instance synthesis, so the child proofs use StronglyMeasurable compositions.
