@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.cone_splitting-a1.split_off_spine-a1.cone_filling_subspace-a1.param_series_im-a1",
+  "parent_id": "root.dimension_reduction_results-a1.cone_splitting-a1.split_off_spine-a1.cone_filling_subspace-a1",
+  "depth": 5,
+  "title": "A current given by a summable integer-weighted Lipschitz parametrization is integer multiplicity",
+  "statement": "Let P, k ∈ ℕ and T ∈ 𝒟_{k+1}(ℝ^P) (GeometricCurrentOn univ (k+1)). Suppose that for i ∈ ℕ there are Lipschitz G_i : ℝ^{k+1} → ℝ^P, Borel A_i ⊆ ℝ^{k+1}, and measurable w_i : ℝ^{k+1} → ℤ and c_i : ℝ^{k+1} → ℝ such that:\n- w_i is integrable on A_i;\n- for u ∈ A_i, c_i(u) ≥ 0 and |α(DG_i(u)e_0, …, DG_i(u)e_k)| ≤ c_i(u)·|α| for all (k+1)-covectors α (|α| = covectorEuclideanNorm α);\n- Σ_i ∫⁻_{A_i} |w_i|·c_i < ∞;\n- for every ω ∈ 𝒟^{k+1}(ℝ^P), Σ_i ∫_{A_i} w_i(u)·ω(G_i(u))(DG_i(u)e_0, …, DG_i(u)e_k) du converges to T(ω) (HasSum).\nThen T is integer multiplicity. (Simon Ch. 6, 3.10 in the form of step 9 of the parent proof.)",
+  "lean_statement": "∀ (P k : ℕ) (T : GeometricCurrentOn (univ : Set (Euclid P)) (k + 1)) (G : ℕ → Euclid (k + 1) → Euclid P) (A : ℕ → Set (Euclid (k + 1))) (w : ℕ → Euclid (k + 1) → ℤ) (c : ℕ → Euclid (k + 1) → ℝ), (∀ i, ∃ L : NNReal, LipschitzWith L (G i)) → (∀ i, MeasurableSet (A i)) → (∀ i, Measurable (w i)) → (∀ i, Measurable (c i)) → (∀ i, IntegrableOn (fun u => (w i u : ℝ)) (A i)) → (∀ i, ∀ u ∈ A i, 0 ≤ c i u ∧ ∀ α : Covector (Euclid P) (k + 1), |α (fun a => fderiv ℝ (G i) u (EuclideanSpace.single a 1))| ≤ c i u * covectorEuclideanNorm α) → ∑' i, ∫⁻ u in A i, ENNReal.ofReal (|(w i u : ℝ)| * c i u) ≠ ∞ → (∀ ω : TestFormOn (univ : Set (Euclid P)) (k + 1), HasSum (fun i => ∫ u in A i, (w i u : ℝ) * (ω : DifferentialForm (Euclid P) (k + 1)) (G i u) (fun a => fderiv ℝ (G i) u (EuclideanSpace.single a 1))) (T ω)) → IsIntegerMultiplicity T",
+  "lean_name": "dimred_cs_sos_cfs_param_series_im",
+  "depends_on": [
+    "root.density_and_tangent_cones-a1.vanish_off_support-a1",
+    "root.compactness_of_minimizing_currents-a1.mass_equals_rep_measure-a1",
+    "root.compactness_of_minimizing_currents-a1.im_calculus-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.density_and_tangent_cones-a1.vanish_off_support-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-vanish-off-support-a1-a1",
+      "result_commit": "44ef61f79e2168134f8a5a6d6520baba56052d67",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.compactness_of_minimizing_currents-a1.mass_equals_rep_measure-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-mass-equals-rep-measure-a1-a1",
+      "result_commit": "27de75e6856bea4ad251fe33afb1925333bb7655",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.compactness_of_minimizing_currents-a1.im_calculus-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-im-calculus-a1-a1",
+      "result_commit": "2af75d6921b01a9c889a45103692ca0af95ea394",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-cone-splitting-a1-split-off-spine-10d8744eb4-a1"
+}
