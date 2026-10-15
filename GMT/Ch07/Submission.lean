@@ -12415,8 +12415,715 @@ theorem Submission.idtp_cse_rotation_conservation : ∀ (P : ℕ) (R : IMRep (un
       Measure.restrict_restrict measurableSet_closedBall, Set.inter_comm]
     exact R.locallyIntegrable_mult _ (isCompact_closedBall _ _) (subset_univ _)
   exact ⟨Measure.integrableOn_of_bounded hfin hφm (ae_restrict_of_forall_mem hZm hbound), hint⟩
+/-- **Normalized `C¹` bump** in a given open interval.  For `c < d` there is a `C¹` function
+`χ : ℝ → ℝ` with `spt χ ⊆ (c, d)` and `∫ χ = 1`.  With `σ = Real.smoothTransition`,
+`m = (c + d)/2`, `ρ = (d − c)/2`, `p = m − ρ/2` and `q = m + ρ/2` (so `c < p < q < d`), the
+function `θ(α) = σ((4/ρ)(α − p)) σ((4/ρ)(q − α))` is smooth, nonnegative, vanishes off `[p, q]`
+and has `θ(m) = 1`, so `∫ θ > 0`; take `χ = (∫ θ)⁻¹ θ`. -/
+theorem Submission.idtp_cse_ah_normalized_bump : ∀ c d : ℝ, c < d → ∃ χ : ℝ → ℝ, ContDiff ℝ 1 χ ∧ tsupport χ ⊆ Ioo c d ∧ ∫ α, χ α = 1 := by
+  intro c d hcd
+  -- `c < p < m < q < d` with `m = (c + d)/2`, `ρ = (d - c)/2`, `p = m - ρ/2`, `q = m + ρ/2`
+  set ρ : ℝ := (d - c) / 2 with hρ_def
+  have hρ : 0 < ρ := by rw [hρ_def]; linarith
+  set m : ℝ := (c + d) / 2 with hm_def
+  set p : ℝ := m - ρ / 2 with hp_def
+  set q : ℝ := m + ρ / 2 with hq_def
+  have hcp : c < p := by rw [hp_def, hm_def, hρ_def]; linarith
+  have hqd : q < d := by rw [hq_def, hm_def, hρ_def]; linarith
+  -- `θ(α) = σ((4/ρ)(α - p)) σ((4/ρ)(q - α))`, `σ = Real.smoothTransition`
+  set θ : ℝ → ℝ := fun α =>
+    Real.smoothTransition (4 / ρ * (α - p)) * Real.smoothTransition (4 / ρ * (q - α)) with hθ_def
+  have hθ_diff : ContDiff ℝ 1 θ := by
+    have h₁ : ContDiff ℝ 1 fun α : ℝ => Real.smoothTransition (4 / ρ * (α - p)) :=
+      Real.smoothTransition.contDiff.comp (contDiff_const.mul (contDiff_id.sub contDiff_const))
+    have h₂ : ContDiff ℝ 1 fun α : ℝ => Real.smoothTransition (4 / ρ * (q - α)) :=
+      Real.smoothTransition.contDiff.comp (contDiff_const.mul (contDiff_const.sub contDiff_id))
+    exact h₁.mul h₂
+  have hθ_nonneg : 0 ≤ θ := fun α =>
+    mul_nonneg (Real.smoothTransition.nonneg _) (Real.smoothTransition.nonneg _)
+  -- `θ` vanishes off `[p, q]`
+  have hθ_supp : support θ ⊆ Icc p q := by
+    intro α hα
+    rw [mem_support] at hα
+    by_contra h
+    rw [mem_Icc, not_and_or, not_le, not_le] at h
+    apply hα
+    rcases h with h | h
+    · have h' : 4 / ρ * (α - p) ≤ 0 :=
+        mul_nonpos_of_nonneg_of_nonpos (by positivity) (by linarith)
+      simp only [hθ_def, Real.smoothTransition.zero_of_nonpos h', zero_mul]
+    · have h' : 4 / ρ * (q - α) ≤ 0 :=
+        mul_nonpos_of_nonneg_of_nonpos (by positivity) (by linarith)
+      simp only [hθ_def, Real.smoothTransition.zero_of_nonpos h', mul_zero]
+  have hθ_tsupp : tsupport θ ⊆ Icc p q := closure_minimal hθ_supp isClosed_Icc
+  have hθ_cpt : HasCompactSupport θ :=
+    isCompact_Icc.of_isClosed_subset (isClosed_tsupport θ) hθ_tsupp
+  -- `θ(m) = 1`
+  have hθm : θ m = 1 := by
+    have h₁ : 4 / ρ * (m - p) = 2 := by rw [hp_def]; field_simp; ring
+    have h₂ : 4 / ρ * (q - m) = 2 := by rw [hq_def]; field_simp; ring
+    simp only [hθ_def, h₁, h₂, Real.smoothTransition.one_of_one_le (by norm_num : (1 : ℝ) ≤ 2),
+      mul_one]
+  -- `∫ θ > 0`; normalize
+  have hI : 0 < ∫ α, θ α :=
+    hθ_diff.continuous.integral_pos_of_hasCompactSupport_nonneg_nonzero hθ_cpt hθ_nonneg
+      (x := m) (by rw [hθm]; exact one_ne_zero)
+  refine ⟨fun α => (∫ α, θ α)⁻¹ * θ α, contDiff_const.mul hθ_diff, ?_, ?_⟩
+  · exact tsupport_mul_subset_right.trans (hθ_tsupp.trans (Icc_subset_Ioo hcp hqd))
+  · rw [integral_const_mul]
+    exact inv_mul_cancel₀ hI.ne'
+/-- **Smooth plateaus converge weakly to `1_{(p, q)}`.**  For real `p, q` the `C¹` functions
+`χ_k(α) = σ(k(α - p)) σ(k(q - α))`, `σ = Real.smoothTransition`, satisfy `0 ≤ χ_k ≤ 1` and vanish
+off `(p, q)`, so `tsupport χ_k ⊆ [p, q]`; for `p < α < q`, `χ_k(α) = 1` once
+`k ≥ max (1/(α - p)) (1/(q - α))`.  Dominated convergence with bound `|g|` then gives
+`∫ χ_k g → ∫_{(p, q)} g` for every integrable `g`. -/
+theorem Submission.idtp_cse_ah_cst_plateau_weak_limit : ∀ p q : ℝ, ∃ χ : ℕ → ℝ → ℝ, (∀ k, ContDiff ℝ 1 (χ k)) ∧ (∀ k, tsupport (χ k) ⊆ Icc p q) ∧ ∀ g : ℝ → ℝ, Integrable g → Tendsto (fun k => ∫ α, χ k α * g α) atTop (𝓝 (∫ α in Ioo p q, g α)) := by
+  intro p q
+  -- `χ_k(α) = σ(k(α - p)) σ(k(q - α))`, with `σ` the smooth transition from `0` (on `(-∞, 0]`)
+  -- to `1` (on `[1, ∞)`)
+  have hzero : ∀ (k : ℕ) (α : ℝ), α ∉ Ioo p q →
+      Real.smoothTransition (k * (α - p)) * Real.smoothTransition (k * (q - α)) = 0 := by
+    intro k α hα
+    rcases not_and_or.1 hα with h | h
+    · rw [Real.smoothTransition.zero_of_nonpos
+        (mul_nonpos_of_nonneg_of_nonpos k.cast_nonneg (sub_nonpos.2 (not_lt.1 h))), zero_mul]
+    · rw [Real.smoothTransition.zero_of_nonpos
+        (mul_nonpos_of_nonneg_of_nonpos k.cast_nonneg (sub_nonpos.2 (not_lt.1 h))), mul_zero]
+  refine ⟨fun k α => Real.smoothTransition (k * (α - p)) * Real.smoothTransition (k * (q - α)),
+    fun k => ?_, fun k => ?_, fun g hg => ?_⟩
+  · exact (Real.smoothTransition.contDiff.comp
+      (contDiff_const.mul (contDiff_id.sub contDiff_const))).mul
+      (Real.smoothTransition.contDiff.comp (contDiff_const.mul (contDiff_const.sub contDiff_id)))
+  · -- `χ_k` vanishes off `(p, q)`, so its closed support lies in `[p, q]`
+    exact closure_minimal (fun α hα => Ioo_subset_Icc_self (by_contra fun h => hα (hzero k α h)))
+      isClosed_Icc
+  · -- dominated convergence with bound `|g|`, the limit being `1_{(p, q)} g`
+    rw [← integral_indicator measurableSet_Ioo]
+    refine tendsto_integral_of_dominated_convergence (fun α => ‖g α‖) (fun k => ?_) hg.norm
+      (fun k => Eventually.of_forall fun α => ?_) (Eventually.of_forall fun α => ?_)
+    · exact (((Real.smoothTransition.continuous.comp (continuous_const.mul
+        (continuous_id.sub continuous_const))).mul (Real.smoothTransition.continuous.comp
+        (continuous_const.mul (continuous_const.sub continuous_id)))).aestronglyMeasurable).mul
+        hg.aestronglyMeasurable
+    · -- `0 ≤ χ_k ≤ 1`
+      rw [norm_mul]
+      refine mul_le_of_le_one_left (norm_nonneg _) ?_
+      rw [Real.norm_eq_abs, abs_of_nonneg (mul_nonneg (Real.smoothTransition.nonneg _)
+        (Real.smoothTransition.nonneg _))]
+      exact (mul_le_of_le_one_left (Real.smoothTransition.nonneg _)
+        (Real.smoothTransition.le_one _)).trans (Real.smoothTransition.le_one _)
+    · by_cases hα : α ∈ Ioo p q
+      · -- `χ_k(α) = 1` once `k ≥ max (1/(α - p)) (1/(q - α))`
+        rw [indicator_of_mem hα]
+        obtain ⟨N, hN⟩ := exists_nat_ge (max (1 / (α - p)) (1 / (q - α)))
+        have hp : 0 < α - p := sub_pos.2 hα.1
+        have hq : 0 < q - α := sub_pos.2 hα.2
+        refine tendsto_const_nhds.congr' ?_
+        filter_upwards [eventually_ge_atTop N] with k hk
+        have hk' : max (1 / (α - p)) (1 / (q - α)) ≤ k := hN.trans (Nat.cast_le.2 hk)
+        have h1 : 1 ≤ (k : ℝ) * (α - p) := by
+          have := (le_max_left _ _).trans hk'
+          rwa [div_le_iff₀ hp] at this
+        have h2 : 1 ≤ (k : ℝ) * (q - α) := by
+          have := (le_max_right _ _).trans hk'
+          rwa [div_le_iff₀ hq] at this
+        rw [Real.smoothTransition.one_of_one_le h1, Real.smoothTransition.one_of_one_le h2, one_mul,
+          one_mul]
+      · -- `χ_k(α) = 0` for every `k`
+        rw [indicator_of_notMem hα]
+        simp only [hzero _ α hα, zero_mul]
+        exact tendsto_const_nhds
+/-- Vanishing integrals over rational subintervals force a.e. vanishing: if `w` is integrable on
+`(c, d)` and `∫_{(p, q)} w = 0` for all rationals `c < p < q < d`, then `w = 0` a.e. on `(c, d)`.
+Extend `w` by zero to `w̄ = 𝟙_{(c, d)} w`.  The primitive `W x = ∫_c^x w̄` is continuous and
+constant on the dense set `(c, d) ∩ ℚ`, hence `W ≡ W c = 0` on `[c, d]`; so the averages of `w̄`
+over `[x - ρ, x + ρ] ⊆ [c, d]` vanish, and Lebesgue differentiation gives `w x = w̄ x = 0` for
+a.e. `x ∈ (c, d)`. -/
+theorem Submission.idtp_cse_ah_cst_ae_zero_of_rat_intervals : ∀ (c d : ℝ) (w : ℝ → ℝ), IntegrableOn w (Ioo c d) → (∀ p q : ℚ, c < (p : ℝ) → (p : ℝ) < (q : ℝ) → (q : ℝ) < d → ∫ α in Ioo (p : ℝ) (q : ℝ), w α = 0) → ∀ᵐ α, α ∈ Ioo c d → w α = 0 := by
+  intro c d w hw hrat
+  -- Step 0: if `d ≤ c` the interval is empty and the claim is vacuous.
+  rcases le_or_gt d c with hdc | hcd
+  · exact Eventually.of_forall fun α hα => absurd (hα.1.trans hα.2) (not_lt.mpr hdc)
+  -- Step 1: the extension `w̄ = 𝟙_{(c, d)} w` by zero is integrable on `ℝ`.
+  set wb : ℝ → ℝ := (Ioo c d).indicator w with hwb
+  have hwbi : Integrable wb := hw.integrable_indicator measurableSet_Ioo
+  have hwb_rat : ∀ p q : ℚ, c < (p : ℝ) → (p : ℝ) < (q : ℝ) → (q : ℝ) < d →
+      ∫ α in Ioo (p : ℝ) (q : ℝ), wb α = 0 := by
+    intro p q hcp hpq hqd
+    rw [← hrat p q hcp hpq hqd]
+    exact setIntegral_congr_fun measurableSet_Ioo fun α hα =>
+      indicator_of_mem (show α ∈ Ioo c d from ⟨hcp.trans hα.1, hα.2.trans hqd⟩) w
+  -- Step 2: the primitive `W x = ∫_c^x w̄` is continuous and `W q = W p` for rationals.
+  set W : ℝ → ℝ := fun x => ∫ t in c..x, wb t with hW
+  have hWc : Continuous W :=
+    intervalIntegral.continuous_primitive (fun _ _ => hwbi.intervalIntegrable) c
+  have hWsub : ∀ a b : ℝ, W b - W a = ∫ t in a..b, wb t := fun a b =>
+    intervalIntegral.integral_interval_sub_left hwbi.intervalIntegrable hwbi.intervalIntegrable
+  have hWrat : ∀ p q : ℚ, c < (p : ℝ) → (p : ℝ) < (q : ℝ) → (q : ℝ) < d → W q = W p := by
+    intro p q hcp hpq hqd
+    have h := hWsub p q
+    rw [intervalIntegral.integral_of_le hpq.le, integral_Ioc_eq_integral_Ioo,
+      hwb_rat p q hcp hpq hqd] at h
+    linarith
+  -- Step 3: `W` is constant on the dense set `(c, d) ∩ ℚ`, hence `W ≡ W c = 0` on `[c, d]`.
+  obtain ⟨q₀, hcq₀, hq₀d⟩ := exists_rat_btwn hcd
+  have hWS : ∀ r : ℚ, c < (r : ℝ) → (r : ℝ) < d → W r = W q₀ := by
+    intro r hcr hrd
+    rcases lt_trichotomy (r : ℝ) (q₀ : ℝ) with h | h | h
+    · exact (hWrat r q₀ hcr h hq₀d).symm
+    · rw [h]
+    · exact hWrat q₀ r hcq₀ h hrd
+  have hSsub : Ioo c d ∩ range ((↑) : ℚ → ℝ) ⊆ Icc c d := fun x hx =>
+    Ioo_subset_Icc_self hx.1
+  have hclos : Icc c d ⊆ closure (Ioo c d ∩ range ((↑) : ℚ → ℝ)) := by
+    have h : Ioo c d ⊆ closure (Ioo c d ∩ range ((↑) : ℚ → ℝ)) :=
+      Rat.denseRange_cast.open_subset_closure_inter isOpen_Ioo
+    rw [← closure_Ioo hcd.ne]
+    exact closure_minimal h isClosed_closure
+  have hEq : EqOn W (fun _ => W q₀) (Icc c d) := by
+    refine EqOn.of_subset_closure ?_ hWc.continuousOn continuousOn_const hSsub hclos
+    rintro x ⟨hxJ, r, rfl⟩
+    exact hWS r hxJ.1 hxJ.2
+  have hWq₀ : W q₀ = 0 := by
+    have h := hEq (left_mem_Icc.mpr hcd.le)
+    simp only [hW, intervalIntegral.integral_same] at h
+    exact h.symm
+  have hW0 : ∀ x ∈ Icc c d, W x = 0 := fun x hx => (hEq hx).trans hWq₀
+  -- Step 4: Lebesgue differentiation for `w̄` along closed balls centred at `x`.
+  filter_upwards [IsUnifLocDoublingMeasure.ae_tendsto_average volume hwbi.locallyIntegrable 1]
+    with x hx hxJ
+  have hlim : Tendsto (fun ρ => ⨍ y in closedBall x ρ, wb y) (𝓝[>] 0) (𝓝 (wb x)) := by
+    refine hx (fun _ => x) id tendsto_id ?_
+    filter_upwards [self_mem_nhdsWithin] with ρ hρ
+    exact mem_closedBall_self (by rw [one_mul]; exact le_of_lt hρ)
+  -- Step 5: the averages vanish for `0 < ρ < min (x - c) (d - x)`.
+  have hm : 0 < min (x - c) (d - x) := lt_min (sub_pos.mpr hxJ.1) (sub_pos.mpr hxJ.2)
+  have hzero : ∀ᶠ ρ in 𝓝[>] (0 : ℝ), ⨍ y in closedBall x ρ, wb y = 0 := by
+    filter_upwards [Ioo_mem_nhdsGT hm] with ρ hρ
+    have h1 : c ≤ x - ρ := by linarith [min_le_left (x - c) (d - x), hρ.2]
+    have h2 : x + ρ ≤ d := by linarith [min_le_right (x - c) (d - x), hρ.2]
+    have hle : x - ρ ≤ x + ρ := by linarith [hρ.1]
+    rw [setAverage_eq, Real.closedBall_eq_Icc, integral_Icc_eq_integral_Ioc,
+      ← intervalIntegral.integral_of_le hle, ← hWsub, hW0 _ ⟨by linarith, h2⟩,
+      hW0 _ ⟨h1, by linarith⟩, sub_zero, smul_zero]
+  have hwbx : wb x = 0 :=
+    tendsto_nhds_unique hlim (tendsto_const_nhds.congr' (hzero.mono fun ρ hρ => hρ.symm))
+  rwa [hwb, indicator_of_mem hxJ] at hwbx
+/-- **Reduction of a product-tested integral to one variable** (step 7 of the `α`-homogeneity
+rigidity at the edge of a planar sector of a 2-dimensional minimizing cone, Simon 7.3.3).  If
+`H(p) = h(p.1)` for a.e. `p ∈ O = (a, b) × (c, d)`, `f = 0` off `(a, b)`, `ψ₀ = 0` off `(c, d)`
+and `∫ ψ₀ = 1`, then `∫ f(p.1) ψ₀(p.2) H(p) dp = ∫ f h`.  The integrand vanishes off `O` and
+equals `(f h)(p.1) ψ₀(p.2)` a.e. on `O`; `setIntegral_prod_mul` (no integrability needed) factors
+the box integral as `(∫_{(a,b)} f h) (∫_{(c,d)} ψ₀)`, and both factors are whole-line integrals. -/
+theorem Submission.idtp_cse_ah_product_integral_reduce : ∀ (a b c d : ℝ) (H : ℝ × ℝ → ℝ) (h f ψ₀ : ℝ → ℝ), (∀ᵐ p : ℝ × ℝ, p ∈ Ioo a b ×ˢ Ioo c d → H p = h p.1) → (∀ t, t ∉ Ioo a b → f t = 0) → (∀ α, α ∉ Ioo c d → ψ₀ α = 0) → ∫ α, ψ₀ α = 1 → ∫ p : ℝ × ℝ, f p.1 * ψ₀ p.2 * H p = ∫ t, f t * h t := by
+  intro a b c d H h f ψ₀ hH hf hψ hψ1
+  -- step 1: the integrand vanishes off the box `O = (a, b) × (c, d)`
+  have hvan : ∀ p : ℝ × ℝ, p ∉ Ioo a b ×ˢ Ioo c d → f p.1 * ψ₀ p.2 * H p = 0 := by
+    intro p hp
+    rcases not_and_or.mp hp with hp1 | hp2
+    · rw [hf _ hp1, zero_mul, zero_mul]
+    · rw [hψ _ hp2, mul_zero, zero_mul]
+  -- step 2: on `O`, `H p = h p.1` almost everywhere
+  have hO : ∫ p in Ioo a b ×ˢ Ioo c d, f p.1 * ψ₀ p.2 * H p =
+      ∫ p in Ioo a b ×ˢ Ioo c d, f p.1 * h p.1 * ψ₀ p.2 := by
+    refine setIntegral_congr_ae (measurableSet_Ioo.prod measurableSet_Ioo) ?_
+    filter_upwards [hH] with p hp hpO
+    rw [hp hpO, mul_right_comm]
+  -- step 3: `volume = volume.prod volume` on `ℝ × ℝ`, and the box integral factors
+  have hprod : ∫ p in Ioo a b ×ˢ Ioo c d, f p.1 * h p.1 * ψ₀ p.2 =
+      (∫ t in Ioo a b, f t * h t) * ∫ α in Ioo c d, ψ₀ α := by
+    rw [Measure.volume_eq_prod]
+    exact setIntegral_prod_mul (fun t => f t * h t) ψ₀ (Ioo a b) (Ioo c d)
+  -- step 4: both factors are whole-line integrals, and `∫ ψ₀ = 1`
+  have hfh : ∀ t, t ∉ Ioo a b → f t * h t = 0 := fun t ht => by rw [hf t ht, zero_mul]
+  rw [← setIntegral_eq_integral_of_forall_compl_eq_zero hvan, hO, hprod,
+    setIntegral_eq_integral_of_forall_compl_eq_zero hψ, hψ1, mul_one,
+    setIntegral_eq_integral_of_forall_compl_eq_zero hfh]
+/-- **Almost-everywhere scaling from a weak scaling identity.**  Let `r > 0` and let `h : ℝ → ℝ`
+be integrable on `J = (a, b)` and on `(ra, rb)`.  If `∫ l(t/r) h(t) dt = r² ∫ l(t) h(t) dt` for
+every `C¹` function `l` with `spt l ⊆ J`, then `h(ru) = r h(u)` for a.e. `u ∈ J`.  The change of
+variables `t = ru` gives `∫ l(t/r) h(t) dt = r ∫ l(u) h(ru) du`, so `∫ l(u) F(u) du = 0` for
+`F(u) = h(ru) − r h(u)`, which is integrable on `J` (`u ↦ h(ru)` agrees there with
+`1_{(ra, rb)} h (r ·)`).  The fundamental lemma on the open set `J` gives `F = 0` a.e. on `J`. -/
+theorem Submission.idtp_cse_ah_ae_scaling_of_weak_scaling : ∀ (a b r : ℝ) (h : ℝ → ℝ), 0 < r → IntegrableOn h (Ioo a b) → IntegrableOn h (Ioo (r * a) (r * b)) → (∀ l : ℝ → ℝ, ContDiff ℝ 1 l → tsupport l ⊆ Ioo a b → ∫ t, l (t / r) * h t = r ^ 2 * ∫ t, l t * h t) → ∀ᵐ u, u ∈ Ioo a b → h (r * u) = r * h u := by
+  intro a b r h hr hJ hrJ hw
+  -- `u ↦ h (r u)` is integrable on `J = (a, b)`: it agrees there with `1_{(ra, rb)} h (r ·)`
+  have hhr : IntegrableOn (fun u => h (r * u)) (Ioo a b) := by
+    have h2 : Integrable (fun u => (Ioo (r * a) (r * b)).indicator h (r * u)) :=
+      (hrJ.integrable_indicator measurableSet_Ioo).comp_mul_left' hr.ne'
+    refine h2.integrableOn.congr_fun (fun u hu => ?_) measurableSet_Ioo
+    exact indicator_of_mem (show r * u ∈ Ioo (r * a) (r * b) from
+      ⟨mul_lt_mul_of_pos_left hu.1 hr, mul_lt_mul_of_pos_left hu.2 hr⟩) h
+  -- `F(u) = h (r u) - r h u` is integrable on `J`
+  have hF : IntegrableOn (fun u => h (r * u) - r * h u) (Ioo a b) := hhr.sub (hJ.const_mul r)
+  -- fundamental lemma on `J`
+  have key := isOpen_Ioo.ae_eq_zero_of_integral_contDiff_smul_eq_zero hF.locallyIntegrableOn ?_
+  · filter_upwards [key] with u hu hmem
+    exact sub_eq_zero.mp (hu hmem)
+  intro g hg hgc hgs
+  have hgcont : Continuous g := hg.continuous
+  obtain ⟨C, hC⟩ := hgc.exists_bound_of_continuous hgcont
+  have hgz : ∀ u, u ∉ Ioo a b → g u = 0 := fun u hu =>
+    image_eq_zero_of_notMem_tsupport fun hu' => hu (hgs hu')
+  -- `g h(r ·)` and `g h` are integrable on `ℝ` (`g` is bounded and vanishes off `J`)
+  have hI : ∀ k : ℝ → ℝ, IntegrableOn k (Ioo a b) → Integrable (fun u => g u * k u) := by
+    intro k hk
+    refine ((hk.integrable_indicator measurableSet_Ioo).bdd_mul hgcont.aestronglyMeasurable
+      (Eventually.of_forall hC)).congr (Eventually.of_forall fun u => ?_)
+    by_cases hu : u ∈ Ioo a b
+    · simp only [indicator_of_mem hu]
+    · simp only [hgz u hu, zero_mul]
+  -- change of variables `t = r u`: `∫ g(u) h(r u) du = r⁻¹ ∫ g(t/r) h(t) dt`
+  have hcv : ∫ u, g u * h (r * u) = r⁻¹ * ∫ t, g (t / r) * h t := by
+    have := Measure.integral_comp_mul_left (fun t => g (t / r) * h t) r
+    simp only [mul_div_cancel_left₀ _ hr.ne'] at this
+    rw [this, abs_of_pos (inv_pos.mpr hr), smul_eq_mul]
+  have hid := hw g (hg.of_le (by exact_mod_cast le_top)) hgs
+  calc ∫ u, g u • (h (r * u) - r * h u)
+      = ∫ u, (g u * h (r * u) - r * (g u * h u)) := by
+        congr 1; ext u; rw [smul_eq_mul]; ring
+    _ = (∫ u, g u * h (r * u)) - r * ∫ u, g u * h u := by
+        rw [integral_sub (hI _ hhr) ((hI _ hJ).const_mul r), integral_const_mul]
+    _ = 0 := by
+        rw [hcv, hid, ← mul_assoc, pow_two, ← mul_assoc, inv_mul_cancel₀ hr.ne', one_mul, sub_self]
+/-- **A.e. degree-one homogeneity forces linearity near `1`** (step 8 of the rigidity lemma
+`idtp_cse_alpha_invariant_homogeneous`, towards Simon 7.3.3).  Let `0 < s ≤ 1` and let `h` be
+a.e.-strongly measurable on `I = (1 - s, 1 + s)`.  If for every `r` with `|r - 1| < s/4`,
+`h (r u) = r h u` for a.e. `u ∈ (1 - s/2, 1 + s/2)`, then `h v = c v` for a.e.
+`v ∈ (1 - s/8, 1 + s/8)`.  Pass to a measurable `h'` with `h = h'` a.e. on `I` (`u ↦ r u` maps
+`(1 - s/2, 1 + s/2)` into `I` and pulls null sets back to null sets) and put `g v = h' v / v`, so
+`g (r u) = g u` for a.e. `u`.  Tonelli swaps the quantifiers, giving `u₀ ∈ (1 - s/16, 1 + s/16)`
+with `g (r u₀) = g u₀` for a.e. `r ∈ (1 - s/4, 1 + s/4)`; rescaling by `u₀` gives `g = c := g u₀`
+a.e. on `(1 - s/8, 1 + s/8)`. -/
+theorem Submission.idtp_cse_ah_ae_linear_of_ae_scaling : ∀ (s : ℝ) (h : ℝ → ℝ), 0 < s → s ≤ 1 → AEStronglyMeasurable h (volume.restrict (Ioo (1 - s) (1 + s))) → (∀ r : ℝ, |r - 1| < s / 4 → ∀ᵐ u, u ∈ Ioo (1 - s / 2) (1 + s / 2) → h (r * u) = r * h u) → ∃ c : ℝ, ∀ᵐ v, v ∈ Ioo (1 - s / 8) (1 + s / 8) → h v = c * v := by
+  intro s h hs hs1 hmeas hscal
+  -- a measurable `h'` with `h = h'` a.e. on `I = (1 - s, 1 + s)`
+  obtain ⟨h', hh', hhh'⟩ := hmeas
+  have hI : ∀ᵐ v, v ∈ Ioo (1 - s) (1 + s) → h v = h' v :=
+    (ae_restrict_iff' measurableSet_Ioo).1 hhh'
+  -- for `r ∈ R = (1 - s/4, 1 + s/4)`: `h' (r u) = r h' u` for a.e. `u ∈ I₁ = (1 - s/2, 1 + s/2)`
+  have hscal' : ∀ r ∈ Ioo (1 - s / 4) (1 + s / 4),
+      ∀ᵐ u, u ∈ Ioo (1 - s / 2) (1 + s / 2) → h' (r * u) = r * h' u := by
+    intro r hr
+    have hr0 : 0 < r := by linarith [hr.1]
+    -- `u ↦ r u` maps `I₁` into `I`, and the preimage of the null set `{h ≠ h'} ∩ I` is null
+    have h1 : ∀ᵐ u, u ∈ Ioo (1 - s / 2) (1 + s / 2) → h (r * u) = h' (r * u) := by
+      rw [ae_iff]
+      refine measure_mono_null (fun u hu => ?_)
+        ((Real.volume_preimage_mul_left hr0.ne' _).trans (by rw [ae_iff.1 hI, mul_zero]))
+      simp only [mem_ofPred_eq, not_imp, mem_preimage, mem_Ioo] at hu ⊢
+      obtain ⟨⟨hu1, hu2⟩, hu3⟩ := hu
+      have hu0 : 0 < u := by linarith
+      refine ⟨⟨?_, ?_⟩, hu3⟩
+      · nlinarith [mul_pos (sub_pos.2 hr.1) (sub_pos.2 hu1),
+          mul_pos (by linarith : (0 : ℝ) < 1 - s / 4) (sub_pos.2 hu1),
+          mul_pos (by linarith : (0 : ℝ) < 1 - s / 2) (sub_pos.2 hr.1), mul_pos hs hs]
+      · nlinarith [mul_pos (sub_pos.2 hr.2) (sub_pos.2 hu2), mul_pos hr0 (sub_pos.2 hu2),
+          mul_pos hu0 (sub_pos.2 hr.2), mul_nonneg hs.le (sub_nonneg.2 hs1)]
+    have hr' : |r - 1| < s / 4 := abs_sub_lt_iff.2 ⟨by linarith [hr.2], by linarith [hr.1]⟩
+    filter_upwards [hscal r hr', h1, hI] with u hu1 hu2 hu3 hu
+    rw [← hu2 hu, hu1 hu, hu3 ⟨by linarith [hu.1], by linarith [hu.2]⟩]
+  -- the quotient `g v = h' v / v` satisfies `g (r u) = g u` for a.e. `u ∈ I₁`, for each `r ∈ R`
+  obtain ⟨g, hg, hgdef⟩ : ∃ g : ℝ → ℝ, Measurable g ∧ ∀ v, g v = h' v / v :=
+    ⟨fun v => h' v / v, hh'.measurable.div measurable_id, fun v => rfl⟩
+  have hginv : ∀ r ∈ Ioo (1 - s / 4) (1 + s / 4),
+      ∀ᵐ u ∂(volume.restrict (Ioo (1 - s / 2) (1 + s / 2))), g (r * u) = g u := by
+    intro r hr
+    rw [ae_restrict_iff' measurableSet_Ioo]
+    filter_upwards [hscal' r hr] with u hu1 hu
+    rw [hgdef, hgdef, hu1 hu, mul_div_mul_left _ _ (by linarith [hr.1] : r ≠ 0)]
+  -- Tonelli: for a.e. `u ∈ I₁`, `g (r u) = g u` for a.e. `r ∈ R`
+  have hE : MeasurableSet {p : ℝ × ℝ | g (p.2 * p.1) = g p.1} :=
+    measurableSet_eq_fun (hg.comp (measurable_snd.mul measurable_fst)) (hg.comp measurable_fst)
+  have hswap : ∀ᵐ u ∂(volume.restrict (Ioo (1 - s / 2) (1 + s / 2))),
+      ∀ᵐ r ∂(volume.restrict (Ioo (1 - s / 4) (1 + s / 4))), g (r * u) = g u :=
+    (Measure.ae_ae_comm (p := fun u r => g (r * u) = g u) hE).2
+      (ae_restrict_of_forall_mem measurableSet_Ioo hginv)
+  -- choose such a `u₀ ∈ I₃ = (1 - s/16, 1 + s/16)`; put `c = g u₀`
+  have hI₃ : volume.restrict (Ioo (1 - s / 2) (1 + s / 2)) (Ioo (1 - s / 16) (1 + s / 16)) ≠ 0 := by
+    rw [Measure.restrict_apply measurableSet_Ioo,
+      inter_eq_left.2 (Ioo_subset_Ioo (by linarith) (by linarith)), Real.volume_Ioo]
+    exact (ENNReal.ofReal_pos.2 (by linarith)).ne'
+  obtain ⟨u₀, hu₀, hu₀ae⟩ := Measure.exists_mem_of_measure_ne_zero_of_ae hI₃ (ae_restrict_of_ae hswap)
+  have hu₀0 : 0 < u₀ := by linarith [hu₀.1]
+  have hA : ∀ᵐ r, r ∈ Ioo (1 - s / 4) (1 + s / 4) → g (r * u₀) = g u₀ :=
+    (ae_restrict_iff' measurableSet_Ioo).1 hu₀ae
+  -- rescaling `v ↦ v / u₀`: `g v = c` for a.e. `v ∈ I₂ = (1 - s/8, 1 + s/8)`
+  have hgc : ∀ᵐ v, v ∈ Ioo (1 - s / 8) (1 + s / 8) → g v = g u₀ := by
+    rw [ae_iff]
+    refine measure_mono_null (fun v hv => ?_)
+      ((Real.volume_preimage_mul_left (inv_ne_zero hu₀0.ne') _).trans (by rw [ae_iff.1 hA, mul_zero]))
+    simp only [mem_ofPred_eq, not_imp, mem_preimage, mem_Ioo] at hv ⊢
+    obtain ⟨⟨hv1, hv2⟩, hv3⟩ := hv
+    have hvu : u₀⁻¹ * v * u₀ = v := by field_simp
+    refine ⟨⟨?_, ?_⟩, by rwa [hvu]⟩
+    · rw [← div_eq_inv_mul, lt_div_iff₀ hu₀0]
+      nlinarith [hu₀.2, mul_pos (by linarith : (0 : ℝ) < 1 - s / 4) (sub_pos.2 hu₀.2), mul_pos hs hs]
+    · rw [← div_eq_inv_mul, div_lt_iff₀ hu₀0]
+      nlinarith [hu₀.1, mul_pos (by linarith : (0 : ℝ) < 1 + s / 4) (sub_pos.2 hu₀.1),
+        mul_nonneg hs.le (sub_nonneg.2 hs1)]
+  -- conclusion: `h v = h' v = v g v = c v` for a.e. `v ∈ I₂`
+  refine ⟨g u₀, ?_⟩
+  filter_upwards [hI, hgc] with v hv1 hv2 hv
+  have hv0 : v ≠ 0 := by linarith [hv.1]
+  rw [hv1 ⟨by linarith [hv.1], by linarith [hv.2]⟩, ← hv2 hv, hgdef, div_mul_cancel₀ _ hv0]
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
+
+/-- Test functions for the `α`-independence step of the cone-sector endpoint density argument
+(Simon 7.3.3): the primitive of a mean-zero continuous test function is a `C¹` test function.
+Let `ψ(x) = ∫_c^x g`, so `ψ' = g` by the fundamental theorem of calculus and `ψ` is `C¹`.  If
+`spt g ≠ ∅`, let `p = min spt g` and `q = max spt g`, so `c < p ≤ q < d`.  Then `ψ = 0` on
+`(-∞, p)`, as `g` vanishes between `c` and `x`, and `ψ(x) = ∫ g = 0` for `x > q`.  Hence
+`spt ψ ⊆ [p, q] ⊆ (c, d)`. -/
+theorem Submission.idtp_cse_ah_antiderivative_test : ∀ (c d : ℝ) (g : ℝ → ℝ), Continuous g → tsupport g ⊆ Ioo c d → ∫ α, g α = 0 → ∃ ψ : ℝ → ℝ, ContDiff ℝ 1 ψ ∧ tsupport ψ ⊆ Ioo c d ∧ deriv ψ = g := by
+  intro c d g hg hgcd hg0
+  -- step 3: `ψ(x) = ∫_c^x g` has derivative `g x` at every `x` (FTC for the continuous `g`)
+  have hψ : ∀ x, HasDerivAt (fun y => ∫ α in c..y, g α) (g x) x := fun x =>
+    intervalIntegral.integral_hasDerivAt_right (hg.intervalIntegrable c x)
+      (hg.stronglyMeasurableAtFilter _ _) hg.continuousAt
+  have hdψ : deriv (fun y => ∫ α in c..y, g α) = g := funext fun x => (hψ x).deriv
+  -- step 4: `ψ` is differentiable with continuous derivative `g`, hence `C¹`
+  refine ⟨fun y => ∫ α in c..y, g α,
+    contDiff_one_iff_deriv.2 ⟨fun x => (hψ x).differentiableAt, hdψ.symm ▸ hg⟩, ?_, hdψ⟩
+  -- step 2: if `spt g = ∅`, then `g = 0` and `ψ = 0`
+  rcases (tsupport g).eq_empty_or_nonempty with he | hne
+  · obtain rfl := tsupport_eq_empty_iff.1 he
+    simp
+  -- step 1: `spt g` is a closed subset of `[c, d]`, hence compact; `p = min spt g` and
+  -- `q = max spt g` lie in `spt g ⊆ (c, d)`, and `g = 0` off `[p, q]`
+  have hK : IsCompact (tsupport g) :=
+    isCompact_Icc.of_isClosed_subset (isClosed_tsupport g) (hgcd.trans Ioo_subset_Icc_self)
+  have hp := hgcd (hK.sInf_mem hne)
+  have hq := hgcd (hK.sSup_mem hne)
+  have hpq : sInf (tsupport g) ≤ sSup (tsupport g) := csInf_le hK.bddBelow (hK.sSup_mem hne)
+  have hgpq : ∀ α ∉ Icc (sInf (tsupport g)) (sSup (tsupport g)), g α = 0 := fun α hα =>
+    image_eq_zero_of_notMem_tsupport fun h =>
+      hα ⟨csInf_le hK.bddBelow h, le_csSup hK.bddAbove h⟩
+  -- step 6: `spt ψ ⊆ [p, q] ⊆ (c, d)`, once `ψ = 0` off `[p, q]`
+  refine (closure_minimal (support_subset_iff'.2 fun x hx => ?_) isClosed_Icc).trans
+    (Icc_subset_Ioo hp.1 hq.2)
+  show ∫ α in c..x, g α = 0
+  -- step 5: `ψ = 0` off `[p, q]`
+  rcases not_and_or.1 hx with hx | hx <;> rw [not_le] at hx
+  · -- `x < p`: `g` vanishes on `Ι c x`, which lies left of `p`
+    refine intervalIntegral.integral_zero_ae
+      (Eventually.of_forall fun α hα => hgpq α fun h => ?_)
+    exact lt_irrefl _ ((h.1.trans hα.2).trans_lt (max_lt hp.1 hx))
+  · -- `x > q`: `ψ(x) = ∫_{(c, x]} g = ∫ g = 0`, as `g` vanishes off `[p, q] ⊆ (c, x]`
+    rw [intervalIntegral.integral_of_le (hp.1.trans_le (hpq.trans hx.le)).le,
+      setIntegral_eq_integral_of_forall_compl_eq_zero, hg0]
+    exact fun α hα => hgpq α fun h => hα ⟨hp.1.trans_le h.1, h.2.trans hx.le⟩
+/-- **Product-tested vanishing forces a.e. vanishing of slice integrals** (step 2 of the
+`α`-homogeneity step in the cone-sector endpoint density argument for Simon 7.3.3).  Let
+`I = (a, b)`, `J = (c, d)`, `H` integrable on `I × J` and `g` continuous with `tsupport g ⊆ J`.
+If `∫ g(α) l(t) H(t, α) = 0` for every `C¹` function `l` with `tsupport l ⊆ I`, then
+`Φ(t) = ∫_J g(α) H(t, α) dα` vanishes for a.e. `t ∈ I`.  As `g` is bounded, `g(α) H(t, α)` is
+integrable for `vol|I ⊗ vol|J = vol|(I × J)` and `Φ` is integrable on `I` (Fubini).  The test
+integrand vanishes off `I × J`, so Fubini turns the hypothesis into `∫ l Φ = 0` for every smooth
+`l` with compact support in `I`, and the fundamental lemma on the open set `I` applies. -/
+theorem Submission.idtp_cse_ah_slice_integral_ae_zero : ∀ (a b c d : ℝ) (H : ℝ × ℝ → ℝ) (g : ℝ → ℝ), IntegrableOn H (Ioo a b ×ˢ Ioo c d) → Continuous g → tsupport g ⊆ Ioo c d → (∀ l : ℝ → ℝ, ContDiff ℝ 1 l → tsupport l ⊆ Ioo a b → ∫ p : ℝ × ℝ, g p.2 * l p.1 * H p = 0) → ∀ᵐ t, t ∈ Ioo a b → ∫ α in Ioo c d, g α * H (t, α) = 0 := by
+  intro a b c d H g hH hg hgs htest
+  -- step 1: `H` is integrable for `μ.prod ν`, `μ = vol|I`, `ν = vol|J`
+  have hH' : Integrable H ((volume.restrict (Ioo a b)).prod (volume.restrict (Ioo c d))) := by
+    rw [Measure.prod_restrict, ← Measure.volume_eq_prod]
+    exact hH
+  -- step 2: `g` is bounded, so `K(t, α) = g α * H (t, α)` is integrable for `μ.prod ν`
+  have hgc : HasCompactSupport g :=
+    isCompact_Icc.of_isClosed_subset (isClosed_tsupport g) (hgs.trans Ioo_subset_Icc_self)
+  obtain ⟨M, hM⟩ := hgc.exists_bound_of_continuous hg
+  have hK : Integrable (fun p : ℝ × ℝ => g p.2 * H p)
+      ((volume.restrict (Ioo a b)).prod (volume.restrict (Ioo c d))) :=
+    hH'.bdd_mul (hg.comp continuous_snd).aestronglyMeasurable (Eventually.of_forall fun p => hM p.2)
+  -- step 3: `Φ(t) = ∫_J g α H(t, α) dα` is integrable on `I` (Fubini)
+  have hΦ : IntegrableOn (fun t => ∫ α in Ioo c d, g α * H (t, α)) (Ioo a b) := hK.integral_prod_left
+  -- step 5: the fundamental lemma on the open interval `I`
+  refine isOpen_Ioo.ae_eq_zero_of_integral_contDiff_smul_eq_zero hΦ.locallyIntegrableOn
+    fun l hl hlc hls => ?_
+  -- step 4: `∫ l Φ = ∫_{I × J} g(p.2) l(p.1) H(p) = ∫_{ℝ²} g(p.2) l(p.1) H(p) = 0`
+  obtain ⟨L, hL⟩ := hlc.exists_bound_of_continuous hl.continuous
+  have hl0 : ∀ t ∉ Ioo a b, l t = 0 := fun t ht => image_eq_zero_of_notMem_tsupport fun h => ht (hls h)
+  have hg0 : ∀ α ∉ Ioo c d, g α = 0 := fun α hα => image_eq_zero_of_notMem_tsupport fun h => hα (hgs h)
+  have hlK : Integrable (fun p : ℝ × ℝ => g p.2 * l p.1 * H p)
+      ((volume.restrict (Ioo a b)).prod (volume.restrict (Ioo c d))) :=
+    (hK.bdd_mul (f := fun p => l p.1) (hl.continuous.comp continuous_fst).aestronglyMeasurable
+      (Eventually.of_forall fun p => hL p.1)).congr (Eventually.of_forall fun p => by ring)
+  rw [← htest l (hl.of_le (by exact_mod_cast le_top)) hls,
+    ← setIntegral_eq_integral_of_forall_compl_eq_zero (s := Ioo a b) fun t ht => by
+      rw [hl0 t ht, zero_smul],
+    ← setIntegral_eq_integral_of_forall_compl_eq_zero (s := Ioo a b ×ˢ Ioo c d) fun p hp => by
+      rcases not_and_or.mp hp with hp | hp
+      · rw [hl0 _ hp, mul_zero, zero_mul]
+      · rw [hg0 _ hp, zero_mul, zero_mul],
+    Measure.volume_eq_prod, ← Measure.prod_restrict, integral_prod _ hlK]
+  refine integral_congr_ae (Eventually.of_forall fun t => ?_)
+  simp only [smul_eq_mul]
+  rw [← integral_const_mul]
+  refine integral_congr_ae (Eventually.of_forall fun α => ?_)
+  simp only
+  ring
+/-- **Countable separating `C¹` tests on an interval** (replaces the separability of `C([−s, s])`
+in the `α`-homogeneity step of the cone-sector endpoint density argument for Simon 7.3.3).  For
+reals `c, d` there are `C¹` functions `Fₙ` with `tsupport Fₙ ⊆ (c, d)` such that every `w`
+integrable on `(c, d)` with `∫ Fₙ w = 0` for all `n` vanishes a.e. on `(c, d)`.  Enumerate the
+triples `(p, q, k) ∈ ℚ × ℚ × ℕ` by a surjection `e : ℕ → ℚ × ℚ × ℕ`, and let `Fₙ` be the `k`-th
+`C¹` plateau `χ_{p,q,k}` (`tsupport ⊆ [p, q]`) if `c < p < q < d`, and `0` otherwise.  For such
+`p, q` the plateaus vanish off `(c, d)`, so with `w̄ = 1_{(c,d)} w` integrable,
+`∫_{(p,q)} w = ∫_{(p,q)} w̄ = lim_k ∫ χ_{p,q,k} w̄ = lim_k ∫ χ_{p,q,k} w = 0`; vanishing on all
+rational subintervals gives `w = 0` a.e. on `(c, d)`. -/
+theorem Submission.idtp_cse_ah_countable_separating_tests : ∀ c d : ℝ, ∃ F : ℕ → ℝ → ℝ, (∀ n, ContDiff ℝ 1 (F n)) ∧ (∀ n, tsupport (F n) ⊆ Ioo c d) ∧ ∀ w : ℝ → ℝ, IntegrableOn w (Ioo c d) → (∀ n, ∫ α, F n α * w α = 0) → ∀ᵐ α, α ∈ Ioo c d → w α = 0 := by
+  intro c d
+  classical
+  -- plateaus `χ p q k`: `C¹`, `tsupport ⊆ [p, q]`, and `∫ χ p q k · g → ∫_{(p,q)} g`
+  choose χ hχC hχS hχT using Submission.idtp_cse_ah_cst_plateau_weak_limit
+  -- an enumeration `e` of the triples `(p, q, k)`; `A t` says `c < p < q < d`
+  obtain ⟨e, he⟩ := exists_surjective_nat (ℚ × ℚ × ℕ)
+  let A : ℚ × ℚ × ℕ → Prop := fun t => c < (t.1 : ℝ) ∧ (t.1 : ℝ) < t.2.1 ∧ (t.2.1 : ℝ) < d
+  refine ⟨fun n => if A (e n) then χ (e n).1 (e n).2.1 (e n).2.2 else 0, fun n => ?_, fun n => ?_,
+    ?_⟩
+  · dsimp only
+    split_ifs
+    · exact hχC _ _ _
+    · exact contDiff_zero_fun
+  -- `tsupport Fₙ ⊆ [p, q] ⊆ (c, d)`, or `Fₙ = 0`
+  · dsimp only
+    split_ifs with h
+    · exact (hχS _ _ _).trans (Icc_subset_Ioo h.1 h.2.2)
+    · simp
+  -- it suffices that `∫_{(p,q)} w = 0` for rationals `c < p < q < d`
+  · intro w hw hF
+    refine Submission.idtp_cse_ah_cst_ae_zero_of_rat_intervals c d w hw fun p q hcp hpq hqd => ?_
+    have hg : Integrable ((Ioo c d).indicator w) := hw.integrable_indicator measurableSet_Ioo
+    -- `∫ χ p q k · w̄ = ∫ Fₙ w = 0` for `e n = (p, q, k)`, since `χ p q k = 0` off `(c, d)`
+    have hzero : ∀ k, ∫ α, χ p q k α * (Ioo c d).indicator w α = 0 := by
+      intro k
+      obtain ⟨n, hn⟩ := he (p, q, k)
+      have hA : A (e n) := by rw [hn]; exact ⟨hcp, hpq, hqd⟩
+      have h := hF n
+      dsimp only at h
+      rw [ite_eq_left hA, hn] at h
+      rw [← h]
+      congr 1
+      funext α
+      by_cases hα : α ∈ Ioo c d
+      · rw [indicator_of_mem hα]
+      · have hα' : α ∉ tsupport (χ p q k) :=
+          fun h' => hα ((hχS _ _ _).trans (Icc_subset_Ioo hcp hqd) h')
+        simp [image_eq_zero_of_notMem_tsupport hα']
+    -- so `∫_{(p,q)} w̄ = lim_k ∫ χ p q k · w̄ = 0`, and `w̄ = w` on `(p, q)`
+    have hlim := hχT p q _ hg
+    simp only [hzero] at hlim
+    rw [← tendsto_nhds_unique hlim tendsto_const_nhds]
+    exact (setIntegral_congr_fun measurableSet_Ioo fun α hα =>
+      indicator_of_mem (Ioo_subset_Ioo hcp.le hqd.le hα) w).symm
+
+/-- **Slices are a.e. constant** (one-variable du Bois-Reymond lemma, with a parameter).  Let
+`I = (a, b)`, `J = (c, d)` with `c < d`, and let `H` be integrable on `I × J` with
+`∫ ψ′(α) l(t) H(t, α) = 0` for all `C¹` functions `ψ`, `l` supported in `J`, `I`.  Fix a normalized
+`C¹` bump `χ` and a countable separating family `F n` of `C¹` tests in `J`.  Then
+`g n = F n − (∫ F n) χ` has mean zero, so `g n = ψ n′` with `ψ n ∈ C¹` supported in `J`, and the
+hypothesis gives `∫_J g n H(t, ·) = 0` for a.e. `t ∈ I`.  By Fubini the slice `H(t, ·)` is
+integrable on `J` for a.e. `t ∈ I`.  For such `t`, `w = H(t, ·) − ∫_J χ H(t, ·)` is integrable on
+`J` and satisfies `∫ F n w = 0` for all `n`, so `w = 0` a.e. on `J`. -/
+theorem Submission.idtp_cse_ah_slice_ae_const : ∀ (a b c d : ℝ) (H : ℝ × ℝ → ℝ), c < d → IntegrableOn H (Ioo a b ×ˢ Ioo c d) → (∀ ψ l : ℝ → ℝ, ContDiff ℝ 1 ψ → ContDiff ℝ 1 l → tsupport ψ ⊆ Ioo c d → tsupport l ⊆ Ioo a b → ∫ p : ℝ × ℝ, deriv ψ p.2 * l p.1 * H p = 0) → ∀ᵐ t, t ∈ Ioo a b → ∃ k : ℝ, ∀ᵐ α, α ∈ Ioo c d → H (t, α) = k := by
+  intro a b c d H hcd hH hweak
+  -- Step 1: the normalized bump `χ` and the separating family `F n`, all supported in `J`; they
+  -- are continuous with compact support, hence integrable, bounded and zero off `J`
+  obtain ⟨χ, hχ_diff, hχ_supp, hχ_int⟩ := Submission.idtp_cse_ah_normalized_bump c d hcd
+  obtain ⟨F, hF_diff, hF_supp, hF_sep⟩ := Submission.idtp_cse_ah_countable_separating_tests c d
+  have hJ_cpt : ∀ f : ℝ → ℝ, tsupport f ⊆ Ioo c d → HasCompactSupport f := fun f hf =>
+    isCompact_Icc.of_isClosed_subset (isClosed_tsupport f) (hf.trans Ioo_subset_Icc_self)
+  have hJ_zero : ∀ f : ℝ → ℝ, tsupport f ⊆ Ioo c d → ∀ α, α ∉ Ioo c d → f α = 0 :=
+    fun f hf α hα => image_eq_zero_of_notMem_tsupport fun h => hα (hf h)
+  have hχ_integrable : Integrable χ :=
+    hχ_diff.continuous.integrable_of_hasCompactSupport (hJ_cpt χ hχ_supp)
+  have hF_integrable : ∀ n, Integrable (F n) := fun n =>
+    (hF_diff n).continuous.integrable_of_hasCompactSupport (hJ_cpt (F n) (hF_supp n))
+  obtain ⟨Cχ, hCχ⟩ := hχ_diff.continuous.bounded_above_of_compact_support (hJ_cpt χ hχ_supp)
+  choose CF hCF using fun n =>
+    (hF_diff n).continuous.bounded_above_of_compact_support (hJ_cpt (F n) (hF_supp n))
+  -- Step 2: `g n = F n - (∫ F n) χ` is continuous, supported in `J` and of mean zero, so it is
+  -- the derivative of some `ψ n ∈ C¹` supported in `J`
+  obtain ⟨g, hg⟩ : ∃ g : ℕ → ℝ → ℝ, ∀ n, g n = fun α => F n α - (∫ β, F n β) * χ α :=
+    ⟨_, fun _ => rfl⟩
+  have hg_cont : ∀ n, Continuous (g n) := fun n => by
+    rw [hg n]
+    exact (hF_diff n).continuous.sub (continuous_const.mul hχ_diff.continuous)
+  have hg_supp : ∀ n, tsupport (g n) ⊆ Ioo c d := fun n => by
+    rw [hg n]
+    exact (tsupport_sub _ _).trans (union_subset (hF_supp n)
+      ((tsupport_mul_subset_right (f := fun _ => ∫ β, F n β) (g := χ)).trans hχ_supp))
+  have hg_mean : ∀ n, ∫ α, g n α = 0 := fun n => by
+    rw [hg n, integral_sub (hF_integrable n) (hχ_integrable.const_mul _), integral_const_mul, hχ_int,
+      mul_one, sub_self]
+  choose ψ hψ_diff hψ_supp hψ_deriv using fun n =>
+    Submission.idtp_cse_ah_antiderivative_test c d (g n) (hg_cont n) (hg_supp n) (hg_mean n)
+  -- Step 3: the hypothesis with `ψ n` gives `∫_J g n H(t, ·) = 0` for a.e. `t ∈ I`
+  have hslice : ∀ n, ∀ᵐ t, t ∈ Ioo a b → ∫ α in Ioo c d, g n α * H (t, α) = 0 := fun n =>
+    Submission.idtp_cse_ah_slice_integral_ae_zero a b c d H (g n) hH (hg_cont n) (hg_supp n)
+      fun l hl_diff hl_supp => by
+        have h := hweak (ψ n) l (hψ_diff n) hl_diff (hψ_supp n) hl_supp
+        rwa [hψ_deriv n] at h
+  -- Step 4: Fubini; for a.e. `t ∈ I` the slice `H(t, ·)` is integrable on `J`
+  have hH' : Integrable H ((volume.restrict (Ioo a b)).prod (volume.restrict (Ioo c d))) := by
+    rw [Measure.prod_restrict, ← Measure.volume_eq_prod]
+    exact hH
+  have hslice_int : ∀ᵐ t, t ∈ Ioo a b → IntegrableOn (fun α => H (t, α)) (Ioo c d) :=
+    (ae_restrict_iff' measurableSet_Ioo).mp hH'.prod_right_ae
+  -- Step 5: intersect the countably many full-measure sets and fix a good `t`
+  filter_upwards [ae_all_iff.mpr hslice, hslice_int] with t ht hti htI
+  have hHt : Integrable (fun α => H (t, α)) (volume.restrict (Ioo c d)) := hti htI
+  -- Step 6: `w = H(t, ·) - k` with `k = ∫_J χ H(t, ·)` is integrable on `J` and `∫ F n w = 0`
+  set k : ℝ := ∫ α in Ioo c d, χ α * H (t, α)
+  refine ⟨k, ?_⟩
+  have hw_int : IntegrableOn (fun α => H (t, α) - k) (Ioo c d) :=
+    hHt.sub (integrableOn_const measure_Ioo_lt_top.ne)
+  have hFH_int : ∀ n, Integrable (fun α => F n α * H (t, α)) (volume.restrict (Ioo c d)) :=
+    fun n => hHt.bdd_mul (hF_diff n).continuous.aestronglyMeasurable
+      (Eventually.of_forall (hCF n))
+  have hχH_int : Integrable (fun α => χ α * H (t, α)) (volume.restrict (Ioo c d)) :=
+    hHt.bdd_mul hχ_diff.continuous.aestronglyMeasurable (Eventually.of_forall hCχ)
+  have hw_zero : ∀ n, ∫ α, F n α * (H (t, α) - k) = 0 := by
+    intro n
+    have h₁ : ∫ α, F n α * (H (t, α) - k) = ∫ α in Ioo c d, F n α * (H (t, α) - k) :=
+      (setIntegral_eq_integral_of_forall_compl_eq_zero fun α hα => by
+        rw [hJ_zero (F n) (hF_supp n) α hα, zero_mul]).symm
+    have h₂ : ∫ α in Ioo c d, F n α * (H (t, α) - k) =
+        (∫ α in Ioo c d, F n α * H (t, α)) - (∫ α in Ioo c d, F n α) * k := by
+      simp_rw [mul_sub]
+      rw [integral_sub (hFH_int n) ((hF_integrable n).integrableOn.mul_const k), integral_mul_const]
+    have h₃ : ∫ α in Ioo c d, g n α * H (t, α) =
+        (∫ α in Ioo c d, F n α * H (t, α)) - (∫ β, F n β) * k := by
+      simp_rw [hg n, sub_mul, mul_assoc]
+      rw [integral_sub (hFH_int n) (hχH_int.const_mul _), integral_const_mul]
+    have h₄ : ∫ α in Ioo c d, F n α = ∫ α, F n α :=
+      setIntegral_eq_integral_of_forall_compl_eq_zero (hJ_zero (F n) (hF_supp n))
+    rw [h₁, h₂, h₄, ← h₃]
+    exact ht n htI
+  -- Step 7: the separating property of `F n` gives `w = 0` a.e. on `J`
+  filter_upwards [hF_sep (fun α => H (t, α) - k) hw_int hw_zero] with α hα hαJ
+  exact sub_eq_zero.mp (hα hαJ)
+/-- **Fibrewise a.e. constancy gives the product form** (steps 1 and 6 of the `α`-homogeneity
+step in the cone-sector endpoint density argument for Simon 7.3.3).  Let `c < d`, `I = (a, b)`,
+`J = (c, d)` and `H` integrable on `I × J`.  If for a.e. `t ∈ I` the slice `H(t, ·)` equals a
+constant `k_t` a.e. on `J`, then `H(t, α) = (d − c)⁻¹ ∫_J H(t, ·)` for a.e. `(t, α) ∈ I × J`.
+Lebesgue measure on `I × J` is `μ.prod ν` with `μ = vol|I`, `ν = vol|J`.  Take a strongly
+measurable `H̃ = H` a.e.; then `h̃(t) = (d − c)⁻¹ ∫_J H̃(t, ·)` is measurable and equals the slice
+average `h(t)` for a.e. `t`.  As `vol J = d − c`, `k_t = h(t)`.  So the measurable set
+`{H̃ = h̃ ∘ fst}` has a.e.-full sections and is conull, and `fst` carries `h̃ = h` back to the
+product. -/
+theorem Submission.idtp_cse_ah_ae_eq_slice_average : ∀ (a b c d : ℝ) (H : ℝ × ℝ → ℝ), c < d → IntegrableOn H (Ioo a b ×ˢ Ioo c d) → (∀ᵐ t, t ∈ Ioo a b → ∃ k : ℝ, ∀ᵐ α, α ∈ Ioo c d → H (t, α) = k) → ∀ᵐ p : ℝ × ℝ, p ∈ Ioo a b ×ˢ Ioo c d → H p = (d - c)⁻¹ * ∫ α in Ioo c d, H (p.1, α) := by
+  intro a b c d H hcd hH hk
+  -- step 1: `vol|(I × J) = (vol|I).prod (vol|J)`, so `H` is integrable for the product measure
+  have hprod : (volume : Measure (ℝ × ℝ)).restrict (Ioo a b ×ˢ Ioo c d) =
+      (volume.restrict (Ioo a b)).prod (volume.restrict (Ioo c d)) := by
+    rw [Measure.volume_eq_prod, Measure.prod_restrict]
+  rw [IntegrableOn, hprod] at hH
+  refine (ae_restrict_iff' (measurableSet_Ioo.prod measurableSet_Ioo)).1 ?_
+  rw [hprod]
+  -- a strongly measurable representative `H̃ = H` a.e.
+  obtain ⟨H', hH'm, hHH'⟩ := hH.aestronglyMeasurable
+  -- step 2: `h̃(t) = (d - c)⁻¹ ∫_J H̃(t, ·)` is strongly measurable
+  have hh'm : StronglyMeasurable fun t => (d - c)⁻¹ * ∫ β in Ioo c d, H' (t, β) :=
+    hH'm.integral_prod_right'.const_mul _
+  -- step 3: `h̃ = h` for a.e. `t ∈ I`
+  have hhh' : ∀ᵐ t ∂volume.restrict (Ioo a b), (d - c)⁻¹ * ∫ β in Ioo c d, H' (t, β) =
+      (d - c)⁻¹ * ∫ β in Ioo c d, H (t, β) := by
+    filter_upwards [Measure.ae_ae_of_ae_prod hHH'] with t ht
+    rw [integral_congr_ae ht]
+  -- step 4: for a.e. `t ∈ I`, `H(t, ·)` is a.e. on `J` its constant `k_t`, which is the average
+  have hslice : ∀ᵐ t ∂volume.restrict (Ioo a b), ∀ᵐ α ∂volume.restrict (Ioo c d),
+      H (t, α) = (d - c)⁻¹ * ∫ β in Ioo c d, H (t, β) := by
+    filter_upwards [(ae_restrict_iff' measurableSet_Ioo).2 hk] with t ⟨k, hk⟩
+    rw [← ae_restrict_iff' measurableSet_Ioo] at hk
+    rw [integral_congr_ae hk, setIntegral_const, Real.volume_real_Ioo_of_le hcd.le, smul_eq_mul,
+      inv_mul_cancel_left₀ (sub_pos.2 hcd).ne']
+    exact hk
+  -- steps 5, 6: `{H̃ = h̃ ∘ fst}` is measurable with a.e.-full sections, hence conull
+  have hE : MeasurableSet {p : ℝ × ℝ | H' p = (d - c)⁻¹ * ∫ β in Ioo c d, H' (p.1, β)} :=
+    hH'm.measurableSet_eq_fun (hh'm.comp_measurable measurable_fst)
+  have h6 : ∀ᵐ p ∂(volume.restrict (Ioo a b)).prod (volume.restrict (Ioo c d)),
+      H' p = (d - c)⁻¹ * ∫ β in Ioo c d, H' (p.1, β) := by
+    refine (Measure.ae_prod_iff_ae_ae hE).2 ?_
+    filter_upwards [Measure.ae_ae_of_ae_prod hHH', hslice, hhh'] with t h1 h2 h3
+    filter_upwards [h1, h2] with α h1 h2
+    exact h1.symm.trans (h2.trans h3.symm)
+  -- step 7: `h̃ ∘ fst = h ∘ fst` a.e., as `fst` is quasi-measure-preserving
+  have h7 : ∀ᵐ p ∂(volume.restrict (Ioo a b)).prod (volume.restrict (Ioo c d)),
+      (d - c)⁻¹ * ∫ β in Ioo c d, H' (p.1, β) = (d - c)⁻¹ * ∫ β in Ioo c d, H (p.1, β) :=
+    Measure.quasiMeasurePreserving_fst.ae hhh'
+  -- step 8: `H = H̃ = h̃ ∘ fst = h ∘ fst` a.e.
+  filter_upwards [hHH', h6, h7] with p h1 h2 h3
+  exact h1.trans (h2.trans h3)
+/-- **`α`-invariance and degree-one homogeneity of the edge density** (steps 8 and 9(b) of the
+cone-sector endpoint density argument for Simon 7.3.3).  Let `0 < s ≤ 1`, `I = (1 - s, 1 + s)`,
+`J = (-s, s)` and let `H` be integrable on `I × J`.  If `∫ ψ′(α) l(t) H(t, α) = 0` for all `C¹`
+tests `ψ`, `l` supported in `J`, `I` (`α`-invariance), and the weak scaling identity
+`∫ l(t/r) ψ(α) H = r² ∫ l(t) ψ(α) H` holds for `C¹` tests `l` supported in
+`I₁ = (1 - s/2, 1 + s/2)`, `ψ` supported in `J` and `|r - 1| < s/4`, then `H(t, α) = c t` for
+a.e. `(t, α) ∈ (1 - s/8, 1 + s/8) × J`.  By `α`-invariance the slices `H(t, ·)` are a.e.
+constant, so `H(t, α) = h(t)` a.e. on `I × J`, `h` the slice average (integrable on `I` by
+Fubini).  Testing the scaling identity against a normalized bump `ψ₀` in `J` reduces it to
+`∫ l(t/r) h(t) dt = r² ∫ l h`, as `u ↦ r u` maps `I₁` into `I`; hence `h(r u) = r h(u)` for a.e.
+`u ∈ I₁`, so `h(v) = c v` for a.e. `v ∈ (1 - s/8, 1 + s/8)`, and `H(t, α) = h(t) = c t`. -/
+theorem Submission.idtp_cse_alpha_invariant_homogeneous : ∀ (s : ℝ) (H : ℝ × ℝ → ℝ), 0 < s → s ≤ 1 → IntegrableOn H (Ioo (1 - s) (1 + s) ×ˢ Ioo (-s) s) → (∀ ψ l : ℝ → ℝ, ContDiff ℝ 1 ψ → ContDiff ℝ 1 l → tsupport ψ ⊆ Ioo (-s) s → tsupport l ⊆ Ioo (1 - s) (1 + s) → ∫ p : ℝ × ℝ, deriv ψ p.2 * l p.1 * H p = 0) → (∀ (l ψ : ℝ → ℝ) (r : ℝ), ContDiff ℝ 1 l → ContDiff ℝ 1 ψ → tsupport l ⊆ Ioo (1 - s / 2) (1 + s / 2) → tsupport ψ ⊆ Ioo (-s) s → |r - 1| < s / 4 → ∫ p : ℝ × ℝ, l (p.1 / r) * ψ p.2 * H p = r ^ 2 * ∫ p : ℝ × ℝ, l p.1 * ψ p.2 * H p) → ∃ c : ℝ, ∀ᵐ p : ℝ × ℝ, p ∈ Ioo (1 - s / 8) (1 + s / 8) ×ˢ Ioo (-s) s → H p = c * p.1 := by
+  intro s H hs hs1 hH hα hβ
+  have hJ : -s < s := by linarith
+  -- steps 1–6: the slices are a.e. constant, so `H(t, α) = h(t)` for a.e. `(t, α) ∈ I × J`,
+  -- with `h` the slice average
+  set h : ℝ → ℝ := fun t => (s - -s)⁻¹ * ∫ α in Ioo (-s) s, H (t, α)
+  have hHh : ∀ᵐ p : ℝ × ℝ, p ∈ Ioo (1 - s) (1 + s) ×ˢ Ioo (-s) s → H p = h p.1 :=
+    Submission.idtp_cse_ah_ae_eq_slice_average (1 - s) (1 + s) (-s) s H hJ hH
+      (Submission.idtp_cse_ah_slice_ae_const (1 - s) (1 + s) (-s) s H hJ hH hα)
+  -- `h` is integrable on `I` (Fubini)
+  have hH' : Integrable H
+      ((volume.restrict (Ioo (1 - s) (1 + s))).prod (volume.restrict (Ioo (-s) s))) := by
+    rw [Measure.prod_restrict, ← Measure.volume_eq_prod]
+    exact hH
+  have hhI : IntegrableOn h (Ioo (1 - s) (1 + s)) := hH'.integral_prod_left.const_mul _
+  -- for `|r - 1| < s/4`, `u ↦ r u` maps `I₁ = (1 - s/2, 1 + s/2)` into `I`
+  have hmaps : ∀ r : ℝ, |r - 1| < s / 4 →
+      Ioo (r * (1 - s / 2)) (r * (1 + s / 2)) ⊆ Ioo (1 - s) (1 + s) := by
+    intro r hr t ht
+    obtain ⟨hr1, hr2⟩ := abs_sub_lt_iff.1 hr
+    constructor
+    · nlinarith [ht.1, mul_pos (by linarith : (0 : ℝ) < r - 1 + s / 4)
+        (by linarith : (0 : ℝ) < 1 - s / 2), mul_pos hs hs]
+    · nlinarith [ht.2, mul_pos (by linarith : (0 : ℝ) < 1 + s / 4 - r)
+        (by linarith : (0 : ℝ) < 1 + s / 2), mul_nonneg hs.le (sub_nonneg.2 hs1)]
+  -- a normalized bump `ψ₀` in `J`
+  obtain ⟨ψ₀, hψ₀C, hψ₀S, hψ₀1⟩ := Submission.idtp_cse_ah_normalized_bump (-s) s hJ
+  have hψ₀0 : ∀ α, α ∉ Ioo (-s) s → ψ₀ α = 0 := fun α hα =>
+    image_eq_zero_of_notMem_tsupport fun h' => hα (hψ₀S h')
+  -- step 7: `h(r u) = r h(u)` for a.e. `u ∈ I₁`, for each `r` with `|r - 1| < s/4`
+  have hscal : ∀ r : ℝ, |r - 1| < s / 4 →
+      ∀ᵐ u, u ∈ Ioo (1 - s / 2) (1 + s / 2) → h (r * u) = r * h u := by
+    intro r hr
+    have hr0 : 0 < r := by linarith [(abs_sub_lt_iff.1 hr).2]
+    refine Submission.idtp_cse_ah_ae_scaling_of_weak_scaling (1 - s / 2) (1 + s / 2) r h hr0
+      (hhI.mono_set (Ioo_subset_Ioo (by linarith) (by linarith))) (hhI.mono_set (hmaps r hr))
+      fun l hl hlS => ?_
+    have hl0 : ∀ t, t ∉ Ioo (1 - s / 2) (1 + s / 2) → l t = 0 := fun t ht =>
+      image_eq_zero_of_notMem_tsupport fun h' => ht (hlS h')
+    -- `l(t/r) ≠ 0` forces `t ∈ r I₁ ⊆ I`
+    have hdiv : ∀ t, t / r ∈ Ioo (1 - s / 2) (1 + s / 2) → t ∈ Ioo (1 - s) (1 + s) := fun t ht =>
+      hmaps r hr ⟨(lt_div_iff₀' hr0).1 ht.1, (div_lt_iff₀' hr0).1 ht.2⟩
+    -- both sides of the scaling identity reduce to one-variable integrals against `h`
+    have h1 := Submission.idtp_cse_ah_product_integral_reduce (1 - s) (1 + s) (-s) s H h
+      (fun t => l (t / r)) ψ₀ hHh (fun t ht => hl0 (t / r) fun hu => ht (hdiv t hu)) hψ₀0 hψ₀1
+    have h2 := Submission.idtp_cse_ah_product_integral_reduce (1 - s) (1 + s) (-s) s H h l ψ₀ hHh
+      (fun t ht => hl0 t fun hu => ht (Ioo_subset_Ioo (by linarith) (by linarith) hu)) hψ₀0 hψ₀1
+    rw [← h1, ← h2]
+    exact hβ l ψ₀ r hl hψ₀C hlS hψ₀S hr
+  -- step 8: `h(v) = c v` for a.e. `v ∈ I₂ = (1 - s/8, 1 + s/8)`
+  obtain ⟨c, hc⟩ :=
+    Submission.idtp_cse_ah_ae_linear_of_ae_scaling s h hs hs1 hhI.aestronglyMeasurable hscal
+  refine ⟨c, ?_⟩
+  -- step 9: pull back along `fst` and combine with `H(t, α) = h(t)`
+  have hc' : ∀ᵐ p : ℝ × ℝ, p.1 ∈ Ioo (1 - s / 8) (1 + s / 8) → h p.1 = c * p.1 :=
+    (Measure.quasiMeasurePreserving_fst (μ := volume) (ν := volume)).ae hc
+  filter_upwards [hHh, hc'] with p h1 h2 hp
+  rw [h1 ⟨Ioo_subset_Ioo (by linarith) (by linarith) hp.1, hp.2⟩, h2 hp.1]
 
 end GMT.Ch07
