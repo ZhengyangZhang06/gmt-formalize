@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "ba46eac85a59da8eebed493efa81227689ac107dba84ba8a3a6288fba0ee51b4",
+  "git_delta": {
+    "base_commit": "ce887807b7045511d8c297bc83106c74d430247e",
+    "candidate_commit": "8f66d3bbc008cdc05b1232acf094691061f148d0",
+    "target": "GMT/Ch06/Submission.lean",
+    "changed_files": [
+      "GMT/Ch06/Submission.lean"
+    ],
+    "diff_sha256": "4133547180e66435e975b2675520df4c7507612a5182c2b4a690264109d90a0f",
+    "source_sha256": "72653c3f321ecb26fa49160fe68cb0e83134485e45bb45bd09568902b65034ab",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.boundary_rectifiability",
+      "statement": "BoundaryRectifiability",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

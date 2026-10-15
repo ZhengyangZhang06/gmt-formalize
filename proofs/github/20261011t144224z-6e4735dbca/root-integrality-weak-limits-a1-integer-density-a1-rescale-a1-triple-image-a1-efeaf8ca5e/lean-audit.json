@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "3799679d28b5ce5af9c9d595b3d0ddd98266696e7f415d070caa9645c0092fcc",
+  "git_delta": {
+    "base_commit": "6ab34979345ea96838a4b8546ae3b2f41360097e",
+    "candidate_commit": "49800702c686e95912fe79812808edeb3cbd94bd",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "ind_rs_rectifiableTriple_dilation",
+    "diff_sha256": "2c71944b5df8d126e7950a4cae96732dd97becfac7d67517013db18d7fe82bde",
+    "source_sha256": "a12cc84c3bdd5bdeff5090f93d827838bb5d5ee6cef0e1c1e44261953056601c",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.ind_rs_rectifiableTriple_dilation",
+      "statement": "∀ (P n : ℕ) (M : Set (Eucl P)) (θ : Eucl P → ℝ) (ξ : Eucl P → NVector (Eucl P) n) (x : Eucl P) (r : ℝ), 0 < r → IsRectifiableTriple (univ : Set (Eucl P)) n M θ ξ → IsRectifiableTriple (univ : Set (Eucl P)) n ((fun y => r⁻¹ • (y - x)) '' M) (fun z => θ (x + r • z)) (fun z => ξ (x + r • z))",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

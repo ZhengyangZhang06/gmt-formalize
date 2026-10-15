@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "0c93e927c6fdd78b9785f8b2a54855b0ab7c0e36e1ec2ae3a01655d78fb86211",
+  "git_delta": {
+    "base_commit": "ce5ccc4363c81e3735a43642f6e09d83344724fa",
+    "candidate_commit": "7b74e18da55e9e43c56b2a2d22f5ad9863a9da46",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "slicing_mb_pointwise_liminf_bound",
+    "diff_sha256": "ef2929911b7f03f35bdd7d70c4978406d91e6882294c2fe7c2d7c64e90a27d83",
+    "source_sha256": "0e9140313e90cfce7a7c4441cd906d2ef2d128f31c1c0a9637af4ac8fe38752b",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.slicing_mb_pointwise_liminf_bound",
+      "statement": "∀ (a : ℝ → ℝ≥0∞) (LW : ℝ≥0) (r : ℝ), (∀ ε : ℝ, 0 < ε → ∃ X : ℝ → ℝ, Tendsto X (𝓝[>] 0) (𝓝 r) ∧ ∀ h : ℝ, 0 < h → ENNReal.ofReal |X h| ≤ ENNReal.ofReal ((1 + ε) / h) * (LW : ℝ≥0∞) * a h) → ENNReal.ofReal |r| ≤ (LW : ℝ≥0∞) * liminf (fun h : ℝ => a h / ENNReal.ofReal h) (𝓝[>] 0)",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "65aef1fc4898933636b648b86a879b84a5a7b2dfa760d059080063dfc2315b12",
+  "git_delta": {
+    "base_commit": "f5347826cf4d97f79e168e3b7de3cc4108ff6de7",
+    "candidate_commit": "eb6b2fc0270e6957328dc858d6cb5caa60b6ed39",
+    "target": "GMT/Ch06/Submission.lean",
+    "changed_files": [
+      "GMT/Ch06/Submission.lean"
+    ],
+    "diff_sha256": "044e7c818d4639549b8071c85ece3b9222f1beed0cd673bb98086b2b73120d2d",
+    "source_sha256": "490a53dfa93bbd5329633fd2bf074fe1c8662949aee2b22a597469727ad40c1e",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dgc_periodic_maximal",
+      "statement": "∀ (ι : Type) [Fintype ι] (X : Type) [MeasurableSpace X] (μ : Measure X), IsFiniteMeasure μ → ∀ p : X → EuclideanSpace ℝ ι, Measurable p → ∀ (g₀ : EuclideanSpace ℝ ι) (β : ℝ), 0 < β → volume {g : EuclideanSpace ℝ ι | dist g g₀ < 1 / 4 ∧ ∃ σ : ℝ, 0 < σ ∧ σ < 1 / 4 ∧ ENNReal.ofReal (β * σ ^ Fintype.card ι) * μ univ < μ {x | ∃ z : ι → ℤ, ∑ i, (p x i - g i - z i) ^ 2 < σ ^ 2}} ≤ ENNReal.ofReal (10 ^ Fintype.card ι / β)",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

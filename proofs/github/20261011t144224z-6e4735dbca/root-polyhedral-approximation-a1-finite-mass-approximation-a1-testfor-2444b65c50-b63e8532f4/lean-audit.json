@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "2634bb5f58ad61d6fa66d25674c7cb7bebf0775c83f9e928e294a2c426d5a504",
+  "git_delta": {
+    "base_commit": "cd02f35f95cb0fb2bafe24314fb8b819ff0eecbf",
+    "candidate_commit": "7110c9805fefadcc61e66c61eceea824252dd248",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "polyhedral_approx_testForm_covectorNorm_bounded",
+    "diff_sha256": "8e806e48082f122ec81547555e739fbf95ebd8f85a9144831af4cb0a790d82d4",
+    "source_sha256": "719030412a1cec9797b8ac3ad27fdfcf0cefcee1eff40e73a7ff3facaad1256b",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.polyhedral_approx_testForm_covectorNorm_bounded",
+      "statement": "∀ (P n : ℕ) (U : Set (Eucl P)) (ω : TestFormOn U n), ∃ C : ℝ, 0 < C ∧ ∀ x : Eucl P, covectorEuclideanNorm ((ω : DifferentialForm (Eucl P) n) x) ≤ C",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

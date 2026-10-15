@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "0a2be58d2a0593dec14374bc86649993166de678a477c025fd199902af386103",
+  "git_delta": {
+    "base_commit": "c3279d9106ffc548fd2df3d3df20abcf83f4b5d8",
+    "candidate_commit": "7c119a556b4c6c3ef8bae377dcae1dbfe3ffade7",
+    "target": "GMT/Ch06/Submission.lean",
+    "changed_files": [
+      "GMT/Ch06/Submission.lean"
+    ],
+    "diff_sha256": "407e70f2f4048c59064e358e4ceffed10878c3094325a6b8a58b5f368521c6ed",
+    "source_sha256": "6e81018c5000a83d09abfff2b4286b6bb043677413085491054847aadd4fbd03",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.flat_convergence_iff_weak_convergence",
+      "statement": "FlatConvergenceIffWeakConvergence",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

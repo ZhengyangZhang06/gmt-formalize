@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "0dac4beab90cf8a7735cbb88c7ae3ddd297f26aa219a28d67789dcf9768c0dba",
+  "git_delta": {
+    "base_commit": "61481d2ad4b886ffbf2ef016eb90ed38eea9c0cb",
+    "candidate_commit": "f78b89b01de54d09013ded988ab092f6b8593f2b",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "dgc_tube_cover",
+    "diff_sha256": "7a999000261e1bebf76555be52032f42fa77f6262c47e426bf6fb81e9be42f66",
+    "source_sha256": "880f2dd0d4b6785a3c89f2457fe09d1e68e296b913eedb6ef78176b73fb20cc2",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dgc_tube_cover",
+      "statement": "∀ (d k : ℕ), k ≤ d → ∀ (a : Eucl d) (La : Set (Eucl d)), La = {y | ∃ J : Finset (Fin d), J.card = k ∧ ∀ i ∈ J, ∃ n : ℤ, y i - a i = n} → ∀ (σ : ℝ) (x : Eucl d), infDist x La < σ → ∃ J : Finset (Fin d), J.card = k ∧ ∃ z : J → ℤ, ∑ i : J, (x i - a i - z i) ^ 2 < σ ^ 2",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

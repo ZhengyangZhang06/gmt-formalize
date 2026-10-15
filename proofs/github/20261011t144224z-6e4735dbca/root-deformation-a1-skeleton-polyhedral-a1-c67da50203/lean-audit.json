@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "cb4c25c26fe6648f4bcf9b413b75baddeb69891fb14f82d82734a3a9bfec8e0c",
+  "git_delta": {
+    "base_commit": "a7fa79299db276d55650647a3a0b2625647dd9f5",
+    "candidate_commit": "261bae15b4dd4dad4049f25fd4dfb8c76df94a7b",
+    "target": "GMT/Ch06/Submission.lean",
+    "changed_files": [
+      "GMT/Ch06/Submission.lean"
+    ],
+    "diff_sha256": "c7813f9289cd1093925126613ce45aee93e396ffa47369da70a9f8b711a8635c",
+    "source_sha256": "6a67dd554af517e998adfab9557bddf0c4bc7e1ae4262d30784dbe6425df67e9",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.deformation_skeleton_polyhedral",
+      "statement": "∀ m ℓ : ℕ, 1 ≤ ℓ → ∃ C : ℝ≥0, ∀ Q : GeometricCurrentOn (univ : Set (Eucl (m + 1 + ℓ))) (m + 1), Q.mass + Q.boundary.mass < ∞ → Q.support ⊆ ⋃ F : LatticeFaceIndex (m + 1) (m + 1 + ℓ), latticeFace 1 F → (∀ (F : LatticeFaceIndex (m + 1) (m + 1 + ℓ)) (y : Eucl (m + 1 + ℓ)) (r : ℝ), ball y r ∩ (⋃ G : LatticeFaceIndex (m + 1) (m + 1 + ℓ), latticeFace 1 G) ⊆ latticeFace 1 F → ∀ ω : TestFormOn (univ : Set (Eucl (m + 1 + ℓ))) (m + 1), tsupport (ω : DifferentialForm (Eucl (m + 1 + ℓ)) (m + 1)) ⊆ ball y r → (∀ x, (ω : DifferentialForm (Eucl (m + 1 + ℓ)) (m + 1)) x (fun j => EuclideanSpace.single (F.2 j) (1 : ℝ)) = 0) → Q ω = 0) → ∃ (β : LatticeFaceIndex (m + 1) (m + 1 + ℓ) → ℝ) (P S : GeometricCurrentOn (univ : Set (Eucl (m + 1 + ℓ))) (m + 1)), IsLatticeChain 1 β P ∧ (∀ ω, Q ω - P ω = S ω) ∧ P.mass ≤ C * Q.mass ∧ P.boundary.mass ≤ C * Q.boundary.mass ∧ S.mass ≤ C * Q.boundary.mass ∧ P.support ⊆ cthickening (Real.sqrt ((m + 1 : ℕ) : ℝ)) Q.support ∧ P.boundary.support ∪ S.support ⊆ cthickening (Real.sqrt ((m + 1 : ℕ) : ℝ)) Q.boundary.support ∧ (IsIntegerMultiplicity Q → (∀ F, ∃ k : ℤ, β F = k) ∧ IsIntegerMultiplicity P)",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "8a3da279e9d59fd87559c1b013e22dad0575cc22d2c693c555e16408acc2fec7",
+  "git_delta": {
+    "base_commit": "aa6d7585b2a560613a7c868bd8c03f9655485ea4",
+    "candidate_commit": "84cf3d4ed0c17bda203230fbdbded6ed5cc6f4a1",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "rectifiability_rn_positive_real_density",
+    "diff_sha256": "453c0df59e79bb6ab24651231e482644f1a2a7a3e35da8ec7b98621aabc1e99a",
+    "source_sha256": "3cb86cd7cc652d7c6e156f00c55ae89fffe1d98aeb80ec34e9d8bf42b57b750c",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.rectifiability_rn_positive_real_density",
+      "statement": "∀ (X : Type) [MeasurableSpace X] (ν μ : Measure X) (B : Set X), MeasurableSet B → SigmaFinite (ν.restrict B) → SigmaFinite μ → μ Bᶜ = 0 → μ ≪ ν → ∃ (M : Set X) (θ : X → ℝ), M ⊆ B ∧ MeasurableSet M ∧ Measurable θ ∧ (∀ x ∈ M, 0 < θ x) ∧ (∀ K : Set X, MeasurableSet K → μ K < ∞ → IntegrableOn θ (M ∩ K) ν) ∧ μ = (ν.restrict M).withDensity (fun x => ENNReal.ofReal (θ x))",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

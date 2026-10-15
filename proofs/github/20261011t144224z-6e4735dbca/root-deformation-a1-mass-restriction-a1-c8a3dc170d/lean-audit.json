@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "fdcdc894baa51982907197a67cb9e78b21d1e6f9fef8e32d831f30c903e38ed8",
+  "git_delta": {
+    "base_commit": "bfdcaac6e82f714dab5fbdabcdc7a822861f443f",
+    "candidate_commit": "0b7851dc2aad39b445dee72d62552bfdcf96e632",
+    "target": "GMT/Ch06/Submission.lean",
+    "changed_files": [
+      "GMT/Ch06/Submission.lean"
+    ],
+    "diff_sha256": "e3d5ed3ff1c5e0bf66cabdaa8bdf600b3485b6812ee8a542b5f31c22be7180d2",
+    "source_sha256": "c2d0e4e488b36ae7024edfad0ac40ffeeb641aee2a0abc9f8aae487926d84d4e",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.deformation_mass_restriction",
+      "statement": "∀ (N k : ℕ) (X : GeometricCurrentOn (univ : Set (Eucl N)) k), X.mass < ∞ → ∃ (μ : Measure (Eucl N)) (v : Eucl N → NVector (Eucl N) k), IsFiniteMeasure μ ∧ IsMeasureRepresentation X μ v ∧ μ X.supportᶜ = 0 ∧ (∀ (μ' : Measure (Eucl N)) (v' : Eucl N → NVector (Eucl N) k), IsMeasureRepresentation X μ' v' → ∀ A : Set (Eucl N), MeasurableSet A → Bornology.IsBounded A → ∀ α : Covector (Eucl N) k, ∫ x in A, v' x α ∂μ' = ∫ x in A, v x α ∂μ) ∧ ∀ A : Set (Eucl N), MeasurableSet A → ∃ Y : GeometricCurrentOn (univ : Set (Eucl N)) k, IsRestriction X A Y ∧ (∀ ω : TestFormOn (univ : Set (Eucl N)) k, Y ω = ∫ x in A, v x ((ω : DifferentialForm (Eucl N) k) x) ∂μ) ∧ (∀ W : Set (Eucl N), IsOpen W → Y.massOn W = μ (W ∩ A)) ∧ (∀ Y' : GeometricCurrentOn (univ : Set (Eucl N)) k, IsRestriction X A Y' → Y' = Y) ∧ (IsIntegerMultiplicity X → IsIntegerMultiplicity Y)",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

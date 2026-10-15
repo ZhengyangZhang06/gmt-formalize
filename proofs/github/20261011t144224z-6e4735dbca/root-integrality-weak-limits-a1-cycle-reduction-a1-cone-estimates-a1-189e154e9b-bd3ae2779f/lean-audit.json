@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "ae0128da7afa10f4a509b415da14880aa3ec3982293dd3e430269b4f7b677897",
+  "git_delta": {
+    "base_commit": "65a941a4937a8dd698eda5ea99d999818ba32d54",
+    "candidate_commit": "6b30182501b5d4abaa490188c1373e2efe08b721",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "iwl_cr_cest_cutoff_radial_form",
+    "diff_sha256": "08c9af21bcc5d725cb21282740004f709de107b46d5a250c888098e8f779f5ea",
+    "source_sha256": "36d113ed9849407d0a104fadbc3b34a011aa4c6d8ddcbbdf1397005e3eb3d662",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.iwl_cr_cest_cutoff_radial_form",
+      "statement": "∀ (P m : ℕ) (ω : DifferentialForm (Eucl P) (m + 1)) (ψ₀ : DifferentialForm (Eucl P) m) (r s : ℝ), ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) ψ₀ → (∀ (x : Eucl P) (v : Fin m → Eucl P), ψ₀ x v = ∫ t in (0 : ℝ)..1, t ^ m * ω (t • x) (Fin.cons x v)) → 0 < r → r < s → ∃ ψ : TestFormOn (univ : Set (Eucl P)) m, (∀ x ∈ ball (0 : Eucl P) r, ∀ v : Fin m → Eucl P, (ψ : DifferentialForm (Eucl P) m) x v = ∫ t in (0 : ℝ)..1, t ^ m * ω (t • x) (Fin.cons x v)) ∧ ((∀ y, covectorEuclideanNorm (ω y) ≤ 1) → ∀ x, covectorEuclideanNorm ((ψ : DifferentialForm (Eucl P) m) x) ≤ (P : ℝ) ^ (2 * m + 1) * s)",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

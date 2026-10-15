@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "62e5ab894843e83d37916bf2144bf89f6e6b56801255e96fbf07e2a3419836d6",
+  "git_delta": {
+    "base_commit": "4724d92bc41db8794cf149650a4621e8190c7e9a",
+    "candidate_commit": "87574e15477872bb7ab52563fba64cf04a20ff99",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "iwl_cr_cest_cone_support",
+    "diff_sha256": "600998fe426fee9d7410f046e50ca8bad777cf5cc0a1ae89df07ce0679c106a0",
+    "source_sha256": "d57719962a32ffad5d8216af2abef68974735b536c80cf20edb3edff54d70530",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.iwl_cr_cest_cone_support",
+      "statement": "∀ (P m : ℕ) (R : ℝ) (X : GeometricCurrentOn (univ : Set (Eucl P)) m) (C : GeometricCurrentOn (univ : Set (Eucl P)) (m + 1)), X.support ⊆ closedBall 0 R → (∀ (ω : TestFormOn (univ : Set (Eucl P)) (m + 1)) (ψ : TestFormOn (univ : Set (Eucl P)) m), (∃ N : Set (Eucl P), IsOpen N ∧ X.support ⊆ N ∧ ∀ x ∈ N, ∀ v : Fin m → Eucl P, (ψ : DifferentialForm (Eucl P) m) x v = ∫ t in (0 : ℝ)..1, t ^ m * (ω : DifferentialForm (Eucl P) (m + 1)) (t • x) (Fin.cons x v)) → C ω = X ψ) → C.support ⊆ closedBall 0 R",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

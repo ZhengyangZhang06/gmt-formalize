@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "457f678627f97785c3a2c30ef27a689829e28aca3a053c02009d6802f0e0276c",
+  "git_delta": {
+    "base_commit": "1fd8aea1f61aabc97c139b88a906ad8a778a2245",
+    "candidate_commit": "16bd0f6600e771cf38a5f9ac0fc5465dff980897",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "fiw_tb_finite_net",
+    "diff_sha256": "a5db21a6999b6abe8f5ef77a35caab895f8bfd7b2b8007811aa35f9ba1e4dea3",
+    "source_sha256": "9027d48d8a5f9ef71a176974c5fdbf918a22be7a0bea5e44ab4a6d6083df73f8",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.fiw_tb_finite_net",
+      "statement": "DeformationTheorem → (∀ (P n : ℕ) (U : Set (Eucl P)), IsOpen U → ∀ (T : GeometricCurrentOn U n) (M : Set (Eucl P)) (θ : Eucl P → ℝ) (ξ : Eucl P → NVector (Eucl P) n), IsRectifiableTriple U n M θ ξ → (∀ ω : TestFormOn U n, T ω = tauAction n M θ ξ ω) → ∀ W : Set (Eucl P), IsOpen W → T.massOn W = ∫⁻ x in M ∩ W, ENNReal.ofReal (θ x) ∂(μHE[n] : Measure (Eucl P))) → (∀ (P n : ℕ) (U : Set (Eucl P)), IsOpen U → ∀ (T₁ T₂ S : GeometricCurrentOn U n) (a b : ℤ), IsIntegerMultiplicity T₁ → IsIntegerMultiplicity T₂ → (∀ ω, S ω = (a : ℝ) * T₁ ω + (b : ℝ) * T₂ ω) → IsIntegerMultiplicity S) → ∀ (P m : ℕ) (U : Set (Eucl P)), IsOpen U → ∀ (K : Set (Eucl P)), IsCompact K → K ⊆ U → ∃ C : ℝ≥0, ∀ (B : ℝ≥0∞), B ≠ ∞ → ∀ ρ : ℝ, 0 < ρ → ∃ Qs : Set (GeometricCurrentOn U (m + 1)), Qs.Finite ∧ ∀ T : GeometricCurrentOn U (m + 1), IsIntegerMultiplicity T → IsIntegerMultiplicity T.boundary → T.support ⊆ K → T.mass + T.boundary.mass ≤ B → ∃ Q ∈ Qs, ∃ (R : GeometricCurrentOn U (m + 1 + 1)) (S : GeometricCurrentOn U (m + 1)), IsIntegerMultiplicity R ∧ IsIntegerMultiplicity S ∧ (∀ ω, T ω - Q ω = R.boundary ω + S ω) ∧ R.mass + S.mass ≤ C * ENNReal.ofReal ρ * B",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "48a465d52eb10284b6be81c57f107730893a05cc552a8b8d5634fd91aab70392",
+  "git_delta": {
+    "base_commit": "bfa5a6cb3a43626168beb2e21a7d4c929748eb47",
+    "candidate_commit": "890c3df1bb8651e766429f8661b9de235c837fc8",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "fiw_tb_tda_lattice_cubes",
+    "diff_sha256": "67edddfdf291b5eb7aefd0ef60f5b938fd3da5d8c7519cc9a39ebd5396341028",
+    "source_sha256": "c37b481327989a8a0ef25f92f725dca8e4f1aa7579e8f7022d1db28750791ae9",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.fiw_tb_tda_lattice_cubes",
+      "statement": "∀ (m : ℕ) (ρ : ℝ), 0 < ρ → (∀ (F : LatticeFaceIndex (m + 1) (m + 1)) (j : Fin (m + 1)), F.2 j = j) ∧ (∀ F : LatticeFaceIndex (m + 1) (m + 1), latticeFace ρ F = {x : Eucl (m + 1) | ∀ i, ρ * (F.1 i : ℝ) ≤ x i ∧ x i ≤ ρ * ((F.1 i : ℝ) + 1)}) ∧ (∀ F : LatticeFaceIndex (m + 1) (m + 1), MeasurableSet (latticeFace ρ F)) ∧ (∀ F : LatticeFaceIndex (m + 1) (m + 1), volume (latticeFace ρ F) = ENNReal.ofReal (ρ ^ (m + 1))) ∧ (∀ F : LatticeFaceIndex (m + 1) (m + 1), ∀ x ∈ latticeFace ρ F, ∀ y ∈ latticeFace ρ F, dist x y ≤ Real.sqrt ((m + 1 : ℕ) : ℝ) * ρ) ∧ (∀ᵐ x ∂(volume : Measure (Eucl (m + 1))), ∀ (i : Fin (m + 1)) (k : ℤ), x i ≠ ρ * k) ∧ (∀ g : Eucl (m + 1) → ℝ≥0∞, ∫⁻ x, g x = ∑' F : LatticeFaceIndex (m + 1) (m + 1), ∫⁻ x in latticeFace ρ F, g x) ∧ ∀ f : Eucl (m + 1) → ℝ, Integrable f → ∫ x, f x = ∑' F : LatticeFaceIndex (m + 1) (m + 1), ∫ x in latticeFace ρ F, f x",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

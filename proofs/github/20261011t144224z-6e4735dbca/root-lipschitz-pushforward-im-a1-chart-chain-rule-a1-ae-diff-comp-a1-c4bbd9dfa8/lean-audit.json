@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "834d014a640c37499d6c2f41438f089b61212298d503e98f17e704efcfcb5b3c",
+  "git_delta": {
+    "base_commit": "79c111cb9a8572b2eaa8b51f9d8896d6188575dd",
+    "candidate_commit": "f8ca7a783787d7b8d6e63af6338e37390c2a0600",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "lpf_ccr_ae_differentiableAt_comp",
+    "diff_sha256": "f9f8592bd537b1d5ba14450a9b99e2b3db3ec9bde3e7117ce9db781f1e48a918",
+    "source_sha256": "53d6489c08c16d2e63aad2513e44f8ff27cae1a93a99f616dca2823fa5d66122",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.lpf_ccr_ae_differentiableAt_comp",
+      "statement": "∀ (P Q n : ℕ) (U : Set (Eucl P)) (f : Eucl P → Eucl Q) (Φ : Eucl n → Eucl P), IsOpen U → LocallyLipschitzOn U f → ContDiff ℝ 1 Φ → ∀ᵐ w ∂(volume : Measure (Eucl n)), Φ w ∈ U → DifferentiableAt ℝ (f ∘ Φ) w",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

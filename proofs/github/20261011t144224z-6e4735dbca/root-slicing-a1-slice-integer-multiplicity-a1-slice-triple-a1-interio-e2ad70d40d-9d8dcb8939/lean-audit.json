@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "23d79bd4f718c5070637e652100ee2215035d762e7a7a5878846e731770e5386",
+  "git_delta": {
+    "base_commit": "1743cdb0fce79e872e08af9e8a253c1da8c0272b",
+    "candidate_commit": "c005e98f97c38eda4abb1deffdc4c507bab9cd42",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "slicing_im_st_interior_product",
+    "diff_sha256": "6bb1908e9e6e5cd27a2df154464171ae3ccaade35723c40f84befbfade38aa9a",
+    "source_sha256": "81fac98f2af73d49d978a8a7352b8e153ee31999d5d79b3535182869fabf15b1",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.slicing_im_st_interior_product",
+      "statement": "∀ (P m : ℕ) (τ : Fin (m + 1) → Eucl P) (g : Eucl P) (w : NVector (Eucl P) (m + 1)), Orthonormal ℝ τ → g ∈ Submodule.span ℝ (range τ) → g ≠ 0 → (w = simpleNVector τ ∨ w = -simpleNVector τ) → ∃ τ' : Fin m → Eucl P, Orthonormal ℝ τ' ∧ Submodule.span ℝ (range τ') = Submodule.span ℝ (range τ) ⊓ (ℝ ∙ g)ᗮ ∧ (w.comp ((ContinuousAlternatingMap.alternatizeUncurryFinCLM ℝ (Eucl P) ℝ).comp (ContinuousLinearMap.smulRightL ℝ (Eucl P) (Covector (Eucl P) m) (innerSL ℝ (‖g‖⁻¹ • g)))) = simpleNVector τ' ∨ w.comp ((ContinuousAlternatingMap.alternatizeUncurryFinCLM ℝ (Eucl P) ℝ).comp (ContinuousLinearMap.smulRightL ℝ (Eucl P) (Covector (Eucl P) m) (innerSL ℝ (‖g‖⁻¹ • g)))) = -simpleNVector τ')",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

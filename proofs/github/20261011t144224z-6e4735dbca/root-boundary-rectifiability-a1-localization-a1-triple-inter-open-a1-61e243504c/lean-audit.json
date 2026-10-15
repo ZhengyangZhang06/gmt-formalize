@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "637aae9030d13c2981993da46e61e179cedd7a4b6542452f1af1c9b3c925c135",
+  "git_delta": {
+    "base_commit": "7753bb2e4d996d813bd9b6d5f4eb5b9c88421fa4",
+    "candidate_commit": "980bf2f0ffdd14accb50c367f00b73e531581dc7",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "br_loc_triple_inter_open",
+    "diff_sha256": "81aa22014dc96fbd15e92175251bccf4b9b78e719e0adce8614a8e1daa6d6966",
+    "source_sha256": "0f54ed4dca020cc09564ea8ee2a49da2b5f46641e9c21082b2742e84c8a10b30",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.br_loc_triple_inter_open",
+      "statement": "∀ (P n : ℕ) (U U' V M : Set (Eucl P)) (θ : Eucl P → ℝ) (ξ : Eucl P → NVector (Eucl P) n), IsRectifiableTriple U n M θ ξ → IsOpen V → M ∩ V ⊆ U' → (∀ K : Set (Eucl P), IsCompact K → K ⊆ U' → IntegrableOn θ (M ∩ V ∩ K) (μHE[n] : Measure (Eucl P))) → IsRectifiableTriple U' n (M ∩ V) θ ξ",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

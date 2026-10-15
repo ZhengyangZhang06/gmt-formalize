@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "74adc9bbb34e01fc5cc9df10bcc25e45f3371b1849f17b7c13f9cce8f7651faa",
+  "git_delta": {
+    "base_commit": "cb98c3e9ff2de2ceab0f3c63c8bc09260096ef18",
+    "candidate_commit": "d0e028370d07e05166033989959a8820b2741eeb",
+    "target": "GMT/Ch06/Submission.lean",
+    "changed_files": [
+      "GMT/Ch06/Submission.lean"
+    ],
+    "diff_sha256": "eaec9a5ad84ae37f416291bb7ff92e05132a183363ef0bc71006d10b28fb154d",
+    "source_sha256": "095589901ff48efd3992894547515a6f86b6adbc63ef977abd68813fcb1903c4",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.fiw_tb_restrictDomain_mass_im",
+      "statement": "∀ (P k : ℕ) (U W : Set (Eucl P)) (hWU : W ⊆ U), IsOpen W → ∀ Y : GeometricCurrentOn U k, (Y.restrictDomain hWU).mass ≤ Y.mass ∧ (IsIntegerMultiplicity Y → IsIntegerMultiplicity (Y.restrictDomain hWU))",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

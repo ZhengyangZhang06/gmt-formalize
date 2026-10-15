@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "c63e3fb3d378d7b66cab00275fdcf616069bf74aec5104f12b11390f7b8bca51",
+  "git_delta": {
+    "base_commit": "a7594fb0037b453faeacac2f328495dcf8655189",
+    "candidate_commit": "36fae233c91bed83230d0ade9f30195e1cc74766",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "iwl_cr_ce_cutoff_radial_operator",
+    "diff_sha256": "26f1980e396cdfeab528636dec340169a6e5dbbd623da5d05755cbca346aeea2",
+    "source_sha256": "5a37c54d75c347be39994832a278737650100e357cecb0cb8813734dbcebb172",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.iwl_cr_ce_cutoff_radial_operator",
+      "statement": "∀ (P m : ℕ) (r : ℝ), (∀ ω : DifferentialForm (Eucl P) (m + 1), ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) ω → ∃ ψ : DifferentialForm (Eucl P) m, ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) ψ ∧ (∀ (x : Eucl P) (v : Fin m → Eucl P), ψ x v = ∫ t in (0 : ℝ)..1, t ^ m * ω (t • x) (Fin.cons x v)) ∧ ∀ (j : ℕ) (R D : ℝ), 0 ≤ D → (∀ i ≤ j, ∀ y ∈ closedBall (0 : Eucl P) R, ‖iteratedFDeriv ℝ i ω y‖ ≤ D) → ∀ x ∈ closedBall (0 : Eucl P) R, ‖iteratedFDeriv ℝ j ψ x‖ ≤ (R + j) * D) → ∃ Φ : TestFormOn (univ : Set (Eucl P)) (m + 1) →ₗ[ℝ] TestFormOn (univ : Set (Eucl P)) m, (∀ ωs : ℕ → TestFormOn (univ : Set (Eucl P)) (m + 1), TestFormOnConverges ωs 0 → TestFormOnConverges (fun l => Φ (ωs l)) 0) ∧ ∀ (ω : TestFormOn (univ : Set (Eucl P)) (m + 1)) (x : Eucl P), x ∈ ball (0 : Eucl P) r → ∀ v : Fin m → Eucl P, (Φ ω : DifferentialForm (Eucl P) m) x v = ∫ t in (0 : ℝ)..1, t ^ m * (ω : DifferentialForm (Eucl P) (m + 1)) (t • x) (Fin.cons x v)",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "a0c4619ec94df886e843d4b57643beee05aabd1aa327c28d87939a0b5b0a1048",
+  "git_delta": {
+    "base_commit": "d38f8d269bdd65d1637bdfbc5b30900e9fbd7b50",
+    "candidate_commit": "f3a3c5910cef858d3b4e5c761c630fda053bb38f",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "slicing_im_ll_tangent_dual_field",
+    "diff_sha256": "b214bdc2905b45a7b91ddf24cfd5675430363472dc33375ae479afe8a1e14baf",
+    "source_sha256": "a616936dc15a808f185f98963c0e930e34951bf553180263d9ca6e86d8c4ac66",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.slicing_im_ll_tangent_dual_field",
+      "statement": "∀ (P m : ℕ) (U M : Set (Eucl P)) (θ : Eucl P → ℝ) (ξ : Eucl P → NVector (Eucl P) (m + 1)), IsRectifiableTriple U (m + 1) M θ ξ → ∀ ω : TestFormOn U m, ∃ Y : Eucl P → Eucl P, Integrable Y ((μHE[m + 1] : Measure (Eucl P)).restrict M) ∧ (∀ (x : Eucl P) (φ : Eucl P →L[ℝ] ℝ), φ (Y x) = θ x * ξ x (ContinuousAlternatingMap.alternatizeUncurryFin (φ.smulRight ((ω : DifferentialForm (Eucl P) m) x)))) ∧ ∀ᵐ x ∂((μHE[m + 1] : Measure (Eucl P)).restrict M), ∀ Q : Submodule ℝ (Eucl P), HasWeightedApproximateTangentSpaceAt (m + 1) M θ x Q → Y x ∈ Q",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "1f41208304a2a05367e1fe309b1092ff4a0b2f3b73f47b3446c81d922764473a",
+  "git_delta": {
+    "base_commit": "bfa5a6cb3a43626168beb2e21a7d4c929748eb47",
+    "candidate_commit": "70c43b4108dec93eb6881ce65863eae64c430cbd",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "fiw_tb_tda_density_current",
+    "diff_sha256": "91dc1bf1281edb631fad754983a0ca409a32c2a4e309730cb39911763510d82f",
+    "source_sha256": "9734fa910b9c0596e24bbb36a87fc45cd1c78739f66508c21dd5757370232115",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.fiw_tb_tda_density_current",
+      "statement": "∀ (m : ℕ) (v : Eucl (m + 1) → ℝ), Integrable v → ∃ T : GeometricCurrentOn (univ : Set (Eucl (m + 1))) (m + 1), ∀ ω : TestFormOn (univ : Set (Eucl (m + 1))) (m + 1), T ω = ∫ x, v x * (ω : DifferentialForm (Eucl (m + 1)) (m + 1)) x (fun i => EuclideanSpace.single i (1 : ℝ))",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

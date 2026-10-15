@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "d4a8ea2a8d398be7cea902d9d06e74da60aa37c4f74b426d711fe83ec4d7fa10",
+  "git_delta": {
+    "base_commit": "de807372d0c1285556712eca33e920a2d829a21d",
+    "candidate_commit": "00678bdb77967b2eb9ebad68f45b34115664e050",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "cmb_exists_weakly_convergent_subseq",
+    "diff_sha256": "fcc409b4ae30d1b58b29691198e15a5f076ec82f074827b4ff99c11a2e237dbf",
+    "source_sha256": "1fa444baf44d8d404bb74cf638d28cacbe3303782dd1298b9d947174511e260a",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cmb_exists_weakly_convergent_subseq",
+      "statement": "∀ (P n : ℕ) (U : Set (Eucl P)), IsOpen U → ∀ T : ℕ → GeometricCurrentOn U n, (∀ W, CompactlyContainedOpen W U → (⨆ q, (T q).massOn W) < ∞) → ∃ (φ : ℕ → ℕ) (T₀ : GeometricCurrentOn U n), StrictMono φ ∧ WeaklyConvergesOn (fun q => T (φ q)) T₀",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

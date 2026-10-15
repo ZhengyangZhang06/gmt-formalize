@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "77e434465dbadaa832da0a43093697186b92cc045110ffaee8cff7cdda933d7f",
+  "git_delta": {
+    "base_commit": "f85bf9976bae178db240610c754a9c794dcf0a32",
+    "candidate_commit": "4dd0c03d8f6b4432a16b7e4f34ef1a4d78c47a1f",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "slicing_im_coarea_cc_null_of_small_majorants",
+    "diff_sha256": "9abaa04f4faa99bcde97625e29f04341838f3c12e4a7458a971b6595f432346b",
+    "source_sha256": "2fd83b9312b06ae38749d15f340c1f7c653be9be9a15c64f502a824f8b2279a7",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.slicing_im_coarea_cc_null_of_small_majorants",
+      "statement": "∀ (X : Type) [MeasurableSpace X] (ν : Measure X) (f : X → ℝ) (S : Set X) (M : ℝ≥0∞), M ≠ ∞ → (∀ ε : ℝ≥0, 0 < ε → ∃ (A : ℕ → Set X) (φ : ℕ → ℝ → ℝ≥0∞), S ⊆ ⋃ k, A k ∧ (∀ k, Measurable (φ k)) ∧ (∀ k t, ν (A k ∩ f ⁻¹' {t}) ≤ φ k t) ∧ ∑' k, ∫⁻ t, φ k t ≤ (ε : ℝ≥0∞) * M) → ∀ᵐ t ∂(volume : Measure ℝ), ν (S ∩ f ⁻¹' {t}) = 0",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

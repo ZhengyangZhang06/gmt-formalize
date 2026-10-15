@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "ff7ba1965c3817ea76c1340271a812bc0ba53731a9e884dd54a4ad44b361e94b",
+  "git_delta": {
+    "base_commit": "a755934e466f100e859718452ac35be8d45b0bfd",
+    "candidate_commit": "8723e7ff4f22ff10e8a82fe807201f7a5cf3e4d8",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "slicing_im_coarea_glue",
+    "diff_sha256": "88b83ae26f7896b6ccc39ae5c23e6818f5832ca738b829418394ee90ee1d2510",
+    "source_sha256": "6b14aeafa4c82ac447372feed278431628dc7a0c31d2bb9856bc17f677885cde",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.slicing_im_coarea_glue",
+      "statement": "∀ (X : Type) [MeasurableSpace X] (μ ν : Measure X) (f : X → ℝ) (J g : X → ℝ≥0∞) (M : Set X) (W : ℕ → Set X), Measurable f → (∀ i, MeasurableSet (W i)) → (∀ i, W i ⊆ M) → Pairwise (Function.onFun Disjoint W) → (∀ᵐ x ∂(μ.restrict (M \\ ⋃ i, W i)), J x * g x = 0) → (∀ᵐ t ∂(volume : Measure ℝ), ν ((M \\ ⋃ i, W i) ∩ f ⁻¹' {t}) = 0) → (∀ i, AEMeasurable (fun t : ℝ => ∫⁻ x in W i ∩ f ⁻¹' {t}, g x ∂ν) (volume : Measure ℝ) ∧ ∫⁻ t, (∫⁻ x in W i ∩ f ⁻¹' {t}, g x ∂ν) ∂(volume : Measure ℝ) = ∫⁻ x in W i, J x * g x ∂μ) → AEMeasurable (fun t : ℝ => ∫⁻ x in M ∩ f ⁻¹' {t}, g x ∂ν) (volume : Measure ℝ) ∧ ∫⁻ t, (∫⁻ x in M ∩ f ⁻¹' {t}, g x ∂ν) ∂(volume : Measure ℝ) = ∫⁻ x in M, J x * g x ∂μ",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

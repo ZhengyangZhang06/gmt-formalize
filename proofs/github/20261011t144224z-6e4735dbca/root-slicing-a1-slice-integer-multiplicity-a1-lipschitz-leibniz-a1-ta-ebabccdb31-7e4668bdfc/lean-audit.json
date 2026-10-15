@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "f6f719371f528180e6a22dc865b8f2e21af753d10c44602377974c0808f206be",
+  "git_delta": {
+    "base_commit": "a50230857d222f9c49f144d7de9612c11e3ae524",
+    "candidate_commit": "583322f91d4e68aa62adec321a572227bf16767b",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "slicing_im_ll_twl_chart_representation",
+    "diff_sha256": "ac686e0aab883ecda68ff539cc8a413fef2a545ad7636fafaf2774ec90404ecc",
+    "source_sha256": "9a52a986e8d17c095818ca3cf6fa424af354bb822bd6f9a323aa4c7165d94f05",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.slicing_im_ll_twl_chart_representation",
+      "statement": "∀ (P n : ℕ) (Φ : Eucl n → Eucl P) (Ω : Set (Eucl n)) (A : Set (Eucl P)) (h : Eucl P → ℝ) (L : ℝ≥0) (G Y : Eucl P → Eucl P), IsOpen Ω → ContDiff ℝ 1 Φ → (∃ K : ℝ≥0, LipschitzOnWith K Φ Ω) → (∃ κ : ℝ, 0 < κ ∧ ∀ w ∈ Ω, ∀ w' ∈ Ω, κ * ‖w - w'‖ ≤ ‖Φ w - Φ w'‖) → A ⊆ Φ '' Ω → NullMeasurableSet A (μHE[n] : Measure (Eucl P)) → LipschitzWith L h → Measurable G → (∀ x, ‖G x‖ ≤ L) → IntegrableOn Y A (μHE[n] : Measure (Eucl P)) → (∀ᵐ x ∂((μHE[n] : Measure (Eucl P)).restrict A), ∀ w ∈ Ω, Φ w = x → Y x ∈ LinearMap.range (fderiv ℝ Φ w).toLinearMap ∧ ∀ u ∈ LinearMap.range (fderiv ℝ Φ w).toLinearMap, HasDerivAt (fun s : ℝ => h (x + s • u)) (inner ℝ (G x) u) 0) → ∃ c : Eucl n → Eucl n, IntegrableOn c Ω (volume : Measure (Eucl n)) ∧ (∀ (f : Eucl P → ℝ) (K : ℝ≥0), Differentiable ℝ f → LipschitzWith K f → ∫ x in A, fderiv ℝ f x (Y x) ∂(μHE[n] : Measure (Eucl P)) = ∫ w in Ω, fderiv ℝ (f ∘ Φ) w (c w)) ∧ ∫ x in A, inner ℝ (G x) (Y x) ∂(μHE[n] : Measure (Eucl P)) = ∫ w in Ω, fderiv ℝ (h ∘ Φ) w (c w)",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

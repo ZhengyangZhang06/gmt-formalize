@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "225f48e401071a11cddf729daf15853d725d16c2d938802b687490e74aa4b8be",
+  "git_delta": {
+    "base_commit": "b2e86329406601dde216d3ea44de36143abd678e",
+    "candidate_commit": "6f506c46bb4e00035236c5bf0f37e1e1e996f268",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "fiw_ims_orientation_sign",
+    "diff_sha256": "8600c48521a07b84684e54a2068c0ee70dbc9175116e2d6aa784999bdc9f02e1",
+    "source_sha256": "ccfce26b48e8cfe8c7644ffd2caea315b81d693335e4fac1f3f9e280d8870840",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.fiw_ims_orientation_sign",
+      "statement": "∀ (P n : ℕ) (U M₁ M₂ : Set (Eucl P)) (θ₁ θ₂ : Eucl P → ℝ) (ξ₁ ξ₂ : Eucl P → NVector (Eucl P) n), IsRectifiableTriple U n M₁ θ₁ ξ₁ → IsRectifiableTriple U n M₂ θ₂ ξ₂ → (∀ᵐ x ∂((μHE[n] : Measure (Eucl P)).restrict (M₁ ∩ M₂)), ∀ Q : Submodule ℝ (Eucl P), HasWeightedApproximateTangentSpaceAt n M₁ θ₁ x Q → HasWeightedApproximateTangentSpaceAt n M₂ θ₂ x Q) → ∀ᵐ x ∂((μHE[n] : Measure (Eucl P)).restrict (M₁ ∩ M₂)), ξ₁ x = ξ₂ x ∨ ξ₁ x = -ξ₂ x",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "0b7cb86c93405ae712b63f00fd7da5020daf0382e3094767676ecb1455bc63ac",
+  "git_delta": {
+    "base_commit": "cd421a31e486921b9870b72023b5f68305a6cca9",
+    "candidate_commit": "fdd90dcb0712241d0c87ef3895417484526ab354",
+    "target": "GMT/Ch06/Submission.lean",
+    "changed_files": [
+      "GMT/Ch06/Submission.lean"
+    ],
+    "diff_sha256": "565e2b86a5dbbfcf57207abb44cdd2128cb5ad9a3005bf2ed7dfafbeb53b8cf1",
+    "source_sha256": "cfbdeb1d1c5045301c96d0b2edff8554057e7019117ed2eaae18cafbdb90ac3c",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.slicing_mb_leibniz_bound",
+      "statement": "∀ (P m : ℕ) (U : Set (Eucl P)) (T : GeometricCurrentOn U (m + 1)) (μ : Measure (Eucl P)) (v : Eucl P → NVector (Eucl P) (m + 1)), IsMeasureRepresentation T μ v → (∀ (x : Eucl P) (α : Covector (Eucl P) (m + 1)), |v x α| ≤ covectorEuclideanNorm α) → ∀ (ω : TestFormOn U m) (ψ : Eucl P → ℝ), ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) ψ → ∃ (η₁ : TestFormOn U m) (η₂ : TestFormOn U (m + 1)), (∀ x, (η₁ : DifferentialForm (Eucl P) m) x = ψ x • (ω : DifferentialForm (Eucl P) m) x) ∧ (∀ x, (η₂ : DifferentialForm (Eucl P) (m + 1)) x = ψ x • exteriorDerivative (ω : DifferentialForm (Eucl P) m) x) ∧ ENNReal.ofReal |T.boundary η₁ - T η₂| ≤ ∫⁻ x, (‖fderiv ℝ ψ x‖₊ : ℝ≥0∞) * ENNReal.ofReal (covectorEuclideanNorm ((ω : DifferentialForm (Eucl P) m) x)) ∂μ",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

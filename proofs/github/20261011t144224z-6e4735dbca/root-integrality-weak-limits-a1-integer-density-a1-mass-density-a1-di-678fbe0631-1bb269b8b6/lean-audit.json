@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "d9769211239dad57baf0cd2b12e02ccecad21184dd6c31575e9116b65ba41b87",
+  "git_delta": {
+    "base_commit": "f9394fd91a19147b5623ef7449ed472582d40064",
+    "candidate_commit": "93e13175da02caaa4a03d05b8e845c2810c0b11f",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "ind_md_diagonal_weak_subseq",
+    "diff_sha256": "04319f0179abf18f18b1c755ea42f1287efc1f89333f49e80b6167a83edacfc2",
+    "source_sha256": "2900cc5ed7485203b109a2dc58c431855bfb6f7bd4427a7080113364942ec839",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.ind_md_diagonal_weak_subseq",
+      "statement": "∀ (P : ℕ) (μ : ℕ → Measure (Eucl P)), (⨆ j, μ j univ) < ∞ → ∃ (φ : ℕ → ℕ) (ν : ℕ → Measure (Eucl P)), StrictMono φ ∧ (∀ R, ν R univ < ∞) ∧ ∀ (R : ℕ) (F : Set (Eucl P)), IsClosed F → F ⊆ closedBall 0 (R : ℝ) → limsup (fun j => μ (φ j) F) atTop ≤ ν R F",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "ffa1448d244f9a452725f490302312e71ecca8463a2b1f1046d18110b4156c95",
+  "git_delta": {
+    "base_commit": "33ec297a69dff384f7c05f295dc62b63e3525f5c",
+    "candidate_commit": "79fa90c23a7942b29d98e9701f4414b8408d1021",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "slicing_mb_dm_density_le_lowerLeftDini",
+    "diff_sha256": "ffb6bb8b29398acb77e809217d0d88e5b08710c250013cdcbcb3ab6c9ba9e059",
+    "source_sha256": "36dfccf4b7daa80a100deb21099d3e6959b06c72d670ccc01c92dca6ebd188fb",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.slicing_mb_dm_density_le_lowerLeftDini",
+      "statement": "∀ (ν : Measure ℝ) (a b : ℝ), ν (Ioo a b) ≠ ∞ → ∀ t ∈ Ioo a b, liminf (fun h : ℝ => ν (Icc (t - h) t) / ENNReal.ofReal h) (𝓝[>] 0) ≤ liminf (fun k : ℝ => ENNReal.ofReal (((ν (Ioo a b ∩ Iic t)).toReal - (ν (Ioo a b ∩ Iic (t - k))).toReal) / k)) (𝓝[>] 0)",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

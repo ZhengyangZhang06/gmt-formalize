@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "7437cb30bd68a2e81e0e876b999576d7fd7f98567bf883a10e6b5116172aa532",
+  "git_delta": {
+    "base_commit": "d74ec47d38c6d2a56133d67a9a9943203a86a284",
+    "candidate_commit": "469f013363eae50dbd864d795703cdc6930d8086",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "constancy_closed_kills_partial_derivatives",
+    "diff_sha256": "71f48f12ebc09f824ec8851354ab6a36510b5cba380d6dff4d6b79fce5d540ca",
+    "source_sha256": "ec16a98222e3b811bf3432b6b900080f0b3ed638fde433d80df62fd5cc86a3c8",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.constancy_closed_kills_partial_derivatives",
+      "statement": "∀ (m : ℕ) (U : Set (Eucl (m + 1))) (T : GeometricCurrentOn U (m + 1)), T.boundary = 0 → ∀ (a : Eucl (m + 1) → ℝ), ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) a → HasCompactSupport a → tsupport a ⊆ U → ∀ (j : Fin (m + 1)) (ω : TestFormOn U (m + 1)), (∀ x, (ω : DifferentialForm (Eucl (m + 1)) (m + 1)) x (fun i => EuclideanSpace.single i (1 : ℝ)) = fderiv ℝ a x (EuclideanSpace.single j (1 : ℝ))) → T ω = 0",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

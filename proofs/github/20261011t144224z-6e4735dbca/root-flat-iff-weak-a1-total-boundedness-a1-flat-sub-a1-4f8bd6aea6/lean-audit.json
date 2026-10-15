@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "1f4bb402820409057221f2bb859662edfa3667afc68e1c0ef26766007746b8df",
+  "git_delta": {
+    "base_commit": "48003458fad021bfb5c2e6033b53fcc6b2f37d85",
+    "candidate_commit": "9dc32d5162c173b22ab5e3645d2542ef3150ee80",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "fiw_tb_flat_sub",
+    "diff_sha256": "b212a57e7a01bf0956f34e5a7a6b0040ff36b7fe72a7a973c06a79528718dc30",
+    "source_sha256": "3049206e16fb8dd13eecd7447b17ae377ffefad77c0916e8e57cb4655777b65e",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.fiw_tb_flat_sub",
+      "statement": "(∀ (P n : ℕ) (U : Set (Eucl P)), IsOpen U → ∀ (T₁ T₂ S : GeometricCurrentOn U n) (a b : ℤ), IsIntegerMultiplicity T₁ → IsIntegerMultiplicity T₂ → (∀ ω, S ω = (a : ℝ) * T₁ ω + (b : ℝ) * T₂ ω) → IsIntegerMultiplicity S) → ∀ (P n : ℕ) (U : Set (Eucl P)), IsOpen U → ∀ (R₁ R₂ : GeometricCurrentOn U (n + 1)) (S₁ S₂ : GeometricCurrentOn U n), IsIntegerMultiplicity R₁ → IsIntegerMultiplicity R₂ → IsIntegerMultiplicity S₁ → IsIntegerMultiplicity S₂ → ∃ (R : GeometricCurrentOn U (n + 1)) (S : GeometricCurrentOn U n), IsIntegerMultiplicity R ∧ IsIntegerMultiplicity S ∧ (∀ ω, R.boundary ω + S ω = (R₁.boundary ω + S₁ ω) - (R₂.boundary ω + S₂ ω)) ∧ R.mass + S.mass ≤ (R₁.mass + S₁.mass) + (R₂.mass + S₂.mass)",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

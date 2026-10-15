@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "0794db3f1ff2d1f4754d27805488e0cdf6494375bcaedfa577051ab7f82f5871",
+  "git_delta": {
+    "base_commit": "dbd37a474c3c8ec1f452a2402cfebc51dec7da8d",
+    "candidate_commit": "06b135a22629659ace8a2b0cc00c0cc3051819b0",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "iwl_sp_sn_null_diff_support_of_local_null",
+    "diff_sha256": "eb27b4b79fa8f6e6a8bd4a2ad8e7c3e91482f3c0c14e15fbd15094e03ae1a5cd",
+    "source_sha256": "d4b2a24df79e468eefcb84b18bd1e694fc781b5ac0a82bff713dfc8e5daba58d",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.iwl_sp_sn_null_diff_support_of_local_null",
+      "statement": "∀ (P n : ℕ) (U : Set (Eucl P)) (T : GeometricCurrentOn U n) (M : Set (Eucl P)) (μ : Measure (Eucl P)), M ⊆ U → (∀ W : Set (Eucl P), IsOpen W → IsCompact (closure W) → closure W ⊆ U → T.VanishesOn W → μ (M ∩ W) = 0) → μ (M \\ T.support) = 0",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

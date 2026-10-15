@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "a026a94d306d14d0d3f8e0df50d6b6283193cf1e77ff459c6c5df68f5224850c",
+  "git_delta": {
+    "base_commit": "8e30f5c6c435c3a285cfe2112da7108c26c2d828",
+    "candidate_commit": "118fa606212e52093641c86c04aef190ca18f9d2",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "slicing_im_tg_cc_contDiff_range_chart_cover",
+    "diff_sha256": "5d7f4298e946febfdee92be8049bc55efb514fe83bdb8b2f9b7d538ed24610cc",
+    "source_sha256": "61c72f2c96ded009ddb35a3023a6c88a24e19bb7751a06a09075c222677a3b2c",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.slicing_im_tg_cc_contDiff_range_chart_cover",
+      "statement": "∀ (n P : ℕ) (G : Eucl n → Eucl P), ContDiff ℝ 1 G → ∃ O : ℕ → Set (Eucl n), (∀ k, IsOpen (O k)) ∧ (∀ k, ∃ K : ℝ≥0, LipschitzOnWith K G (O k)) ∧ (∀ k, ∃ c : ℝ, 0 < c ∧ ∀ w ∈ O k, ∀ w' ∈ O k, c * ‖w - w'‖ ≤ ‖G w - G w'‖) ∧ (μHE[n] : Measure (Eucl P)) (range G \\ ⋃ k, G '' O k) = 0",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

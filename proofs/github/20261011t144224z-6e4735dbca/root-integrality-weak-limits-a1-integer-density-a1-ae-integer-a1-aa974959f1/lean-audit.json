@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "ab87cb074e2f3015cbd9280d8a6b9c06973ad338698a302a56bc5e5e4ce24e51",
+  "git_delta": {
+    "base_commit": "c87640011c8af7f7945de3f610ff98c0f268df81",
+    "candidate_commit": "0213342518a9bd4f0a5e7bd16ebbb491597b0105",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "ind_ae_integer_multiplicity",
+    "diff_sha256": "54ce859c101483a44ded328ddf3f97fdbfed97df64a8c829589f9bf6b23dff6a",
+    "source_sha256": "37ceb0580f910c72ff8a241872590937d096177a4541c82fb4ccf9448fd744ca",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.ind_ae_integer_multiplicity",
+      "statement": "∀ (P n : ℕ) (U : Set (Eucl P)) (T : GeometricCurrentOn U n) (M : Set (Eucl P)) (θ : Eucl P → ℝ) (ξ : Eucl P → NVector (Eucl P) n), IsRectifiableTriple U n M θ ξ → (∀ ω : TestFormOn U n, T ω = tauAction n M θ ξ ω) → (∀ᵐ x ∂((μHE[n] : Measure (Eucl P)).restrict M), ∃ k : ℕ, θ x = k) → IsIntegerMultiplicity T",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

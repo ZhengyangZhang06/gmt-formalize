@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "aa3be332f70abc4ac2c63b5b5b70b0e2c41ecacea59279dce4880d26d54f8504",
+  "git_delta": {
+    "base_commit": "0d872cdce83439b754d9a05f2d0e82df01794711",
+    "candidate_commit": "b4bbd87115fa12fc3c955447a428b2ff9036e74e",
+    "target": "GMT/Ch06/Submission.lean",
+    "changed_files": [
+      "GMT/Ch06/Submission.lean"
+    ],
+    "diff_sha256": "e346e1671e3f758bc563adb5f57147ab7fee3950611bd2880b5c3bc8008c653c",
+    "source_sha256": "2c79ebbebcec81a602f931587923d661abe7c56bc7975527906d46b353dcbd6e",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.constancy_theorem",
+      "statement": "ConstancyTheorem",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

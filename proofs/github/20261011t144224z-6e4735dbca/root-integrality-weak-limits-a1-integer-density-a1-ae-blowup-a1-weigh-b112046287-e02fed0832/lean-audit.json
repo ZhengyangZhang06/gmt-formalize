@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "d0eec3103aa8098ff833240e03a9ce6cb652ccb9ff84056ff5194b4c54bd7661",
+  "git_delta": {
+    "base_commit": "2c49edebdb78197cf330595bec7ec0614df8e3d3",
+    "candidate_commit": "d054ee15516d16e143b6e6c9897a1ec4ca1cb380",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "ind_ab_weighted_lebesgue_point",
+    "diff_sha256": "8ae6f8dca17a534a029a77b70c4e2492b104c296cea2d4d294fc25d9206ba094",
+    "source_sha256": "046e2f3ca9703bd9ed668f2593f164aa1684b35505c2f9ecb433606dd8fa0e5a",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.ind_ab_weighted_lebesgue_point",
+      "statement": "∀ (P n : ℕ) (M : Set (Eucl P)) (θ : Eucl P → ℝ) (ξ : Eucl P → NVector (Eucl P) n), IsRectifiableTriple (univ : Set (Eucl P)) n M θ ξ → ∀ᵐ x ∂((μHE[n] : Measure (Eucl P)).restrict M), Tendsto (fun s : ℝ => (∫⁻ y in M ∩ closedBall x s, ENNReal.ofReal (θ y) * ‖ξ y - ξ x‖ₑ ∂(μHE[n] : Measure (Eucl P))) / (∫⁻ y in M ∩ closedBall x s, ENNReal.ofReal (θ y) ∂(μHE[n] : Measure (Eucl P)))) (𝓝[>] 0) (𝓝 0)",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

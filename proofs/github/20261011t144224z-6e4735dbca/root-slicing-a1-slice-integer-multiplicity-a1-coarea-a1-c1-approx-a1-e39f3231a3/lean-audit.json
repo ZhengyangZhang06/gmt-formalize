@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "9143acb1ab9ba357e8b7e0db09869b0c2117f5a37f2325a62855668dba993ad8",
+  "git_delta": {
+    "base_commit": "4e461e3e062c1011989baebb41540c026fb3b88e",
+    "candidate_commit": "c7050c55826ea6979222733199c96fe3a0c74171",
+    "target": "GMT/Ch06/Submission.lean",
+    "changed_files": [
+      "GMT/Ch06/Submission.lean"
+    ],
+    "diff_sha256": "4adedcf1e9fa5fa6e492193a674d421ff546b7a8764fd129ca515455a1a50815",
+    "source_sha256": "24db806b82d0fd3339571e80087443a6cb880d3b5add9ee20961b3da86dc8369",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.slicing_im_coarea_c1_approx",
+      "statement": "∀ (n : ℕ) (g : Eucl n → ℝ) (K : ℝ≥0), LipschitzWith K g → ∀ ε : ℝ≥0∞, 0 < ε → ∃ (A : Set (Eucl n)) (h : Eucl n → ℝ), IsClosed A ∧ (volume : Measure (Eucl n)) Aᶜ < ε ∧ ContDiff ℝ 1 h ∧ ∀ x ∈ A, g x = h x ∧ HasFDerivAt g (fderiv ℝ h x) x",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

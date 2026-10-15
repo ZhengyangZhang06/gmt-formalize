@@ -1,0 +1,91 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.slicing-a1.slice_mass_bound-a1.cutoff_defect_bound-a1`
+- Child DAG node: `root.slicing-a1.slice_mass_bound-a1.cutoff_defect_bound-a1.grad_lintegral-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Provenance (orientation only; the hypotheses are exactly those of the statement): parent proof, Steps 3 and 4 (Simon's bound (4c) for one smooth approximant g = g_j with accuracy δ = δ_j), extracted for a single function g and an arbitrary accuracy δ. No current, representation or sibling result is used.
+
+Notation. K := tsupport ω; E := K ∩ f⁻¹((t − h − δ, t + δ)); a := ofReal(c)·LW ∈ [0, ∞); ψ := (y ↦ χ(g(y))); |α| := covectorEuclideanNorm(α) for covectors α; ‖·‖ on continuous linear maps is the operator norm and ‖·‖₊ its ℝ≥0 version, coerced to ℝ≥0∞. For a set S, 1_S·a denotes Set.indicator S (fun _ => a).
+
+1. (c ≥ 0.) c ≥ |χ′(0)| ≥ 0 (abs_nonneg and the hypothesis at s = 0).
+
+2. (Pointwise bound.) Claim: for every x ∈ ℝ^P, ‖Dψ(x)‖₊ · ofReal(|ω(x)|) ≤ (1_E·a)(x).
+ (a) Let x ∉ K. Then ω(x) = 0 (image_eq_zero_of_notMem_tsupport), so |ω(x)| = covectorEuclideanNorm 0 = 0 (covectorEuclideanNorm_zero) and ofReal 0 = 0. The left side is 0, which is ≤ the right side (simp).
+ (b) Let x ∈ K. Since χ is differentiable at g(x) and g is differentiable at x, the chain rule gives Dψ(x) = Dχ(g(x)) ∘ Dg(x) (fderiv_fun_comp x (hχ (g x)) (hg x); equivalently fderiv_comp for χ ∘ g). For the one-variable map χ, ‖Dχ(s)‖ = ‖χ′(s)‖ = |χ′(s)| (norm_deriv_eq_norm_fderiv, Real.norm_eq_abs).
+  (b1) If g(x) ∉ (t − h, t), then χ′(g(x)) = 0 by hypothesis, so ‖Dχ(g(x))‖ = 0 and Dχ(g(x)) = 0 (norm_eq_zero). Hence Dψ(x) = 0 ∘ Dg(x) = 0, and the left side is 0 ≤ the right side (simp).
+  (b2) If g(x) ∈ (t − h, t), i.e. t − h < g(x) < t: since x ∈ K, |g(x) − f(x)| ≤ δ, i.e. −δ ≤ g(x) − f(x) ≤ δ (abs_le). Hence f(x) ≥ g(x) − δ > t − h − δ and f(x) ≤ g(x) + δ < t + δ (linarith), so x ∈ E and the right side equals a (indicator_of_mem). By the operator-norm bound for compositions (ContinuousLinearMap.opNorm_comp_le), ‖Dψ(x)‖ ≤ ‖Dχ(g(x))‖·‖Dg(x)‖. Here ‖Dχ(g(x))‖ = |χ′(g(x))| ≤ c, and ‖Dg(x)‖ ≤ LW (the ℝ≥0 hypothesis ‖Dg(x)‖₊ ≤ LW cast to ℝ, exact_mod_cast). Since ‖Dg(x)‖ ≥ 0 and c ≥ 0 (step 1), ‖Dχ(g(x))‖·‖Dg(x)‖ ≤ c·LW (mul_le_mul). In [0, ∞]: ‖Dψ(x)‖₊ = ofReal(‖Dψ(x)‖) (ofReal_norm, since ‖·‖ₑ = ‖·‖₊ by definition) ≤ ofReal(c·LW) (ENNReal.ofReal_le_ofReal) = ofReal(c)·ofReal(LW) = ofReal(c)·LW (ENNReal.ofReal_mul with c ≥ 0, ENNReal.ofReal_coe_nnreal). Moreover ofReal(|ω(x)|) ≤ 1 because |ω(x)| ≤ 1 (ENNReal.ofReal_le_one). Therefore the left side is ≤ a·1 = a (mul_le_mul', mul_one).
+
+3. (Integration.) By step 2 and monotonicity of the lower Lebesgue integral (lintegral_mono, which needs no measurability), ∫⁻ ‖Dψ(x)‖₊·ofReal(|ω(x)|) dμ(x) ≤ ∫⁻ (1_E·a)(x) dμ(x). For an arbitrary set E (no measurability needed), ∫⁻ 1_E·a dμ ≤ a·μ(E) (lintegral_indicator_const_le). Since a·μ(E) = ofReal(c)·LW·μ(K ∩ f⁻¹((t − h − δ, t + δ))) (multiplication is left-associated), the stated inequality follows. ∎
+
+Remark. No sign condition on h or δ and no measurability of f, g, ω or E is used; every step holds verbatim for arbitrary reals t, h, δ (if δ < 0 the hypothesis |g − f| ≤ δ on K forces K = ∅, and case (a) applies everywhere).
+
+## Key steps
+
+1. c ≥ |χ′(0)| ≥ 0.
+2. Off K = tsupport ω: ω(x) = 0 (image_eq_zero_of_notMem_tsupport, covectorEuclideanNorm_zero), so the integrand vanishes.
+3. On K: chain rule Dψ(x) = Dχ(g(x)) ∘ Dg(x) (fderiv_fun_comp) and ‖Dχ(s)‖ = |χ′(s)| (norm_deriv_eq_norm_fderiv).
+4. If g(x) ∉ (t − h, t) then Dψ(x) = 0; otherwise x ∈ E (from |g − f| ≤ δ) and ‖Dψ(x)‖₊·ofReal|ω(x)| ≤ ofReal(c)·LW (opNorm_comp_le, |ω| ≤ 1).
+5. lintegral_mono and lintegral_indicator_const_le give ∫⁻ … ≤ ofReal(c)·LW·μ(K ∩ f⁻¹((t − h − δ, t + δ))).
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat local-references/197bdd4b88278494/manifest.json (mode local-project; project_commit d8d46c9587747dee0751a1f780fcafdba16a3886; mathlib_commit 25730c7c759d108ef87ab70af2342a196760f79d)`
+- `python3 read of nodes/root-slicing-a1-slice-mass-bound-a1-cutoff-defect-bound-a1/{parent-child-handoff.json, parent-supplied-plan.md, parent-supplied-natural-proof.json}`
+- `python3 scan of dag.json: sibling lean_statements of smooth_approx-a1, leibniz_bound-a1, wedge_norm-a1; non-sibling dependency census; 235 nodes with unique lean_names, no child of this node yet; patterns 'Tendsto (fun j => ∫', '∫⁻ x, (‖fderiv ℝ', 'Integrable F', 'IsClosed K → ContinuousOn f K' (no identical child type)`
+- `python3 read of nodes/root-slicing-a1-slice-mass-bound-a1/decomposition-audit-v1..v5.json and nodes/root-flat-iff-weak-a1-im-series-a1-series-current-a1/decomposition-v2.json (format of depth-4 child contracts)`
+- `grep -n 'abbrev NVector|abbrev Covector|abbrev DifferentialForm|def IsTestForm|def testFormOnSubmodule|abbrev TestFormOn|def covectorEuclideanNorm|covectorEuclideanNorm_zero|def exteriorDerivativeTestOn|GeometricCurrentOn.boundary_apply|tsupport_exteriorDerivative_subset|abbrev exteriorDerivative' simongmt/Poincare/SimonGMT/Chapter06/{Forms,FormsDuality,Mass,Currents}.lean`
+- `rg -n 'theorem lintegral_indicator_const_le|theorem tendsto_measure_iInter_atTop|theorem tendsto_integral_of_dominated_convergence|theorem ContinuousOn.preimage_isClosed_of_isClosed|theorem ContDiff.differentiable |theorem Tendsto.const_mul|theorem norm_deriv_eq_norm_fderiv|theorem fderiv_comp |theorem ContinuousOn.isOpen_inter_preimage' local-references/197bdd4b88278494/mathlib/Mathlib`
+- `rg -n 'exists_nat_one_div_lt|image_eq_zero_of_notMem_tsupport|theorem tendsto_one_div_add_atTop_nhds_zero_nat|theorem le_of_tendsto_of_tendsto|lemma ofReal_norm|lemma enorm_eq_nnnorm|theorem opNorm_comp_le' local-references/197bdd4b88278494/mathlib/Mathlib`
+- `rg -n 'slicing_mb_cdb|grad_lintegral_le|band_measure_tendsto|multiplier_integral_tendsto' local-references/197bdd4b88278494/project (no match); rg -l slicing_mb_cdb over the run directory and workspace GMT/ (no match)`
+- `python3 contract_scope(GMT/Ch06/Contract.lean, 'GMT.Ch06.main_theorem') and child_modules from verifier/gmt-compare.py; lean_contract.validate_lean_statement on the three child types and the parent`
+- `git show <tangent-locality branch>:GMT/Ch06/Submission.lean (accepted declarations are `theorem Submission.X` inside namespace GMT.Ch06)`
+- `lean -o /tmp/cdb_split_HHvFLJ/out/GMT/Ch06/Submission.olean GMT/Ch06/Submission.lean (LEAN_PATH from lake env)`
+- `lean /tmp/cdb_split_HHvFLJ/check/Stmts.lean (parent, two siblings, three children elaborate in the comparator scope)`
+- `lean /tmp/cdb_split_HHvFLJ/check/Children.lean (#print axioms of the three child proofs: [propext, Classical.choice, Quot.sound])`
+- `lean /tmp/cdb_split_HHvFLJ/check/Assembly.lean (#print axioms HumanizeCheck.assembly: [propext, Classical.choice, Quot.sound])`
+- `lean /tmp/cdb_split_HHvFLJ/check/Named.lean (Submission.* declarations, parent from children + stubbed siblings, comparator-style exact targets)`
+- `lean /tmp/cdb_split_HHvFLJ/check/Quoted.lean and /tmp/cdb_split_HHvFLJ/check/NamedQuoted.lean (the assembly text quoted in the rationale, verbatim, in hypothesis form and under the real Submission.* names)`
+- `independent reviewer subagent re-check of payload, statements, proofs, lemma names and compiles (verdict: accept with minor fixes, applied)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/GMT/Ch06/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-slicing-a1-slice-mass-bound-a1-cutoff-defect-bound-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-slicing-a1-slice-mass-bound-a1/decomposition-audit-v4.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-slicing-a1-slice-mass-bound-a1/decomposition-audit-v5.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-flat-iff-weak-a1-im-series-a1-series-current-a1/decomposition-v2.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/FormsDuality.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/Continuity.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/DominatedConvergence.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/ContinuousOn.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/Instances/ENNReal/Lemmas.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/EMetricSpace/Lipschitz.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/FDeriv/Comp.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/Deriv/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/ContDiff/Defs.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Normed/Group/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Normed/Operator/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/SpecificLimits/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/Order/OrderClosed.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/tmp/cdb_split_HHvFLJ/check/Stmts.lean`
+- `/tmp/cdb_split_HHvFLJ/check/Children.lean`
+- `/tmp/cdb_split_HHvFLJ/check/Assembly.lean`
+- `/tmp/cdb_split_HHvFLJ/check/Named.lean`
+- `/tmp/cdb_split_HHvFLJ/check/Quoted.lean`
+- `/tmp/cdb_split_HHvFLJ/check/NamedQuoted.lean`
+
+The pinned snapshot (project d8d46c95, Mathlib 25730c7c) holds the frozen Ch06 contract, and the workspace Submission is the frozen file, so the child types may use only contract, SimonGMT and Mathlib names. SimonGMT supplies DifferentialForm, TestFormOn (membership IsTestForm ∧ tsupport ⊆ U, so ω.property.1.2 : HasCompactSupport), covectorEuclideanNorm with covectorEuclideanNorm_zero, exteriorDerivativeTestOn (its coercion is exteriorDerivative ω by rfl) and tsupport_exteriorDerivative_subset. Mathlib supplies every lemma the child proofs cite: fderiv_fun_comp, norm_deriv_eq_norm_fderiv, ContinuousLinearMap.opNorm_comp_le, lintegral_indicator_const_le (no measurability), ofReal_norm, ContinuousOn.preimage_isClosed_of_isClosed, exists_nat_one_div_lt, tendsto_measure_iInter_atTop, tendsto_integral_of_dominated_convergence, ENNReal.Tendsto.const_mul, le_of_tendsto_of_tendsto' and tendsto_one_div_add_atTop_nhds_zero_nat. Neither library nor the DAG contains the three child statements, so they are new obligations. In a scratch compile of the frozen Submission, all child types elaborate in the comparator scope and pass validate_lean_statement. Their complete Lean proofs compile with axioms [propext, Classical.choice, Quot.sound]. The exact parent type follows from the three children plus the resolved siblings slicing_mb_smooth_approx and slicing_mb_leibniz_bound, also with only those axioms. The proposed names occur nowhere in the snapshot, the workspace or the run directory.

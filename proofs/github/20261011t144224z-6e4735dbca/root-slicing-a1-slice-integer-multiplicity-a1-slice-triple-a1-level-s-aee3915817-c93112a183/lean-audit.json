@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "53a272fa8767037a834bcf8c7019cdd29c8fa660c81bd583f35f78cea1288175",
+  "git_delta": {
+    "base_commit": "eb9fbe539747266638d66ebb71bc90a76f45d543",
+    "candidate_commit": "54d4b4edc3e9a88a083845bcb65d77f8136d50d7",
+    "target": "GMT/Ch06/Submission.lean",
+    "changed_files": [
+      "GMT/Ch06/Submission.lean"
+    ],
+    "diff_sha256": "f7ca978c3045df24bf17858f31a0ff4a3b3fbb5ae7d0357e8c996d1cda0bcb1f",
+    "source_sha256": "48aac117e52d76e16065979d51c2ece6613a32cb0745d7268fa78621cbb00615",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.slicing_im_st_level_set_charts",
+      "statement": "∀ (P m : ℕ) (Φ : Eucl (m + 1) → Eucl P) (Ω : Set (Eucl (m + 1))) (h : Eucl (m + 1) → ℝ) (t : ℝ), IsOpen Ω → ContDiff ℝ 1 Φ → (∃ c : ℝ, 0 < c ∧ ∀ w ∈ Ω, ∀ w' ∈ Ω, c * ‖w - w'‖ ≤ ‖Φ w - Φ w'‖) → ContDiff ℝ 1 h → ∃ (Ψ : ℕ → Eucl m → Eucl P) (V : ℕ → Set (Eucl m)), (∀ i, IsOpen (V i)) ∧ (∀ i, ContDiff ℝ 1 (Ψ i)) ∧ (∀ i, ∃ K : ℝ≥0, LipschitzOnWith K (Ψ i) (V i)) ∧ (∀ i, ∃ c : ℝ, 0 < c ∧ ∀ v ∈ V i, ∀ v' ∈ V i, c * ‖v - v'‖ ≤ ‖Ψ i v - Ψ i v'‖) ∧ (∀ w ∈ Ω, h w = t → fderiv ℝ h w ≠ 0 → ∃ i, ∃ v ∈ V i, Ψ i v = Φ w) ∧ ∀ i, ∀ v ∈ V i, ∃ w ∈ Ω, h w = t ∧ Ψ i v = Φ w ∧ LinearMap.range (fderiv ℝ (Ψ i) v).toLinearMap = Submodule.map (fderiv ℝ Φ w).toLinearMap (LinearMap.ker (fderiv ℝ h w).toLinearMap)",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "0ed07f303b3609cbaa15f13a8a691716738a4a6c723b1ef1b4e3ddfdaf5f31c8",
+  "git_delta": {
+    "base_commit": "8d776b43f5b1b2acca9c4129f1a57d9015a61cf1",
+    "candidate_commit": "5bfbfcbc2a753f8da0c8d34d7854c0614b87f9d3",
+    "target": "GMT/Ch06/Submission.lean",
+    "changed_files": [
+      "GMT/Ch06/Submission.lean"
+    ],
+    "diff_sha256": "36b8c373913344cbec2e3c972e5724d939bd839280c168daeeb3f572fd920896",
+    "source_sha256": "9f3ef764c9edd6799156fc91a430d240e6e7a0525514bb9bbf38bc9cf92c04e1",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.fiw_tb_lattice_chain_coeff",
+      "statement": "∀ (m N : ℕ) (ρ : ℝ) (β : LatticeFaceIndex (m + 1) N → ℝ) (Pc : GeometricCurrentOn (univ : Set (Eucl N)) (m + 1)), 0 < ρ → IsLatticeChain ρ β Pc → ∀ F : LatticeFaceIndex (m + 1) N, β F ≠ 0 → latticeFace ρ F ⊆ Pc.support ∧ ENNReal.ofReal (|β F| * ρ ^ (m + 1)) ≤ Pc.mass",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

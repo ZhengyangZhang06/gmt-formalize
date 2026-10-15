@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "9c79a0b531c109cc32d861532e05dd70066fb7836539bc8a1711704b7913fb02",
+  "git_delta": {
+    "base_commit": "2c87a1695b3eb21572e87de1592f511dd455aba7",
+    "candidate_commit": "100a3f23645ad7ca81831915170c7b8a3ab2ca20",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "ltg_simple_unit_rigidity",
+    "diff_sha256": "cc72fb87172dabe4e184b961e0c72cfe3e1febfa48d0c81997a8f2c963d23200",
+    "source_sha256": "49966636f27446800373f623a8e9b84c06317b7ab8bbc16e71893f7968803e20",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.ltg_simple_unit_rigidity",
+      "statement": "∀ (P k : ℕ) (τ τ' : Fin k → Eucl P) (w w' : NVector (Eucl P) k) (a a' : ℝ), Orthonormal ℝ τ → Orthonormal ℝ τ' → (w = simpleNVector τ ∨ w = -simpleNVector τ) → (w' = simpleNVector τ' ∨ w' = -simpleNVector τ') → 0 ≤ a → 0 ≤ a' → a • w = a' • w' → a = a' ∧ (a ≠ 0 → w = w')",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "ae13d3e936056ec2d3122f14c972fac3250e68cc2fc45f16aeb9a2e7c5344ad8",
+  "git_delta": {
+    "base_commit": "a818bea2c0e5380cd219ed0dea9e80cda32a2a67",
+    "candidate_commit": "02fc450166154794a0e945278312f4dc47169cbf",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "fiw_ims_overlap_finite",
+    "diff_sha256": "64a5fd08e75e13060a07c206646d260738c563f78f6c571315b8d3d4a4ec1fdd",
+    "source_sha256": "845a2e2eff4faacc9e415af6bd09a389fcb4befd6ecdb0c6613e6ca36e8a9152",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.fiw_ims_overlap_finite",
+      "statement": "∀ (P n : ℕ) (U : Set (Eucl P)), IsOpen U → ∀ (M : ℕ → Set (Eucl P)) (θ : ℕ → Eucl P → ℝ) (c : ℕ → ℤ), (∀ r, M r ⊆ U) → (∀ r, NullMeasurableSet (M r) (μHE[n] : Measure (Eucl P))) → (∀ r, ∀ K : Set (Eucl P), IsCompact K → K ⊆ U → IntegrableOn (θ r) (M r ∩ K) (μHE[n] : Measure (Eucl P))) → (∀ r, ∀ x ∈ M r, 1 ≤ θ r x) → (∀ W, CompactlyContainedOpen W U → (∑' r, ((c r).natAbs : ℝ≥0∞) * ∫⁻ x in M r ∩ W, ENNReal.ofReal (θ r x) ∂(μHE[n] : Measure (Eucl P))) < ∞) → (∀ K : Set (Eucl P), IsCompact K → K ⊆ U → (∫⁻ x in K, ∑' r, ((c r).natAbs : ℝ≥0∞) * (M r).indicator (fun y => ENNReal.ofReal (θ r y)) x ∂(μHE[n] : Measure (Eucl P))) < ∞) ∧ ∀ᵐ x ∂(μHE[n] : Measure (Eucl P)), {r | c r ≠ 0 ∧ x ∈ M r}.Finite",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

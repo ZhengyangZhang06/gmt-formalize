@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "ff54da665c6d2c5150efe3b81d7a2cd3394d913a7ee3a02c6c62152c15baa922",
+  "git_delta": {
+    "base_commit": "66bf7ce76a4f67f9370bdcf0fc8028256c698bfe",
+    "candidate_commit": "a079caed8454a03b16a07b4e8e2f2681817410a6",
+    "target": "GMT/Ch06/Submission.lean",
+    "changed_files": [
+      "GMT/Ch06/Submission.lean"
+    ],
+    "diff_sha256": "d2c49bf8fdbcce454e48a08c09f08eece734b52b34c1dc1b484f3bfdb57c5fd9",
+    "source_sha256": "6c9faeb7b1db181bdc585d1ec7ddfe77a35937115361e027c1b0ec496e6d3de9",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.fiw_ims_tsum_tau",
+      "statement": "∀ (P n : ℕ) (U : Set (Eucl P)), IsOpen U → ∀ (M : ℕ → Set (Eucl P)) (θ : ℕ → Eucl P → ℝ) (ξ : ℕ → Eucl P → NVector (Eucl P) n) (c : ℕ → ℤ), (∀ r, IsRectifiableTriple U n (M r) (θ r) (ξ r)) → (∀ W, CompactlyContainedOpen W U → (∑' r, ((c r).natAbs : ℝ≥0∞) * ∫⁻ x in M r ∩ W, ENNReal.ofReal (θ r x) ∂(μHE[n] : Measure (Eucl P))) < ∞) → ∀ ω : TestFormOn U n, HasSum (fun r => (c r : ℝ) * tauAction n (M r) (θ r) (ξ r) ω) (∫ x, ∑' r, (M r).indicator (fun y => (c r : ℝ) * (θ r y * ξ r y ((ω : DifferentialForm (Eucl P) n) y))) x ∂(μHE[n] : Measure (Eucl P)))",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

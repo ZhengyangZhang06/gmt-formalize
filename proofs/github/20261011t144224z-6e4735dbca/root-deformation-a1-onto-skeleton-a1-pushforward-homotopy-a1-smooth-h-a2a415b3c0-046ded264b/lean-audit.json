@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "3c79a07c14fb7a2bdd2b40c349f5ed2ece991e4847704a8725711bfb38b86c74",
+  "git_delta": {
+    "base_commit": "b39b272e9ae49f17482547bbd35b526cb1239660",
+    "candidate_commit": "b9c2a28d96da59bd3a40bf31aa4498bbb003d033",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "dph_sh_slice_compatible_testForm",
+    "diff_sha256": "55c38a535413dbc161b538d29f8bbdc8b10828ddece3d7d2d162fee7928d5749",
+    "source_sha256": "655303e29943f088557e3259b81b17285ca69800860e645a29189830d448c3af",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dph_sh_slice_compatible_testForm",
+      "statement": "∀ (m m' q : ℕ) (G : Eucl (m + 1) → Eucl m') (ω : DifferentialForm (Eucl m') q) (θ : TestFormOn (univ : Set (Eucl (m + 1))) q) (N : Set (Eucl (m + 1))) (s : ℝ), ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) G → (∀ y ∈ N, (θ : DifferentialForm (Eucl (m + 1)) q) y = (ω (G y)).compContinuousLinearMap (fderiv ℝ G y)) → ∃ θs : TestFormOn (univ : Set (Eucl m)) q, (∀ (x : Eucl m) (v : Fin q → Eucl m), (θs : DifferentialForm (Eucl m) q) x v = (θ : DifferentialForm (Eucl (m + 1)) q) ((EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm (Fin.cons s (EuclideanSpace.equiv (Fin m) ℝ x))) (fun i => (EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm (Fin.cons 0 (EuclideanSpace.equiv (Fin m) ℝ (v i))))) ∧ ∀ x : Eucl m, (EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm (Fin.cons s (EuclideanSpace.equiv (Fin m) ℝ x)) ∈ N → (θs : DifferentialForm (Eucl m) q) x = (ω ((fun x : Eucl m => G ((EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm (Fin.cons s (EuclideanSpace.equiv (Fin m) ℝ x)))) x)).compContinuousLinearMap (fderiv ℝ (fun x : Eucl m => G ((EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm (Fin.cons s (EuclideanSpace.equiv (Fin m) ℝ x)))) x)",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

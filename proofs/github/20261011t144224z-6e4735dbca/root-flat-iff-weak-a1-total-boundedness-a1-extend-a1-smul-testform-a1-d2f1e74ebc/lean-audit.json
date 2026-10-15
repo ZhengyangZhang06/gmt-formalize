@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "ba6c579bab0662f389f3e6bea967912cb5a5058a2da0758dba35d2cb8a2f059b",
+  "git_delta": {
+    "base_commit": "91f6be301231a7dd1e704ffa98958f26390e9dd5",
+    "candidate_commit": "6819909468921faa6100b5aafe3fe4e59e738d8b",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "fiw_tb_ext_smul_testForm",
+    "diff_sha256": "656739ed9388d1ee8c18a078e9dcd39431d95b692b80ceeacb3bcfa9d654b634",
+    "source_sha256": "161e9e1331cf2058e7c12e8ece8523f9feb6b3090b3cc2382f192d2a90447735",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.fiw_tb_ext_smul_testForm",
+      "statement": "∀ (P q : ℕ) (V W : Set (Eucl P)) (χ : Eucl P → ℝ), ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) χ → tsupport χ ⊆ W → ∃ L : TestFormOn V q →ₗ[ℝ] TestFormOn W q, ∀ (ω : TestFormOn V q) (x : Eucl P), (L ω : DifferentialForm (Eucl P) q) x = χ x • (ω : DifferentialForm (Eucl P) q) x",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

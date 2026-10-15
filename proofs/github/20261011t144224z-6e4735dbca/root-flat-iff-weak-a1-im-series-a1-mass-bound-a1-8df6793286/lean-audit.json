@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "0867aa2e4d8b61e0867503a8cb44670f1bfdee3bda297169319a72298fa443dc",
+  "git_delta": {
+    "base_commit": "a818bea2c0e5380cd219ed0dea9e80cda32a2a67",
+    "candidate_commit": "bf9ca0af59c29a43051813c46db6cfd1dc1429fe",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "fiw_ims_mass_bound",
+    "diff_sha256": "e6148001e8846dd83e52b6996ee833cf17d8bae6136a1ad06bb60b6fd1abe245",
+    "source_sha256": "03e9d3172927680f7e40b5e1be57419b30349e72655b5786b7a8b9376b5ca63b",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.fiw_ims_mass_bound",
+      "statement": "∀ (P k : ℕ) (U : Set (Eucl P)) (X : GeometricCurrentOn U k) (V : Set (Eucl P)) (η : TestFormOn U k) (C : ℝ), 0 < C → tsupport (η : DifferentialForm (Eucl P) k) ⊆ V → (∀ x, covectorEuclideanNorm ((η : DifferentialForm (Eucl P) k) x) ≤ C) → ENNReal.ofReal |X η| ≤ X.massOn V * ENNReal.ofReal C",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

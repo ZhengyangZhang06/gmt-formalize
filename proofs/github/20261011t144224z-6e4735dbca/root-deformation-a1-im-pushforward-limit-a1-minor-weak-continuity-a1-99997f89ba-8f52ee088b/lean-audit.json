@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "638e664745d584181f0d830f2d0d7144a59d3a3f67168767b222a4f46270ad75",
+  "git_delta": {
+    "base_commit": "bfbd849e73baa1bd37bc97df9e6770419f6e6ade",
+    "candidate_commit": "2e78567bf521e2b05b0b3c1ffb846ad412e4c897",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "deformation_ipl_mwc_pi_cofactor_leibniz",
+    "diff_sha256": "ea2ec5f6908b97dbf6c9011cfe737c4749a20479fb78b341b9714ec4cb4efe06",
+    "source_sha256": "d783ad64770d725913f7764c129187d8d5f8e48786734c19065460512cea7a6d",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.deformation_ipl_mwc_pi_cofactor_leibniz",
+      "statement": "∀ (r : ℕ) (N : Fin r → Fin (r + 1) → ℝ) (q : Fin (r + 1)), (-1 : ℝ) ^ (q : ℕ) * Matrix.det (Matrix.of fun t s : Fin r => N t (q.succAbove s)) = ∑ σ : Equiv.Perm (Fin (r + 1)), (if σ 0 = q then ((Equiv.Perm.sign σ : ℤ) : ℝ) else 0) * ∏ t : Fin r, N t (σ t.succ)",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

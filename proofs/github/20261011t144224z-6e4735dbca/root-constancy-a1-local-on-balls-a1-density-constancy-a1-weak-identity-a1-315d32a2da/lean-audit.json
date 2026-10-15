@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "4779700908c956c8ba89fd2a8b6f8abbded6598d928638732959bcf65c6a6bb7",
+  "git_delta": {
+    "base_commit": "fb50a54712b47586ecd8d0e5f08669ff2c8ff932",
+    "candidate_commit": "6403f9e1601be349eb30aa92555d874efab8c341",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "constancy_mdc_weak_partials_vanish",
+    "diff_sha256": "aa45fa53760e20f88410fe7813d105b21f482244f2a7cd6c67b2305fd85f5ca0",
+    "source_sha256": "0b91f6b1f673fdeee0c2502857dfa0a2520a266f9cd01765a3e86868e8c35c6a",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.constancy_mdc_weak_partials_vanish",
+      "statement": "∀ (n : ℕ) (U : Set (Eucl n)) (u : (Eucl n → ℝ) → ℝ), (∀ a : Eucl n → ℝ, ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) a → HasCompactSupport a → tsupport a ⊆ U → ∀ j : Fin n, u (fun x => fderiv ℝ a x (EuclideanSpace.single j (1 : ℝ))) = 0) → ∀ (x₀ : Eucl n) (ρ ε : ℝ), closedBall x₀ (ρ + ε) ⊆ U → ∀ φ : Eucl n → ℝ, ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) φ → HasCompactSupport φ → tsupport φ ⊆ closedBall 0 ε → ∀ θ : Eucl n → ℝ, (∀ f : Eucl n → ℝ, IntegrableOn f (ball x₀ ρ) volume → u (convolution φ ((ball x₀ ρ).indicator f) (ContinuousLinearMap.lsmul ℝ ℝ) volume) = ∫ x in ball x₀ ρ, f x * θ x ∂volume) → ∀ a : Eucl n → ℝ, ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) a → HasCompactSupport a → tsupport a ⊆ ball x₀ ρ → ∀ j : Fin n, ∫ x, θ x * fderiv ℝ a x (EuclideanSpace.single j (1 : ℝ)) ∂volume = 0",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

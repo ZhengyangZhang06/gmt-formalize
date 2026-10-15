@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "a9c9423f8262dfdae740b321071e17cb31519d7449a3402b66257d1975bb9588",
+  "git_delta": {
+    "base_commit": "825765c1fd603c8ccb1a2975944c8072833d465b",
+    "candidate_commit": "51907ff085abf2c27411ebd60937784eee60d27f",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "fiw_tb_ext_isIntegerMultiplicity",
+    "diff_sha256": "0b2e0ac07d55df7db4b7632e64ef97df497c00e50e4dce26ad26b3e2447020c3",
+    "source_sha256": "94ea3dcc7b948e3d72dd1dd1db68d1d0531ff39e183f09fb77e1b0eccb477150",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.fiw_tb_ext_isIntegerMultiplicity",
+      "statement": "∀ (P q : ℕ) (U K : Set (Eucl P)), IsOpen U → IsCompact K → K ⊆ U → ∀ Z : GeometricCurrentOn (univ : Set (Eucl P)) q, (∀ ω : TestFormOn (univ : Set (Eucl P)) q, Disjoint (tsupport (ω : DifferentialForm (Eucl P) q)) K → Z ω = 0) → IsIntegerMultiplicity (Z.restrictDomain (subset_univ U)) → IsIntegerMultiplicity Z",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

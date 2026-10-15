@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "dc974c02e6ab40a7eabcdeb6c4b41b70a6b75c7f2157314e29fa2e140bbcf7bb",
+  "git_delta": {
+    "base_commit": "ad666c00ad8e620bcea3cf6324c857d2ff94c5aa",
+    "candidate_commit": "420db8a1d3912719c7f61a33a7f416577efab4dd",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "slicing_exists",
+    "diff_sha256": "799d7b4bf86b078f182e428c261056160e89724924bdc7dcd5031830f1a7dafd",
+    "source_sha256": "9cf3b30376f09340826d66809688ab8482814acf0e125c2727f2450697123c2d",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.slicing_exists",
+      "statement": "∀ (P m : ℕ) (U : Set (Eucl P)), IsOpen U → ∀ T : GeometricCurrentOn U (m + 1), (∀ W, CompactlyContainedOpen W U → T.massOn W < ∞ ∧ T.boundary.massOn W < ∞) → ∀ (f : Eucl P → ℝ) (L : ℝ≥0), LipschitzOnWith L f U → ∀ t : ℝ, ∃ S : GeometricCurrentOn U m, IsSlice T f t S",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

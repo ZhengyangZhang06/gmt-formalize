@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "1d569c97f5a8f9f0ce3580b829e5ac28defe013b23060cb51a161857f2840fae",
+  "git_delta": {
+    "base_commit": "a80346bf1bbb538306180350fe64b97f3d19bb1d",
+    "candidate_commit": "0d6109c0ff96b1e4b7e2d25bd9126bb8bc6afc2f",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "dr_cc_similarity_bound",
+    "diff_sha256": "254ac95c42851d979c14bf55315e9f61470e346aaa2544395815f086de53c1e7",
+    "source_sha256": "a2bfdcf5d41223bf6291f0643892d7837ce69c4f73397d8fe730ea7c3333c46d",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dr_cc_similarity_bound",
+      "statement": "∀ (m ℓ : ℕ) (a : Eucl (m + 1 + ℓ)), (∀ i, 1 / 4 < a i ∧ a i < 3 / 4) → ∀ La : Set (Eucl (m + 1 + ℓ)), La = {y | ∃ J : Finset (Fin (m + 1 + ℓ)), J.card = m + 2 ∧ ∀ i ∈ J, ∃ k : ℤ, y i - a i = k} → ∀ (J : Finset (Fin (m + 1 + ℓ))) (c x y : Eucl (m + 1 + ℓ)) (s : ℝ), (∀ i ∈ J, c i = a i) → (∀ i ∉ J, c i = 0 ∨ c i = 1) → (∀ i ∉ J, x i = c i) → (∀ i, 0 ≤ y i ∧ y i ≤ 1) → 0 < s → (∀ i, y i - c i = s * (x i - c i)) → min (1 / 4) (s * infDist x La) ≤ infDist y La",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

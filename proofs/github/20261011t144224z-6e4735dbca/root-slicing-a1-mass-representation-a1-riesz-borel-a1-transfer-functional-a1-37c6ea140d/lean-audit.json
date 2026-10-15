@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "ebd7a957aca83714bb186f9242e22fd35ea50b1ab51902d9622992b0dcbb69d8",
+  "git_delta": {
+    "base_commit": "416efd450712d139e1bc21d6f12590cb04792b22",
+    "candidate_commit": "accc0298da5677d35633fce4ce798300f5143276",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "smr_rb_transfer_functional",
+    "diff_sha256": "3a95803c56a89a0206198b6bc909e50b9dbecbd5e0bd220958cb0f9555f1e895",
+    "source_sha256": "243e2e03011441d7e2a7ed7d8677a1e0024e51b7cbb82c65010b8d80401cd9bf",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.smr_rb_transfer_functional",
+      "statement": "∀ (P N : ℕ) (U : Set (Eucl P)), IsOpen U → ∀ L : (Eucl P → EuclideanSpace ℝ (Fin N)) → ℝ, (∀ f g : Eucl P → EuclideanSpace ℝ (Fin N), Continuous f → HasCompactSupport f → tsupport f ⊆ U → Continuous g → HasCompactSupport g → tsupport g ⊆ U → L (f + g) = L f + L g) → (∀ (c : ℝ) (f : Eucl P → EuclideanSpace ℝ (Fin N)), Continuous f → HasCompactSupport f → tsupport f ⊆ U → L (c • f) = c * L f) → (∀ K : Set (Eucl P), IsCompact K → K ⊆ U → ∃ B : ℝ, ∀ f : Eucl P → EuclideanSpace ℝ (Fin N), Continuous f → tsupport f ⊆ K → (∀ x, ‖f x‖ ≤ 1) → L f ≤ B) → ∃ L' : CompactlySupportedContinuousMap ↥U (EuclideanSpace ℝ (Fin N)) →ₗ[ℝ] ℝ, (∀ K : Set ↥U, IsCompact K → ∃ B : ℝ, ∀ g : CompactlySupportedContinuousMap ↥U (EuclideanSpace ℝ (Fin N)), (∀ y, ‖g y‖ ≤ 1) → tsupport g ⊆ K → L' g ≤ B) ∧ ∀ f : Eucl P → EuclideanSpace ℝ (Fin N), Continuous f → HasCompactSupport f → tsupport f ⊆ U → ∃ g : CompactlySupportedContinuousMap ↥U (EuclideanSpace ℝ (Fin N)), (∀ y : ↥U, g y = f ↑y) ∧ L f = L' g",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

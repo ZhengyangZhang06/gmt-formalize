@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "c4b9215f98088e57d9017412e866657088d766053ee4206647a1a1890ca2dea7",
+  "git_delta": {
+    "base_commit": "6e8ff7b030240366e3568cad8dc06404db41fc9a",
+    "candidate_commit": "e0ddd8eced4764469f354f916cb9c9d6c6cc82b1",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "deformation_skeleton_isClosed",
+    "diff_sha256": "5d6128f4550386f7694edab9dbca96498793fb85af50617683ebc77bfbdbe74a",
+    "source_sha256": "fca373d2c5dfea09a7caf5dd35bf6a683217078eba8d7b2b6e3ac29ab3c03e07",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.deformation_skeleton_isClosed",
+      "statement": "∀ (n N : ℕ) (ρ : ℝ), 0 < ρ → IsClosed (⋃ F : LatticeFaceIndex n N, latticeFace ρ F)",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

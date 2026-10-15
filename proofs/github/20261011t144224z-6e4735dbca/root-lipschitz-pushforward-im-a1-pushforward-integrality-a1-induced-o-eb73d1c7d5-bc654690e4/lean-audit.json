@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "fd78162f14c51e774f54399f157a8c7ce2d4dc0f45636e20567334e0db8387b1",
+  "git_delta": {
+    "base_commit": "fa0d928355c32116b96be4c338c5c4947732c28e",
+    "candidate_commit": "5553df438424264d79d5bf5fdb8cd5133976dc99",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "lpf_pi_induced_orientation",
+    "diff_sha256": "77f9e51fa3e1c2976a1a52f25130e76a4c0e4188f3c806439b347fa8cb3a8f3a",
+    "source_sha256": "cead31f247d9587c78b1b0a4673fb33f23155980d7c3bad5af46c8baa8440f65",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.lpf_pi_induced_orientation",
+      "statement": "((∀ (P n : ℕ) (v : Fin n → Eucl P), ‖simpleNVector v‖ ^ 2 = (Matrix.of fun i j => inner ℝ (v i) (v j)).det) ∧ ∀ (P n : ℕ) (B : Matrix (Fin n) (Fin n) ℝ) (τ : Fin n → Eucl P), simpleNVector (fun i => ∑ j, B i j • τ j) = B.det • simpleNVector τ) → ∀ (P Q n : ℕ) (τ : Fin n → Eucl P) (A : Eucl P →L[ℝ] Eucl Q) (w : NVector (Eucl P) n), Orthonormal ℝ τ → (w = simpleNVector τ ∨ w = -simpleNVector τ) → nVectorPushforward n A w ≠ 0 → LinearIndependent ℝ (fun i => A (τ i)) ∧ ∃ σ : Fin n → Eucl Q, Orthonormal ℝ σ ∧ Submodule.span ℝ (range σ) = Submodule.span ℝ (range (fun i => A (τ i))) ∧ (nVectorPushforward n A w = ‖nVectorPushforward n A w‖ • simpleNVector σ ∨ nVectorPushforward n A w = -(‖nVectorPushforward n A w‖ • simpleNVector σ))",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

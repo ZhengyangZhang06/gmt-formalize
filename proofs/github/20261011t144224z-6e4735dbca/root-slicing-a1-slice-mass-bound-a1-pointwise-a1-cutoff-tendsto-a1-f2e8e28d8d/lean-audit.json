@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "dc4eb93a6048b217a2c5863fb75cbca87148e4bceb29cb90a7a0270aa0b6a87a",
+  "git_delta": {
+    "base_commit": "ce5ccc4363c81e3735a43642f6e09d83344724fa",
+    "candidate_commit": "012eb78d57e01b1e54de6b8f0e5cf786950b91c0",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "slicing_mb_pointwise_cutoff_tendsto",
+    "diff_sha256": "a8bf9b8e1d7cf84914a8cac27ca498b80f1d377dc91176a33a6699dd39dadec2",
+    "source_sha256": "7d80670ec8452dce2a1e5e7404917aee089c708549d9996603544a2839a49b53",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.slicing_mb_pointwise_cutoff_tendsto",
+      "statement": "∀ (P : ℕ) (U : Set (Eucl P)), IsOpen U → ∀ (f : Eucl P → ℝ) (L : ℝ≥0), LipschitzOnWith L f U → ∀ (ν : Measure (Eucl P)) (F : Eucl P → ℝ), Integrable F ν → (∀ x, x ∉ U → F x = 0) → ∀ (t : ℝ) (χ : ℝ → ℝ → ℝ), (∀ h : ℝ, 0 < h → Measurable (χ h)) → (∀ h s : ℝ, 0 < h → |χ h s| ≤ 1) → (∀ h s : ℝ, 0 < h → s ≤ t - h → χ h s = 1) → (∀ h s : ℝ, 0 < h → t ≤ s → χ h s = 0) → Tendsto (fun h : ℝ => ∫ x, χ h (f x) * F x ∂ν) (𝓝[>] 0) (𝓝 (∫ x in {x | x ∈ U ∧ f x < t}, F x ∂ν))",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

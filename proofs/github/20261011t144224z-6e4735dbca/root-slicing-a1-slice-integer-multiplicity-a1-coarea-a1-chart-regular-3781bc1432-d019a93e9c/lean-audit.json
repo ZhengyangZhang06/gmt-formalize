@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "5ad4b2e0d085b3f742be3930b107bac13c014fe55f4de696eeb5da5e41db0abd",
+  "git_delta": {
+    "base_commit": "d80a3e139c17bb8f0be7c508569b09eb2997a09b",
+    "candidate_commit": "7a8b65c256aa65a1aa02fb200a2380634fd93fad",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "slicing_im_creg_straightening",
+    "diff_sha256": "62c6f87b9213d143c14409cd131406d50d5fdfa116f83074b4bf109f6e64ffcb",
+    "source_sha256": "2b48030b07d6f63545321ac1f8fd3612540260378daef03d603388e9a656aba2",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.slicing_im_creg_straightening",
+      "statement": "∀ (m : ℕ) (h : Eucl (m + 1) → ℝ) (Ω : Set (Eucl (m + 1))) (w₀ : Eucl (m + 1)), IsOpen Ω → w₀ ∈ Ω → ContDiff ℝ 1 h → fderiv ℝ h w₀ ≠ 0 → ∃ (B : Set (Eucl (m + 1))) (χ : Eucl (m + 1) → Eucl (m + 1)), IsOpen B ∧ ContDiffOn ℝ 1 χ B ∧ IsOpen (χ '' B) ∧ w₀ ∈ χ '' B ∧ χ '' B ⊆ Ω ∧ (∃ Λ : ℝ≥0, LipschitzOnWith Λ χ B) ∧ (∀ y ∈ B, h (χ y) = y 0) ∧ ∀ (t : ℝ) (v v' : Eucl m), (EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm (Fin.cons t (EuclideanSpace.equiv (Fin m) ℝ v)) ∈ B → (EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm (Fin.cons t (EuclideanSpace.equiv (Fin m) ℝ v')) ∈ B → ‖v - v'‖ ≤ ‖χ ((EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm (Fin.cons t (EuclideanSpace.equiv (Fin m) ℝ v))) - χ ((EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm (Fin.cons t (EuclideanSpace.equiv (Fin m) ℝ v')))‖",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

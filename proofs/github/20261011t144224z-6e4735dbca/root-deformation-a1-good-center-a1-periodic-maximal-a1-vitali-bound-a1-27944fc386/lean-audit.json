@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "2f1368c904ebd9da9afbd079d2cd17eed11607fb94096835cc12e0f0a1699f4c",
+  "git_delta": {
+    "base_commit": "ff6a01651a1e9f3a4cde0e5c221c717c3c51d954",
+    "candidate_commit": "5fd1714689624fd1dff42a3c690311ebe48fc691",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "dgc_pm_vitali_volume_bound",
+    "diff_sha256": "93f4e2dc194bc9666ee87131664687def1c125b2cc9c232baa46b5ca5eefb934",
+    "source_sha256": "63741803a7c0a3dae5bfade98a66f0b237b4fef24bcdc2b473237f6b80409892",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dgc_pm_vitali_volume_bound",
+      "statement": "∀ (ι : Type) [Fintype ι] (S : Set (EuclideanSpace ℝ ι)) (r : EuclideanSpace ℝ ι → ℝ) (R M : ℝ), (∀ b ∈ S, 0 < r b ∧ r b ≤ R) → (∀ u ⊆ S, u.PairwiseDisjoint (fun b => closedBall b (r b)) → u.Countable ∧ ∑' b : u, ENNReal.ofReal (r b ^ Fintype.card ι) ≤ ENNReal.ofReal M) → volume S ≤ ENNReal.ofReal (10 ^ Fintype.card ι * M)",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

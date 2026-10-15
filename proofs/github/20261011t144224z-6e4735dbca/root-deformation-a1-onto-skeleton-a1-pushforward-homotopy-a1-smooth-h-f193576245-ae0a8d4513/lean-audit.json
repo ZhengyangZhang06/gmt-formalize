@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "d61a5c496d5257624d3d39d91eca110f0dc46dbd27244c26c416aa87805553bd",
+  "git_delta": {
+    "base_commit": "1af7c22dfe29a32efe05ff7fd4b73adc87642b11",
+    "candidate_commit": "6adf1557d9ef590eb92403732b90e6dfdd0825ac",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "dph_sh_ib_covectorEuclideanNorm_contract_le",
+    "diff_sha256": "5a601a323f781fc9b4a2139d373ed5a8430abd25ea19a8606c898a29bd8a620d",
+    "source_sha256": "352d01e6b24cb30dcfb9ed9eb62a93832547fb1bbea84e9fb1a75cefeec156ef",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dph_sh_ib_covectorEuclideanNorm_contract_le",
+      "statement": "∀ (p k : ℕ) (γ : Covector (Eucl p) (k + 1)) (w : Eucl p) (δ : Covector (Eucl p) k), (∀ u : Fin k → Eucl p, δ u = γ (Fin.cons w u)) → covectorEuclideanNorm δ ≤ Real.sqrt ((k : ℝ) + 1) * ‖w‖ * covectorEuclideanNorm γ",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

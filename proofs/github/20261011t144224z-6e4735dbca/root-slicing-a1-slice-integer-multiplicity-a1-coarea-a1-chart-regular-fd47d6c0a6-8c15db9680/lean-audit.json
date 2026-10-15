@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "5b7c819111bbf17e5ca390969edc9bbaeca7e7832db1b8744f9cc03dbf2959dd",
+  "git_delta": {
+    "base_commit": "d80a3e139c17bb8f0be7c508569b09eb2997a09b",
+    "candidate_commit": "46c9d53ecea65815b879c0ecb63adb897255cdbb",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "slicing_im_creg_jacobian_identity",
+    "diff_sha256": "bda38bdf0917490a0cbefa95166cf74aabb7e9aa4ebeab3ffd1bd25e883621c7",
+    "source_sha256": "e7b11289d06ab4eb719964d55805c581a014f1770eef276989c712b727b9edc4",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.slicing_im_creg_jacobian_identity",
+      "statement": "∀ (P m : ℕ) (A : Eucl (m + 1) →L[ℝ] Eucl P) (D : Eucl (m + 1) →L[ℝ] Eucl (m + 1)) (γ : Eucl P), γ ∈ LinearMap.range A.toLinearMap → (∀ y : Eucl (m + 1), inner ℝ γ (A (D y)) = y 0) → Real.sqrt (Matrix.of fun i j : Fin m => inner ℝ (A (D (EuclideanSpace.single i.succ 1))) (A (D (EuclideanSpace.single j.succ 1)))).det = ‖γ‖ * Real.sqrt (Matrix.of fun i j : Fin (m + 1) => inner ℝ (A (EuclideanSpace.single i 1)) (A (EuclideanSpace.single j 1))).det * |D.det|",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

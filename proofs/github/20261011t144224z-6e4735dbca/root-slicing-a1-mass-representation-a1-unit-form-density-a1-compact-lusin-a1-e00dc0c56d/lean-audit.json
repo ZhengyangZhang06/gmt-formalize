@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "3d99a844bcc67a1d4d288b049f53bcd155120cd7e0e2a28b079b0304d921752c",
+  "git_delta": {
+    "base_commit": "531ccc71a3ec7d7340e33ab455f47e1f3b138b82",
+    "candidate_commit": "a73776b666a34710970d67aa6f2d3bdd9c2f602c",
+    "target": "GMT/Ch06/Submission.lean",
+    "changed_files": [
+      "GMT/Ch06/Submission.lean"
+    ],
+    "diff_sha256": "bf2947577b85c6a90121a80b1d25c46d26078f354fe3d8e235cdf13a8c7aab3c",
+    "source_sha256": "14df4a0b85496bb119022723bfaf7350ee1a893a5e266b3c64054b4c759d62e3",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.smr_ufd_compact_lusin_set",
+      "statement": "∀ (P N : ℕ) (U : Set (Eucl P)) (μ : Measure (Eucl P)) (u : Eucl P → EuclideanSpace ℝ (Fin N)), (∀ K : Set (Eucl P), IsCompact K → K ⊆ U → μ K < ∞) → Measurable u → ∀ E : Set (Eucl P), MeasurableSet E → ∀ W : Set (Eucl P), IsOpen W → W ⊆ U → ∀ c : ℝ≥0∞, c < μ (W ∩ E) → ∃ C : Set (Eucl P), IsCompact C ∧ C ⊆ W ∩ E ∧ c < μ C ∧ ContinuousOn u C",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

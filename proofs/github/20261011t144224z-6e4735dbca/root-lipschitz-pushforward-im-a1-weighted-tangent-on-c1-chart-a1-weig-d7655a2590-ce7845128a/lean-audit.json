@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "34c8b362039225bd96666b9db397ebfb3edb637ad7adab996ce473f2e9be2a4e",
+  "git_delta": {
+    "base_commit": "b74923c68d94bd61ad6301c3948239d0cef49814",
+    "candidate_commit": "6a3a02bbf28912bda73652bbeca26662f5c70f6d",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "lpf_wtc_wtt_continuity_error_vanishes",
+    "diff_sha256": "b79b22eb79724759f4fff8e341a22b116b1884f942e5581ee1cdd4f0151824b6",
+    "source_sha256": "c98a6170738fb35c85dff286d5194a557e43982020060739e9b979e8c3b613dc",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.lpf_wtc_wtt_continuity_error_vanishes",
+      "statement": "∀ (Q n : ℕ) (C : Set (Eucl Q)) (θ : Eucl Q → ℝ) (y : Eucl Q) (φ : CompactlySupportedContinuousMap (Eucl Q) ℝ), NullMeasurableSet C (μHE[n] : Measure (Eucl Q)) → ContinuousWithinAt θ C y → (∃ K : ℝ≥0, ∀ᶠ ρ in 𝓝[>] (0 : ℝ), (μHE[n] : Measure (Eucl Q)) (C ∩ closedBall y ρ) ≤ K * ENNReal.ofReal (ρ ^ n)) → Tendsto (fun t : ℝ => (t ^ n)⁻¹ * ∫ x in C, φ (Poincare.SimonGMT.Chapter03.blowUpMap y t x) * (θ x - θ y) ∂(μHE[n] : Measure (Eucl Q))) (𝓝[>] 0) (𝓝 0)",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

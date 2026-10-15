@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "25ebde88049fad4778d722a389f127a40fcc941abe8b1a74485091f6bc6a197c",
+  "git_delta": {
+    "base_commit": "843eb8d5e2c01b0ac7bfc141e79560310732e690",
+    "candidate_commit": "314f515e2ee48e68a94e72b99f70d611beeb69fe",
+    "target": "GMT/Ch06/Submission.lean",
+    "changed_files": [
+      "GMT/Ch06/Submission.lean"
+    ],
+    "diff_sha256": "0932030dabc22a503e9f73e593ddcda6686b0a9815413162e93980b327c3ab5e",
+    "source_sha256": "017373aaf76c55aac0789719497ce9eb751d21385715af9d3dce4ce4163ab758",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.fiw_tb_tda_poincare_sum",
+      "statement": "∀ m : ℕ, ∃ c : ℝ≥0, ∀ (ρ : ℝ), 0 < ρ → ∀ (u : Eucl (m + 1) → ℝ) (Λ : ℝ≥0∞), Measurable u → (∀ h : Eucl (m + 1), ∫⁻ x, ENNReal.ofReal |u (x + h) - u x| ≤ ENNReal.ofReal ‖h‖ * Λ) → ∑' F : LatticeFaceIndex (m + 1) (m + 1), ENNReal.ofReal (ρ ^ (m + 1))⁻¹ * ∫⁻ x in latticeFace ρ F, ∫⁻ y in latticeFace ρ F, ENNReal.ofReal |u x - u y| ≤ c * ENNReal.ofReal ρ * Λ",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

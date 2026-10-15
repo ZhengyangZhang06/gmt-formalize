@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "c2870f81489f9864f15e52669852809260f3653310a77672d0b1502a03353039",
+  "git_delta": {
+    "base_commit": "e4addc2dfba67e014d6340cb006c7a7f1dbe67aa",
+    "candidate_commit": "3e52d3e816fb507ab732d7ad15590fb7280bc981",
+    "target": "GMT/Ch06/Submission.lean",
+    "changed_files": [
+      "GMT/Ch06/Submission.lean"
+    ],
+    "diff_sha256": "42cc3cc4445459dfc0fc751b6857cabb6c20e195ae1461cbb7368dc8deead220",
+    "source_sha256": "db9322b321932eceef1eb40d5dcc3843bfd1b20bfb4bbe161b75ec67acc8c99e",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.iwl_sp_covectorEuclideanNorm_pullback_le",
+      "statement": "∀ (P Q j : ℕ) (L : Eucl P →L[ℝ] Eucl Q) (α : Covector (Eucl Q) j), covectorEuclideanNorm (α.compContinuousLinearMap L) ≤ ‖L‖ ^ j * covectorEuclideanNorm α",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "22f41b14fa3f7b5222819a487157a7f96de7772a9087153b4d7b92f2cc64a063",
+  "git_delta": {
+    "base_commit": "bd443623f209846f7712998c0414496c43ee868f",
+    "candidate_commit": "d757828a49ef3f2d6f4972b46861baf94811ec73",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "fiw_fcl_telescope_limit",
+    "diff_sha256": "60a4ec2050bb1ee8a950941f22e612f9dba1bf089dc3aa9df40dcfe052ddb1d2",
+    "source_sha256": "66c23e2cd283d6bc6a739e4a7b6b544ffc297ad6da02d131527cc46440011207",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.fiw_fcl_telescope_limit",
+      "statement": "∀ (P n : ℕ) (U : Set (Eucl P)) (Tr : ℕ → GeometricCurrentOn U n) (T : GeometricCurrentOn U n) (R : ℕ → GeometricCurrentOn U (n + 1)) (S : ℕ → GeometricCurrentOn U n) (X : GeometricCurrentOn U (n + 1)) (Y : GeometricCurrentOn U n) (ℓ : ℕ), (∀ r ω, Tr r ω - Tr (r + 1) ω = (R r).boundary ω + S r ω) → WeaklyConvergesOn Tr T → (∀ η, HasSum (fun k => R (ℓ + k) η) (X η)) → (∀ ω, HasSum (fun k => S (ℓ + k) ω) (Y ω)) → ∀ ω, Tr ℓ ω - T ω = X.boundary ω + Y ω",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

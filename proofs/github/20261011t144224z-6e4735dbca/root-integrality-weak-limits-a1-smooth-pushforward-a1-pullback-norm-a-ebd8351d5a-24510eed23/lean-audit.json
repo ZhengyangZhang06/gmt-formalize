@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "7ec412385da06aa9a667dc5025b4f23d6f1ec02e8a665d5f628459066b430003",
+  "git_delta": {
+    "base_commit": "aedd0ea232d1eba6d3d68656a306fa90e3b9c797",
+    "candidate_commit": "82bc30ecd41cf6132874ce2a71f4b3923931c3fb",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "iwl_sp_pn_multilinear_sum_sq_le",
+    "diff_sha256": "fd141ca6c9d324accac04bb152a1d5c9ae247b4615d1be291b2b257227da2f02",
+    "source_sha256": "a55dfd026c00905c065333728c26c58a1c72049778eefa4c2330c08378b8fdb8",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.iwl_sp_pn_multilinear_sum_sq_le",
+      "statement": "∀ (P Q j : ℕ) (L : Eucl P →L[ℝ] Eucl Q) (β : MultilinearMap ℝ (fun _ : Fin j => Eucl Q) ℝ), ∑ i : Fin j → Fin P, (β (fun k => L (EuclideanSpace.basisFun (Fin P) ℝ (i k)))) ^ 2 ≤ (‖L‖ ^ 2) ^ j * ∑ i : Fin j → Fin Q, (β (fun k => EuclideanSpace.basisFun (Fin Q) ℝ (i k))) ^ 2",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

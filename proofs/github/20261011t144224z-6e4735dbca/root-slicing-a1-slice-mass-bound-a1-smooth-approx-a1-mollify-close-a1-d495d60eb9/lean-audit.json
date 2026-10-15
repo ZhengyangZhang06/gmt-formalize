@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "fc29e628f636d648d79d9f28c33f7d8cbc1f8e6305f7eab20492f68201c34040",
+  "git_delta": {
+    "base_commit": "b4234a9dd3d42e8e090c071ecb99244a728e1ce3",
+    "candidate_commit": "0db2d9bb718d2841475070c496d6c527c1c5f3f7",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "slicing_mb_sa_mollify_lipschitz_close",
+    "diff_sha256": "5f1030ddaa2ddf9c5510d3551ca97857f5e44c0bf5b380564bc2cc89c57aaaf2",
+    "source_sha256": "a17b22895554c7fb1499411b96a4c179cd5796e8dc0a8024031fa267f154a89b",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.slicing_mb_sa_mollify_lipschitz_close",
+      "statement": "∀ (P : ℕ) (F : Eucl P → ℝ) (L : ℝ≥0), LipschitzWith L F → ∀ (ρ : Eucl P → ℝ) (σ : ℝ), Continuous ρ → HasCompactSupport ρ → (∀ y, 0 ≤ ρ y) → (∀ y : Eucl P, σ ≤ ‖y‖ → ρ y = 0) → ∫ y, ρ y = 1 → ∀ x : Eucl P, |(∫ y, ρ y * F (x - y)) - F x| ≤ (L : ℝ) * σ",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

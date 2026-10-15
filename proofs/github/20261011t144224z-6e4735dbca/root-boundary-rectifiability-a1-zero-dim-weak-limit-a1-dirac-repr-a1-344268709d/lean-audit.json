@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "94b82acc1d3374d98203ee704451878d8caf7b790f31f6edbf2f0c4a734895bf",
+  "git_delta": {
+    "base_commit": "bfc799fe30bfad88e6e8b250d05a376c15a511ec",
+    "candidate_commit": "a530e777eaab2849430edda86c79fffabd37be22",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "br_zd_im_dirac_repr",
+    "diff_sha256": "484830a10f9683241b96292d7b2153f84c88ab48f7b2421807688f92772721b3",
+    "source_sha256": "abb67b2034056c53537bbeab792abeb9f2b9ef68fdf66166f7cb24cb5ddf87f2",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.br_zd_im_dirac_repr",
+      "statement": "∀ (P : ℕ) (U : Set (Eucl P)) (Y : GeometricCurrentOn U 0), IsIntegerMultiplicity Y → ∃ (N : Set (Eucl P)) (c : Eucl P → ℤ), N ⊆ U ∧ (∀ K : Set (Eucl P), IsCompact K → K ⊆ U → (N ∩ K).Finite) ∧ (∀ x ∈ N, c x ≠ 0) ∧ ∀ ω : TestFormOn U 0, Y ω = ∑ᶠ x ∈ N, (c x : ℝ) * (ω : DifferentialForm (Eucl P) 0) x ![]",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "87967386639540d4a13eae216f969b81f85cd2b038a682a95ec1350646407c62",
+  "git_delta": {
+    "base_commit": "32ff68c7eacf1846ca13ee64ca3fbed86fd81a3c",
+    "candidate_commit": "5c2485018f3340792575eada5d595fc0c38682d6",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "fiw_ims_sc_continuous_of_bound",
+    "diff_sha256": "f7159ff271903ed03efc54f685445a14b033de93c04c8dcbd4b15bf80d76f4f4",
+    "source_sha256": "5fa76217bf3be6410979de68c29cb3af045ed7b72804f2810cd475fe6dad2589",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.fiw_ims_sc_continuous_of_bound",
+      "statement": "∀ (P n : ℕ) (U : Set (Eucl P)) (L : TestFormOn U n → ℝ), (∀ K : Set (Eucl P), IsCompact K → K ⊆ U → ∃ A : ℝ, ∀ (ω : TestFormOn U n) (C : ℝ), 0 < C → tsupport ((ω : DifferentialForm (Eucl P) n)) ⊆ K → (∀ x, covectorEuclideanNorm ((ω : DifferentialForm (Eucl P) n) x) ≤ C) → |L ω| ≤ A * C) → ∀ ωs : ℕ → TestFormOn U n, TestFormOnConverges ωs 0 → Tendsto (fun q => L (ωs q)) atTop (𝓝 0)",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

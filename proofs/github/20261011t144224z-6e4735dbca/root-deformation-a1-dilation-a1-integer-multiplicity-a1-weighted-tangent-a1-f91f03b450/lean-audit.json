@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "6c7f3bde59ace5f7f6e3a5c4ec57f5ed2c3492778c14c07d2918fb550b559ecd",
+  "git_delta": {
+    "base_commit": "510e70d341aabe3d8575c6e2f606574d90537035",
+    "candidate_commit": "4fc201187da53a4e733359976babe324eba0f7b2",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "deformation_dilation_im_weightedTangent",
+    "diff_sha256": "9457b6660e45c056d383fae4f64a542723fd4cbd8301cc9ad57be6a49fc67649",
+    "source_sha256": "3a46a5d40e05f740d13016baa51d10e7a6f925d7c68ccde64e736500d9fdaceb",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.deformation_dilation_im_weightedTangent",
+      "statement": "∀ (N k : ℕ) (ρ : ℝ) (M : Set (Eucl N)) (θ : Eucl N → ℝ) (x : Eucl N) (Q : Submodule ℝ (Eucl N)), 0 < ρ → HasWeightedApproximateTangentSpaceAt k M θ x Q → HasWeightedApproximateTangentSpaceAt k ((fun y : Eucl N => ρ • y) '' M) (fun y : Eucl N => θ (ρ⁻¹ • y)) (ρ • x) Q",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

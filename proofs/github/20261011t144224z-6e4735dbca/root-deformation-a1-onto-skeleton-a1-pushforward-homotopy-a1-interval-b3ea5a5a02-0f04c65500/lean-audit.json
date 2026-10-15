@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "750595d7820cc0ecf5f2bf8d7a21458655cc2072d4851a1f10000ea2fe01c547",
+  "git_delta": {
+    "base_commit": "c14101bd7c5429381aa39075b81daf5628f98221",
+    "candidate_commit": "e246cb9497182918e762dab2d23a48f8df8aeb72",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "dph_iprod_horizontal_slices",
+    "diff_sha256": "6523e2268ac76995466e82ac927228ded2c7a739edddf3095279cc98c2a1952f",
+    "source_sha256": "696197b119911fdbaa4b036b2cc73d90ad20c047e7cd1bd27b5783766200e7a7",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dph_iprod_horizontal_slices",
+      "statement": "∀ (m q : ℕ) (ψ : TestFormOn (univ : Set (Eucl (m + 1))) q), ∃ Ψ Ψ' : ℝ → TestFormOn (univ : Set (Eucl m)) q, (∀ (s : ℝ) (x : Eucl m) (v : Fin q → Eucl m), (Ψ s : DifferentialForm (Eucl m) q) x v = (ψ : DifferentialForm (Eucl (m + 1)) q) ((EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm (Fin.cons s (EuclideanSpace.equiv (Fin m) ℝ x))) (fun i => (EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm (Fin.cons 0 (EuclideanSpace.equiv (Fin m) ℝ (v i))))) ∧ ∀ (s : ℝ) (x : Eucl m) (v : Fin q → Eucl m), (Ψ' s : DifferentialForm (Eucl m) q) x v = fderiv ℝ (ψ : DifferentialForm (Eucl (m + 1)) q) ((EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm (Fin.cons s (EuclideanSpace.equiv (Fin m) ℝ x))) (EuclideanSpace.single 0 1) (fun i => (EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm (Fin.cons 0 (EuclideanSpace.equiv (Fin m) ℝ (v i))))",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

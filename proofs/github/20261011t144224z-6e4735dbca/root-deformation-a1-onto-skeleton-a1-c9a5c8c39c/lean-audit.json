@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "162e256ff252ff6d37a40ab7fdaaaccfae9261472ccdc9458a80243016bccfb6",
+  "git_delta": {
+    "base_commit": "081e4e9a8dfffdbde8e4a57b68ca342db026b3f5",
+    "candidate_commit": "738861e0720c59535531ea2704c3126f32d431d0",
+    "target": "GMT/Ch06/Submission.lean",
+    "changed_files": [
+      "GMT/Ch06/Submission.lean"
+    ],
+    "diff_sha256": "7a76e0abfe361c1aceac7bcd2eb8cf4627594090f50f3d9c54b2728a9b04b710",
+    "source_sha256": "2b9e6d884fe7083296d508ee04971973f7672e7dda04bbebda2af8c91dea61e1",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.deformation_onto_skeleton",
+      "statement": "SlicingTheorem → LipschitzPushforwardIntegerMultiplicity → ∀ m ℓ : ℕ, 1 ≤ ℓ → ∃ C : ℝ≥0, ∀ T : GeometricCurrentOn (univ : Set (Eucl (m + 1 + ℓ))) (m + 1), T.mass + T.boundary.mass < ∞ → ∃ (Q : GeometricCurrentOn (univ : Set (Eucl (m + 1 + ℓ))) (m + 1)) (R : GeometricCurrentOn (univ : Set (Eucl (m + 1 + ℓ))) (m + 2)) (S : GeometricCurrentOn (univ : Set (Eucl (m + 1 + ℓ))) (m + 1)), (∀ ω, T ω - Q ω = R.boundary ω + S ω) ∧ Q.support ⊆ ⋃ F : LatticeFaceIndex (m + 1) (m + 1 + ℓ), latticeFace 1 F ∧ (∀ (F : LatticeFaceIndex (m + 1) (m + 1 + ℓ)) (y : Eucl (m + 1 + ℓ)) (r : ℝ), ball y r ∩ (⋃ G : LatticeFaceIndex (m + 1) (m + 1 + ℓ), latticeFace 1 G) ⊆ latticeFace 1 F → ∀ ω : TestFormOn (univ : Set (Eucl (m + 1 + ℓ))) (m + 1), tsupport (ω : DifferentialForm (Eucl (m + 1 + ℓ)) (m + 1)) ⊆ ball y r → (∀ x, (ω : DifferentialForm (Eucl (m + 1 + ℓ)) (m + 1)) x (fun j => EuclideanSpace.single (F.2 j) (1 : ℝ)) = 0) → Q ω = 0) ∧ Q.mass ≤ C * T.mass ∧ Q.boundary.mass ≤ C * T.boundary.mass ∧ R.mass ≤ C * T.mass ∧ S.mass ≤ C * T.boundary.mass ∧ Q.support ∪ R.support ⊆ cthickening (Real.sqrt ((m + 1 + ℓ : ℕ) : ℝ)) T.support ∧ Q.boundary.support ∪ S.support ⊆ cthickening (Real.sqrt ((m + 1 + ℓ : ℕ) : ℝ)) T.boundary.support ∧ (IsIntegerMultiplicity T → IsIntegerMultiplicity Q ∧ IsIntegerMultiplicity R) ∧ (IsIntegerMultiplicity T → IsIntegerMultiplicity T.boundary → IsIntegerMultiplicity S)",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

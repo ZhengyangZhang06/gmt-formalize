@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "c8efe60c8169ee3f1b623fa58017f70817637879d3a41198540a6f42b772f2e2",
+  "git_delta": {
+    "base_commit": "b4f6d7b272d341944a0ce6d7cd52395554642289",
+    "candidate_commit": "b42e6549be1d87e696a4c950c2dabf0d31137027",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "deformation_ipl_mwc_mil_ae_fderiv_eq_proj",
+    "diff_sha256": "f81cf75c87e71d214193c65d82eb7570aeef406807ce518ba648c56de4c916d8",
+    "source_sha256": "3df2600c9d9d8dd45b524696f338abe7715c647696a51073786ff9f565d94cfb",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.deformation_ipl_mwc_mil_ae_fderiv_eq_proj",
+      "statement": "∀ (k Q : ℕ) (Ω : Set (Eucl k)) (C : ℝ≥0) (v : Eucl k → Eucl Q) (c : Fin Q) (g : Eucl k → ℝ), IsOpen Ω → LipschitzOnWith C v Ω → EqOn g (fun w => EuclideanSpace.proj c (v w)) Ω → ∀ᵐ w ∂(volume : Measure (Eucl k)), w ∈ Ω → ∀ x : Eucl k, fderiv ℝ g w x = EuclideanSpace.proj c (fderiv ℝ v w x)",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

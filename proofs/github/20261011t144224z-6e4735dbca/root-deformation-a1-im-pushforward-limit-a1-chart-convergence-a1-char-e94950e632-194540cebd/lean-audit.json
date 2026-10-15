@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "191044e2cb6816968fd9e12977eccfc26295313d1692561c199d64277d71965a",
+  "git_delta": {
+    "base_commit": "405b2f3fdef97b5ad7d38ac180c240fa0de47b0e",
+    "candidate_commit": "620950e4ff282efd6bf912b8390f69b49248729b",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "deformation_ipl_cc_chart_integral_representation",
+    "diff_sha256": "4a60575bc122cc112834b2fb351020f8e14ded777de5f25eac65feaa57370239",
+    "source_sha256": "e5c1b8327224893c87fea9b0b9748a862d2676cda75f799100845654e61cbec6",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.deformation_ipl_cc_chart_integral_representation",
+      "statement": "∀ (P Q k : ℕ) (U M : Set (Eucl P)) (θ : Eucl P → ℝ) (ξ : Eucl P → NVector (Eucl P) k) (Φ : Eucl k → Eucl P) (Ω : Set (Eucl k)) (G : Set (Eucl P)), IsOpen U → IsRectifiableTriple U k M θ ξ → IsOpen Ω → ContDiff ℝ 1 Φ → (∃ K : ℝ≥0, LipschitzOnWith K Φ Ω) → (∃ c : ℝ, 0 < c ∧ ∀ w ∈ Ω, ∀ w' ∈ Ω, c * ‖w - w'‖ ≤ ‖Φ w - Φ w'‖) → G ⊆ M → G ⊆ Φ '' Ω → NullMeasurableSet G (μHE[k] : Measure (Eucl P)) → IntegrableOn θ G (μHE[k] : Measure (Eucl P)) → ∃ ψ : Eucl k → ℝ, IntegrableOn ψ Ω (volume : Measure (Eucl k)) ∧ ∀ (f : Eucl P → Eucl Q) (A : Eucl P → (Eucl P →L[ℝ] Eucl Q)) (α : Eucl Q → Covector (Eucl Q) k), (∀ᵐ w ∂((volume : Measure (Eucl k)).restrict (Ω ∩ Φ ⁻¹' G)), HasFDerivAt (f ∘ Φ) ((A (Φ w)).comp (fderiv ℝ Φ w)) w) → IntegrableOn (fun x => θ x * nVectorPushforward k (A x) (ξ x) (α (f x))) G (μHE[k] : Measure (Eucl P)) → ∫ x in G, θ x * nVectorPushforward k (A x) (ξ x) (α (f x)) ∂(μHE[k] : Measure (Eucl P)) = ∫ w in Ω, ψ w * α (f (Φ w)) (fun b => fderiv ℝ (f ∘ Φ) w (EuclideanSpace.single b 1)) ∂(volume : Measure (Eucl k))",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

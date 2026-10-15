@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "9db30aa4b9179a528f8f524dc92959c418e2ed19c8d226a9046f9ffad3193bb7",
+  "git_delta": {
+    "base_commit": "0eb79cb8e1d75509e9f1c77f6acd6fd5aa616755",
+    "candidate_commit": "230f547c2f70f1856c5ab599b1fb21d2bb295c9e",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "cmb_rb_integral_coeff_pairing_bound",
+    "diff_sha256": "f7f2d8353ae243236b70bd74ebfff59d3932a54b6858f5f915d7fbb5ea7b646c",
+    "source_sha256": "762c8fef6b52da9ecbd1077fec6c6d294839c4461ad16e4fca828ecfedc31102",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cmb_rb_integral_coeff_pairing_bound",
+      "statement": "∀ (P n : ℕ) (μ : Measure (Eucl P)) (v : Eucl P → NVector (Eucl P) n) (K : Set (Eucl P)), MeasurableSet K → (∀ β : SimonMultiIndex n P, IntegrableOn (fun x => euclideanNVectorCoordinate (v x) β) K μ) → ∀ (θ : Eucl P → Covector (Eucl P) n) (D : ℝ), Continuous θ → (∀ x, x ∉ K → θ x = 0) → (∀ x, covectorEuclideanNorm (θ x) ≤ D) → Integrable (fun x => ∑ β : SimonMultiIndex n P, euclideanCovectorCoordinate (θ x) β * euclideanNVectorCoordinate (v x) β) μ ∧ |∫ x, ∑ β : SimonMultiIndex n P, euclideanCovectorCoordinate (θ x) β * euclideanNVectorCoordinate (v x) β ∂μ| ≤ D * ∑ β : SimonMultiIndex n P, ∫ x in K, |euclideanNVectorCoordinate (v x) β| ∂μ",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

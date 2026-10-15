@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "1633c6b62c046dbf6b5dc59f27f95af371e703d4bf6176f2949b2b2d99f1ebb3",
+  "git_delta": {
+    "base_commit": "b77d88d6bab86a1622ffa2e446ace4ffad247102",
+    "candidate_commit": "5d7d2e528f9621d37602dd4f204bfdb7e7807626",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "ind_top_dim_integer_density",
+    "diff_sha256": "40582d47820b255cb015523a8c8fdb659580b4271eb4e803cdda8147305a4a35",
+    "source_sha256": "e4d9d7678da6a6877a0229fb97ecedefc9ac014a705e1879331726ea0bad556e",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.ind_top_dim_integer_density",
+      "statement": "∀ (m : ℕ) (U : Set (Eucl (m + 1))) (X : GeometricCurrentOn U (m + 1)), IsIntegerMultiplicity X → ∃ u : Eucl (m + 1) → ℝ, (∀ᵐ x ∂(volume : Measure (Eucl (m + 1))), ∃ k : ℤ, u x = k) ∧ (∀ K : Set (Eucl (m + 1)), IsCompact K → K ⊆ U → IntegrableOn u K volume) ∧ ∀ ω : TestFormOn U (m + 1), X ω = ∫ x in U, u x * (ω : DifferentialForm (Eucl (m + 1)) (m + 1)) x (fun i => EuclideanSpace.single i (1 : ℝ)) ∂volume",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

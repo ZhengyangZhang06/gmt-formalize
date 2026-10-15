@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "42e90ec2e71c50d5d62589501587a562e4776d3eac29a3d5ee804cf1c7c75a94",
+  "git_delta": {
+    "base_commit": "9f6ec514b377527799a1eaedae78f43210587b00",
+    "candidate_commit": "bfaf075e752540b5b9bdd08df253219c88f9c043",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "cmb_exists_countable_dense_testForms",
+    "diff_sha256": "634222eed07cfa3925fa701a25eccf17bc70e1bdda578b48fe07376dd7f44671",
+    "source_sha256": "9bc89d1e9f5f8356ca7946a49581c1bba9858fa64a44421cf488cc3853e72bd1",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cmb_exists_countable_dense_testForms",
+      "statement": "∀ (P n : ℕ) (U W : Set (Eucl P)), IsCompact (closure W) → ∃ E : Set (TestFormOn U n), E.Countable ∧ (∀ η ∈ E, tsupport (η : DifferentialForm (Eucl P) n) ⊆ W) ∧ ∀ ω : TestFormOn U n, tsupport (ω : DifferentialForm (Eucl P) n) ⊆ W → ∀ ε : ℝ, 0 < ε → ∃ η ∈ E, ∀ x, covectorEuclideanNorm ((ω : DifferentialForm (Eucl P) n) x - (η : DifferentialForm (Eucl P) n) x) ≤ ε",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

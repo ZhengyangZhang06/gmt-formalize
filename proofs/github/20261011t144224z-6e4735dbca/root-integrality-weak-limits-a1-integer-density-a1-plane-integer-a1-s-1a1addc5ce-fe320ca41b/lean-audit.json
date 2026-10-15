@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "3b14dd5490415dd5b4edcb7f89dc03a4526ef5c58626853cf6108d71a09e4085",
+  "git_delta": {
+    "base_commit": "9c989bc00caa96e00bc54d043fd3bbf5eae406ae",
+    "candidate_commit": "fbecac1595ff993267b5ca16cf3924cb5b4b09b3",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "ind_pi_ss_fatou_level_selection",
+    "diff_sha256": "3009eb815dcbfd66aa6ab8eee047ba89deca0d34da15e5be0ce9c136ba00f20d",
+    "source_sha256": "07c3ae1d3f399c759319c100313253612dc9351312378ca36b507a708e531e21",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.ind_pi_ss_fatou_level_selection",
+      "statement": "∀ (g : ℕ → ℝ → ℝ≥0∞) (a b : ℝ) (C : ℝ≥0∞) (E : Set ℝ), a < b → (∀ k, Measurable (g k)) → C < ∞ → (∀ k, ∫⁻ t in Ioo a b, g k t ≤ C) → E.Countable → ∃ (γ : ℝ) (σ : ℕ → ℕ) (G : ℝ≥0∞), γ ∈ Ioo a b ∧ γ ∉ E ∧ StrictMono σ ∧ G < ∞ ∧ ∀ k, g (σ k) γ ≤ G",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

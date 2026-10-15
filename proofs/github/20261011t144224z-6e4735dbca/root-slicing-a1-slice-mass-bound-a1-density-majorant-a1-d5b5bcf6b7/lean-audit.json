@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "d9c83d4bb37c26be29292437848695d73000ac4f9b17491e06534e935c1ffac0",
+  "git_delta": {
+    "base_commit": "bd8e762a305bc5d9dbbfb397dac7395845120372",
+    "candidate_commit": "5ea978433c6f28d052567ea92660b7bb43bf5c3d",
+    "target": "GMT/Ch06/Submission.lean",
+    "changed_files": [
+      "GMT/Ch06/Submission.lean"
+    ],
+    "diff_sha256": "abddc4c218da001d20878295f26bfec696237db6f7c56d68b67d02e908623f8d",
+    "source_sha256": "a6d68154841268217b33e16c3b717114900a8d897418ba187d623f429c763218",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.slicing_mb_density_majorant",
+      "statement": "∀ (ν : Measure ℝ) (a b : ℝ), a < b → ∃ g : ℝ → ℝ≥0∞, Measurable g ∧ (∀ t ∈ Ioo a b, liminf (fun h : ℝ => ν (Icc (t - h) t) / ENNReal.ofReal h) (𝓝[>] 0) ≤ g t) ∧ ∫⁻ t in Ioo a b, g t ≤ ν (Ioo a b)",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

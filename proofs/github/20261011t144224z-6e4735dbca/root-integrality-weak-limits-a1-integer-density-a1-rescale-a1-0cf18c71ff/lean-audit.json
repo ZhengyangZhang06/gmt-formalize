@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "caf4a0f2fe3830526c5e0cf20408f2943c6947da2c9f30fafccf063cb65deedc",
+  "git_delta": {
+    "base_commit": "72c690a8b59ca1c7bf4e8212a79786606a4d651c",
+    "candidate_commit": "36b130395d1b407d51d826bc393849981fd58393",
+    "target": "GMT/Ch06/Submission.lean",
+    "changed_files": [
+      "GMT/Ch06/Submission.lean"
+    ],
+    "diff_sha256": "7201350e9c981a8dc3630ee184b0012b458b463d5f996d3106585b66a375e2ee",
+    "source_sha256": "8d966716c30c3db028bafaba10662f10891a18d8e0d4e2f8a0a2b92d8fcd26fa",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.ind_rescaled_current",
+      "statement": "∀ (P m : ℕ) (X : GeometricCurrentOn (univ : Set (Eucl P)) (m + 1)) (x : Eucl P) (r : ℝ), 0 < r → ∃ Y : GeometricCurrentOn (univ : Set (Eucl P)) (m + 1), (∀ ω : TestFormOn (univ : Set (Eucl P)) (m + 1), ∃ η : TestFormOn (univ : Set (Eucl P)) (m + 1), ∀ y, (η : DifferentialForm (Eucl P) (m + 1)) y = (r ^ (m + 1))⁻¹ • (ω : DifferentialForm (Eucl P) (m + 1)) (r⁻¹ • (y - x))) ∧ (∀ ω η : TestFormOn (univ : Set (Eucl P)) (m + 1), (∀ y, (η : DifferentialForm (Eucl P) (m + 1)) y = (r ^ (m + 1))⁻¹ • (ω : DifferentialForm (Eucl P) (m + 1)) (r⁻¹ • (y - x))) → Y ω = X η) ∧ (IsIntegerMultiplicity X → IsIntegerMultiplicity Y) ∧ (X.boundary = 0 → Y.boundary = 0) ∧ ∀ W : Set (Eucl P), Y.massOn W ≤ ENNReal.ofReal ((r ^ (m + 1))⁻¹) * X.massOn {y | r⁻¹ • (y - x) ∈ W}",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

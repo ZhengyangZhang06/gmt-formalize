@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "3d239b5c37a6bd1bcc5e0783cb1c1385cb5024b3cef2f86eaab8692aa5001ca4",
+  "git_delta": {
+    "base_commit": "661ac3ac5bfeb902622c5554dc56ce461e705138",
+    "candidate_commit": "d0bdb40ee3ab32e70fda8a3af0e9cc5f6d0883d3",
+    "target": "GMT/Ch06/Submission.lean",
+    "changed_files": [
+      "GMT/Ch06/Submission.lean"
+    ],
+    "diff_sha256": "e8a6d86bccab614faa3059170955b21b8634a1b5e686ddb86166ba447b1925bf",
+    "source_sha256": "e328404b575dd53597e281ddf7f413503cadf62eb0f80a0135ebc902745a00e1",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.polyhedral_approx_restriction_tau",
+      "statement": "∀ (P n : ℕ) (U : Set (Eucl P)), IsOpen U → ∀ (T : GeometricCurrentOn U n) (M : Set (Eucl P)) (θ : Eucl P → ℝ) (ξ : Eucl P → NVector (Eucl P) n), IsRectifiableTriple U n M θ ξ → (∀ ω : TestFormOn U n, T ω = tauAction n M θ ξ ω) → ∀ (A : Set (Eucl P)) (S : GeometricCurrentOn U n), IsRestriction T A S → ∀ ω : TestFormOn U n, S ω = tauAction n (M ∩ A) θ ξ ω",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

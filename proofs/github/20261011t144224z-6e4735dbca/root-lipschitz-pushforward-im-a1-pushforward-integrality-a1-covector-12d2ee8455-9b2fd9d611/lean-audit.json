@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "cb3b55a210e6d590eb8e788c74f2f639cc5e93b56e115b4b62553483ddc17487",
+  "git_delta": {
+    "base_commit": "2a9df835e9c7991cb668fe018b5e19a9f2add6b4",
+    "candidate_commit": "662fd8919e809d16d20f427ae35555cd1030a4c1",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "lpf_pi_covector_finiteDimensional",
+    "diff_sha256": "a147c7f37f9985be3eec1c35bb186f4f0023234df86bd75debf733e20796247e",
+    "source_sha256": "7790ba9a39cbdd6be83fb181cfdc2d0ea7d429ef65469c36a5da9961ff95da4a",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.lpf_pi_covector_finiteDimensional",
+      "statement": "∀ (Q n : ℕ), FiniteDimensional ℝ (Covector (Eucl Q) n)",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

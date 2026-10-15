@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "bb19de657eab70cf98f5204ae452b45acc47176a5bc554f0316a495a6950feb7",
+  "git_delta": {
+    "base_commit": "f478787345a9306aa15ef629bbf357ede186fa9e",
+    "candidate_commit": "a5855f5953efe397fcfa9f765c1321f408d0c740",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "smr_restriction_isCurrent",
+    "diff_sha256": "9c1f76740b6559516c7fba545bbf4d761c0508f13a9b009d37b854359c36603a",
+    "source_sha256": "757ffd9f6f34a746336f02453729b8bf22016bcbd46a0fe195323df035f814c8",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.smr_restriction_isCurrent",
+      "statement": "∀ (P k : ℕ) (U : Set (Eucl P)) (μ : Measure (Eucl P)) (v : Eucl P → NVector (Eucl P) k), (∀ ω : TestFormOn U k, Integrable (fun x => v x ((ω : DifferentialForm (Eucl P) k) x)) μ) → (∀ K : Set (Eucl P), IsCompact K → K ⊆ U → μ K < ∞) → (∀ (x : Eucl P) (α : Covector (Eucl P) k), |v x α| ≤ covectorEuclideanNorm α) → ∀ A : Set (Eucl P), ∃ S : GeometricCurrentOn U k, ∀ ω : TestFormOn U k, S ω = ∫ x in A, v x ((ω : DifferentialForm (Eucl P) k) x) ∂μ",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

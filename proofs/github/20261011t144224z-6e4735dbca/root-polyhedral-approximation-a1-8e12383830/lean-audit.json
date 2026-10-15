@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "4f751f9ed0e2b52e014322b31e3acaa5b2ef6984035ab7f00d4b5abaf90a4d5a",
+  "git_delta": {
+    "base_commit": "adca4ba7d7a997cd6f65f2a9ef9853fad11389c5",
+    "candidate_commit": "786e6c8abe438f1b9b7f8cfaf73ccf13aa010bee",
+    "target": "GMT/Ch06/Submission.lean",
+    "changed_files": [
+      "GMT/Ch06/Submission.lean"
+    ],
+    "diff_sha256": "c455c36f8b3c6800f3f65a6b812eeb879eec6d7a2f1acc57de4ad40d292fdf2b",
+    "source_sha256": "6a90e26d95f60449a6de9bba88cad101754e418f210ea15e9981695c18bb2c08",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.polyhedral_approximation",
+      "statement": "PolyhedralApproximation",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

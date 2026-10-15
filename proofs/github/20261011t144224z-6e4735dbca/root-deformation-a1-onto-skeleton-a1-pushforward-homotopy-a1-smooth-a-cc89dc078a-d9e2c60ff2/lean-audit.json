@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "662d5377a04d9f28af1570fd6bcd20933b707ff8ea1e9ee5acdd8044de94a4ba",
+  "git_delta": {
+    "base_commit": "fee31418546ed4a3cf648ec1bc5cbe32b3f63418",
+    "candidate_commit": "43b4eb53677f5ee05030f63b9a7dce77e2f24243",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "dph_sa_mollify_lipschitz",
+    "diff_sha256": "5b050ebb9b3ccba8d0b48d20cdac74f550c301119210bb1c247f85ea60a33e61",
+    "source_sha256": "6b97ca1d52c9dfdd53d920b44e2f66641c138ff4ebdc5c9d3ff33713e59f4647",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dph_sa_mollify_lipschitz",
+      "statement": "∀ (m m' : ℕ) (F : Eucl m → Eucl m') (L : ℝ≥0), LipschitzWith L F → ∀ σ : ℝ, 0 < σ → ∃ Fs : Eucl m → Eucl m', ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) Fs ∧ LipschitzWith L Fs ∧ (∀ x, ‖Fs x - F x‖ ≤ (L : ℝ) * σ) ∧ (∀ (x : Eucl m) (Λ' : ℝ≥0), LipschitzOnWith Λ' F (ball x (2 * σ)) → LipschitzOnWith Λ' Fs (ball x σ) ∧ ‖fderiv ℝ Fs x‖ ≤ (Λ' : ℝ) ∧ ‖Fs x - F x‖ ≤ (Λ' : ℝ) * σ) ∧ ∀ (x : Eucl m) (i : Fin m') (c : ℝ), (∀ y ∈ ball x σ, F y i = c) → Fs x i = c",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

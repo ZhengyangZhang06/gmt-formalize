@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "935eb7a75e86a7a7c86e905261ecd94429f75fd430d060b572792b8e3fbfa41f",
+  "git_delta": {
+    "base_commit": "4d4792b21f1e17a42af3488a83ea8ca9bb2826ab",
+    "candidate_commit": "205c2f1bc9eaee4c9c1599aaac48eaf743801c21",
+    "target": "GMT/Ch06/Submission.lean",
+    "changed_files": [
+      "GMT/Ch06/Submission.lean"
+    ],
+    "diff_sha256": "619038fab287ff7e28e5af8b64b87e44bcc9063f4a084c55af913004395107ca",
+    "source_sha256": "581c6c84efe89706b167f7758d620daa5bfa7a4cf3efea35f0429f0f19ffd520",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.ind_pi_localized_cycles",
+      "statement": "SlicingTheorem → (∀ (P k : ℕ) (U : Set (Eucl P)), IsOpen U → ∀ (Xj : ℕ → GeometricCurrentOn U k) (X : GeometricCurrentOn U k) (W : Set (Eucl P)) (φ : Eucl P → ℝ), WeaklyConvergesOn Xj X → IsOpen W → W ⊆ U → (⨆ j, (Xj j).massOn W) < ∞ → ContinuousOn φ U → ∃ (ψ : ℕ → ℕ) (E : Set ℝ), StrictMono ψ ∧ E.Countable ∧ ∀ s ∉ E, ∀ (Rj : ℕ → GeometricCurrentOn U k) (R : GeometricCurrentOn U k), (∀ j, IsRestriction (Xj (ψ j)) {x | x ∈ U ∧ φ x < s} (Rj j)) → IsRestriction X {x | x ∈ U ∧ φ x < s} R → (∀ ω : TestFormOn U k, tsupport (ω : DifferentialForm (Eucl P) k) ⊆ W → Tendsto (fun j => Rj j ω) atTop (𝓝 (R ω))) ∧ (∀ K : Set (Eucl P), IsCompact K → K ⊆ W → {x | x ∈ U ∧ φ x ≤ s} ⊆ K → WeaklyConvergesOn Rj R)) → ∀ (P m : ℕ) (τ : Fin (m + 1) → Eucl P) (c : ℝ) (Y : ℕ → GeometricCurrentOn (univ : Set (Eucl P)) (m + 1)) (p : Eucl P →L[ℝ] Eucl (m + 1)) (d : Eucl P → ℝ), Orthonormal ℝ τ → (∀ y i, p y i = inner ℝ (τ i) y) → (∀ y, d y = ‖y - ∑ i, inner ℝ (τ i) y • τ i‖) → (∀ k, IsIntegerMultiplicity (Y k)) → (∀ k, (Y k).boundary = 0) → (⨆ k, (Y k).massOn (ball (0 : Eucl P) 2)) < ∞ → (∀ ω : TestFormOn (univ : Set (Eucl P)) (m + 1), tsupport (ω : DifferentialForm (Eucl P) (m + 1)) ⊆ ball (0 : Eucl P) 2 → Tendsto (fun k => Y k ω) atTop (𝓝 (c * ∫ z in (Submodule.span ℝ (Set.range τ) : Set (Eucl P)), (ω : DifferentialForm (Eucl P) (m + 1)) z τ ∂(μHE[m + 1] : Measure (Eucl P))))) → ∃ (γ : ℝ) (Z : ℕ → GeometricCurrentOn {y : Eucl P | ‖p y‖ < 1 ∧ d y < 3 / 4} (m + 1)), 0 ≤ γ ∧ γ < 3 / 4 ∧ (∀ k, IsIntegerMultiplicity (Z k)) ∧ (∀ k, (Z k).support ⊆ {y | d y ≤ γ}) ∧ (⨆ k, ((Z k).mass + (Z k).boundary.mass)) < ∞ ∧ ∀ ω : TestFormOn {y : Eucl P | ‖p y‖ < 1 ∧ d y < 3 / 4} (m + 1), Tendsto (fun k => Z k ω) atTop (𝓝 (c * ∫ z in (Submodule.span ℝ (Set.range τ) : Set (Eucl P)), (ω : DifferentialForm (Eucl P) (m + 1)) z τ ∂(μHE[m + 1] : Measure (Eucl P))))",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

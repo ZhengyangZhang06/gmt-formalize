@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "211b8993f501e5237da7a710d00702d7f7b6e39ecda1d1356a361b994bb7ad21",
+  "git_delta": {
+    "base_commit": "563be045a91bd10f0b12e3de6ad58a29df578404",
+    "candidate_commit": "6d508b9e6a78deb0a0bd2e22bc237f0546b2b4b1",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "imc_wte_approxTangent_of_weightedTangent",
+    "diff_sha256": "1b74d7d8524c193ce9fba89054c75d8b8c1aba3aaa9f4873f2ec98e61daf5365",
+    "source_sha256": "b4f6e0c151d8bbc1da7737be8e343bead04b90b7822eb93eba67018ece6c696e",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.imc_wte_approxTangent_of_weightedTangent",
+      "statement": "∀ (Q n : ℕ) (M C : Set (Eucl Q)) (θ : Eucl Q → ℝ) (y : Eucl Q) (T : Submodule ℝ (Eucl Q)), NullMeasurableSet M (μHE[n] : Measure (Eucl Q)) → NullMeasurableSet C (μHE[n] : Measure (Eucl Q)) → C ⊆ M → (∀ x ∈ M, 0 ≤ θ x) → 0 < θ y → HasWeightedApproximateTangentSpaceAt n M θ y T → (∃ r : ℝ, 0 < r ∧ (μHE[n] : Measure (Eucl Q)) (C ∩ closedBall y r) < ∞ ∧ IntegrableOn θ (M ∩ closedBall y r) (μHE[n] : Measure (Eucl Q))) → ContinuousWithinAt θ C y → Tendsto (fun ρ : ℝ => (∫⁻ x in (M \\ C) ∩ closedBall y ρ, ENNReal.ofReal (θ x) ∂(μHE[n] : Measure (Eucl Q))) / ENNReal.ofReal (ρ ^ n)) (𝓝[>] 0) (𝓝 0) → Poincare.SimonGMT.Chapter03.HasApproximateTangentSpaceAt n C y T",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

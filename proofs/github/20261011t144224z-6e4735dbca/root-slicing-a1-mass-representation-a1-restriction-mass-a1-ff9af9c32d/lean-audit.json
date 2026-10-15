@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "7758a61cb61d9c67673f782339ae2e75f391cc83b08a73d744205b14d894200f",
+  "git_delta": {
+    "base_commit": "af8fba23abe140df7053105f3dec9ee7e0b0997a",
+    "candidate_commit": "57be985b01b2d2bb38aa112548aedb1bd333a7e1",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "smr_restriction_massOn_eq",
+    "diff_sha256": "4d3cea430029587b6cc0747daae34b93c53df9cd570539f83ea7c402d3448014",
+    "source_sha256": "f2c10145ac918991db846c94514b445a7852daac3c5028049e851a7ac0630ffb",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.smr_restriction_massOn_eq",
+      "statement": "∀ (P k : ℕ) (U : Set (Eucl P)) (μ : Measure (Eucl P)) (v : Eucl P → NVector (Eucl P) k), (∀ ω : TestFormOn U k, Integrable (fun x => v x ((ω : DifferentialForm (Eucl P) k) x)) μ) → (∀ K : Set (Eucl P), IsCompact K → K ⊆ U → μ K < ∞) → (∀ (x : Eucl P) (α : Covector (Eucl P) k), |v x α| ≤ covectorEuclideanNorm α) → (∀ α : Covector (Eucl P) k, Measurable (fun x => v x α)) → (∀ᵐ x ∂μ, ∃ α : Covector (Eucl P) k, covectorEuclideanNorm α ≤ 1 ∧ v x α = 1) → ∀ A : Set (Eucl P), MeasurableSet A → ∀ S : GeometricCurrentOn U k, (∀ ω : TestFormOn U k, S ω = ∫ x in A, v x ((ω : DifferentialForm (Eucl P) k) x) ∂μ) → ∀ W : Set (Eucl P), IsOpen W → W ⊆ U → S.massOn W = μ (W ∩ A)",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

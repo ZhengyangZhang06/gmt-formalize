@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "fc0bdb54c623a73d292175c23c7bce2bcab20e7cd2098b3c8ca686618ff30665",
+  "git_delta": {
+    "base_commit": "1b2e8c530e5f6dd89d9f412a7fac8199171f4e2d",
+    "candidate_commit": "3639f75e8f12467d3501c49c852f1183d2490b59",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "lpf_wtc_cat_gram_jacobian_continuous",
+    "diff_sha256": "eed77e3a622e37f50f4ced53de1c76099605376177e9e2baadd0b6c546af7322",
+    "source_sha256": "2e23c06f7cac12d3ed67ddda5997c251b65d0031691c71c7e9ba757e6aabb545",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.lpf_wtc_cat_gram_jacobian_continuous",
+      "statement": "∀ (Q n : ℕ) (Φ : Eucl n → Eucl Q), ContDiff ℝ 1 Φ → Continuous (fun v : Eucl n => Real.sqrt (Matrix.of fun i j : Fin n => inner ℝ (fderiv ℝ Φ v (EuclideanSpace.single i 1)) (fderiv ℝ Φ v (EuclideanSpace.single j 1))).det)",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

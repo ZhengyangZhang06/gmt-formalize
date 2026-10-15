@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "51bc681e2aa3014d1f5867f3cee1534b0cd3b3dd3b0db24dcb9ed35396f15e84",
+  "git_delta": {
+    "base_commit": "6f7cf4f077e3c15ac8182500ad52bd5a1a5cdc18",
+    "candidate_commit": "90ea33e846200adf6746aa4ac890fa4b8036d54c",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "lpf_wtc_density_bound_of_tangent",
+    "diff_sha256": "9290e5761cca667a923fc5a730c5ded20d81d73fe0ca5d0c8950a8dfd8e461f1",
+    "source_sha256": "fdfa0e3a01c302dd9f4aef3d9eda17db591cbfaa812b6284202b3828b06b5b8b",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.lpf_wtc_density_bound_of_tangent",
+      "statement": "∀ (Q n : ℕ) (S : Set (Eucl Q)) (y : Eucl Q) (T : Submodule ℝ (Eucl Q)), Poincare.SimonGMT.Chapter03.HasApproximateTangentSpaceAt n S y T → (∃ r : ℝ, 0 < r ∧ (μHE[n] : Measure (Eucl Q)) (S ∩ closedBall y r) < ∞) → ∃ K : ℝ≥0, ∀ᶠ ρ in 𝓝[>] (0 : ℝ), (μHE[n] : Measure (Eucl Q)) (S ∩ closedBall y ρ) ≤ K * ENNReal.ofReal (ρ ^ n)",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

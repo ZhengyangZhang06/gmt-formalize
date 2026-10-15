@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "15f6a9f3a3ee865815a02a7ae45077e0116f057f088562aa523f1612f749ca11",
+  "git_delta": {
+    "base_commit": "589a02c2bc098442385b077e76593d0af1b969d9",
+    "candidate_commit": "e20ff737992de82b418061d4133cb87070f5deb7",
+    "target": "GMT/Ch06/Submission.lean",
+    "changed_files": [
+      "GMT/Ch06/Submission.lean"
+    ],
+    "diff_sha256": "a15c15ff43702f909440884f7efa47cc84c6935d0e32a8f07c35f707e2a8e8ea",
+    "source_sha256": "54f293d953259c9d0c586dd9ffff4b11013983a805d16c03b9228a870739e268",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.rpn_abs_apply_le_opNorm_mul_massOn",
+      "statement": "∀ (P n : ℕ) (U W : Set (Eucl P)) (T : GeometricCurrentOn U n) (ω : TestFormOn U n) (B C : ℝ), 0 ≤ B → T.massOn W ≤ ENNReal.ofReal B → tsupport (ω : DifferentialForm (Eucl P) n) ⊆ W → (∀ x, ‖(ω : DifferentialForm (Eucl P) n) x‖ ≤ C) → |T ω| ≤ (P : ℝ) ^ n * B * C",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

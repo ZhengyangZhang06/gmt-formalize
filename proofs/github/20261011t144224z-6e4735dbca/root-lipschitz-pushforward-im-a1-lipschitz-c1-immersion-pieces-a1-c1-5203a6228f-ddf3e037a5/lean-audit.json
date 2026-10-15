@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "851a73ea8b1ffc0c4def84f81bea58d6bdf53b84c55eb9f404fbe2473d93b5fa",
+  "git_delta": {
+    "base_commit": "d11eb3def4ee3265ab79726eeb3da9b5b78a9435",
+    "candidate_commit": "b7b6c02711462cdab6674583e64c3bb5e404fa6e",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "lpf_c1r_lusin_closed",
+    "diff_sha256": "a82925df2ae4f6f3b7c8edf677f13012673a29f05e1d175796453df2e088ece8",
+    "source_sha256": "3ce524620c3c85cd0628aced8e485853fc85d65e4b8882ebb3240dbe74b1e913",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.lpf_c1r_lusin_closed",
+      "statement": "∀ (n : ℕ) (S : Set (Eucl n)) (f : Eucl n → (Eucl n →L[ℝ] ℝ)), MeasurableSet S → Measurable f → ∀ ε : ℝ≥0∞, 0 < ε → ∃ C : Set (Eucl n), IsClosed C ∧ C ⊆ S ∧ (volume : Measure (Eucl n)) (S \\ C) < ε ∧ ContinuousOn f C",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "d237bb1b7641b112b5d90bf7cf93751fc5fa8b326007866e1d76deb3823f5273",
+  "git_delta": {
+    "base_commit": "f00a435437420e5676232a93804fbe8d037d389e",
+    "candidate_commit": "fc246393d257db8c09bfddf6c41d7d70e53bf9ea",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "iwl_rl_massOn_iUnion_monotone",
+    "diff_sha256": "86558da98991a49db059b72e60f0e73d6fceb38b7b69138fc0ec8a6a784cfd13",
+    "source_sha256": "8610f6a0cea6400a4dfb8b4dbb46baa6b1d1b43ee806ee9e4777908a393e73e3",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.iwl_rl_massOn_iUnion_monotone",
+      "statement": "∀ (P k : ℕ) (U : Set (Eucl P)) (T : GeometricCurrentOn U k) (O : ℕ → Set (Eucl P)), (∀ i, IsOpen (O i)) → Monotone O → T.massOn (⋃ i, O i) = ⨆ i, T.massOn (O i)",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

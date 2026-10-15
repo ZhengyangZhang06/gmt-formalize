@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "a815cfeeb597fc712fbcd64422cc01999747b186db8929e4979059f773f08e2b",
+  "git_delta": {
+    "base_commit": "ab223e6c354e0f2c463fadaa7575bae17bbe829d",
+    "candidate_commit": "6d007652360111d399285ceada79732ebfc5e76c",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "rpn_pe_kernel_sup_bound",
+    "diff_sha256": "df0c6009568e3854d44a4dd0978baa577ddf2f6e4cf30d15736a7c66cb63d995",
+    "source_sha256": "4dcb83ce01d0c1591b8710b2b8c885b332bd63668f78bf982417e0d902399d1c",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.rpn_pe_kernel_sup_bound",
+      "statement": "∀ m : ℕ, ∃ C : ℝ, ∀ a : Eucl (m + 1) → ℝ, HasCompactSupport a → ∀ M : ℝ, (∀ y, |a y| ≤ M) → ∀ (j : Fin (m + 1)) (y : Eucl (m + 1)), |∫ t, t j / (((m : ℝ) + 1) * (volume (ball (0 : Eucl (m + 1)) 1)).toReal * ‖t‖ ^ (m + 1)) * a (y - t)| ≤ C * M * ((volume (tsupport a)).toReal) ^ ((1 : ℝ) / ((m : ℝ) + 1))",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "787f5e06618cb7ac5c10fb36df06bf1ebdfe8bb9da6066d8a3c9cac5ca92851c",
+  "git_delta": {
+    "base_commit": "48003458fad021bfb5c2e6033b53fcc6b2f37d85",
+    "candidate_commit": "702dace4538c82aaa35ab6c49feea7cc1e3ce55e",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "fiw_tb_apply_eq_zero_of_disjoint_support",
+    "diff_sha256": "2ae74a8088b00d226b8280e56ff25be180c75f51595f585321a4776ccf026dc0",
+    "source_sha256": "283c9fd057587c3981cd7a4168bddc934b1474e815083c89e67b3e8eace6d9d9",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.fiw_tb_apply_eq_zero_of_disjoint_support",
+      "statement": "∀ (P n : ℕ) (U : Set (Eucl P)) (T : GeometricCurrentOn U n) (ω : TestFormOn U n), Disjoint (tsupport (ω : DifferentialForm (Eucl P) n)) T.support → T ω = 0",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

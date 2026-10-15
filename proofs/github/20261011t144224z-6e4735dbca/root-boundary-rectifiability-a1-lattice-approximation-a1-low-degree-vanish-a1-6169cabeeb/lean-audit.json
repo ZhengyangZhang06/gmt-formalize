@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "f84d1df2b967516849f0f299ceea6881f1bfb613ebd08c42b3b0eb20aa7abfbf",
+  "git_delta": {
+    "base_commit": "fb53951020498beb7e7ab43be99270346c7432da",
+    "candidate_commit": "5e97e54b7c48d8e53196b85846b7863fbaa0fe66",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "br_la_apply_eq_zero_of_lt_degree",
+    "diff_sha256": "4c5dcbbd4b5c7dcb91f1d94412f791f03b48367342074f18dc663fda6245d4ae",
+    "source_sha256": "89f6895c398585d457f8c5666c97eb6574ad3c59020e98299467132e31c43ffe",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.br_la_apply_eq_zero_of_lt_degree",
+      "statement": "∀ (P n : ℕ) (U : Set (Eucl P)) (X : GeometricCurrentOn U n), P < n → ∀ ω : TestFormOn U n, X ω = 0",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

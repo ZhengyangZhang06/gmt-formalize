@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "ffca3a4c54e1d51fdcdc08c27be83d89098235fd88118f532ec2f64c9bc9bd4f",
+  "git_delta": {
+    "base_commit": "002b9a39fd8aa001749804f8764f09a2d12eb60a",
+    "candidate_commit": "f755fa9355f622ae732a6bb530298320fe16c88c",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "deformation_ipl_mwc_mis_integral_fderiv_eq_zero",
+    "diff_sha256": "23c577b9deffef2b2489da69423260635421ba05350ce66dde2578231b9b223a",
+    "source_sha256": "1429aec840170e519abfab9f56dba6071f3fcf6f9d39d4ac311c2d92810c7184",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.deformation_ipl_mwc_mis_integral_fderiv_eq_zero",
+      "statement": "∀ (k : ℕ) (h : Eucl k → ℝ) (e : Eucl k), ContDiff ℝ 1 h → HasCompactSupport h → ∫ w, fderiv ℝ h w e ∂(volume : Measure (Eucl k)) = 0",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "e43e5836a738a773cbf31035e83da9c9af2941f54c430d37aa5f6fc47236db20",
+  "git_delta": {
+    "base_commit": "e8e425c49ebd2733d9f819df40e24b9eb14ac9ac",
+    "candidate_commit": "37bba5ece9475815ccd85125365e10e340f04dc7",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "br_lattice_chain_boundary_isIntegerMultiplicity",
+    "diff_sha256": "e4d7637e092b29ad7b69eac50eca944a00e50c2f432195d179bb18637fbabff7",
+    "source_sha256": "a55ef9bc37addad872ee652a8547a68fdbc53b9ae75b79244d4fa1265b4bfc26",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.br_lattice_chain_boundary_isIntegerMultiplicity",
+      "statement": "∀ (P m : ℕ) (ρ : ℝ), 0 < ρ → ∀ (β : LatticeFaceIndex (m + 1) P → ℤ) (Pc : GeometricCurrentOn (univ : Set (Eucl P)) (m + 1)), IsLatticeChain ρ (fun F => (β F : ℝ)) Pc → IsIntegerMultiplicity Pc.boundary",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

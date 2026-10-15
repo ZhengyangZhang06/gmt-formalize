@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "3af9203abc0353b2b64c079cd37c212f9af6ef643047c21c668018b9da3fa505",
+  "git_delta": {
+    "base_commit": "a80346bf1bbb538306180350fe64b97f3d19bb1d",
+    "candidate_commit": "947cb45aeb4589573ad1b1e3694f26e26661bd9f",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "dr_cc_lip_at_comp",
+    "diff_sha256": "b9117ff38e6531c03b2deb85cb200dea95e53eb4cd5d41398ecf77df63f886db",
+    "source_sha256": "d944a4bb649a17bb47bd634168da595ada0edaf70907cd16802ba01d0c7a8c5f",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dr_cc_lip_at_comp",
+      "statement": "∀ (X Y Z : Type) [PseudoMetricSpace X] [PseudoMetricSpace Y] [PseudoMetricSpace Z] (f : X → Y) (g : Y → Z) (A : Set X) (B : Set Y) (x : X) (K₁ K₂ : ℝ), 0 ≤ K₁ → 0 ≤ K₂ → MapsTo f A B → (∀ ε : ℝ, 0 < ε → ∃ δ : ℝ, 0 < δ ∧ ∀ x' ∈ A, dist x' x < δ → dist (f x') (f x) ≤ (K₁ + ε) * dist x' x) → (∀ ε : ℝ, 0 < ε → ∃ δ : ℝ, 0 < δ ∧ ∀ y' ∈ B, dist y' (f x) < δ → dist (g y') (g (f x)) ≤ (K₂ + ε) * dist y' (f x)) → ∀ ε : ℝ, 0 < ε → ∃ δ : ℝ, 0 < δ ∧ ∀ x' ∈ A, dist x' x < δ → dist (g (f x')) (g (f x)) ≤ (K₁ * K₂ + ε) * dist x' x",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

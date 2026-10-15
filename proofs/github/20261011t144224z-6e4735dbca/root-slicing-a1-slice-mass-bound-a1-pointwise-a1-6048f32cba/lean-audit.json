@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "4a241b5b276154ec74661d4c060a6a13d45aea8c656e7b38e5b7075f6d4cecd1",
+  "git_delta": {
+    "base_commit": "ffc375c780b4de57910eb10a990b74492c6b68fd",
+    "candidate_commit": "fdaebfd29faa4375e3a7e6bc23505e2cdce4845c",
+    "target": "GMT/Ch06/Submission.lean",
+    "changed_files": [
+      "GMT/Ch06/Submission.lean"
+    ],
+    "diff_sha256": "741f053551703003b4033a05b7ea3ae1615e82f8736336cf6caa75d120364cb4",
+    "source_sha256": "8d303bad8307fa87f7932d0a74122e3ffb9b75adb880b5bc5305d40f76ff8042",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.slicing_mb_pointwise",
+      "statement": "∀ (P m : ℕ) (U : Set (Eucl P)), IsOpen U → ∀ (T : GeometricCurrentOn U (m + 1)) (μ : Measure (Eucl P)) (v : Eucl P → NVector (Eucl P) (m + 1)), IsMeasureRepresentation T μ v → (∀ K : Set (Eucl P), IsCompact K → K ⊆ U → μ K < ∞) → (∀ (x : Eucl P) (α : Covector (Eucl P) (m + 1)), |v x α| ≤ covectorEuclideanNorm α) → ∀ (f : Eucl P → ℝ) (L : ℝ≥0), LipschitzOnWith L f U → ∀ (t : ℝ) (S : GeometricCurrentOn U m), IsSlice T f t S → ∀ W : Set (Eucl P), IsOpen W → W ⊆ U → ∀ LW : ℝ≥0, (∀ᵐ x ∂(volume : Measure (Eucl P)), x ∈ W → ‖fderiv ℝ f x‖₊ ≤ LW) → S.massOn W ≤ (LW : ℝ≥0∞) * liminf (fun h : ℝ => μ (W ∩ f ⁻¹' Icc (t - h) t) / ENNReal.ofReal h) (𝓝[>] 0)",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

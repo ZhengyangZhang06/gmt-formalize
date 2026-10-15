@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "9934b8fe1f0c587c13d11ca35aa3abdb251d14bfa6442be6017e0f4f9087c3f7",
+  "git_delta": {
+    "base_commit": "51f984afee2de048efa36ed5b046f67345bc8b54",
+    "candidate_commit": "0bff98712e728999b6d2145654f7b16504354ccd",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "polyhedral_approx_restriction_exists",
+    "diff_sha256": "7f14c78a7c59e1d83b3323f5ae77c90caf5ceee225d75c445dfb428f2dd2776e",
+    "source_sha256": "3f98a9af4ebb5eeb425b66cf8d6407f8d84598d093e09f899d2b6285aa0b053e",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.polyhedral_approx_restriction_exists",
+      "statement": "∀ (P n : ℕ) (U : Set (Eucl P)), IsOpen U → ∀ T : GeometricCurrentOn U n, (∀ (μ : Measure (Eucl P)) (v : Eucl P → NVector (Eucl P) n), IsMeasureRepresentation T μ v → ∀ A : Set (Eucl P), MeasurableSet A → ∃ S : GeometricCurrentOn U n, IsRestriction T A S) ∧ ∀ (A : Set (Eucl P)) (S : GeometricCurrentOn U n), IsRestriction T A S → ∀ W : Set (Eucl P), CompactlyContainedOpen W U → S.massOn W < ∞",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "ff0e2abf7d33586d6c628e64238f3f33319c4a3aab8a5620be81b5b624df34f2",
+  "git_delta": {
+    "base_commit": "ce44a9bd9260d81fd722327ccfb59e89e782afac",
+    "candidate_commit": "17098070bab17e7c3ce39fe56f59f65fb9d98e75",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "slicing_im_st_cd_c1_pieces_of_lipschitzOn",
+    "diff_sha256": "082942dd72f8a15010ff0a3e8a9244b90d0bdce1fa3d33a944aef4a74094da52",
+    "source_sha256": "c53b38caf6aa447d949d9875e05c48869352279601fe4ef30802905faa0fb28d",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.slicing_im_st_cd_c1_pieces_of_lipschitzOn",
+      "statement": "∀ (n : ℕ) (Ω : Set (Eucl n)) (u : Eucl n → ℝ) (K : ℝ≥0), IsOpen Ω → LipschitzOnWith K u Ω → ∃ (h : ℕ → Eucl n → ℝ) (A : ℕ → Set (Eucl n)), (∀ k, ContDiff ℝ 1 (h k)) ∧ (∀ k, A k ⊆ Ω) ∧ (∀ k, ∀ w ∈ A k, u w = h k w ∧ HasFDerivAt u (fderiv ℝ (h k) w) w) ∧ (volume : Measure (Eucl n)) (Ω \\ ⋃ k, A k) = 0",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

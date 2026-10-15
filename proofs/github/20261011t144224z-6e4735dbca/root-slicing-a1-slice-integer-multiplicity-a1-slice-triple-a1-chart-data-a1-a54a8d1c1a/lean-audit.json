@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "8a4d94de0658b78482d804f48b2adbc946a71a11d4d5654662261b4305a64f4f",
+  "git_delta": {
+    "base_commit": "583e304604a84652de0219169a5c32c3633ae063",
+    "candidate_commit": "402bc07ae52065945fbefab9b40988611dabbaa9",
+    "target": "GMT/Ch06/Submission.lean",
+    "changed_files": [
+      "GMT/Ch06/Submission.lean"
+    ],
+    "diff_sha256": "624392c37fdd16d1655488de076c194ea8a5ab79e88d9de307be1131dcd0e98d",
+    "source_sha256": "37d7d5717e0cdb35d970cdbd4a2b57cfb06d6e95333140ec9d52a84f91681e11",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.slicing_im_st_chart_data",
+      "statement": "∀ (P m : ℕ) (U M : Set (Eucl P)) (θ : Eucl P → ℝ) (ξ : Eucl P → NVector (Eucl P) (m + 1)) (f : Eucl P → ℝ) (L : ℝ≥0) (G : Eucl P → Eucl P), IsOpen U → IsRectifiableTriple U (m + 1) M θ ξ → LipschitzWith L f → (∀ᵐ x ∂((μHE[m + 1] : Measure (Eucl P)).restrict M), ∀ Q : Submodule ℝ (Eucl P), HasWeightedApproximateTangentSpaceAt (m + 1) M θ x Q → G x ∈ Q ∧ ∀ u ∈ Q, HasDerivAt (fun s : ℝ => f (x + s • u)) (inner ℝ (G x) u) 0) → ∃ (Φ : ℕ → Eucl (m + 1) → Eucl P) (Ω A : ℕ → Set (Eucl (m + 1))) (h : ℕ → Eucl (m + 1) → ℝ), (∀ j, IsOpen (Ω j)) ∧ (∀ j, ContDiff ℝ 1 (Φ j)) ∧ (∀ j, ∃ c : ℝ, 0 < c ∧ ∀ w ∈ Ω j, ∀ w' ∈ Ω j, c * ‖w - w'‖ ≤ ‖Φ j w - Φ j w'‖) ∧ (∀ j, A j ⊆ Ω j) ∧ (∀ j, ContDiff ℝ 1 (h j)) ∧ (∀ j, ∀ w ∈ A j, f (Φ j w) = h j w) ∧ (μHE[m + 1] : Measure (Eucl P)) (M \\ ⋃ j, Φ j '' A j) = 0 ∧ ∀ᵐ x ∂((μHE[m + 1] : Measure (Eucl P)).restrict M), ∀ j, ∀ w ∈ A j, Φ j w = x → HasWeightedApproximateTangentSpaceAt (m + 1) M θ x (LinearMap.range (fderiv ℝ (Φ j) w).toLinearMap) ∧ G x ∈ LinearMap.range (fderiv ℝ (Φ j) w).toLinearMap ∧ ∀ u : Eucl (m + 1), inner ℝ (G x) (fderiv ℝ (Φ j) w u) = fderiv ℝ (h j) w u",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

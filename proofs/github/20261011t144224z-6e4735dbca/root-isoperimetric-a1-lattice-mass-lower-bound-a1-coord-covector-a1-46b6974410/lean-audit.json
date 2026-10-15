@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "927f97333d38b97b11085342e898c2dfda5294e22aaa1c053fc1c162edd70cd7",
+  "git_delta": {
+    "base_commit": "1deaa96350f3945139f0fa7b71ee16c1b6f777fe",
+    "candidate_commit": "3d98b1871057eeff6b4d78f84c5665e21780c082",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "isoperimetric_coord_covector_eval",
+    "diff_sha256": "6d3677f56f235ca59478a095621d910812ad8ddc075acf34d87cbc86c35d8513",
+    "source_sha256": "5eb87138d85a31d899f39364b0b103c9948a13ff1ca1c1644689fc50d1d1199d",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.isoperimetric_coord_covector_eval",
+      "statement": "∀ (n N : ℕ) (α : SimonMultiIndex n N), (wedgeCovectors n (fun i => EuclideanSpace.proj (α i)) : Covector (Eucl N) n) (fun j => EuclideanSpace.single (α j) (1 : ℝ)) = 1 ∧ (∀ α' : SimonMultiIndex n N, α' ≠ α → (wedgeCovectors n (fun i => EuclideanSpace.proj (α i)) : Covector (Eucl N) n) (fun j => EuclideanSpace.single (α' j) (1 : ℝ)) = 0) ∧ ∀ c : ℝ, covectorEuclideanNorm (c • (wedgeCovectors n (fun i => EuclideanSpace.proj (α i)) : Covector (Eucl N) n)) = |c|",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "655fb037f0f403be9a58d1452b9f09a22e9f83ae07d89fbca1bcf6006f84e029",
+  "git_delta": {
+    "base_commit": "e0dd7ce5b0feca7e9a2ba50c5a63f67f21ebf018",
+    "candidate_commit": "2cd5968b05f4b9a50bdb8adf73ce2b853ef42994",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "deformation_ipl_cc_tendsto_setIntegral_of_partition",
+    "diff_sha256": "14cb5ebb8394e1d6e6b7d8fde0ed2c4374ea1ee9f021201eec5b70d0dc7e1b63",
+    "source_sha256": "762febf6686a4ac68d0a52741a6ba9d5a0883d2bc0a5e211f19c5cc995d95324",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.deformation_ipl_cc_tendsto_setIntegral_of_partition",
+      "statement": "∀ (X : Type) [MeasurableSpace X] (μ : Measure X) (S : Set X) (E : ℕ → Set X) (f : ℕ → X → ℝ) (f₀ G : X → ℝ), (∀ i, NullMeasurableSet (E i) μ) → Pairwise (Function.onFun Disjoint E) → S =ᵐ[μ] (⋃ i, E i) → IntegrableOn G S μ → (∀ j, AEStronglyMeasurable (f j) (μ.restrict S)) → AEStronglyMeasurable f₀ (μ.restrict S) → (∀ᶠ j in atTop, ∀ᵐ x ∂(μ.restrict S), |f j x| ≤ G x) → (∀ᵐ x ∂(μ.restrict S), |f₀ x| ≤ G x) → (∀ i, Tendsto (fun j => ∫ x in E i, f j x ∂μ) atTop (𝓝 (∫ x in E i, f₀ x ∂μ))) → Tendsto (fun j => ∫ x in S, f j x ∂μ) atTop (𝓝 (∫ x in S, f₀ x ∂μ))",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

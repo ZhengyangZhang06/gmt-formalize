@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "651c8737ba27402de3ef9f693db19f1020096d42507638eb1ecb0b22376830c8",
+  "git_delta": {
+    "base_commit": "002b9a39fd8aa001749804f8764f09a2d12eb60a",
+    "candidate_commit": "d91c70c26b5469e33b9730884d25069176ccb1c6",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "deformation_ipl_mwc_mis_det_contDiff",
+    "diff_sha256": "47d7878db43a8c4fec6f45435ceb351f7d5a34a6d41aaf6f82982bb02a010ddb",
+    "source_sha256": "11adb2696273e410b237be9cae146821ceda5061603490827ba92f2b4ab6e7d3",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.deformation_ipl_mwc_mis_det_contDiff",
+      "statement": "∀ (k n : ℕ) (m : WithTop ℕ∞) (M : Fin n → Fin n → Eucl k → ℝ), (∀ t s, ContDiff ℝ m (M t s)) → ContDiff ℝ m (fun w => Matrix.det (Matrix.of fun t s : Fin n => M t s w))",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

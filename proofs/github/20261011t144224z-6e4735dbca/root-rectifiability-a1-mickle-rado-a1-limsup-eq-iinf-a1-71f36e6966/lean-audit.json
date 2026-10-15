@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "a87cab48c449b2155fac875e9bf604d248157e22b7e02071c639d1ee39439107",
+  "git_delta": {
+    "base_commit": "fa6a180514582c612267b20322541440d54613c3",
+    "candidate_commit": "cfa90d4234cc3e0bf046417af74d50498c203094",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "rectifiability_mickle_rado_limsup_eq_iInf",
+    "diff_sha256": "c4b9241ae5bb583a3e157f74b0fce711ce0c6444023f328c3f2c10913a2f2cad",
+    "source_sha256": "e480a97dd197ee39b98bea26a068b00ee495e7eaf2aa436d58e6070afcb9bf7b",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.rectifiability_mickle_rado_limsup_eq_iInf",
+      "statement": "∀ f : ℝ → ℝ≥0∞, limsup f (𝓝[>] (0 : ℝ)) = ⨅ n : ℕ, ⨆ t ∈ Ioo (0 : ℝ) (1 / ((n : ℝ) + 1)), f t",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

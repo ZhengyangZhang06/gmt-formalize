@@ -1,0 +1,109 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.lipschitz_pushforward_im-a1`
+- Child DAG node: `root.lipschitz_pushforward_im-a1.chart_chain_rule-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Conventions used below. ℝ^P = EuclideanSpace ℝ (Fin P) with inner product ⟨·,·⟩ and norm |·|; Hⁿ = μHE[n] (Mathlib's Euclidean-normalized n-dimensional Hausdorff measure; on ℝⁿ it equals Lebesgue measure Lⁿ = volume, it is invariant under isometries and translations and scales by λⁿ under x ↦ λx). An n-covector α is a continuous alternating n-linear map (ℝ^P)ⁿ → ℝ with the operator norm ‖α‖ (least C with |α(u₁,…,u_n)| ≤ C Π|u_i|); an n-vector is a continuous linear functional on n-covectors with the operator norm; simpleNVector v is the n-vector α ↦ α(v₁,…,v_n), so |simpleNVector v (α)| ≤ ‖α‖ Π|v_i|; for a linear map A, A_# w := nVectorPushforward n A w = w ∘ A^#, where A^#α = α(A·,…,A·), it is linear in w and A_#(simpleNVector v) = simpleNVector(A v) (`nVectorPushforward_simple`). A map Φ is c-antilipschitz on Ω if c|w − w′| ≤ |Φ(w) − Φ(w′)| for all w, w′ ∈ Ω.
+
+This is the chain-rule part of Step 2 and Step 5.2 of the parent proof (“the chain rule applied to u = (f∘Φ_x)∘(Φ_x⁻¹∘Φ) gives Du(w) = d^Mf_x∘DΦ(w)”), formulated for an arbitrary admissible L. Setting: U ⊆ ℝ^P open, IsRectifiableTriple U n M θ ξ, f locally Lipschitz on U, L satisfying the derivative clause for Hⁿ⌞M-a.e. x, Φ : ℝⁿ → ℝ^P of class C¹ and c-antilipschitz on the open set Ω. We use:
+(DD) (Simon Ch. 2, 4.7–4.10.) Let f be K-Lipschitz on a ball B_ρ(x) ⊆ ℝ^P, let Φ be differentiable at w with Φ(w) = x and f∘Φ differentiable at w. Then for every s ∈ ℝⁿ, t ↦ f(x + t·DΦ(w)s) is differentiable at t = 0 with derivative D(f∘Φ)(w)s. Proof: for small |t| both x + t·DΦ(w)s and Φ(w+ts) lie in B_ρ(x), so |f(x + t·DΦ(w)s) − f(Φ(w+ts))| ≤ K|Φ(w) + t·DΦ(w)s − Φ(w+ts)| = o(t), and f(Φ(w+ts)) = f(x) + t·D(f∘Φ)(w)s + o(t).
+
+1. (Null sets transfer to the parameter domain.) Ψ := (Φ|Ω)⁻¹ : Φ(Ω) → Ω is (1/c)-Lipschitz, so for every Z ⊆ Φ(Ω) with Hⁿ(Z) = 0 we get Lⁿ(Ω ∩ Φ⁻¹(Z)) = Hⁿ(Ψ(Z)) ≤ c^{−n} Hⁿ(Z) = 0 (Lipschitz image bound; on ℝⁿ, Hⁿ = μHE[n] = Lⁿ = volume). Also Ω ∩ Φ⁻¹(M) is Lⁿ-null-measurable: writing M = B ∪ Z₀ with B Borel and Hⁿ(Z₀) = 0, Ω ∩ Φ⁻¹(B) is Borel and Ω ∩ Φ⁻¹(Z₀) is Lⁿ-null; so “Lⁿ-a.e. w ∈ Ω ∩ Φ⁻¹(M)” is the a.e. filter of volume.restrict (Ω ∩ Φ⁻¹(M)).
+
+2. (Tangent identification.) By the sibling lemma weighted_tangent_on_c1_chart with (Q, V, M, θ, Φ, Ω) := (P, U, M, θ, Φ, Ω) (hypotheses: fields `subset`, `nullMeasurableSet`, `pos`, `integrableOn` of the triple; Φ C¹ and antilipschitz on Ω), the set Z₁ of y ∈ M ∩ Φ(Ω) at which HasWeightedApproximateTangentSpaceAt n M θ y (range DΦ(Ψ y)) fails is Hⁿ-null. By step 1, for Lⁿ-a.e. w ∈ Ω ∩ Φ⁻¹(M): HasWeightedApproximateTangentSpaceAt n M θ (Φ w) (range DΦ(w)). This is the first conjunct.
+
+3. (Derivative clause transfers.) The set Z₂ of x ∈ M at which the derivative clause for L fails is Hⁿ-null (the hypothesis is an a.e. statement for Hⁿ⌞M and M is null-measurable). By step 1, for Lⁿ-a.e. w ∈ Ω ∩ Φ⁻¹(M) the clause holds at x := Φ(w).
+
+4. (Rademacher.) u := f∘Φ is locally Lipschitz on the open set Ω′ := Ω ∩ Φ⁻¹(U) ⊇ Ω ∩ Φ⁻¹(M) (Φ is C¹, hence Lipschitz near each point, and f is locally Lipschitz on the open set U). Covering Ω′ by countably many balls on which u is Lipschitz and applying Rademacher's theorem to Lipschitz extensions (SimonGMT `rademacher_ae_differentiableAt`), u is differentiable at Lⁿ-a.e. w ∈ Ω′.
+
+5. (Identification of the derivative.) Let w ∈ Ω ∩ Φ⁻¹(M) be outside the three Lⁿ-null exceptional sets of steps 2–4; put x := Φ(w) ∈ M ⊆ U, A := DΦ(w), B := Du(w). Since U is open and f is locally Lipschitz on U, f is Lipschitz on a ball B_ρ(x) ⊆ U. For s ∈ ℝⁿ, As ∈ range A, which by step 2 is a weighted approximate tangent space of (M, θ) at x; so by step 3, t ↦ f(x + t·As) has derivative L(x)(As) at t = 0. By (DD) the same map has derivative Bs at t = 0. By uniqueness of derivatives, L(x)As = Bs for all s, i.e. L(Φ w) ∘ DΦ(w) = Du(w). Hence HasFDerivAt (f ∘ Φ) ((L (Φ w)).comp (fderiv ℝ Φ w)) w. Together with step 2 this proves both conjuncts for Lⁿ-a.e. w ∈ Ω ∩ Φ⁻¹(M). ∎ (For n = 0, ℝ⁰ is a point and Lⁿ is the Dirac measure; for n > P, Ω must be empty or every statement is trivial; the proof covers both.)
+
+## Key steps
+
+1. The inverse of Φ on Φ(Ω) is (1/c)-Lipschitz, so Hⁿ-null subsets of M ∩ Φ(Ω) pull back to Lⁿ-null subsets of Ω.
+2. weighted_tangent_on_c1_chart gives T_{Φ(w)}(M,θ) = range DΦ(w) for a.e. w; the derivative clause for L also holds at Φ(w) for a.e. w.
+3. Rademacher: f∘Φ is differentiable a.e. on Ω ∩ Φ⁻¹(U).
+4. (DD): t ↦ f(Φ(w) + tDΦ(w)s) has derivative D(f∘Φ)(w)s; comparing with the clause gives L(Φ w)∘DΦ(w) = D(f∘Φ)(w).
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat local-references/197bdd4b88278494/manifest.json (mode local-project; project_commit d8d46c9587747dee0751a1f780fcafdba16a3886; mathlib_commit 25730c7c759d108ef87ab70af2342a196760f79d)`
+- `cmp workspace GMT/Ch06/Contract.lean against snapshot project/GMT/Ch06/Contract.lean and GMT/Ch06/Submission.lean (all identical)`
+- `python3 listing of lean_name fields in dag.json (only GMT.Ch06.main_theorem and its 12 children reserved; no lpf_* names)`
+- `contract_scope(Contract.lean, 'GMT.Ch06.main_theorem') from verifier/gmt-compare.py to generate the exact child scope; lean_contract.validate_lean_statement on all 11 child statements`
+- `rg -n 'μHE' mathlib/Mathlib (Geometry/Euclidean/Volume/Measure.lean: euclideanHausdorffMeasure_def, euclideanHausdorffMeasure_zero, euclideanHausdorffMeasure_smul₀, EuclideanSpace.euclideanHausdorffMeasure_eq_volume)`
+- `rg -n 'theorem IsOpen.ae_eq_zero_of_integral_contDiff_smul_eq_zero|theorem ae_eq_zero_of_integral_contDiff_smul_eq_zero' mathlib/Mathlib`
+- `rg -n 'theorem measurable_fderiv' mathlib/Mathlib`
+- `rg -n 'theorem hausdorffMeasure_of_dimH_lt' mathlib/Mathlib`
+- `rg -n 'theorem abs_volumeForm_apply_le|normDet_sq_eq_det_gram|theorem map_linearDependent|theorem LipschitzOnWith.extend_pi' mathlib/Mathlib`
+- `rg -n -i 'hadamard.s inequality|det_le_prod|abs_det_le' mathlib/Mathlib (no packaged Hadamard inequality besides Orientation.abs_volumeForm_apply_le)`
+- `grep -n '^theorem|^def' simongmt/Poincare/SimonGMT/Chapter03/{Rectifiable,SubmanifoldCover,Differential}.lean`
+- `grep -n '^theorem' simongmt/Poincare/SimonGMT/Chapter02/{Lipschitz,AreaDomain,AreaLipschitz,AreaNoninjective,AreaCompletion,AreaMultiplicity,LipschitzMeasurability,WhitneyExtension,WhitneyCover}.lean`
+- `grep -n 'simon_theorem_3_6' simongmt/Poincare/SimonGMT/Chapter01/DensityComparison.lean; grep -n '^theorem' Chapter01/Lusin.lean Chapter01/GeneralDifferentiation.lean`
+- `ls simongmt/.lake/build/lib/lean/Poincare/SimonGMT/Chapter02 | grep -i whitney (WhitneyCover/Jet/Partition built; WhitneyExtension.olean absent)`
+- `lake env lean Scratch/Probe*.lean (#print GeometricCurrentOn.support/zeroRegion/VanishesOn, TestFormOn, IsTestForm, TestFormOnConverges, simpleNVector, covectorPullback; #synth Norm (NVector (Eucl 3) 2) = ContinuousLinearMap.hasOpNorm; Norm (Covector (Eucl 3) 2) = ContinuousAlternatingMap.instNormedAddCommGroup.toNorm; MeasureSpace (Eucl 3) = measureSpaceOfInnerProductSpace; Chapter02.IsSimonSubmanifold not in child scope; LinearMap.range needs (fderiv ℝ Φ w).toLinearMap)`
+- `lake env lean Scratch/Stmts.lean (11 child statements in comparator child scope; only sorry warnings)`
+- `lake env lean Scratch/Assembly.lean (parent from lpf_tangential_differential_exists, lpf_pushforward_is_current, lpf_pushforward_integrality; #print axioms)`
+- `grep -n 'Lemma|Theorem|Remark' book/chapter-03.txt; sed -n 1,445p book/chapter-03.txt; sed -n 160,270p and 900,1000p book/chapter-02.txt; sed -n 740,900p book/chapter-06.txt`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/GMT/Ch06/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/GMT/Ch06/README.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-lipschitz-pushforward-im-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Distribution/AEEqOfIntegralContDiff.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/FDeriv/Measurable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/MetricSpace/HausdorffDimension.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/InnerProductSpace/Orientation.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/InnerProductSpace/NormDet.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/LinearAlgebra/Alternating/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/MetricSpace/Lipschitz.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/SubmanifoldCover.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Differential.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/Lipschitz.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaDomain.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaLipschitz.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaMultiplicity.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/WhitneyExtension.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/DensityComparison.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/Lusin.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/FormsDuality.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-02.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-03.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt`
+- `/tmp/lpim_scratch/Scratch/scope_prefix.txt`
+- `/tmp/lpim_scratch/Scratch/Stmts.lean`
+- `/tmp/lpim_scratch/Scratch/Assembly.lean`
+
+The snapshot (project d8d46c95, Mathlib 25730c7c) contains the frozen Ch06 Contract, byte-identical to the workspace Contract and Submission. Only GMT.Ch06.main_theorem and its 12 children are reserved in the DAG, so the bare lpf_* names are free.
+
+The child scope (import GMT.Ch06.Submission plus the replayed namespace and opens) gives the contract notions and SimonGMT Ch01 Densities, Ch03 Rectifiable (HasWeightedApproximateTangentSpaceAt, blowUpMap, CountablyRectifiable, .unique) and Ch06 (NVector, simpleNVector, nVectorPushforward, nVectorPushforward_simple, TestFormOn, GeometricCurrentOn, support). Chapter02.IsSimonSubmanifold is not in scope, so C¹ pieces are stated as C¹ maps that are antilipschitz on open sets.
+
+Instance checks:
+- NVector carries the operator norm over the ContinuousAlternatingMap norm, so ‖simpleNVector v‖² is the Gram determinant and ‖L_#ξ‖ is the area Jacobian.
+- volume on Eucl n is measureSpaceOfInnerProductSpace, and μHE[n] = volume there.
+- μHE[0] = μH[0].
+
+Mathlib provides the fundamental lemma (IsOpen.ae_eq_zero_of_integral_contDiff_smul_eq_zero), measurable_fderiv, hausdorffMeasure_of_dimH_lt, Hadamard via Orientation.abs_volumeForm_apply_le, normDet_sq_eq_det_gram, AlternatingMap.map_linearDependent and LipschitzOnWith.extend_pi.
+
+SimonGMT provides Rademacher, Lipschitz image bounds and image measurability (Ch02/Lipschitz). It provides the full Euclidean area formula with fibre sums and its a.e.-measurability (Ch02/AreaDomain: weighted_area_formula_lipschitzOn_fiberSum, aemeasurable_weightedAreaFiberSum_lipschitzOn, ae_fderivWithin_eq_of_lipschitz_extension) and null critical images (Ch02/AreaLipschitz: area_image_compl_regularSet_eq_zero). It also provides the upper density theorem (Ch01 simon_theorem_3_6), Lusin (Ch01/Lusin), and the C¹-cover-to-rectifiable direction (Ch03/SubmanifoldCover).
+
+SimonGMT does not provide:
+- Lemma 1.2 ⇒, Theorem 1.6/1.9 existence, or the rectifiable area formula; these are the new children.
+- A packaged C¹ approximation theorem: Whitney machinery exists in Ch02/WhitneyExtension.lean, but that file is not built.
+
+All 11 child statements pass the lexical validator and elaborate in the comparator child scope. The parent assembly from 3 children is kernel-checked with the standard axioms only. These checks do not certify the analytic proofs.

@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "d6ae48c61373e10d8a9b07731b2eef656b0c24b62e120737666ab05d8d4af386",
+  "git_delta": {
+    "base_commit": "16e8aef346d8275e29369d3ddc06716b3bc882d7",
+    "candidate_commit": "e70632735cee8e225c0f4c7de8f8f75839d8e61e",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "smr_ufd_ball_tietze",
+    "diff_sha256": "1b48bcbc039dc01644a13e225c949fb6a4ea5698219259b3d63ba5c0a893a2a8",
+    "source_sha256": "6529d3d0a7b2ef605b116ad4be4a0826394c5462110586f5cccc69c6fe031e27",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.smr_ufd_ball_tietze",
+      "statement": "∀ (P N : ℕ) (C : Set (Eucl P)) (u : Eucl P → EuclideanSpace ℝ (Fin N)), IsClosed C → ContinuousOn u C → (∀ x ∈ C, ‖u x‖ ≤ 1) → ∃ w : Eucl P → EuclideanSpace ℝ (Fin N), Continuous w ∧ (∀ x, ‖w x‖ ≤ 1) ∧ ∀ x ∈ C, w x = u x",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "3680f4e6df9b8533780b2a10a995d1949a90503885cc12e400c3720a90c40701",
+  "git_delta": {
+    "base_commit": "fe5ecf7a6849dd0ef1e06b8dc02871a2084becf9",
+    "candidate_commit": "4d089a08226f20f39328d7c0b6174e07cb8efd63",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "slicing_im_tg_line_deriv_of_comp",
+    "diff_sha256": "31f7b02318aa9fe876d87dea23dea2ef80d9ab35d2c37d4451244f02d0bc8da6",
+    "source_sha256": "a1ec8c343fdaf0320e05a8c163e5805a4d0969070901f30b674e7ab438686499",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.slicing_im_tg_line_deriv_of_comp",
+      "statement": "∀ (n P : ℕ) (f : Eucl P → ℝ) (L : ℝ≥0) (Φ : Eucl n → Eucl P) (w : Eucl n), LipschitzWith L f → DifferentiableAt ℝ Φ w → DifferentiableAt ℝ (f ∘ Φ) w → ∀ u : Eucl n, HasDerivAt (fun s : ℝ => f (Φ w + s • fderiv ℝ Φ w u)) (fderiv ℝ (f ∘ Φ) w u) 0",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

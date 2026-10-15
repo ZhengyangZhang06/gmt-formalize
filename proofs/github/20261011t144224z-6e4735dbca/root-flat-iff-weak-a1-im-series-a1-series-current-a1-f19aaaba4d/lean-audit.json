@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "107cb6eb4daada49c83a3e830e2a6eda342b47df8a2ff95f6f0bfcd86687fef4",
+  "git_delta": {
+    "base_commit": "dfa25271b86222a09ece6b2d342138c94d5e07b6",
+    "candidate_commit": "2065ad1fee8c7dc9474c00d6ca127895bd6127f5",
+    "target": "GMT/Ch06/Submission.lean",
+    "changed_files": [
+      "GMT/Ch06/Submission.lean"
+    ],
+    "diff_sha256": "6ef80eae41d98146a0bc13b69ae5755786757d1890a47d5b358b5a3f05bd179b",
+    "source_sha256": "6c8d0d0f03daefb8cb8640deec4e066f7b3c01ccfc3d2c9d479fa8a5f5af0b13",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.fiw_ims_series_current",
+      "statement": "∀ (P n : ℕ) (U : Set (Eucl P)), IsOpen U → ∀ (T : ℕ → GeometricCurrentOn U n) (c : ℕ → ℤ), (∀ W, CompactlyContainedOpen W U → (∑' r, ((c r).natAbs : ℝ≥0∞) * (T r).massOn W) < ∞) → ∃ S : GeometricCurrentOn U n, (∀ ω, HasSum (fun r => (c r : ℝ) * T r ω) (S ω)) ∧ ∀ W, S.massOn W ≤ ∑' r, ((c r).natAbs : ℝ≥0∞) * (T r).massOn W",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

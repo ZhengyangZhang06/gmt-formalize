@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "d5ff2026f686a348771a3f00b56a015e8b22bac2755fc6e49fa021419945a5d8",
+  "git_delta": {
+    "base_commit": "620c9f883664ec06f263a7caa9986c7036a18951",
+    "candidate_commit": "9cc90cbe2d0473b3a43f64944a1e11804b6702b0",
+    "target": "GMT/Ch06/Submission.lean",
+    "changed_files": [
+      "GMT/Ch06/Submission.lean"
+    ],
+    "diff_sha256": "a63184617963fe6c684880d752d5d886bb540527713db3dc872146f3f72a4f44",
+    "source_sha256": "cda0591bed7228abc5e8df25963b2ceb2f0b1c4b36bff682442d7de203afbd56",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.fiw_tb_top_dim_approx",
+      "statement": "(∀ (P n : ℕ) (U : Set (Eucl P)), IsOpen U → ∀ (T : GeometricCurrentOn U n) (M : Set (Eucl P)) (θ : Eucl P → ℝ) (ξ : Eucl P → NVector (Eucl P) n), IsRectifiableTriple U n M θ ξ → (∀ ω : TestFormOn U n, T ω = tauAction n M θ ξ ω) → ∀ W : Set (Eucl P), IsOpen W → T.massOn W = ∫⁻ x in M ∩ W, ENNReal.ofReal (θ x) ∂(μHE[n] : Measure (Eucl P))) → (∀ (P n : ℕ) (U : Set (Eucl P)), IsOpen U → ∀ (T₁ T₂ S : GeometricCurrentOn U n) (a b : ℤ), IsIntegerMultiplicity T₁ → IsIntegerMultiplicity T₂ → (∀ ω, S ω = (a : ℝ) * T₁ ω + (b : ℝ) * T₂ ω) → IsIntegerMultiplicity S) → ∀ m : ℕ, ∃ c : ℝ≥0, ∀ X : GeometricCurrentOn (univ : Set (Eucl (m + 1))) (m + 1), IsIntegerMultiplicity X → X.mass < ∞ → X.boundary.mass < ∞ → ∀ ρ : ℝ, 0 < ρ → ∃ (β : LatticeFaceIndex (m + 1) (m + 1) → ℝ) (Pc S : GeometricCurrentOn (univ : Set (Eucl (m + 1))) (m + 1)), IsLatticeChain ρ β Pc ∧ (∀ F, ∃ k : ℤ, β F = k) ∧ (∀ F, β F ≠ 0 → latticeFace ρ F ⊆ cthickening (Real.sqrt ((m + 1 : ℕ) : ℝ) * ρ) X.support) ∧ (∀ F, ENNReal.ofReal (|β F| * ρ ^ (m + 1)) ≤ 2 * X.mass) ∧ IsIntegerMultiplicity S ∧ (∀ ω, X ω - Pc ω = S ω) ∧ S.mass ≤ c * ENNReal.ofReal ρ * X.boundary.mass",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

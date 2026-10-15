@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "4f9a926f4d9d5d2bc3237de2fa25cf646e7750787f806dd472f557d60806380f",
+  "git_delta": {
+    "base_commit": "640caac231aed70672764951d675308d103abdf3",
+    "candidate_commit": "81af8e83cfa04cd8557c4cce8143b9f85ad5b913",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "deformation_ipl_cc_signed_change_of_variables",
+    "diff_sha256": "3609d66a4f8c5e24cba47950e30fb5c8a9e8090f363c371ef42077f28f033f93",
+    "source_sha256": "4d9a45daad18ab769568bd848de9a1aaefc91e312bdacd8e8c39034a85646d4f",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.deformation_ipl_cc_signed_change_of_variables",
+      "statement": "∀ (P k : ℕ) (Φ : Eucl k → Eucl P) (Ω : Set (Eucl k)) (A : Set (Eucl P)) (h : Eucl P → ℝ), IsOpen Ω → (∃ K : ℝ≥0, LipschitzOnWith K Φ Ω) → (∃ c : ℝ, 0 < c ∧ ∀ w ∈ Ω, ∀ w' ∈ Ω, c * ‖w - w'‖ ≤ ‖Φ w - Φ w'‖) → A ⊆ Φ '' Ω → NullMeasurableSet A (μHE[k] : Measure (Eucl P)) → IntegrableOn h A (μHE[k] : Measure (Eucl P)) → IntegrableOn (fun w => h (Φ w) * Real.sqrt (Matrix.of fun i j => inner ℝ (fderiv ℝ Φ w (EuclideanSpace.single i 1)) (fderiv ℝ Φ w (EuclideanSpace.single j 1))).det) (Ω ∩ Φ ⁻¹' A) (volume : Measure (Eucl k)) ∧ ∫ x in A, h x ∂(μHE[k] : Measure (Eucl P)) = ∫ w in Ω ∩ Φ ⁻¹' A, h (Φ w) * Real.sqrt (Matrix.of fun i j => inner ℝ (fderiv ℝ Φ w (EuclideanSpace.single i 1)) (fderiv ℝ Φ w (EuclideanSpace.single j 1))).det ∂(volume : Measure (Eucl k))",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
