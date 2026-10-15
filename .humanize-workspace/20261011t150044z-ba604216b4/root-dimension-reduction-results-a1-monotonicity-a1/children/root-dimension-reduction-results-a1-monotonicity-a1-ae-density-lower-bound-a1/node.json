@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.monotonicity-a1.ae_density_lower_bound-a1",
+  "parent_id": "root.dimension_reduction_results-a1.monotonicity-a1",
+  "depth": 3,
+  "title": "Lower bound 1 for every ball-density limit of an integer multiplicity weight at almost every point",
+  "statement": "Let P, n ∈ ℕ, U ⊆ ℝ^P open, and let R = (M, θ, ξ) be an integer multiplicity triple in U (IMRep U n) with weight μ := R.measure = θ·Hⁿ⌞M (Hⁿ = μHE[n]). Then the following holds for μ-a.e. x ∈ ℝ^P. Whenever θ₀ ∈ ℝ and μ(B_ρ(x))/(ω_n·ofReal(ρ^n)) → ofReal(θ₀) in [0, ∞] as ρ ↓ 0, θ₀ ≥ 1. Here ω_n = unitBallVolume n and B_ρ(x) = ball x ρ.",
+  "lean_statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (R : IMRep U n), IsOpen U → ∀ᵐ x ∂R.measure, ∀ θ : ℝ, Tendsto (fun ρ : ℝ => R.measure (ball x ρ) / (unitBallVolume n * ENNReal.ofReal (ρ ^ n))) (𝓝[>] 0) (𝓝 (ENNReal.ofReal θ)) → 1 ≤ θ",
+  "lean_name": "dimred_mono_ae_ball_density_ge_one",
+  "depends_on": [
+    "root.regular_set_dense-a1.density_eq_multiplicity-a1.unweighted_density_one-a1",
+    "root.regular_set_dense-a1.density_eq_multiplicity-a1.closed_to_open_ball_density-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.regular_set_dense-a1.density_eq_multiplicity-a1.unweighted_density_one-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-regular-set-dense-a1-density-eq-multiplicity-a1-unweighted-density-one-a1-a1",
+      "result_commit": "dbef2c15948a21d9574315bea458a9edb4f708e3",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.regular_set_dense-a1.density_eq_multiplicity-a1.closed_to_open_ball_density-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-regular-set-dense-a1-density-eq-multiplicity-a1-closed-to-open-b-2625a8c412-a1",
+      "result_commit": "c3ca64f29e6259bb0947d084036f55b096f91e3f",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-monotonicity-a1-ae-density-lower-bound-a1-a1"
+}
