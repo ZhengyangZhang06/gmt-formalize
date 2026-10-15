@@ -1,0 +1,28 @@
+{
+  "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_off_null_set-a1.cone_splitting-a1",
+  "issue": "https://github.com/ZhengyangZhang06/gmt-formalize/issues/5851",
+  "solution_pr": "see this branch's pull request",
+  "candidate_commit": "430f4eb918b94f9a5321ef0000397cafbd6c2df1",
+  "integrated_commit": "",
+  "proof_base_commit": "a2f3bbf6dad5fd9f22f390eea801ef3a4eb6f373",
+  "comparator_command": "python3 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py --lean-target {lean_target} --verifier-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier --verify-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification --packages /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c --frozen-commit b4d606db1da5da8fa2c0292ad4924d97de8b3c4b {node_id}",
+  "required_success_marker": "Your solution is okay!",
+  "machine_comparator_passed": true,
+  "lean_review_method": "machine-nonleaf",
+  "reviewer_comparator_passed": null,
+  "parent": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_off_null_set-a1",
+  "requires": [
+    "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_off_null_set-a1.stationarity-a1",
+    "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_off_null_set-a1.monotonicity-a1",
+    "root.dimension_reduction_results-a1.im_mass_measure-a1",
+    "root.dimension_reduction_results-a1.cone_splitting-a1.high_degree_case-a1",
+    "root.dimension_reduction_results-a1.cone_splitting-a1.measure_invariance-a1",
+    "root.dimension_reduction_results-a1.cone_splitting-a1.spine_tangency-a1",
+    "root.dimension_reduction_results-a1.cone_splitting-a1.cone_of_radial_tangency-a1",
+    "root.dimension_reduction_results-a1.cone_splitting-a1.translation_invariance-a1",
+    "root.dimension_reduction_results-a1.cone_splitting-a1.product_support_density-a1",
+    "root.dimension_reduction_results-a1.im_mass_measure-a1",
+    "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_off_null_set-a1.cone_splitting-a1.split_off_spine-a1",
+    "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_off_null_set-a1.cone_splitting-a1.subspace_projection-a1"
+  ]
+}
