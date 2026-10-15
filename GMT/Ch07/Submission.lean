@@ -119250,4 +119250,131 @@ theorem Submission.dimred_blowup_limit_moving_centres : ∀ (n k ℓ : ℕ), ℓ
     (fun R => hφ'.eventually (hball R)) hCim hconv hcomp
   exact ⟨φ, C, hφ, hconv, hμ, hCmin, hCbd⟩
 
+/-- **Simon 7.3.3(2), (11)–(13)** (chapter-07.txt lines 367–372 and 511–583, with Remark 3.4 and
+Appendix A.4; the union `⋃ⱼ R_{βⱼ}` of (12)–(13) read as the intersection): flatness at
+arbitrarily small scales off a set `F` with `μH[n − 2 + α](F) = 0`.  Put
+`dens μ x = limsup_{ρ ↓ 0} μ(B_ρ(x)) / (ωₙρⁿ)`.  For a ball with `B̄_{2r}(z) ⊆ U` meeting `spt T`,
+`idtp_fons_cone_closed_class` (fed with `idtp_imrep_measure_density_ae`,
+`idtp_fons_minimizing_monotonicity`, `idtp_fons_density_tangent_cones` and the planar support
+`idtp_fons_invariant_planar_support` of `idtp_fons_invariant_cone_splitting` and
+`idtp_fons_one_dim_minimizing_cone`) gives a class `𝓜 ∋ μ₀`, `D μ₀ = B₂(0)`, whose member `μ₀`
+has support `η_{z,r}(spt T)` in `B₂(0)`.  For a tilt `β`, `idtp_fons_flat_class_reduction` gives
+a `μH[n − 2 + α]`-null `Z'` (empty if `n = 1`) off which each `w ∈ spt μ₀ ∩ B₁(0)` is `β`-flat at
+a scale `ρ'` with `B_{ρ'}(w) ⊆ B₂(0)`, so `ρ' ≤ 2`.  Rescaling by `w ↦ z + rw`, each
+`x ∈ spt T ∩ B_r(z)` off `z + rZ'` is `β`-flat at the scale `rρ' ≤ 2r`.  `F` is the union of the
+sets `z + rZ'` over a dense sequence of centres `z`, rational radii `r` and tilts `1/(j + 1)`: it is
+null by countable subadditivity, and every `x ∈ spt T ∖ F` lies in balls `B_r(z)` with
+`B̄_{2r}(z) ⊆ U` and `r < R/2`. -/
+theorem Submission.idtp_flat_off_null_set : ∀ (n k ℓ : ℕ), ℓ ≤ k → ∀ (U N : Set (Euclid (n + k))) (T : GeometricCurrentOn U n), 1 ≤ n → IsOpen U → IsEmbeddedSubmanifold 2 (n + ℓ) N → (closure N \ N) ∩ U = ∅ → IsMinimizingIn T (U ∩ N) → T.support ⊆ U ∩ N → BoundaryVanishes T → ∃ F : Set (Euclid (n + k)), (∀ α : ℝ, 0 < α → μH[(n : ℝ) - 2 + α] F = 0) ∧ ∀ x ∈ T.support \ F, ∀ β : ℝ, 0 < β → ∀ R : ℝ, 0 < R → ∃ ρ : ℝ, 0 < ρ ∧ ρ < R ∧ ∃ Q : Submodule ℝ (Euclid (n + k)), Module.finrank ℝ Q = n ∧ ∀ y ∈ T.support, dist y x < ρ → ‖(y - x) - Q.starProjection (y - x)‖ < β * ρ := by
+  intro n k ℓ hℓk U N T hn hU hN hNU hTmin hTspt hTbd
+  -- `ℝ^{n+k}` is nontrivial, as `n ≥ 1`
+  have : Nontrivial (Euclid (n + k)) :=
+    Module.nontrivial_of_finrank_pos (R := ℝ) (by rw [finrank_euclideanSpace_fin]; omega)
+  -- the density functions `dens μ x = limsup_{ρ ↓ 0} μ(B_ρ(x)) / (ωₙρⁿ)`
+  obtain ⟨dens, hdens⟩ : ∃ dens : Measure (Euclid (n + k)) → Euclid (n + k) → ℝ,
+      ∀ (μ : Measure (Euclid (n + k))) (x : Euclid (n + k)), dens μ x = (limsup (fun ρ : ℝ =>
+        μ (ball x ρ) / (unitBallVolume n * ENNReal.ofReal (ρ ^ n))) (𝓝[>] 0)).toReal :=
+    ⟨_, fun _ _ => rfl⟩
+  -- the class `𝓜` of a ball, from (DEM), (MON), (DTC) and (PS) = (CS) + (ODC)
+  have hCC := Submission.idtp_fons_cone_closed_class Submission.idtp_imrep_measure_density_ae
+    Submission.idtp_fons_minimizing_monotonicity Submission.idtp_fons_density_tangent_cones
+    (Submission.idtp_fons_invariant_planar_support Submission.idtp_fons_invariant_cone_splitting
+      Submission.idtp_fons_one_dim_minimizing_cone) n k ℓ hℓk U N T hn hU hN hNU hTmin hTspt hTbd
+  -- Step 1: for `B̄_{2r}(z) ⊆ U` and a tilt `β`, a null set `Z` off which the points of
+  -- `spt T ∩ B_r(z)` are `β`-flat at some scale `≤ 2r` (`Z = ∅` for other `z`, `r`, `β`)
+  have hball : ∀ (z : Euclid (n + k)) (r β : ℝ), ∃ Z : Set (Euclid (n + k)),
+      (∀ α : ℝ, 0 < α → μH[(n : ℝ) - 2 + α] Z = 0) ∧
+      (0 < r → closedBall z (2 * r) ⊆ U → 0 < β → ∀ x ∈ T.support, dist x z < r → x ∉ Z →
+        ∃ ρ : ℝ, 0 < ρ ∧ ρ ≤ 2 * r ∧ ∃ Q : Submodule ℝ (Euclid (n + k)),
+          Module.finrank ℝ Q = n ∧ ∀ y ∈ T.support, dist y x < ρ →
+            ‖(y - x) - Q.starProjection (y - x)‖ < β * ρ) := by
+    intro z r β
+    by_cases h : 0 < r ∧ closedBall z (2 * r) ⊆ U ∧ 0 < β ∧ (T.support ∩ ball z (2 * r)).Nonempty
+    swap
+    · -- if `B_{2r}(z)` misses `spt T`, so does `B_r(z)`: take `Z = ∅`
+      refine ⟨∅, fun _ _ => measure_empty, fun hr hzU hβ x hx hxz _ => ?_⟩
+      exact absurd ⟨hr, hzU, hβ, x, hx, mem_ball.2 (by linarith)⟩ h
+    obtain ⟨hr, hzU, hβ, hne⟩ := h
+    obtain ⟨𝓜, D, μ₀, Λ, hμ₀, hDμ₀, hsupp, hfin, hrep, hdil, hblow, hD, hexh, hlow, hM8, hM9⟩ :=
+      hCC z r dens hr hzU hne hdens
+    -- (CR): the null set `Z'` of non-`β`-flat points of `spt μ₀ ∩ B₁(0)`
+    obtain ⟨Z', hZ'1, hZ'null, hZ'flat⟩ := Submission.idtp_fons_flat_class_reduction (n + k) n Λ
+      𝓜 D dens hn hdens hfin hrep hdil hblow hD hexh hlow hM8 hM9 μ₀ hμ₀ β hβ
+    refine ⟨(fun w => z + r • w) '' Z', fun α hα => ?_, fun _ _ _ x hx hxz hxZ => ?_⟩
+    · -- `w ↦ z + rw` is Lipschitz, so `z + rZ'` is null (`Z' = ∅` if `n = 1`)
+      rcases hn.eq_or_lt with hn1 | hn2
+      · rw [hZ'1 hn1.symm, image_empty, measure_empty]
+      have hd : (0 : ℝ) ≤ (n : ℝ) - 2 + α := by
+        have : (2 : ℝ) ≤ n := by exact_mod_cast (show 2 ≤ n by omega)
+        linarith
+      have hlip : LipschitzWith ‖r‖₊ (fun w : Euclid (n + k) => z + r • w) :=
+        LipschitzWith.of_dist_le_mul fun a b => by
+          simp only [dist_add_left, dist_smul₀, coe_nnnorm, le_refl]
+      exact nonpos_iff_eq_zero.1 ((hlip.hausdorffMeasure_image_le hd Z').trans_eq
+        (by rw [hZ'null α hα, mul_zero]))
+    -- `y = z + r(r⁻¹(y − z))`, and `r⁻¹(· − z)` scales distances by `r⁻¹`
+    have hzw : ∀ y : Euclid (n + k), z + r • (r⁻¹ • (y - z)) = y := fun y => by
+      rw [smul_smul, mul_inv_cancel₀ hr.ne', one_smul, add_sub_cancel]
+    have hnorm : ∀ y y' : Euclid (n + k), ‖r⁻¹ • (y - z) - r⁻¹ • (y' - z)‖ = dist y y' / r := by
+      intro y y'
+      rw [← smul_sub, sub_sub_sub_cancel_right, norm_smul, norm_inv, Real.norm_eq_abs,
+        abs_of_pos hr, ← dist_eq_norm, inv_mul_eq_div]
+    -- `spt μ₀ ∩ B₂(0)` is the rescaled support of `T`
+    have hspt : ∀ y : Euclid (n + k), r⁻¹ • (y - z) ∈ ball (0 : Euclid (n + k)) 2 →
+        y ∈ T.support → ∀ ε : ℝ, 0 < ε → μ₀ (ball (r⁻¹ • (y - z)) ε) ≠ 0 := fun y hy hyT =>
+      (hsupp _ hy).2 (by rwa [hzw])
+    -- `w = r⁻¹(x − z) ∈ spt μ₀ ∩ B₁(0)` and `w ∉ Z'`
+    have hw1 : r⁻¹ • (x - z) ∈ ball (0 : Euclid (n + k)) 1 := by
+      have h := hnorm x z
+      rw [sub_self, smul_zero, sub_zero] at h
+      rw [mem_ball_zero_iff, h, div_lt_one hr]
+      exact hxz
+    obtain ⟨ρ', hρ', hρ'D, Q, hQ, s, hs, hflat⟩ := hZ'flat _ hw1
+      (hspt x (ball_subset_ball (by norm_num) hw1) hx) fun h => hxZ ⟨_, h, hzw x⟩
+    rw [hDμ₀] at hρ'D
+    -- `ρ' ≤ 2`, as `B_{ρ'}(w) ⊆ B₂(0)`
+    have hρ'2 : ρ' ≤ 2 := by
+      have h1 := Metric.diam_mono hρ'D isBounded_ball
+      rw [Metric.diam_ball_eq _ hρ'.le] at h1
+      have h2 := Metric.diam_ball (x := (0 : Euclid (n + k))) (show (0 : ℝ) ≤ 2 by norm_num)
+      linarith
+    refine ⟨r * ρ', mul_pos hr hρ', by nlinarith, Q, hQ, fun y hy hyx => ?_⟩
+    -- `v = r⁻¹(y − z) ∈ spt μ₀ ∩ B_{ρ'}(w)`, and `y − x = r(v − w)`
+    have hv : r⁻¹ • (y - z) ∈ ball (r⁻¹ • (x - z)) ρ' := by
+      rw [mem_ball, dist_eq_norm, hnorm, div_lt_iff₀ hr]
+      linarith
+    have h1 := hflat _ (hspt y (hρ'D hv) hy) hv
+    have hyx' : y - x = r • (r⁻¹ • (y - z) - r⁻¹ • (x - z)) := by
+      rw [← smul_sub, sub_sub_sub_cancel_right, smul_smul, mul_inv_cancel₀ hr.ne', one_smul]
+    rw [hyx', map_smul, ← smul_sub, norm_smul, Real.norm_eq_abs, abs_of_pos hr]
+    calc r * ‖(r⁻¹ • (y - z) - r⁻¹ • (x - z)) -
+          Q.starProjection (r⁻¹ • (y - z) - r⁻¹ • (x - z))‖ ≤ r * s :=
+          mul_le_mul_of_nonneg_left h1 hr.le
+      _ < r * (β * ρ') := mul_lt_mul_of_pos_left hs hr
+      _ = β * (r * ρ') := by ring
+  choose Zf hZnull hZflat using hball
+  -- Step 2: `F` is the union of the sets `Zf z r (1/(j + 1))` over a dense sequence of centres
+  -- `z`, rational radii `r` and `j ∈ ℕ`; it is null by countable subadditivity
+  obtain ⟨zs, hzs⟩ : ∃ zs : ℕ → Euclid (n + k), DenseRange zs :=
+    ⟨_, TopologicalSpace.denseRange_denseSeq _⟩
+  refine ⟨⋃ (i : ℕ) (q : ℚ) (j : ℕ), Zf (zs i) q (1 / ((j : ℝ) + 1)), fun α hα =>
+    measure_iUnion_null fun i => measure_iUnion_null fun q => measure_iUnion_null fun j =>
+      hZnull _ _ _ α hα, ?_⟩
+  -- Step 3: `x ∈ spt T ∖ F` lies in a ball `B_q(zᵢ)` with `B̄_{2q}(zᵢ) ⊆ U` and `q < R/2`
+  rintro x ⟨hx, hxF⟩ β hβ R hR
+  obtain ⟨j, hj⟩ := exists_nat_one_div_lt hβ
+  obtain ⟨δ, hδ, hδU⟩ := Metric.isOpen_iff.1 hU x (hTspt hx).1
+  obtain ⟨q, hq0, hq⟩ := exists_rat_btwn (lt_min (half_pos hR) (div_pos hδ three_pos))
+  obtain ⟨hqR, hqδ⟩ := lt_min_iff.1 hq
+  obtain ⟨i, hi⟩ := hzs.exists_dist_lt x hq0
+  have hzU : closedBall (zs i) (2 * q) ⊆ U := fun y hy => hδU <| by
+    rw [mem_ball]
+    calc dist y x ≤ dist y (zs i) + dist (zs i) x := dist_triangle _ _ _
+      _ < 2 * q + q := add_lt_add_of_le_of_lt (mem_closedBall.1 hy) (by rwa [dist_comm])
+      _ < δ := by linarith
+  obtain ⟨ρ, hρ, hρq, Q, hQ, hflat⟩ := hZflat (zs i) q (1 / ((j : ℝ) + 1)) hq0 hzU
+    (by positivity) x hx hi fun h => hxF (mem_iUnion.2 ⟨i, mem_iUnion.2 ⟨q, mem_iUnion.2 ⟨j, h⟩⟩⟩)
+  refine ⟨ρ, hρ, by linarith, Q, hQ, fun y hy hyx => (hflat y hy hyx).trans_le ?_⟩
+  exact mul_le_mul_of_nonneg_right hj.le hρ.le
+
 end GMT.Ch07
