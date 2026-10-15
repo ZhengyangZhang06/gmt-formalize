@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "604379798c4eb10d234be0df768d5a7e66284aa5c7d3b9193df21fe09ce54521",
+  "git_delta": {
+    "base_commit": "bbdbf2f649b818078ea16c24da7323e4fe9bc2cf",
+    "candidate_commit": "dbb64b92fdd996cccbd164d4f72ab1b4d471b93b",
+    "target": "GMT/Ch07/Submission.lean",
+    "changed_files": [
+      "GMT/Ch07/Submission.lean"
+    ],
+    "diff_sha256": "1db9effd58a06104e601dfdc8b0c430d7f266438adfdb068b0d5d87899aade55",
+    "source_sha256": "7a12857763f3045e70a663f2e8ebde00ef5e32e270a2940a9d8f661c8e48e4ab",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.idtp_tdc_dlc_light_disc",
+      "statement": "∀ (P : ℕ) (C : GeometricCurrentOn (univ : Set (Euclid P)) 2) (z : Euclid P) (k : ℕ) (δ L : ℝ), IsMinimizingIn C univ → BoundaryVanishes C → IsConeCurrent C → z ∈ C.support → ‖z‖ = 1 → 1 ≤ k → 0 < δ → 0 < L → (∀ y ∈ C.support, y ∈ ball z δ → HasMassDensity C y k) → (∀ a ∈ C.support, ‖a‖ = 1 → a ∈ ball z L → HasMassDensity C a k → ∃ (δ' : ℝ) (k' : ℕ), 0 < δ' ∧ ∀ y ∈ C.support, y ∈ ball a δ' → HasMassDensity C y k') → ∃ Q : Submodule ℝ (Euclid P), Module.finrank ℝ Q = 2 ∧ z ∈ Q ∧ ∀ x ∈ (Q : Set (Euclid P)) ∩ ball z (min (1 / 2) (L / 4)), ∃ ε : ℝ, 0 < ε ∧ C.support ∩ ball x ε = (Q : Set (Euclid P)) ∩ ball x ε ∧ (∀ y ∈ C.support, y ∈ ball x ε → HasMassDensity C y k) ∧ ∀ W : Set (Euclid P), IsOpen W → W ⊆ ball x ε → μHE[2] (W ∩ (Q : Set (Euclid P))) ≤ C.massOn W",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
