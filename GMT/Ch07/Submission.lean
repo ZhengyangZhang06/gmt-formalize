@@ -70192,4 +70192,14 @@ theorem Submission.dtc_blowUp_compactness : ∀ (n k ℓ : ℕ), ℓ ≤ k → 0
     C (fun j => hUo (φ j)) (fun R => hφ'.eventually (hUex R)) hCim hconv hcomp
   exact ⟨φ, C, hφ, hconv, hmeas, hCmin, hCbd⟩
 
+/-- **Compactness of blow-ups** (Lemma BC in the proof of Simon 7.3.1(2), used again for the
+tangent cones in the proof of 7.3.3; chapter-07.txt lines 302–309, lines 326–345 of the proof
+and footnote 2, lines 361–364).  If `T` is minimizing in `U ∩ N`, `spt T ⊆ U ∩ N`,
+`x ∈ spt T \ spt ∂T` and `Θⁿ(μ_T, x) = θ`, then for `λⱼ > 0`, `λⱼ → 0`, a subsequence of the
+blow-ups `η_{x,λⱼ#}T` converges weakly to some `C ∈ 𝒟ₙ(ℝ^{n+k})` with `∂C = 0` that is
+minimizing in `ℝ^{n+k}`, with convergence of the mass measures.  The statement is that of the
+accepted `dtc_blowUp_compactness`, byte for byte, so it is that theorem. -/
+theorem Submission.idtp_fons_blowUp_compactness : ∀ (n k ℓ : ℕ), ℓ ≤ k → 0 < n → ∀ (U N : Set (Euclid (n + k))) (T : GeometricCurrentOn U n) (x : Euclid (n + k)) (θ : ℝ), IsOpen U → IsEmbeddedSubmanifold 2 (n + ℓ) N → (closure N \ N) ∩ U = ∅ → IsMinimizingIn T (U ∩ N) → T.support ⊆ U ∩ N → x ∈ T.support \ boundarySupport T → HasMassDensity T x θ → ∀ (lams : ℕ → ℝ) (hlams : ∀ j, 0 < lams j), Tendsto lams atTop (𝓝 0) → ∃ (φ : ℕ → ℕ) (C : GeometricCurrentOn (univ : Set (Euclid (n + k))) n), StrictMono φ ∧ ConvergesWeakly (fun j => blowUp T x (lams (φ j)) (hlams (φ j)).ne') C ∧ MassMeasuresConverge (fun j => blowUp T x (lams (φ j)) (hlams (φ j)).ne') C ∧ IsMinimizingIn C univ ∧ BoundaryVanishes C :=
+  Submission.dtc_blowUp_compactness
+
 end GMT.Ch07
