@@ -54282,9 +54282,6 @@ theorem Submission.dtc_isIntegerMultiplicity_sub : ∀ (P n : ℕ) (U : Set (Euc
   push_cast
   ring
 
-/-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
-theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
-
 /-- Step 13 of the proof that an integer multiplicity cycle carried by a `C¹` graph is regular
 (Simon 7.4.3, via Allard's theorem): if `∂T = 0` and `T` integrates forms supported in the cylinder
 `C` over the graph `Φ(v) = z + ι v + ι' (u v)`, `v ∈ D = B_s(0)`, with density `G`, then `G` has
