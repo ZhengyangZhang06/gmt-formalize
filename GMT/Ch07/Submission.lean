@@ -716,6 +716,161 @@ theorem Submission.idtp_cse_bml_rescaled_box_inclusions : ∀ (P : ℕ) (Q : Sub
       have hu : s' * inner ℝ w e < s' * (1 + η) := by linarith
       have hl : s' * -(1 + η) < s' * inner ℝ w e := by linarith
       exact abs_le.2 ⟨(lt_of_mul_lt_mul_left hl hs.le).le, (lt_of_mul_lt_mul_left hu hs.le).le⟩
+/-- **`Hⁿ⌞Q = ι_#(Lⁿ)` for the plane of an orthonormal frame** (step 3 of the planar constancy
+argument, Simon Ch. 6, 2.34, in the proof of Simon 7.3.3).  For `τ` orthonormal in `ℝᴾ`,
+`ι(s) = Σᵢ sᵢτᵢ` is linear with `|ι(s)|² = Σᵢ sᵢ² = |s|²`, so it is an isometry `ℝⁿ → ℝᴾ` with
+range `Q = span{τ₁, …, τₙ}`; `Hⁿ` is preserved by isometries (`ι_#(Hⁿ) = Hⁿ⌞range ι`) and
+`Hⁿ = Lⁿ` on `ℝⁿ`. -/
+theorem Submission.idtp_pc_plane_hausdorff_eq_map : ∀ (P n : ℕ) (τ : Fin n → Euclid P), Orthonormal ℝ τ → (μHE[n] : Measure (Euclid P)).restrict (Submodule.span ℝ (Set.range τ) : Set (Euclid P)) = Measure.map (fun s : Euclid n => ∑ i, s i • τ i) volume := by
+  intro P n τ hτ
+  -- `ι(s) = Σᵢ sᵢτᵢ` is linear
+  let L : Euclid n →ₗ[ℝ] Euclid P :=
+    { toFun := fun s => ∑ i, s i • τ i
+      map_add' := fun s t => by simp [add_smul, Finset.sum_add_distrib]
+      map_smul' := fun c s => by simp [Finset.smul_sum, smul_smul] }
+  have hLapp : ∀ s, L s = ∑ i, s i • τ i := fun s => rfl
+  -- `|ι(s)|² = ⟨ι(s), ι(s)⟩ = Σᵢ sᵢ² = |s|²`, so `ι` is an isometry
+  have hnorm : ∀ s, ‖L s‖ = ‖s‖ := by
+    intro s
+    have h1 : ‖L s‖ ^ 2 = ‖s‖ ^ 2 := by
+      rw [hLapp, ← real_inner_self_eq_norm_sq, hτ.inner_sum, EuclideanSpace.norm_eq,
+        Real.sq_sqrt (Finset.sum_nonneg fun i _ => sq_nonneg _)]
+      simp [sq]
+    exact (pow_left_inj₀ (norm_nonneg _) (norm_nonneg _) two_ne_zero).mp h1
+  have hiso : Isometry L := AddMonoidHomClass.isometry_of_norm L hnorm
+  -- `range ι = Q`: `ι(s) ∈ Q`, and each `y ∈ Q` is `Σᵢ cᵢτᵢ = ι(c)`
+  have hrange : Set.range L = (Submodule.span ℝ (Set.range τ) : Set (Euclid P)) := by
+    ext y
+    constructor
+    · rintro ⟨s, rfl⟩
+      rw [hLapp]
+      exact Submodule.sum_mem _ fun i _ => Submodule.smul_mem _ _ (Submodule.subset_span ⟨i, rfl⟩)
+    · intro hy
+      obtain ⟨c, rfl⟩ := (Submodule.mem_span_range_iff_exists_fun ℝ).mp (SetLike.mem_coe.mp hy)
+      exact ⟨(WithLp.equiv 2 (Fin n → ℝ)).symm c, by rw [hLapp]; rfl⟩
+  -- `ι_#(Hⁿ) = Hⁿ⌞range ι = Hⁿ⌞Q`, and `Hⁿ = Lⁿ` on `ℝⁿ`
+  have h := hiso.map_euclideanHausdorffMeasure (d := n)
+  rw [EuclideanSpace.euclideanHausdorffMeasure_eq_volume, hrange] at h
+  exact h.symm
+/-- **Lebesgue measure of the squares `(−r, r)²` and `[−r, r]²` in `ℝ²`** (for the box masses at
+the edge of a planar sector, in the proof of Simon 7.3.3).  `WithLp.ofLp : ℝ² → (Fin 2 → ℝ)`
+preserves volume, the open square is the preimage of the box `∏ᵢ (−r, r)` and the closed square
+that of `∏ᵢ [−r, r]`, and both boxes have volume `(2r)·(2r) = 4r²` for `r ≥ 0`. -/
+theorem Submission.idtp_cse_bml_sqm_coord_square_volume : ∀ r : ℝ, 0 ≤ r → volume {v : Euclid 2 | |v 0| < r ∧ |v 1| < r} = ENNReal.ofReal (4 * r ^ 2) ∧ volume {v : Euclid 2 | |v 0| ≤ r ∧ |v 1| ≤ r} = ENNReal.ofReal (4 * r ^ 2) := by
+  intro r hr
+  -- `WithLp.ofLp : ℝ² → (Fin 2 → ℝ)` is measure preserving
+  have hmp := PiLp.volume_preserving_ofLp (Fin 2)
+  -- both boxes have volume `ofReal (2r) · ofReal (2r) = ofReal (4r²)`, using `r ≥ 0`
+  have h4 : (∏ _i : Fin 2, ENNReal.ofReal (r - -r)) = ENNReal.ofReal (4 * r ^ 2) := by
+    rw [Fin.prod_univ_two, ← ENNReal.ofReal_mul (by linarith)]
+    congr 1
+    ring
+  constructor
+  · -- the open square is the preimage of `∏ᵢ (−r, r)` (`|t| < r ↔ −r < t < r`)
+    have hset : {v : Euclid 2 | |v 0| < r ∧ |v 1| < r} =
+        WithLp.ofLp ⁻¹' (Set.pi univ fun _ : Fin 2 => Ioo (-r) r) := by
+      ext v
+      simp [abs_lt, Fin.forall_fin_two]
+    rw [hset, hmp.measure_preimage
+      (MeasurableSet.univ_pi fun _ => measurableSet_Ioo).nullMeasurableSet,
+      Real.volume_pi_Ioo, h4]
+  · -- the closed square is the preimage of `∏ᵢ [−r, r]` (`|t| ≤ r ↔ −r ≤ t ≤ r`)
+    have hset : {v : Euclid 2 | |v 0| ≤ r ∧ |v 1| ≤ r} =
+        WithLp.ofLp ⁻¹' (Set.Icc (fun _ : Fin 2 => -r) (fun _ => r)) := by
+      ext v
+      simp only [Set.mem_ofPred_eq, Set.mem_preimage, Set.mem_Icc, Pi.le_def, Fin.forall_fin_two,
+        abs_le]
+      tauto
+    rw [hset, hmp.measure_preimage measurableSet_Icc.nullMeasurableSet, Real.volume_Icc_pi, h4]
+
+/-- **`H²` of the squares in a `2`-plane, and local finiteness of `H²⌞Q`** (for the box masses at
+the edge of a planar sector, in the proof of Simon 7.3.3).  `H²⌞Q` is regular
+(`regular_euclideanHausdorffMeasure_restrict_submodule`), hence finite on compacts.  The orthonormal
+pair `(a, e)` spans `Q` (`dim Q = 2`), so `H²⌞Q = ι_#(L²)` for `ι(s) = s₀a + s₁e`; since
+`⟨ι s, a⟩ = s₀`, `⟨ι s, e⟩ = s₁` and `|ι s|² = s₀² + s₁² ≤ 2r² ≤ 8 < 9`, the preimages of the two
+sets are the squares `(−r, r)²` and `[−r, r]²`, both of area `4r²`. -/
+theorem Submission.idtp_cse_bml_plane_square_measure : ∀ (P : ℕ) (Q : Submodule ℝ (Euclid P)) (a e : Euclid P), Module.finrank ℝ Q = 2 → a ∈ Q → e ∈ Q → ‖a‖ = 1 → ‖e‖ = 1 → inner ℝ a e = 0 → IsFiniteMeasureOnCompacts (μHE[2].restrict (Q : Set (Euclid P))) ∧ ∀ r : ℝ, 0 ≤ r → r ≤ 2 → μHE[2].restrict (Q : Set (Euclid P)) {w : Euclid P | ‖w‖ < 3 ∧ |inner ℝ w a| < r ∧ |inner ℝ w e| < r} = ENNReal.ofReal (4 * r ^ 2) ∧ μHE[2].restrict (Q : Set (Euclid P)) {w : Euclid P | ‖w‖ ≤ 3 ∧ |inner ℝ w a| ≤ r ∧ |inner ℝ w e| ≤ r} = ENNReal.ofReal (4 * r ^ 2) := by
+  intro P Q a e hQ haQ heQ ha he hae
+  refine ⟨(Poincare.SimonGMT.Chapter03.regular_euclideanHausdorffMeasure_restrict_submodule
+    hQ).toIsFiniteMeasureOnCompacts, ?_⟩
+  intro r hr0 hr2
+  -- `τ = (a, e)` is an orthonormal frame
+  let τ : Fin 2 → Euclid P := ![a, e]
+  have hτ : Orthonormal ℝ τ := by
+    rw [orthonormal_iff_ite]
+    intro i j
+    fin_cases i <;> fin_cases j <;>
+      simp [τ, ha, he, hae, real_inner_comm a e]
+  -- its span is `Q`
+  have hspan : Submodule.span ℝ (Set.range τ) = Q := by
+    apply Submodule.eq_of_le_of_finrank_eq
+    · rw [Submodule.span_le]
+      rintro _ ⟨i, rfl⟩
+      fin_cases i
+      · exact haQ
+      · exact heQ
+    · rw [finrank_span_eq_card hτ.linearIndependent, hQ]
+      simp
+  have hmap := Submission.idtp_pc_plane_hausdorff_eq_map P 2 τ hτ
+  rw [hspan] at hmap
+  -- `ι(s) = s₀a + s₁e`, with `⟨ι s, a⟩ = s₀`, `⟨ι s, e⟩ = s₁` and `|ι s|² = s₀² + s₁²`
+  set ι : Euclid 2 → Euclid P := fun s => ∑ i, s i • τ i
+  have hιc : Continuous ι := by fun_prop
+  have hf : ∀ s : Euclid 2, ι s = s 0 • a + s 1 • e := by
+    intro s
+    simp [ι, τ, Fin.sum_univ_two]
+  have hia : ∀ s : Euclid 2, inner ℝ (ι s) a = s 0 := by
+    intro s
+    rw [hf, inner_add_left, real_inner_smul_left, real_inner_smul_left, real_inner_self_eq_norm_sq,
+      ha, real_inner_comm a e, hae]
+    ring
+  have hie : ∀ s : Euclid 2, inner ℝ (ι s) e = s 1 := by
+    intro s
+    rw [hf, inner_add_left, real_inner_smul_left, real_inner_smul_left, real_inner_self_eq_norm_sq,
+      he, hae]
+    ring
+  have hn : ∀ s : Euclid 2, ‖ι s‖ ^ 2 = s 0 ^ 2 + s 1 ^ 2 := by
+    intro s
+    rw [← real_inner_self_eq_norm_sq]
+    calc inner ℝ (ι s) (ι s) = inner ℝ (ι s) (s 0 • a + s 1 • e) := by rw [← hf]
+      _ = s 0 * inner ℝ (ι s) a + s 1 * inner ℝ (ι s) e := by
+          rw [inner_add_right, real_inner_smul_right, real_inner_smul_right]
+      _ = s 0 ^ 2 + s 1 ^ 2 := by rw [hia, hie]; ring
+  -- both sets are Borel
+  have hSo : MeasurableSet {w : Euclid P | ‖w‖ < 3 ∧ |inner ℝ w a| < r ∧ |inner ℝ w e| < r} :=
+    IsOpen.measurableSet <| (isOpen_lt continuous_norm continuous_const).inter
+      ((isOpen_lt (f := fun w : Euclid P => |inner ℝ w a|) (by fun_prop) continuous_const).inter
+        (isOpen_lt (f := fun w : Euclid P => |inner ℝ w e|) (by fun_prop) continuous_const))
+  have hSc : MeasurableSet {w : Euclid P | ‖w‖ ≤ 3 ∧ |inner ℝ w a| ≤ r ∧ |inner ℝ w e| ≤ r} :=
+    IsClosed.measurableSet <| (isClosed_le continuous_norm continuous_const).inter
+      ((isClosed_le (f := fun w : Euclid P => |inner ℝ w a|) (by fun_prop) continuous_const).inter
+        (isClosed_le (f := fun w : Euclid P => |inner ℝ w e|) (by fun_prop) continuous_const))
+  have hsq := Submission.idtp_cse_bml_sqm_coord_square_volume r hr0
+  constructor
+  · -- `ι⁻¹(S) = (−r, r)²`: the ball constraint is redundant, `|ι s|² < 2r² ≤ 8 < 9`
+    rw [hmap, Measure.map_apply hιc.measurable hSo]
+    convert hsq.1 using 2
+    ext s
+    simp only [Set.mem_preimage, Set.mem_ofPred_eq, hia, hie]
+    constructor
+    · rintro ⟨-, h0, h1⟩
+      exact ⟨h0, h1⟩
+    · rintro ⟨h0, h1⟩
+      refine ⟨?_, h0, h1⟩
+      have h2 := hn s
+      nlinarith [sq_abs (s 0), sq_abs (s 1), abs_nonneg (s 0), abs_nonneg (s 1), norm_nonneg (ι s)]
+  · -- `ι⁻¹(K) = [−r, r]²`: `|ι s|² ≤ 2r² ≤ 8 < 9`
+    rw [hmap, Measure.map_apply hιc.measurable hSc]
+    convert hsq.2 using 2
+    ext s
+    simp only [Set.mem_preimage, Set.mem_ofPred_eq, hia, hie]
+    constructor
+    · rintro ⟨-, h0, h1⟩
+      exact ⟨h0, h1⟩
+    · rintro ⟨h0, h1⟩
+      refine ⟨?_, h0, h1⟩
+      have h2 := hn s
+      nlinarith [sq_abs (s 0), sq_abs (s 1), abs_nonneg (s 0), abs_nonneg (s 1), norm_nonneg (ι s)]
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
