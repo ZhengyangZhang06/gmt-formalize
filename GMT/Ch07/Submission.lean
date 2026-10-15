@@ -97980,4 +97980,48 @@ theorem Submission.idtp_cse_edge_box_mass_limits : ∀ (P : ℕ) (C : GeometricC
   exact key _ _ _ hmass hdecay fun s' hs' hs's =>
     key2 _ s' (hnull s' hs' hs's) fun x hx => hx.1
 
+/-- **The rotational flux density at the edge of the sector is `m t`** (steps 6–10 of the
+cone-sector endpoint density argument for Simon 7.3.3).  Let `C` be a 2-dimensional minimizing
+cone in `ℝᴾ` with `∂C = 0`, `R = (M, θ, ξ)` a representation of `C`, `μ = θ H²⌞M`,
+`Q = span{a, e}`, `m = Θ²(μ_C, a)` and `0 < s ≤ 1/4` with the localization property `Loc(s)`.
+With `Ax = ⟨x, a⟩e − ⟨x, e⟩a`, `G = |p_{T_x}(Ax)|² / |πx|²` and `F̃(x) = (|x|, f(x))`, the fibre
+sum `H(p) = Σ_{x ∈ M ∩ Z_s ∩ F̃⁻¹{p}} θ(x) |p_{T_x}(Ax)|` equals `m p₁` for a.e. `p` near
+`(1, 0)`.  Stationarity, radial tangency and the gap given by `Loc(s)` yield the conservation law
+`∫_{Z_s} ψ′(f) l(|x|) G dμ = 0`; the fibre area identity turns it, together with the dilation
+invariance of the cone, into the rotation test (α) and the dilation test (β) for `toReal ∘ H`, so
+`H(p) = c p₁` a.e. near `(1, 0)`; the box identity `∫_{Sq(s')} H = ∫_{Z(s, s')} G dμ` and the box
+limit `s'⁻² ∫_{Z(s, s')} G dμ → 4m` force `c = m`. -/
+theorem Submission.idtp_cse_flux_density_eq : ∀ (P : ℕ) (C : GeometricCurrentOn (univ : Set (Euclid P)) 2) (Q : Submodule ℝ (Euclid P)) (a e : Euclid P) (δ : ℝ) (k : ℕ), IsMinimizingIn C univ → BoundaryVanishes C → IsConeCurrent C → Module.finrank ℝ Q = 2 → a ∈ Q → e ∈ Q → ‖a‖ = 1 → ‖e‖ = 1 → inner ℝ a e = 0 → 0 < δ → 1 ≤ k → a ∈ C.support → (∀ t φ : ℝ, 0 < t → 0 < φ → φ < δ → HasMassDensity C (t • (Real.cos φ • a + Real.sin φ • e)) k ∧ ∃ r : ℝ, 0 < r ∧ C.support ∩ ball (t • (Real.cos φ • a + Real.sin φ • e)) r ⊆ (Q : Set (Euclid P))) → ∀ (R : IMRep (univ : Set (Euclid P)) 2) (m : ℕ) (s : ℝ), R.Represents C → HasMassDensity C a m → 0 < s → s ≤ 1 / 4 → (∀ s' : ℝ, 0 < s' → s' ≤ s → ∀ x ∈ C.support, 0 < inner ℝ x a → |‖x‖ - 1| < s' → |Real.arctan (inner ℝ x e / inner ℝ x a)| < s' → ‖x - Q.starProjection x‖ ≤ 2 * s * ‖x‖ → ‖x - Q.starProjection x‖ < s' / 4 * ‖x‖ ∧ dist x a < 3 * s') → ∃ s₂ : ℝ, 0 < s₂ ∧ ∀ᵐ p : ℝ × ℝ, p ∈ Ioo (1 - s₂) (1 + s₂) ×ˢ Ioo (-s₂) s₂ → ∑' x : ↥(R.carrier ∩ {x : Euclid P | 0 < inner ℝ x a ∧ |‖x‖ - 1| < s ∧ |Real.arctan (inner ℝ x e / inner ℝ x a)| < s ∧ ‖x - Q.starProjection x‖ < s * ‖x‖} ∩ (fun x : Euclid P => (‖x‖, Real.arctan (inner ℝ x e / inner ℝ x a))) ⁻¹' {p}), (R.mult x : ℝ≥0∞) * ENNReal.ofReal ‖(approxTangentPlane 2 R.carrier (x : Euclid P)).starProjection (inner ℝ (x : Euclid P) a • e - inner ℝ (x : Euclid P) e • a)‖ = ENNReal.ofReal ((m : ℝ) * p.1) := by
+  intro P C Q a e δ k hmin hbdry hcone hQ haQ heQ ha he hae hδ hk haC hsect R m s hR hm hs hs4 hloc
+  -- step 0: `δV(X) = 0` for `C¹` compactly supported `X`, and `x ∈ T_x` for `μ`-a.e. `x`
+  obtain ⟨hfv, hrad⟩ :=
+    Submission.idtp_cse_cone_stationary_radial P 2 C R hmin hbdry hcone hR
+  -- step 1: the gap `|q(x)| < s|x|/2` or `|q(x)| > 2s|x|`, `μ`-a.e. on the sector
+  have hgap := Submission.idtp_cse_fd_gap_ae P C Q a e R s hR hs hloc
+  -- step 3: `H` is a.e. measurable and `∫ b H = ∫_Z b(F̃) G dμ` for Borel `b ≥ 0`
+  obtain ⟨hHm, -, hHb⟩ :=
+    Submission.idtp_cse_fibre_area_identities P R Q a e s hQ haQ heQ ha he hae hrad
+  -- step 3(a), (b): `H < ∞` a.e., `H_ℝ = toReal ∘ H` is integrable, the signed identity for
+  -- bounded Borel `b`, and the box identity `∫_{Sq(s')} H = ∫_{Z(s, s')} G dμ`
+  obtain ⟨hfin, hint, hsigned, hbox⟩ :=
+    Submission.idtp_cse_fd_fibre_signed_identity P R Q a e s _ hQ haQ heQ ha he hae hHm
+      fun b hb => (hHb b hb).1
+  -- step 2: the conservation law `∫_Z ψ′(f) l(|x|) G dμ = 0`
+  have hrc := Submission.idtp_cse_rotation_conservation P R Q a e s hQ haQ heQ ha he hae hs hs4
+    hfv hrad hgap
+  -- steps 4–6: the rotation test (α) and the dilation test (β) for `H_ℝ`, using `T_{rx} = T_x`
+  obtain ⟨hα, hβ⟩ := Submission.idtp_cse_fd_alpha_beta P C R Q a e s _ hcone hR hs hs4
+    (Submission.idtp_cse_cone_approxTangent_smul P 2 C R hcone hR) hsigned
+    fun ψ l hψ hl hψs hls => (hrc ψ l hψ hl hψs hls).2
+  -- step 7: `H_ℝ(p) = c p₁` for a.e. `p ∈ (1 - s/8, 1 + s/8) × (-s, s)`
+  obtain ⟨c, hc⟩ := Submission.idtp_cse_alpha_invariant_homogeneous s _ hs (by linarith)
+    hint.integrableOn hα hβ
+  -- step 8: `∫_{Z(s, s')} G dμ / s'² → 4m` as `s' → 0⁺`
+  have hlim := (Submission.idtp_cse_edge_box_mass_limits P C Q a e δ k hmin hbdry hcone hQ haQ
+    heQ ha he hae hδ hk haC hsect R m s hR hm hs hs4 hloc).2
+  -- steps 8–9: `c = m`, so `H(p) = m p₁` for a.e. `p` in the box of size `s₂ = s/8`
+  refine ⟨s / 8, by linarith, ?_⟩
+  exact Submission.idtp_cse_fd_identify_constant s c m _ _ hs (by linarith) hfin hc
+    (fun s' _ hs' => hbox s' (by linarith)) hlim
+
 end GMT.Ch07
