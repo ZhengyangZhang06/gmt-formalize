@@ -141496,4 +141496,105 @@ theorem Submission.idtp_tdc_dlc_ld_piece_mass_bound : ∀ (P : ℕ) (C : Geometr
   rw [hmass W hW (hWx.trans hδ'), ← hWQ]
   exact le_mul_of_one_le_left zero_le (Nat.one_le_cast.2 hk)
 
+/-- **Planar disc around a light point** (steps 7–10 of the proof of
+`idtp_tdc_density_locally_constant`, the local constancy of the density of a two-dimensional
+minimizing cone away from `0`; proof of Simon 7.3.3(1), case `n − d = 2`, chapter-07.txt
+lines 497–510, where the structure of 2-dimensional minimizing cones is cited to [Whi82]).  Let
+`C ∈ 𝒟₂(ℝᴾ)` be a minimizing cone with `∂C = 0`, `z ∈ spt C` with `|z| = 1`, `k ≥ 1`, with
+`Θ²(μ_C, y) = k` for every `y ∈ spt C ∩ B_δ(z)`, and suppose that every `a ∈ spt C ∩ B_L(z)` with
+`|a| = 1` and `Θ²(μ_C, a) = k` has a neighbourhood `B_δ'(a)` on which the density of `C` is a
+constant `k'`.  Then there is a 2-plane `Q ∋ z` such that every `x ∈ Q ∩ B_ρ(z)`,
+`ρ = min(1/2, L/4)`, has `ε > 0` with `spt C ∩ B_ε(x) = Q ∩ B_ε(x)`, `Θ²(μ_C, y) = k` on
+`spt C ∩ B_ε(x)` and `H²(W ∩ Q) ≤ M_W(C)` for open `W ⊆ B_ε(x)`.  The plane `Q` at `z` comes from
+`idtp_cone_constant_density_planar`, and `idtp_tdc_dlc_ld_orthonormal_partner` gives a unit
+`e ∈ Q` with `e ⊥ z`.  The arc continuation along `±e` (`idtp_tdc_arc_continuation`) makes every
+`cos φ·z + sin φ·(±e)`, `0 ≤ φ < L`, good; its endpoint hypothesis is the assumption on `a`, since
+the arc point `a` is a unit vector with `|a − z| ≤ φ < L` (`idtp_tdc_dlc_ld_arc_point_bounds`).
+Every unit `w ∈ Q` with `|w − z| < L/2` is such an arc point
+(`idtp_tdc_dlc_ld_unit_vector_angle`).  For `x ∈ Q ∩ B_ρ(z)`, `|x| > 1/2` and `w = x/|x|` has
+`|w − z| ≤ 2|x − z| < L/2` (`idtp_tdc_dlc_normalize_dist_le`); dilating the good ball of `w` by
+`|x|` (`idtp_tdc_dlc_ld_cone_scale_piece`) makes `x` good, and
+`idtp_tdc_dlc_ld_piece_mass_bound` shrinks its radius to add the mass bound. -/
+theorem Submission.idtp_tdc_dlc_light_disc : ∀ (P : ℕ) (C : GeometricCurrentOn (univ : Set (Euclid P)) 2) (z : Euclid P) (k : ℕ) (δ L : ℝ), IsMinimizingIn C univ → BoundaryVanishes C → IsConeCurrent C → z ∈ C.support → ‖z‖ = 1 → 1 ≤ k → 0 < δ → 0 < L → (∀ y ∈ C.support, y ∈ ball z δ → HasMassDensity C y k) → (∀ a ∈ C.support, ‖a‖ = 1 → a ∈ ball z L → HasMassDensity C a k → ∃ (δ' : ℝ) (k' : ℕ), 0 < δ' ∧ ∀ y ∈ C.support, y ∈ ball a δ' → HasMassDensity C y k') → ∃ Q : Submodule ℝ (Euclid P), Module.finrank ℝ Q = 2 ∧ z ∈ Q ∧ ∀ x ∈ (Q : Set (Euclid P)) ∩ ball z (min (1 / 2) (L / 4)), ∃ ε : ℝ, 0 < ε ∧ C.support ∩ ball x ε = (Q : Set (Euclid P)) ∩ ball x ε ∧ (∀ y ∈ C.support, y ∈ ball x ε → HasMassDensity C y k) ∧ ∀ W : Set (Euclid P), IsOpen W → W ⊆ ball x ε → μHE[2] (W ∩ (Q : Set (Euclid P))) ≤ C.massOn W := by
+  intro P C z k δ L hmin hbd hcone hzC hz hk hδ hL hdens hconst
+  have hz0 : z ≠ 0 := by
+    rintro rfl
+    rw [norm_zero] at hz
+    exact zero_ne_one hz
+  -- Step 1: the plane `Q ∋ z` with `spt C ∩ B_δ₁(z) = Q ∩ B_δ₁(z)`
+  obtain ⟨δ₁, Q, hδ₁, hQ, hzQ, hC₁, -⟩ :=
+    Submission.idtp_cone_constant_density_planar P C z k δ hmin hbd hcone hzC hz0 hδ hdens
+  -- Step 2: a unit `e ∈ Q` with `e ⊥ z` and `w = ⟨w, z⟩ z + ⟨w, e⟩ e` for `w ∈ Q`
+  obtain ⟨e, heQ, he, hze, hdecomp⟩ :=
+    Submission.idtp_tdc_dlc_ld_orthonormal_partner P Q z hQ hzQ hz
+  -- Step 3: for `v = ±e`, every arc point `cos φ • z + sin φ • v`, `0 ≤ φ < L`, is good
+  have harc : ∀ v : Euclid P, (v = e ∨ v = -e) → ∀ φ : ℝ, 0 ≤ φ → φ < L → ∃ ε : ℝ, 0 < ε ∧
+      C.support ∩ ball (Real.cos φ • z + Real.sin φ • v) ε =
+        (Q : Set (Euclid P)) ∩ ball (Real.cos φ • z + Real.sin φ • v) ε ∧
+      ∀ y ∈ C.support, y ∈ ball (Real.cos φ • z + Real.sin φ • v) ε → HasMassDensity C y k := by
+    intro v hv
+    have hvQ : v ∈ Q := by
+      rcases hv with h | h <;> rw [h]
+      · exact heQ
+      · exact Q.neg_mem heQ
+    have hv1 : ‖v‖ = 1 := by
+      rcases hv with h | h <;> rw [h]
+      · exact he
+      · rw [norm_neg, he]
+    have hzv : inner ℝ z v = (0 : ℝ) := by
+      rcases hv with h | h <;> rw [h]
+      · exact hze
+      · rw [inner_neg_right, hze, neg_zero]
+    refine Submission.idtp_tdc_arc_continuation P C Q z v k L hmin hbd hcone hQ hzQ hvQ hz hv1 hzv
+      hk ?_ ?_
+    -- (i) `z` is good with radius `min δ δ₁`
+    · have hsub : ball z (min δ δ₁) ⊆ ball z δ₁ := ball_subset_ball (min_le_right δ δ₁)
+      refine ⟨min δ δ₁, lt_min hδ hδ₁, ?_,
+        fun y hy hyz => hdens y hy (ball_subset_ball (min_le_left δ δ₁) hyz)⟩
+      rw [← inter_eq_right.2 hsub, ← inter_assoc, hC₁, inter_assoc]
+    -- (ii) an arc point `a` of density `k` is a unit vector with `|a − z| ≤ φ < L`, so the
+    -- hypothesis on `a` gives a constant density near `a`
+    · intro φ hφ0 hφL ha hak
+      obtain ⟨ha1, haz⟩ :=
+        Submission.idtp_tdc_dlc_ld_arc_point_bounds P z v φ hz hv1 hzv hφ0.le
+      refine hconst _ ha ha1 ?_ hak
+      rw [mem_ball, dist_eq_norm]
+      linarith
+  -- Step 4: every unit `w ∈ Q` with `|w − z| < L/2` is an arc point, hence good
+  have hunit : ∀ w ∈ Q, ‖w‖ = 1 → ‖w - z‖ < L / 2 → ∃ ε : ℝ, 0 < ε ∧
+      C.support ∩ ball w ε = (Q : Set (Euclid P)) ∩ ball w ε ∧
+      ∀ y ∈ C.support, y ∈ ball w ε → HasMassDensity C y k := by
+    intro w hwQ hw hwz
+    obtain ⟨θ, v, hθ0, hθL, hv, hwv⟩ :=
+      Submission.idtp_tdc_dlc_ld_unit_vector_angle P z e w L hz he hze hw (hdecomp w hwQ) hwz
+    rw [hwv]
+    exact harc v hv θ hθ0 hθL
+  refine ⟨Q, hQ, hzQ, ?_⟩
+  rintro x ⟨hxQ, hxz⟩
+  rw [mem_ball, dist_eq_norm] at hxz
+  have hρ₁ : min (1 / 2 : ℝ) (L / 4) ≤ 1 / 2 := min_le_left _ _
+  have hρ₂ : min (1 / 2 : ℝ) (L / 4) ≤ L / 4 := min_le_right _ _
+  -- Step 5: `|x| > 1/2`, and `w = x/|x| ∈ Q` is a unit vector with `|w − z| ≤ 2|x − z| < L/2`
+  have hx : 1 / 2 < ‖x‖ := by
+    have h := norm_sub_norm_le z x
+    rw [norm_sub_rev, hz] at h
+    linarith
+  have hx0 : x ≠ 0 := by
+    rintro rfl
+    rw [norm_zero] at hx
+    linarith
+  have hs : 0 < ‖x‖ := norm_pos_iff.mpr hx0
+  have hw1 : ‖‖x‖⁻¹ • x‖ = 1 := by
+    rw [norm_smul, norm_inv, norm_norm, inv_mul_cancel₀ hs.ne']
+  have hwz : ‖‖x‖⁻¹ • x - z‖ < L / 2 := by
+    have h := Submission.idtp_tdc_dlc_normalize_dist_le P x z hx0 hz
+    linarith
+  -- `w` is good with some radius `ε`; dilating by `|x|` makes `x` good with radius `|x| ε`
+  obtain ⟨ε, hε, hA, hB⟩ := hunit (‖x‖⁻¹ • x) (Q.smul_mem _ hxQ) hw1 hwz
+  obtain ⟨hA', hB'⟩ :=
+    Submission.idtp_tdc_dlc_ld_cone_scale_piece P C Q x k ‖x‖ ε hmin.1 hcone hs hA hB
+  -- Step 6: shrink the radius to add `H²(W ∩ Q) ≤ M_W(C)` for open `W ⊆ B_ε(x)`
+  exact Submission.idtp_tdc_dlc_ld_piece_mass_bound P C Q x k (‖x‖ * ε) hmin hbd hcone hk hxQ hx0
+    (mul_pos hs hε) hA' hB'
+
 end GMT.Ch07
