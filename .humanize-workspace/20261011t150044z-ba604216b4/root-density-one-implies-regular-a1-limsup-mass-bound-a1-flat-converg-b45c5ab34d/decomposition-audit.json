@@ -1,0 +1,64 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "^(import|namespace|open|end)|def IsUnitOrientationOf|structure IMRep|def IsIntegerMultiplicity|def action|def Represents|MultiVector|sorry|axiom",
+        "theorem EuclideanSpace.euclideanHausdorffMeasure_eq_volume|def basisFun|theorem basisFun_apply|theorem coe_toBasis|protected theorem orthonormal|theorem finrank_euclideanSpace_fin|def apply|lemma apply_apply|theorem _root_.IsCompact.measure_lt_top|theorem span_eq|theorem finrank_top",
+        "cube|top.?dimensional|borel_current_im|cbr_cc_current_algebra|cmc_imRep_locality_restrict_sub",
+        "abbrev Covector|def massAdmissibleOn|def massOn|theorem le_massOn|covectorEuclideanNorm_neg|GeometricCurrentOn.ext",
+        "git show 791f7d722ecc7a162afa46e5f9e1dd564f0ce80b -- GMT/Ch07/Submission.lean",
+        "git show 2af75d6921b01a9c889a45103692ca0af95ea394 -- GMT/Ch07/Submission.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch06",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Module/Alternating/Topology.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Typeclasses/Finite.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-limsup-mass-bound-a1-flat-converg-b45c5ab34d/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-limsup-mass-bound-a1-flat-converg-b45c5ab34d/decomposition-v1.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-253f25df92/accepted-candidate.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-im-calculus-a1/accepted-candidate.json",
+        "/tmp/cci-decomp/lean/ChildProof2.lean",
+        "/tmp/cci-decomp/lean/Assembly2.lean",
+        "/tmp/cci-independent-audit-4gozviy7/Reuse_current_algebra.lean",
+        "/tmp/cci-independent-audit-4gozviy7/Reuse_im_calculus.lean",
+        "/tmp/cci-independent-audit-4gozviy7/Challenge_borel_current_im.lean",
+        "/tmp/cci-independent-audit-4gozviy7/Challenge_current_algebra.lean",
+        "/tmp/cci-independent-audit-4gozviy7/Challenge_im_calculus.lean",
+        "/tmp/cci-independent-audit-4gozviy7/Challenge_cube_chain_im.lean"
+      ],
+      "conclusion": "Verified snapshot revisions b4d606db1da5da8fa2c0292ad4924d97de8b3c4b and 25730c7c759d108ef87ab70af2342a196760f79d, contract compatibility, and byte identity of the inspected Mathlib files with the compiler packages. The named cube/top-dimensional/current searches returned no matches in snapshot Ch06/Ch07. The required orientation, tangent, rectifiability, measure and extensionality APIs are present. All three child propositions and the exact selected parent proposition independently elaborate as comparator challenges. Recompiled the supplied conditional child proof and parent assembly, and both accepted reuse artifacts with exact-type checks: their axiom closures contain only propext, Classical.choice and Quot.sound. The split is appropriate: Borel cube currents, im_calculus(c), current_algebra(c), and extensionality establish precisely the selected contract. The retained positivity hypothesis is unnecessary but unchanged. All names are bare identifiers; the new name is unreserved, and both reused names have identical accepted frozen types. The 21-node reused dependency closure is accepted and acyclic. Public cross-check: [Simon, Chapter 6, Definition 3.1 and Remark 3.2(1)](https://web.stanford.edu/class/math285/ts-gmt.pdf#page=77)."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "borel_current_im",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line proposition matches the prose, including arbitrary Borel G and n = 0. Steps 1–5 verify every field of the full-space IMRep: standard unit orientation, full-space tangent, rectifiability, measurability and local integrability. Steps 6–7 use the declared im_calculus dependency to obtain the restricted current and its exact action. The construction and conditional Lean proof check without circular reliance. This is a genuine reusable obligation supplying each cube current."
+    },
+    {
+      "key": "current_algebra",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Verified exact reuse of the comparator-accepted declaration at commit 791f7d722ecc7a162afa46e5f9e1dd564f0ce80b, including its frozen type and standard-axiom closure. The prose matches all three clauses. The supplied argument correctly handles zero, signed evaluations, integer multiples and finite sums. Subtraction closure is explicitly a hypothesis of clause (c), so no dependency is missing; the parent supplies it from im_calculus(c)."
+    },
+    {
+      "key": "im_calculus",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Verified exact reuse of the comparator-accepted declaration at commit 2af75d6921b01a9c889a45103692ca0af95ea394, including its frozen type and standard-axiom closure. All four prose clauses match their quantified Lean contracts. The supplied proof identifies an existing certified artifact, making reuse complete without new proof planning. Its dependency closure is acyclic and does not reach the selected parent. Clauses (b) and (c) supply exactly the restriction and subtraction results required here."
+    }
+  ],
+  "required_changes": []
+}

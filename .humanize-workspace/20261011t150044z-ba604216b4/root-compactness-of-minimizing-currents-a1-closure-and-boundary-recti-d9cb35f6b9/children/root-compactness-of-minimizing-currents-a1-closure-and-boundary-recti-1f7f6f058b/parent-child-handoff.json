@@ -1,0 +1,90 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat local-references/123e8435b4a2469b/manifest.json (mode local-project, project_commit b4d606db1da5da8fa2c0292ad4924d97de8b3c4b, mathlib_commit 25730c7c759d108ef87ab70af2342a196760f79d); diff snapshot project/GMT/Ch07/Contract.lean against workspace GMT/Ch07/Contract.lean (identical) and Submission.lean (identical copy); rg -n 'segment|elim0' project/GMT/Ch07/Contract.lean (no match)",
+        "python3 -I scans of dag.json: frozen lean_statement/status of the selected node, its parent cbr_closure_compact_support and its dependencies dtc_imrep_current (accepted), rsd_cmr_support_subset_of_vanish (accepted), cbr_cc_current_algebra (decomposing); pattern scan over all 1305 nodes for 'segment', 'elim0', 'HasApproximateTangentSpaceAt', 'μHE\\[1\\]', 'IsUnitOrientationOf', 'ContinuousAlternatingMap.apply', 'Measure.map', 'Ioo 0', 'exteriorDerivative', 'blowUpMap' and inspection of hasApproximateTangentSpaceAt_iff_of_null_sdiff, regcomp_approx_tangent_locality, dtc_approxTangent_dilation, dtc_hausdorff_dilation, dpfir_bilipschitz_image_imrep_exists, codim1_rdo_c1_piece_approxTangent, regcomp_cop_zdr_unitOrientation_zero; collision check of cbr_cc_seg_line_hausdorff, cbr_cc_seg_open_segment_tangent, cbr_cc_seg_zero_form_ftc, cbr_cc_seg_segment_imrep (none present)",
+        "grep/rg in snapshot mathlib/Mathlib: notation μHE, Isometry.euclideanHausdorffMeasure_image, Isometry.map_euclideanHausdorffMeasure, InnerProductSpace.euclideanHausdorffMeasure_eq_volume, extDeriv_apply, extDeriv_constOfIsEmpty, ContinuousAlternatingMap.apply/apply_apply, segment_same, segment_eq_image, segment_eq_image', isCompact_segment (no match: use segment_eq_image + isCompact_Icc.image), setIntegral_eq_of_subset_of_ae_sdiff_eq_zero, ContDiff.differentiable, ContDiff.continuous_fderiv, integral_eq_sub_of_hasDerivAt, integral_Ioc_eq_integral_Ioo, integral_of_le, PiLp.norm_apply_le, finrank_span_singleton, Submodule.closed_of_finiteDimensional, MeasurableEmbedding.restrict_map, MeasurableEmbedding.integral_map, ae_restrict_of_forall_mem, orthonormal_iff_ite",
+        "grep -n in lake-packages-25730c7c/simongmt/Poincare/SimonGMT: Chapter03/Rectifiable.lean (CountablyRectifiable, countablyRectifiable_range, CountablyRectifiable.mono, blowUpMap, HasApproximateTangentSpaceAt), Chapter06/Forms.lean (DifferentialForm, IsSmoothForm, IsTestForm, exteriorDerivative, exteriorDerivative_apply), Chapter06/Currents.lean (TestFormOn, GeometricCurrentOn, boundary_apply, zero_apply), Chapter06/Mass.lean (massOn, mass := massOn U), CurrentLocalEquality.lean (support)",
+        "python3 -I verifier/lean_contract.py validate_lean_statement on the 4 child statements (all OK); python3 -I gmt-compare.py contract_scope replay (open Filter Function Set MeasureTheory Metric; open scoped ENNReal Topology; namespace GMT.Ch07; open Poincare.SimonGMT.Chapter06; open Poincare.SimonGMT.Chapter03 (CountablyRectifiable HasApproximateTangentSpaceAt); noncomputable section; end)",
+        "lake env lean /tmp/seg-decomp-q9/{Types,Replay,ChildA,ChildB,ChildC,ChildD,Assembly,All}.lean with #print axioms (all: propext, Classical.choice, Quot.sound)",
+        "sed -n on book/chapter-06.txt 190,232p (6.2.1–2.5) and 728,760p (6.3.1); book/chapter-03.txt 60,106p (3.1.4 approximate tangent space)"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-d9cb35f6b9/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-d9cb35f6b9/parent-supplied-plan.md",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-b218e818f5/parent-supplied-natural-proof.md",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/DifferentialForm/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Module/Alternating/Topology.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Convex/Segment.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/Defs.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/IntervalIntegral/FundThmCalculus.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/IntervalIntegral/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/FiniteDimensional/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Module/FiniteDimension.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Orthonormal.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Lp/PiLp.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-03.txt",
+        "/tmp/seg-decomp-q9/Types.lean",
+        "/tmp/seg-decomp-q9/Replay.lean",
+        "/tmp/seg-decomp-q9/ChildA.lean",
+        "/tmp/seg-decomp-q9/ChildB.lean",
+        "/tmp/seg-decomp-q9/ChildC.lean",
+        "/tmp/seg-decomp-q9/ChildD.lean",
+        "/tmp/seg-decomp-q9/Assembly.lean",
+        "/tmp/seg-decomp-q9/All.lean"
+      ],
+      "conclusion": "The pinned snapshot (project b4d606d, mathlib 25730c7c) has the frozen contract byte-identical to the workspace and supplies every lemma cited in the child proofs. The snapshot has no isCompact_segment; compactness of the segment comes from segment_eq_image and isCompact_Icc.image. SimonGMT supplies CountablyRectifiable, countablyRectifiable_range and its .mono, blowUpMap, HasApproximateTangentSpaceAt and exteriorDerivative_apply. No accepted DAG declaration matches any of the four new obligations, so new names with prefix cbr_cc_seg_ are used; none collides with an existing DAG name. All four statements pass the verifier's lexical check and elaborate in the replayed comparator scope. In /tmp/seg-decomp-q9/All.lean, children A, B and C are proved outright and D from A and B. The frozen selected type is proved from the four children plus the frozen types of dtc_imrep_current, rsd_cmr_support_subset_of_vanish and cbr_cc_current_algebra. Every check reports only the axioms propext, Classical.choice and Quot.sound."
+    }
+  ],
+  "parent_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.closure_compact-a1.segment_current-a1",
+  "child_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.closure_compact-a1.segment_current-a1.segment_imrep-a1",
+  "subproblem": {
+    "key": "segment_imrep",
+    "title": "The oriented open segment with multiplicity one is an IMRep",
+    "statement": "Let P ∈ ℕ, a, τ ∈ ℝ^P with |τ| = 1, and ℓ > 0. There is an integer multiplicity triple R (structure IMRep of the frozen contract, Simon 6.3.1) of degree 1 in U = ℝ^P such that: (i) R.carrier ⊆ [a, a + ℓτ] (segment ℝ a (a + ℓ • τ)); (ii) R.measure(ℝ^P) < ∞; (iii) R.action(ω) = ∫_{(0,ℓ)} ω(a + uτ)(τ) du for every differential 1-form ω on ℝ^P, where ω(y)(τ) is the value of the 1-covector ω(y) on the 1-tuple (τ).",
+    "lean_statement": "∀ (P : ℕ) (a τ : Euclid P) (ℓ : ℝ), ‖τ‖ = 1 → 0 < ℓ → ∃ R : IMRep (univ : Set (Euclid P)) 1, R.carrier ⊆ segment ℝ a (a + ℓ • τ) ∧ R.measure univ < ∞ ∧ ∀ ω : DifferentialForm (Euclid P) 1, R.action ω = ∫ u in Ioo 0 ℓ, ω (a + u • τ) (fun _ => τ)",
+    "lean_name": "cbr_cc_seg_segment_imrep",
+    "depends_on": [
+      "line_hausdorff",
+      "open_segment_tangent"
+    ],
+    "natural_proof": "Source: parent proof steps 2–7 and 9 (the IMRep (I, 1, ζ₀) of the oriented open segment); Simon Ch. 6, 2.2 (chapter-06.txt lines 196–208) and 3.1 (lines 733–747). Definition 3.1 requires T = τ(M, θ, ξ) with M countably n-rectifiable, θ positive, integer-valued and locally Hⁿ-integrable, and ξ orienting the approximate tangent spaces Hⁿ-a.e. Uses the sibling children line_hausdorff and open_segment_tangent.\nNotation: φ(u) := a + uτ, I := φ((0, ℓ)), Q := span{τ}, H¹ := μHE[1].\n1. Measure facts. Apply line_hausdorff to P, a, τ (|τ| = 1) and the Borel set A := (0, ℓ). It gives: I is Borel; H¹(I) = volume((0, ℓ)) = ofReal(ℓ − 0) < ∞ (Real.volume_Ioo); and ∫_I h dH¹ = ∫_{(0,ℓ)} h(a + uτ) du for every h : ℝ^P → ℝ.\n2. Orientation. Let ζ₀ := ContinuousAlternatingMap.apply ℝ ℝ^P ℝ (fun _ : Fin 1 => τ). This is the 1-vector with ζ₀(α) = α(τ) for every 1-covector α (by definition; apply_apply). ζ₀ is a unit orientation of Q (IsUnitOrientationOf, first alternative), witnessed by the family e := (fun _ : Fin 1 => τ):\n   (i) e is orthonormal. By orthonormal_iff_ite it suffices that ⟨e i, e j⟩ is 1 if i = j and 0 otherwise. Fin 1 has only i = j = 0, and ⟨τ, τ⟩ = |τ|² = 1.\n   (ii) range e = {τ} (Set.range_const), so span(range e) = Q.\n   (iii) ζ₀(α) = α(e) for every α.\n3. Rectifiability. Define F : EuclideanSpace ℝ (Fin 1) → ℝ^P by F(w) := a + w₀τ. It is 1-Lipschitz: |F(w) − F(w')| = |(w₀ − w'₀)τ| = |(w − w')₀| ≤ |w − w'| (PiLp.norm_apply_le; LipschitzWith.of_dist_le_mul). For u ∈ (0, ℓ), φ(u) = F(EuclideanSpace.single 0 u), so I ⊆ range F. By countablyRectifiable_range and CountablyRectifiable.mono, I is countably 1-rectifiable.\n4. Definition of R. Set carrier := I, mult := (fun _ => 1), orient := (fun _ => ζ₀). The IMRep fields hold:\n   - measurableSet_carrier: by step 1.\n   - carrier_subset: I ⊆ univ.\n   - rectifiable: by step 3.\n   - measurable_mult: a constant is measurable.\n   - mult_pos: 0 < 1.\n   - locallyIntegrable_mult: for every compact K ⊆ ℝ^P, ∫⁻_{I∩K} 1 dH¹ = H¹(I ∩ K) (lintegral_const, Measure.restrict_apply MeasurableSet.univ, univ_inter), and H¹(I ∩ K) ≤ H¹(I) < ∞ (measure_mono, step 1).\n   - aestronglyMeasurable_orient: a constant is a.e. strongly measurable.\n   - orients: for every x ∈ I, open_segment_tangent (applied to P, a, τ, ℓ, |τ| = 1 and x ∈ I) gives HasApproximateTangentSpaceAt 1 I x Q, and step 2 gives IsUnitOrientationOf ζ₀ Q. Since I is measurable, a property of every point of I holds H¹⌞I-a.e. (ae_restrict_of_forall_mem).\n5. Carrier in the closed segment. Let u ∈ (0, ℓ) and t := u/ℓ. Then t ∈ [0, 1] because 0 < u ≤ ℓ and ℓ > 0 (div_nonneg, div_le_one). Moreover a + t((a + ℓτ) − a) = a + (u/ℓ)(ℓτ) = a + uτ = φ(u) (div_mul_cancel₀). By segment_eq_image' (segment x y = {x + t(y − x) : t ∈ [0, 1]}), φ(u) ∈ segment ℝ a (a + ℓτ). Hence R.carrier ⊆ segment ℝ a (a + ℓτ), which is conclusion (i).\n6. Finite total measure. R.measure = (H¹⌞I).withDensity(x ↦ (1 : ℝ≥0∞)), so R.measure(ℝ^P) = ∫⁻_{ℝ^P} 1 d(H¹⌞I) (withDensity_apply on the measurable set univ, Measure.restrict_univ). By lintegral_const this is H¹(I), which is < ∞ by step 1. This is conclusion (ii).\n7. Action. For every 1-form ω, R.action(ω) = ∫_I (1 : ℝ)·ζ₀(ω(x)) dH¹(x) = ∫_I ω(x)(τ) dH¹(x) (Nat.cast_one, one_mul, step 2). By step 1 with h(x) := ω(x)(τ), this equals ∫_{(0,ℓ)} ω(a + uτ)(τ) du, which is conclusion (iii).\nSteps 4–7 give the required R. ∎",
+    "proof_key_steps": [
+      "line_hausdorff with A = (0, ℓ): I is Borel, H¹(I) = ℓ < ∞, and ∫_I h dH¹ = ∫_{(0,ℓ)} h(a + uτ) du.",
+      "ζ₀ = (α ↦ α(τ)) is a unit orientation of span{τ}: the family (τ) is orthonormal and spans the line.",
+      "I lies in the range of the 1-Lipschitz map F(w) = a + w₀τ on EuclideanSpace ℝ (Fin 1), so it is countably 1-rectifiable.",
+      "R := (I, 1, ζ₀) satisfies every IMRep field; orients follows from open_segment_tangent at every point of I.",
+      "I ⊆ [a, a + ℓτ]; R.measure(ℝ^P) = H¹(I) < ∞; R.action(ω) = ∫_{(0,ℓ)} ω(a + uτ)(τ) du."
+    ]
+  },
+  "audit": {
+    "key": "segment_imrep",
+    "acceptable": true,
+    "natural_proof_acceptable": true,
+    "reason": "The proposition matches all three promised properties. The proof explicitly verifies every IMRep field, including rectifiability, positive integer multiplicity, local integrability, measurable orientation, and approximate tangent orientation. Its only child dependencies are the declared measure and tangent lemmas. Carrier containment, finite total measure, and the action formula for arbitrary forms follow as stated, and provide the required construction for the parent."
+  },
+  "resolved_dependencies": [
+    "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.closure_compact-a1.segment_current-a1.line_hausdorff-a1",
+    "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.closure_compact-a1.segment_current-a1.open_segment_tangent-a1"
+  ],
+  "plan_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-1f7f6f058b/parent-supplied-plan.md",
+  "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-1f7f6f058b/parent-supplied-natural-proof.md",
+  "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-1f7f6f058b/parent-supplied-natural-proof.json"
+}

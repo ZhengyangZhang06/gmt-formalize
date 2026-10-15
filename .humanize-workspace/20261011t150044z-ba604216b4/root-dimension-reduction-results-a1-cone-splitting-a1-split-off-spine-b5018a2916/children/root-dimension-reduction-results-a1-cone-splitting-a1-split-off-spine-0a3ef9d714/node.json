@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.cone_splitting-a1.split_off_spine-a1.minimality_transfer-a1.cube_cycle-a1.cycle_algebra-a1",
+  "parent_id": "root.dimension_reduction_results-a1.cone_splitting-a1.split_off_spine-a1.minimality_transfer-a1.cube_cycle-a1",
+  "depth": 6,
+  "title": "An integer multiplicity cycle from a boundary relation ∂B = T₂ + (−1)^p T₁",
+  "statement": "Let P, n, p ∈ ℕ, U ⊆ ℝ^P open, B ∈ 𝒟_{n+2}(U) (GeometricCurrentOn U (n+1+1)) and integer multiplicity T₁, T₂ ∈ 𝒟_{n+1}(U) such that ∂B(ω) = T₂(ω) + (−1)^p·T₁(ω) for every test (n+1)-form ω in U. Then there are Z, E' ∈ 𝒟_{n+1}(U) such that Z is integer multiplicity, ∂Z = 0 (BoundaryVanishes Z), spt Z ⊆ spt B, M(E') ≤ M(T₂), and Z(ω) = T₁(ω) + E'(ω) for every test (n+1)-form ω in U. (Z = (−1)^p ∂B, E' = (−1)^p T₂.)",
+  "lean_statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (B : GeometricCurrentOn U (n + 1 + 1)) (T₁ T₂ : GeometricCurrentOn U (n + 1)) (p : ℕ), IsOpen U → IsIntegerMultiplicity T₁ → IsIntegerMultiplicity T₂ → (∀ ω : TestFormOn U (n + 1), B.boundary ω = T₂ ω + (-1 : ℝ) ^ p * T₁ ω) → ∃ Z E' : GeometricCurrentOn U (n + 1), IsIntegerMultiplicity Z ∧ BoundaryVanishes Z ∧ Z.support ⊆ B.support ∧ E'.mass ≤ T₂.mass ∧ ∀ ω : TestFormOn U (n + 1), Z ω = T₁ ω + E' ω",
+  "lean_name": "dimred_cs_sos_mt_cc_cycle_of_boundary_eq",
+  "depends_on": [
+    "root.dimension_reduction_results-a1.cone_splitting-a1.split_off_spine-a1.minimality_transfer-a1.cube_cycle-a1.support_smul_boundary-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.dimension_reduction_results-a1.cone_splitting-a1.split_off_spine-a1.minimality_transfer-a1.cube_cycle-a1.support_smul_boundary-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-cone-splitting-a1-split-off-spine-0a3ef9d714-a1"
+}

@@ -1,0 +1,137 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.density_one_implies_regular-a1.limsup_mass_bound-a1.slicing-a1.slice_family-a1`
+- Child DAG node: `root.density_one_implies_regular-a1.limsup_mass_bound-a1.slicing-a1.slice_family-a1.piece_coarea-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: parent Step 4(a) for one piece (Simon Ch. 3, 2.8–2.9; Ch. 2, 3.2, 3.5, 4.11–4.13, 6.3, 6.6). The parent combines:
+ - the area formula for ψ;
+ - the area formula for ψ restricted to the level sets Γ_t;
+ - the Jacobian identity |g|J = |∇F|J_Γ;
+ - the Euclidean co-area formula, obtained “from the implicit function theorem, Fubini and the area formula after locally straightening F to a coordinate function”.
+These are carried out together below, in local coordinates in which F is one coordinate.
+Notation: A(y) := Dψ(y), Γ(y) := A(y)ᵀA(y) (positive definite on V). For a map Φ that is differentiable with injective derivative, JΦ := (det DΦᵀDΦ)^{1/2} > 0 (SimonGMT areaJacobianAt). For i ∈ {1, …, n+1} let drop_i : ℝ^{n+1} → ℝⁿ delete the i-th coordinate, and ins_i(z, s) ∈ ℝ^{n+1} insert s as i-th coordinate into z ∈ ℝⁿ.
+
+[Imports: SimonGMT Chapter02.WeightedArea (weighted area formula, areaJacobianAt).]
+
+1. Reduction to the regular part.
+ - For y ∈ Y the hypothesis gives G(ψ(y)) = A(y)w for some w, and Γ(y)w = A(y)ᵀG(ψ(y)) = ∇F(y), because ⟨G(ψ(y)), A(y)e⟩ = DF(y)e for all e. So G(ψ(y)) = A(y)Γ(y)⁻¹∇F(y), and since A(y) is injective, G(ψ(y)) ≠ 0 ⇔ ∇F(y) ≠ 0.
+ - Let O := {y ∈ V : ∇F(y) ≠ 0} (open, as F is C¹) and Y' := Y ∩ O. Using f∘ψ = F on Y: S_t = ψ(Y' ∩ F⁻¹(t)) for every t. Also |G|φ = 0 on ψ(Y ∖ Y'), and ψ(Y) = ψ(Y') ⊔ ψ(Y ∖ Y').
+ - Images under ψ of Borel subsets of Y are Borel: Lusin–Souslin, since ψ is continuous and injective on the Borel set Y (MeasurableSet.image_of_continuousOn_injOn).
+ - Hence it suffices to prove: t ↦ ∫_{ψ(Y'∩F⁻¹(t))} φ dHⁿ is a.e.-measurable, and ∫_ℝ ∫_{ψ(Y'∩F⁻¹(t))} φ dHⁿ dt = ∫_{ψ(Y')} |G|φ dH^{n+1}.
+ (G is only used through its values on ψ(Y), given by the formula above; the hypothesis Measurable G is not needed.)
+
+2. Local straightening.
+ - Let y₀ ∈ O and choose an index i with ∂_iF(y₀) ≠ 0. Define Θ : ℝ^{n+1} → ℝ^{n+1} by Θ(y)_l := y_l for l ≠ i and Θ(y)_i := F(y). Θ is C¹ and DΘ(y₀) is invertible.
+ - By the inverse function theorem (Mathlib HasStrictFDerivAt.toOpenPartialHomeomorph) there are an open N with y₀ ∈ N ⊆ O and an open box B with Θ : N → B a C¹ diffeomorphism. B is a product: an open box D ⊆ ℝⁿ in the coordinates l ≠ i, and an open interval I in coordinate i. Let Ψ := (Θ|_N)⁻¹ : B → N. Then F(Ψ(w)) = w_i, and DΨ is invertible on B.
+ - O is Lindelöf, so countably many such N, say N_q (q ∈ ℕ), cover O. Pad with empty sets if needed. Put Y_q := (Y' ∩ N_q) ∖ ⋃_{p<q} N_p. These are disjoint Borel sets with ⋃_q Y_q = Y'.
+
+3. Reduction to one patch. Suppose that for every q:
+ (*) t ↦ ∫_{ψ(Y_q∩F⁻¹(t))} φ dHⁿ is a.e.-measurable, and ∫_ℝ ∫_{ψ(Y_q∩F⁻¹(t))} φ dHⁿ dt = ∫_{ψ(Y_q)} |G|φ dH^{n+1}.
+ - For every t, ψ(Y'∩F⁻¹(t)) is the disjoint union of the Borel sets ψ(Y_q∩F⁻¹(t)), so ∫_{ψ(Y'∩F⁻¹(t))} φ = Σ_q ∫_{ψ(Y_q∩F⁻¹(t))} φ (lintegral_iUnion).
+ - A countable sum of a.e.-measurable [0,∞]-valued functions is a.e.-measurable, and ∫_ℝ Σ_q = Σ_q ∫_ℝ (lintegral_tsum).
+ - Likewise ∫_{ψ(Y')} |G|φ = Σ_q ∫_{ψ(Y_q)} |G|φ.
+ Summing (*) over q gives the claim of step 1.
+
+4. One patch. Fix q, and let N, B = D × I (in the coordinates of step 2), Θ, Ψ be the data for N_q.
+ - Φ := ψ∘Ψ : B → ℝ^P is C¹ and injective, and DΦ = A(Ψ)DΨ is injective.
+ - Ŷ := Θ(Y_q) ⊆ B is Borel (Θ restricts to a homeomorphism N → B), and Ψ(Ŷ) = Y_q.
+ - For s ∈ ℝ let Ŷ_s := {z ∈ D : ins_i(z, s) ∈ Ŷ} ⊆ ℝⁿ and Φ_s(z) := Φ(ins_i(z, s)) for z ∈ D. Φ_s is C¹ and injective, and DΦ_s(z) = DΦ(ins_i(z, s))∘ins_i(·, 0) is injective.
+ - Since F(Ψ(w)) = w_i: ψ(Y_q) = Φ(Ŷ) and ψ(Y_q ∩ F⁻¹(s)) = Φ_s(Ŷ_s). For s ∉ I this set is empty.
+
+5. Area formulas. Ch. 2, 3.2/3.5 is the weighted area formula for injective differentiable maps with injective derivative (SimonGMT Chapter02.weighted_area_formula_of_injective_derivative); on the parameter spaces μHE[n+1] = L^{n+1} and μHE[n] = Lⁿ. It gives
+ ∫_{Φ(Ŷ)} |G|φ dH^{n+1} = ∫_Ŷ JΦ(w)·(|G|φ)(Φ(w)) dw,
+ ∫_{Φ_s(Ŷ_s)} φ dHⁿ = ∫_{Ŷ_s} JΦ_s(z)·φ(Φ_s(z)) dz   for every s ∈ I.
+
+6. Jacobian identity: |G(Φ(w))|·JΦ(w) = JΦ_s(z) for w = ins_i(z, s) ∈ Ŷ.
+ Let y := Ψ(w) ∈ Y_q, x := ψ(y), u := G(x). Then u ≠ 0, since y ∈ O.
+ - The vectors a_l := DΦ(w)e_l (l ≠ i) and a_i := DΦ(w)e_i span A(y)(ℝ^{n+1}), because DΨ(w) is invertible. The a_l with l ≠ i are the columns of DΦ_s(z).
+ - By the hypothesis on G and F(Ψ(w)) = w_i: ⟨u, a_l⟩ = DF(y)DΨ(w)e_l = ∂_l(F∘Ψ)(w), which is 0 for l ≠ i and 1 for l = i.
+ - So u lies in the (n+1)-dimensional space A(y)(ℝ^{n+1}) and is orthogonal to the n-dimensional subspace E := span{a_l : l ≠ i}. Hence u/|u| spans E^⊥ ∩ A(y)(ℝ^{n+1}).
+ - Gram determinant formula: the Gram determinant of n+1 vectors is the Gram determinant of n of them times the squared distance of the remaining one to their span, so (JΦ)² = (JΦ_s)²·dist(a_i, E)². [Equivalently: the matrix of DΦ(w) in orthonormal bases adapted to E ⊕ ℝ(u/|u|) is block upper triangular with corner entry ⟨a_i, u/|u|⟩.]
+ - dist(a_i, E) = |⟨a_i, u/|u|⟩| = 1/|u|. Hence JΦ = JΦ_s/|u|.
+
+7. Tonelli.
+ - Let H(w) := 1_Ŷ(w)·φ(Φ(w))·JΦ_{w_i}(drop_i w) for w ∈ B, and H := 0 elsewhere. H ≥ 0 is Borel: φ is Borel, Φ is continuous, and w ↦ JΦ_{w_i}(drop_i w) is continuous on B.
+ - By steps 5 and 6, ∫_{ψ(Y_q)} |G|φ dH^{n+1} = ∫_Ŷ JΦ·(|G|φ)∘Φ dw = ∫ H dL^{n+1}.
+ - The map w ↦ (w_i, toLp(drop_i w)) is a volume-preserving measurable equivalence Euclid (n+1) ≃ ℝ × Euclid n. Compose PiLp.volume_preserving_ofLp (= EuclideanSpace.volume_preserving_symm_measurableEquiv_toLp), MeasureTheory.volume_preserving_piFinSuccAbove (which splits off coordinate i first) and PiLp.volume_preserving_toLp on the second factor (MeasurePreserving.prod). The second factor is Euclid n, so μHE[n] = volume there for the slice area formula. By Tonelli (Measurable.lintegral_prod_right'), s ↦ ∫ H(ins_i(z, s)) dz is Borel and ∫ H dL^{n+1} = ∫_ℝ ∫_{Euclid n} H(ins_i(z, s)) dz ds.
+ - For s ∈ I, step 5 gives ∫ H(ins_i(z, s)) dz = ∫_{Ŷ_s} JΦ_s·φ∘Φ_s dz = ∫_{ψ(Y_q∩F⁻¹(s))} φ dHⁿ. For s ∉ I both sides are 0.
+ This proves (*) for patch q, with the inner integral even Borel in s. ∎
+
+## Key steps
+
+1. Reduce to Y' = Y ∩ {∇F ≠ 0}, where G(ψ y) = Dψ Γ⁻¹∇F ≠ 0. S_t = ψ(Y' ∩ F⁻¹(t)).
+2. Straighten F near each regular point: Θ replaces coordinate i by F, Ψ = Θ⁻¹ on a box. Countable disjoint Borel patches Y_q.
+3. Countable additivity and lintegral_tsum reduce to one patch.
+4. On a patch, Φ = ψ∘Ψ parametrizes ψ(Y_q) and Φ(·, s) parametrizes the slice ψ(Y_q ∩ F⁻¹(s)).
+5. Area formula for Φ and for each Φ(·, s).
+6. Jacobian identity |G∘Φ|·JΦ = JΦ_s, since ⟨G, ∂_zΦ⟩ = 0, ⟨G, ∂_sΦ⟩ = 1 and the Gram determinant is base × height.
+7. Tonelli via the volume-preserving split ℝ^{n+1} ≃ ℝⁿ × ℝ gives measurability in s and the co-area identity.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cmp local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean GMT/Ch07/Contract.lean; cmp GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean (both identical)`
+- `python3 -I transitive import scan of the Contract's Poincare.SimonGMT imports (public import ...)`
+- `grep -n '^theorem |^def ' simongmt Chapter03/Rectifiable.lean, Chapter02/{AreaFormula,WeightedArea,AreaCritical,AreaLipschitz,AreaDomain,CoareaProjection,CoareaLinear,WhitneyExtension,WhitneyJet,Lipschitz}.lean, Chapter03/{SubmanifoldCover,DisjointCover,Differential}.lean, Chapter06/{Forms,Currents}.lean`
+- `grep -rn 'HasApproximateTangentSpaceAt.unique|exists_contDiff_one_extension_of_whitney|HasWhitneyC1Compatibility|area_image_criticalSet_eq_zero|integral_area_formula_of_injective_derivative|weighted_area_formula_of_injective_derivative|map_withDensity_areaJacobian_eq|integrableOn_image_iff_integrableOn_areaJacobian_smul|exists_isClosed_continuousOn_of_measurable|countablyRectifiable_iUnion' simongmt`
+- `grep -rn 'ae_tendsto_measure_inter_div_of_measurableSet|LipschitzWith.integral_lineDeriv_mul_eq|Lp.dense_hasCompactSupport_contDiff|tendsto_tsum_of_dominated_convergence|alternatizeUncurryFin_apply|AlternatingMap.eq_smul_basis_det|det_to_matrix_orthonormalBasis_real|volume_preserving_piFinSuccAbove|PiLp.volume_preserving_ofLp|Measurable.lintegral_prod_right|exists_cthickening_subset_open|tendstoUniformlyOn_of_ae_tendsto|euclideanHausdorffMeasure_eq_volume|norm_alternatizeUncurryFin_le' mathlib`
+- `#check probes in contract scope: ContinuousAlternatingMap.alternatizeUncurryFin, innerSL, ContinuousLinearMap.smulRight, (ℝ ∙ v)ᗮ, ‖v‖ₑ, GeometricCurrentOn.boundary, exists_measurable_superset_of_null`
+- `dag.json scans: regex 'co-?area|area formula|Rademacher|tangential gradient|C¹ approx|Lusin|Jacobian|implicit function' over node statements; lean_name collision check for dor_lmbsf_* (1022 nodes, none)`
+- `git grep dor_lmbsf_ over all local branches (no match)`
+- `python3 -I verifier lean_contract.validate_lean_statement and gmt-compare.child_modules on the 12 statements; lake env lean /tmp/dor-sf-decomp/v2/All.lean (#print axioms DorSf.parent_from_children)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-limsup-mass-bound-a1-slicing-a1-s-e999363692/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-limsup-mass-bound-a1-slicing-a1/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaFormula.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/WeightedArea.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaCritical.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/WhitneyExtension.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/WhitneyJet.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/Lipschitz.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/Lusin.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Covering/Besicovitch.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/Alternating/Uncurry/Fin.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Haar/InnerProductSpace.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-02.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-03.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/tmp/dor-sf-decomp/v2/All.lean`
+
+Snapshot: project b4d606d, mathlib 25730c7c, simongmt 2b36630. The snapshot Contract.lean is byte-identical to the workspace Contract.lean and Submission.lean, and the snapshot mathlib matches the package tree.
+
+No existing declaration states a rectifiable co-area formula, a tangential gradient of a Lipschitz function, a slice family or the Lipschitz-cut-off Leibniz limit. Related nodes in other branches are unaccepted, reserved and have different types:
+- codim1_rdo_c1_approximation;
+- codim1_rdo_c1_piece_approxTangent;
+- codim1_lur_rectifiable_area_formula;
+- dimred_cs_sos_spine_coarea.
+So all 12 children get fresh dor_lmbsf_ names.
+
+Reusable library facts for the child proofs:
+- SimonGMT Chapter02: injective area formulas in lintegral, Bochner and measure form (WeightedArea, AreaFormula); critical images null (AreaCritical); Whitney C¹ extension (WhitneyExtension/WhitneyJet); Rademacher and Lipschitz images (Lipschitz).
+- SimonGMT Chapter01.Lusin.
+- SimonGMT Chapter03: HasApproximateTangentSpaceAt.unique, countablyRectifiable_iUnion.
+- Mathlib: Besicovitch density theorem, LipschitzWith.integral_lineDeriv_mul_eq, Lp.dense_hasCompactSupport_contDiff, Tannery's theorem, alternatizeUncurryFin_apply, volume-preserving coordinate splits.
+- Some of these need extra imports, which are listed in the child proofs.
+
+Lean checks:
+- All 12 child types pass validate_lean_statement and elaborate in the exact comparator scope.
+- The Lean assembly of the exact frozen parent type from tangential_gradient, slice_imreps and lipschitz_leibniz compiles with only propext, Classical.choice and Quot.sound.
+- Interface checks (chart_pieces → piece lemmas; Besicovitch → density_directions) compile.
+- MultiVector lacks SecondCountable/FiniteDimensional instance synthesis, so the child proofs use StronglyMeasurable compositions.

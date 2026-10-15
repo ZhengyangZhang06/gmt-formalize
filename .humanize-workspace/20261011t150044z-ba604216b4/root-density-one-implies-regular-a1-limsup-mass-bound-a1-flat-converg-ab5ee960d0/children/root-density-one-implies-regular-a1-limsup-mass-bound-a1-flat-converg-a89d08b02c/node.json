@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.flat_convergence-a1.deformation-a1.face_replacement-a1.coordinate_covectors-a1",
+  "parent_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.flat_convergence-a1.deformation-a1.face_replacement-a1",
+  "depth": 6,
+  "title": "Coordinate covectors dx^J: duality with the coordinate frames e_I and the Euclidean coefficient norm of their combinations (Simon Ch. 6, §1, 1.1, 1.2 and 1.5; the covectors of steps 3–4 of the parent proof)",
+  "statement": "Let P, k ∈ ℕ. Write ℝ^P = Euclid P, e_i := EuclideanSpace.single i 1 and, for I : Fin k → Fin P, e_I := (e_{I(0)}, …, e_{I(k−1)}). There is a family dx : (Fin k → Fin P) → Covector(ℝ^P, k) of continuous alternating k-linear forms on ℝ^P (the coordinate covectors dx^J = dx^{J(0)} ∧ ⋯ ∧ dx^{J(k−1)}) such that (i) for all strictly increasing I, J : Fin k → Fin P, dx^J(e_I) = 1 if I = J and dx^J(e_I) = 0 if I ≠ J; and (ii) for every N ∈ ℕ, every injective family J : Fin N → (Fin k → Fin P) of strictly increasing maps and every c : Fin N → ℝ, covectorEuclideanNorm(Σ_{l<N} c_l·dx^{J_l}) = (Σ_{l<N} c_l²)^{1/2}. Here covectorEuclideanNorm(α) = (Σ_{I : Fin k → Fin P strictly increasing} α(b_{I(0)}, …, b_{I(k−1)})²)^{1/2} with b = EuclideanSpace.basisFun (Fin P) ℝ (the Euclidean coefficient norm of SimonGMT).",
+  "lean_statement": "∀ (P k : ℕ), ∃ dx : (Fin k → Fin P) → Covector (Euclid P) k, (∀ I J : Fin k → Fin P, StrictMono I → StrictMono J → dx J (fun r => EuclideanSpace.single (I r) (1 : ℝ)) = if I = J then 1 else 0) ∧ ∀ (N : ℕ) (J : Fin N → Fin k → Fin P) (c : Fin N → ℝ), Function.Injective J → (∀ l, StrictMono (J l)) → covectorEuclideanNorm (∑ l, c l • dx (J l)) = Real.sqrt (∑ l, c l ^ 2)",
+  "lean_name": "dor_lmb_fcd_fr_coordinate_covectors",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-limsup-mass-bound-a1-flat-converg-a89d08b02c-a1"
+}

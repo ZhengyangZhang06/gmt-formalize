@@ -1,0 +1,117 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.dimension_reduction_results-a1.cone_splitting-a1.translation_invariance-a1`
+- Child DAG node: `root.dimension_reduction_results-a1.cone_splitting-a1.translation_invariance-a1.blowup_translate_eval-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source. Step 1 of the parent proof (Reduction): Simon 6.2.23 for the proper affine diffeomorphism η_{−v,1}(y) = v + y, i.e. the translation τ_v of Simon Lemma 7.3.5 (chapter-07.txt lines 386–395). It uses only the contract definitions dilation, dilationCLM, blowUp, currentEval and the SimonGMT definitions GeometricCurrentOn.restrictDomain (restrictDomain_apply), GeometricCurrentOn.affinePushforward (affinePushforward_apply), affinePullbackTestOn and affinePullbackForm (x ↦ (ω(b + L x)).compContinuousLinearMap L). It is the translation counterpart of the accepted Submission.dtc_cwv_isConeCurrent_of_pullback_invariant (which unfolds blowUp C 0 λ).
+
+1. (The translate is a test form.) Put ω'(y) := ω(v + y). ω is C^∞ with compact support (IsTestForm). The map y ↦ v + y is affine, hence C^∞, so ω' = ω ∘ (v + ·) is C^∞. The map y ↦ v + y is a homeomorphism of ℝ^P (Homeomorph.addLeft v, inverse z ↦ z − v), so tsupport ω' = (tsupport ω) − v is the image of a compact set under a continuous map, hence compact (Mathlib HasCompactSupport.comp_homeomorph). Trivially tsupport ω' ⊆ univ. So ω' ∈ TestFormOn univ n, and ω'(y) = ω(v + y) holds for every y by definition.
+2. (The dilation is the translation.) dilationCLM P 1 = 1⁻¹ • id = id and −(1⁻¹ • (−v)) = v, so dilation (−v) 1 (y) = v + y for every y. Hence dilation (−v) 1 '' univ = univ: every x ∈ ℝ^P equals dilation (−v) 1 (x − v).
+3. (currentEval takes its test-form branch.) ω is a test form and tsupport ω ⊆ univ = dilation (−v) 1 '' univ by step 2, so by the definition of currentEval, currentEval(blowUp S (−v) 1, ω) = (blowUp S (−v) 1)(⟨ω, _⟩), the value of blowUp S (−v) 1 ∈ 𝒟_n(dilation (−v) 1 '' univ) on ω regarded as an element of its test-form space.
+4. (Unfolding blowUp.) By definition blowUp S (−v) 1 = (S.restrictDomain h).affinePushforward L b _ with L = dilationCLM P 1 and b = −(1⁻¹ • (−v)), where S.restrictDomain h is S restricted to W = (y ↦ b + L y)⁻¹'(dilation (−v) 1 '' univ) ⊆ univ. By affinePushforward_apply, the definition of affinePullbackTestOn, and restrictDomain_apply (the inclusion testFormOnInclusion does not change the underlying form), (blowUp S (−v) 1)(⟨ω, _⟩) = S(ω''), where ω'' ∈ TestFormOn univ n has underlying form affinePullbackForm L b ω, i.e. ω''(y)(w_1, …, w_n) = ω(b + L y)(L w_1, …, L w_n).
+5. (Identification.) By step 2, b + L y = v + y and L w_i = w_i, so ω''(y)(w) = ω(v + y)(w) = ω'(y)(w) for all y ∈ ℝ^P and all w ∈ (ℝ^P)^n (ext). Hence ω'' and ω' have the same underlying form, and as elements of the subtype TestFormOn univ n they are equal (Subtype.ext). Therefore currentEval(blowUp S (−v) 1, ω) = S(ω'') = S(ω'), which together with step 1 proves the claim for this ω'. ∎
+
+Implementation note (not part of the numbered proof).
+- The Lean proof below of exactly this frozen type was kernel-checked during this decomposition: Lean v4.35.0-rc3, Mathlib 25730c7c, after `import GMT.Ch07.Submission`, inside `namespace GMT.Ch07` with the contract's opens (`open Filter Function Set MeasureTheory Metric`, `open scoped ENNReal Topology`, `open Poincare.SimonGMT.Chapter06`, `open Poincare.SimonGMT.Chapter03 (CountablyRectifiable HasApproximateTangentSpaceAt)`), like the accepted Submission theorems. #print axioms gives propext, Classical.choice, Quot.sound. It was also checked in isolation with only the listed sibling dependencies present (as stubs), and through the comparator's own NodeSolution wrapper (`exact Submission.X`).
+- Do not put `open scoped ContDiff` in front of the declaration (it makes `ω` a reserved token); write the smoothness order as `(⊤ : ℕ∞)`, not `∞` (with `open scoped ENNReal`, `∞` is the ENNReal top).
+- Step 4 is definitional: after `rw [currentEval, dite_eq_left h]`, `change S _ = S ω'` unfolds blowUp/affinePushforward/restrictDomain; then `congr 1`, `Subtype.ext`, `funext`, `ext`, a `change` to the pullback formula, and `simp [dilationCLM]`.
+```lean
+/-- **A unit-scale blow-up is a translation** (Simon 6.2.23 for `η_{−v,1}(y) = v + y`; the
+translation `τ_{v#}` of Lemma 7.3.5).  For `S ∈ 𝒟ₙ(ℝᴾ)`, `v ∈ ℝᴾ` and `ω ∈ 𝒟ⁿ(ℝᴾ)`, the translate
+`ω' = ω(v + ·)` is a test form and `currentEval (η_{−v,1#}S) ω = S(ω')`: `η_{−v,1}(ℝᴾ) = ℝᴾ`, and
+unfolding `blowUp` (linear part `dilationCLM P 1 = id`, translation `−(1⁻¹ • −v) = v`) the affine
+pullback of `ω` is `y ↦ ω(v + y) ∘ id = ω'(y)`. -/
+theorem Submission.dimred_cs_ti_blowUp_translate_eval : ∀ (P n : ℕ) (S : GeometricCurrentOn (univ : Set (Euclid P)) n) (v : Euclid P) (ω : TestFormOn (univ : Set (Euclid P)) n), ∃ ω' : TestFormOn (univ : Set (Euclid P)) n, (∀ y, (ω' : DifferentialForm (Euclid P) n) y = (ω : DifferentialForm (Euclid P) n) (v + y)) ∧ currentEval (blowUp S (-v) 1 one_ne_zero) (ω : DifferentialForm (Euclid P) n) = S ω' := by
+  intro P n S v ω
+  -- the translate `y ↦ ω(v + y)` is a test form
+  have hsm : ContDiff ℝ (⊤ : ℕ∞) (fun y => (ω : DifferentialForm (Euclid P) n) (v + y)) :=
+    ω.property.1.1.comp (contDiff_const.add contDiff_id)
+  have hcs : HasCompactSupport (fun y => (ω : DifferentialForm (Euclid P) n) (v + y)) :=
+    ω.property.1.2.comp_homeomorph (Homeomorph.addLeft v)
+  let ω' : TestFormOn (univ : Set (Euclid P)) n :=
+    ⟨fun y => (ω : DifferentialForm (Euclid P) n) (v + y), ⟨hsm, hcs⟩, subset_univ _⟩
+  refine ⟨ω', fun y => rfl, ?_⟩
+  -- `η_{−v,1}(ℝᴾ) = ℝᴾ`, so `currentEval` takes its test-form branch
+  have hV : dilation (-v) (1 : ℝ) '' univ = univ := by
+    refine eq_univ_of_forall fun x => ⟨x - v, mem_univ _, ?_⟩
+    simp [dilation, dilationCLM]
+  have h : IsTestForm (ω : DifferentialForm (Euclid P) n) ∧
+      tsupport (ω : DifferentialForm (Euclid P) n) ⊆ dilation (-v) (1 : ℝ) '' univ :=
+    ⟨ω.property.1, by rw [hV]; exact subset_univ _⟩
+  rw [currentEval, dite_eq_left h]
+  -- unfolding `blowUp`: the affine pullback of `ω` by `y ↦ v + 1⁻¹ y` is `ω'`
+  change S _ = S ω'
+  congr 1
+  apply Subtype.ext
+  funext y
+  ext w
+  change (ω : DifferentialForm (Euclid P) n) (-((1 : ℝ)⁻¹ • -v) + dilationCLM P 1 y)
+      (fun i => dilationCLM P 1 (w i)) = (ω : DifferentialForm (Euclid P) n) (v + y) w
+  simp [dilationCLM]
+```
+
+## Key steps
+
+1. ω' := ω(v + ·) is C^∞ with compact support (composition with the translation homeomorphism Homeomorph.addLeft v), so ω' ∈ TestFormOn univ n.
+2. dilation (−v) 1 (y) = v + y, so dilation (−v) 1 '' univ = univ and currentEval takes its test-form branch.
+3. Unfolding blowUp (restrictDomain, affinePushforward, affinePullbackForm with L = dilationCLM P 1 = id, b = v), the value is S of the form y ↦ ω(v + y) ∘ id = ω'(y); Subtype.ext gives S(ω').
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json (project b4d606d, mathlib 25730c7c); git status (clean at b4d606d); stat GMT/Ch07/Submission.lean .lake/build/lib/lean/GMT/Ch07/Submission.olean`
+- `python3 inspection of dag.json: selected node (depth 3, depends_on orientation_norm_bound-a1, no children), siblings under cone_splitting-a1, accepted dtc_cwv_* / dtc_cone_* / unit_orientation_norm_le_one / dtc_blowUp_testForm_corr types; scan of all lean_statements for curryLeft|blowUp|translat|fderiv|extDeriv|exteriorDerivative|HasDerivAt`
+- `git show {d120e82,9203aee,77ba671,ec0cc8f,dd88db7,81f1c23,da8da23,0325970}:GMT/Ch07/Submission.lean (accepted cone criterion, wedge vanishing, Euler-Cartan, contraction, Lie annihilation, scaled derivative, dilation invariance, orientation norm proofs)`
+- `python3 nodes/root-density-and-tangent-cones-a1-cone-a1-cone-lemma-a1/decomposition-v1.json and nodes/root-dimension-reduction-results-a1-cone-splitting-a1/decomposition-v1.json (reuse convention, embedded-proof precedent)`
+- `grep -rn 'alternatizeUncurryFin|extDeriv' and grep -rln 'Cartan|interiorProduct|lieDerivForm' in the snapshot mathlib (only Lie-algebra Cartan files; no Cartan formula or interior product for differential forms)`
+- `grep -n defs in simongmt Chapter06/Forms.lean, AffineCurrentPushforward.lean, CurrentLocalEquality.lean (restrictDomain_apply); grep -rn 'curryLeft|interior|translat' simongmt (no contraction/translation lemmas)`
+- `sed -n 330,400p book/chapter-07.txt (7.3.1 proof, Lemma 7.3.5 left to reader); sed -n 420,500p and 550,600p book/chapter-06.txt (homotopy formula 2.25-2.27, Lemma 2.33)`
+- `#check fderiv_comp_add_left, is_const_of_deriv_eq_zero, exteriorDerivative_isTestForm, GeometricCurrentOn.boundary_apply, ContinuousAlternatingMap.curryLeftLI, ContinuousAlternatingMap.alternatizeUncurryFin`
+- `verifier/lean_contract.py validate_lean_statement and verifier/gmt-compare.py contract_scope/child_modules applied to the 8 types (NodeChallenge/NodeSolution emulation)`
+- `lake env lean /tmp/ti-decomp/{Stubs,Full2,Emu}.lean and /tmp/ti-decomp/final/{Final,Isolate,FromJson}.lean (all children, isolation with dependency stubs, comparator wrapper, re-extraction from JSON; #print axioms)`
+- `grep -rl dimred_cs_ti_ across workspaces/ (incl. .swarm-worktrees), lake-packages simongmt, and dag.json (no matches)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-cone-splitting-a1-translation-invariance-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-cone-splitting-a1-translation-invariance-a1/parent-supplied-natural-proof.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-cone-splitting-a1/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-cone-a1-cone-lemma-a1/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-cone-a1-cone-lemma-a1/decomposition-scope-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-half-space-cone-lies-in-boundary-a1-imrep-measure-unique-a1-orie-c3a822a8f5/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/DifferentialForm/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/Alternating/Uncurry/Fin.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/AffineCurrentPushforward.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-07.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/tmp/ti-decomp/final/FromJson.lean`
+- `/tmp/ti-decomp/final/Isolate.lean`
+- `/tmp/ti-decomp/Emu.lean`
+
+The pins match: the snapshot is at project b4d606d (= the workspace HEAD, clean) and mathlib 25730c7c. The built Submission.olean is newer than the frozen source.
+
+What the library lacks.
+- Mathlib has the exterior derivative (extDeriv = alternatizeUncurryFin ∘ fderiv, with extDeriv_apply and alternatizeUncurryFin_apply). It has no interior product and no Cartan formula for differential forms; the Cartan grep matches only Lie-algebra files.
+- SimonGMT Chapter06 provides exteriorDerivative, IsTestForm, exteriorDerivative_isTestForm, boundary_apply, restrictDomain_apply, affinePushforward_apply and affinePullbackForm. It has no contraction, translation or Lie-derivative lemmas.
+So the constant-field Cartan identity, the contraction lemma and the translation lemmas are new obligations.
+
+Precedent and reuse.
+- The accepted cone-lemma children (commits d120e82, 9203aee, 77ba671, ec0cc8f, dd88db7, 81f1c23, da8da23) prove the Euler-field (dilation) versions. Their types are tied to the point x or to sⁿω(s·), so none applies to a fixed vector v; they served as templates.
+- The accepted dtc_blowUp_testForm_corr is not needed, because blowup_translate_eval unfolds blowUp directly.
+- The only reuse is unit_orientation_norm_le_one (accepted, candidate 0325970, byte-identical type), which is already this node's resolved dependency.
+
+Mathlib facts used, all present in the snapshot: fderiv_comp_add_left, is_const_of_deriv_eq_zero, HasCompactSupport.comp_homeomorph, HasCompactSupport.fderiv, hasDerivAt_integral_of_dominated_loc_of_deriv_le, Submodule.starProjection_eq_self_iff, ae_withDensity_iff and withDensity_absolutelyContinuous.
+
+Lean check. All seven new children have kernel-checked proofs with standard axioms only, and the 9-line assembly of the frozen parent type compiles from them.

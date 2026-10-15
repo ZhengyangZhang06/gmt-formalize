@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.tilt_excess_decay-a1.hs_integral_compare-a1",
+  "parent_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.tilt_excess_decay-a1",
+  "depth": 5,
+  "title": "Integrated Hilbert–Schmidt triangle inequalities for comparing planes (Simon 5.4.6 and 5.5.2 proof (7))",
+  "statement": "Let P ∈ ℕ and E := ℝ^P (EuclideanSpace ℝ (Fin P)) with standard basis e_i := EuclideanSpace.single i 1 (i < P); let μ be a measure on E, τ : E → L(E, E) a map into the continuous linear maps E → E (operator-norm topology) that is μ-a.e. strongly measurable, A₁, A₂ : E → E continuous linear maps, and s ⊆ E any set. Put d := Σ_{i<P} ‖A₁e_i − A₂e_i‖² and, for k = 1, 2 and x ∈ E, f_k(x) := Σ_{i<P} ‖τ(x)e_i − A_k e_i‖². Then, with lower Lebesgue integrals in [0, ∞] over s (Lean ∫⁻ x in s, ENNReal.ofReal(…) ∂μ): (i) ofReal(d)·μ(s) ≤ 2∫_s ofReal(f_1) dμ + 2∫_s ofReal(f_2) dμ; and (ii) ∫_s ofReal(f_1) dμ ≤ 2∫_s ofReal(f_2) dμ + 2·ofReal(d)·μ(s).",
+  "lean_statement": "∀ (P : ℕ) (μ : Measure (Euclid P)) (τ : Euclid P → (Euclid P →L[ℝ] Euclid P)) (A₁ A₂ : Euclid P →L[ℝ] Euclid P) (s : Set (Euclid P)), AEStronglyMeasurable τ μ → ENNReal.ofReal (∑ i : Fin P, ‖A₁ (EuclideanSpace.single i (1 : ℝ)) - A₂ (EuclideanSpace.single i (1 : ℝ))‖ ^ 2) * μ s ≤ 2 * (∫⁻ x in s, ENNReal.ofReal (∑ i : Fin P, ‖τ x (EuclideanSpace.single i (1 : ℝ)) - A₁ (EuclideanSpace.single i (1 : ℝ))‖ ^ 2) ∂μ) + 2 * (∫⁻ x in s, ENNReal.ofReal (∑ i : Fin P, ‖τ x (EuclideanSpace.single i (1 : ℝ)) - A₂ (EuclideanSpace.single i (1 : ℝ))‖ ^ 2) ∂μ) ∧ (∫⁻ x in s, ENNReal.ofReal (∑ i : Fin P, ‖τ x (EuclideanSpace.single i (1 : ℝ)) - A₁ (EuclideanSpace.single i (1 : ℝ))‖ ^ 2) ∂μ) ≤ 2 * (∫⁻ x in s, ENNReal.ofReal (∑ i : Fin P, ‖τ x (EuclideanSpace.single i (1 : ℝ)) - A₂ (EuclideanSpace.single i (1 : ℝ))‖ ^ 2) ∂μ) + 2 * ENNReal.ofReal (∑ i : Fin P, ‖A₁ (EuclideanSpace.single i (1 : ℝ)) - A₂ (EuclideanSpace.single i (1 : ℝ))‖ ^ 2) * μ s",
+  "lean_name": "dorag_ted_hs_integral_compare",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-2fff1c16a4-a1"
+}

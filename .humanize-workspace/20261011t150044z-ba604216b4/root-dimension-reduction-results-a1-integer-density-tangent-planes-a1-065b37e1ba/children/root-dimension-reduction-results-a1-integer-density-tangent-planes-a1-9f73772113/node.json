@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.carrier_area_formula-a1.piece_area_formula-a1.carrier_side-a1",
+  "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.carrier_area_formula-a1.piece_area_formula-a1",
+  "depth": 5,
+  "title": "Carrier side: ∫_{g(A)} J_T·h dH^n = ∫_A |det D(G∘g)|·h∘g dL^n via the Jacobian chain rule (parent steps 5–6)",
+  "statement": "Let P, n ∈ ℕ; g : ℝ^n → ℝ^P Lipschitz; A ⊆ ℝ^n Borel with g injective on A and differentiable at every point of A; V ⊆ ℝ^P open with g(A) ⊆ V; F, G : ℝ^P → ℝ^n with F = G on V and F differentiable at every point of g(A); T : ℝ^P → {linear subspaces of ℝ^P} with T(g(a)) = range Dg(a) for L^n-a.e. a ∈ A (Dg(a) = fderiv ℝ g a); and h : ℝ^P → [0, ∞] arbitrary (no measurability assumed). For x ∈ ℝ^P let J_T(x) := (det(⟨DF(x)u_i, DF(x)u_j⟩)_{i,j})^{1/2}, where DF(x) = fderiv ℝ F x and (u_i) is the standard orthonormal basis (stdOrthonormalBasis) of T(x), indexed by Fin(dim T(x)). Then ∫_{g(A)} J_T(x)·h(x) dH^n(x) = ∫_A |det D(G∘g)(a)|·h(g(a)) dL^n(a), where H^n = μHE[n], L^n = volume on ℝ^n, D(G∘g)(a) = fderiv ℝ (G∘g) a regarded as a linear endomorphism of ℝ^n, and both factors J_T and |det D(G∘g)| enter through ENNReal.ofReal.",
+  "lean_statement": "∀ (P n : ℕ) (g : Euclid n → Euclid P) (A : Set (Euclid n)) (Lg : NNReal) (V : Set (Euclid P)) (F G : Euclid P → Euclid n) (T : Euclid P → Submodule ℝ (Euclid P)) (h : Euclid P → ℝ≥0∞), LipschitzWith Lg g → MeasurableSet A → InjOn g A → (∀ a ∈ A, DifferentiableAt ℝ g a) → IsOpen V → g '' A ⊆ V → EqOn F G V → (∀ x ∈ g '' A, DifferentiableAt ℝ F x) → (∀ᵐ a ∂(volume.restrict A), T (g a) = LinearMap.range (fderiv ℝ g a : Euclid n →ₗ[ℝ] Euclid P)) → ∫⁻ x in g '' A, ENNReal.ofReal (Real.sqrt (Matrix.det (Matrix.of fun i j : Fin (Module.finrank ℝ (T x)) => inner ℝ (fderiv ℝ F x (stdOrthonormalBasis ℝ (T x) i)) (fderiv ℝ F x (stdOrthonormalBasis ℝ (T x) j))))) * h x ∂μHE[n] = ∫⁻ a in A, ENNReal.ofReal |LinearMap.det (fderiv ℝ (G ∘ g) a : Euclid n →ₗ[ℝ] Euclid n)| * h (g a) ∂volume",
+  "lean_name": "idtp_caf_paf_carrier_side",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-9f73772113-a1"
+}

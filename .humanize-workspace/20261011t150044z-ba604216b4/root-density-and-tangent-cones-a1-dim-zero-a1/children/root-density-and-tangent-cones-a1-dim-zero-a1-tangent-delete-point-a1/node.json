@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_and_tangent_cones-a1.dim_zero-a1.tangent_delete_point-a1",
+  "parent_id": "root.density_and_tangent_cones-a1.dim_zero-a1",
+  "depth": 3,
+  "title": "Deleting a point other than the base point preserves approximate tangent spaces",
+  "statement": "Let P, n ∈ ℕ, let M ⊆ ℝ^P be a Borel set, let x, p ∈ ℝ^P with x ≠ p, and let Q ⊆ ℝ^P be a linear subspace. Suppose Q is the n-dimensional approximate tangent space of M at x in the sense of Simon Ch. 3, Def. 1.4, formalized as HasApproximateTangentSpaceAt n M x Q. This means:\n- dim Q = n; and\n- for every compactly supported continuous f : ℝ^P → ℝ, ∫_{η_{x,r}(M)} f dHⁿ → ∫_Q f dHⁿ as r ↓ 0.\nHere η_{x,r}(y) = r⁻¹(y − x) is blowUpMap x r and Hⁿ = μHE[n]. Then Q is also the approximate tangent space of M ∖ {p} at x, i.e. HasApproximateTangentSpaceAt n (M ∖ {p}) x Q.",
+  "lean_statement": "∀ (P n : ℕ) (M : Set (Euclid P)) (x p : Euclid P) (Q : Submodule ℝ (Euclid P)), MeasurableSet M → x ≠ p → HasApproximateTangentSpaceAt n M x Q → HasApproximateTangentSpaceAt n (M \\ {p}) x Q",
+  "lean_name": "dtc_approxTangent_sdiff_singleton",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-dim-zero-a1-tangent-delete-point-a1-a1"
+}
