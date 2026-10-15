@@ -1,0 +1,267 @@
+{
+  "schema_version": 1,
+  "run_id": "20261011T150044Z-ba604216b4",
+  "parent_id": "root.dimension_reduction_results-a1.cone_splitting-a1.split_off_spine-a1.minimality_transfer-a1.slice_integrable-a1",
+  "dispatch_branch": "proof-workspace/gmt-ch07/20261011t150044z-ba604216b4/dispatch/root-dimension-reduction-results-a1-cone-splitting-a1-split-off-spine-fff589dbdd",
+  "source_commit": "b4d606db1da5da8fa2c0292ad4924d97de8b3c4b",
+  "comparator_command": "python3 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py --lean-target {lean_target} --verifier-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier --verify-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification --packages /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c --frozen-commit b4d606db1da5da8fa2c0292ad4924d97de8b3c4b {node_id}",
+  "comparator_success": "Your solution is okay!",
+  "lean_target": "GMT/Ch07/Submission.lean",
+  "children": [
+    {
+      "node_id": "root.dimension_reduction_results-a1.cone_splitting-a1.split_off_spine-a1.minimality_transfer-a1.slice_integrable-a1.span_bounded_finite-a1",
+      "key": "span_bounded_finite",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-cone-splitting-a1-split-off-spine-4ec8b869cc-a1",
+      "bundle_path": ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-cone-splitting-a1-split-off-spine-fff589dbdd/children/root-dimension-reduction-results-a1-cone-splitting-a1-split-off-spine-4ec8b869cc",
+      "handoff": {
+        "reference_use": [
+          {
+            "source": "local-project",
+            "queries": [
+              "cat manifest.json (project b4d606db1, mathlib 25730c7c); diff -q snapshot project/GMT/Ch07/Contract.lean vs workspace GMT/Ch07/Submission.lean (identical)",
+              "python3 over dag.json: depth/status/depends_on of slice_integrable-a1 (depth 5; deps interior_product-a1, frame_measure-a1, both decomposing); frozen lean_statements of dimred_cs_sos_mt_interior_product and dimred_cs_sos_mt_frame_measure",
+              "python3 over dag.json accepted lean_statements: patterns 'orient x α| ≤', '.action (fun', 'Continuous (fun t', 'ᗮ' with '.measure'/'.action', 'Bornology.IsBounded'+'μHE'+'span'+'≠ ∞'",
+              "git show f899c748:GMT/Ch07/Submission.lean (accepted dimred_cs_ti_translate_action_hasDerivAt and unit_orientation_norm_le_one: domination via ‖R.orient‖ ≤ 1 and locallyIntegrable_mult on a closed ball)",
+              "git show 4aa9ba8d:GMT/Ch07/Submission.lean | grep theorem/starProjection (accepted idtp_fons_cs_sos_product_current: monolithic, uses Submodule.starProjection_eq_self_iff / starProjection_apply_eq_zero_iff)",
+              "grep -n cited_inherited inherited.py; grep -n 'max_depth|_inherited_prerequisites' runtime.py",
+              "rg -n over snapshot mathlib: continuousAt_of_dominated, Measure.integrableOn_of_bounded, IntegrableOn.of_forall_sdiff_eq_zero (alias of_forall_diff_eq_zero), starProjection_eq_self_iff, starProjection_apply_eq_zero_iff, isClosed_orthogonal, withDensity_apply, abs_real_inner_le_norm, ContinuousAlternatingMap.le_opNorm, opNorm_le_bound, Continuous.bounded_above_of_compact_support, integral_eq_zero_of_ae, Bornology.IsBounded.isCompact_closure",
+              "rg -n 'dimred_cs_sos_mt_si_|translate_action_continuous|span_bounded_measure' snapshot project and dag.json (no match)",
+              "lake env lean /tmp/si-decomp/check/{Smoke,Assembly,Children,Elab}.lean (Lean v4.35.0-rc3)"
+            ],
+            "files": [
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-cone-splitting-a1-split-off-spine-fff589dbdd/parent-child-handoff.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-cone-splitting-a1-split-off-spine-fff589dbdd/parent-supplied-natural-proof.md",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-cone-splitting-a1-split-off-spine-7f270cb1eb/decomposition-v1.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Projection/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Orthogonal.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/WithDensity.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/Alternating/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Operator/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Group/Bounded.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/Bounded.lean",
+              "/runtime/flows/gmt-claude-cf346c63e6ef/_recursive_lean/inherited.py",
+              "/runtime/flows/gmt-claude-cf346c63e6ef/_recursive_lean/runtime.py",
+              "/tmp/si-decomp/check/Assembly.lean",
+              "/tmp/si-decomp/check/Children.lean",
+              "/tmp/si-decomp/check/Elab.lean"
+            ],
+            "conclusion": "Pins match. The manifest records project b4d606db1 (= workspace HEAD) and mathlib 25730c7c, and the snapshot Contract.lean is byte-identical to the workspace Submission.lean.\n\nNo accepted declaration matches any child.\n- No accepted node proves continuity of t ↦ R.action(η(t + ·)) or vanishing of translates under concentration on G^⊥.\n- No accepted node proves finiteness of H^k on bounded subsets of a frame span.\n- The closest are dimred_cs_ti_translate_action_hasDerivAt (f899c748), which only differentiates along a line, and idtp_fons_cs_sos_product_current (4aa9ba8d), which is monolithic.\n- Their proofs confirm the API used here: ‖R.orient‖ ≤ 1 from IsUnitOrientationOf, locallyIntegrable_mult on closed balls, Submodule.starProjection_eq_self_iff and starProjection_apply_eq_zero_iff.\n\nAll Mathlib lemmas the child proofs need are in the snapshot at the files listed: continuousAt_of_dominated, Measure.integrableOn_of_bounded, IntegrableOn.of_forall_sdiff_eq_zero, isClosed_orthogonal, withDensity_apply, abs_real_inner_le_norm, ContinuousAlternatingMap.le_opNorm, opNorm_le_bound, Continuous.bounded_above_of_compact_support, integral_eq_zero_of_ae and Bornology.IsBounded.isCompact_closure.\n\nThe proposed names have no match in the snapshot project or dag.json. inherited.py adds frame_measure to span_bounded_finite as an inherited prerequisite, because that child's proof cites it by exact Lean name.\n\nLean checks (v4.35.0-rc3):\n- All three child types elaborate after `import GMT.Ch07.Submission` with the contract opens.\n- The frozen parent type compiles from the child stubs and the interior_product and frame_measure stubs, with no sorry of its own.\n- Complete proofs of all three children compile: two use only standard axioms, and span_bounded_finite depends only on the frame_measure stub."
+          }
+        ],
+        "parent_id": "root.dimension_reduction_results-a1.cone_splitting-a1.split_off_spine-a1.minimality_transfer-a1.slice_integrable-a1",
+        "child_id": "root.dimension_reduction_results-a1.cone_splitting-a1.split_off_spine-a1.minimality_transfer-a1.slice_integrable-a1.span_bounded_finite-a1",
+        "subproblem": {
+          "key": "span_bounded_finite",
+          "title": "Bounded subsets of a k-frame span have finite H^k-measure",
+          "statement": "Let P, k ∈ ℕ and let g = (g_1, …, g_k) (g : Fin k → Euclid P) be an orthonormal family in ℝ^P with span G := span{g_1, …, g_k}; H^k := μHE[k]. Then every bounded set E ⊆ G (Bornology.IsBounded E) has finite H^k-measure: μHE[k] E ≠ ∞.",
+          "lean_statement": "∀ (P k : ℕ) (g : Fin k → Euclid P), Orthonormal ℝ g → ∀ E : Set (Euclid P), E ⊆ (Submodule.span ℝ (Set.range g) : Set (Euclid P)) → Bornology.IsBounded E → μHE[k] E ≠ ∞",
+          "lean_name": "dimred_cs_sos_mt_si_span_bounded_measure_ne_top",
+          "depends_on": [],
+          "natural_proof": "Source: step 4 of the parent proof.\n\nUses frame_measure (ii), the closed-box half of Submission.dimred_cs_sos_mt_frame_measure: for every r > 0, H^k({t ∈ G : |⟨g_i, t⟩| ≤ r for all i}) = ENNReal.ofReal((2r)^k).\n\n1. Since E is bounded, E ⊆ closedBall(0, ρ) for some ρ ∈ ℝ (Bornology.IsBounded.subset_closedBall). Put r := max(ρ, 0) + 1, so that r > 0 and ρ ≤ r.\n2. Let t ∈ E. Then t ∈ G, because E ⊆ G. For each i, Cauchy–Schwarz (abs_real_inner_le_norm) and ‖g_i‖ = 1 (orthonormality) give |⟨g_i, t⟩| ≤ ‖g_i‖·‖t‖ = ‖t‖ ≤ ρ ≤ r. Hence E ⊆ Box_r := {t : t ∈ G ∧ ∀ i, |⟨g_i, t⟩| ≤ r}.\n3. By frame_measure (ii) with this r > 0, H^k(Box_r) = ENNReal.ofReal((2r)^k), which is finite (ENNReal.ofReal_ne_top).\n4. By monotonicity of the measure (measure_mono), H^k(E) ≤ H^k(Box_r) < ∞, so μHE[k] E ≠ ∞. ∎",
+          "proof_key_steps": [
+            "E ⊆ closedBall(0, ρ). With r = max(ρ, 0) + 1 > 0, Cauchy–Schwarz and ‖g_i‖ = 1 give E ⊆ {t ∈ G : |⟨g_i, t⟩| ≤ r for all i}.",
+            "frame_measure (ii) gives this closed box H^k-measure ENNReal.ofReal((2r)^k) < ∞; monotonicity finishes."
+          ]
+        },
+        "audit": {
+          "key": "span_bounded_finite",
+          "acceptable": true,
+          "natural_proof_acceptable": true,
+          "reason": "The type exactly states finiteness for every bounded subset of the frame span. No measurability assumption is needed: enclosure in a positive-radius closed frame box and measure monotonicity suffice. The supplied proof correctly uses orthonormality and the exact closed-box conclusion of frame_measure. Its explicit citation creates the inherited prerequisite, so the empty sibling-dependency list is correct and acyclic."
+        },
+        "resolved_dependencies": [],
+        "plan_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-cone-splitting-a1-split-off-spine-4ec8b869cc/parent-supplied-plan.md",
+        "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-cone-splitting-a1-split-off-spine-4ec8b869cc/parent-supplied-natural-proof.md",
+        "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-cone-splitting-a1-split-off-spine-4ec8b869cc/parent-supplied-natural-proof.json"
+      }
+    },
+    {
+      "node_id": "root.dimension_reduction_results-a1.cone_splitting-a1.split_off_spine-a1.minimality_transfer-a1.slice_integrable-a1.translate_continuous-a1",
+      "key": "translate_continuous",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-cone-splitting-a1-split-off-spine-486e36824a-a1",
+      "bundle_path": ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-cone-splitting-a1-split-off-spine-fff589dbdd/children/root-dimension-reduction-results-a1-cone-splitting-a1-split-off-spine-486e36824a",
+      "handoff": {
+        "reference_use": [
+          {
+            "source": "local-project",
+            "queries": [
+              "cat manifest.json (project b4d606db1, mathlib 25730c7c); diff -q snapshot project/GMT/Ch07/Contract.lean vs workspace GMT/Ch07/Submission.lean (identical)",
+              "python3 over dag.json: depth/status/depends_on of slice_integrable-a1 (depth 5; deps interior_product-a1, frame_measure-a1, both decomposing); frozen lean_statements of dimred_cs_sos_mt_interior_product and dimred_cs_sos_mt_frame_measure",
+              "python3 over dag.json accepted lean_statements: patterns 'orient x α| ≤', '.action (fun', 'Continuous (fun t', 'ᗮ' with '.measure'/'.action', 'Bornology.IsBounded'+'μHE'+'span'+'≠ ∞'",
+              "git show f899c748:GMT/Ch07/Submission.lean (accepted dimred_cs_ti_translate_action_hasDerivAt and unit_orientation_norm_le_one: domination via ‖R.orient‖ ≤ 1 and locallyIntegrable_mult on a closed ball)",
+              "git show 4aa9ba8d:GMT/Ch07/Submission.lean | grep theorem/starProjection (accepted idtp_fons_cs_sos_product_current: monolithic, uses Submodule.starProjection_eq_self_iff / starProjection_apply_eq_zero_iff)",
+              "grep -n cited_inherited inherited.py; grep -n 'max_depth|_inherited_prerequisites' runtime.py",
+              "rg -n over snapshot mathlib: continuousAt_of_dominated, Measure.integrableOn_of_bounded, IntegrableOn.of_forall_sdiff_eq_zero (alias of_forall_diff_eq_zero), starProjection_eq_self_iff, starProjection_apply_eq_zero_iff, isClosed_orthogonal, withDensity_apply, abs_real_inner_le_norm, ContinuousAlternatingMap.le_opNorm, opNorm_le_bound, Continuous.bounded_above_of_compact_support, integral_eq_zero_of_ae, Bornology.IsBounded.isCompact_closure",
+              "rg -n 'dimred_cs_sos_mt_si_|translate_action_continuous|span_bounded_measure' snapshot project and dag.json (no match)",
+              "lake env lean /tmp/si-decomp/check/{Smoke,Assembly,Children,Elab}.lean (Lean v4.35.0-rc3)"
+            ],
+            "files": [
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-cone-splitting-a1-split-off-spine-fff589dbdd/parent-child-handoff.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-cone-splitting-a1-split-off-spine-fff589dbdd/parent-supplied-natural-proof.md",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-cone-splitting-a1-split-off-spine-7f270cb1eb/decomposition-v1.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Projection/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Orthogonal.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/WithDensity.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/Alternating/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Operator/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Group/Bounded.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/Bounded.lean",
+              "/runtime/flows/gmt-claude-cf346c63e6ef/_recursive_lean/inherited.py",
+              "/runtime/flows/gmt-claude-cf346c63e6ef/_recursive_lean/runtime.py",
+              "/tmp/si-decomp/check/Assembly.lean",
+              "/tmp/si-decomp/check/Children.lean",
+              "/tmp/si-decomp/check/Elab.lean"
+            ],
+            "conclusion": "Pins match. The manifest records project b4d606db1 (= workspace HEAD) and mathlib 25730c7c, and the snapshot Contract.lean is byte-identical to the workspace Submission.lean.\n\nNo accepted declaration matches any child.\n- No accepted node proves continuity of t ↦ R.action(η(t + ·)) or vanishing of translates under concentration on G^⊥.\n- No accepted node proves finiteness of H^k on bounded subsets of a frame span.\n- The closest are dimred_cs_ti_translate_action_hasDerivAt (f899c748), which only differentiates along a line, and idtp_fons_cs_sos_product_current (4aa9ba8d), which is monolithic.\n- Their proofs confirm the API used here: ‖R.orient‖ ≤ 1 from IsUnitOrientationOf, locallyIntegrable_mult on closed balls, Submodule.starProjection_eq_self_iff and starProjection_apply_eq_zero_iff.\n\nAll Mathlib lemmas the child proofs need are in the snapshot at the files listed: continuousAt_of_dominated, Measure.integrableOn_of_bounded, IntegrableOn.of_forall_sdiff_eq_zero, isClosed_orthogonal, withDensity_apply, abs_real_inner_le_norm, ContinuousAlternatingMap.le_opNorm, opNorm_le_bound, Continuous.bounded_above_of_compact_support, integral_eq_zero_of_ae and Bornology.IsBounded.isCompact_closure.\n\nThe proposed names have no match in the snapshot project or dag.json. inherited.py adds frame_measure to span_bounded_finite as an inherited prerequisite, because that child's proof cites it by exact Lean name.\n\nLean checks (v4.35.0-rc3):\n- All three child types elaborate after `import GMT.Ch07.Submission` with the contract opens.\n- The frozen parent type compiles from the child stubs and the interior_product and frame_measure stubs, with no sorry of its own.\n- Complete proofs of all three children compile: two use only standard axioms, and span_bounded_finite depends only on the frame_measure stub."
+          }
+        ],
+        "parent_id": "root.dimension_reduction_results-a1.cone_splitting-a1.split_off_spine-a1.minimality_transfer-a1.slice_integrable-a1",
+        "child_id": "root.dimension_reduction_results-a1.cone_splitting-a1.split_off_spine-a1.minimality_transfer-a1.slice_integrable-a1.translate_continuous-a1",
+        "subproblem": {
+          "key": "translate_continuous",
+          "title": "Translates of an integer multiplicity action depend continuously on the translation",
+          "statement": "Let P, j ∈ ℕ and let R = (M, θ, ξ) be an integer multiplicity triple in ℝ^P (R : IMRep univ j, with M = R.carrier, θ = R.mult, ξ = R.orient, H^j := μHE[j]). Let η : ℝ^P → Λ^j (η : DifferentialForm (Euclid P) j) be a continuous j-form with compact support. Then the function t ↦ R.action(y ↦ η(t + y)) = ∫_M θ(y)·ξ(y)(η(t + y)) dH^j(y) is continuous on ℝ^P.",
+          "lean_statement": "∀ (P j : ℕ) (R : IMRep (univ : Set (Euclid P)) j) (η : DifferentialForm (Euclid P) j), Continuous η → HasCompactSupport η → Continuous (fun t : Euclid P => R.action (fun y => η (t + y)))",
+          "lean_name": "dimred_cs_sos_mt_si_translate_action_continuous",
+          "depends_on": [],
+          "natural_proof": "Source: steps 2–3 of the parent proof (unit orientations and dominated convergence), stated for an arbitrary continuous compactly supported j-form η in place of Φ∘ω.\n\nNotation: μ := H^j⌞M = μHE[j].restrict R.carrier. By definition, R.action(γ) = ∫ θ(y)·ξ(y)(γ(y)) dμ(y) for every j-form γ. Put f_t(y) := θ(y)·ξ(y)(η(t + y)). The claim is that t ↦ ∫ f_t dμ is continuous.\n\n1. (Unit orientations have norm ≤ 1.) By R.orients, μ-a.e. y has the following property (IsUnitOrientationOf): there are a subspace Q, an orthonormal family τ = (τ_1, …, τ_j) and a sign such that either ξ(y)(α) = α(τ) for all α ∈ Λ^j, or ξ(y)(α) = −α(τ) for all α. For such y and every α, |ξ(y)(α)| = |α(τ)| ≤ ‖α‖·∏_l ‖τ_l‖ = ‖α‖, by ContinuousAlternatingMap.le_opNorm and ‖τ_l‖ = 1 (orthonormality). Hence the operator norm satisfies ‖ξ(y)‖ ≤ 1 (ContinuousLinearMap.opNorm_le_bound), and |ξ(y)(β)| ≤ ‖ξ(y)‖·‖β‖ ≤ ‖β‖ for every β ∈ Λ^j. Call such y good; μ-a.e. y is good.\n2. (Constants.) As η is continuous with compact support, there is C₀ with ‖η(z)‖ ≤ C₀ for all z (Continuous.bounded_above_of_compact_support); in particular C₀ ≥ ‖η(0)‖ ≥ 0. The set tsupport η is compact, hence bounded, so tsupport η ⊆ closedBall(0, r) for some r.\n3. (Measurability.) Fix t.\n   - y ↦ (θ(y) : ℝ) is measurable, since θ is measurable and ℕ → ℝ is measurable.\n   - ξ is μ-a.e. strongly measurable (R.aestronglyMeasurable_orient).\n   - y ↦ η(t + y) is continuous.\n   - The evaluation map (L, β) ↦ L(β), from MultiVector P j × Λ^j to ℝ, is continuous.\n   So y ↦ ξ(y)(η(t + y)) is μ-a.e. strongly measurable, being a continuous function of the a.e. strongly measurable pair (ξ(y), η(t + y)). Hence so is the product f_t.\n4. (Pointwise continuity.) For each y, t ↦ f_t(y) = θ(y)·ξ(y)(η(t + y)) is continuous: t ↦ t + y and η are continuous, and ξ(y) is a continuous linear functional.\n5. (A compact window.) Fix t₀ ∈ ℝ^P and let B := closedBall(0, r + ‖t₀‖ + 1), a compact Borel set. Suppose ‖t − t₀‖ < 1 and t + y ∈ tsupport η. Then ‖t + y‖ ≤ r and ‖t‖ ≤ ‖t − t₀‖ + ‖t₀‖ < ‖t₀‖ + 1. Hence ‖y‖ = ‖(t + y) − t‖ ≤ ‖t + y‖ + ‖t‖ ≤ r + ‖t₀‖ + 1, so y ∈ B.\n6. (Integrable bound.) Put b(y) := C₀·1_B(y)·θ(y). The function 1_B·θ is μ-integrable:\n   - it is a.e. strongly measurable, since θ is measurable and B is Borel;\n   - ∫ 1_B·θ dμ = ∫_{M∩B} θ dH^j < ∞ by R.locallyIntegrable_mult, applied to the compact set B ⊆ ℝ^P (use integrable_indicator_iff and Measure.restrict_restrict).\n   Hence b is μ-integrable.\n7. (Domination.) Let t ∈ ball(t₀, 1) and let y be good (step 1).\n   - If t + y ∈ tsupport η, then y ∈ B by step 5, and |f_t(y)| = θ(y)·|ξ(y)(η(t + y))| ≤ θ(y)·‖ξ(y)‖·‖η(t + y)‖ ≤ θ(y)·C₀ = b(y).\n   - If t + y ∉ tsupport η, then η(t + y) = 0, so f_t(y) = θ(y)·ξ(y)(0) = 0 ≤ b(y), as C₀ ≥ 0 and θ ≥ 0.\n   Thus |f_t| ≤ b μ-a.e. for every t in ball(t₀, 1), which is a neighbourhood of t₀.\n8. (Dominated convergence.) By steps 3, 4, 6 and 7, the dominated convergence theorem for parametric integrals (Mathlib continuousAt_of_dominated) shows that t ↦ ∫ f_t dμ = R.action(y ↦ η(t + y)) is continuous at t₀.\n9. Since t₀ was arbitrary, the function is continuous on ℝ^P (continuous_iff_continuousAt). ∎",
+          "proof_key_steps": [
+            "μHE[j]⌞M-a.e., the unit orientation ξ(y) = ±(β ↦ β(τ)), with τ orthonormal, has operator norm ≤ 1.",
+            "‖η‖ ≤ C₀ and tsupport η ⊆ closedBall(0, r). For each t the integrand f_t(y) = θ(y)ξ(y)(η(t + y)) is a.e. strongly measurable, and for each y it is continuous in t.",
+            "For ‖t − t₀‖ < 1 the integrand vanishes unless y ∈ B = closedBall(0, r + ‖t₀‖ + 1), and it is dominated by C₀·1_B·θ. This bound is integrable by local integrability of θ on the compact set B.",
+            "continuousAt_of_dominated gives continuity at every t₀, hence continuity."
+          ]
+        },
+        "audit": {
+          "key": "translate_continuous",
+          "acceptable": true,
+          "natural_proof_acceptable": true,
+          "reason": "The one-line type exactly matches the prose hypotheses and conclusion. The supplied proof establishes the orientation bound, integrand measurability, pointwise continuity, and an integrable compact-window majorant before applying dominated convergence. Empty support and zero degree cause no gap. The argument is complete and independent of the parent and other children."
+        },
+        "resolved_dependencies": [],
+        "plan_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-cone-splitting-a1-split-off-spine-486e36824a/parent-supplied-plan.md",
+        "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-cone-splitting-a1-split-off-spine-486e36824a/parent-supplied-natural-proof.md",
+        "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-cone-splitting-a1-split-off-spine-486e36824a/parent-supplied-natural-proof.json"
+      }
+    },
+    {
+      "node_id": "root.dimension_reduction_results-a1.cone_splitting-a1.split_off_spine-a1.minimality_transfer-a1.slice_integrable-a1.translate_vanish-a1",
+      "key": "translate_vanish",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-cone-splitting-a1-split-off-spine-8f4345c036-a1",
+      "bundle_path": ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-cone-splitting-a1-split-off-spine-fff589dbdd/children/root-dimension-reduction-results-a1-cone-splitting-a1-split-off-spine-8f4345c036",
+      "handoff": {
+        "reference_use": [
+          {
+            "source": "local-project",
+            "queries": [
+              "cat manifest.json (project b4d606db1, mathlib 25730c7c); diff -q snapshot project/GMT/Ch07/Contract.lean vs workspace GMT/Ch07/Submission.lean (identical)",
+              "python3 over dag.json: depth/status/depends_on of slice_integrable-a1 (depth 5; deps interior_product-a1, frame_measure-a1, both decomposing); frozen lean_statements of dimred_cs_sos_mt_interior_product and dimred_cs_sos_mt_frame_measure",
+              "python3 over dag.json accepted lean_statements: patterns 'orient x α| ≤', '.action (fun', 'Continuous (fun t', 'ᗮ' with '.measure'/'.action', 'Bornology.IsBounded'+'μHE'+'span'+'≠ ∞'",
+              "git show f899c748:GMT/Ch07/Submission.lean (accepted dimred_cs_ti_translate_action_hasDerivAt and unit_orientation_norm_le_one: domination via ‖R.orient‖ ≤ 1 and locallyIntegrable_mult on a closed ball)",
+              "git show 4aa9ba8d:GMT/Ch07/Submission.lean | grep theorem/starProjection (accepted idtp_fons_cs_sos_product_current: monolithic, uses Submodule.starProjection_eq_self_iff / starProjection_apply_eq_zero_iff)",
+              "grep -n cited_inherited inherited.py; grep -n 'max_depth|_inherited_prerequisites' runtime.py",
+              "rg -n over snapshot mathlib: continuousAt_of_dominated, Measure.integrableOn_of_bounded, IntegrableOn.of_forall_sdiff_eq_zero (alias of_forall_diff_eq_zero), starProjection_eq_self_iff, starProjection_apply_eq_zero_iff, isClosed_orthogonal, withDensity_apply, abs_real_inner_le_norm, ContinuousAlternatingMap.le_opNorm, opNorm_le_bound, Continuous.bounded_above_of_compact_support, integral_eq_zero_of_ae, Bornology.IsBounded.isCompact_closure",
+              "rg -n 'dimred_cs_sos_mt_si_|translate_action_continuous|span_bounded_measure' snapshot project and dag.json (no match)",
+              "lake env lean /tmp/si-decomp/check/{Smoke,Assembly,Children,Elab}.lean (Lean v4.35.0-rc3)"
+            ],
+            "files": [
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-cone-splitting-a1-split-off-spine-fff589dbdd/parent-child-handoff.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-cone-splitting-a1-split-off-spine-fff589dbdd/parent-supplied-natural-proof.md",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-cone-splitting-a1-split-off-spine-7f270cb1eb/decomposition-v1.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Projection/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Orthogonal.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/WithDensity.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/Alternating/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Operator/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Group/Bounded.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/Bounded.lean",
+              "/runtime/flows/gmt-claude-cf346c63e6ef/_recursive_lean/inherited.py",
+              "/runtime/flows/gmt-claude-cf346c63e6ef/_recursive_lean/runtime.py",
+              "/tmp/si-decomp/check/Assembly.lean",
+              "/tmp/si-decomp/check/Children.lean",
+              "/tmp/si-decomp/check/Elab.lean"
+            ],
+            "conclusion": "Pins match. The manifest records project b4d606db1 (= workspace HEAD) and mathlib 25730c7c, and the snapshot Contract.lean is byte-identical to the workspace Submission.lean.\n\nNo accepted declaration matches any child.\n- No accepted node proves continuity of t ↦ R.action(η(t + ·)) or vanishing of translates under concentration on G^⊥.\n- No accepted node proves finiteness of H^k on bounded subsets of a frame span.\n- The closest are dimred_cs_ti_translate_action_hasDerivAt (f899c748), which only differentiates along a line, and idtp_fons_cs_sos_product_current (4aa9ba8d), which is monolithic.\n- Their proofs confirm the API used here: ‖R.orient‖ ≤ 1 from IsUnitOrientationOf, locallyIntegrable_mult on closed balls, Submodule.starProjection_eq_self_iff and starProjection_apply_eq_zero_iff.\n\nAll Mathlib lemmas the child proofs need are in the snapshot at the files listed: continuousAt_of_dominated, Measure.integrableOn_of_bounded, IntegrableOn.of_forall_sdiff_eq_zero, isClosed_orthogonal, withDensity_apply, abs_real_inner_le_norm, ContinuousAlternatingMap.le_opNorm, opNorm_le_bound, Continuous.bounded_above_of_compact_support, integral_eq_zero_of_ae and Bornology.IsBounded.isCompact_closure.\n\nThe proposed names have no match in the snapshot project or dag.json. inherited.py adds frame_measure to span_bounded_finite as an inherited prerequisite, because that child's proof cites it by exact Lean name.\n\nLean checks (v4.35.0-rc3):\n- All three child types elaborate after `import GMT.Ch07.Submission` with the contract opens.\n- The frozen parent type compiles from the child stubs and the interior_product and frame_measure stubs, with no sorry of its own.\n- Complete proofs of all three children compile: two use only standard axioms, and span_bounded_finite depends only on the frame_measure stub."
+          }
+        ],
+        "parent_id": "root.dimension_reduction_results-a1.cone_splitting-a1.split_off_spine-a1.minimality_transfer-a1.slice_integrable-a1",
+        "child_id": "root.dimension_reduction_results-a1.cone_splitting-a1.split_off_spine-a1.minimality_transfer-a1.slice_integrable-a1.translate_vanish-a1",
+        "subproblem": {
+          "key": "translate_vanish",
+          "title": "Translates along G of an action carried by G^⊥ vanish outside a compact set",
+          "statement": "Let P, j ∈ ℕ and let G be a linear subspace of ℝ^P (G : Submodule ℝ (Euclid P)). Let R = (M, θ, ξ) be an integer multiplicity triple in ℝ^P (R : IMRep univ j) whose measure R.measure = θ·μHE[j]⌞M is concentrated on G^⊥: R.measure(ℝ^P ∖ G^⊥) = 0. Let η : ℝ^P → Λ^j (η : DifferentialForm (Euclid P) j) be a j-form with compact support. Then there is a compact set K ⊆ ℝ^P such that R.action(y ↦ η(t + y)) = 0 for every t ∈ G with t ∉ K.",
+          "lean_statement": "∀ (P j : ℕ) (G : Submodule ℝ (Euclid P)) (R : IMRep (univ : Set (Euclid P)) j) (η : DifferentialForm (Euclid P) j), HasCompactSupport η → R.measure (Gᗮ : Set (Euclid P))ᶜ = 0 → ∃ K : Set (Euclid P), IsCompact K ∧ ∀ t ∈ G, t ∉ K → R.action (fun y => η (t + y)) = 0",
+          "lean_name": "dimred_cs_sos_mt_si_translate_action_eq_zero_of_concentrated",
+          "depends_on": [],
+          "natural_proof": "Source: step 6 of the parent proof (vanishing off p(tsupport ω) under concentration), stated for an arbitrary compactly supported j-form η and an arbitrary subspace G.\n\nNotation: H^j := μHE[j], M := R.carrier, θ := R.mult, ξ := R.orient. By definition, R.action(γ) = ∫_M θ(y)·ξ(y)(γ(y)) dH^j(y).\n\n1. (The compact set.) Let p := G.starProjection, the orthogonal projection of ℝ^P onto G. It exists because G, a subspace of the finite-dimensional space ℝ^P, is complete (instance HasOrthogonalProjection). It is a continuous linear map with p(t) = t for t ∈ G (Submodule.starProjection_eq_self_iff) and p(y) = 0 for y ∈ G^⊥ (Submodule.starProjection_apply_eq_zero_iff). Put K := p(tsupport η). Since η has compact support, tsupport η is compact, so K is compact as a continuous image of a compact set. Fix t ∈ G with t ∉ K; we show R.action(y ↦ η(t + y)) = 0.\n2. (M is H^j-almost contained in G^⊥.)\n   - G^⊥ is closed (Submodule.isClosed_orthogonal), so A := ℝ^P ∖ G^⊥ is Borel.\n   - By definition R.measure = (H^j⌞M).withDensity θ, so R.measure(A) = ∫_{M∩A} θ dH^j (withDensity_apply, Measure.restrict_restrict).\n   - For x ∈ M, θ(x) > 0 (R.mult_pos), so θ(x) ≥ 1 since θ is ℕ-valued.\n   - Since θ is measurable, setLIntegral_mono gives H^j(M ∩ A) = ∫_{M∩A} 1 dH^j ≤ ∫_{M∩A} θ dH^j = R.measure(A) = 0.\n   Consequently y ∈ G^⊥ for H^j⌞M-a.e. y: the exceptional set {y : y ∉ G^⊥} = A has (H^j⌞M)-measure H^j(A ∩ M) = 0 (ae_iff, Measure.restrict_apply').\n3. (The integrand vanishes on G^⊥.) Let y ∈ G^⊥ and suppose η(t + y) ≠ 0. Then t + y ∈ support η ⊆ tsupport η, and by linearity p(t + y) = p(t) + p(y) = t + 0 = t. Hence t = p(t + y) ∈ p(tsupport η) = K, contradicting t ∉ K. So η(t + y) = 0, and the integrand is θ(y)·ξ(y)(η(t + y)) = θ(y)·ξ(y)(0) = 0.\n4. (Conclusion.) By steps 2 and 3, the integrand y ↦ θ(y)·ξ(y)(η(t + y)) vanishes H^j⌞M-almost everywhere. So its integral R.action(y ↦ η(t + y)) is 0 (integral_eq_zero_of_ae). As t ∈ G ∖ K was arbitrary, K has the required property. ∎",
+          "proof_key_steps": [
+            "K := G.starProjection(tsupport η) is compact, as the continuous image of a compact set.",
+            "R.measure(ℝ^P ∖ G^⊥) = ∫_{M∖G^⊥} θ dH^j ≥ H^j(M ∖ G^⊥), since θ ≥ 1 on M. So H^j⌞M-a.e. point lies in G^⊥.",
+            "For t ∈ G ∖ K and y ∈ G^⊥, η(t + y) ≠ 0 would give t = p(t + y) ∈ K. So the integrand vanishes a.e. and the action is 0."
+          ]
+        },
+        "audit": {
+          "key": "translate_vanish",
+          "acceptable": true,
+          "natural_proof_acceptable": true,
+          "reason": "The type matches the prose; continuity of η is unnecessary. Positive integer multiplicity transfers concentration to the restricted Hausdorff measure. Projecting tsupport η gives a compact set outside which the integrand vanishes almost everywhere. Independent Lean checks confirm projection-instance inference for arbitrary G and that the concentration expression measures the complement set. No circular reliance occurs."
+        },
+        "resolved_dependencies": [],
+        "plan_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-cone-splitting-a1-split-off-spine-8f4345c036/parent-supplied-plan.md",
+        "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-cone-splitting-a1-split-off-spine-8f4345c036/parent-supplied-natural-proof.md",
+        "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-cone-splitting-a1-split-off-spine-8f4345c036/parent-supplied-natural-proof.json"
+      }
+    }
+  ],
+  "files": {
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-cone-splitting-a1-split-off-spine-fff589dbdd/task.md": "9e4ea41ef257319c83fb02009150ae5578d921c66b3d8377928fa0839feacb93",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-cone-splitting-a1-split-off-spine-fff589dbdd/problem.md": "5b78b2fcb87970586dd76fea8db5f33ecf950ba8df40e0bbfb2eb94f2eb67d06",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-cone-splitting-a1-split-off-spine-fff589dbdd/problem.json": "a64eb8eb7211544e754b40959feeb1378f1cc31f7893bafbe4c7add776da17a2",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-cone-splitting-a1-split-off-spine-fff589dbdd/reference-manifest.json": "166b882f6e1c222a7523ace3505311d8aa41f939a8ae9b59a30353c38d3be033",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-cone-splitting-a1-split-off-spine-fff589dbdd/decomposition.json": "425729cde8aaedc603e651129e7aa554743ce78f439d1816fce6100943644907",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-cone-splitting-a1-split-off-spine-fff589dbdd/decomposition-audit.json": "3371fec76551d988885564d8ced1d29c4b405fc57542afac2c5a6061109c2dae",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-cone-splitting-a1-split-off-spine-fff589dbdd/controller-contract.json": "98ca6c78b2de77f692540fa24e80694ddcd2346111afbb4918901a159346efca",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-cone-splitting-a1-split-off-spine-fff589dbdd/children/root-dimension-reduction-results-a1-cone-splitting-a1-split-off-spine-4ec8b869cc/parent-child-handoff.json": "125370cf037270c184875d69c5e3c0e28f96217010e6e5f22f42e7e8cd2f2449",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-cone-splitting-a1-split-off-spine-fff589dbdd/children/root-dimension-reduction-results-a1-cone-splitting-a1-split-off-spine-4ec8b869cc/parent-supplied-plan.md": "5b73c22a8dd21a2e0e36ca542f8762111c008ef3f45e3b0df64a85444b8b1e84",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-cone-splitting-a1-split-off-spine-fff589dbdd/children/root-dimension-reduction-results-a1-cone-splitting-a1-split-off-spine-4ec8b869cc/parent-supplied-natural-proof.md": "0fc1f5bdd5c731cb434cba72906d19542089cfecb3f7b655f75e91956d73db55",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-cone-splitting-a1-split-off-spine-fff589dbdd/children/root-dimension-reduction-results-a1-cone-splitting-a1-split-off-spine-4ec8b869cc/parent-supplied-natural-proof.json": "912fa16d438f960b8d0f1565ebef890f574c450fbd56db86839ed90b2f6d653b",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-cone-splitting-a1-split-off-spine-fff589dbdd/children/root-dimension-reduction-results-a1-cone-splitting-a1-split-off-spine-4ec8b869cc/node.json": "6b0df996b3974131aa5dc31bcd2c779cd415ef27bf6a4360629de75e7f07fd9e",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-cone-splitting-a1-split-off-spine-fff589dbdd/children/root-dimension-reduction-results-a1-cone-splitting-a1-split-off-spine-486e36824a/parent-child-handoff.json": "4fb42595fc7007391a51b9055fb4424cc223b4de162146bb52b363b648f7c21d",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-cone-splitting-a1-split-off-spine-fff589dbdd/children/root-dimension-reduction-results-a1-cone-splitting-a1-split-off-spine-486e36824a/parent-supplied-plan.md": "6806e52814bc817ec59416abca6dba5dafbc2d6c7c36fc1a66fbf3f1bd2615e9",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-cone-splitting-a1-split-off-spine-fff589dbdd/children/root-dimension-reduction-results-a1-cone-splitting-a1-split-off-spine-486e36824a/parent-supplied-natural-proof.md": "32742ff48746fa39d0f10003ab91f6e11d9e8299500fb559ee554e6ee8bf8795",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-cone-splitting-a1-split-off-spine-fff589dbdd/children/root-dimension-reduction-results-a1-cone-splitting-a1-split-off-spine-486e36824a/parent-supplied-natural-proof.json": "4896be33f2d063897709420f8b18a9fdd96e77993b11224c061a871ab0105e6e",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-cone-splitting-a1-split-off-spine-fff589dbdd/children/root-dimension-reduction-results-a1-cone-splitting-a1-split-off-spine-486e36824a/node.json": "de934e7d28c1ab6391fb0ab038dd34e79f6205bcef9e8fa4511a9e6f499f5647",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-cone-splitting-a1-split-off-spine-fff589dbdd/children/root-dimension-reduction-results-a1-cone-splitting-a1-split-off-spine-8f4345c036/parent-child-handoff.json": "73981b05e16025c4c3f84f90340708dabbfd2f9c4e4793e08e4f768490e7d16c",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-cone-splitting-a1-split-off-spine-fff589dbdd/children/root-dimension-reduction-results-a1-cone-splitting-a1-split-off-spine-8f4345c036/parent-supplied-plan.md": "017359faaacb1ddf2e7dec6fb324459b31772c0eddcc752f11cafe58ff3969b7",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-cone-splitting-a1-split-off-spine-fff589dbdd/children/root-dimension-reduction-results-a1-cone-splitting-a1-split-off-spine-8f4345c036/parent-supplied-natural-proof.md": "e2659747ea3245eaa79d4fc471e4c238a2dc78aff991c67c2134d2e69a980d91",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-cone-splitting-a1-split-off-spine-fff589dbdd/children/root-dimension-reduction-results-a1-cone-splitting-a1-split-off-spine-8f4345c036/parent-supplied-natural-proof.json": "c4e1cc7656dff546b58c77616e127a2f4809d5432999b099891b77cae500df6e",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-cone-splitting-a1-split-off-spine-fff589dbdd/children/root-dimension-reduction-results-a1-cone-splitting-a1-split-off-spine-8f4345c036/node.json": "aae17db6810f10ef91ad65c804b6634b393bcb952acef42f36ed2656f1af5838"
+  }
+}

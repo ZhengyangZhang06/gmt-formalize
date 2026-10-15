@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.cone_splitting-a1.split_off_spine-a1.cone_filling_subspace-a1.cone_param-a1.piece_bounds-a1",
+  "parent_id": "root.dimension_reduction_results-a1.cone_splitting-a1.split_off_spine-a1.cone_filling_subspace-a1.cone_param-a1",
+  "depth": 6,
+  "title": "Cone piece bounds: integrability of w∘tail on B, the covector bound with c′ = s^n‖G‖c, and ∫⁻_B |w∘tail|·c′ ≤ ρ·∫⁻_A |w|·c",
+  "statement": "Let P, n ∈ ℕ and ρ ∈ ℝ. Let G : ℝ^n → ℝ^P be measurable, H : ℝ^{n+1} → ℝ^P any map, A ⊆ ℝ^n Borel, and w : ℝ^n → ℤ and c : ℝ^n → ℝ measurable. Assume (w : ℝ) is Lebesgue integrable on A, ‖G(u)‖ ≤ ρ for u ∈ A, and for every u ∈ A: c(u) ≥ 0 and |α(DG(u)e_0, …, DG(u)e_{n−1})| ≤ c(u)·|α| for every n-covector α on ℝ^P (|α| = covectorEuclideanNorm α). Write z_0 := WithLp.ofLp z 0 and tail z := WithLp.toLp 2 (Fin.tail (WithLp.ofLp z)), and let B := {z ∈ ℝ^{n+1} : z_0 ∈ (0, 1) and tail z ∈ A}. Assume that for every z ∈ B the tuple (b ↦ DH(z)ê_b) equals Fin.cons (G(tail z)) (a ↦ z_0·DG(tail z)e_a). Put c′(z) := z_0^n·‖G(tail z)‖·c(tail z). Then:\n(i) z ↦ (w(tail z) : ℝ) is integrable on B;\n(ii) for every z ∈ B, c′(z) ≥ 0 and |α(DH(z)ê_0, …, DH(z)ê_n)| ≤ c′(z)·|α| for every (n+1)-covector α on ℝ^P;\n(iii) ∫⁻_{z ∈ B} ofReal(|w(tail z)|·c′(z)) dz ≤ ofReal(ρ)·∫⁻_{u ∈ A} ofReal(|w(u)|·c(u)) du.\nHere D = fderiv ℝ, e_a := EuclideanSpace.single a 1 ∈ ℝ^n, ê_b := EuclideanSpace.single b 1 ∈ ℝ^{n+1}, and all measures are Lebesgue measure.",
+  "lean_statement": "∀ (P n : ℕ) (ρ : ℝ) (G : Euclid n → Euclid P) (H : Euclid (n + 1) → Euclid P) (A : Set (Euclid n)) (w : Euclid n → ℤ) (c : Euclid n → ℝ), Measurable G → MeasurableSet A → Measurable w → Measurable c → IntegrableOn (fun u => (w u : ℝ)) A → (∀ u ∈ A, ‖G u‖ ≤ ρ) → (∀ u ∈ A, 0 ≤ c u ∧ ∀ α : Covector (Euclid P) n, |α (fun a => fderiv ℝ G u (EuclideanSpace.single a 1))| ≤ c u * covectorEuclideanNorm α) → (∀ z : Euclid (n + 1), WithLp.ofLp z 0 ∈ Ioo (0 : ℝ) 1 → (WithLp.toLp 2 (Fin.tail (WithLp.ofLp z)) : Euclid n) ∈ A → (fun b => fderiv ℝ H z (EuclideanSpace.single b 1)) = Fin.cons (G (WithLp.toLp 2 (Fin.tail (WithLp.ofLp z)))) (fun a => WithLp.ofLp z 0 • fderiv ℝ G (WithLp.toLp 2 (Fin.tail (WithLp.ofLp z))) (EuclideanSpace.single a 1))) → IntegrableOn (fun z : Euclid (n + 1) => (w (WithLp.toLp 2 (Fin.tail (WithLp.ofLp z))) : ℝ)) {z : Euclid (n + 1) | WithLp.ofLp z 0 ∈ Ioo (0 : ℝ) 1 ∧ (WithLp.toLp 2 (Fin.tail (WithLp.ofLp z)) : Euclid n) ∈ A} ∧ (∀ z : Euclid (n + 1), WithLp.ofLp z 0 ∈ Ioo (0 : ℝ) 1 → (WithLp.toLp 2 (Fin.tail (WithLp.ofLp z)) : Euclid n) ∈ A → 0 ≤ WithLp.ofLp z 0 ^ n * ‖G (WithLp.toLp 2 (Fin.tail (WithLp.ofLp z)))‖ * c (WithLp.toLp 2 (Fin.tail (WithLp.ofLp z))) ∧ ∀ α : Covector (Euclid P) (n + 1), |α (fun b => fderiv ℝ H z (EuclideanSpace.single b 1))| ≤ WithLp.ofLp z 0 ^ n * ‖G (WithLp.toLp 2 (Fin.tail (WithLp.ofLp z)))‖ * c (WithLp.toLp 2 (Fin.tail (WithLp.ofLp z))) * covectorEuclideanNorm α) ∧ ∫⁻ z in {z : Euclid (n + 1) | WithLp.ofLp z 0 ∈ Ioo (0 : ℝ) 1 ∧ (WithLp.toLp 2 (Fin.tail (WithLp.ofLp z)) : Euclid n) ∈ A}, ENNReal.ofReal (|(w (WithLp.toLp 2 (Fin.tail (WithLp.ofLp z))) : ℝ)| * (WithLp.ofLp z 0 ^ n * ‖G (WithLp.toLp 2 (Fin.tail (WithLp.ofLp z)))‖ * c (WithLp.toLp 2 (Fin.tail (WithLp.ofLp z))))) ≤ ENNReal.ofReal ρ * ∫⁻ u in A, ENNReal.ofReal (|(w u : ℝ)| * c u)",
+  "lean_name": "dimred_cs_sos_cfs_cp_piece_bounds",
+  "depends_on": [
+    "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.lipschitz_pushforward-a1.integrality-a1.cylinder_im-a1.cyl_fubini-a1",
+    "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.lipschitz_pushforward-a1.covector_bounds-a1.curry_le-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.lipschitz_pushforward-a1.integrality-a1.cylinder_im-a1.cyl_fubini-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-lip-36d21f0b90-a1",
+      "result_commit": "8597f3f04cb72a70e4b11d91699ec1f9f45dfc0f",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.lipschitz_pushforward-a1.covector_bounds-a1.curry_le-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-lip-14afd577b6-a1",
+      "result_commit": "0ea228e4341594546bf57438f6b9c6dbb180422d",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-cone-splitting-a1-split-off-spine-e0da228da4-a1"
+}

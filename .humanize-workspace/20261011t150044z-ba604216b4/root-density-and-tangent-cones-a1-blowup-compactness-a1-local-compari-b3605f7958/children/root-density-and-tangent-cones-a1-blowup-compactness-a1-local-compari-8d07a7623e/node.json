@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.orientation_fixed-a1.orientation_comp-a1",
+  "parent_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.orientation_fixed-a1",
+  "depth": 5,
+  "title": "A linear map fixing an n-plane fixes every unit orientation of that plane",
+  "statement": "Let P, n ∈ ℕ, Q a linear subspace of ℝ^P and ξ ∈ Λₙ(ℝ^P) (MultiVector P n, a continuous linear functional on n-covectors) a unit orientation of Q (IsUnitOrientationOf ξ Q: ξ = ±τ₁ ∧ ⋯ ∧ τₙ, i.e. ⟨β, ξ⟩ = ±β(τ₁, …, τₙ) for all n-covectors β, for an orthonormal family τ spanning Q, with one fixed sign). Let L : ℝ^P → ℝ^P be a continuous linear map with Lv = v for every v ∈ Q. Then ⟨α ∘ ΛⁿL, ξ⟩ = ⟨α, ξ⟩ for every n-covector α, where (α ∘ ΛⁿL)(w₁, …, wₙ) = α(Lw₁, …, Lwₙ) is α.compContinuousLinearMap L.",
+  "lean_statement": "∀ (P n : ℕ) (ξ : MultiVector P n) (Q : Submodule ℝ (Euclid P)) (L : Euclid P →L[ℝ] Euclid P), IsUnitOrientationOf ξ Q → (∀ v ∈ Q, L v = v) → ∀ α : Covector (Euclid P) n, ξ (α.compContinuousLinearMap L) = ξ α",
+  "lean_name": "dtc_bc_lc_unitOrientation_comp_eq",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-compari-8d07a7623e-a1"
+}
