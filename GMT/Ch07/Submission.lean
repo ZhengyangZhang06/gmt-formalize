@@ -2264,120 +2264,6 @@ theorem Submission.idtp_cse_fc_ae_mem_support : ∀ (P n : ℕ) (C : GeometricCu
   filter_upwards [measure_eq_zero_iff_ae_notMem.1 hZ] with x hx
   exact ⟨mem_univ x, hx⟩
 
-/-- **Fibre count for the cone-sector endpoint density** (Simon 7.3.3; the classification of
-`2`-dimensional minimizing cones used there, which the book cites to [Whi82]).  Let
-`N(p) = Σ_{x ∈ X(p)} θ(x)` be the multiplicity of the fibre `X(p) = M ∩ Z_s ∩ F̃⁻¹{p}` of
-`F̃(x) = (|x|, f(x))`, `f(x) = arctan(⟨x, e⟩/⟨x, a⟩)`, and `s₃ = min(s₂, δ/2, s/2)`, where `s₂` is
-the radius of the flux identity `H(p) = m p₁` (`idtp_cse_flux_density_eq`).  For a.e.
-`p ∈ (1 − s₃, 1 + s₃) × (−s₃, s₃)` the flux identity and, if `p₂ > 0`, the sector point
-`x_Q(p) ∈ M` of multiplicity `k` with `T_{x_Q(p)}M = Q` (`idtp_cse_sector_carrier_points`) give
-`m ≤ N(p)`, `k ≤ m` and, if `k < m`, `m + 1 ≤ N(p)` (`idtp_cse_fc_fibre_pointwise`).  A good point
-of the positive-measure half box gives `k ≤ m`.  If `k < m` and `0 < s' ≤ s₃`, then
-`ofReal((4m + 2)s'²) ≤ ∫_{Sq(s')} N` (`idtp_cse_fc_square_lintegral_lower`); the `N`-identity of
-`idtp_cse_fibre_area_identities` (with radial tangency, `idtp_cse_cone_stationary_radial`) for
-`b = 1_{Sq(s')}` turns this into `∫_{Z(s, s')} J dμ`, since `Z_s ∩ F̃⁻¹(Sq(s')) = Z(s, s')`, and
-`idtp_cse_fc_jacobian_upper` (with `μ`-a.e. `x ∈ spt C`, `idtp_cse_fc_ae_mem_support`, and the
-localization `Loc(s)` at `s'`) bounds that by `μ(Z(s, s'))/(1 − 2s')`. -/
-theorem Submission.idtp_cse_fibre_count_bound : ∀ (P : ℕ) (C : GeometricCurrentOn (univ : Set (Euclid P)) 2) (Q : Submodule ℝ (Euclid P)) (a e : Euclid P) (δ : ℝ) (k : ℕ), IsMinimizingIn C univ → BoundaryVanishes C → IsConeCurrent C → Module.finrank ℝ Q = 2 → a ∈ Q → e ∈ Q → ‖a‖ = 1 → ‖e‖ = 1 → inner ℝ a e = 0 → 0 < δ → 1 ≤ k → a ∈ C.support → (∀ t φ : ℝ, 0 < t → 0 < φ → φ < δ → HasMassDensity C (t • (Real.cos φ • a + Real.sin φ • e)) k ∧ ∃ r : ℝ, 0 < r ∧ C.support ∩ ball (t • (Real.cos φ • a + Real.sin φ • e)) r ⊆ (Q : Set (Euclid P))) → ∀ (R : IMRep (univ : Set (Euclid P)) 2) (m : ℕ) (s : ℝ), R.Represents C → HasMassDensity C a m → 0 < s → s ≤ 1 / 4 → (∀ s' : ℝ, 0 < s' → s' ≤ s → ∀ x ∈ C.support, 0 < inner ℝ x a → |‖x‖ - 1| < s' → |Real.arctan (inner ℝ x e / inner ℝ x a)| < s' → ‖x - Q.starProjection x‖ ≤ 2 * s * ‖x‖ → ‖x - Q.starProjection x‖ < s' / 4 * ‖x‖ ∧ dist x a < 3 * s') → k ≤ m ∧ (k < m → ∃ s₃ : ℝ, 0 < s₃ ∧ ∀ s' : ℝ, 0 < s' → s' ≤ s₃ → ENNReal.ofReal ((4 * (m : ℝ) + 2) * s' ^ 2 * (1 - 2 * s')) ≤ R.measure {x : Euclid P | 0 < inner ℝ x a ∧ |‖x‖ - 1| < s' ∧ |Real.arctan (inner ℝ x e / inner ℝ x a)| < s' ∧ ‖x - Q.starProjection x‖ < s * ‖x‖}) := by
-  intro P C Q a e δ k hmin hbd hcone hQ haQ heQ ha he hae hδ hk haC hsect R m s hR ham hs hs4 hloc
-  -- Step 0: radial tangency, the fibre identities, the flux identity and the sector points
-  have hrad := (Submission.idtp_cse_cone_stationary_radial P 2 C R hmin hbd hcone hR).2
-  have hid := (Submission.idtp_cse_fibre_area_identities P R Q a e s hQ haQ heQ ha he hae hrad).2.2
-  obtain ⟨s₂, hs₂, hflux⟩ := Submission.idtp_cse_flux_density_eq P C Q a e δ k hmin hbd hcone hQ
-    haQ heQ ha he hae hδ hk haC hsect R m s hR ham hs hs4 hloc
-  have hsec := Submission.idtp_cse_sector_carrier_points P C Q a e δ k R hQ haQ heQ ha he hae hδ hk
-    hsect hR
-  -- the fibre multiplicity `N(p) = Σ_{x ∈ X(p)} θ(x)`
-  set N : ℝ × ℝ → ℝ≥0∞ := fun p => ∑' x : ↥(R.carrier ∩ {x : Euclid P | 0 < inner ℝ x a ∧ |‖x‖ - 1| < s ∧ |Real.arctan (inner ℝ x e / inner ℝ x a)| < s ∧ ‖x - Q.starProjection x‖ < s * ‖x‖} ∩ (fun x : Euclid P => (‖x‖, Real.arctan (inner ℝ x e / inner ℝ x a))) ⁻¹' {p}), (R.mult x : ℝ≥0∞)
-  -- `s₃ = min(s₂, δ/2, s/2)`, so `s₃ ≤ 1/8`
-  set s₃ := min s₂ (min (δ / 2) (s / 2))
-  have hs₃0 : 0 < s₃ := lt_min hs₂ (lt_min (half_pos hδ) (half_pos hs))
-  have hs₃₂ : s₃ ≤ s₂ := min_le_left _ _
-  have hs₃δ : s₃ ≤ δ / 2 := (min_le_right _ _).trans (min_le_left _ _)
-  have hs₃s : s₃ ≤ s / 2 := (min_le_right _ _).trans (min_le_right _ _)
-  -- Step 2: a.e. on `Box(s₃)`, `m ≤ N(p)`, and for `p₂ > 0`, `k ≤ m` and `k < m → m + 1 ≤ N(p)`
-  have hgood : ∀ᵐ p : ℝ × ℝ, p ∈ Ioo (1 - s₃) (1 + s₃) ×ˢ Ioo (-s₃) s₃ →
-      (m : ℝ≥0∞) ≤ N p ∧ (0 < p.2 → k ≤ m ∧ (k < m → (m : ℝ≥0∞) + 1 ≤ N p)) := by
-    filter_upwards [hflux, hsec] with p hpH hpsec hp
-    obtain ⟨⟨hp1l, hp1u⟩, hp2l, hp2u⟩ := hp
-    obtain ⟨hmN, hcount⟩ := Submission.idtp_cse_fc_fibre_pointwise P R Q a e s m k p hQ haQ heQ ha
-      he hae hs hs4 (abs_lt.2 ⟨by linarith, by linarith⟩) (abs_lt.2 ⟨by linarith, by linarith⟩)
-      (hpH ⟨⟨by linarith, by linarith⟩, by linarith, by linarith⟩)
-    refine ⟨hmN, fun hp2 => ?_⟩
-    obtain ⟨hM, hθ, hT⟩ := hpsec (by linarith) hp2 (by linarith) (by linarith)
-    exact hcount hM hθ hT
-  -- Step 3: `k ≤ m`, read off at a good point of the half box `(1 - s₃, 1 + s₃) × (0, s₃)`
-  have hkm : k ≤ m := by
-    have hvol : volume (Ioo (1 - s₃) (1 + s₃) ×ˢ Ioo 0 s₃ : Set (ℝ × ℝ)) ≠ 0 := by
-      rw [Measure.volume_eq_prod, Measure.prod_prod, Real.volume_Ioo, Real.volume_Ioo]
-      exact mul_ne_zero (ENNReal.ofReal_pos.2 (by linarith)).ne'
-        (ENNReal.ofReal_pos.2 (by linarith)).ne'
-    obtain ⟨p, ⟨⟨hp1l, hp1u⟩, hp2l, hp2u⟩, hp⟩ :=
-      Measure.exists_mem_of_measure_ne_zero_of_ae hvol (ae_restrict_of_ae hgood)
-    exact ((hp ⟨⟨hp1l, hp1u⟩, by linarith, hp2u⟩).2 hp2l).1
-  refine ⟨hkm, fun hlt => ⟨s₃, hs₃0, fun s' hs' hs's₃ => ?_⟩⟩
-  -- Steps 5–7 for `0 < s' ≤ s₃`: the square `Sq(s') ⊆ Box(s₃)`
-  have hs's : s' ≤ s / 2 := hs's₃.trans hs₃s
-  have hSq : MeasurableSet (Ioo (1 - s') (1 + s') ×ˢ Ioo (-s') s' : Set (ℝ × ℝ)) :=
-    measurableSet_Ioo.prod measurableSet_Ioo
-  have hSqbox : Ioo (1 - s') (1 + s') ×ˢ Ioo (-s') s' ⊆ Ioo (1 - s₃) (1 + s₃) ×ˢ Ioo (-s₃) s₃ :=
-    prod_mono (Ioo_subset_Ioo (by linarith) (by linarith)) (Ioo_subset_Ioo (by linarith) hs's₃)
-  -- Step 5: `ofReal((4m + 2)s'²) ≤ ∫⁻_{Sq(s')} N`
-  have hlow := Submission.idtp_cse_fc_square_lintegral_lower N m s' hs'
-    (hgood.mono fun p hp hpSq => (hp (hSqbox hpSq)).1)
-    (hgood.mono fun p hp hpSq hp2 => ((hp (hSqbox hpSq)).2 hp2).2 hlt)
-  -- Step 6: `∫⁻_{Sq(s')} N = ∫⁻ 1_{Sq(s')} N`, which the `N`-identity turns into an integral over `Z_s`
-  have hb : Measurable ((Ioo (1 - s') (1 + s') ×ˢ Ioo (-s') s').indicator (1 : ℝ × ℝ → ℝ≥0∞)) :=
-    measurable_one.indicator hSq
-  have hNSq : ∫⁻ p in Ioo (1 - s') (1 + s') ×ˢ Ioo (-s') s', N p =
-      ∫⁻ p, (Ioo (1 - s') (1 + s') ×ˢ Ioo (-s') s').indicator 1 p * N p := by
-    rw [← lintegral_indicator hSq]
-    refine lintegral_congr fun p => ?_
-    by_cases hp : p ∈ Ioo (1 - s') (1 + s') ×ˢ Ioo (-s') s'
-    · rw [indicator_of_mem hp, indicator_of_mem hp, Pi.one_apply, one_mul]
-    · rw [indicator_of_notMem hp, indicator_of_notMem hp, zero_mul]
-  -- `Z_s` and `Z(s, s')` are Borel
-  have hZ : ∀ r : ℝ, MeasurableSet {x : Euclid P | 0 < inner ℝ x a ∧ |‖x‖ - 1| < r ∧ |Real.arctan (inner ℝ x e / inner ℝ x a)| < r ∧ ‖x - Q.starProjection x‖ < s * ‖x‖} := by
-    intro r
-    simp only [ofPred_and]
-    refine (measurableSet_lt measurable_const ?_).inter ((measurableSet_lt ?_ measurable_const).inter
-      ((measurableSet_lt ?_ measurable_const).inter (measurableSet_lt ?_ ?_))) <;> fun_prop
-  -- on `Z_s`, `F̃(x) ∈ Sq(s')` iff `x ∈ Z(s, s')`, so the integral over `Z_s` is one over `Z(s, s')`
-  have hmid : ∫⁻ x in {x : Euclid P | 0 < inner ℝ x a ∧ |‖x‖ - 1| < s ∧ |Real.arctan (inner ℝ x e / inner ℝ x a)| < s ∧ ‖x - Q.starProjection x‖ < s * ‖x‖}, (Ioo (1 - s') (1 + s') ×ˢ Ioo (-s') s').indicator 1 (‖x‖, Real.arctan (inner ℝ x e / inner ℝ x a)) * ENNReal.ofReal (‖(approxTangentPlane 2 R.carrier x).starProjection (inner ℝ x a • e - inner ℝ x e • a)‖ / ‖Q.starProjection x‖ ^ 2) ∂R.measure ≤ ∫⁻ x in {x : Euclid P | 0 < inner ℝ x a ∧ |‖x‖ - 1| < s' ∧ |Real.arctan (inner ℝ x e / inner ℝ x a)| < s' ∧ ‖x - Q.starProjection x‖ < s * ‖x‖}, ENNReal.ofReal (‖(approxTangentPlane 2 R.carrier x).starProjection (inner ℝ x a • e - inner ℝ x e • a)‖ / ‖Q.starProjection x‖ ^ 2) ∂R.measure := by
-    rw [← lintegral_indicator (hZ s')]
-    refine (setLIntegral_congr_fun (hZ s) fun x hx => ?_).trans_le (setLIntegral_le_lintegral _ _)
-    obtain ⟨hxa, -, -, hxq⟩ := hx
-    have hiff : (‖x‖, Real.arctan (inner ℝ x e / inner ℝ x a)) ∈
-        Ioo (1 - s') (1 + s') ×ˢ Ioo (-s') s' ↔ x ∈ {x : Euclid P | 0 < inner ℝ x a ∧
-          |‖x‖ - 1| < s' ∧ |Real.arctan (inner ℝ x e / inner ℝ x a)| < s' ∧
-          ‖x - Q.starProjection x‖ < s * ‖x‖} := by
-      simp only [mem_prod, mem_Ioo, mem_ofPred_eq, abs_lt]
-      constructor
-      · rintro ⟨⟨h1, h2⟩, h3, h4⟩
-        exact ⟨hxa, ⟨by linarith, by linarith⟩, ⟨h3, h4⟩, hxq⟩
-      · rintro ⟨-, ⟨h1, h2⟩, ⟨h3, h4⟩, -⟩
-        exact ⟨⟨by linarith, by linarith⟩, h3, h4⟩
-    by_cases hxZ : x ∈ {x : Euclid P | 0 < inner ℝ x a ∧ |‖x‖ - 1| < s' ∧
-        |Real.arctan (inner ℝ x e / inner ℝ x a)| < s' ∧ ‖x - Q.starProjection x‖ < s * ‖x‖}
-    · rw [indicator_of_mem (hiff.2 hxZ), indicator_of_mem hxZ, Pi.one_apply, one_mul]
-    · rw [indicator_of_notMem (mt hiff.1 hxZ), indicator_of_notMem hxZ, zero_mul]
-  -- `J ≤ 1/(1 − 2s')` `μ`-a.e. on `Z(s, s')`: `μ`-a.e. point lies in `spt C`, where `Loc(s)` applies
-  have hjac := Submission.idtp_cse_fc_jacobian_upper P R Q a e C.support s s' hQ haQ heQ ha he hae
-    (Submission.idtp_cse_fc_ae_mem_support P 2 C R hR) hs' (by linarith)
-    fun x hx hxa hx1 hxf hxq => (hloc s' hs' (by linarith) x hx hxa hx1 hxf
-      (hxq.le.trans (by linarith [mul_nonneg hs.le (norm_nonneg x)]))).1
-  have hkey := hlow.trans (hNSq.trans_le ((hid _ hb).2.trans_le (hmid.trans hjac)))
-  -- Step 7: multiply by `ofReal(1 − 2s') > 0`
-  have h2s' : 0 < 1 - 2 * s' := by linarith
-  calc ENNReal.ofReal ((4 * (m : ℝ) + 2) * s' ^ 2 * (1 - 2 * s'))
-      = ENNReal.ofReal ((4 * (m : ℝ) + 2) * s' ^ 2) * ENNReal.ofReal (1 - 2 * s') :=
-        ENNReal.ofReal_mul (by positivity)
-    _ ≤ ENNReal.ofReal (1 / (1 - 2 * s')) * R.measure {x : Euclid P | 0 < inner ℝ x a ∧ |‖x‖ - 1| < s' ∧ |Real.arctan (inner ℝ x e / inner ℝ x a)| < s' ∧ ‖x - Q.starProjection x‖ < s * ‖x‖} * ENNReal.ofReal (1 - 2 * s') := by
-        gcongr
-    _ = R.measure {x : Euclid P | 0 < inner ℝ x a ∧ |‖x‖ - 1| < s' ∧ |Real.arctan (inner ℝ x e / inner ℝ x a)| < s' ∧ ‖x - Q.starProjection x‖ < s * ‖x‖} := by
-        rw [mul_right_comm, ← ENNReal.ofReal_mul (by positivity), one_div_mul_cancel h2s'.ne',
-          ENNReal.ofReal_one, one_mul]
-
 /-- **Weak limits of blow-ups of a cycle are cycles** (`∂C = 0` for the blow-up limit `C` in the
 proof of Simon 7.3.3(2), chapter-07.txt line 512 ff.; cf. the proof of 7.3.1, lines 335–336,
 where `∂η_{x,λⱼ#}T = 0` in `B_{MR}(0)` for large `j`, and Ch. 6, 2.13 and 2.24(1)).  If
@@ -99160,5 +99046,119 @@ theorem Submission.idtp_cse_flux_density_eq : ∀ (P : ℕ) (C : GeometricCurren
   refine ⟨s / 8, by linarith, ?_⟩
   exact Submission.idtp_cse_fd_identify_constant s c m _ _ hs (by linarith) hfin hc
     (fun s' _ hs' => hbox s' (by linarith)) hlim
+
+/-- **Fibre count for the cone-sector endpoint density** (Simon 7.3.3; the classification of
+`2`-dimensional minimizing cones used there, which the book cites to [Whi82]).  Let
+`N(p) = Σ_{x ∈ X(p)} θ(x)` be the multiplicity of the fibre `X(p) = M ∩ Z_s ∩ F̃⁻¹{p}` of
+`F̃(x) = (|x|, f(x))`, `f(x) = arctan(⟨x, e⟩/⟨x, a⟩)`, and `s₃ = min(s₂, δ/2, s/2)`, where `s₂` is
+the radius of the flux identity `H(p) = m p₁` (`idtp_cse_flux_density_eq`).  For a.e.
+`p ∈ (1 − s₃, 1 + s₃) × (−s₃, s₃)` the flux identity and, if `p₂ > 0`, the sector point
+`x_Q(p) ∈ M` of multiplicity `k` with `T_{x_Q(p)}M = Q` (`idtp_cse_sector_carrier_points`) give
+`m ≤ N(p)`, `k ≤ m` and, if `k < m`, `m + 1 ≤ N(p)` (`idtp_cse_fc_fibre_pointwise`).  A good point
+of the positive-measure half box gives `k ≤ m`.  If `k < m` and `0 < s' ≤ s₃`, then
+`ofReal((4m + 2)s'²) ≤ ∫_{Sq(s')} N` (`idtp_cse_fc_square_lintegral_lower`); the `N`-identity of
+`idtp_cse_fibre_area_identities` (with radial tangency, `idtp_cse_cone_stationary_radial`) for
+`b = 1_{Sq(s')}` turns this into `∫_{Z(s, s')} J dμ`, since `Z_s ∩ F̃⁻¹(Sq(s')) = Z(s, s')`, and
+`idtp_cse_fc_jacobian_upper` (with `μ`-a.e. `x ∈ spt C`, `idtp_cse_fc_ae_mem_support`, and the
+localization `Loc(s)` at `s'`) bounds that by `μ(Z(s, s'))/(1 − 2s')`. -/
+theorem Submission.idtp_cse_fibre_count_bound : ∀ (P : ℕ) (C : GeometricCurrentOn (univ : Set (Euclid P)) 2) (Q : Submodule ℝ (Euclid P)) (a e : Euclid P) (δ : ℝ) (k : ℕ), IsMinimizingIn C univ → BoundaryVanishes C → IsConeCurrent C → Module.finrank ℝ Q = 2 → a ∈ Q → e ∈ Q → ‖a‖ = 1 → ‖e‖ = 1 → inner ℝ a e = 0 → 0 < δ → 1 ≤ k → a ∈ C.support → (∀ t φ : ℝ, 0 < t → 0 < φ → φ < δ → HasMassDensity C (t • (Real.cos φ • a + Real.sin φ • e)) k ∧ ∃ r : ℝ, 0 < r ∧ C.support ∩ ball (t • (Real.cos φ • a + Real.sin φ • e)) r ⊆ (Q : Set (Euclid P))) → ∀ (R : IMRep (univ : Set (Euclid P)) 2) (m : ℕ) (s : ℝ), R.Represents C → HasMassDensity C a m → 0 < s → s ≤ 1 / 4 → (∀ s' : ℝ, 0 < s' → s' ≤ s → ∀ x ∈ C.support, 0 < inner ℝ x a → |‖x‖ - 1| < s' → |Real.arctan (inner ℝ x e / inner ℝ x a)| < s' → ‖x - Q.starProjection x‖ ≤ 2 * s * ‖x‖ → ‖x - Q.starProjection x‖ < s' / 4 * ‖x‖ ∧ dist x a < 3 * s') → k ≤ m ∧ (k < m → ∃ s₃ : ℝ, 0 < s₃ ∧ ∀ s' : ℝ, 0 < s' → s' ≤ s₃ → ENNReal.ofReal ((4 * (m : ℝ) + 2) * s' ^ 2 * (1 - 2 * s')) ≤ R.measure {x : Euclid P | 0 < inner ℝ x a ∧ |‖x‖ - 1| < s' ∧ |Real.arctan (inner ℝ x e / inner ℝ x a)| < s' ∧ ‖x - Q.starProjection x‖ < s * ‖x‖}) := by
+  intro P C Q a e δ k hmin hbd hcone hQ haQ heQ ha he hae hδ hk haC hsect R m s hR ham hs hs4 hloc
+  -- Step 0: radial tangency, the fibre identities, the flux identity and the sector points
+  have hrad := (Submission.idtp_cse_cone_stationary_radial P 2 C R hmin hbd hcone hR).2
+  have hid := (Submission.idtp_cse_fibre_area_identities P R Q a e s hQ haQ heQ ha he hae hrad).2.2
+  obtain ⟨s₂, hs₂, hflux⟩ := Submission.idtp_cse_flux_density_eq P C Q a e δ k hmin hbd hcone hQ
+    haQ heQ ha he hae hδ hk haC hsect R m s hR ham hs hs4 hloc
+  have hsec := Submission.idtp_cse_sector_carrier_points P C Q a e δ k R hQ haQ heQ ha he hae hδ hk
+    hsect hR
+  -- the fibre multiplicity `N(p) = Σ_{x ∈ X(p)} θ(x)`
+  set N : ℝ × ℝ → ℝ≥0∞ := fun p => ∑' x : ↥(R.carrier ∩ {x : Euclid P | 0 < inner ℝ x a ∧ |‖x‖ - 1| < s ∧ |Real.arctan (inner ℝ x e / inner ℝ x a)| < s ∧ ‖x - Q.starProjection x‖ < s * ‖x‖} ∩ (fun x : Euclid P => (‖x‖, Real.arctan (inner ℝ x e / inner ℝ x a))) ⁻¹' {p}), (R.mult x : ℝ≥0∞)
+  -- `s₃ = min(s₂, δ/2, s/2)`, so `s₃ ≤ 1/8`
+  set s₃ := min s₂ (min (δ / 2) (s / 2))
+  have hs₃0 : 0 < s₃ := lt_min hs₂ (lt_min (half_pos hδ) (half_pos hs))
+  have hs₃₂ : s₃ ≤ s₂ := min_le_left _ _
+  have hs₃δ : s₃ ≤ δ / 2 := (min_le_right _ _).trans (min_le_left _ _)
+  have hs₃s : s₃ ≤ s / 2 := (min_le_right _ _).trans (min_le_right _ _)
+  -- Step 2: a.e. on `Box(s₃)`, `m ≤ N(p)`, and for `p₂ > 0`, `k ≤ m` and `k < m → m + 1 ≤ N(p)`
+  have hgood : ∀ᵐ p : ℝ × ℝ, p ∈ Ioo (1 - s₃) (1 + s₃) ×ˢ Ioo (-s₃) s₃ →
+      (m : ℝ≥0∞) ≤ N p ∧ (0 < p.2 → k ≤ m ∧ (k < m → (m : ℝ≥0∞) + 1 ≤ N p)) := by
+    filter_upwards [hflux, hsec] with p hpH hpsec hp
+    obtain ⟨⟨hp1l, hp1u⟩, hp2l, hp2u⟩ := hp
+    obtain ⟨hmN, hcount⟩ := Submission.idtp_cse_fc_fibre_pointwise P R Q a e s m k p hQ haQ heQ ha
+      he hae hs hs4 (abs_lt.2 ⟨by linarith, by linarith⟩) (abs_lt.2 ⟨by linarith, by linarith⟩)
+      (hpH ⟨⟨by linarith, by linarith⟩, by linarith, by linarith⟩)
+    refine ⟨hmN, fun hp2 => ?_⟩
+    obtain ⟨hM, hθ, hT⟩ := hpsec (by linarith) hp2 (by linarith) (by linarith)
+    exact hcount hM hθ hT
+  -- Step 3: `k ≤ m`, read off at a good point of the half box `(1 - s₃, 1 + s₃) × (0, s₃)`
+  have hkm : k ≤ m := by
+    have hvol : volume (Ioo (1 - s₃) (1 + s₃) ×ˢ Ioo 0 s₃ : Set (ℝ × ℝ)) ≠ 0 := by
+      rw [Measure.volume_eq_prod, Measure.prod_prod, Real.volume_Ioo, Real.volume_Ioo]
+      exact mul_ne_zero (ENNReal.ofReal_pos.2 (by linarith)).ne'
+        (ENNReal.ofReal_pos.2 (by linarith)).ne'
+    obtain ⟨p, ⟨⟨hp1l, hp1u⟩, hp2l, hp2u⟩, hp⟩ :=
+      Measure.exists_mem_of_measure_ne_zero_of_ae hvol (ae_restrict_of_ae hgood)
+    exact ((hp ⟨⟨hp1l, hp1u⟩, by linarith, hp2u⟩).2 hp2l).1
+  refine ⟨hkm, fun hlt => ⟨s₃, hs₃0, fun s' hs' hs's₃ => ?_⟩⟩
+  -- Steps 5–7 for `0 < s' ≤ s₃`: the square `Sq(s') ⊆ Box(s₃)`
+  have hs's : s' ≤ s / 2 := hs's₃.trans hs₃s
+  have hSq : MeasurableSet (Ioo (1 - s') (1 + s') ×ˢ Ioo (-s') s' : Set (ℝ × ℝ)) :=
+    measurableSet_Ioo.prod measurableSet_Ioo
+  have hSqbox : Ioo (1 - s') (1 + s') ×ˢ Ioo (-s') s' ⊆ Ioo (1 - s₃) (1 + s₃) ×ˢ Ioo (-s₃) s₃ :=
+    prod_mono (Ioo_subset_Ioo (by linarith) (by linarith)) (Ioo_subset_Ioo (by linarith) hs's₃)
+  -- Step 5: `ofReal((4m + 2)s'²) ≤ ∫⁻_{Sq(s')} N`
+  have hlow := Submission.idtp_cse_fc_square_lintegral_lower N m s' hs'
+    (hgood.mono fun p hp hpSq => (hp (hSqbox hpSq)).1)
+    (hgood.mono fun p hp hpSq hp2 => ((hp (hSqbox hpSq)).2 hp2).2 hlt)
+  -- Step 6: `∫⁻_{Sq(s')} N = ∫⁻ 1_{Sq(s')} N`, which the `N`-identity turns into an integral over `Z_s`
+  have hb : Measurable ((Ioo (1 - s') (1 + s') ×ˢ Ioo (-s') s').indicator (1 : ℝ × ℝ → ℝ≥0∞)) :=
+    measurable_one.indicator hSq
+  have hNSq : ∫⁻ p in Ioo (1 - s') (1 + s') ×ˢ Ioo (-s') s', N p =
+      ∫⁻ p, (Ioo (1 - s') (1 + s') ×ˢ Ioo (-s') s').indicator 1 p * N p := by
+    rw [← lintegral_indicator hSq]
+    refine lintegral_congr fun p => ?_
+    by_cases hp : p ∈ Ioo (1 - s') (1 + s') ×ˢ Ioo (-s') s'
+    · rw [indicator_of_mem hp, indicator_of_mem hp, Pi.one_apply, one_mul]
+    · rw [indicator_of_notMem hp, indicator_of_notMem hp, zero_mul]
+  -- `Z_s` and `Z(s, s')` are Borel
+  have hZ : ∀ r : ℝ, MeasurableSet {x : Euclid P | 0 < inner ℝ x a ∧ |‖x‖ - 1| < r ∧ |Real.arctan (inner ℝ x e / inner ℝ x a)| < r ∧ ‖x - Q.starProjection x‖ < s * ‖x‖} := by
+    intro r
+    simp only [ofPred_and]
+    refine (measurableSet_lt measurable_const ?_).inter ((measurableSet_lt ?_ measurable_const).inter
+      ((measurableSet_lt ?_ measurable_const).inter (measurableSet_lt ?_ ?_))) <;> fun_prop
+  -- on `Z_s`, `F̃(x) ∈ Sq(s')` iff `x ∈ Z(s, s')`, so the integral over `Z_s` is one over `Z(s, s')`
+  have hmid : ∫⁻ x in {x : Euclid P | 0 < inner ℝ x a ∧ |‖x‖ - 1| < s ∧ |Real.arctan (inner ℝ x e / inner ℝ x a)| < s ∧ ‖x - Q.starProjection x‖ < s * ‖x‖}, (Ioo (1 - s') (1 + s') ×ˢ Ioo (-s') s').indicator 1 (‖x‖, Real.arctan (inner ℝ x e / inner ℝ x a)) * ENNReal.ofReal (‖(approxTangentPlane 2 R.carrier x).starProjection (inner ℝ x a • e - inner ℝ x e • a)‖ / ‖Q.starProjection x‖ ^ 2) ∂R.measure ≤ ∫⁻ x in {x : Euclid P | 0 < inner ℝ x a ∧ |‖x‖ - 1| < s' ∧ |Real.arctan (inner ℝ x e / inner ℝ x a)| < s' ∧ ‖x - Q.starProjection x‖ < s * ‖x‖}, ENNReal.ofReal (‖(approxTangentPlane 2 R.carrier x).starProjection (inner ℝ x a • e - inner ℝ x e • a)‖ / ‖Q.starProjection x‖ ^ 2) ∂R.measure := by
+    rw [← lintegral_indicator (hZ s')]
+    refine (setLIntegral_congr_fun (hZ s) fun x hx => ?_).trans_le (setLIntegral_le_lintegral _ _)
+    obtain ⟨hxa, -, -, hxq⟩ := hx
+    have hiff : (‖x‖, Real.arctan (inner ℝ x e / inner ℝ x a)) ∈
+        Ioo (1 - s') (1 + s') ×ˢ Ioo (-s') s' ↔ x ∈ {x : Euclid P | 0 < inner ℝ x a ∧
+          |‖x‖ - 1| < s' ∧ |Real.arctan (inner ℝ x e / inner ℝ x a)| < s' ∧
+          ‖x - Q.starProjection x‖ < s * ‖x‖} := by
+      simp only [mem_prod, mem_Ioo, mem_ofPred_eq, abs_lt]
+      constructor
+      · rintro ⟨⟨h1, h2⟩, h3, h4⟩
+        exact ⟨hxa, ⟨by linarith, by linarith⟩, ⟨h3, h4⟩, hxq⟩
+      · rintro ⟨-, ⟨h1, h2⟩, ⟨h3, h4⟩, -⟩
+        exact ⟨⟨by linarith, by linarith⟩, h3, h4⟩
+    by_cases hxZ : x ∈ {x : Euclid P | 0 < inner ℝ x a ∧ |‖x‖ - 1| < s' ∧
+        |Real.arctan (inner ℝ x e / inner ℝ x a)| < s' ∧ ‖x - Q.starProjection x‖ < s * ‖x‖}
+    · rw [indicator_of_mem (hiff.2 hxZ), indicator_of_mem hxZ, Pi.one_apply, one_mul]
+    · rw [indicator_of_notMem (mt hiff.1 hxZ), indicator_of_notMem hxZ, zero_mul]
+  -- `J ≤ 1/(1 − 2s')` `μ`-a.e. on `Z(s, s')`: `μ`-a.e. point lies in `spt C`, where `Loc(s)` applies
+  have hjac := Submission.idtp_cse_fc_jacobian_upper P R Q a e C.support s s' hQ haQ heQ ha he hae
+    (Submission.idtp_cse_fc_ae_mem_support P 2 C R hR) hs' (by linarith)
+    fun x hx hxa hx1 hxf hxq => (hloc s' hs' (by linarith) x hx hxa hx1 hxf
+      (hxq.le.trans (by linarith [mul_nonneg hs.le (norm_nonneg x)]))).1
+  have hkey := hlow.trans (hNSq.trans_le ((hid _ hb).2.trans_le (hmid.trans hjac)))
+  -- Step 7: multiply by `ofReal(1 − 2s') > 0`
+  have h2s' : 0 < 1 - 2 * s' := by linarith
+  calc ENNReal.ofReal ((4 * (m : ℝ) + 2) * s' ^ 2 * (1 - 2 * s'))
+      = ENNReal.ofReal ((4 * (m : ℝ) + 2) * s' ^ 2) * ENNReal.ofReal (1 - 2 * s') :=
+        ENNReal.ofReal_mul (by positivity)
+    _ ≤ ENNReal.ofReal (1 / (1 - 2 * s')) * R.measure {x : Euclid P | 0 < inner ℝ x a ∧ |‖x‖ - 1| < s' ∧ |Real.arctan (inner ℝ x e / inner ℝ x a)| < s' ∧ ‖x - Q.starProjection x‖ < s * ‖x‖} * ENNReal.ofReal (1 - 2 * s') := by
+        gcongr
+    _ = R.measure {x : Euclid P | 0 < inner ℝ x a ∧ |‖x‖ - 1| < s' ∧ |Real.arctan (inner ℝ x e / inner ℝ x a)| < s' ∧ ‖x - Q.starProjection x‖ < s * ‖x‖} := by
+        rw [mul_right_comm, ← ENNReal.ofReal_mul (by positivity), one_div_mul_cancel h2s'.ne',
+          ENNReal.ofReal_one, one_mul]
 
 end GMT.Ch07
