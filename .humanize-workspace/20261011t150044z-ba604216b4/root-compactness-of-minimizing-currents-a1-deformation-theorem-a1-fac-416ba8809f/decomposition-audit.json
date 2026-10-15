@@ -1,0 +1,65 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cmcdtfrcb_|cubical|cube_stokes|face_regroup|IsLatticeChain|latticeFaceAction",
+        "volume_preserving_(ofLp|toLp)|volume_preserving_piFinSuccAbove|setIntegral_preimage_emb|theorem integral_prod_symm|theorem prod_restrict|theorem integral_eq_sub_of_hasDerivAt|integral_Ioc_eq_integral_Ioo|continuousAlternatingMap_apply_const|strictMono_succAbove|sum_fiberwise_of_maps_to|prod_fiberwise_of_maps_to|theorem integral_divergence_of_hasFDerivAt_off_countable|def removeNth|def insertNth",
+        "exteriorDerivative_apply|def exteriorDerivative|abbrev DifferentialForm|abbrev Covector|def TestFormOn|def boundary|theorem boundary_apply|smooth|ContDiff",
+        "rg -n 'cmcdtfrcb_' .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/cbsplit-k7q2/lean/Combined.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/chain-boundary-review-ee7bltsa/Types.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/chain-boundary-review-ee7bltsa/Conventions.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch06/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Haar/InnerProductSpace.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Constructions/Pi.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Prod.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/IntervalIntegral/FundThmCalculus.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/DivergenceTheorem.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/CompCLM.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Algebra/BigOperators/Group/Finset/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-fac-416ba8809f/parent-child-handoff.json",
+        "/tmp/cbsplit-k7q2/lean/Combined.lean",
+        "/tmp/chain-boundary-review-ee7bltsa/Types.lean",
+        "/tmp/chain-boundary-review-ee7bltsa/Conventions.lean"
+      ],
+      "conclusion": "The pinned revisions and recomputed parent digest match. The split appropriately separates coordinate integration, differential calculus, cubical Stokes, and integer regrouping. All four names are bare identifiers with no DAG reservations; no previously accepted declaration is reused. Every frozen type is a standalone one-line proposition and independently elaborates without implementing the children. Independently rerunning the supplied proofs and exact-type checks succeeds under the frozen imports; the assembled selected parent uses only propext, Classical.choice, and Quot.sound. The sources and additional probes confirm product-volume transport, zero-dimensional volume, tuple deletion, and pointwise integer base translations. The box divergence theorem is unavailable under the frozen imports, but the supplied Fubini–FTC route works. Dependencies are acyclic. Boundary evaluation followed by cube_stokes and face_regroup proves exactly the selected parent, with coefficients independent of the test form."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "cube_partial_ftc",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and Lean type agree on C¹ regularity, integrability, endpoint insertions, and all dimensions. The proof establishes continuous derivatives and compact-box integrability before applying measure-preserving coordinate transport and Fubini. The affine-line derivative and FTC give the exact endpoint difference. Endpoint integrability justifies subtraction, and k = 0 is covered. No circular or undeclared dependency occurs."
+    },
+    {
+      "key": "pullback_divergence",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Both conjuncts are proved under exactly the stated C¹ hypothesis. Continuous linear evaluation establishes coefficient regularity; the affine derivative satisfies L(e_i) = e_{ι(i)} without injectivity. The chain rule, removeNth convention, and integer-to-real sign conversion yield the exact exterior-derivative formula. The proof is complete and independent of the parent."
+    },
+    {
+      "key": "cube_stokes",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The statement and type match, including arbitrary ι and C¹ forms. The proof uses exactly its two declared dependencies: derivative integrability justifies exchanging the finite sum and integral, and coordinate FTC supplies the face differences. Splitting the coordinate sum proves the face identities even when ι repeats. Extracting the alternating constants gives the stated formula, including m = 0."
+    },
+    {
+      "key": "face_regroup",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The finite face union and integer fiber differences explicitly construct witnesses before quantifying over I, matching the required uniformity. Strict monotonicity follows from the supplied hypothesis and succAbove. Distributivity, integer casts, and fiberwise regrouping prove the exact equality without assuming distinct faces. No additional hypothesis, circular reliance, or deferred proof construction is needed."
+    }
+  ],
+  "required_changes": []
+}

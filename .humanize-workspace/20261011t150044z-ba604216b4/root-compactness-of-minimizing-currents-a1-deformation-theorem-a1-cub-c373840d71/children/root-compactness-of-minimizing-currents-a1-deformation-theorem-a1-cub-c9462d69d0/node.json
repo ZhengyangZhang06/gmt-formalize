@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.cube_bv_median-a1.smooth_poincare-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.cube_bv_median-a1",
+  "depth": 4,
+  "title": "Poincaré inequality on the cube Q_δ for C¹ functions, double-integral form",
+  "statement": "Let m ∈ ℕ, n := m + 1, δ ≥ 0 and Q_δ := {y ∈ ℝⁿ : δ < y_i < 1 − δ for all i} ⊆ Euclid n (Lebesgue measure). For every C¹ function v : ℝⁿ → ℝ, ∫_{x ∈ Q_δ} ∫_{y ∈ Q_δ} |v(x) − v(y)| dy dx ≤ 2ⁿ √n ∫_{Q_δ} ‖Dv‖, with 2ⁿ√n = 2^{m+1} √(m + 1) and ‖Dv(x)‖ the operator norm of fderiv ℝ v x.",
+  "lean_statement": "∀ (m : ℕ) (v : Euclid (m + 1) → ℝ) (δ : ℝ), ContDiff ℝ 1 v → 0 ≤ δ → ∫ x in {z : Euclid (m + 1) | ∀ i, δ < z i ∧ z i < 1 - δ}, ∫ y in {z : Euclid (m + 1) | ∀ i, δ < z i ∧ z i < 1 - δ}, |v x - v y| ≤ 2 ^ (m + 1) * Real.sqrt (m + 1) * ∫ x in {z : Euclid (m + 1) | ∀ i, δ < z i ∧ z i < 1 - δ}, ‖fderiv ℝ v x‖",
+  "lean_name": "cmcdt_cbm_smooth_poincare",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-cub-c9462d69d0-a1"
+}

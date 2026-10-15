@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.lipschitz_pushforward-a1.operators-a1.cylinder-a1.restriction-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.lipschitz_pushforward-a1.operators-a1.cylinder-a1",
+  "depth": 6,
+  "title": "Restriction of covectors along ι(0, ·) and contraction with e₀ do not increase the Euclidean norm",
+  "statement": "Notation: ι(t, x) := WithLp.toLp 2 (Fin.cons t (WithLp.ofLp x)) ∈ ℝ^{N+1} for t ∈ ℝ, x ∈ ℝ^N; Jv := ι(0, v) = WithLp.toLp 2 (Fin.cons 0 (WithLp.ofLp v)); e₀ := EuclideanSpace.single 0 1 ∈ ℝ^{N+1}; |α| := covectorEuclideanNorm α; 𝒟^m(ℝ^P) := TestFormOn univ m and 𝒟_m(ℝ^P) := GeometricCurrentOn univ m (forms and currents on all of ℝ^P = Euclid P); M(T) := T.mass = T.massOn univ; spt T := T.support. Assume (L1): for all N, N', k ∈ ℕ, every continuous linear A : ℝ^N → ℝ^{N'} and every k-covector β on ℝ^{N'}, |β.compContinuousLinearMap A| ≤ ‖A‖^k·|β|; and (L2): for all N, k ∈ ℕ, v ∈ ℝ^N and every (k+1)-covector β on ℝ^N, |β.curryLeft v| ≤ ‖v‖·|β|. Then (R1) for all N, k there is a continuous linear map Φ from (k+1)-covectors on ℝ^{N+1} to k-covectors on ℝ^N with Φ(γ)(v_1, …, v_k) = γ(e₀, Jv_1, …, Jv_k) for all γ and v, and |Φ(γ)| ≤ |γ| for all γ; and (R2) for all N, k there is a continuous linear map Ψ from k-covectors on ℝ^{N+1} to k-covectors on ℝ^N with Ψ(γ)(v_1, …, v_k) = γ(Jv_1, …, Jv_k) for all γ and v, and |Ψ(γ)| ≤ |γ| for all γ.",
+  "lean_statement": "(∀ (N N' k : ℕ) (A : Euclid N →L[ℝ] Euclid N') (β : Covector (Euclid N') k), covectorEuclideanNorm (β.compContinuousLinearMap A) ≤ ‖A‖ ^ k * covectorEuclideanNorm β) → (∀ (N k : ℕ) (v : Euclid N) (β : Covector (Euclid N) (k + 1)), covectorEuclideanNorm (β.curryLeft v) ≤ ‖v‖ * covectorEuclideanNorm β) → (∀ N k : ℕ, ∃ Φ : Covector (Euclid (N + 1)) (k + 1) →L[ℝ] Covector (Euclid N) k, (∀ (γ : Covector (Euclid (N + 1)) (k + 1)) (v : Fin k → Euclid N), Φ γ v = γ (Fin.cons (EuclideanSpace.single 0 1) (fun i => WithLp.toLp 2 (Fin.cons 0 (WithLp.ofLp (v i)))))) ∧ ∀ γ : Covector (Euclid (N + 1)) (k + 1), covectorEuclideanNorm (Φ γ) ≤ covectorEuclideanNorm γ) ∧ (∀ N k : ℕ, ∃ Ψ : Covector (Euclid (N + 1)) k →L[ℝ] Covector (Euclid N) k, (∀ (γ : Covector (Euclid (N + 1)) k) (v : Fin k → Euclid N), Ψ γ v = γ (fun i => WithLp.toLp 2 (Fin.cons 0 (WithLp.ofLp (v i))))) ∧ ∀ γ : Covector (Euclid (N + 1)) k, covectorEuclideanNorm (Ψ γ) ≤ covectorEuclideanNorm γ)",
+  "lean_name": "cmcdt_lpo_cyl_restriction_bounds",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-lip-57af8dc9f1-a1"
+}

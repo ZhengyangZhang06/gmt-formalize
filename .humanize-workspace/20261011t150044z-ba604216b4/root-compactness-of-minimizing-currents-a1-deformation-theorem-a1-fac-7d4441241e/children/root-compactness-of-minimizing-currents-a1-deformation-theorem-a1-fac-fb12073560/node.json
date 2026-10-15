@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.face_replacement-a1.boundary_variation-a1.boundary_support_faces-a1.closed_faces_compact-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.face_replacement-a1.boundary_variation-a1.boundary_support_faces-a1",
+  "depth": 6,
+  "title": "The union of the closed faces Φ_q([0,1]^{m+1}), q ∈ s, is compact",
+  "statement": "Let P, m ∈ ℕ and let s be a finite set of index pairs q = (ι, b) with ι : Fin (m+1) → Fin P and b : Fin P → ℤ. For q = (ι, b) and y ∈ Euclid (m+1) put Φ_q(y) := b + Σ_j y_j e_{ι(j)} ∈ ℝ^P. Here b is regarded as the vector WithLp.toLp 2 (fun i => (b i : ℝ)) and e_l := EuclideanSpace.single l 1. Then Z := {x ∈ ℝ^P : x = Φ_q(y) for some q ∈ s and some y ∈ Euclid (m+1) with 0 ≤ y_i ≤ 1 for every i} is compact.",
+  "lean_statement": "∀ (P m : ℕ) (s : Finset ((Fin (m + 1) → Fin P) × (Fin P → ℤ))), IsCompact {x : Euclid P | ∃ q ∈ s, ∃ y : Euclid (m + 1), (∀ i, 0 ≤ y i ∧ y i ≤ 1) ∧ (WithLp.toLp 2 (fun i => (q.2 i : ℝ)) + ∑ j, y j • EuclideanSpace.single (q.1 j) (1 : ℝ)) = x}",
+  "lean_name": "cmcdtfrbvbsf_closed_faces_isCompact",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-fac-fb12073560-a1"
+}

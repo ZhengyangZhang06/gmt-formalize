@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.lipschitz_pushforward-a1.integrality-a1.piece_current-a1.measurable_inverse-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.lipschitz_pushforward-a1.integrality-a1.piece_current-a1",
+  "depth": 6,
+  "title": "Lusin–Souslin: Borel image and Borel left inverse of a map that is continuous and injective on a Borel set (supplied step 5)",
+  "statement": "Let P, n ∈ ℕ, let H : ℝⁿ → ℝ^P, and let B ⊆ ℝⁿ be Borel such that H is continuous on B (ContinuousOn H B) and injective on B (InjOn H B). Then H(B) is Borel, and there is a Borel measurable map h : ℝ^P → ℝⁿ with h(H(u)) = u for every u ∈ B.",
+  "lean_statement": "∀ (P n : ℕ) (H : Euclid n → Euclid P) (B : Set (Euclid n)), ContinuousOn H B → MeasurableSet B → InjOn H B → MeasurableSet (H '' B) ∧ ∃ h : Euclid P → Euclid n, Measurable h ∧ ∀ u ∈ B, h (H u) = u",
+  "lean_name": "cmcdt_lpi_pc_measurable_inverse",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-lip-96a89f9021-a1"
+}

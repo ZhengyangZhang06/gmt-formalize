@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.cube_bv_median-a1.bv_trace-a1.cube_exhaust-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.cube_bv_median-a1.bv_trace-a1",
+  "depth": 5,
+  "title": "Set integrals over the shrunken cubes Q_δ converge to the integral over Q₁ as δ ↓ 0",
+  "statement": "Let k ∈ ℕ, Euclid k = EuclideanSpace ℝ (Fin k) with Lebesgue measure, Q₁ := {y : 0 < y_i < 1 for all i} and, for δ ∈ ℝ, Q_δ := {z : δ < z_i < 1 − δ for all i}. If f : Euclid k → ℝ is integrable on Q₁, then ∫_{Q_δ} f → ∫_{Q₁} f as δ → 0⁺ (i.e. along the filter 𝓝[>] 0).",
+  "lean_statement": "∀ (k : ℕ) (f : Euclid k → ℝ), IntegrableOn f {y : Euclid k | ∀ i, 0 < y i ∧ y i < 1} → Tendsto (fun δ : ℝ => ∫ y in {z : Euclid k | ∀ i, δ < z i ∧ z i < 1 - δ}, f y) (𝓝[>] 0) (𝓝 (∫ y in {y : Euclid k | ∀ i, 0 < y i ∧ y i < 1}, f y))",
+  "lean_name": "cmcdt_cbm_bvt_cube_exhaust",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-cub-381a269e64-a1"
+}
