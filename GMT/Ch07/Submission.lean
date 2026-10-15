@@ -53086,4 +53086,75 @@ theorem Submission.rsd_constant_multiplicity_reduction : ∀ (P n : ℕ) (U N : 
     exact Submission.rsd_cmr_regularSet_transfer P n U (ball z₀ r) hBU T T₀ N₀ z₀
       (Nat.cast_ne_zero.2 hN₀.ne') (fun ω => by rw [Int.cast_natCast]; exact hT₀ ω) hz₀
 
+/-- **Simon 7.4.2–7.4.3** (chapter-07.txt lines 608–631; Allard's theorem for `T/k`): a support
+point `p` of a minimizing cycle `T` is regular if `Θⁿ(μ_T, y) = k` for every `y ∈ spt T` near
+`p`.  Fix `T = τ(S, θ, ξ)`, so `μ_T = θHⁿ⌞S ≪ Hⁿ⌞S`, and a radius `r ≤ δ` with `B_r(p) ⊆ U`.  Then
+`n ≤ P`: otherwise `Hⁿ` vanishes on balls of `ℝᴾ`, against `μ_T(B_1(p)) > 0`.  `μ_T`-a.e. `x` lies
+in `spt T` and has density `θ(x)`, so `θ = k` `μ_T`-a.e. on `B_r(p)` by uniqueness of densities;
+`k ≥ 1` since `θ > 0` `μ_T`-a.e. and `μ_T(B_r(p)) > 0`.  Dividing by `k`
+(`rsd_constant_multiplicity_reduction`) gives a minimizing cycle `T₀` in `B_r(p)` with
+`Θⁿ(μ_{T₀}, p) = 1` and `p ∈ reg T₀ → p ∈ reg T`; 7.4.3 for the constant sequence `T₀`, with
+`N = ℝ^{n+k₀}` (`P = n + k₀`, identity chart), gives `p ∈ reg T₀`. -/
+theorem Submission.idtp_ccd_regular_of_const_density : ∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (p : Euclid P) (k : ℕ) (δ : ℝ), 1 ≤ n → IsOpen U → IsMinimizingIn T U → BoundaryVanishes T → p ∈ T.support → 0 < δ → (∀ y ∈ T.support, y ∈ ball p δ → HasMassDensity T y k) → p ∈ regularSet T := by
+  intro P n U T p k δ _ hU hmin hb hp hδ hdens
+  -- `T = τ(S, θ, ξ)`; `μ_T = θHⁿ⌞S ≪ Hⁿ⌞S`, and `μ_T(B_s(p)) > 0` for `s > 0` as `p ∈ spt T`.
+  obtain ⟨R, hR⟩ := hmin.1
+  have hac : R.measure ≪ μHE[n].restrict R.carrier := withDensity_absolutelyContinuous _ _
+  have hpos : ∀ s : ℝ, 0 < s → 0 < R.measure (ball p s) :=
+    ((Submission.rsd_mem_support_iff_measure_ball_pos P n U T R hU hR p).1 hp).2
+  -- A radius `r ≤ δ` with `B_r(p) ⊆ U`.
+  obtain ⟨ε, hε, hεU⟩ := Metric.isOpen_iff.1 hU p (T.support_subset_domain hp)
+  obtain ⟨r, hr, hrδ, hrU⟩ : ∃ r : ℝ, 0 < r ∧ ball p r ⊆ ball p δ ∧ ball p r ⊆ U :=
+    ⟨min ε δ, lt_min hε hδ, ball_subset_ball (min_le_right ε δ),
+      (ball_subset_ball (min_le_left ε δ)).trans hεU⟩
+  -- `n ≤ P`: otherwise `Hⁿ(B_1(p)) = 0` in `ℝᴾ`, so `μ_T(B_1(p)) = 0`.
+  have hnP : n ≤ P := by
+    refine le_of_not_gt fun hlt => ?_
+    have h0 : μHE[n] (ball p 1) = 0 := by
+      rcases Measure.euclideanHausdorffMeasure_zero_or_top hlt (ball p 1) with h | h
+      · exact h
+      · rw [EuclideanSpace.euclideanHausdorffMeasure_eq_volume] at h
+        exact absurd h measure_ball_lt_top.ne
+    refine (hpos 1 one_pos).ne' (hac ?_)
+    rw [Measure.restrict_apply' R.measurableSet_carrier]
+    exact measure_mono_null inter_subset_left h0
+  -- `θ = k` `μ_T`-a.e. on `B_r(p)`: `μ_T`-a.e. point lies in `spt T` and has density `θ`.
+  have hae : ∀ᵐ x ∂R.measure, x ∈ ball p r → R.mult x = k := by
+    have hspt : ∀ᵐ x ∂(μHE[n].restrict R.carrier), x ∈ T.support := by
+      rw [ae_iff, Measure.restrict_apply' R.measurableSet_carrier]
+      refine measure_mono_null ?_ (Submission.imrep_carrier_sdiff_support_null P n U T R hU hR)
+      exact fun x hx => ⟨hx.2, hx.1⟩
+    filter_upwards [Submission.rsd_ae_hasMassDensity_mult P n U T R hU hR, hac.ae_le hspt]
+      with x hx hxs hxb
+    exact_mod_cast Submission.dimred_cs_mi_hasMassDensity_unique P n U T x _ _ hx
+      (hdens x hxs (hrδ hxb))
+  -- `k ≥ 1`: `θ > 0` `μ_T`-a.e., so `k = 0` would give `μ_T(B_r(p)) = 0`.
+  have hk : 0 < k := by
+    rcases Nat.eq_zero_or_pos k with rfl | hk
+    · have hθ : ∀ᵐ x ∂R.measure, (R.mult x : ℝ≥0∞) ≠ 0 :=
+        (ae_withDensity_iff ((measurable_from_nat (f := fun m : ℕ => (m : ℝ≥0∞))).comp
+          R.measurable_mult)).2 (Eventually.of_forall fun _ h => h)
+      refine absurd (measure_eq_zero_iff_ae_notMem.2 ?_) (hpos r hr).ne'
+      filter_upwards [hae, hθ] with x hx hθx hxb
+      exact hθx (by simp [hx hxb])
+    · exact hk
+  -- Division by the multiplicity: a minimizing cycle `T₀` in `B_r(p)` with density `1` at `p`.
+  obtain ⟨T₀, hT₀min, hT₀N, hT₀b, hT₀mass, hpT₀, hT₀dens, htrans⟩ :=
+    Submission.rsd_constant_multiplicity_reduction P n U univ T R p r k hU (by rwa [inter_univ])
+      (subset_univ _) hb hR hr hrU hk hae hp (hdens p hp (mem_ball_self hδ))
+  -- Allard (7.4.3) for the constant sequence `T₀`, with `N = ℝ^{n+k₀}` (identity chart).
+  obtain ⟨k₀, rfl⟩ := Nat.exists_eq_add_of_le hnP
+  have hN : IsEmbeddedSubmanifold 2 (n + k₀) (univ : Set (Euclid (n + k₀))) := by
+    intro y _
+    refine ⟨univ, univ, id, isOpen_univ, isOpen_univ, mem_univ y, contDiffOn_id, injOn_id _,
+      by simp, fun K _ hK => by simpa using hK, fun z _ => ?_⟩
+    rw [fderiv_id]
+    exact fun a b h => h
+  exact htrans (Submission.density_one_implies_regular n k₀ k₀ le_rfl (ball p r) univ
+    (fun _ => T₀) T₀ (fun _ => p) p isOpen_ball hN (by simp) (fun _ => hT₀min) hT₀min
+    (fun _ => hT₀N) hT₀N (fun _ => hT₀b) hT₀b
+    (fun W hW hWc => by simpa only [iSup_const] using hT₀mass W hW hWc)
+    (fun _ => tendsto_const_nhds) ⟨mem_univ p, mem_ball_self hr⟩ hT₀dens tendsto_const_nhds
+    (fun _ => hpT₀)).1
+
 end GMT.Ch07
