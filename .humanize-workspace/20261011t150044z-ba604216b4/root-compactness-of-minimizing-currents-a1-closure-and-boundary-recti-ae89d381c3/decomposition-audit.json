@@ -1,0 +1,87 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "def (IsSmoothForm|IsTestForm|testFormOnSubmodule|exteriorDerivativeTestOn|covectorEuclideanNorm|massOn|massAdmissibleOn)|abbrev Covector|theorem (boundary_apply|le_massOn)|lemma covectorEuclideanNorm",
+        "theorem continuous_of_dominated|theorem integral_mono_of_nonneg|theorem norm_setIntegral_le_of_norm_le_const|theorem ContinuousOn.integrableOn_compact|theorem tendsto_toReal|theorem bounded_above_of_compact_support|theorem tendstoUniformlyOn_iff|theorem integral_pos_iff_support_of_nonneg",
+        "theorem.*(support_eq|hasCompactSupport|contDiff|nonneg)|volumeForm_robust|abs_volumeForm_apply_le|lemma.*(support_eq|hasCompactSupport|nonneg)",
+        "dgoj_exists_det_covector",
+        "dgcr_stc_exists_normalized_mollifier",
+        "cmr_abs_apply_le_massOn",
+        "rsd_mw_tfa_norm_props",
+        "cbr_ci_pw_l1_scalar_test_tendsto",
+        "cbr_ci_pw_l1_boundary_variation_bound",
+        "cbr_ci_pw_l1_squeeze_of_mollified",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/l1c-independent-audit/Types.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/l1c-independent-audit/ProofsAndAssembly.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/BumpFunction/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Orientation.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/LocallyIntegrable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Support.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-ae89d381c3/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-ae89d381c3/decomposition-v1.json",
+        "/tmp/l1c-independent-audit/Types.lean",
+        "/tmp/l1c-independent-audit/ProofsAndAssembly.lean"
+      ],
+      "conclusion": "The split appropriately isolates obligations used by the selected L¹ convergence proof. Independently confirmed the binding digest, pinned revisions, and equality of the snapshot contract with the workspace contract and submission. All seven types pass lexical validation and elaborate before any child implementation. All names are bare identifiers; the three new names have no DAG matches. The four reused declarations have passing comparator records, matching candidate-source hashes, and byte-identical frozen types. The proposed dependency graph is acyclic and correctly directed. Independently compiled all seven proofs and the selected parent assembly, with its three frozen prerequisites supplied as explicit parameters; every axiom report contains only propext, Classical.choice and Quot.sound. Thus the children establish exactly the selected parent conditional on its existing prerequisites. Smoothness coercions, scalar actions, coefficient norms, boundary evaluation and restricted Lebesgue integrals match the pinned definitions; no matrix-unit construction occurs."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "det_covector",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Prose and type agree for every n, including zero. Hadamard's bound supplies continuity, and the standard orientation identifies the volume form with the basis determinant, yielding normalization. The proof is complete and non-circular; accepted reuse has an identical frozen type."
+    },
+    {
+      "key": "normalized_mollifier",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All five properties and the positive-radius hypothesis match the type. The bump has positive integral, so normalization preserves smoothness, compact support and nonnegativity and gives integral one. Applying it at R/8 supplies the parent's required topological support inside B_(R/4). Accepted reuse is type-identical."
+    },
+    {
+      "key": "eval_mass_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The arbitrary domains, finite-mass condition, support restriction and coefficient bound are stated exactly. The proof independently derives homogeneity and r ≥ 0, uses both signed admissible rescalings, converts finite ENNReal mass to a real bound, and takes the limit. It also covers r = 0 without circularity. Accepted reuse is type-identical."
+    },
+    {
+      "key": "norm_props",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The coefficient-vector argument proves all four conjuncts: subadditivity, homogeneity, the explicit operator-norm bound and continuity through a Lipschitz estimate. Zero-dimensional and empty-index cases are covered. The proof requires no undeclared obligation, and accepted reuse is type-identical."
+    },
+    {
+      "key": "scalar_tests",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose includes every hypothesis of the independently elaborated type. Using only det_covector, the proof constructs b·δ as a supported smooth test form and transfers convergence through pointwise integrand identities. No additional integrability or domain-measurability assumption is needed for these identities. The dependency is correctly directed."
+    },
+    {
+      "key": "variation_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The covector norm and exterior-derivative identities are explicit hypotheses. The proof constructs γ = f·ε, derives M ≥ 0, applies norm_props and eval_mass_bound with their exact assumptions, and identifies boundary evaluation with the requested integral. Product rearrangement gives precisely the stated conclusion, with no circular reliance on interior_form or the parent."
+    },
+    {
+      "key": "l1_squeeze",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Prose and type agree, including eventual error control and uniform convergence on the closed ball. Dominated continuity establishes continuous mollifications; compactness and finite volume justify the required integrability. The triangle inequality and explicit ε/(2(m+1)) estimate prove the exact limit. This is a complete independent leaf proof."
+    }
+  ],
+  "required_changes": []
+}

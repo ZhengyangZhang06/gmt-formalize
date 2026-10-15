@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.codim_zero-a1.minimizing-a1.const_eq_zero-a1",
+  "parent_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.codim_zero-a1.minimizing-a1",
+  "depth": 5,
+  "title": "A compactly supported constant multiple of [[ℝⁿ]] in ℝⁿ has constant zero",
+  "statement": "Let n ≥ 1, X ∈ 𝒟_n(ℝⁿ) (GeometricCurrentOn univ n) and c ∈ ℝ. Suppose X(ω) = c·∫_{ℝⁿ} ω(y)(e₁, …, eₙ) dy for every ω ∈ 𝒟ⁿ(ℝⁿ) (TestFormOn univ n), where (e₁, …, eₙ) = EuclideanSpace.basisFun (Fin n) ℝ and dy is Lebesgue measure. If spt X (GeometricCurrentOn.support) is compact, then c = 0.",
+  "lean_statement": "∀ (n : ℕ) (X : GeometricCurrentOn (univ : Set (Euclid n)) n) (c : ℝ), 0 < n → IsCompact X.support → (∀ ω : TestFormOn (univ : Set (Euclid n)) n, X ω = c * ∫ y, (ω : DifferentialForm (Euclid n) n) y ⇑(EuclideanSpace.basisFun (Fin n) ℝ)) → c = 0",
+  "lean_name": "dtc_bc_cz_isMinimizingIn_const_eq_zero",
+  "depends_on": [
+    "root.density_and_tangent_cones-a1.blowup_compactness-a1.codim_zero-a1.minimizing-a1.bump_form-a1",
+    "root.density_and_tangent_cones-a1.vanish_off_support-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.codim_zero-a1.minimizing-a1.bump_form-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.density_and_tangent_cones-a1.vanish_off_support-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-vanish-off-support-a1-a1",
+      "result_commit": "44ef61f79e2168134f8a5a6d6520baba56052d67",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-compactness-a1-codim-zero-a1-bba0184232-a1"
+}

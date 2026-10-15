@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.codim_zero-a1.blowup_eval-a1",
+  "parent_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.codim_zero-a1",
+  "depth": 4,
+  "title": "Blow-ups of a current equal to c[[ℝⁿ]] on a ball, and of local boundary vanishing",
+  "statement": "Let m ∈ ℕ, n := m + 1, U ⊆ ℝⁿ, T ∈ 𝒟_n(U), x ∈ ℝⁿ, ρ, c ∈ ℝ and λ > 0 with B_ρ(x) ⊆ U; let η := η_{x,λ} = dilation x λ (η(y) = λ⁻¹(y − x)) and S := η_{x,λ#}T = blowUp T x λ ∈ 𝒟_n(η(U)); e = standard basis of ℝⁿ. (i) If T(ω) = c·∫ω(y)(e) dy for every ω ∈ 𝒟ⁿ(U) with tsupport ω ⊆ B_ρ(x), then currentEval(S, ω) = c·∫ω(z)(e) dz for every ω ∈ 𝒟ⁿ(ℝⁿ) with tsupport ω ⊆ B_{ρ/λ}(0). (ii) If ∂T(β) = 0 for every β ∈ 𝒟^m(U) with tsupport β ⊆ B_ρ(x), then ∂S(β) = 0 for every β ∈ 𝒟^m(η(U)) with tsupport β ⊆ B_{ρ/λ}(0).",
+  "lean_statement": "∀ (m : ℕ) (U : Set (Euclid (m + 1))) (T : GeometricCurrentOn U (m + 1)) (x : Euclid (m + 1)) (ρ c lam : ℝ) (hlam : 0 < lam), ball x ρ ⊆ U → ((∀ ω : TestFormOn U (m + 1), tsupport (ω : DifferentialForm (Euclid (m + 1)) (m + 1)) ⊆ ball x ρ → T ω = c * ∫ y, (ω : DifferentialForm (Euclid (m + 1)) (m + 1)) y ⇑(EuclideanSpace.basisFun (Fin (m + 1)) ℝ)) → ∀ ω : TestFormOn (univ : Set (Euclid (m + 1))) (m + 1), tsupport (ω : DifferentialForm (Euclid (m + 1)) (m + 1)) ⊆ ball 0 (ρ / lam) → currentEval (blowUp T x lam hlam.ne') (ω : DifferentialForm (Euclid (m + 1)) (m + 1)) = c * ∫ z, (ω : DifferentialForm (Euclid (m + 1)) (m + 1)) z ⇑(EuclideanSpace.basisFun (Fin (m + 1)) ℝ)) ∧ ((∀ β : TestFormOn U m, tsupport (β : DifferentialForm (Euclid (m + 1)) m) ⊆ ball x ρ → T.boundary β = 0) → ∀ β : TestFormOn (dilation x lam '' U) m, tsupport (β : DifferentialForm (Euclid (m + 1)) m) ⊆ ball 0 (ρ / lam) → (blowUp T x lam hlam.ne').boundary β = 0)",
+  "lean_name": "dtc_bc_cz_blowUp_eval",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-compactness-a1-codim-zero-a1-cb96411644-a1"
+}
