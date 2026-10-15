@@ -1,0 +1,93 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.dimension_reduction_results-a1.moving_blowups-a1.deformation_theorem-a1.lipschitz_pushforward-a1.im_cylinder-a1`
+- Child DAG node: `root.dimension_reduction_results-a1.moving_blowups-a1.deformation_theorem-a1.lipschitz_pushforward-a1.im_cylinder-a1.product_null-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: parent proof, step 3 (product-null lemma: covers of Z by sets C_j with Σ(diam C_j)ⁿ < ε, side lengths d_j := max(diam C_j, ε2^{−j}), boxes [a, a + d_j] × C_j of diameter ≤ √2 d_j, total (n+1)-cost ≤ 2^{(n+3)/2}(|I| + 1)ε), applied to the bounded intervals [−K, K] and united over K ∈ ℕ. No sibling results are used.
+
+Notation. Ψ(t, x) := WithLp.toLp 2 (Fin.cons t (WithLp.ofLp x)) ∈ ℝ^{N+1} for t ∈ ℝ, x ∈ ℝ^N. μH[s] is Mathlib's s-dimensional Hausdorff measure, diam the extended diameter (EMetric.diam, values in [0, ∞]). μHE[d] = c_d·μH[d] with c_d := addHaarScalarFactor volume μH[d] ∈ ℝ≥0 and c_d ≠ 0 (Measure.euclideanHausdorffMeasure_def, Measure.addHaarScalarFactor_volume_hausdorffMeasure_ne_zero).
+
+1. Reduction to μH. μHE[n] Z = c_n·μH[n] Z = 0 with c_n ≠ 0 gives μH[n] Z = 0. Since μHE[n+1] = c_{n+1}·μH[n+1], it suffices to show μH[n+1](Ψ(ℝ × Z)) = 0.
+
+2. Metric fact. |Ψ(s, x) − Ψ(s', x')|² = (s − s')² + |x − x'|² for s, s' ∈ ℝ, x, x' ∈ ℝ^N (the squared Euclidean norm is the sum of squared coordinates; split off the 0-th coordinate with Fin.sum_univ_succ). Hence for an interval I of length ≤ d and C ⊆ ℝ^N with diam C ≤ d (d ≥ 0 real), diam Ψ(I × C) ≤ √2·d. (Equivalently: Ψ is 2-Lipschitz from ℝ × ℝ^N with the max metric, so by LipschitzWith.hausdorffMeasure_image_le it suffices to show μH[n+1](ℝ × Z) = 0 in ℝ × ℝ^N, where diam(I × C) = max(diam I, diam C); either bookkeeping gives the estimates below up to a constant factor.)
+
+3. Case n = 0. Every nonempty set has μH[0]-measure ≥ 1 (Measure.one_le_hausdorffMeasure_zero_of_nonempty), so μH[0] Z = 0 forces Z = ∅; then Ψ(ℝ × Z) = ∅ and the claim holds. From now on n ≥ 1.
+
+4. Reduction to bounded intervals. Ψ(ℝ × Z) = ⋃_{K∈ℕ} Ψ([−K, K] × Z), so by countable subadditivity (measure_iUnion_null) it suffices to show μH[n+1](Ψ([a, b] × Z)) = 0 for real a ≤ b. Fix such a, b and put ℓ := b − a ≥ 0.
+
+5. Covers of Z. Let ε ∈ (0, 1). Mathlib's formula μH[n] Z = ⨆_{r>0} ⨅ {Σ_j ⨆_{C_j ≠ ∅} (diam C_j)ⁿ : Z ⊆ ⋃_j C_j, diam C_j ≤ r ∀j} (Measure.hausdorffMeasure_apply) and μH[n] Z = 0 show that for r := ε the infimum is 0; hence there are sets C_j (j ∈ ℕ) with Z ⊆ ⋃_j C_j, diam C_j ≤ ε and Σ_j ⨆_{C_j≠∅}(diam C_j)ⁿ < ε. Put e_j := ε·2^{−(j+1)} ∈ (0, ε]; since e_j < 1 and n ≥ 1, e_jⁿ ≤ e_j, so Σ_j e_jⁿ ≤ ε. For nonempty C_j put d_j := max(diam C_j, e_j), a real number in (0, ε] ⊆ (0, 1). Then d_jⁿ ≤ (diam C_j)ⁿ + e_jⁿ, so Σ_{j: C_j≠∅} d_jⁿ ≤ 2ε.
+
+6. Covers of Ψ([a, b] × Z). For nonempty C_j let p_j := ⌊ℓ/d_j⌋ + 1 ∈ ℕ (so p_j ≤ ℓ/d_j + 1), and for q ∈ ℕ let D^ε_{j,q} := Ψ([a + q d_j, a + (q + 1)d_j] × C_j) if C_j ≠ ∅ and q < p_j, and D^ε_{j,q} := ∅ otherwise. They cover Ψ([a, b] × Z): for t ∈ [a, b] and x ∈ Z pick j with x ∈ C_j and q := ⌊(t − a)/d_j⌋; then q ≤ ℓ/d_j < p_j and t ∈ [a + q d_j, a + (q + 1)d_j]. By step 2, diam D^ε_{j,q} ≤ √2·d_j ≤ √2·ε.
+
+7. Sum estimate. Using d_j ≤ 1 (so d_j^{n+1} ≤ d_jⁿ) and diam ∅ = 0 (with 0^{n+1} = 0):
+ Σ_{j,q}(diam D^ε_{j,q})^{n+1} ≤ Σ_{j: C_j≠∅} p_j(√2 d_j)^{n+1} ≤ 2^{(n+1)/2}Σ_j(ℓ/d_j + 1)d_j^{n+1} = 2^{(n+1)/2}Σ_j(ℓ d_jⁿ + d_j^{n+1}) ≤ 2^{(n+1)/2}(ℓ + 1)Σ_j d_jⁿ ≤ 2^{(n+1)/2}(ℓ + 1)·2ε.
+
+8. Conclusion. Apply Measure.hausdorffMeasure_le_liminf_tsum (dimension n + 1, filter atTop on k ∈ ℕ, countable index type ℕ × ℕ) to the covers D^{ε_k}_{j,q} with ε_k := 1/(k + 2) and radii r_k := √2·ε_k → 0: μH[n+1](Ψ([a, b] × Z)) ≤ liminf_k 2^{(n+1)/2}(ℓ + 1)·2ε_k = 0. With steps 4 and 1, μHE[n+1](Ψ(ℝ × Z)) = 0. ∎
+
+Formalization note (optional aid; the proof above is self-contained): a complete Lean proof of exactly this statement (about 215 lines, no extra imports; it uses the 2-Lipschitz reduction to ℝ × ℝ^N of step 2 and ENNReal.exists_pos_sum_of_countable for the e_j; axioms propext, Classical.choice, Quot.sound) was compiled during decomposition, file /tmp/imcyl/verified/LeafProductNull.lean on the decomposition host (if available there) (theorem ImcylLeaf.product_null).
+
+## Key steps
+
+1. μHE = c·μH with c ≠ 0 reduces to μH; n = 0 forces Z = ∅.
+2. Ψ(ℝ × Z) is the countable union of Ψ([−K, K] × Z); |Ψ(s,x) − Ψ(s',x')|² = (s − s')² + |x − x'|².
+3. μH[n] Z = 0 gives covers C_j with Σ(diam C_j)ⁿ < ε; side lengths d_j = max(diam C_j, ε2^{−(j+1)}) with Σ d_jⁿ ≤ 2ε.
+4. Boxes [a + q d_j, a + (q+1) d_j] × C_j (q ≤ ℓ/d_j) cover with total (n+1)-cost ≤ 2^{(n+1)/2}(ℓ + 1)·2ε; hausdorffMeasure_le_liminf_tsum gives 0.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat SNAPSHOT/manifest.json (project_commit b4d606db, mathlib_commit 25730c7c); git -C SNAPSHOT/mathlib rev-parse HEAD (25730c7c); cmp SNAPSHOT/project/GMT/Ch07/Contract.lean workspace GMT/Ch07/Submission.lean (identical)`
+- `rg -n -i 'cylinder|\[\[0, ?1\]\]|product.?null|hausdorffMeasure.*prod|prod.*hausdorffMeasure' SNAPSHOT/project/GMT -g '*.lean' (no match)`
+- `rg -n 'theorem hausdorffMeasure_le_liminf_tsum|theorem hausdorffMeasure_apply|theorem hausdorffMeasure_prod_real|theorem normDet_sq_eq_det_gram|theorem volume_preserving_piFinSuccAbove|theorem det_succ_row_zero|theorem hausdorffMeasure_image_le|theorem one_le_hausdorffMeasure_zero_of_nonempty|theorem integral_prod' SNAPSHOT/mathlib/Mathlib (all found; the only Hausdorff product result is hausdorffMeasure_prod_real on ℝ × ℝ)`
+- `grep -rn SNAPSHOT/mathlib/Mathlib for Continuous.measurableEmbedding, curryLeftLI, compContinuousLinearMapCLM, lintegral_map, prod_sum_right, map_sum, restrict_iUnion, restrict_congr_set, exists_pos_sum_of_countable, volume_preserving_toLp, setLIntegral_comp_emb, of_dist_le_mul, measurable_fderiv, HasFDerivAt.prodMk, orthonormal_iff_ite, range_cons, map_span, inner_single_left, norm_single, euclideanHausdorffMeasure_def, addHaarScalarFactor_volume_hausdorffMeasure_ne_zero, prod_prod, ae_restrict_iff', lintegral_prod, integral_Ioc_eq_integral_Ioo, image_of_continuousOn_injOn (all found)`
+- `grep of SimonGMT (lake-packages-25730c7c/simongmt): weighted_area_formula_lipschitz_injOn, injective_area_formula_lipschitzOn, areaJacobianAt / areaJacobianAt_eq_normDet, measurable_areaJacobianAt, HasApproximateTangentSpaceAt and .unique, CountablyRectifiable, blowUpMap; Chapter06/Product.lean (only the point product {p} × T)`
+- `python3 scans of RUN/dag.json (2102 nodes) for accepted lean_statements mentioning HasApproximateTangentSpaceAt, Fin.cons, Measure.map, IMRep (found dpf_rectifiable_bilipschitz_pieces, dpf_approxTangent_ae_bilipschitz_piece, regcomp_approx_tangent_locality, ptd_ae_approxTangent_iff_of_subset, cbr_ci_imc_isIntegerMultiplicity_of_rectifiable, dpf_pfc_imrep_pairing_integrable_abs_le, dpf_raf_piece_area_formula_gram); twin node cmcdt_lpi_cylinder_im (decomposing, different hypotheses); lean_name scan and grep of RUN/nodes for the 8 new names (no hits)`
+- `grep/sed of /runtime/flows/gmt-claude-b888e19cffb1/_recursive_lean/runtime.py (_decompose with max_depth 6, _existing_lean_name_problem, _accepted_checkpoint: both reused nodes accepted with candidate commits a2ba78fc and a2168047, _reference_use_problem); verifier gmt-compare.py contract_scope/child_modules (replayed challenge scope); both validate_lean_statement implementations on all 10 types`
+- `lake env lean /tmp/imcyl/lean/Types.lean (11 types, only sorry warnings); lake env lean on Assembly.lean, WireImrep.lean, WireTangent.lean, WireMeasure.lean, WireRect.lean, LeafSuspension.lean, LeafOrientation.lean, LeafProductNull.lean, LeafPieceMeasure.lean and Combined.lean (#print axioms: propext, Classical.choice, Quot.sound)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/NormDet.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Constructions/Pi.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Matrix/Determinant/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Prod.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Constructions/Polish/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/Alternating/Curry.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaLipschitz.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/Area.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaDomain.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Product.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-deformation-the-959b56b2f3/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-deformation-the-a2fdfc1c6f/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-piece-tan-680a7024c9/parent-supplied-natural-proof.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-bilipschi-4344c8c0d8/parent-supplied-natural-proof.md`
+- `/runtime/flows/gmt-claude-b888e19cffb1/_recursive_lean/runtime.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/tmp/imcyl/lean/Types.lean`
+- `/tmp/imcyl/verified/Assembly.lean`
+- `/tmp/imcyl/verified/WireImrep.lean`
+- `/tmp/imcyl/verified/WireTangent.lean`
+- `/tmp/imcyl/verified/WireMeasure.lean`
+- `/tmp/imcyl/verified/WireRect.lean`
+- `/tmp/imcyl/verified/LeafSuspension.lean`
+- `/tmp/imcyl/verified/LeafOrientation.lean`
+- `/tmp/imcyl/verified/LeafProductNull.lean`
+- `/tmp/imcyl/verified/LeafPieceMeasure.lean`
+- `/tmp/imcyl/verified/Combined.lean`
+
+The pins match: project b4d606db, Mathlib 25730c7c, and the workspace Submission is identical to the snapshot Ch07 contract. Neither the snapshot project, Mathlib nor SimonGMT contains a product-null lemma, a product formula for Hausdorff measure on cylinders over rectifiable sets, tangent planes of cylinders, or integrality of [[0,1]] × X. Mathlib's only Hausdorff product result is hausdorffMeasure_prod_real on ℝ × ℝ, and SimonGMT's Product.lean covers only {p} × T. So eight children are new obligations under fresh names dimred_mbl_dt_lp_imc_*. Two needed steps already exist as accepted DAG declarations with exactly the required types and are reused verbatim: dpf_rectifiable_bilipschitz_pieces (B1) and dpf_approxTangent_ae_bilipschitz_piece. Every cited Mathlib/SimonGMT name exists in the pinned sources, for example weighted_area_formula_lipschitz_injOn, normDet_sq_eq_det_gram, hausdorffMeasure_apply / hausdorffMeasure_le_liminf_tsum, volume_preserving_piFinSuccAbove and curryLeftLI. All ten child types elaborate in the comparator's challenge scope and pass both validators. Lean proofs establish every child (leaves outright, the others from their declared siblings) and the selected type, using only propext, Classical.choice and Quot.sound.

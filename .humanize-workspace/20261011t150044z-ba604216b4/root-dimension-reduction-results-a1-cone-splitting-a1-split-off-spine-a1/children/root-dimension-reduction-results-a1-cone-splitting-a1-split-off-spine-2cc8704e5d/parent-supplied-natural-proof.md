@@ -1,0 +1,152 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.dimension_reduction_results-a1.cone_splitting-a1.split_off_spine-a1`
+- Child DAG node: `root.dimension_reduction_results-a1.cone_splitting-a1.split_off_spine-a1.cone_filling_subspace-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Notation and conventions.
+- k := m ≥ 1. A test p-form is a C^∞ compactly supported map ℝ^P → Λ^p = Covector (Euclid P) p.
+- H^p := μHE[p], equal to Lebesgue measure on p-dimensional subspaces.
+- For a linear D : ℝ^p → ℝ^P, J(D) := det(D*D)^{1/2}, and ∂F(u) := (DF(u)e_1, …, DF(u)e_p). G_F := {u : F differentiable at u, DF(u) injective}.
+- For injective D, ξ_D(α) := α(De_1, …, De_p)/J(D). By Gram–Schmidt (De = Rτ with R upper triangular, det R = J(D)), this equals α(τ) for an orthonormal basis τ of D(ℝ^p). So ξ_D is a unit orientation of D(ℝ^p) in the sense of IsUnitOrientationOf.
+- Two unit orientations of the same plane differ by a sign, because orthonormal bases differ by an orthogonal matrix of determinant ±1.
+Sibling children used:
+- lipschitz_tangent (tangent identification along Lipschitz maps);
+- the accepted imrep_carrier_sdiff_support_null (reuse sibling carrier_sdiff): if R represents T in an open U, then H^p(R.carrier ∖ spt T) = 0.
+Imports. Steps 7–9 use the SimonGMT area formula weighted_area_formula_lipschitz_injOn and area_image_compl_regularSet_eq_zero, in Poincare.SimonGMT.Chapter02.AreaLipschitz, outside the contract import closure. The Lipschitz image bound euclideanHausdorffMeasure_image_le_of_lipschitzOn is in scope via Chapter02.Lipschitz. The node that formalizes those steps needs `import Poincare.SimonGMT.Chapter02.AreaLipschitz`. It is inherited through the dependency merge from the sibling lipschitz_tangent, which must add it. Otherwise add it in an assembly (non-leaf) proof, since machine leaves cannot add imports; precedent: the accepted parent dtc_isIntegerMultiplicity_sub. All other cited facts (Mathlib) are in scope.
+0. (Support vanishing for X.) Let X = τ(M, θ, ξ) be an IMRep of X. By carrier_sdiff, H^k(M ∖ spt X) = 0. Hence, if a test k-form γ vanishes at every point of spt X — in particular if tsupport γ ∩ spt X = ∅ — then X(γ) = ∫_M θξ(γ) dH^k = 0. If spt X = ∅, then X = 0 and Y := 0 works (∂0 = 0, spt 0 = ∅). Assume spt X ≠ ∅.
+1. (Homotopy operator.) For p ≥ 1 and a C^∞ p-form β, define the (p−1)-form
+ (K_pβ)(x) := ∫_0^1 t^{p−1} ι_x(β(tx)) dt, where ι_x α := ContinuousAlternatingMap.curryLeft α x.
+ - This is a Bochner integral in the finite-dimensional Λ^{p−1}, with integrand C^∞ in (t, x).
+ - K_pβ is C^∞, and its x-derivatives are obtained by differentiating under the integral sign.
+ - If β(tx) = 0 for all t ∈ [0, 1], then (K_pβ)(x) = 0.
+2. (Homotopy formula: β = d(K_pβ) + K_{p+1}(dβ) for p ≥ 1.) Fix x and v_1, …, v_p, and use dγ(x)(w_0, …, w_q) = Σ_i (−1)^i Dγ(x)[w_i](…ŵ_i…) (SimonGMT exteriorDerivative_apply).
+ - d(K_pβ)(x)(v) = ∫_0^1 [p t^{p−1}β(tx)(v) + t^p Σ_i (−1)^{i−1} Dβ(tx)[v_i](x, v_1, …, v̂_i, …, v_p)] dt.
+ - K_{p+1}(dβ)(x)(v) = ∫_0^1 t^p [Dβ(tx)[x](v) + Σ_i (−1)^i Dβ(tx)[v_i](x, v_1, …, v̂_i, …, v_p)] dt.
+ - Adding, the sums cancel, leaving ∫_0^1 (d/dt)(t^p β(tx)(v)) dt = β(x)(v), since p ≥ 1.
+3. (Definition of Y.) spt X is compact. Choose δ > 0 and ζ ∈ C_c^∞(ℝ^P) with 0 ≤ ζ ≤ 1 and ζ = 1 on the open set N_δ := thickening δ (spt X) (Mathlib exists_contDiff_support_eq_eq_one_iff applied to cthickening δ (spt X) ⊆ thickening 2δ (spt X)). For a test (k+1)-form ω, ζK_{k+1}ω is a test k-form with tsupport in tsupport ζ. Define Y(ω) := X(ζK_{k+1}ω); Y is linear.
+4. (Y is a current.) Let ω_j → 0 in the test-form topology, with supports in a compact K₁ and all derivatives tending to 0 uniformly.
+ - Then ε_{j,a} := sup_y ‖D^aω_j(y)‖ → 0 for every a, since ω_j vanishes off K₁.
+ - (K_{k+1}ω_j)(x) = ∫_0^1 t^k Π(ω_j(tx), x) dt, with Π(α, x) := ι_xα bounded bilinear. The Leibniz rule gives ‖D^a(K_{k+1}ω_j)(x)‖ ≤ C_a(1 + |x|) max_{b≤a} ε_{j,b}.
+ - Hence ζK_{k+1}ω_j → 0 in the test-form topology, with supports in tsupport ζ, and Y(ω_j) → 0 by continuity of X.
+ So Y ∈ 𝒟_{k+1}(ℝ^P).
+5. (∂Y = X.) Let ω be a test k-form. Then ∂Y(ω) = Y(dω) = X(ζK_{k+1}dω). Step 2 with p = k ≥ 1 gives K_{k+1}dω = ω − d(K_kω), so ∂Y(ω) = X(ζω) − X(ζ d(K_kω)).
+ - First term: ζω − ω vanishes on N_δ ⊇ spt X, so X(ζω) = X(ω) by step 0.
+ - Second term: ζK_kω is a test (k−1)-form. The k-forms ζ d(K_kω) and d(ζK_kω) agree on N_δ, where ζ ≡ 1 near every point and d is local; their difference vanishes on spt X. So X(ζ d(K_kω)) = X(d(ζK_kω)) = (∂X)(ζK_kω) = 0 by step 0, because ∂X = 0 (k ≥ 1).
+ Hence ∂Y(ω) = X(ω), i.e. Y.boundary = X.
+6. (Support.) C₀ := {sx : s ∈ [0, 1], x ∈ spt X} is compact, as the continuous image of [0, 1] × spt X. Moreover C₀ ⊆ V, since spt X ⊆ V and V is a linear subspace.
+ - Let ω be a test (k+1)-form with tsupport ω ∩ C₀ = ∅. The set W := {x : sx ∉ tsupport ω for all s ∈ [0, 1]} is open, because [0, 1] is compact so the projection is a closed map. W ⊇ spt X.
+ - (K_{k+1}ω)(x) = 0 for x ∈ W (step 1), so ζK_{k+1}ω vanishes on spt X, and Y(ω) = 0 by step 0.
+ - For x ∉ C₀ choose r > 0 with B̄_{2r}(x) ∩ C₀ = ∅. The ball B_r(x) is open with compact closure, and Y vanishes on every test form supported in it. So B_r(x) lies in the zero region of Y and x ∉ spt Y.
+ Thus spt Y ⊆ C₀ ⊆ V, and spt Y is compact (closed in the compact C₀).
+7. (Integral Lipschitz parametrization of X.) Claim: there are Lipschitz F_j : ℝ^k → ℝ^P, Borel A_j ⊆ G_{F_j} with F_j(A_j) ⊆ spt X, and measurable g_j : ℝ^k → ℤ (j ∈ ℕ) such that:
+ (LF) Σ_j ∫_{A_j ∩ F_j⁻¹(C)} |g_j| JF_j < ∞ for every compact C;
+ (REP) X(γ) = Σ_j ∫_{A_j} g_j(u) γ(F_j(u))(∂F_j(u)) du for every test k-form γ.
+ Construction:
+ (a) By step 0, H^k(M ∖ spt X) = 0, and spt X is closed.
+ (b) Pieces. By countable rectifiability, M ⊆ M_null ∪ ⋃_i F̃_i(ℝ^k) with H^k(M_null) = 0 and F̃_i Lipschitz. The Borel sets E_i := {u ∈ G_{F̃_i} : F̃_i(u) ∈ M ∩ spt X} are split by Mathlib exists_partition_approximatesLinearOn_of_hasFDerivWithinAt into Borel pieces.
+ - The tolerance is r(A) := c_A/2 for injective A and r(A) := 1 otherwise, where c_A := min_{|w|=1}|Aw|. The approximating maps are A = DF̃_i(y) for points y of E_i, so they are injective, and F̃_i is bi-Lipschitz on each piece.
+ - Enumerate the pieces as (Φ_l, P_l), and disjointify the images: P'_l := P_l ∖ Φ_l⁻¹(⋃_{l'<l} Φ_{l'}(P_{l'})). Images of Borel sets under maps that are continuous and injective on them are Borel (Lusin–Souslin, MeasurableSet.image_of_continuousOn_injOn).
+ - By the area formula, H^k(F̃_i(ℝ^k ∖ G_{F̃_i})) = 0. Hence the disjoint images Φ_l(P'_l) cover M ∩ spt X up to an H^k-null set.
+ (c) Tangent identification. By lipschitz_tangent applied to (Φ_l, Y := M) (M Borel, locally H^k-finite), for L^k-a.e. u ∈ P'_l, M has approximate tangent space DΦ_l(u)(ℝ^k) at Φ_l(u).
+ (d) Weights. For H^k-a.e. x ∈ M, ξ(x) is a unit orientation of the approximate tangent space of M at x (R.orients). Null sets pull back along the bi-Lipschitz pieces: ∫_{P'_l ∩ Φ_l⁻¹Z} JΦ_l = H^k(Φ_l(P'_l) ∩ Z) = 0, and JΦ_l > 0. So for a.e. u ∈ P'_l, uniqueness of approximate tangent spaces and the sign rule give ξ(Φ_l(u)) = ε_l(u)ξ_{DΦ_l(u)} with ε_l(u) ∈ {±1}. ε_l is Borel: ε_l = 1 iff ‖ξ̃(Φ_l u) − ξ_{DΦ_l(u)}‖ < ‖ξ̃(Φ_l u) + ξ_{DΦ_l(u)}‖, for a Borel version ξ̃ of ξ. Put g_l := ε_l·θ∘Φ_l on that full-measure Borel subset A_l ⊆ P'_l and g_l := 0 elsewhere.
+ (e) Verification. By the area formula on each piece and countable additivity over the disjoint images (the integrand θξ(γ) is integrable),
+ X(γ) = ∫_M θξ(γ) dH^k = Σ_l ∫_{A_l} θ(Φ_l u)ξ(Φ_l u)(γ(Φ_l u)) JΦ_l(u) du = Σ_l ∫_{A_l} g_l(u) γ(Φ_l u)(∂Φ_l u) du,
+ using ξ_D(α)J(D) = α(De). Also Σ_l ∫_{A_l ∩ Φ_l⁻¹C} |g_l| JΦ_l = ∫_{M∩C} θ dH^k < ∞. Rename (Φ_l, A_l, g_l) as (F_j, A_j, g_j).
+8. (Integral Lipschitz parametrization of Y.) Choose ρ with spt X ⊆ B_ρ(0). Let r_ρ be the 1-Lipschitz radial retraction onto B̄_ρ(0), and F̂_j := r_ρ∘F_j; it is Lipschitz and agrees with F_j near A_j. Identify ℝ^{k+1} = ℝ × ℝ^k (measure preserving).
+ - Define G_j(s, u) := σ(s)F̂_j(u) with σ(s) := min(max(s, 0), 1); G_j is Lipschitz. Put Ã_j := (0, 1) × A_j and g̃_j(s, u) := g_j(u).
+ - For (s, u) ∈ Ã_j, G_j is differentiable with ∂G_j(s, u) = (F_j(u), s∂F_j(u)). Hence ω(G_j)(∂G_j) = s^k ω(sF_j(u))(F_j(u), ∂F_j(u)), and ∫_0^1 ω(G_j(s, u))(∂G_j(s, u)) ds = (K_{k+1}ω)(F_j(u))(∂F_j(u)).
+ - Jacobian bound: J(a, w_1, …, w_k) ≤ |a|J(w), by Gram–Schmidt (the Gram determinant is a product of squared lengths of successive orthogonal components). So JG_j(s, u) ≤ s^k|F_j(u)|JF_j(u) ≤ ρJF_j(u).
+ - Apply (REP) for X to γ := ζK_{k+1}ω, using ζ = 1 on F_j(A_j) ⊆ spt X and Fubini; integrability follows from (LF) with C = spt X. This gives Y(ω) = Σ_j ∫_{Ã_j} g̃_j(w) ω(G_j(w))(∂G_j(w)) dw, and (LF) holds for (G_j, Ã_j, g̃_j).
+ - Moreover G_j(Ã_j) ⊆ C₀ ⊆ V.
+9. (From an integral parametrization to an IMRep; Simon Ch. 6, 3.10.) Let T ∈ 𝒟_p(ℝ^P), p ≥ 1, have an integral Lipschitz parametrization (F_j, A_j, g_j) with (LF) and (REP). Then T is integer multiplicity, with a representation whose carrier lies in ⋃_j F_j(A_j).
+ (a) Pieces. Restrict to the Borel sets A°_j := {u ∈ A_j : F_j differentiable at u, DF_j(u) injective, g_j(u) ≠ 0}; elsewhere the integrand vanishes, since α(∂F) = 0 for dependent vectors. Split into bi-Lipschitz pieces (Φ_l, P_l, h_l) as in 7(b), with |h_l| ≥ 1. The images N_l := Φ_l(P_l) are Borel. N := ⋃_l N_l is locally H^p-finite, since H^p(N_l ∩ C) ≤ ∫_{P_l ∩ Φ_l⁻¹C} |h_l| JΦ_l and (LF) holds.
+ (b) Tangent planes and orientations.
+ - Let ψ_l be the Borel inverse of Φ_l on P_l and ξ_l(y) := ξ_{DΦ_l(ψ_l y)} for y ∈ N_l.
+ - By lipschitz_tangent applied to (Φ_l, Y := N) and removing L^p-null sets from the P_l (which removes H^p-null sets from the N_l): for every l and y ∈ N_l, N has approximate tangent space T_y := DΦ_l(ψ_l y)(ℝ^p) at y.
+ - T_y does not depend on l (uniqueness). So ξ_l(y) = σ_l(y)η(y) with η(y) := ξ_{κ(y)}(y), κ(y) := min{l : y ∈ N_l}, and σ_l(y) ∈ {±1} Borel.
+ (c) Multiplicity. For H^p-a.e. y only finitely many l have y ∈ N_l, by (LF) and |h_l| ≥ 1. On that Borel set N° put m(y) := Σ_l 1_{N_l}(y)σ_l(y)h_l(ψ_l y) ∈ ℤ.
+ (d) Action. By the area formula on each piece and dominated convergence (dominating function ‖ω‖_∞1_{tsupport ω}Σ_l 1_{N_l}|h_l∘ψ_l| ∈ L¹), T(ω) = ∫_{N°} m η(ω) dH^p.
+ (e) The representation. Put M' := {y ∈ N° : m(y) ≠ 0} (Borel), θ' := |m| and ξ' := sign(m)η on M' (0 elsewhere). Then:
+ - M' is countably p-rectifiable (covered by the Lipschitz images Φ_l(ℝ^p));
+ - θ' ≥ 1 on M' and θ' is locally integrable by (LF);
+ - ξ' is Borel;
+ - orients: by lipschitz_tangent applied to (Φ_l, Y := M') (M' Borel, locally finite), at H^p-a.e. y ∈ M' the approximate tangent space of M' is T_y, and ξ'(y) = ±η(y) is a unit orientation of T_y.
+ So (M', θ', ξ') is an IMRep (univ, dimension p) with T(ω) = ∫_{M'} θ'ξ'(ω) dH^p.
+10. (Conclusion.) By steps 8 and 9 (p = k + 1), Y is integer multiplicity, with carrier in ⋃_j G_j(Ã_j) ⊆ C₀ ⊆ V. By step 5, Y.boundary = X. By step 6, spt Y is compact and contained in V. ∎
+
+## Key steps
+
+1. The cone Y(ω) := X(ζ K_{k+1}ω) uses the Poincaré homotopy operator (K_pβ)(x) = ∫_0^1 t^{p−1} ι_x β(tx) dt and a cutoff ζ ≡ 1 near spt X; Y is a current.
+2. Support vanishing for X comes from the accepted H^k(M ∖ spt X) = 0. With the homotopy formula β = dK_pβ + K_{p+1}dβ (p ≥ 1) and ∂X = 0, it gives ∂Y = X.
+3. Y vanishes on forms supported off the compact cone C₀ = {sx : s ∈ [0,1], x ∈ spt X} ⊆ V; so spt Y is compact and contained in V.
+4. Bi-Lipschitz pieces, the area formula and lipschitz_tangent give an integral Lipschitz parametrization of X, and then (s,u) ↦ s F_j(u) parametrizes Y.
+5. Pushing pieces to their images with consistent orientations (lipschitz_tangent) gives an integer multiplicity representation of Y (Simon 6.3.10).
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat local-references/123e8435b4a2469b/manifest.json; git rev-parse HEAD; git -C .lake/packages/mathlib rev-parse HEAD; git -C .lake/packages/simongmt rev-parse HEAD (b4d606d, 25730c7c, 2b36630: pins match)`
+- `cmp local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean GMT/Ch07/Contract.lean; cmp GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean (identical; sha256 e4148e7f…)`
+- `grep -n -E '^(theorem|def|structure|abbrev|instance)' over SimonGMT Chapter06/{Currents,Mass,CurrentLocalEquality,AffineCurrentPushforward,Forms}.lean; head of Chapter06/{Product,WedgeForms,GeometricPointProduct,Representation}.lean`
+- `sed -n 1,140p SimonGMT Chapter03/Rectifiable.lean (CountablyRectifiable, HasApproximateTangentSpaceAt, blowUpMap); ls Chapter02 (AreaFormula, AreaLipschitz, CoareaLinear, CoareaProjection)`
+- `grep -n -E 'theorem|def ' local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean (euclideanHausdorffMeasure_zero, Submodule.measurePreserving_measurableEquivProd, AffineSubspace.euclideanHausdorffMeasure_eq_lintegral, euclideanHausdorffMeasure_homothety_image)`
+- `lake env lean /tmp/sos-decomp/Probe.lean and Probe2.lean: #check after import GMT.Ch07.Submission (in scope: ContinuousAlternatingMap.curryLeft, MultilinearMap.alternatization, ContDiffBump, lintegral_prod, MeasurableSpace.induction_on_inter, LipschitzWith.ae_differentiableAt, LipschitzOnWith.extend_real, MeasurableSet.image_of_continuousOn_injOn, exists_partition_approximatesLinearOn_of_hasFDerivWithinAt, Besicovitch.ae_tendsto_measure_inter_div, Besicovitch.ae_tendsto_rnDeriv, VitaliFamily.ae_tendsto_average_norm_sub, exteriorDerivative_apply, CurrentOn.boundary_boundary; not in scope: covectorWedge, GeometricCurrentOn.pointProduct, Add/Neg/SMul on GeometricCurrentOn, SimonGMT AreaLipschitz lemmas, kernel API)`
+- `python3 over dag.json: cone_splitting-a1 siblings and statuses; accepted IMRep lemmas (dtc_imrep_current, imrep_weighted_orient_indicator_ae_eq, imrep_measure_eq_of_represents_same_current, imrep_represents_massOn_eq_measure, imrep_carrier_sdiff_support_null, rsd_isIntegerMultiplicity_int_combination, dtc_blowUp_imrep, dtc_vanish_off_support); emf_exists_cone_filling (decomposing, no support conclusion); dpf_ bi-Lipschitz pieces (not accepted); occurrences of dimred_cs_sos in dag.json: 0`
+- `git show dd88db7, 9203aee, 77fcc7d: GMT/Ch07/Submission.lean (listed dependencies are merged into a child's Submission; the accepted parent dtc_isIntegerMultiplicity_sub adds a SimonGMT import)`
+- `read nodes/root-dimension-reduction-results-a1-cone-splitting-a1/{parent-supplied-natural-proof.md,decomposition-v1.json} (reuse precedent), nodes/root-existence-of-minimizing-filling-a1-cone-filling-a1/parent-supplied-natural-proof.md (cone construction adapted for cone_filling_subspace), and the handoffs of the 6 reused accepted nodes`
+- `lake env lean /tmp/sos-decomp/CheckFinal.lean (12 child types as Submission stubs, assembly of dimred_cs_split_off_spine including the finrank L = 0 case, #print axioms) and Check5.lean (cone_filling_subspace instantiated at degree n − finrank L)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/AffineCurrentPushforward.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Product.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/WedgeForms.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/CoareaProjection.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-cone-splitting-a1-split-off-spine-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-cone-splitting-a1/parent-supplied-natural-proof.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-cone-splitting-a1/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-existence-of-minimizing-filling-a1-cone-filling-a1/parent-supplied-natural-proof.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-localize-a1-imrep-current-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-half-space-cone-lies-in-boundary-a1-imrep-measure-unique-a1-vect-8c0391929c/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-half-space-cone-lies-in-boundary-a1-imrep-measure-unique-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-mass-equals-measure-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-support-null-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-regular-set-dense-a1-integer-combination-a1/parent-child-handoff.json`
+- `/tmp/sos-decomp/CheckFinal.lean`
+
+Pins match. The snapshot is at project b4d606d (= workspace HEAD) with mathlib 25730c7c and SimonGMT 2b36630, and the snapshot Contract.lean is byte-identical to the workspace Contract.lean and Submission.lean.
+
+What the library lacks. SimonGMT has none of:
+- slicing;
+- Cartesian products of currents beyond point products;
+- a Lipschitz push-forward;
+- a coarea formula on rectifiable sets (only the linear one).
+WedgeForms, the area formula (Chapter02.AreaLipschitz) and Mathlib's kernel API are outside the contract import closure. GeometricCurrentOn has only Sub and Zero instances.
+Consequences for the split:
+- no child type mentions products or wedges;
+- the product structure is passed as an action identity over a quantified interior product ♭ (Fin.append f v ∘ Fin.cast), plus the measure identity and concentration on L^⊥;
+- the area-formula import is assigned to the lipschitz_tangent subtree, from which dependents inherit it (precedent: accepted dtc_isIntegerMultiplicity_sub added a SimonGMT import; leaves cannot add imports).
+Mathlib facts the proofs use are all in scope, including the μHE Fubini lemmas Submodule.measurePreserving_measurableEquivProd and AffineSubspace.euclideanHausdorffMeasure_eq_lintegral.
+
+Reuse. The parent dependency im_mass_measure, cited by the supplied proof, is not accepted. Six comparator-accepted declarations are reused in its place, with byte-identical types and commits present: dtc_imrep_current 642d745, imrep_weighted_orient_indicator_ae_eq 2d0f5bb, imrep_measure_eq_of_represents_same_current 6907c2c, imrep_represents_massOn_eq_measure c004e5e, imrep_carrier_sdiff_support_null d15b5cf, rsd_isIntegerMultiplicity_int_combination 568bfe5. Listed dependencies are merged into a child's Submission.lean (checked on accepted commits).
+
+No reuse:
+- emf_exists_cone_filling is not accepted and lacks the support conclusion, so cone_filling_subspace is new; the construction is adapted from that node's proof.
+- The dpf_ bi-Lipschitz/tangent lemmas are not accepted, so lipschitz_tangent is new.
+
+Lean check. All 12 child types elaborate, and the frozen parent type is proved from them, including the finrank L = 0 case. Axioms are propext, sorryAx (stubs only), Classical.choice and Quot.sound. The 6 new dimred_cs_sos_ names are unused elsewhere.
