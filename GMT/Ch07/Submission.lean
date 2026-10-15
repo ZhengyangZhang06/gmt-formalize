@@ -85223,6 +85223,61 @@ theorem Submission.dimred_cdg_minimizing_origin_regular : ∀ (P j : ℕ), 1 ≤
   exact Submission.dor_graph_supported_cycle_regular j k univ C R ι ι' u 0 (γ * (1 / 2) / 4)
     (γ * (1 / 2) / 4) hj isOpen_univ hR hbd horth hs hs
     (hu.mono (ball_subset_ball (by linarith))) hu0 (subset_univ _) hcyl h0
+
+/-- **Density gap for minimizing cones** (Simon 7.3–7.4; part (c) of the gap lemma used for the
+dimension reduction results).  For `1 ≤ j` there is `δ > 0` such that every cone
+`C ∈ 𝒟_j(ℝᴾ)` that is minimizing in `ℝᴾ` with `∂C = 0` and `Θʲ(μ_C, 0) = θ < 1 + δ` has
+`θ ≤ 1`.  If `P < j`, then `C = 0`, so `ω_jθ = M_{B₁(0)}(C) = 0` and `θ = 0`.  If `j ≤ P`, take
+`δ = min(δ₀, 1)` with `δ₀` from the origin regularity theorem, and suppose `θ > 1`.  Then
+`0 ∈ spt C`, and since `C` is a cone `M_{B_ρ(0)}(C) = ω_jθρʲ ≤ (1 + δ₀)ω_jρʲ` for every
+`ρ > 0`.  Hence `0 ∈ reg C` (Allard's theorem, as in Simon 7.4.3), so the density at the vertex
+is an integer: `θ = m ∈ ℕ` with `1 < m < 1 + δ ≤ 2`, which is impossible. -/
+theorem Submission.dimred_cone_density_gap : ∀ (P j : ℕ), 1 ≤ j → ∃ δ : ℝ, 0 < δ ∧ ∀ (C : GeometricCurrentOn (univ : Set (Euclid P)) j) (θ : ℝ), IsMinimizingIn C univ → BoundaryVanishes C → IsConeCurrent C → HasMassDensity C 0 θ → θ < 1 + δ → θ ≤ 1 := by
+  intro P j hj
+  rcases lt_or_ge P j with hPj | hjP
+  · -- Case `P < j`: `δ := 1`.  `C = 0`, so `M_{B₁(0)}(C) = 0`, while the vertex density of the
+    -- cone gives `M_{B₁(0)}(C) = ω_jθ` with `ω_j ≠ 0`; hence `θ ≤ 0`
+    refine ⟨1, one_pos, fun C θ hmin _ hcone hden _ => ?_⟩
+    have hB1 := (((Submission.dimred_cdg_im_cone_ball_mass P j C hcone hmin.1).2.1 θ).1 hden).2
+    have hC0 : C.massOn (ball 0 1) = 0 := by
+      rw [Submission.dimred_cdg_eq_zero_of_lt_degree P j univ C hPj]
+      refine le_antisymm (sSup_le ?_) zero_le
+      rintro _ ⟨ω, -, rfl⟩
+      exact ENNReal.ofReal_zero.le
+    have hω0 : unitBallVolume j ≠ 0 := (measure_ball_pos volume (0 : Euclid j) one_pos).ne'
+    rw [hC0, eq_comm, mul_eq_zero, ENNReal.ofReal_eq_zero] at hB1
+    exact (hB1.resolve_left hω0).trans zero_le_one
+  · -- Case `j ≤ P`: `δ := min(δ₀, 1)` with `δ₀` from the origin regularity theorem; suppose
+    -- `θ > 1`
+    obtain ⟨δ₀, hδ₀, hreg⟩ := Submission.dimred_cdg_minimizing_origin_regular P j hj hjP
+    refine ⟨min δ₀ 1, lt_min hδ₀ one_pos, fun C θ hmin hbd hcone hden hθδ => ?_⟩
+    by_contra hθ1
+    rw [not_le] at hθ1
+    -- Step 1: `M_{B_ρ(0)}(C) = ρʲ M_{B₁(0)}(C)`, `M_{B₁(0)}(C) = ω_jθ` and `0 ∈ spt C`
+    obtain ⟨hi, hii, hiii⟩ := Submission.dimred_cdg_im_cone_ball_mass P j C hcone hmin.1
+    have h0 : (0 : Euclid P) ∈ C.support := hiii θ (by linarith) hden
+    have hB1 := ((hii θ).1 hden).2
+    -- Step 2: `M_{B_ρ(0)}(C) = ω_jθρʲ ≤ (1 + δ₀)ω_jρʲ` for `0 < ρ ≤ 1`, as `θ < 1 + δ₀`
+    have hθδ₀ : θ ≤ 1 + δ₀ := by linarith [min_le_left δ₀ 1]
+    have hmass : ∀ ρ : ℝ, 0 < ρ → ρ ≤ 1 → C.massOn (ball 0 ρ) ≤
+        ENNReal.ofReal (1 + δ₀) * unitBallVolume j * ENNReal.ofReal (ρ ^ j) := by
+      intro ρ hρ _
+      calc C.massOn (ball 0 ρ)
+          = ENNReal.ofReal θ * unitBallVolume j * ENNReal.ofReal (ρ ^ j) := by
+            rw [hi ρ hρ, hB1]
+            ring
+        _ ≤ ENNReal.ofReal (1 + δ₀) * unitBallVolume j * ENNReal.ofReal (ρ ^ j) := by
+            gcongr
+    -- Step 3: `0 ∈ reg C`, so `Θʲ(μ_C, 0) = m` for some `m ∈ ℕ`
+    obtain ⟨m, ρ, -, hρ, hdens⟩ := Submission.dimred_regular_point_density P j univ C 0
+      isOpen_univ (hreg C hmin hbd h0 hmass)
+    -- Step 4: uniqueness of the density gives `θ = m`, but `1 < θ < 1 + δ ≤ 2`
+    have hθm : θ = m := (ENNReal.ofReal_eq_ofReal_iff (by linarith) (Nat.cast_nonneg m)).1
+      (tendsto_nhds_unique hden.2 (hdens 0 ⟨h0, mem_ball_self hρ⟩).2)
+    have h1 : 1 < m := by exact_mod_cast (show (1 : ℝ) < m by linarith)
+    have h2 : m < 2 := by exact_mod_cast (show (m : ℝ) < 2 by linarith [min_le_right δ₀ 1])
+    omega
+
 /-- **Null set of points with small fillings** (Simon Ch. 6, 8.2 (4)–(6); the lower density
 bound in the proof of 7.2.4).  Assume (VO).  Let `μ = μ_C` be finite on compact sets with
 `M_W(C) = μ(W)` for open `W`, and `C(ω) = ∫ ⟨ω, ξ⟩ dμ` with `|ξ| ≤ 1` `μ`-a.e.  Let
