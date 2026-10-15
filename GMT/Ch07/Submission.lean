@@ -99448,4 +99448,78 @@ theorem Submission.idtp_cone_sector_endpoint_density : ∀ (P : ℕ) (C : Geomet
     linarith
   · exact hma
 
+/-- The endpoint of a planar constant-density arc of a 2-dimensional minimizing cone (used in the
+proof of Simon 7.3.3(1), pp. 191–192, for 2-dimensional minimizing cones).  Let
+`γ(φ) = cos φ z + sin φ e` run along the unit circle of `Q`, and let each `γ(φ)`, `0 < φ < φ₀`,
+have a ball on which `spt C` agrees with `Q` and has density `k`.  The centres `γ(φ)` lie in
+`spt C` with density `k`; as `γ` is `1`-Lipschitz and `spt C` is closed, `a := γ(φ₀) ∈ spt C`.
+With `e_a = sin φ₀ z − cos φ₀ e` one has `cos ψ a + sin ψ e_a = γ(φ₀ − ψ)`
+(`idtp_tdc_acont_great_circle`), and the dilations `x ↦ tx`, `t > 0`, carry the density `k` and
+the inclusion `spt C ∩ B_ε(γ(φ₀ − ψ)) ⊆ Q` to `tγ(φ₀ − ψ)` and `B_{tε}(tγ(φ₀ − ψ))`
+(`idtp_tdc_cone_dilation`).  The sector lemma `idtp_cone_sector_endpoint_density` with `δ = φ₀`
+then gives `Θ²(μ_C, a) = k`. -/
+theorem Submission.idtp_tdc_acont_endpoint_density : ∀ (P : ℕ) (C : GeometricCurrentOn (univ : Set (Euclid P)) 2) (Q : Submodule ℝ (Euclid P)) (z e : Euclid P) (k : ℕ) (φ₀ : ℝ), IsMinimizingIn C univ → BoundaryVanishes C → IsConeCurrent C → Module.finrank ℝ Q = 2 → z ∈ Q → e ∈ Q → ‖z‖ = 1 → ‖e‖ = 1 → inner ℝ z e = 0 → 1 ≤ k → 0 < φ₀ → (∀ φ : ℝ, 0 < φ → φ < φ₀ → ∃ ε : ℝ, 0 < ε ∧ C.support ∩ ball (Real.cos φ • z + Real.sin φ • e) ε = (Q : Set (Euclid P)) ∩ ball (Real.cos φ • z + Real.sin φ • e) ε ∧ ∀ y ∈ C.support, y ∈ ball (Real.cos φ • z + Real.sin φ • e) ε → HasMassDensity C y k) → Real.cos φ₀ • z + Real.sin φ₀ • e ∈ C.support ∧ HasMassDensity C (Real.cos φ₀ • z + Real.sin φ₀ • e) k := by
+  intro P C Q z e k φ₀ hmin hbd hcone hQ hzQ heQ hz he hze hk hφ₀ harc
+  -- `γ` is a `1`-Lipschitz unit circle; `e_a` is a unit vector orthogonal to `a = γ(φ₀)`, and
+  -- `cos ψ a + sin ψ e_a = γ(φ₀ − ψ)`
+  obtain ⟨hnorm, hlip, hframe⟩ := Submission.idtp_tdc_acont_great_circle P z e hz he hze
+  obtain ⟨hea, hae, hrot⟩ := hframe φ₀
+  -- `γ(φ) ∈ Q` and `e_a ∈ Q`, as `z, e ∈ Q`
+  have hγQ : ∀ φ : ℝ, Real.cos φ • z + Real.sin φ • e ∈ Q := fun φ =>
+    Q.add_mem (Q.smul_mem _ hzQ) (Q.smul_mem _ heQ)
+  have heaQ : Real.sin φ₀ • z - Real.cos φ₀ • e ∈ Q :=
+    Q.sub_mem (Q.smul_mem _ hzQ) (Q.smul_mem _ heQ)
+  -- the centres `γ(φ)`, `0 < φ < φ₀`, of the balls lie in `spt C` and have density `k`
+  have harcpt : ∀ φ : ℝ, 0 < φ → φ < φ₀ → Real.cos φ • z + Real.sin φ • e ∈ C.support ∧
+      HasMassDensity C (Real.cos φ • z + Real.sin φ • e) k := by
+    intro φ hφ hφφ₀
+    obtain ⟨ε, hε, hspt, hdens⟩ := harc φ hφ hφφ₀
+    have hmem : Real.cos φ • z + Real.sin φ • e ∈
+        C.support ∩ ball (Real.cos φ • z + Real.sin φ • e) ε := by
+      rw [hspt]
+      exact ⟨hγQ φ, mem_ball_self hε⟩
+    exact ⟨hmem.1, hdens _ hmem.1 hmem.2⟩
+  -- `a ∈ spt C`: `|a − γ(φ₀ − η)| ≤ η` for small `η > 0`, and `spt C = ℝᴾ ∖ (zero region)` is
+  -- closed
+  have hclosed : IsClosed C.support := isClosed_univ.sdiff C.isOpen_zeroRegion
+  have hasupp : Real.cos φ₀ • z + Real.sin φ₀ • e ∈ C.support := by
+    refine hclosed.closure_subset (Metric.mem_closure_iff.2 fun r hr => ?_)
+    obtain ⟨η, hη, hηφ₀, hηr⟩ : ∃ η : ℝ, 0 < η ∧ η < φ₀ ∧ η < r :=
+      ⟨min φ₀ r / 2, half_pos (lt_min hφ₀ hr),
+        (half_lt_self (lt_min hφ₀ hr)).trans_le (min_le_left _ _),
+        (half_lt_self (lt_min hφ₀ hr)).trans_le (min_le_right _ _)⟩
+    refine ⟨_, (harcpt (φ₀ - η) (sub_pos.2 hηφ₀) (sub_lt_self φ₀ hη)).1, ?_⟩
+    rw [dist_eq_norm]
+    calc _ ≤ |φ₀ - (φ₀ - η)| := hlip φ₀ (φ₀ - η)
+      _ = η := by rw [sub_sub_cancel, abs_of_pos hη]
+      _ < r := hηr
+  -- the sector hypothesis at `a`: for `t > 0` and `0 < ψ < φ₀`, the point
+  -- `t (cos ψ a + sin ψ e_a) = tγ(φ₀ − ψ)` has density `k`, and `spt C ⊆ Q` near it, since
+  -- `B_{tε}(tγ(φ₀ − ψ)) = t B_ε(γ(φ₀ − ψ))` and `spt C` is invariant under `x ↦ tx`
+  have hsector : ∀ t ψ : ℝ, 0 < t → 0 < ψ → ψ < φ₀ →
+      HasMassDensity C (t • (Real.cos ψ • (Real.cos φ₀ • z + Real.sin φ₀ • e) +
+        Real.sin ψ • (Real.sin φ₀ • z - Real.cos φ₀ • e))) k ∧
+      ∃ r : ℝ, 0 < r ∧ C.support ∩ ball (t • (Real.cos ψ • (Real.cos φ₀ • z + Real.sin φ₀ • e) +
+        Real.sin ψ • (Real.sin φ₀ • z - Real.cos φ₀ • e))) r ⊆ (Q : Set (Euclid P)) := by
+    intro t ψ ht hψ hψφ₀
+    have hφ : 0 < φ₀ - ψ := sub_pos.2 hψφ₀
+    have hφφ₀ : φ₀ - ψ < φ₀ := sub_lt_self φ₀ hψ
+    have hdil := Submission.idtp_tdc_cone_dilation P 2 C hmin.1 hcone t ht
+    have hball : ∀ (w : Euclid P) (r : ℝ), ball (t • w) (t * r) = (fun y => t • y) '' ball w r :=
+      fun w r => by rw [image_smul, smul_ball ht.ne', Real.norm_of_nonneg ht.le]
+    obtain ⟨ε, hε, hspt, -⟩ := harc (φ₀ - ψ) hφ hφφ₀
+    rw [hrot ψ]
+    refine ⟨(hdil.2.2 _ _).2 (harcpt _ hφ hφφ₀).2, t * ε, mul_pos ht hε, ?_⟩
+    rintro x ⟨hx, hxball⟩
+    rw [hball] at hxball
+    obtain ⟨y, hy, rfl⟩ := hxball
+    have hyQ : y ∈ (Q : Set (Euclid P)) ∩
+        ball (Real.cos (φ₀ - ψ) • z + Real.sin (φ₀ - ψ) • e) ε := by
+      rw [← hspt]
+      exact ⟨(hdil.2.1 y).1 hx, hy⟩
+    exact Q.smul_mem t hyQ.1
+  exact ⟨hasupp, Submission.idtp_cone_sector_endpoint_density P C Q
+    (Real.cos φ₀ • z + Real.sin φ₀ • e) (Real.sin φ₀ • z - Real.cos φ₀ • e) φ₀ k hmin hbd hcone hQ
+    (hγQ φ₀) heaQ (hnorm φ₀) hea hae hφ₀ hk hasupp hsector⟩
+
 end GMT.Ch07
