@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.flat_convergence-a1.im_series-a1.partial_sums-a1",
+  "parent_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.flat_convergence-a1.im_series-a1",
+  "depth": 5,
+  "title": "Finite sums of integer multiplicity densities are integer multiplicity densities with subadditive weights",
+  "statement": "Conventions: ℝ^P = Euclid P and Hⁿ = μHE[n]. Λ_n(ℝ^P) = MultiVector P n is the space of continuous linear functionals on n-covectors (Covector (Euclid P) n), with its operator norm ‖·‖ and the induced topology. An IMRep R = (M, θ, ξ) in U is the contract structure IMRep U n (M = R.carrier Borel, M ⊆ U, countably n-rectifiable; θ = R.mult : ℝ^P → ℕ measurable, θ ≥ 1 on M, locally Hⁿ-integrable on M in U; ξ = R.orient : ℝ^P → Λ_n(ℝ^P), Hⁿ⌞M-a.e. strongly measurable and Hⁿ⌞M-a.e. a unit orientation (IsUnitOrientationOf) of an approximate tangent space of M). Its density is D_R(x) := 1_M(x)θ(x)ξ(x) ∈ Λ_n(ℝ^P) (Lean: R.carrier.indicator (fun y => (R.mult y : ℝ) • R.orient y) x), its weight is μ_R := θ·Hⁿ⌞M (R.measure), and its action on an n-form ω is R.action(ω) = ∫_M θ(x)·ξ(x)(ω(x)) dHⁿ(x). 𝒟ⁿ(U) = TestFormOn U n (smooth n-forms on ℝ^P with compact support contained in U). Let P, n ∈ ℕ, U ⊆ ℝ^P open and R_r (r ∈ ℕ) IMReps in U. Then for every q ∈ ℕ there is an IMRep R' in U such that D_{R'} = Σ_{r<q} D_{R_r} Hⁿ-a.e. on ℝ^P (sum over Finset.range q) and μ_{R'} ≤ Σ_{r<q} μ_{R_r} as measures.",
+  "lean_statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (R : ℕ → IMRep U n), IsOpen U → ∀ q : ℕ, ∃ R' : IMRep U n, (∀ᵐ x ∂μHE[n], R'.carrier.indicator (fun y => (R'.mult y : ℝ) • R'.orient y) x = ∑ r ∈ Finset.range q, (R r).carrier.indicator (fun y => ((R r).mult y : ℝ) • (R r).orient y) x) ∧ R'.measure ≤ ∑ r ∈ Finset.range q, (R r).measure",
+  "lean_name": "dor_lmb_fc_ims_partial_sum_reps",
+  "depends_on": [
+    "root.regular_set_dense-a1.integer_combination-a1.combination_construction-a1",
+    "root.density_one_implies_regular-a1.limsup_mass_bound-a1.int_combination-a1.mass_bound-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.regular_set_dense-a1.integer_combination-a1.combination_construction-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-regular-set-dense-a1-integer-combination-a1-combination-construction-a1-a1",
+      "result_commit": "0af9ed599cb8b131973221f740cf2b64fb2fe357",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.int_combination-a1.mass_bound-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-limsup-mass-bound-a1-int-combinat-1f7fa9f5db-a1",
+      "result_commit": "4d37886e9e528008961e01e22d2a37293a7dc576",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-limsup-mass-bound-a1-flat-converg-c31fd77b0d-a1"
+}

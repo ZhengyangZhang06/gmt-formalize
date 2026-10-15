@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.level_cut-a1",
+  "parent_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1",
+  "depth": 3,
+  "title": "Cut-off at a good level: an integer multiplicity cycle X vanishing off B̄_t(y), and the mass of T' + X on B̄_t(y)",
+  "statement": "Assume (C1), the frozen statement of the sibling-of-parent node dor_imrep_massOn_eq_measure_and_support: for all P, n ∈ ℕ, open U ⊆ ℝ^P, T ∈ 𝒟_n(U) and every integer multiplicity triple R in U representing T, M_W(T) = μ_R(W) for every open W ⊆ ℝ^P, and spt T = U ∩ spt μ_R. Let P, n ∈ ℕ with n ≥ 1, and U ⊆ ℝ^P open. Let T, T', S ∈ 𝒟_n(U) and R ∈ 𝒟_{n+1}(U) be integer multiplicity with T − T' = ∂R + S in U. Let y ∈ ℝ^P and 0 < ρ < ρ' with B̄_{ρ'}(y) ⊆ U. Then there are t ∈ (ρ, ρ'), X, Y ∈ 𝒟_n(U) and an integer multiplicity triple RY in U such that:\n- X is integer multiplicity and ∂X = 0;\n- X(ω) = 0 for every ω ∈ 𝒟ⁿ(U) whose support is disjoint from B̄_t(y);\n- Y = T' + X, and RY represents Y;\n- μ_{RY}(B̄_t(y)) ≤ M_{B_{ρ'}(y)}(T) + M_{B_{ρ'}(y)}(S) + (2/(ρ' − ρ))·M_{B_{ρ'}(y)}(R).",
+  "lean_statement": "(∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (R : IMRep U n), IsOpen U → R.Represents T → (∀ W : Set (Euclid P), IsOpen W → T.massOn W = R.measure W) ∧ T.support = U ∩ R.measure.support) → ∀ (P n : ℕ) (U : Set (Euclid P)) (T T' S : GeometricCurrentOn U n) (R : GeometricCurrentOn U (n + 1)) (y : Euclid P) (ρ ρ' : ℝ), IsOpen U → 0 < n → IsIntegerMultiplicity T → IsIntegerMultiplicity T' → IsIntegerMultiplicity S → IsIntegerMultiplicity R → (∀ ω : TestFormOn U n, T ω - T' ω = R.boundary ω + S ω) → 0 < ρ → ρ < ρ' → closedBall y ρ' ⊆ U → ∃ (t : ℝ) (X Y : GeometricCurrentOn U n) (RY : IMRep U n), ρ < t ∧ t < ρ' ∧ IsIntegerMultiplicity X ∧ BoundaryVanishes X ∧ (∀ ω : TestFormOn U n, Disjoint (tsupport (ω : DifferentialForm (Euclid P) n)) (closedBall y t) → X ω = 0) ∧ (∀ ω : TestFormOn U n, Y ω = T' ω + X ω) ∧ RY.Represents Y ∧ RY.measure (closedBall y t) ≤ T.massOn (ball y ρ') + S.massOn (ball y ρ') + ENNReal.ofReal (2 / (ρ' - ρ)) * R.massOn (ball y ρ')",
+  "lean_name": "dor_lmb_good_level_cut",
+  "depends_on": [
+    "root.density_one_implies_regular-a1.limsup_mass_bound-a1.int_combination-a1",
+    "root.density_one_implies_regular-a1.limsup_mass_bound-a1.borel_restriction-a1",
+    "root.density_one_implies_regular-a1.limsup_mass_bound-a1.slicing-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.int_combination-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.borel_restriction-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.slicing-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-limsup-mass-bound-a1-level-cut-a1-a1"
+}

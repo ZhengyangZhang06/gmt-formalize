@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.harmonic_approximation-a1.rellich_ball-a1",
+  "parent_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.harmonic_approximation-a1",
+  "depth": 5,
+  "title": "Rellich compactness in L²(B̆_1) for Lipschitz functions with bounded W^{1,2} norm",
+  "statement": "Let n ≥ 1, M ∈ ℝ, and let (u_j)_{j∈ℕ} be Lipschitz functions ℝⁿ → ℝ (ℝⁿ = Euclid n, each u_j with its own Lipschitz constant) such that ∫_B u_j² ≤ M and ∫_B ‖Du_j‖² ≤ M for every j, where B := B̆_1(0) is the open unit ball and Du_j = fderiv ℝ u_j. Then there are a strictly increasing φ : ℕ → ℕ and W : ℝⁿ → ℝ with W ∈ L²(B) (MemLp W 2 for Lebesgue measure restricted to B) such that ∫_B (u_{φ(j)} − W)² → 0 as j → ∞.",
+  "lean_statement": "∀ (n : ℕ) (M : ℝ) (u : ℕ → Euclid n → ℝ), 0 < n → (∀ j, ∃ L : NNReal, LipschitzWith L (u j)) → (∀ j, ∫ x in ball (0 : Euclid n) 1, u j x ^ 2 ≤ M) → (∀ j, ∫ x in ball (0 : Euclid n) 1, ‖fderiv ℝ (u j) x‖ ^ 2 ≤ M) → ∃ (φ : ℕ → ℕ) (W : Euclid n → ℝ), StrictMono φ ∧ MemLp W 2 (volume.restrict (ball (0 : Euclid n) 1)) ∧ Tendsto (fun j => ∫ x in ball (0 : Euclid n) 1, (u (φ j) x - W x) ^ 2) atTop (𝓝 0)",
+  "lean_name": "dorag_ha_rellich_ball",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-af41ce05d4-a1"
+}

@@ -1,0 +1,107 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "git -C . rev-parse HEAD",
+        "git -C .lake/packages/mathlib rev-parse HEAD",
+        "git -C .lake/packages/simongmt rev-parse HEAD",
+        "idtp_fons_cs_sp_|dtc_bc_lc_pushforward|dor_imrep_massOn_eq_measure_and_support|atsm_approxTangent_le_of_flat",
+        "(theorem|lemma) (starProjection_norm_le|starProjection_eq_self_iff|norm_starProjection_apply_le|measure_compl_support|measure_inter_conull|ext_of_generateFrom_of_iUnion|enorm_integral_le_lintegral_enorm|norm_compContinuousLinearMap_le|isPiSystem_isOpen)",
+        "git show b1757de56800bfad9f11c71168e87756f47b6004:GMT/Ch07/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/independent_sp_audit/AuditBindings.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/lake-manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Projection/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Support.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/Alternating/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/AffineCurrentPushforward.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-5df916c2fb/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-5df916c2fb/decomposition-v2.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification/results/hoa1/20261014T064759Z-ch07-root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.push-00upzs_f/comparator-config.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-07.txt",
+        "/tmp/independent_sp_audit/AuditBindings.lean"
+      ],
+      "conclusion": "The pinned definitions, revisions and package manifests match; tracked project and dependency files are clean. The searched declaration names have no matches in the snapshot project. All eight reused declarations are comparator-accepted: their frozen types, candidate sources and retained comparator inputs match, with only propext, Classical.choice and Quot.sound permitted. The three new names are unreserved. All names are bare identifiers, and all eleven statements are standalone one-line propositions without implementation-dependent aliases. The proposed dependency graph and 92 reachable existing nodes are acyclic, with no route to the selected parent or its ancestors. Independently compiled all eleven exact types, the three new proofs from their stated dependencies, and the assembly of the exact selected parent; compilation succeeded and axiom reports contain only the three standard axioms. Splitting is appropriate: every child contributes directly or transitively. Projecting the compact perturbation preserves the prescribed boundary, and finite common-mass cancellation proves ambient minimality. The width-one window does not require W ⊆ W*. Projection constructions use the intended continuous linear maps; no inline matrix-unit ambiguity occurs."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "pushforward",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Exact accepted-type reuse. The proof establishes representation independence, current continuity, integrality, support containment, the mass estimate, subtraction compatibility and preservation of zero boundary. Its hypotheses apply to the compactly supported cycle S − T without assuming ∂T = 0."
+    },
+    {
+      "key": "mass_support",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and type agree, including arbitrary open W. Passing to W ∩ U handles windows extending outside U. Unit-orientation duality, approximation of the dual covector field and the zero-region argument prove both the mass formula and support identity."
+    },
+    {
+      "key": "im_sub",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Openness and positive degree are explicit. The density and tangent arguments justify compatible orientations on overlaps; the signed multiplicity construction verifies every IMRep field and the exact subtraction identity without circularity."
+    },
+    {
+      "key": "vanish_off_support",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The compact test-form support lies in the zero region and admits the stated finite partition-of-unity decomposition. Each piece is a valid test form annihilated by the current. No unmentioned openness assumption on U is needed."
+    },
+    {
+      "key": "int_combination",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The Borel sign and integer coefficient construction proves the exact almost-everywhere multivector identity. Local integrability and orientation transfer justify all representation fields, including cancellation regions. Its cited prerequisites are accepted and acyclic."
+    },
+    {
+      "key": "orient_comp",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Cauchy–Binet, Cauchy–Schwarz and Hadamard give precisely the Euclidean coefficient-norm estimate. Fixing the oriented plane gives the second conclusion directly. The proof also covers degree zero."
+    },
+    {
+      "key": "pairing_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Measurability, compact-set integrability and domination by B times the indicated multiplicity function prove both conclusions with the stated operator norm. The finite lintegral justifies the toReal expression; no additional regularity of F is assumed."
+    },
+    {
+      "key": "flat_tangent",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The positive bump on Q and eventual vanishing of its blow-up integrals yield the claimed contradiction. Null-set transport and evaluation on the measurable bump support avoid introducing measurability assumptions on M or N."
+    },
+    {
+      "key": "projection_invariance",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Positive multiplicity converts weight concentration into carrier nullity outside V. The declared flat_tangent dependency puts the oriented planes inside V, so projection fixes the integrands almost everywhere. Integral congruence proves the exact arbitrary-form statement without an integrability assumption."
+    },
+    {
+      "key": "measure_locality",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Agreement on supported test forms gives equal local masses and hence equal weights on open subsets of O. Compact-set finiteness supplies the finite ball cover needed for generating-π-system uniqueness. The sole declared dependency suffices."
+    },
+    {
+      "key": "projected_mass",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The combined vector density gives the required representation. Integrability of pullbacks is justified separately using V ∩ tsupport ω and compact K, making action additivity legitimate. Projection invariance and the coefficient-norm contraction then prove the bound for every O, without assuming O measurable or S' integer multiplicity."
+    }
+  ],
+  "required_changes": []
+}

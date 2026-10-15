@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_sector_endpoint_density-a1.flux_density-a1.fibre_signed-a1.ratio_aesm-a1",
+  "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_sector_endpoint_density-a1.flux_density-a1.fibre_signed-a1",
+  "depth": 6,
+  "title": "A.e. strong measurability of the tangential rotation ratio for the weight of an integer multiplicity triple",
+  "statement": "Let P, n ∈ ℕ, U ⊆ ℝ^P, R = (M, θ, ξ) an integer multiplicity triple in U (IMRep U n) with weight μ := R.measure = (H^n⌞M).withDensity θ (H^n = μHE[n]), Q a linear subspace of ℝ^P with orthogonal projection π = Q.starProjection, and a, e ∈ ℝ^P. Put T_x := approxTangentPlane n M x with orthogonal projection p_{T_x}, Ax := ⟨x,a⟩e − ⟨x,e⟩a and G(x) := |p_{T_x}(Ax)|² / |πx|² (real division, t/0 = 0). Then G : ℝ^P → ℝ is μ-a.e. strongly measurable.",
+  "lean_statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (R : IMRep U n) (Q : Submodule ℝ (Euclid P)) (a e : Euclid P), AEStronglyMeasurable (fun x : Euclid P => ‖(approxTangentPlane n R.carrier x).starProjection (inner ℝ x a • e - inner ℝ x e • a)‖ ^ 2 / ‖Q.starProjection x‖ ^ 2) R.measure",
+  "lean_name": "idtp_cse_fd_fs_frame_ratio_aesm",
+  "depends_on": [
+    "root.minimizing_implies_stationary-a1.tangent_projection_measurable-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.minimizing_implies_stationary-a1.tangent_projection_measurable-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-minimizing-implies-stationary-a1-tangent-projection-measurable-a1-a1",
+      "result_commit": "36b2d372040645171f355c68541910ce3ab4bab8",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-518c81e475-a1"
+}

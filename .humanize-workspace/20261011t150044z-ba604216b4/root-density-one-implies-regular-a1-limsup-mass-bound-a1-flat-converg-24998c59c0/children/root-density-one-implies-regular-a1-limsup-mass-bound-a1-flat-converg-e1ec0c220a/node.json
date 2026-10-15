@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.flat_convergence-a1.deformation-a1.cube_poincare-a1.slice_identity-a1",
+  "parent_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.flat_convergence-a1.deformation-a1.cube_poincare-a1",
+  "depth": 6,
+  "title": "Fubini identity along the k-th coordinate of the cube Q_δ (parent step 3)",
+  "statement": "Let m ∈ ℕ, δ ∈ ℝ, k ∈ Fin (m + 1), Q_δ := {y ∈ Euclid (m + 1) : δ < y_i < 1 − δ for all i}, and let h : Euclid (m + 1) → ℝ be integrable on Q_δ. For x ∈ Euclid (m + 1) and t ∈ ℝ let x[k ↦ t] be x with its k-th coordinate replaced by t. Then ∫_{Q_δ} ∫_{(δ, 1 − δ)} h(x[k ↦ t]) dt dx = (1 − 2δ)·∫_{Q_δ} h.",
+  "lean_statement": "∀ (m : ℕ) (δ : ℝ) (k : Fin (m + 1)) (h : Euclid (m + 1) → ℝ), IntegrableOn h {y : Euclid (m + 1) | ∀ i, δ < y i ∧ y i < 1 - δ} → ∫ x in {y : Euclid (m + 1) | ∀ i, δ < y i ∧ y i < 1 - δ}, ∫ t in Ioo δ (1 - δ), h (WithLp.toLp 2 (Function.update (WithLp.ofLp x) k t)) = (1 - 2 * δ) * ∫ x in {y : Euclid (m + 1) | ∀ i, δ < y i ∧ y i < 1 - δ}, h x",
+  "lean_name": "dor_lmb_fcd_cp_slice_integral",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-limsup-mass-bound-a1-flat-converg-e1ec0c220a-a1"
+}

@@ -1,0 +1,69 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat SNAP/manifest.json; git rev-parse HEAD; cmp GMT/Ch07/Submission.lean SNAP/project/GMT/Ch07/Contract.lean; cmp GMT/Ch07/Contract.lean SNAP/project/GMT/Ch07/Contract.lean; python3 read of lake-manifest.json revs (mathlib, simongmt)",
+        "python3 scans of RUN/dag.json: selected node (depth 5, decomposing, no children); lean_name collision check for dmcbr_sl_sb_massOn_eq_of_apply_eq_neg, dmcbr_sl_sb_ennreal_liminf_add_le, dmcbr_sl_sb_boundaryMassOn_slice_le (no match); twin nodes cmcsd_sh_slice_boundaryMassOn_le (byte-identical frozen type to the boundary_slice child, status decomposing) and cbrsl_slice_boundary_mass_bound (queued); short statements mentioning liminf, massOn or neg (no accepted generic lemma)",
+        "grep -n '_existing_lean_name_problem|_reference_use_problem|max_depth' /runtime/flows/gmt-claude-b888e19cffb1/_recursive_lean/runtime.py and prompts.py",
+        "rg/grep over SNAP/mathlib/Mathlib: le_liminf_add, liminf_add_le, biSup_add_biSup_le', limsup_eq_iInf_iSup (to_dual liminf_eq_iSup_iInf), aestronglyMeasurable_zero_measure, integral_zero_measure, ae_zero, tsupport_neg; grep liminf.*add in Topology/Instances/ENNReal/Lemmas.lean and Order/Filter/ENNReal.lean",
+        "rg over SNAP/project for massOn_neg, liminf sum lemmas, dmcbr_sl_sb (no match)",
+        "grep over .lake/packages/simongmt/Poincare for massOn_neg, massOn_sub, Neg instances on GeometricCurrentOn (no match); sed of Chapter06/Mass.lean (covectorEuclideanNorm, massAdmissibleOn, massOn, le_massOn) and Chapter06/Currents.lean (TestFormOn, GeometricCurrentOn, boundary, ext, boundary_boundary, zero_apply)",
+        "grep -n -i slic book/chapter-06.txt; sed -n 1330,1400p (Simon Ch. 6 (4.6)-(4.10))",
+        "lake env lean /tmp/dmcbr-sb-decomp/Probe.lean (#check of all used names) and /tmp/dmcbr-sb-decomp/Check.lean (three child proofs, exact frozen parent type from them, #print axioms); validate_lean_statement from verifier/lean_contract.py and runtime lean_contract.py on all four types"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Order/LiminfLimsup.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Basic/ENNReal/Operations.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Order/LiminfLimsup.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Instances/EReal/Lemmas.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Instances/ENNReal/Lemmas.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Order/Filter/ENNReal.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/StronglyMeasurable/AEStronglyMeasurable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Filter.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/lake-manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-closure-and-bou-1c173fa73c/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/runtime/flows/gmt-claude-b888e19cffb1/_recursive_lean/runtime.py",
+        "/runtime/flows/gmt-claude-b888e19cffb1/_recursive_lean/prompts.py",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt",
+        "/tmp/dmcbr-sb-decomp/Probe.lean",
+        "/tmp/dmcbr-sb-decomp/Check.lean"
+      ],
+      "conclusion": "Pins match. HEAD b4d606d is the snapshot project commit. Mathlib 25730c7c and SimonGMT 2b366308 match lake-manifest.json. Submission.lean and Contract.lean are byte-identical to the snapshot contract. The snapshot project has no mass-negation lemma, no ENNReal liminf-sum lemma and no dmcbr_sl_sb declaration. SimonGMT Chapter06 provides massOn_mono, le_massOn, covectorEuclideanNorm_neg, GeometricCurrentOn.ext, boundary_boundary and zero_apply, but no mass-under-negation lemma. Mathlib's le_liminf_add requires AddCommGroup. The EReal le_liminf_add and ENNReal.liminf_add_of_*_tendsto_zero do not give ℝ≥0∞ superadditivity, so liminf_add is derived from liminf_eq_iSup_iInf (to_dual of limsup_eq_iInf_iSup, Order/LiminfLimsup.lean:296) and ENNReal.biSup_add_biSup_le' (Basic/ENNReal/Operations.lean:674). The zero-representation step uses aestronglyMeasurable_zero_measure, integral_zero_measure and ae_zero. The three child names collide with no DAG node. The boundary_slice type is byte-identical to the unaccepted twin cmcsd_sh_slice_boundaryMassOn_le, so that name cannot be reused. All four types pass both validate_lean_statement implementations and elaborate in the contract scope. In /tmp/dmcbr-sb-decomp/Check.lean (sha256 efc82f98c106b99309b59da4cbe01b9195da6d79bad62e438977befb63e50dfe), all three children are proved and the exact frozen parent type is proved from them; #print axioms reports only propext, Classical.choice and Quot.sound."
+    }
+  ],
+  "parent_id": "root.dimension_reduction_results-a1.moving_blowups-a1.closure_and_boundary_rectifiability-a1.slice_limit-a1.slice_bound-a1",
+  "child_id": "root.dimension_reduction_results-a1.moving_blowups-a1.closure_and_boundary_rectifiability-a1.slice_limit-a1.slice_bound-a1.mass_neg-a1",
+  "subproblem": {
+    "key": "mass_neg",
+    "title": "Local mass is invariant under negation of a current",
+    "statement": "Let P, n ∈ ℕ, U ⊆ ℝ^P an arbitrary set, T₁, T₂ ∈ 𝒟_n(U) (SimonGMT GeometricCurrentOn U n) and W ⊆ ℝ^P an arbitrary set. If T₁(ω) = −T₂(ω) for every test form ω ∈ 𝒟^n(U) (TestFormOn U n), then M_W(T₁) = M_W(T₂). Here M_W(T) = T.massOn W ∈ [0, ∞] is the supremum of ENNReal.ofReal(T(ω)) over the admissible forms ω ∈ 𝒟^n(U), i.e. those with tsupport ω ⊆ W and |ω(x)| ≤ 1 for all x ∈ ℝ^P (massAdmissibleOn U n W, |·| the Euclidean covector norm covectorEuclideanNorm).",
+    "lean_statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (T₁ T₂ : GeometricCurrentOn U n) (W : Set (Euclid P)), (∀ ω : TestFormOn U n, T₁ ω = -T₂ ω) → T₁.massOn W = T₂.massOn W",
+    "lean_name": "dmcbr_sl_sb_massOn_eq_of_apply_eq_neg",
+    "depends_on": [],
+    "natural_proof": "Notation. For S ∈ 𝒟_n(U), M_W(S) = S.massOn W = sup{ofReal(S(ω)) : ω ∈ 𝒜} in [0, ∞]. Here 𝒜 := massAdmissibleOn U n W is the set of ω ∈ 𝒟^n(U) with tsupport ω ⊆ W and |ω(x)| ≤ 1 for every x ∈ ℝ^P, where |·| = covectorEuclideanNorm.\n1. 𝒜 is closed under negation. Let ω ∈ 𝒜. Since 𝒟^n(U) is a submodule of the n-forms, −ω ∈ 𝒟^n(U), and the underlying form of −ω is x ↦ −ω(x). Hence tsupport(−ω) = tsupport(ω) ⊆ W (Mathlib tsupport_neg). For every x, |(−ω)(x)| = |−ω(x)| = |ω(x)| ≤ 1 (SimonGMT covectorEuclideanNorm_neg). So −ω ∈ 𝒜.\n2. Auxiliary inequality. Let S₁, S₂ ∈ 𝒟_n(U) satisfy S₁(ω) = −S₂(ω) for every ω ∈ 𝒟^n(U), and let ω ∈ 𝒜. The functional underlying S₂ is ℝ-linear, so S₂(−ω) = −S₂(ω) = S₁(ω). By step 1, −ω ∈ 𝒜, so ofReal(S₁(ω)) = ofReal(S₂(−ω)) ≤ M_W(S₂), because every admissible value is at most the supremum (SimonGMT GeometricCurrentOn.le_massOn). Since ω ∈ 𝒜 was arbitrary, M_W(S₂) bounds every value whose supremum is M_W(S₁). Hence M_W(S₁) ≤ M_W(S₂).\n3. By hypothesis T₁(ω) = −T₂(ω) for every ω, so step 2 applies with (S₁, S₂) := (T₁, T₂) and gives M_W(T₁) ≤ M_W(T₂).\n4. For every ω, T₂(ω) = −(−T₂(ω)) = −T₁(ω). So step 2 also applies with (S₁, S₂) := (T₂, T₁) and gives M_W(T₂) ≤ M_W(T₁).\n5. By antisymmetry of ≤ on [0, ∞], M_W(T₁) = M_W(T₂). ∎",
+    "proof_key_steps": [
+      "Admissible forms for M_W are closed under negation: tsupport(−ω) = tsupport ω (tsupport_neg) and |−ω(x)| = |ω(x)| (covectorEuclideanNorm_neg).",
+      "If S₁ = −S₂ pointwise, then by linearity ofReal(S₁(ω)) = ofReal(S₂(−ω)) ≤ M_W(S₂) for each admissible ω, so M_W(S₁) ≤ M_W(S₂).",
+      "Apply this to (T₁, T₂) and to (T₂, T₁), using T₂ = −T₁ pointwise, and conclude by antisymmetry."
+    ]
+  },
+  "audit": {
+    "key": "mass_neg",
+    "acceptable": true,
+    "natural_proof_acceptable": true,
+    "reason": "The standalone proposition exactly matches the prose, including arbitrary U and W. Negation preserves admissibility through support and Euclidean covector norm invariance. Linearity identifies each admissible evaluation with one for the other current; taking suprema in both directions proves equality. The proof correctly handles ENNReal.ofReal and requires neither finite mass nor a negation instance on currents."
+  },
+  "resolved_dependencies": [],
+  "plan_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-closure-and-bou-d8a61cf59f/parent-supplied-plan.md",
+  "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-closure-and-bou-d8a61cf59f/parent-supplied-natural-proof.md",
+  "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-closure-and-bou-d8a61cf59f/parent-supplied-natural-proof.json"
+}

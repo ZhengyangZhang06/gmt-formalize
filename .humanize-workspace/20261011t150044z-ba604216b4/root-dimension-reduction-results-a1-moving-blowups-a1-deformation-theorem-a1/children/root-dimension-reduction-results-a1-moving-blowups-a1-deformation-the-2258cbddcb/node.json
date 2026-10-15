@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.moving_blowups-a1.deformation_theorem-a1.skeleton_retraction-a1",
+  "parent_id": "root.dimension_reduction_results-a1.moving_blowups-a1.deformation_theorem-a1",
+  "depth": 4,
+  "title": "Retraction onto the n-skeleton away from the dual skeleton (Lemma D; Simon 6.5.4)",
+  "statement": "Let P, m ∈ ℕ with m + 1 < P and put n := m + 1. There is a constant c > 0, depending only on P and m, such that for every a ∈ ℝ^P (Euclid P) with |a_i − 1/2| < 1/4 for all i the following holds. Let L*(a) := {y ∈ ℝ^P : there is a finite set s of coordinate indices with |s| ≥ m + 2 and y_i − a_i ∈ ℤ for all i ∈ s} (the dual skeleton) and d(x) := dist(x, L*(a)) (Metric.infDist). Then there is a map ψ : ℝ^P → ℝ^P such that (i) for every x with d(x) > 0, ψ(x) lies in the n-skeleton of the unit cubical grid, i.e. there is a set s of coordinate indices with P ≤ n + |s| and ψ(x)_i ∈ ℤ for all i ∈ s, and |ψ(x) − x| ≤ √P; (ii) for every r with 0 < r ≤ 1/4 and all x, y with d(x) ≥ r and d(y) ≥ r, |ψ(x) − ψ(y)| ≤ (c/r)|x − y|.",
+  "lean_statement": "∀ (P m : ℕ), m + 1 < P → ∃ c : ℝ, 0 < c ∧ ∀ a : Euclid P, (∀ i, |a i - 1 / 2| < 1 / 4) → ∃ ψ : Euclid P → Euclid P, (∀ x : Euclid P, 0 < infDist x {w : Euclid P | ∃ s : Finset (Fin P), m + 2 ≤ s.card ∧ ∀ i ∈ s, ∃ z : ℤ, w i - a i = z} → (∃ s : Finset (Fin P), P ≤ m + 1 + s.card ∧ ∀ i ∈ s, ∃ z : ℤ, ψ x i = z) ∧ dist (ψ x) x ≤ Real.sqrt P) ∧ ∀ r : ℝ, 0 < r → r ≤ 1 / 4 → ∀ x y : Euclid P, r ≤ infDist x {w : Euclid P | ∃ s : Finset (Fin P), m + 2 ≤ s.card ∧ ∀ i ∈ s, ∃ z : ℤ, w i - a i = z} → r ≤ infDist y {w : Euclid P | ∃ s : Finset (Fin P), m + 2 ≤ s.card ∧ ∀ i ∈ s, ∃ z : ℤ, w i - a i = z} → dist (ψ x) (ψ y) ≤ c / r * dist x y",
+  "lean_name": "dimred_mbl_dt_skeleton_retraction",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-moving-blowups-a1-deformation-the-2258cbddcb-a1"
+}

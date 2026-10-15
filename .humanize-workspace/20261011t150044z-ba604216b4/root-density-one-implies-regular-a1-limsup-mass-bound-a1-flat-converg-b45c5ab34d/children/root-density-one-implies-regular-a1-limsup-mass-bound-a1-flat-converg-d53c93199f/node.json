@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.flat_convergence-a1.deformation_top-a1.cube_chain_im-a1.borel_current_im-a1",
+  "parent_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.flat_convergence-a1.deformation_top-a1.cube_chain_im-a1",
+  "depth": 6,
+  "title": "The top-dimensional current [[G]] = τ(G, 1, e_0∧⋯∧e_{n−1}) of a Borel set G ⊆ ℝⁿ is integer multiplicity",
+  "statement": "Conventions: ℝⁿ = Euclid n = EuclideanSpace ℝ (Fin n). Hⁿ = μHE[n], Mathlib's normalized Euclidean Hausdorff measure; on ℝⁿ it equals Lebesgue measure. 𝒟ⁿ(ℝⁿ) = TestFormOn univ n (smooth n-forms on ℝⁿ with compact support) and 𝒟_n(ℝⁿ) = GeometricCurrentOn univ n.\n\nAn IMRep R = (M, θ, ξ) in U ⊆ ℝ^P is the contract structure IMRep U n:\n- M is Borel, M ⊆ U and M is countably n-rectifiable;\n- θ : ℝ^P → ℕ is measurable, positive on M, and ∫_{M∩K} θ dHⁿ < ∞ for every compact K ⊆ U;\n- ξ : ℝ^P → MultiVector P n is strongly measurable for Hⁿ⌞M, and for Hⁿ-a.e. x ∈ M there is a subspace Q with HasApproximateTangentSpaceAt n M x Q and IsUnitOrientationOf (ξ x) Q.\n\nR represents T when T(ω) = ∫_M θ(x)·ξ(x)(ω(x)) dHⁿ(x) for every ω ∈ 𝒟ⁿ(U). T is integer multiplicity (IsIntegerMultiplicity T) if some IMRep represents it. e_k = EuclideanSpace.single k 1 for k ∈ Fin n.\n\nStatement: Let n ∈ ℕ and let G ⊆ ℝⁿ be a Borel set (MeasurableSet G). Then there is an integer multiplicity current A ∈ 𝒟_n(ℝⁿ) with A(ω) = ∫_G ω(x)(e_0, …, e_{n−1}) dHⁿ(x) for every ω ∈ 𝒟ⁿ(ℝⁿ). That is, [[G]] = τ(G, 1, e_0∧⋯∧e_{n−1}) is an integer multiplicity current.",
+  "lean_statement": "∀ (n : ℕ) (G : Set (Euclid n)), MeasurableSet G → ∃ A : GeometricCurrentOn (univ : Set (Euclid n)) n, IsIntegerMultiplicity A ∧ ∀ ω : TestFormOn (univ : Set (Euclid n)) n, A ω = ∫ x in G, (ω : DifferentialForm (Euclid n) n) x (fun k => EuclideanSpace.single k (1 : ℝ)) ∂μHE[n]",
+  "lean_name": "dor_lmb_fc_dtop_cci_borel_current_im",
+  "depends_on": [
+    "root.compactness_of_minimizing_currents-a1.im_calculus-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.compactness_of_minimizing_currents-a1.im_calculus-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-im-calculus-a1-a1",
+      "result_commit": "2af75d6921b01a9c889a45103692ca0af95ea394",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-limsup-mass-bound-a1-flat-converg-d53c93199f-a1"
+}

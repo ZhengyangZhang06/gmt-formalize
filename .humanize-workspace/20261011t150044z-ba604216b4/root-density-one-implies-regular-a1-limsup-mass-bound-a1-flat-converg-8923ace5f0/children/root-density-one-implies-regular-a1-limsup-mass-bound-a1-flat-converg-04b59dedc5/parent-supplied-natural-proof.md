@@ -1,0 +1,99 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.density_one_implies_regular-a1.limsup_mass_bound-a1.flat_convergence-a1.localize-a1`
+- Child DAG node: `root.density_one_implies_regular-a1.limsup_mass_bound-a1.flat_convergence-a1.localize-a1.good_level-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: steps 2–4 of the supplied proof of dor_lmb_fc_localize (the monotone/Helly extraction, Fatou's lemma for the slice masses, and the choice of the level t), stated abstractly. In dor_lmb_fc_localize: ν_j := g_#μ_j is the push-forward under g = dist(·, closure W) of the mass measure μ_j = R_j.measure of T_j, so ν_j([s − η, s]) = μ_j({s − η ≤ g ≤ s}) for every band width η > 0. F_j(t) := M_{W₁}(P_{j,t}), where P_{j,t} are the slices of T_j given by (SL) and W₁ = {g < 5σ/2} ⊂⊂ U is open, σ := δ₀/3 being the scale from the setup step. Good_j(t) is the a.e. clause (2) of (SL) for P_{j,t}, and Λ := sup_j M_{W₁}(T_j). Step 2 of the supplied proof constructs limits G(q) of μ_j({f < q}) on rational q and the countable jump set C of G. That step is supplied here by the sibling helly. Its conclusion at a level s ∉ N, that some band {s − η ≤ g ≤ s} eventually carries little mass along the subsequence, is a sufficient substitute for the property of t ∉ C that step 6 of the supplied proof uses (it is precisely the no-concentration hypothesis of the sibling weak_conv).
+Tool: the sibling helly (cmc_fc_gs_helly_no_concentration). Let μ_j (j ∈ ℕ) be Borel measures on ℝ, let a, b ∈ ℝ and let Λ ∈ [0, ∞) with μ_j([a, b]) ≤ Λ for every j. Then there are a strictly increasing φ : ℕ → ℕ and a countable N ⊆ ℝ such that for every s ∈ (a, b) ∖ N and every ε ∈ (0, ∞] there is δ > 0 with μ_{φ(j)}([s − δ, s]) ≤ ε for all sufficiently large j.
+Notation: L¹ is Lebesgue measure (volume) on ℝ, 'a.e.' refers to L¹, and liminf is taken in [0, ∞] as the index tends to ∞.
+1. (Helly selection.) Apply helly to the measures ν_j, the reals a, b and Λ; its hypothesis is ν_j([a, b]) ≤ Λ < ∞. This gives a strictly increasing φ₁ : ℕ → ℕ and a countable set N ⊆ ℝ with the following property (H). For every s ∈ (a, b) with s ∉ N and every ε ∈ (0, ∞] there are δ > 0 and J ∈ ℕ with ν_{φ₁(i)}([s − δ, s]) ≤ ε for all i ≥ J.
+2. (Fatou along φ₁.) For t ∈ ℝ put h(t) := liminf_{i→∞} F_{φ₁(i)}(t) ∈ [0, ∞]. Each F_{φ₁(i)} is a.e.-measurable, so Fatou's lemma for a.e.-measurable functions (Mathlib lintegral_liminf_le') gives ∫ h dL¹ ≤ liminf_i ∫ F_{φ₁(i)} dL¹. Every term satisfies ∫ F_{φ₁(i)} dL¹ ≤ Λ, so this liminf is ≤ Λ (liminf_le_of_frequently_le'). Hence ∫ h dL¹ ≤ Λ < ∞.
+3. (h is finite a.e.) h is a.e.-measurable. Indeed, choose measurable F̃_i equal a.e. to F_{φ₁(i)}. The liminf of the F̃_i is measurable (Measurable.liminf), and it equals h outside the countable union of the exceptional null sets (Mathlib AEMeasurable.liminf). An a.e.-measurable [0, ∞]-valued function with finite integral is finite a.e. (ae_lt_top'). So h(t) < ∞ for a.e. t.
+4. (A common full-measure set.) For each j the set {t : Good_j(t) fails} is L¹-null. ℕ is countable, so for a.e. t, Good_j(t) holds for every j simultaneously (ae_all_iff). N is countable and L¹ has no atoms, so L¹(N) = 0 (Set.Countable.measure_zero); that is, t ∉ N for a.e. t (measure_eq_zero_iff_ae_notMem). Let B be the set of t ∈ ℝ at which at least one of the following fails: (i) Good_j(t) for every j; (ii) h(t) < ∞; (iii) t ∉ N. Combining these facts with step 3, L¹(B) = 0.
+5. (Choice of s.) Since a < b, L¹((a, b)) = b − a > 0 (Real.volume_Ioo). If (a, b) ⊆ B, then L¹((a, b)) ≤ L¹(B) = 0, a contradiction. Hence there is s ∈ (a, b) with s ∉ B. That is, Good_j(s) holds for every j ∈ ℕ, ℓ := h(s) = liminf_i F_{φ₁(i)}(s) < ∞, and s ∉ N.
+6. (Subsequence with bounded values.) Put C := ℓ + 1 ∈ [0, ∞); then ℓ < C. A [0, ∞]-valued sequence is bounded below by 0. So by the definition of liminf (frequently_lt_of_liminf_lt), F_{φ₁(i)}(s) < C for infinitely many i. Therefore (extraction_of_frequently_atTop) there is a strictly increasing φ₂ : ℕ → ℕ with F_{φ₁(φ₂(j))}(s) ≤ C for every j ∈ ℕ.
+7. (Conclusion.) Let φ := φ₁ ∘ φ₂; it is strictly increasing as a composition of strictly increasing maps. We have s ∈ (a, b) and C ≠ ∞. Good_j(s) holds for every j (step 5), and F_{φ(j)}(s) ≤ C for every j (step 6). Finally let ε ∈ (0, ∞]. Since s ∈ (a, b) and s ∉ N, (H) gives δ > 0 and J with ν_{φ₁(i)}([s − δ, s]) ≤ ε for all i ≥ J. A strictly increasing φ₂ : ℕ → ℕ satisfies φ₂(j) ≥ j. So for every j ≥ J, i := φ₂(j) ≥ J and ν_{φ(j)}([s − δ, s]) = ν_{φ₁(φ₂(j))}([s − δ, s]) ≤ ε. Thus ν_{φ(j)}([s − δ, s]) ≤ ε for all sufficiently large j. ∎
+
+## Key steps
+
+1. Helly (sibling helly) gives a strictly increasing φ₁ and a countable N such that ν_{φ₁(i)} does not concentrate on [s − δ, s] at any s ∈ (a, b) ∖ N.
+2. Fatou: ∫ liminf_i F_{φ₁(i)} ≤ liminf_i ∫ F_{φ₁(i)} ≤ Λ < ∞. The liminf is a.e.-measurable, hence finite a.e.
+3. For a.e. t: Good_j(t) holds for all j (countable intersection), the liminf is finite, and t ∉ N (N is countable, hence null).
+4. (a, b) has positive Lebesgue measure, so such a level s ∈ (a, b) exists.
+5. liminf < ℓ + 1 =: C gives frequently F_{φ₁(i)}(s) < C, hence a subsequence φ₂ with F_{φ₁(φ₂(j))}(s) ≤ C.
+6. φ := φ₁ ∘ φ₂. The no-concentration property passes to the subsequence because φ₂(j) ≥ j.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat local-references/123e8435b4a2469b/manifest.json (project b4d606db1da5da8fa2c0292ad4924d97de8b3c4b, mathlib 25730c7c759d108ef87ab70af2342a196760f79d)`
+- `cmp local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean GMT/Ch07/Contract.lean; cmp GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean (both identical)`
+- `rg -n -i "dor_lmb_fcl|good_level|helly|cmc_fcl|lcmp_massOn" local-references/123e8435b4a2469b/project --glob *.lean (no match)`
+- `rg -n "theorem lintegral_liminf_le'|protected theorem AEMeasurable.liminf|theorem ae_lt_top'|theorem ae_all_iff|theorem extraction_of_frequently_atTop |theorem measure_eq_zero_iff_ae_notMem|theorem volume_Ioo|theorem liminf_le_of_frequently_le'|frequently_lt_of_liminf_lt|theorem lipschitz_infDist_pt|theorem infDist_zero_of_mem|theorem closure_lt_subset_le|theorem setIntegral_eq_integral_of_forall_compl_eq_zero|Set.Countable.measure_zero" local-references/123e8435b4a2469b/mathlib/Mathlib`
+- `rg -n "image_eq_one_of_notMem_mulTSupport|theorem continuous_infDist_pt|theorem measurableSet_lt|theorem isOpen_lt" local-references/123e8435b4a2469b/mathlib/Mathlib`
+- `grep -n "def CountablyRectifiable|theorem countablyRectifiable_of_measure_zero" .lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean; grep -n massOn_mono/le_massOn/boundary_apply/GeometricCurrentOn.ext in SimonGMT Chapter06 Mass.lean and Currents.lean`
+- `python3 -I scans of dag.json: lean_name collisions (dor_lmb_fcl_*, good_level, helly, cutoff, localize), statuses and frozen types of cmc_fcl_*, cmc_fc_gs_helly_no_concentration, lcmp_massOn_le_of_vanish_off_compact, dor_imrep_massOn_eq_measure_and_support, cmc_imRep_locality_restrict_sub, dor_lmb_slicing_lipschitz, dor_lmb_good_level_cut, dtc_bc_lc_good_level`
+- `python3 -I comparison of accepted-candidate.json and isolated-comparator-result.json of the six reused nodes with dag.json lean_statements (byte-identical, passed = True); verifier/gmt-compare.py AXIOMS = [propext, Quot.sound, Classical.choice]`
+- `sed runtime.py _existing_lean_name_problem and _solve_children (reuse of accepted checkpoints by Lean name with identical type)`
+- `lake env lean /tmp/dlfl-decomp/lean/Challenge_*.lean, /tmp/dlfl-decomp/lean/Assembly.lean, /tmp/dlfl-decomp/lean/GoodLevel.lean (#print axioms: propext, Classical.choice, Quot.sound)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Add.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Markov.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Constructions/BorelSpace/Order.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/OuterMeasure/AE.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Typeclasses/NullSingletonClass.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Order/LiminfLimsup.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Order/Filter/AtTopBot/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/HausdorffDistance.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Order/OrderClosed.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Support.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-limsup-mass-bound-a1-flat-converg-8923ace5f0/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-limsup-mass-bound-a1-flat-convergence-a1/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-flat-convergence-a1-localize-a1/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-flat-convergence-a1-good-s-c33ce83c1f/parent-supplied-natural-proof.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-flat-convergence-a1-locali-fe7f261e4c/parent-supplied-natural-proof.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-flat-convergence-a1-locali-77f2fff68d/accepted-candidate.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-flat-convergence-a1-locali-2bdc65f87f/accepted-candidate.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-flat-convergence-a1-locali-a5cfc87778/accepted-candidate.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-local-comparison-a1-mass-l-9981f1246a/accepted-candidate.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/runtime/flows/gmt-claude-9a0895c8c5e1/_recursive_lean/runtime.py`
+- `/tmp/dlfl-decomp/lean/Assembly.lean`
+- `/tmp/dlfl-decomp/lean/GoodLevel.lean`
+
+The snapshot is project b4d606db with Mathlib 25730c7c. Its Ch07 Contract.lean is byte-identical to the workspace Contract.lean and Submission.lean.
+
+The snapshot project has no dor_lmb_fcl_*, Helly, good-level, cmc_fcl_* or lcmp_* declaration (rg: no match). The general lemmas this proof needs therefore come from accepted DAG nodes:
+- cmc_fc_gs_helly_no_concentration, cmc_fcl_dist_sublevel_compact, cmc_fcl_imrep_integral_data, cmc_fcl_imrep_restrict_formula and cmc_fcl_weakConverges_sublevel (compactness branch);
+- lcmp_massOn_le_of_vanish_off_compact (local_comparison branch).
+All six are accepted, with byte-identical frozen types and passing isolated comparator results, so they are reused under their own names. The other good-level nodes (dor_lmb_good_level_cut, dtc_bc_lc_good_level) have different types and are not reused.
+
+The pinned Mathlib supplies every tool that the new child and the node assembly cite:
+- lintegral_liminf_le' (Lebesgue/Add.lean:216), AEMeasurable.liminf (BorelSpace/Order.lean:1064), ae_lt_top' (Markov.lean:154);
+- ae_all_iff and measure_eq_zero_iff_ae_notMem (OuterMeasure/AE.lean), Set.Countable.measure_zero (NullSingletonClass.lean:58), Real.volume_Ioo;
+- liminf_le_of_frequently_le', frequently_lt_of_liminf_lt, extraction_of_frequently_atTop;
+- lipschitz_infDist_pt, continuous_infDist_pt, infDist_zero_of_mem, closure_lt_subset_le, isOpen_lt, measurableSet_lt, setIntegral_eq_integral_of_forall_compl_eq_zero and image_eq_zero_of_notMem_tsupport (to_additive of image_eq_one_of_notMem_mulTSupport).
+SimonGMT supplies countablyRectifiable_of_measure_zero for the empty IMRep.
+
+Lean checks:
+- All child types elaborate in the exact comparator scope.
+- The exact frozen parent type compiles from the six child types plus (C1) and (IMC).
+- The new child compiles from helly's frozen type.
+Both proofs use only propext, Classical.choice and Quot.sound.
