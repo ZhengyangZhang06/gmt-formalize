@@ -1,0 +1,93 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat RUN/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-pushforward-a1-92749cae4f/{parent-child-handoff.json,parent-supplied-plan.md,parent-supplied-natural-proof.md}",
+        "python3 -I scan of RUN/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-pushforward-a1/decomposition-v1.json (sibling lean_statements; exact carrier_facts type)",
+        "python3 -I scans of RUN/dag.json: statuses of the pushforward-a1 subtree; accepted nodes whose types mention IsTestForm/TestFormOn with TendstoUniformly/HasCompactSupport/Continuous; covectorEuclideanNorm norm-comparison nodes; lean_name prefix dimred_mbl_pf_ext (no match)",
+        "git log --all --oneline -S'dimred_mbl_pf_ext' (no match)",
+        "cmp GMT/Ch07/Submission.lean GMT/Ch07/Contract.lean; cmp GMT/Ch07/Contract.lean RUN/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean (both identical); cat manifest.json",
+        "git show 8abce3204fc0:GMT/Ch07/Submission.lean (accepted dor_ims_sua_mollify_unit_field proof); git show d49dda91b75b:GMT/Ch07/Submission.lean (placement of accepted theorem Submission.X inside namespace GMT.Ch07)",
+        "rg -n 'compContinuousLinearMap' RUN/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/Alternating RUN/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/ContinuousAlternatingMap.lean",
+        "rg -n 'continuous_of_mulTSupport|exists_continuous_one_zero_of_isCompact|exists_open_between_and_isCompact_closure|exists_contDiff_zero_iff_one_iff_of_isClosed|dist_convolution_le|uniformContinuous_of_continuous|tendsto_integral_of_dominated_convergence|continuousOn_fderiv_of_isOpen|aestronglyMeasurable_comp₂|enorm_natCast' RUN/local-references/123e8435b4a2469b/mathlib/Mathlib",
+        "grep -n 'namespace|Submission' /runtime/flows/gmt-claude-b888e19cffb1/_recursive_lean/{runtime.py,speculation.py,accepted_checkpoint.py} (_existing_lean_name_problem, accepted-declaration layout)",
+        "grep -n '2.13|2.14|2.23|2.24' book/chapter-06.txt (Simon 6.2.14 remark, 6.2.23-2.24)",
+        "lake env lean /tmp/extdecomp/T1.lean (3 child types + carrier_facts + frozen parent type elaborate)",
+        "lake env lean /tmp/extdecomp/T2.lean (conditional assembly from child axioms + carrier_facts axiom to the frozen parent type; #print axioms)",
+        "lake env lean /tmp/extdecomp/T3.lean (instance/feasibility probes: Metric.tendstoUniformly_iff, orientation bound, pullback continuity, a.e. measurability)",
+        "lake env lean /tmp/extdecomp/T4.lean /tmp/extdecomp/T5.lean /tmp/extdecomp/T6.lean (complete prototype proofs of all three children; combined file with assembly; #print axioms)",
+        "python3 -I /tmp/extdecomp/scripts/validate.py with verifier/lean_contract.py and runtime lean_contract.py (validate_lean_statement + verbatim match against compiled T6)"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-pushforward-a1-92749cae4f/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-pushforward-a1-92749cae4f/parent-supplied-plan.md",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-pushforward-a1-92749cae4f/parent-supplied-natural-proof.md",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-pushforward-a1/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/FormSupNorm.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/Alternating/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/ContinuousAlternatingMap.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Support.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/Defs.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/UrysohnsLemma.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Separation/Regular.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Manifold/PartitionOfUnity.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Convolution.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/UniformSpace/HeineCantor.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/DominatedConvergence.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/StronglyMeasurable/Lemmas.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Group/Real.lean",
+        "/runtime/flows/gmt-claude-b888e19cffb1/_recursive_lean/runtime.py",
+        "/runtime/flows/gmt-claude-b888e19cffb1/_recursive_lean/speculation.py",
+        "/runtime/flows/gmt-claude-b888e19cffb1/_recursive_lean/accepted_checkpoint.py",
+        "/runtime/flows/gmt-claude-b888e19cffb1/_recursive_lean/lean_contract.py",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt",
+        "/tmp/extdecomp/T1.lean",
+        "/tmp/extdecomp/T2.lean",
+        "/tmp/extdecomp/T3.lean",
+        "/tmp/extdecomp/T4.lean",
+        "/tmp/extdecomp/T5.lean",
+        "/tmp/extdecomp/T6.lean",
+        "/tmp/extdecomp/scripts/validate.py"
+      ],
+      "conclusion": "The pins match: HEAD b4d606d and Mathlib 25730c7c. Submission.lean is byte-identical to the frozen contract and to the snapshot contract.\n\nNeither the contract nor SimonGMT provides any of the three needed facts in operator norm: cutoff of a C¹ pullback, uniform density of test forms, or continuity of R.action under uniform convergence. The accepted relatives (dor_ims_sua_mollify_unit_field, dor_ims_smooth_unit_approx, regcomp_exists_smooth_unit_form_support_approx, dimred_mbl_fnd_tfe_uniform_testForm_approx) use covectorEuclideanNorm with unit bounds and single-ε statements, so none has an identical type to reuse. The fresh names dimred_mbl_pf_ext_* collide with nothing in dag.json or in git history.\n\nEvery cited Mathlib lemma exists in the pinned snapshot, and all were used in compiled prototypes. One caveat: ContDiffBump.normed is not imported by the contract, so bump normalisation is done by hand.\n\nResults:\n- All child types, the exact carrier_facts type and the exact frozen parent type elaborate after import GMT.Ch07.Submission in namespace GMT.Ch07.\n- The assembly proves the frozen parent type from the three child types plus carrier_facts, using only propext, Classical.choice and Quot.sound otherwise.\n- Full prototype proofs of the three children compile with only the standard axioms."
+    }
+  ],
+  "parent_id": "root.dimension_reduction_results-a1.moving_blowups-a1.pushforward-a1.extension-a1",
+  "child_id": "root.dimension_reduction_results-a1.moving_blowups-a1.pushforward-a1.extension-a1.testform_uniform_approx-a1",
+  "subproblem": {
+    "key": "testform_uniform_approx",
+    "title": "Test forms approximate a continuous compactly supported covector field uniformly (mollification)",
+    "statement": "Let P, n ∈ ℕ and let h : ℝ^P → Λⁿ(ℝ^P) be continuous with compact support. Here Λⁿ(ℝ^P) = Covector (Euclid P) n, the n-covectors with the operator norm. Then there is a sequence (ω_j)_{j∈ℕ} of test forms ω_j ∈ 𝒟ⁿ(ℝ^P) (elements of TestFormOn univ n, i.e. C^∞ n-forms with compact support) converging to h uniformly on ℝ^P: sup_x ‖ω_j(x) − h(x)‖ → 0 as j → ∞.",
+    "lean_statement": "∀ (P n : ℕ) (h : Euclid P → Covector (Euclid P) n), Continuous h → HasCompactSupport h → ∃ ωs : ℕ → TestFormOn (univ : Set (Euclid P)) n, TendstoUniformly (fun j x => (ωs j : DifferentialForm (Euclid P) n) x) h atTop",
+    "lean_name": "dimred_mbl_pf_ext_testForm_uniform_approx",
+    "depends_on": [],
+    "natural_proof": "Source: step 3 of the parent proof (the mollifications ω_j := h ∗ ρ_j), applied to the continuous compactly supported field h.\nNotation. E := Covector (Euclid P) n, the n-covectors of ℝ^P with the operator norm. volume is Lebesgue measure on ℝ^P.\n1. Preliminaries. E is a finite-dimensional real normed space, hence complete. h : ℝ^P → E is continuous with compact support. So h is locally integrable (Continuous.locallyIntegrable) and uniformly continuous (HasCompactSupport.uniformContinuous_of_continuous).\n2. Mollifiers. For j ∈ ℕ let r_j := 1/(j+1) > 0. Let φ_j be the smooth bump function centred at 0 with inner radius r_j/2 and outer radius r_j (a ContDiffBump). Then φ_j is C^∞, 0 ≤ φ_j ≤ 1, supp φ_j = ball(0, r_j), and φ_j has compact support. φ_j is nonnegative, continuous, integrable, and positive on the open ball ball(0, r_j), which has positive measure. Hence c_j := ∫φ_j > 0 (integral_pos_iff_support_of_nonneg, measure_ball_pos). Put ρ_j := φ_j / c_j. Then ρ_j is C^∞, ρ_j ≥ 0, supp ρ_j ⊆ supp φ_j = ball(0, r_j), ρ_j has compact support, and ∫ρ_j = 1 (integral_div). The normalisation is done by hand because ContDiffBump.normed is not imported by the frozen contract.\n3. The test forms. Let ω_j := ρ_j ⋆ h, i.e. ω_j(x) = ∫ρ_j(t)·h(x − t) dt. This is the convolution with respect to scalar multiplication ℝ × E → E (ContinuousLinearMap.lsmul ℝ ℝ) and Lebesgue measure.\n(a) ρ_j is C^∞ with compact support and h is locally integrable, so ω_j is C^∞ (HasCompactSupport.contDiff_convolution_left).\n(b) ρ_j and h have compact support, so ω_j has compact support (HasCompactSupport.convolution; supp ω_j ⊆ supp ρ_j + supp h).\nThus IsTestForm ω_j holds. Also tsupport ω_j ⊆ ℝ^P = univ trivially, so ω_j is an element of TestFormOn univ n.\n4. Uniform estimate. Let ε > 0. By uniform continuity of h choose δ > 0 such that dist(h(y), h(x)) < ε/2 whenever dist(y, x) < δ. Choose J ∈ ℕ with 1/(J+1) < δ (exists_nat_one_div_lt). Let j ≥ J and x ∈ ℝ^P. Every y ∈ ball(x, r_j) satisfies dist(y, x) < r_j ≤ 1/(J+1) < δ, so dist(h(y), h(x)) ≤ ε/2. We have ρ_j ≥ 0, ∫ρ_j = 1 and supp ρ_j ⊆ ball(0, r_j). Hence ω_j(x) − h(x) = ∫ρ_j(t)·(h(x − t) − h(x)) dt, and therefore ‖ω_j(x) − h(x)‖ ≤ ∫ρ_j(t)·‖h(x − t) − h(x)‖ dt ≤ ε/2 (dist_convolution_le, with radius r_j, bound ε/2 and centre value h(x)).\n5. Conclusion. For all j ≥ J and all x ∈ ℝ^P, dist(h(x), ω_j(x)) ≤ ε/2 < ε. Since ε > 0 was arbitrary, ω_j → h uniformly on ℝ^P (Metric.tendstoUniformly_iff; the uniform structure on E is the one induced by its norm). ∎",
+    "proof_key_steps": [
+      "Covector (Euclid P) n is a complete normed space; h is locally integrable and uniformly continuous.",
+      "Normalised smooth bumps ρ_j = φ_j/∫φ_j satisfy ρ_j ≥ 0, ∫ρ_j = 1 and supp ρ_j ⊆ ball(0, 1/(j+1)).",
+      "ω_j := ρ_j ⋆ h (lsmul convolution) is C^∞ with compact support, so ω_j ∈ TestFormOn univ n.",
+      "By uniform continuity and dist_convolution_le, sup_x ‖ω_j(x) − h(x)‖ ≤ ε/2 for j ≥ J. Hence TendstoUniformly."
+    ]
+  },
+  "audit": {
+    "key": "testform_uniform_approx",
+    "acceptable": true,
+    "natural_proof_acceptable": true,
+    "reason": "The exact type expresses the claimed uniform approximation in operator norm. The supplied proof verifies positive finite bump normalization, smoothness and compact support of scalar convolution, and an epsilon estimate uniform in x. Completeness and the norm-induced uniform structure were independently checked in Lean. No missing hypothesis or circular dependency is present."
+  },
+  "resolved_dependencies": [],
+  "plan_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-pushforward-a1-9f100f3ca4/parent-supplied-plan.md",
+  "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-pushforward-a1-9f100f3ca4/parent-supplied-natural-proof.md",
+  "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-pushforward-a1-9f100f3ca4/parent-supplied-natural-proof.json"
+}

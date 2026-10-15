@@ -1,0 +1,123 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cbr_ci_|def IsUnitOrientationOf|structure IMRep|def approxTangentPlane|def dilation|def unitBallVolume",
+        "exists_disjoint_subfamily_covering_enlargement|ae_tendsto_lintegral_enorm_sub_div|tendsto_filterAt|integral_map_equiv|setIntegral_map_equiv|measure_toMeasurable_inter",
+        "haveLebesgueDecomposition_add|singularPart_eq_zero_of_ac|rnDeriv_lt_top",
+        "isAddLeftInvariant_eq_smul|isMulLeftInvariant_eq_smul",
+        "theorem.*(affinePushforward_apply|boundary_affinePushforward)|theorem HasApproximateTangentSpaceAt.unique|theorem exteriorDerivative_apply",
+        "sed -n '380,570p' /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-01.txt",
+        "sed -n '570,720p' /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-01.txt",
+        "sed -n '1180,1230p' /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-01.txt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/cycle-independent-audit/TypesAndAssembly.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/cycle-independent-audit/Lemmas.lean",
+        "git -C /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/mathlib rev-parse HEAD",
+        "git -C /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt rev-parse HEAD",
+        "cmp GMT/Ch07/Submission.lean .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Covering/Vitali.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Covering/Besicovitch.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Covering/Differentiation.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Decomposition/Lebesgue.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Haar/Unique.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Typeclasses/SFinite.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/AffineCurrentPushforward.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-01.txt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-33509b6e86/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-33509b6e86/decomposition-v1.json",
+        "/tmp/cyc-decomp/lean/Final.lean",
+        "/tmp/cycle-independent-audit/TypesAndAssembly.lean",
+        "/tmp/cycle-independent-audit/Lemmas.lean"
+      ],
+      "conclusion": "Splitting is appropriate and establishes the selected cycle theorem. Independently checked the supplied proofs, frozen handoff, dependency direction and acyclicity. All twelve names remain fresh bare identifiers in the 936-node DAG; the snapshot contains no matching cbr_ci_ declarations. Every exact one-line type elaborates without an implemented child. The conditional assembly has the exact frozen parent conclusion and matching child/sibling hypotheses. Its axiom check, and checks of the reused library lemmas, report only propext, Classical.choice and Quot.sound. These compilation checks establish types and conditional assembly, not completed Lean proofs of the children. Pinned revisions and contract compatibility match. No matrix-unit instance ambiguity occurs."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "dilation_calculus",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All six clauses match the prose. The proof supplies test-form transport, boundary and mass scaling, Hausdorff scaling, representation transfer and IMRep transport, including arbitrary measures in the representation clause."
+    },
+    {
+      "key": "dilation_isp",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "SL supplies restriction currents; RU identifies arbitrary admissible slices and forces the boundary restriction to vanish. The declared dilation_calculus dependency then proves the exact ISP conclusion without circularity."
+    },
+    {
+      "key": "const_mass",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The hypotheses imply s ≥ 0. The admissible-form upper bound and compact-exhaustion cutoff lower bound prove the stated ENNReal mass equality, including s = 0."
+    },
+    {
+      "key": "isodiametric_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The supplied Steiner symmetrization argument establishes the isodiametric inequality; the covering and Haar-normalization arguments give exactly the asserted measure inequality. The zero-dimensional case is addressed."
+    },
+    {
+      "key": "density_rep",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Mass equality forces unit dual norm almost everywhere. The covering estimate, finite-measure Radon–Nikodym construction and removal of exceptional sets yield every stated carrier, field, density and representation property."
+    },
+    {
+      "key": "good_points",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The pinned Vitali lemma supplies the required intersection-and-radius property. The tail-cover argument and isodiametric_bound give the sharp upper density; Besicovitch differentiation gives the exact normalized ENNReal error limit."
+    },
+    {
+      "key": "blowup_limit",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof establishes uniform compact bounds, subsequential measure convergence, current convergence, both support/concentration assertions and compact limsup bounds. The declared dilation dependencies and explicit SLIM hypothesis correctly supply ISP."
+    },
+    {
+      "key": "constant_planes",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The directional boundary identity proves translation invariance. Coordinate algebra and growth force simplicity and dimension n; Haar decomposition and positive lower density give finitely many parallel planes with the exact weight and origin conditions."
+    },
+    {
+      "key": "weight_ge_one",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof supplies annular slicing, projection, absolute-continuity densities and the mollifier duality estimate. Its measurable-hull argument accommodates the unrestricted sets Ns; the final projection comparison proves each weight is at least one."
+    },
+    {
+      "key": "plane_integer",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The half-space boundary computation, ISP, const_mass and MR identify a positive constant density with an IMRep multiplicity on a set of positive finite measure. This proves the natural-number conclusion, including d = 0."
+    },
+    {
+      "key": "pointwise",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All four dependencies apply with the stated hypotheses. The supplied determinant/volume argument proves plane uniqueness, and the subsequence argument establishes the exact approximate-tangent predicate together with orientation and integer density."
+    },
+    {
+      "key": "im_criterion",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The moment and polarization argument supplies the measurable projection field required by RECT. Removing a Borel null exceptional set preserves tangent limits, and the constructed multiplicity and orientation satisfy every IMRep field and the representation identity."
+    }
+  ],
+  "required_changes": []
+}

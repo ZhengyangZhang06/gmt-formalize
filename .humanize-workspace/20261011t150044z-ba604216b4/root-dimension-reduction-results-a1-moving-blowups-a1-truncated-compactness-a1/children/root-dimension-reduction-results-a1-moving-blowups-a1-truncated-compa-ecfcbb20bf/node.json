@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.moving_blowups-a1.truncated_compactness-a1.truncation-a1",
+  "parent_id": "root.dimension_reduction_results-a1.moving_blowups-a1.truncated_compactness-a1",
+  "depth": 4,
+  "title": "Truncation of an integer multiplicity current to a ball whose slice has finite boundary mass",
+  "statement": "Let P, m ∈ ℕ, n := m + 1, U ⊆ ℝ^P open, S, A ∈ 𝒟_n(U) (GeometricCurrentOn U n) and R = (M, θ, ξ) an integer multiplicity representation in U (contract IMRep U n) of S (R.Represents S), with weight μ := R.measure = θHⁿ⌞M (Hⁿ = μHE[n]). Let ρ, s ∈ ℝ with 0 < ρ < s and B_s := ball(0, s) ⊆ U, and assume: (i) ∂S(β) = 0 for every β ∈ 𝒟^m(U) with tsupport β ⊆ B_s; (ii) A(ω) = ∫_{ball(0,ρ)} ξ(x)(ω(x)) dμ(x) (Bochner integral) for every ω ∈ 𝒟ⁿ(U); (iii) M_{B_s}(∂A) < ∞ (SimonGMT massOn, Euclidean coefficient norm). Then there are Ŝ ∈ 𝒟_n(ℝ^P) (GeometricCurrentOn univ n) and an IMRep R′ in ℝ^P such that R′ represents Ŝ (so Ŝ is integer multiplicity), R′.measure = μ⌞ball(0, ρ), Ŝ(ω) = currentEval(S, ω) for every ω ∈ 𝒟ⁿ(ℝ^P) with tsupport ω ⊆ ball(0, ρ), ∂Ŝ(β) = 0 for every β ∈ 𝒟^m(ℝ^P) with tsupport β ⊆ ball(0, ρ), and M_{ℝ^P}(∂Ŝ) ≤ M_{B_s}(∂A).",
+  "lean_statement": "∀ (P m : ℕ) (U : Set (Euclid P)) (S A : GeometricCurrentOn U (m + 1)) (R : IMRep U (m + 1)) (ρ s : ℝ), IsOpen U → R.Represents S → (∀ β : TestFormOn U m, tsupport (β : DifferentialForm (Euclid P) m) ⊆ ball 0 s → S.boundary β = 0) → 0 < ρ → ρ < s → ball (0 : Euclid P) s ⊆ U → (∀ ω : TestFormOn U (m + 1), A ω = ∫ x in ball (0 : Euclid P) ρ, R.orient x ((ω : DifferentialForm (Euclid P) (m + 1)) x) ∂R.measure) → A.boundary.massOn (ball 0 s) ≠ ∞ → ∃ (Ŝ : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1)) (R' : IMRep (univ : Set (Euclid P)) (m + 1)), R'.Represents Ŝ ∧ R'.measure = R.measure.restrict (ball 0 ρ) ∧ (∀ ω : TestFormOn (univ : Set (Euclid P)) (m + 1), tsupport (ω : DifferentialForm (Euclid P) (m + 1)) ⊆ ball 0 ρ → Ŝ ω = currentEval S (ω : DifferentialForm (Euclid P) (m + 1))) ∧ (∀ β : TestFormOn (univ : Set (Euclid P)) m, tsupport (β : DifferentialForm (Euclid P) m) ⊆ ball 0 ρ → Ŝ.boundary β = 0) ∧ Ŝ.boundary.massOn univ ≤ A.boundary.massOn (ball 0 s)",
+  "lean_name": "dimred_mbl_tc_truncate_at_good_radius",
+  "depends_on": [
+    "root.compactness_of_minimizing_currents-a1.mass_representation-a1.eval_mass_bound-a1",
+    "root.compactness_of_minimizing_currents-a1.im_calculus-a1",
+    "root.compactness_of_minimizing_currents-a1.local_comparison-a1.imrep_restriction-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.compactness_of_minimizing_currents-a1.mass_representation-a1.eval_mass_bound-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-mass-representation-a1-eva-463e096c91-a1",
+      "result_commit": "7a706164baaf42fc7f55751247396a8836928310",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.compactness_of_minimizing_currents-a1.im_calculus-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-im-calculus-a1-a1",
+      "result_commit": "2af75d6921b01a9c889a45103692ca0af95ea394",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.compactness_of_minimizing_currents-a1.local_comparison-a1.imrep_restriction-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-local-comparison-a1-imrep-1bd5f15878-a1",
+      "result_commit": "ae810e9b4cb8d26664747b2f51d22fb4241e09ca",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-moving-blowups-a1-truncated-compa-ecfcbb20bf-a1"
+}
