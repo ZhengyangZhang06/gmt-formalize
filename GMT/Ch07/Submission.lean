@@ -44609,8 +44609,6 @@ theorem Submission.existence_of_minimizing_filling : ExistenceOfMinimizingFillin
       _ = m₀ := hv.liminf_eq
   exact ⟨T, hTim, hTc, hTb, fun R hRim hRc hRb => hTm.trans (hm₀le R ⟨hRim, hRc, hRb⟩)⟩
 
-/-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
-theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 /-- **Simon Ch. 6, 8.2 with 8.3(1),(2), and 6.3** (closure theorem and boundary rectifiability).
 (CL) If integer multiplicity `T_j ∈ 𝒟_d(U)` have `sup_j (M_W(T_j) + M_W(∂T_j)) < ∞` for every
 `W ⊂⊂ U` (`M_W(∂T_j)` read as `0` when `d = 0`) and `T_j ⇀ T`, then `T` is integer multiplicity.
