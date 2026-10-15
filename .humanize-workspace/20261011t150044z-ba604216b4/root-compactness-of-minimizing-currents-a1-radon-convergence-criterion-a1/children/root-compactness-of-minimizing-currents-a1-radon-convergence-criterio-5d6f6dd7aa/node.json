@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.radon_convergence_criterion-a1.layer_cake_convergence-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.radon_convergence_criterion-a1",
+  "depth": 3,
+  "title": "Convergence of integrals of a nonnegative test function from a.e. convergence of its distribution function",
+  "statement": "Let P ∈ ℕ, let μ, μ_j (j ∈ ℕ) be Borel measures on ℝ^P, and let g : ℝ^P → ℝ be continuous, nonnegative and compactly supported, with μ(tsupport g) < ∞ and limsup_j μ_j(tsupport g) < ∞ (lim sup in [0, ∞]), where tsupport g := closure{x : g(x) ≠ 0}. Suppose that for almost every t ∈ (0, ∞) with respect to Lebesgue measure restricted to (0, ∞), μ_j({x : g(x) > t}) → μ({x : g(x) > t}) in [0, ∞]. Then ∫ g dμ_j → ∫ g dμ (Bochner integrals).",
+  "lean_statement": "∀ (P : ℕ) (μs : ℕ → Measure (Euclid P)) (μ : Measure (Euclid P)) (g : Euclid P → ℝ), Continuous g → HasCompactSupport g → (∀ x, 0 ≤ g x) → μ (tsupport g) < ∞ → limsup (fun j => μs j (tsupport g)) atTop < ∞ → (∀ᵐ t ∂(volume.restrict (Ioi (0 : ℝ))), Tendsto (fun j => μs j {x | t < g x}) atTop (𝓝 (μ {x | t < g x}))) → Tendsto (fun j => ∫ x, g x ∂(μs j)) atTop (𝓝 (∫ x, g x ∂μ))",
+  "lean_name": "cmc_rcc_tendsto_integral_of_ae_tendsto_superlevel",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-radon-convergence-criterio-5d6f6dd7aa-a1"
+}
