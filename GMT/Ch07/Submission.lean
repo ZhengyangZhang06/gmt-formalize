@@ -515,6 +515,34 @@ theorem Submission.idtp_tdc_dlc_ld_orthonormal_partner : ∀ (P : ℕ) (Q : Subm
       real_inner_comm (c 0 • z + c 1 • e) e, hc, hdz, hde, mul_zero, mul_zero, add_zero]
   rw [← sub_eq_zero, ← hd]
   exact inner_self_eq_zero.mp hdd
+/-- Points of a unit great-circle arc (used in the proof of Simon 7.3.3(1), pp. 191–192, for
+2-dimensional minimizing cones): if `z, e ∈ ℝᴾ` are orthonormal and `φ ≥ 0`, then
+`a = cos φ z + sin φ e` is a unit vector with `‖a − z‖ ≤ φ`.  By Pythagoras
+`‖s z + t e‖² = s² + t²`, so `‖a‖² = cos² φ + sin² φ = 1` and
+`‖a − z‖² = (cos φ − 1)² + sin² φ = 2 − 2 cos φ ≤ φ²`, as `1 − φ²/2 ≤ cos φ`. -/
+theorem Submission.idtp_tdc_dlc_ld_arc_point_bounds : ∀ (P : ℕ) (z e : Euclid P) (φ : ℝ), ‖z‖ = 1 → ‖e‖ = 1 → inner ℝ z e = 0 → 0 ≤ φ → ‖Real.cos φ • z + Real.sin φ • e‖ = 1 ∧ ‖Real.cos φ • z + Real.sin φ • e - z‖ ≤ φ := by
+  intro P z e φ hz he hze hφ
+  -- Pythagoras: `‖s z + t e‖² = s² + t²` for orthonormal `z, e`
+  have hpyth : ∀ s t : ℝ, ‖s • z + t • e‖ ^ 2 = s ^ 2 + t ^ 2 := by
+    intro s t
+    rw [norm_add_sq_real, norm_smul, norm_smul, real_inner_smul_left, real_inner_smul_right, hze,
+      hz, he, Real.norm_eq_abs, Real.norm_eq_abs]
+    ring_nf
+    rw [sq_abs, sq_abs]
+  refine ⟨?_, ?_⟩
+  · have h := hpyth (Real.cos φ) (Real.sin φ)
+    rw [Real.cos_sq_add_sin_sq] at h
+    exact (pow_eq_one_iff_of_nonneg (norm_nonneg _) two_ne_zero).mp h
+  · -- `a − z = (cos φ − 1) z + sin φ e`, so `‖a − z‖² = 2 − 2 cos φ ≤ φ²`
+    have hsub : Real.cos φ • z + Real.sin φ • e - z = (Real.cos φ - 1) • z + Real.sin φ • e := by
+      rw [sub_smul, one_smul]
+      abel
+    have h := hpyth (Real.cos φ - 1) (Real.sin φ)
+    rw [← hsub] at h
+    have hsq : ‖Real.cos φ • z + Real.sin φ • e - z‖ ^ 2 ≤ φ ^ 2 := by
+      rw [h]
+      nlinarith [Real.cos_sq_add_sin_sq φ, Real.one_sub_sq_div_two_le_cos (x := φ)]
+    exact (sq_le_sq₀ (norm_nonneg _) hφ).mp hsq
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
