@@ -562,6 +562,71 @@ theorem Submission.idtp_cse_fc_planar_fibre_geometry : ∀ (P : ℕ) (Q : Submod
     rw [hcosα, hsinα, smul_add, smul_smul, smul_smul, mul_div_cancel₀ _ ht.ne',
       mul_div_cancel₀ _ ht.ne']
     exact hx
+/-- **Fibre-count arithmetic** (Simon 7.3.3, cone-sector endpoint density: integrality of the
+fibre multiplicity).  Let `θ : ι → ℕ`, `w : ι → ℝ` and `t > 0` with `w i ≤ t` for all `i`, and
+`∑' i, θ i · ofReal (w i) = ofReal (m t)` in `[0, ∞]`.  Then `m ≤ ∑' i, θ i`.  If moreover every
+`θ i ≥ 1`, `θ i₀ = k`, `w i₀ = t` and `w i < t` for `i ≠ i₀`, then `k ≤ m`, and `k < m` gives
+`m + 1 ≤ ∑' i, θ i`: a finite total multiplicity forces `ι` to be finite, and the terms off `i₀`
+are strictly below `θ i · ofReal t`. -/
+theorem Submission.idtp_cse_fc_tsum_count_arith : ∀ (ι : Type) (θ : ι → ℕ) (w : ι → ℝ) (t : ℝ) (m : ℕ), 0 < t → (∀ i, w i ≤ t) → ∑' i, (θ i : ℝ≥0∞) * ENNReal.ofReal (w i) = ENNReal.ofReal ((m : ℝ) * t) → (m : ℝ≥0∞) ≤ ∑' i, (θ i : ℝ≥0∞) ∧ ∀ (i₀ : ι) (k : ℕ), (∀ i, 1 ≤ θ i) → θ i₀ = k → w i₀ = t → (∀ i, i ≠ i₀ → w i < t) → k ≤ m ∧ (k < m → (m : ℝ≥0∞) + 1 ≤ ∑' i, (θ i : ℝ≥0∞)) := by
+  intro ι θ w t m ht hw hsum
+  -- `τ = ofReal t ∈ (0, ∞)`, and the hypothesis reads `H = m τ`
+  have hτ0 : ENNReal.ofReal t ≠ 0 := (ENNReal.ofReal_pos.mpr ht).ne'
+  have hτ : ENNReal.ofReal t ≠ ∞ := ENNReal.ofReal_ne_top
+  rw [ENNReal.ofReal_mul (Nat.cast_nonneg m), ENNReal.ofReal_natCast] at hsum
+  -- (i): termwise `θ i ofReal (w i) ≤ θ i τ`, so `m τ = H ≤ N τ`
+  have hN : ∑' i, (θ i : ℝ≥0∞) * ENNReal.ofReal (w i) ≤
+      (∑' i, (θ i : ℝ≥0∞)) * ENNReal.ofReal t := by
+    rw [← ENNReal.tsum_mul_right]
+    exact ENNReal.tsum_le_tsum fun i => by gcongr; exact hw i
+  refine ⟨(ENNReal.mul_le_mul_iff_left hτ0 hτ).mp (hsum ▸ hN), ?_⟩
+  intro i₀ k hθ1 hk hw0 hlt
+  -- (ii) `k ≤ m`: the `i₀` term `k τ` is at most `H = m τ`
+  have hkτ : (k : ℝ≥0∞) * ENNReal.ofReal t ≤ (m : ℝ≥0∞) * ENNReal.ofReal t := by
+    rw [← hsum, ← hk, ← hw0]
+    exact ENNReal.le_tsum (f := fun i => (θ i : ℝ≥0∞) * ENNReal.ofReal (w i)) i₀
+  refine ⟨by exact_mod_cast (ENNReal.mul_le_mul_iff_left hτ0 hτ).mp hkτ, fun hkm => ?_⟩
+  -- if `N = ∞` there is nothing to prove; otherwise `ι` is finite, as every `θ i ≥ 1`
+  by_cases hNtop : ∑' i, (θ i : ℝ≥0∞) = ∞
+  · rw [hNtop]
+    exact le_top
+  have hfin : {i : ι | (1 : ℝ≥0∞) ≤ θ i}.Finite :=
+    ENNReal.finite_const_le_of_tsum_ne_top hNtop one_ne_zero
+  have huniv : {i : ι | (1 : ℝ≥0∞) ≤ θ i} = univ :=
+    eq_univ_of_forall fun i => by exact_mod_cast hθ1 i
+  rw [huniv] at hfin
+  have : Finite ι := finite_univ_iff.mp hfin
+  cases nonempty_fintype ι
+  classical
+  rw [tsum_fintype] at hsum ⊢
+  -- split off the `i₀` term of `H` and of `N τ`
+  have hsplitH : (θ i₀ : ℝ≥0∞) * ENNReal.ofReal (w i₀) +
+      ∑ i ∈ Finset.univ.erase i₀, (θ i : ℝ≥0∞) * ENNReal.ofReal (w i) =
+      ∑ i, (θ i : ℝ≥0∞) * ENNReal.ofReal (w i) :=
+    Finset.add_sum_erase _ (fun i => (θ i : ℝ≥0∞) * ENNReal.ofReal (w i)) (Finset.mem_univ i₀)
+  have hsplitN : (θ i₀ : ℝ≥0∞) * ENNReal.ofReal t +
+      ∑ i ∈ Finset.univ.erase i₀, (θ i : ℝ≥0∞) * ENNReal.ofReal t =
+      ∑ i, (θ i : ℝ≥0∞) * ENNReal.ofReal t :=
+    Finset.add_sum_erase _ (fun i => (θ i : ℝ≥0∞) * ENNReal.ofReal t) (Finset.mem_univ i₀)
+  -- `E = ι \ {i₀}` is nonempty, since otherwise `k τ = m τ`, i.e. `k = m`
+  have hE : (Finset.univ.erase i₀).Nonempty := by
+    rw [Finset.nonempty_iff_ne_empty]
+    intro hE
+    rw [← hsplitH, hE, Finset.sum_empty, add_zero, hk, hw0, ENNReal.mul_left_inj hτ0 hτ] at hsum
+    exact hkm.ne (by exact_mod_cast hsum)
+  -- each remaining term is strictly below `θ i τ`, so `m τ < N τ`
+  have hstrict : ∑ i ∈ Finset.univ.erase i₀, (θ i : ℝ≥0∞) * ENNReal.ofReal (w i) <
+      ∑ i ∈ Finset.univ.erase i₀, (θ i : ℝ≥0∞) * ENNReal.ofReal t := by
+    refine ENNReal.sum_lt_sum_of_nonempty hE fun i hi => ?_
+    have hθi : (θ i : ℝ≥0∞) ≠ 0 := by exact_mod_cast (Nat.one_le_iff_ne_zero.mp (hθ1 i))
+    exact ENNReal.mul_lt_mul_right hθi (ENNReal.natCast_ne_top _)
+      ((ENNReal.ofReal_lt_ofReal_iff ht).mpr (hlt i (Finset.ne_of_mem_erase hi)))
+  have hmN : (m : ℝ≥0∞) * ENNReal.ofReal t < (∑ i, (θ i : ℝ≥0∞)) * ENNReal.ofReal t := by
+    rw [← hsum, ← hsplitH, Finset.sum_mul, ← hsplitN, hw0]
+    exact ENNReal.add_lt_add_left (ENNReal.mul_ne_top (ENNReal.natCast_ne_top _) hτ) hstrict
+  -- `N` is the natural number `∑ i, θ i`, so `m < N` gives `m + 1 ≤ N`
+  have hmN' : m < ∑ i, θ i := by exact_mod_cast (ENNReal.mul_lt_mul_iff_left hτ0 hτ).mp hmN
+  exact_mod_cast hmN'
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
