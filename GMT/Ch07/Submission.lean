@@ -41297,4 +41297,152 @@ theorem Submission.cmc_local_comparison_inequality : ∀ (P m : ℕ) (U : Set (E
   exact tendsto_of_tendsto_of_tendsto_of_le_of_le tendsto_const_nhds h3 (fun j => zero_le)
     fun j => add_le_add (((Sf (φ j)).massOn_mono hWW₀).trans le_add_self) (hPbd (φ j) univ)
 
+/-- **Simon 7.2.4** (compactness of minimizing currents, with Remark 7.2.5(1)).  For `n = 0` the
+`Tⱼ` vanish, hence so does `T`, and every representation of `0` has zero measure.  For `n ≥ 1`,
+`T` is integer multiplicity by the closure theorem (Ch. 6, 3.11).  For a competitor `S`, the local
+comparison inequality (Simon (1)–(11)) on a neighbourhood `W₀` of `K = spt (S − T)` and lower
+semicontinuity of mass give `M_{W₀}(T) ≤ M_{W₀}(S)`, which extends to `W ⊇ W₀`.  With `S = T`
+it gives `limsup μ_{Tⱼ}(K) ≤ μ_T({dist(·, K) < ε})` along a subsequence of any subsequence, hence
+(13) for the whole sequence as `ε ↓ 0`; lower semicontinuity gives (14), and (13), (14) give
+`∫ f dμ_{Tⱼ} → ∫ f dμ_T`. -/
+theorem Submission.compactness_of_minimizing_currents : CompactnessOfMinimizingCurrents := by
+  intro n
+  cases n with
+  | zero =>
+    intro k U Ts T hU hmin _ hconv
+    -- minimizing `0`-currents vanish, hence so does their weak limit
+    have hTs : ∀ j, Ts j = 0 := fun j =>
+      Submission.cmc_zeroDim_minimizing_eq_zero _ U (Ts j) hU (hmin j)
+    have hT : T = 0 := by
+      ext ω
+      have h := hconv ω
+      simp only [hTs, GeometricCurrentOn.zero_apply] at h
+      exact tendsto_nhds_unique h tendsto_const_nhds
+    -- every representation of the zero current has zero measure (`M(0) = μ_R(ℝᴾ)`)
+    have hrep : ∀ (S : GeometricCurrentOn U 0) (R : IMRep U 0), S = 0 → R.Represents S →
+        R.measure = 0 := by
+      intro S R hS hR
+      have hm : S.massOn univ = 0 := by
+        subst hS
+        refine le_antisymm (sSup_le ?_) zero_le
+        rintro r ⟨ω, -, rfl⟩
+        simp
+      rw [← Measure.measure_univ_eq_zero,
+        ← Submission.cmc_massOn_eq_imRep_measure _ _ U S R hU hR univ isOpen_univ, hm]
+    refine ⟨?_, ?_⟩
+    · rw [show T = Ts 0 from hT.trans (hTs 0).symm]
+      exact hmin 0
+    · intro Rs hRs R hR f _ _ _
+      have hRs0 : ∀ j, (Rs j).measure = 0 := fun j => hrep (Ts j) (Rs j) (hTs j) (hRs j)
+      simp only [hRs0, hrep T R hT hR, integral_zero_measure]
+      exact tendsto_const_nhds
+  | succ m =>
+    intro k U Ts T hU hmin hbd hconv
+    -- in positive degree `boundaryMassOn` is the mass of the boundary
+    have hbd' : ∀ W : Set (Euclid (m + 1 + k)), IsOpen W → CompactlyContained W U →
+        ⨆ j, ((Ts j).massOn W + (Ts j).boundary.massOn W) < ∞ := hbd
+    -- `T` is integer multiplicity (Remark 7.2.5(1), Ch. 6, 3.11)
+    have hTIM : IsIntegerMultiplicity T :=
+      Submission.cmc_closure_and_boundary_rectifiability.1 _ _ U Ts T hU (fun j => (hmin j).1)
+        hbd hconv
+    -- subsequences satisfy the hypotheses of the theorem
+    have hsub : ∀ ψ : ℕ → ℕ, StrictMono ψ →
+        (∀ j, IsMinimizingIn (Ts (ψ j)) U) ∧
+        (∀ W : Set (Euclid (m + 1 + k)), IsOpen W → CompactlyContained W U →
+          ⨆ j, ((Ts (ψ j)).massOn W + (Ts (ψ j)).boundary.massOn W) < ∞) ∧
+        WeaklyConvergesOn (fun j => Ts (ψ j)) T := by
+      intro ψ hψ
+      refine ⟨fun j => hmin (ψ j), fun W hW hWU => lt_of_le_of_lt ?_ (hbd' W hW hWU),
+        fun ω => (hconv ω).comp hψ.tendsto_atTop⟩
+      exact iSup_le fun j => le_iSup (fun i => (Ts i).massOn W + (Ts i).boundary.massOn W) (ψ j)
+    -- `a + e j → a` when `e j → 0`
+    have hadd : ∀ (a : ℝ≥0∞) (e : ℕ → ℝ≥0∞), Tendsto e atTop (𝓝 0) →
+        Tendsto (fun j => a + e j) atTop (𝓝 a) := fun a e he => by
+      simpa using (tendsto_const_nhds (x := a)).add he
+    -- `T` is minimizing in `U` (Simon (8))
+    have hTmin : IsMinimizingIn T U := by
+      refine ⟨hTIM, fun W S hW hWU hSIM hSB hKc hKWU => ?_⟩
+      have hKU : (S - T).support ⊆ U := fun x hx => (hKWU hx).1
+      have hKW : (S - T).support ⊆ W := fun x hx => (hKWU hx).2
+      obtain ⟨ε, hε, hεW⟩ := hKc.exists_thickening_subset_open hW hKW
+      obtain ⟨W₀, hW₀, hKW₀, hW₀ε, -, φ, e, hφ, he, hcmp⟩ :=
+        Submission.cmc_local_comparison_inequality _ _ U Ts T hU hmin hbd' hconv hTIM
+          (S - T).support ε hKc hKU hε
+      -- lower semicontinuity of mass along `T_{φ j} ⇀ T`
+      have hW₀le : T.massOn W₀ ≤ S.massOn W₀ :=
+        calc T.massOn W₀ ≤ liminf (fun j => (Ts (φ j)).massOn W₀) atTop :=
+              (hsub φ hφ).2.2.massOn_le_liminf W₀
+          _ ≤ liminf (fun j => S.massOn W₀ + e j) atTop :=
+              liminf_le_liminf (Eventually.of_forall fun j => hcmp S hSIM hSB subset_rfl j)
+          _ = S.massOn W₀ := (hadd _ e he).liminf_eq
+      exact Submission.cmc_massOn_le_of_le_near_support _ _ U S T (S - T).support W₀ W hU hSIM
+        hTIM hKc subset_rfl hW₀ hW hKW₀ (hW₀ε.trans hεW) hWU hW₀le
+    refine ⟨hTmin, ?_⟩
+    -- `μ_{Tⱼ} → μ_T` as Radon measures in `U`
+    intro Rs hRs R hR f hf hfc hfU
+    -- masses on open sets are the representation measures (Ch. 6, 3.2(3))
+    have hRsW : ∀ j W, IsOpen W → (Rs j).measure W = (Ts j).massOn W := fun j W hW =>
+      (Submission.cmc_massOn_eq_imRep_measure _ _ U (Ts j) (Rs j) hU (hRs j) W hW).symm
+    have hRW : ∀ W, IsOpen W → R.measure W = T.massOn W := fun W hW =>
+      (Submission.cmc_massOn_eq_imRep_measure _ _ U T R hU hR W hW).symm
+    -- `μ_T` is finite on compact subsets of `U`
+    have hfin : ∀ K : Set (Euclid (m + 1 + k)), IsCompact K → K ⊆ U → R.measure K < ∞ := by
+      intro K hK hKU
+      rw [IMRep.measure, withDensity_apply _ hK.measurableSet,
+        Measure.restrict_restrict hK.measurableSet, Set.inter_comm]
+      exact lt_top_iff_ne_top.mpr (R.locallyIntegrable_mult K hK hKU)
+    refine Submission.cmc_tendsto_integral_of_limsup_liminf _ U (fun j => (Rs j).measure)
+      R.measure hfin ?_ ?_ f hf hfc hfU
+    · -- (13): `limsup_j μ_{Tⱼ}(K) ≤ μ_T(K)`
+      intro K hK hKU
+      -- `spt (T − T) = ∅`
+      have hTT : (T - T).support ⊆ K := by
+        rintro x ⟨hxU, hxZ⟩
+        exfalso
+        apply hxZ
+        obtain ⟨r, hr, hrU⟩ := Metric.isOpen_iff.mp hU x hxU
+        refine Set.mem_sUnion.mpr ⟨ball x (r / 2), ⟨isOpen_ball, isBounded_ball.isCompact_closure,
+          closure_ball_subset_closedBall.trans ((closedBall_subset_ball (half_lt_self hr)).trans
+            hrU), fun ω _ => sub_self (T ω)⟩, mem_ball_self (half_pos hr)⟩
+      -- along a subsequence of any subsequence, `limsup ≤ μ_T({dist(·, K) < ε})`
+      have hεK : ∀ ε : ℝ, 0 < ε →
+          limsup (fun j => (Rs j).measure K) atTop ≤ R.measure (thickening ε K) := by
+        intro ε hε
+        by_contra hlt
+        obtain ⟨c, hc₁, hc₂⟩ := exists_between (not_le.mp hlt)
+        obtain ⟨ψ, hψ, hψc⟩ :=
+          extraction_of_frequently_atTop (frequently_lt_of_lt_limsup (h := hc₂))
+        obtain ⟨hminψ, hbdψ, hconvψ⟩ := hsub ψ hψ
+        obtain ⟨W₀, hW₀, hKW₀, hW₀ε, -, φ, e, -, he, hcmp⟩ :=
+          Submission.cmc_local_comparison_inequality _ _ U (fun j => Ts (ψ j)) T hU hminψ hbdψ
+            hconvψ hTIM K ε hK hKU hε
+        have hj : ∀ j, (Rs (ψ (φ j))).measure K ≤ R.measure (thickening ε K) + e j := fun j =>
+          calc (Rs (ψ (φ j))).measure K ≤ (Rs (ψ (φ j))).measure W₀ := measure_mono hKW₀
+            _ = (Ts (ψ (φ j))).massOn W₀ := hRsW _ W₀ hW₀
+            _ ≤ T.massOn W₀ + e j := hcmp T hTIM rfl hTT j
+            _ = R.measure W₀ + e j := by rw [hRW W₀ hW₀]
+            _ ≤ R.measure (thickening ε K) + e j := add_le_add (measure_mono hW₀ε) le_rfl
+        have hc : c ≤ R.measure (thickening ε K) :=
+          calc c ≤ limsup (fun j => (Rs (ψ (φ j))).measure K) atTop :=
+                le_limsup_of_frequently_le (Frequently.of_forall fun j => (hψc (φ j)).le)
+            _ ≤ limsup (fun j => R.measure (thickening ε K) + e j) atTop :=
+                limsup_le_limsup (Eventually.of_forall hj)
+            _ = R.measure (thickening ε K) := (hadd _ e he).limsup_eq
+        exact absurd hc (not_le.mpr hc₁)
+      -- let `ε ↓ 0`; some thickening of `K` has compact closure in `U`
+      have hthick : ∃ δ > 0, R.measure (thickening δ K) ≠ ∞ := by
+        obtain ⟨δ, hδ, hδU⟩ := hK.exists_cthickening_subset_open hU hKU
+        exact ⟨δ, hδ, ne_top_of_le_ne_top (hfin _ hK.cthickening hδU).ne
+          (measure_mono (thickening_subset_cthickening δ K))⟩
+      exact ge_of_tendsto (tendsto_measure_thickening_of_isClosed hthick hK.isClosed)
+        (eventually_nhdsWithin_of_forall hεK)
+    · -- (14): `μ_T(G) ≤ liminf_j μ_{Tⱼ}(G)` for open `G ⊆ U`
+      intro G hG _
+      calc R.measure G = T.massOn G := hRW G hG
+        _ ≤ liminf (fun j => (Ts j).massOn G) atTop := hconv.massOn_le_liminf G
+        _ = liminf (fun j => (Rs j).measure G) atTop := by
+          congr 1
+          funext j
+          exact (hRsW j G hG).symm
+
 end GMT.Ch07
