@@ -113909,4 +113909,131 @@ theorem Submission.density_one_implies_regular : DensityOneImpliesRegular := by
     have hd : dist (ys j) y < η * ρ := hjη
     linarith
 
+/-! ## Simon 7.4.2: `reg T` is dense in `spt T` -/
+
+/-- **Simon 7.4.2 (Theorem, p. 194)**, by the argument of Simon Ch. 5, Corollary 7.3.  Given
+`x ∈ spt T` and a ball `B_ρ(x) ⊆ U`, let `N₀` be the least positive integer value of the density
+`Θ = Θⁿ(μ_T, ·)` (7.3.1(1)) on `B_ρ(x)`, attained at `z₀`.  Since `Θ = θ` `μ_T`-a.e. and `Θ` is
+upper semicontinuous, `θ = N₀` `μ_T`-a.e. on a ball `B_r(z₀)`; there `N₀⁻¹ T` is a minimizing
+cycle with density `1` at `z₀`, so 7.4.3 (for constant sequences) gives `z₀ ∈ reg T`. -/
+theorem Submission.regular_set_dense : RegularSetDense := by
+  intro n k ℓ hℓ U N T hU hN hNU hmin hspt hbdry
+  -- A representation `T = τ(M, θ, ξ)`, with `μ_T = θ Hⁿ⌞M`.
+  obtain ⟨R, hR⟩ := hmin.1
+  -- `spt ∂T = ∅`, because `∂T = 0` in the open set `U`.
+  have hbs : boundarySupport T = ∅ := by
+    have key : ∀ {m : ℕ} (S : GeometricCurrentOn U m), BoundaryVanishes S →
+        boundarySupport S = ∅ := by
+      intro m S hS
+      cases m with
+      | zero => rfl
+      | succ m =>
+        have h0 : S.boundary = 0 := hS
+        show S.boundary.support = ∅
+        rw [h0, eq_empty_iff_forall_notMem]
+        rintro y ⟨hyU, hyZ⟩
+        obtain ⟨δ, hδ, hδU⟩ := Metric.isOpen_iff.1 hU y hyU
+        refine hyZ (mem_sUnion.2 ⟨ball y (δ / 2), ⟨isOpen_ball, ?_, ?_, fun ω _ => rfl⟩,
+          mem_ball_self (half_pos hδ)⟩)
+        · exact (isCompact_closedBall y (δ / 2)).of_isClosed_subset isClosed_closure
+            closure_ball_subset_closedBall
+        · exact closure_ball_subset_closedBall.trans
+            ((closedBall_subset_ball (half_lt_self hδ)).trans hδU)
+    exact key T hbdry
+  -- Simon 7.3.1(1): the density `Θ` exists on `U` and is upper semicontinuous there.
+  obtain ⟨Θ, hΘ, hΘusc⟩ :=
+    (Submission.density_and_tangent_cones n k ℓ hℓ U N T hU hN hNU hmin hspt).1
+  rw [hbs, Set.sdiff_empty] at hΘ hΘusc
+  -- Densities are unique.
+  have huniq : ∀ (y : Euclid (n + k)) (a b : ℝ), HasMassDensity T y a →
+      HasMassDensity T y b → a = b := fun y a b ha hb =>
+    (ENNReal.ofReal_eq_ofReal_iff ha.1 hb.1).1 (tendsto_nhds_unique ha.2 hb.2)
+  -- `Θ = θ` `μ_T`-a.e. (Simon Ch. 3, 1.8(2)), and `μ_T` is carried by `M`, where `θ ≥ 1`.
+  have hae : ∀ᵐ y ∂R.measure, y ∈ R.carrier ∧ Θ y = R.mult y := by
+    have hM : ∀ᵐ y ∂R.measure, y ∈ R.carrier :=
+      (withDensity_absolutelyContinuous _ _).ae_le (ae_restrict_mem R.measurableSet_carrier)
+    filter_upwards [hM, Submission.rsd_ae_hasMassDensity_mult (n + k) n U T R hU hR]
+      with y hyM hyd
+    exact ⟨hyM, huniq y _ _ (hΘ y (R.carrier_subset hyM)) hyd⟩
+  intro x hx
+  refine Metric.mem_closure_iff.2 fun ε hε => ?_
+  have hxU : x ∈ U := (hspt hx).1
+  obtain ⟨ρ₀, hρ₀, hρ₀U⟩ := Metric.isOpen_iff.1 hU x hxU
+  -- A ball `B_ρ(x) ⊆ U` with `ρ ≤ ε`.
+  obtain ⟨ρ, hρ, hρε, hρU⟩ : ∃ ρ : ℝ, 0 < ρ ∧ ρ ≤ ε ∧ ball x ρ ⊆ U :=
+    ⟨min ε ρ₀, lt_min hε hρ₀, min_le_left _ _, (ball_subset_ball (min_le_right _ _)).trans hρ₀U⟩
+  -- `μ_T(B_ρ(x)) > 0` as `x ∈ spt T`, so `Θ` takes a positive integer value on `B_ρ(x)`.
+  have hex : ∃ j : ℕ, 1 ≤ j ∧ ∃ z ∈ ball x ρ, Θ z = j := by
+    have hpos : R.measure (ball x ρ) ≠ 0 :=
+      (((Submission.rsd_mem_support_iff_measure_ball_pos (n + k) n U T R hU hR x).1 hx).2
+        ρ hρ).ne'
+    have := ae_restrict_neBot.2 hpos
+    have hall : ∀ᵐ y ∂R.measure.restrict (ball x ρ),
+        y ∈ ball x ρ ∧ y ∈ R.carrier ∧ Θ y = R.mult y :=
+      (ae_restrict_mem measurableSet_ball).and (ae_restrict_of_ae hae)
+    obtain ⟨y, hyB, hyM, hyΘ⟩ := hall.exists
+    exact ⟨R.mult y, R.mult_pos y hyM, y, hyB, hyΘ⟩
+  -- `N₀`: the least positive integer value of `Θ` on `B_ρ(x)`, attained at `z₀`.
+  classical
+  obtain ⟨N₀, ⟨hN₀one, z₀, hz₀B, hz₀Θ⟩, hN₀min⟩ :
+      ∃ N₀ : ℕ, (1 ≤ N₀ ∧ ∃ z ∈ ball x ρ, Θ z = N₀) ∧
+        ∀ j < N₀, ¬(1 ≤ j ∧ ∃ z ∈ ball x ρ, Θ z = j) :=
+    ⟨Nat.find hex, Nat.find_spec hex, fun j hj => Nat.find_min hex hj⟩
+  have hN₀pos : 0 < N₀ := hN₀one
+  have hz₀U : z₀ ∈ U := hρU hz₀B
+  have hz₀dens : HasMassDensity T z₀ N₀ := hz₀Θ ▸ hΘ z₀ hz₀U
+  -- Upper semicontinuity at `z₀`: `Θ < N₀ + 1` on a ball `B_{r₁}(z₀)`.
+  have hev : ∀ᶠ y in 𝓝 z₀, Θ y < N₀ + 1 := by
+    have h := hΘusc z₀ hz₀U ((N₀ : ℝ) + 1)
+      (show Θ z₀ < (N₀ : ℝ) + 1 by rw [hz₀Θ]; exact lt_add_one _)
+    rwa [hU.nhdsWithin_eq hz₀U] at h
+  obtain ⟨r₁, hr₁, hr₁Θ⟩ := Metric.eventually_nhds_iff_ball.1 hev
+  -- A ball `B_r(z₀) ⊆ B_{r₁}(z₀) ∩ B_ρ(x)`.
+  obtain ⟨r, hr, hrr₁, hrB⟩ : ∃ r : ℝ, 0 < r ∧ r ≤ r₁ ∧ ball z₀ r ⊆ ball x ρ := by
+    refine ⟨min r₁ (ρ - dist z₀ x), lt_min hr₁ (sub_pos.2 (mem_ball.1 hz₀B)),
+      min_le_left _ _, fun y hy => ?_⟩
+    rw [mem_ball] at hy ⊢
+    have := min_le_right r₁ (ρ - dist z₀ x)
+    linarith [dist_triangle y z₀ x]
+  have hrU : ball z₀ r ⊆ U := hrB.trans hρU
+  -- `θ = N₀` `μ_T`-a.e. on `B_r(z₀)`: there `θ = Θ` is an integer in `[N₀, N₀ + 1)`.
+  have hmult : ∀ᵐ y ∂R.measure, y ∈ ball z₀ r → R.mult y = N₀ := by
+    filter_upwards [hae] with y hy hyr
+    obtain ⟨hyM, hyΘ⟩ := hy
+    have hle : N₀ ≤ R.mult y := not_lt.1 fun hlt =>
+      hN₀min _ hlt ⟨R.mult_pos y hyM, y, hrB hyr, hyΘ⟩
+    have hlt : (R.mult y : ℝ) < N₀ + 1 := hyΘ ▸ hr₁Θ y (ball_subset_ball hrr₁ hyr)
+    have hlt' : R.mult y < N₀ + 1 := by exact_mod_cast hlt
+    omega
+  -- `z₀ ∈ spt T`, its density `N₀` being positive.
+  have hz₀spt : z₀ ∈ T.support := by
+    refine (Submission.rsd_mem_support_iff_measure_ball_pos (n + k) n U T R hU hR z₀).2
+      ⟨hz₀U, fun s hs => ?_⟩
+    have h1 : ∀ᶠ t in 𝓝[>] (0 : ℝ),
+        0 < T.massOn (ball z₀ t) / (unitBallVolume n * ENNReal.ofReal (t ^ n)) :=
+      hz₀dens.2.eventually (eventually_gt_nhds (ENNReal.ofReal_pos.2 (Nat.cast_pos.2 hN₀pos)))
+    have h2 : ∀ᶠ t in 𝓝[>] (0 : ℝ), t < min s r :=
+      eventually_nhdsWithin_of_eventually_nhds (eventually_lt_nhds (lt_min hs hr))
+    obtain ⟨t, ht1, ht2⟩ := (h1.and h2).exists
+    rw [Submission.rsd_massOn_eq_measure (n + k) n U T R hU hR (ball z₀ t) isOpen_ball
+      ((ball_subset_ball (ht2.le.trans (min_le_right _ _))).trans hrU)] at ht1
+    exact (pos_iff_ne_zero.2 (ENNReal.div_pos_iff.1 ht1).1).trans_le
+      (measure_mono (ball_subset_ball (ht2.le.trans (min_le_left _ _))))
+  -- The reduced current `T₀ = N₀⁻¹ T⌞B_r(z₀)`: a minimizing cycle in `B_r(z₀) ∩ N` with density
+  -- `1` at `z₀` (Simon Ch. 5, proof of 7.3).
+  obtain ⟨T₀, hT₀min, hT₀spt, hT₀bdry, hT₀mass, hz₀T₀, hT₀dens, hT₀reg⟩ :=
+    Submission.rsd_constant_multiplicity_reduction (n + k) n U N T R z₀ r N₀ hU hmin
+      (fun y hy => (hspt hy).2) hbdry hR hr hrU hN₀pos hmult hz₀spt hz₀dens
+  -- Simon 7.4.3 for the constant sequences `Tⱼ = T₀`, `yⱼ = z₀`: `z₀ ∈ reg T₀`, so `z₀ ∈ reg T`.
+  have hNr : (closure N \ N) ∩ ball z₀ r = ∅ := by
+    rw [← subset_empty_iff, ← hNU]
+    exact inter_subset_inter_right _ hrU
+  have hreg₀ : z₀ ∈ regularSet T₀ :=
+    (Submission.density_one_implies_regular n k ℓ hℓ (ball z₀ r) N (fun _ => T₀) T₀
+      (fun _ => z₀) z₀ isOpen_ball hN hNr (fun _ => hT₀min) hT₀min (fun _ => hT₀spt) hT₀spt
+      (fun _ => hT₀bdry) hT₀bdry (fun W hW hWr => by rw [iSup_const]; exact hT₀mass W hW hWr)
+      (fun _ => tendsto_const_nhds) ⟨hT₀spt hz₀T₀, mem_ball_self hr⟩ hT₀dens
+      tendsto_const_nhds fun _ => hz₀T₀).1
+  exact ⟨z₀, hT₀reg hreg₀, (mem_ball'.1 hz₀B).trans_le hρε⟩
+
 end GMT.Ch07
