@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "a10f3b22c4e10227fa61d4692223bffab65f6805f787873c04a66a68549dd7cf",
+  "git_delta": {
+    "base_commit": "ae0d56a228e3616fae231a43cdba54e62c539d88",
+    "candidate_commit": "9e5299b59235dbf594b19973f9d380d64c2a2a1f",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "idtp_ccd_regular_of_const_density",
+    "diff_sha256": "3a868cdf4155c3e0351287b1a01240f22d1351faf6f9cad9c150bf95212853df",
+    "source_sha256": "2e53e7dc59b8a08d2010a22ba4891866e25ace6b5d99a4385d8bec561b868db5",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.idtp_ccd_regular_of_const_density",
+      "statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (p : Euclid P) (k : ℕ) (δ : ℝ), 1 ≤ n → IsOpen U → IsMinimizingIn T U → BoundaryVanishes T → p ∈ T.support → 0 < δ → (∀ y ∈ T.support, y ∈ ball p δ → HasMassDensity T y k) → p ∈ regularSet T",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

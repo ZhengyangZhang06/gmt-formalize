@@ -1,0 +1,83 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "rg -n 'def Euclid|abbrev Euclid|structure IMRep|def measure|firstVariation|tangentialDivergence|locallyIntegrable_mult|approxTangentPlane' .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "rg -n -i 'dorag_tes_gv_|vertical.field|cutoff.extension|adapted.frame|graph.plane' .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT --glob '*.lean'",
+        "integral_withDensity_eq_integral_toReal_smul",
+        "^theorem norm_integral_le_of_norm_le",
+        "^theorem integral_undef",
+        "lintegral_const_mul.",
+        "trace_smulRight",
+        "support_mem_ae",
+        "theorem one_of_mem_closedBall",
+        "theorem tsupport_eq",
+        "finrank_add_finrank_orthogonal",
+        "eq_of_le_of_finrank_eq",
+        "toDual_symm_apply",
+        ". ./GMT/Scratch/dorag_tes_graph_first_variation_estimate/env.sh\n\"$LEAN\" GMT/Scratch/dorag_tes_graph_first_variation_estimate/Full.lean",
+        ". ./GMT/Scratch/dorag_tes_graph_first_variation_estimate/env.sh\n\"$LEAN\" /tmp/graph-variation-independent-audit-qko0nd_7/Audit.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/ContinuousLinearMap.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Add.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Support.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Trace.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/BumpFunction/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Projection/FiniteDimensional.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/FiniteDimensional/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Dual.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-2037e48028/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-2037e48028/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Scratch/dorag_tes_graph_first_variation_estimate/Full.lean",
+        "/tmp/graph-variation-independent-audit-qko0nd_7/Audit.lean"
+      ],
+      "conclusion": "Verified pinned revisions and byte-identical snapshot/workspace contracts. The targeted project search found no matching child lemma. All six frozen types are standalone, one-line propositions matching their prose; their exact comparator challenges elaborate. All names are bare identifiers, with no collisions or identical frozen types found across eight workspace DAGs. Independently compiled each supplied proof with only its declared dependencies, then compiled the exact selected parent using child contracts as axioms plus its existing, type-identical proj_algebra dependency. Axiom reports contain only standard axioms and those declared dependencies, with no sorryAx. The split appropriately isolates six useful proof blocks; dependencies are acyclic and correctly directed. Inline constructions use the intended Euclidean and continuous-linear-map structures; no matrix-unit construction occurs."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "adapted_frame",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All hypotheses and five conclusions match. Equal-dimension range arguments establish the orthogonal decomposition, which proves the adjoint and projection identities, Pythagoras, and contraction bound. The complete proof also covers zero dimensions and requires no child dependency."
+    },
+    {
+      "key": "graph_plane_pointwise",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The Riesz-vector argument proves the graph projection identity; Q1 and Q2 then give both stated bounds, with Parseval identifying the finite sum. These are explicit hypotheses supplied independently by the parent's projection-algebra sibling. Only adapted_frame is used; no circular reliance occurs."
+    },
+    {
+      "key": "vertical_field_variation",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The derivative and rank-one trace calculations give the exact divergence integrand. The pinned change-of-density theorem applies to measurable, finite natural-number density without integrability assumptions, so the stated total Bochner-integral equality is fully justified."
+    },
+    {
+      "key": "cutoff_extension",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof uses n > 0 to obtain the unit vector needed for the amplitude bound. The specified bump gives compact support and C¹ regularity. The two cases for the projected norm prove exactly the conditional derivative equality, without an unstated contraction assumption on P."
+    },
+    {
+      "key": "vertical_variation_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Compact inclusion gives finite mass, and conull support justifies localization using the two declared children. Projection measurability and the uniform bound prove integrability of u. The pinned integral-domination lemma requires no measurability of H, and the nonnegative finite factors justify the ENNReal conversion."
+    },
+    {
+      "key": "split_integral_estimate",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof explicitly handles nonintegrable g by integral_undef. Otherwise all subtraction and splitting steps involve integrable functions. Indicator bounds and finite-scalar lower-integral multiplication prove the conclusion without hidden measurability or nonnegativity assumptions on t, including zero factors and infinite measures."
+    }
+  ],
+  "required_changes": []
+}
