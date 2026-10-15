@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.moving_blowups-a1.deformation_theorem-a1.lipschitz_pushforward-a1.covector_bounds-a1",
+  "parent_id": "root.dimension_reduction_results-a1.moving_blowups-a1.deformation_theorem-a1.lipschitz_pushforward-a1",
+  "depth": 5,
+  "title": "Euclidean coefficient norm of covectors under pull-back and interior product (parent (L0)–(L2))",
+  "statement": "For all N, N', k ∈ ℕ, writing |α| for covectorEuclideanNorm α (the Euclidean norm of the values of a covector on the strictly increasing tuples of standard basis vectors), |v| for the Euclidean norm and ‖A‖ for the operator norm: (L1) for every continuous linear map A : ℝ^N → ℝ^{N'} and every k-covector β on ℝ^{N'}, the pull-back A^#β := β.compContinuousLinearMap A, (A^#β)(w_1, …, w_k) = β(Aw_1, …, Aw_k), satisfies |A^#β| ≤ ‖A‖^k·|β|; (L2) for every v ∈ ℝ^N and every (k+1)-covector β on ℝ^N, the interior product ι_vβ := β.curryLeft v, (ι_vβ)(w_1, …, w_k) = β(v, w_1, …, w_k), satisfies |ι_vβ| ≤ |v|·|β|.",
+  "lean_statement": "(∀ (N N' k : ℕ) (A : Euclid N →L[ℝ] Euclid N') (β : Covector (Euclid N') k), covectorEuclideanNorm (β.compContinuousLinearMap A) ≤ ‖A‖ ^ k * covectorEuclideanNorm β) ∧ ∀ (N k : ℕ) (v : Euclid N) (β : Covector (Euclid N) (k + 1)), covectorEuclideanNorm (β.curryLeft v) ≤ ‖v‖ * covectorEuclideanNorm β",
+  "lean_name": "dimred_mbl_dt_lp_covector_bounds",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-moving-blowups-a1-deformation-the-d372b22d2b-a1"
+}

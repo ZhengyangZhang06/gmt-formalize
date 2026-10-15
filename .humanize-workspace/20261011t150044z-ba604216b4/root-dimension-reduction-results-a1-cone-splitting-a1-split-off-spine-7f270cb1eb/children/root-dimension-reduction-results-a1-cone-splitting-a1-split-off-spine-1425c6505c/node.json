@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.cone_splitting-a1.split_off_spine-a1.minimality_transfer-a1.face_currents-a1",
+  "parent_id": "root.dimension_reduction_results-a1.cone_splitting-a1.split_off_spine-a1.minimality_transfer-a1",
+  "depth": 5,
+  "title": "The faces [[∂Q_r]] × Y as one integer multiplicity current with the face action and mass at most 2(j + 1)(2r)^j μ_Y(ℝ^P)",
+  "statement": "Let P, j, m, n' ∈ ℕ, let g : Fin (j + 1) → Euclid P be orthonormal with span G, and for a ∈ Fin (j + 1) let g^(a) := g ∘ a.succAbove (g with g_a removed), G_a := span g^(a) and Q'_a := {s ∈ G_a : |⟨g_{a.succAbove c}, s⟩| ≤ r for all c}; let h₂ : n' = j + (m + 1) and H^j := μHE[j]. Let Y ∈ 𝒟_{m+1}(ℝ^P) have an integer multiplicity representation R_Y whose measure is carried by G^⊥ (R_Y.measure(ℝ^P ∖ G^⊥) = 0), and let r > 0. Then there is an integer multiplicity current E' ∈ 𝒟_{n'}(ℝ^P) with mass M(E') ≤ ENNReal.ofReal(2(j + 1)(2r)^j)·R_Y.measure(ℝ^P) such that, for every family of maps flatF a : Λ^{n'} → Λ^{m+1} with flatF a α v = α(Fin.append g^(a) v ∘ Fin.cast h₂) and every test n'-form ω,\nE'(ω) = Σ_{a ∈ Fin (j+1)} (−1)^a·[∫_{Q'_a} currentEval Y (y ↦ flatF a(ω(s + r·g_a + y))) dH^j(s) − ∫_{Q'_a} currentEval Y (y ↦ flatF a(ω(s − r·g_a + y))) dH^j(s)].",
+  "lean_statement": "∀ (P j m n' : ℕ) (g : Fin (j + 1) → Euclid P) (h₂ : n' = j + (m + 1)) (Y : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1)) (RY : IMRep (univ : Set (Euclid P)) (m + 1)) (r : ℝ), Orthonormal ℝ g → RY.Represents Y → RY.measure ((Submodule.span ℝ (Set.range g))ᗮ : Set (Euclid P))ᶜ = 0 → 0 < r → ∃ E' : GeometricCurrentOn (univ : Set (Euclid P)) n', IsIntegerMultiplicity E' ∧ E'.mass ≤ ENNReal.ofReal (2 * ((j : ℝ) + 1) * (2 * r) ^ j) * RY.measure univ ∧ ∀ flatF : Fin (j + 1) → Covector (Euclid P) n' → Covector (Euclid P) (m + 1), (∀ (a : Fin (j + 1)) (α : Covector (Euclid P) n') (v : Fin (m + 1) → Euclid P), flatF a α v = α (Fin.append (g ∘ a.succAbove) v ∘ Fin.cast h₂)) → ∀ ω : TestFormOn (univ : Set (Euclid P)) n', E' ω = ∑ a : Fin (j + 1), (-1 : ℝ) ^ (a : ℕ) * ((∫ s in {s | s ∈ Submodule.span ℝ (Set.range (g ∘ a.succAbove)) ∧ ∀ c, |inner ℝ (g (a.succAbove c)) s| ≤ r}, currentEval Y (fun y => flatF a ((ω : DifferentialForm (Euclid P) n') (s + r • g a + y))) ∂μHE[j]) - ∫ s in {s | s ∈ Submodule.span ℝ (Set.range (g ∘ a.succAbove)) ∧ ∀ c, |inner ℝ (g (a.succAbove c)) s| ≤ r}, currentEval Y (fun y => flatF a ((ω : DifferentialForm (Euclid P) n') (s - r • g a + y))) ∂μHE[j])",
+  "lean_name": "dimred_cs_sos_mt_face_currents",
+  "depends_on": [
+    "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_off_null_set-a1.cone_splitting-a1.split_off_spine-a1.product_current-a1",
+    "root.compactness_of_minimizing_currents-a1.local_comparison-a1.mass_triangle-a1",
+    "root.dimension_reduction_results-a1.cone_splitting-a1.split_off_spine-a1.minimality_transfer-a1.frame_measure-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_off_null_set-a1.cone_splitting-a1.split_off_spine-a1.product_current-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-da13543666-a1",
+      "result_commit": "4aa9ba8dc9ec5fe22643a88f4a53931e8190119e",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.compactness_of_minimizing_currents-a1.local_comparison-a1.mass_triangle-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-local-comparison-a1-mass-triangle-a1-a1",
+      "result_commit": "c7dea4b81c94f56650b6060d3bcb1e801f43d7e9",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.dimension_reduction_results-a1.cone_splitting-a1.split_off_spine-a1.minimality_transfer-a1.frame_measure-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-cone-splitting-a1-split-off-spine-1425c6505c-a1"
+}
