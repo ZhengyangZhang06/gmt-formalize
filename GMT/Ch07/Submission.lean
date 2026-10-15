@@ -6,8 +6,6 @@ import Poincare.SimonGMT.Chapter03.Rectifiable
 import Poincare.SimonGMT.Chapter06.Mass
 import Poincare.SimonGMT.Chapter06.CurrentLocalEquality
 import Poincare.SimonGMT.Chapter06.AffineCurrentPushforward
-import Poincare.SimonGMT.Chapter08.DistributionalConstancy
-import Poincare.SimonGMT.Chapter02.AreaLipschitz
 import Mathlib.MeasureTheory.Function.ContinuousMapDense
 import Mathlib.Analysis.Calculus.BumpFunction.SmoothApprox
 import Poincare.SimonGMT.Chapter01.DensityComparison
@@ -18,7 +16,28 @@ import Mathlib.MeasureTheory.Function.ContinuousMapDense
 import Mathlib.Analysis.Calculus.BumpFunction.SmoothApprox
 import Poincare.SimonGMT.Chapter01.DensityComparison
 import Poincare.SimonGMT.Chapter08.DistributionalConstancy
+import Poincare.SimonGMT.Chapter02.AreaLipschitz
 import Mathlib.MeasureTheory.Integral.IntervalIntegral.LebesgueDifferentiationThm
+
+/-!
+# Simon, *Introduction to Geometric Measure Theory*, Chapter 7 "Area Minimizing Currents"
+(printed pp. 181–204)
+
+Frozen contract.  Currents, boundary, mass, support and weak convergence are the clean SimonGMT
+objects of `Poincare.SimonGMT.Chapter06`: `GeometricCurrentOn U n` (Simon 6.2.1), `T.boundary`
+(6.2.3), `T.massOn W` = `M_W(T)` (6.2.5, Euclidean coefficient norm), `T.mass` (6.2.4),
+`T.support` (6.2.11), `WeaklyConvergesOn` (6.2.13), and the proper affine push-forward
+`GeometricCurrentOn.affinePushforward` (6.2.23).  Everything else (integer multiplicity currents,
+minimizing currents, densities, blow-ups, tangent cones, `reg T`, `sing T`, the associated
+varifold) is defined below from primitive data.  `Hⁿ` is Mathlib's normalized `μHE[n]`; null-set
+statements use Mathlib's `μH[s]` (same null sets as Simon's `Hˢ`).
+
+**Conventions.**  The ambient space is `ℝ^{n+k}` (`Euclid (n + k)`); when a submanifold `N` is
+present it has dimension `n + ℓ`, `ℓ ≤ k` (Simon writes `N^{n+ℓ} ⊂ ℝ^{n+ℓ}`, `ℓ ≤ k`, a
+misprint for `ℝ^{n+k}`; `N = ℝ^{n+k}` is the case `ℓ = k`).  For an `n`-current, `∂T = 0`,
+`∂S = ∂T`, `spt ∂T`, `M_W(∂T)` are read with Simon's convention `∂T = 0` if `n = 0` (6.2.3).
+-/
+
 
 /-!
 # Simon, *Introduction to Geometric Measure Theory*, Chapter 7 "Area Minimizing Currents"
@@ -1092,6 +1111,289 @@ theorem Submission.rsd_tendsto_closedBall_density_of_approxTangent : ∀ (P n : 
   -- Step 7: `a r → ωₙ`
   have ha : Tendsto a (𝓝[>] 0) (𝓝 w) := by
     rw [tendsto_order]
+    constructor
+    · intro c hc
+      have hcont : Tendsto (fun ε : ℝ => w * (1 - ε) ^ n) (𝓝[>] 0) (𝓝 w) := by
+        have : Continuous (fun ε : ℝ => w * (1 - ε) ^ n) := by fun_prop
+        simpa using (this.tendsto 0).mono_left nhdsWithin_le_nhds
+      obtain ⟨ε, hcε, hε⟩ :=
+        ((hcont.eventually (lt_mem_nhds hc)).and (Ioo_mem_nhdsGT one_pos)).exists
+      obtain ⟨f, hfc, hf0, hfge, hfle⟩ := hbump (1 - ε) 1 (by linarith [hε.2]) (by linarith [hε.1])
+      -- `∫_Q f ≥ ωₙ (1-ε)ⁿ`
+      have hQ1 : w * (1 - ε) ^ n ≤ ∫ y in (Q : Set (Euclid P)), f y ∂μHE[n] := by
+        rw [← hplanereal (1 - ε) (by linarith [hε.2]), ← integral_indicator_one measurableSet_closedBall]
+        exact integral_mono (hindint _ _ (hplanefin _ (by linarith [hε.2])))
+          (hdomint _ _ 1 hfc (hplanefin _ zero_le_one) hf0 hfle) hfge
+      filter_upwards [(tendsto_order.1 (hconv f)).1 c (hcε.trans_le hQ1),
+        Ioc_mem_nhdsGT (half_pos hs)] with r hr1 hr2
+      -- `∫_{η(M)} f ≤ a r`
+      have h1 : (1 : ℝ) * r ≤ s := by linarith [hr2.2]
+      have hle : ∫ y in Poincare.SimonGMT.Chapter03.blowUpMap x r '' M, f y ∂μHE[n] ≤ a r := by
+        rw [← hareal r hr2.1, ← integral_indicator_one measurableSet_closedBall]
+        exact integral_mono (hdomint _ _ 1 hfc (hνfin r hr2.1 1 h1) hf0 hfle)
+          (hindint _ _ (hνfin r hr2.1 1 h1)) hfle
+      exact hr1.trans_le hle
+    · intro c hc
+      have hcont : Tendsto (fun ε : ℝ => w * (1 + ε) ^ n) (𝓝[>] 0) (𝓝 w) := by
+        have : Continuous (fun ε : ℝ => w * (1 + ε) ^ n) := by fun_prop
+        simpa using (this.tendsto 0).mono_left nhdsWithin_le_nhds
+      obtain ⟨ε, hcε, hε⟩ :=
+        ((hcont.eventually (gt_mem_nhds hc)).and (Ioo_mem_nhdsGT one_pos)).exists
+      obtain ⟨f, hfc, hf0, hfge, hfle⟩ := hbump 1 (1 + ε) one_pos (by linarith [hε.1])
+      -- `∫_Q f ≤ ωₙ (1+ε)ⁿ`
+      have hQ2 : ∫ y in (Q : Set (Euclid P)), f y ∂μHE[n] ≤ w * (1 + ε) ^ n := by
+        rw [← hplanereal (1 + ε) (by linarith [hε.1]), ← integral_indicator_one measurableSet_closedBall]
+        exact integral_mono (hdomint _ _ (1 + ε) hfc (hplanefin _ (by linarith [hε.1])) hf0 hfle)
+          (hindint _ _ (hplanefin _ (by linarith [hε.1]))) hfle
+      filter_upwards [(tendsto_order.1 (hconv f)).2 c (hQ2.trans_lt hcε),
+        Ioc_mem_nhdsGT (half_pos hs)] with r hr1 hr2
+      -- `a r ≤ ∫_{η(M)} f`
+      have h1 : (1 : ℝ) * r ≤ s := by linarith [hr2.2]
+      have h2 : (1 + ε) * r ≤ s := by nlinarith [hr2.1, hr2.2, hε.2]
+      have hge : a r ≤ ∫ y in Poincare.SimonGMT.Chapter03.blowUpMap x r '' M, f y ∂μHE[n] := by
+        rw [← hareal r hr2.1, ← integral_indicator_one measurableSet_closedBall]
+        exact integral_mono (hindint _ _ (hνfin r hr2.1 1 h1))
+          (hdomint _ _ (1 + ε) hfc (hνfin r hr2.1 _ h2) hf0 hfle) hfge
+      exact hge.trans_lt hr1
+  -- Step 8: back to the `ℝ≥0∞` quotient
+  have hconvert : ∀ ρ : ℝ, 0 < ρ → ρ ≤ s →
+      μHE[n] (M ∩ closedBall x ρ) / (ω * ENNReal.ofReal (ρ ^ n)) = ENNReal.ofReal (a ρ / w) := by
+    intro ρ hρ hρs
+    have hρn : 0 < ρ ^ n := pow_pos hρ n
+    rw [← ENNReal.ofReal_toReal (hmfin ρ hρs), ← ENNReal.ofReal_toReal hωtop,
+      ← ENNReal.ofReal_mul ENNReal.toReal_nonneg,
+      ← ENNReal.ofReal_div_of_pos (mul_pos hw hρn)]
+    congr 1
+    simp only [hadef, inv_pow]
+    field_simp
+  have hlim : Tendsto (fun ρ : ℝ => ENNReal.ofReal (a ρ / w)) (𝓝[>] 0) (𝓝 1) := by
+    have := ENNReal.tendsto_ofReal (ha.div_const w)
+    rwa [div_self hw.ne', ENNReal.ofReal_one] at this
+  refine hlim.congr' ?_
+  filter_upwards [Ioc_mem_nhdsGT hs] with ρ hρ
+  exact (hconvert ρ hρ.1 hρ.2).symm
+/-- **Simon Ch. 1, 3.1–3.2** (densities may be computed with closed or open balls; cf. 6.2.8 and
+`HasMassDensity`): if `ν(B̄_ρ(x)) / (ωₙρⁿ) → θ ∈ [0, ∞]` as `ρ ↓ 0`, then also
+`ν(B_ρ(x)) / (ωₙρⁿ) → θ`.  The upper bound follows from `B_ρ(x) ⊆ B̄_ρ(x)`.  For the lower
+bound, given `a < θ` pick `t ∈ (0, 1)` with `a < tⁿθ`; then `B̄_{tρ}(x) ⊆ B_ρ(x)` and
+`ωₙ(tρ)ⁿ = tⁿ ωₙρⁿ` give `ν(B_ρ(x)) / (ωₙρⁿ) ≥ tⁿ · ν(B̄_{tρ}(x)) / (ωₙ(tρ)ⁿ) > a` for small
+`ρ`. -/
+theorem Submission.rsd_tendsto_ball_density_of_closedBall : ∀ (P n : ℕ) (ν : Measure (Euclid P)) (x : Euclid P) (θ : ℝ≥0∞), Tendsto (fun ρ : ℝ => ν (closedBall x ρ) / (unitBallVolume n * ENNReal.ofReal (ρ ^ n))) (𝓝[>] 0) (𝓝 θ) → Tendsto (fun ρ : ℝ => ν (ball x ρ) / (unitBallVolume n * ENNReal.ofReal (ρ ^ n))) (𝓝[>] 0) (𝓝 θ) := by
+  intro P n ν x θ hg
+  set ω := unitBallVolume n
+  rw [tendsto_order]
+  refine ⟨fun a ha => ?_, fun b hb => ?_⟩
+  · -- Step 2: choose `t ∈ (0, 1)` with `a < tⁿθ`, using `tⁿθ → θ` as `t ↑ 1`
+    have hlim : Tendsto (fun t : ℝ => ENNReal.ofReal (t ^ n) * θ) (𝓝[<] 1) (𝓝 (1 * θ)) := by
+      refine ENNReal.Tendsto.mul_const ?_ (Or.inl one_ne_zero)
+      have : Tendsto (fun t : ℝ => ENNReal.ofReal (t ^ n)) (𝓝 1) (𝓝 (ENNReal.ofReal (1 ^ n))) :=
+        (ENNReal.continuous_ofReal.comp (continuous_pow n)).tendsto 1
+      simpa using this.mono_left nhdsWithin_le_nhds
+    rw [one_mul] at hlim
+    obtain ⟨t, hta, ht0, ht1⟩ : ∃ t : ℝ, a < ENNReal.ofReal (t ^ n) * θ ∧ 0 < t ∧ t < 1 := by
+      have h1 := (tendsto_order.1 hlim).1 a ha
+      have h2 : ∀ᶠ t in 𝓝[<] (1 : ℝ), t ∈ Ioo (0 : ℝ) 1 := Ioo_mem_nhdsLT (by norm_num)
+      obtain ⟨t, ht, ht'⟩ := (h1.and h2).exists
+      exact ⟨t, ht, ht'.1, ht'.2⟩
+    have hc0 : ENNReal.ofReal (t ^ n) ≠ 0 := by
+      rw [Ne, ENNReal.ofReal_eq_zero, not_le]
+      positivity
+    have hctop : ENNReal.ofReal (t ^ n) ≠ ∞ := ENNReal.ofReal_ne_top
+    have ha' : a / ENNReal.ofReal (t ^ n) < θ := by
+      rw [ENNReal.div_lt_iff (Or.inl hc0) (Or.inl hctop), mul_comm]
+      exact hta
+    -- Step 3: the rescaled closed-ball ratio `g(tρ)` still tends to `θ`
+    have hmap : Tendsto (fun ρ : ℝ => t * ρ) (𝓝[>] 0) (𝓝[>] 0) := by
+      refine tendsto_nhdsWithin_of_tendsto_nhds_of_eventually_within _ ?_ ?_
+      · have h0 : Tendsto (fun ρ : ℝ => t * ρ) (𝓝 0) (𝓝 0) := by
+          simpa using (tendsto_id (x := 𝓝 (0 : ℝ))).const_mul t
+        exact h0.mono_left nhdsWithin_le_nhds
+      · filter_upwards [self_mem_nhdsWithin] with ρ hρ
+        exact mul_pos ht0 hρ
+    have hev := (tendsto_order.1 (hg.comp hmap)).1 _ ha'
+    filter_upwards [hev, self_mem_nhdsWithin] with ρ hρ hρpos
+    simp only [Function.comp] at hρ
+    have hρpos' : (0 : ℝ) < ρ := hρpos
+    -- Step 4: `ν(B̄_{tρ}(x)) / (ωₙ(tρ)ⁿ) · tⁿ = ν(B̄_{tρ}(x)) / (ωₙρⁿ)`
+    have hid : ν (closedBall x (t * ρ)) / (ω * ENNReal.ofReal ((t * ρ) ^ n)) * ENNReal.ofReal (t ^ n)
+        = ν (closedBall x (t * ρ)) / (ω * ENNReal.ofReal (ρ ^ n)) := by
+      rw [mul_pow, ENNReal.ofReal_mul (by positivity), mul_comm (ENNReal.ofReal (t ^ n)),
+        ← mul_assoc, div_eq_mul_inv, div_eq_mul_inv, ENNReal.mul_inv (Or.inr hctop) (Or.inr hc0),
+        mul_assoc, mul_assoc, ENNReal.inv_mul_cancel hc0 hctop, mul_one]
+    -- Step 5: `a < tⁿ g(tρ) ≤ h(ρ)`, as `B̄_{tρ}(x) ⊆ B_ρ(x)`
+    calc a = a / ENNReal.ofReal (t ^ n) * ENNReal.ofReal (t ^ n) :=
+          (ENNReal.div_mul_cancel hc0 hctop).symm
+      _ < ν (closedBall x (t * ρ)) / (ω * ENNReal.ofReal ((t * ρ) ^ n)) * ENNReal.ofReal (t ^ n) :=
+          (ENNReal.mul_lt_mul_iff_left hc0 hctop).2 hρ
+      _ = ν (closedBall x (t * ρ)) / (ω * ENNReal.ofReal (ρ ^ n)) := hid
+      _ ≤ ν (ball x ρ) / (ω * ENNReal.ofReal (ρ ^ n)) := by
+          gcongr
+          exact closedBall_subset_ball (by nlinarith)
+  · -- Step 1: `h(ρ) ≤ g(ρ)`, as `B_ρ(x) ⊆ B̄_ρ(x)`
+    filter_upwards [(tendsto_order.1 hg).2 b hb] with ρ hρ
+    refine lt_of_le_of_lt ?_ hρ
+    gcongr
+    exact ball_subset_closedBall
+
+/-- **Simon Ch. 3, Remarks 1.8(1)–(2) and Theorem 1.9** (with the upper density theorem, Ch. 1,
+3.6–3.7(2)): if `R = (M, θ, ξ)` has weight `μ_R = θ Hⁿ⌞M` finite on compact sets, then for
+`Hⁿ`-a.e. `x ∈ M`, `μ_R(B_ρ(x)) / (ωₙρⁿ) → θ(x)` as `ρ ↓ 0`.  As `θ ≥ 1` on `M`,
+`ν := Hⁿ⌞M ≤ μ_R`, so `ν(B_ρ(x)) / (ωₙρⁿ) → 1` at approximate tangent points.  With `k = θ(x)` and
+`A_k = M ∩ θ⁻¹(ℕ ∖ {k})`, `μ_R(A_k ∩ B_ρ(x)) = o(ρⁿ)` for `Hⁿ`-a.e. `x ∉ A_k`, and
+`kν(B) ≤ μ_R(B) + kμ_R(A_k ∩ B)`, `μ_R(B) ≤ kν(B) + μ_R(A_k ∩ B)` squeeze the ratio to `k`. -/
+theorem Submission.idtp_dema_density_on_carrier : ∀ (P n : ℕ) (U : Set (Euclid P)) (R : IMRep U n), (∀ K : Set (Euclid P), IsCompact K → R.measure K ≠ ∞) → ∀ᵐ x ∂(μHE[n] : Measure (Euclid P)), x ∈ R.carrier → Tendsto (fun ρ : ℝ => R.measure (ball x ρ) / (unitBallVolume n * ENNReal.ofReal (ρ ^ n))) (𝓝[>] 0) (𝓝 (R.mult x : ℝ≥0∞)) := by
+  intro P n U R hfin
+  set M := R.carrier with hM
+  have hMm : MeasurableSet M := R.measurableSet_carrier
+  set ν : Measure (Euclid P) := (μHE[n] : Measure (Euclid P)).restrict M with hν
+  -- `μ_R(S) = ∫_{S ∩ M} θ dHⁿ` for Borel `S`
+  have hmeas : ∀ S : Set (Euclid P), MeasurableSet S →
+      R.measure S = ∫⁻ y in S ∩ M, (R.mult y : ℝ≥0∞) ∂μHE[n] := by
+    intro S hS
+    simp only [IMRep.measure]
+    rw [withDensity_apply _ hS, Measure.restrict_restrict hS]
+  -- Step 1: `ν ≤ μ_R` on Borel sets, as `θ ≥ 1` on `M`
+  have hνle : ∀ S : Set (Euclid P), MeasurableSet S → ν S ≤ R.measure S := by
+    intro S hS
+    rw [hmeas S hS, hν, Measure.restrict_apply hS]
+    calc μHE[n] (S ∩ M) = ∫⁻ _y in S ∩ M, (1 : ℝ≥0∞) ∂μHE[n] := by simp
+      _ ≤ ∫⁻ y in S ∩ M, (R.mult y : ℝ≥0∞) ∂μHE[n] := by
+        apply setLIntegral_mono' (hS.inter hMm)
+        intro y hy
+        have h := R.mult_pos y hy.2
+        exact_mod_cast Nat.one_le_iff_ne_zero.mpr h.ne'
+  -- Step 2: the Borel sets `A_k = M ∩ θ⁻¹(ℕ ∖ {k})`
+  set A : ℕ → Set (Euclid P) := fun k => M ∩ R.mult ⁻¹' ({k}ᶜ) with hA
+  have hAm : ∀ k, MeasurableSet (A k) := fun k =>
+    hMm.inter (R.measurable_mult (measurableSet_singleton k).compl)
+  -- Step 3: `Hⁿ`-a.e., `μ_R(A_k ∩ B_ρ(x)) / (ωₙρⁿ) → 0` for every `k` with `x ∉ A_k`
+  have hUD : ∀ᵐ x ∂(μHE[n] : Measure (Euclid P)), ∀ k : ℕ, x ∉ A k →
+      Tendsto (fun ρ : ℝ => R.measure (A k ∩ ball x ρ) /
+        (unitBallVolume n * ENNReal.ofReal (ρ ^ n))) (𝓝[>] 0) (𝓝 0) :=
+    ae_all_iff.2 fun k => Submission.idtp_dema_upper_density_zero P n R.measure (A k) (hAm k) hfin
+  -- Step 4: `Hⁿ`-a.e. on `M` there is an approximate tangent space (field `orients`)
+  have htan : ∀ᵐ x ∂(μHE[n] : Measure (Euclid P)), x ∈ M →
+      ∃ Q, HasApproximateTangentSpaceAt n M x Q := by
+    have h := R.orients
+    rw [ae_restrict_iff' hMm] at h
+    filter_upwards [h] with x hx hxM
+    obtain ⟨Q, hQ, -⟩ := hx hxM
+    exact ⟨Q, hQ⟩
+  filter_upwards [hUD, htan] with x hxUD hxtan hxM
+  obtain ⟨Q, hQ⟩ := hxtan hxM
+  set k : ℕ := R.mult x with hk
+  have hxA : x ∉ A k := fun h => h.2 (by simp [hk])
+  have he := hxUD k hxA
+  -- `ν(B_ρ(x)) / (ωₙρⁿ) → 1`, using `Hⁿ(M ∩ B̄_1(x)) ≤ μ_R(B̄_1(x)) < ∞`
+  have hfinball : μHE[n] (M ∩ closedBall x 1) ≠ ∞ := by
+    have h1 := hνle (closedBall x 1) measurableSet_closedBall
+    have h2 := hfin (closedBall x 1) (isCompact_closedBall x 1)
+    rw [hν, Measure.restrict_apply measurableSet_closedBall] at h1
+    rw [inter_comm]
+    exact ne_top_of_le_ne_top h2 h1
+  have hTD := Submission.rsd_tendsto_closedBall_density_of_approxTangent P n M x Q 1 one_pos
+    hfinball hQ
+  have hTD' : Tendsto (fun ρ : ℝ => ν (closedBall x ρ) /
+      (unitBallVolume n * ENNReal.ofReal (ρ ^ n))) (𝓝[>] 0) (𝓝 1) := by
+    refine hTD.congr fun ρ => ?_
+    rw [hν, Measure.restrict_apply measurableSet_closedBall, inter_comm]
+  have hb := Submission.rsd_tendsto_ball_density_of_closedBall P n ν x 1 hTD'
+  -- Step 5: `μ_R(B) = k Hⁿ(B ∩ M ∩ θ⁻¹(k)) + μ_R(A_k ∩ B)`, whence the bounds (U) and (L)
+  set T : Set (Euclid P) := R.mult ⁻¹' {k} with hT
+  have hTm : MeasurableSet T := R.measurable_mult (measurableSet_singleton k)
+  have hsplit : ∀ ρ : ℝ, R.measure (ball x ρ) =
+      (k : ℝ≥0∞) * μHE[n] ((ball x ρ ∩ M) ∩ T) + R.measure (A k ∩ ball x ρ) := by
+    intro ρ
+    rw [hmeas _ measurableSet_ball, hmeas _ ((hAm k).inter measurableSet_ball),
+      ← lintegral_inter_add_sdiff (B := T) _ _ hTm]
+    congr 1
+    · rw [setLIntegral_congr_fun ((measurableSet_ball.inter hMm).inter hTm)
+        (g := fun _ => (k : ℝ≥0∞)) (fun y hy => by
+          have : R.mult y = k := hy.2
+          simp [this])]
+      simp
+    · have hset : (ball x ρ ∩ M) \ T = (A k ∩ ball x ρ) ∩ M := by
+        ext y
+        simp only [hA, hT, mem_inter_iff, Set.mem_sdiff, mem_preimage, mem_compl_iff,
+          mem_singleton_iff]
+        tauto
+      rw [hset]
+  have hνsplit : ∀ ρ : ℝ, ν (ball x ρ) =
+      μHE[n] ((ball x ρ ∩ M) ∩ T) + ν (A k ∩ ball x ρ) := by
+    intro ρ
+    rw [hν, Measure.restrict_apply measurableSet_ball,
+      Measure.restrict_apply ((hAm k).inter measurableSet_ball),
+      ← measure_inter_add_sdiff (ball x ρ ∩ M) hTm]
+    have hset : (ball x ρ ∩ M) \ T = (A k ∩ ball x ρ) ∩ M := by
+      ext y
+      simp only [hA, hT, mem_inter_iff, Set.mem_sdiff, mem_preimage, mem_compl_iff,
+        mem_singleton_iff]
+      tauto
+    rw [hset]
+  -- (U) `μ_R(B) ≤ kν(B) + μ_R(A_k ∩ B)`
+  have hup : ∀ ρ : ℝ, R.measure (ball x ρ) ≤
+      (k : ℝ≥0∞) * ν (ball x ρ) + R.measure (A k ∩ ball x ρ) := by
+    intro ρ
+    rw [hsplit ρ]
+    have h1 : μHE[n] ((ball x ρ ∩ M) ∩ T) ≤ ν (ball x ρ) := by
+      rw [hν, Measure.restrict_apply measurableSet_ball]
+      exact measure_mono inter_subset_left
+    exact add_le_add (mul_le_mul_right h1 _) le_rfl
+  -- (L) `kν(B) ≤ μ_R(B) + kμ_R(A_k ∩ B)`
+  have hlow : ∀ ρ : ℝ, (k : ℝ≥0∞) * ν (ball x ρ) ≤
+      R.measure (ball x ρ) + (k : ℝ≥0∞) * R.measure (A k ∩ ball x ρ) := by
+    intro ρ
+    rw [hνsplit ρ, mul_add, hsplit ρ, add_assoc]
+    have h2 := hνle (A k ∩ ball x ρ) ((hAm k).inter measurableSet_ball)
+    exact add_le_add le_rfl ((mul_le_mul_right h2 _).trans le_add_self)
+  -- Step 6: divide by `ωₙρⁿ`; both bounds tend to `k`, as `k < ∞`
+  set c : ℝ → ℝ≥0∞ := fun ρ => unitBallVolume n * ENNReal.ofReal (ρ ^ n) with hc
+  have hk_top : (k : ℝ≥0∞) ≠ ∞ := ENNReal.natCast_ne_top k
+  have hupper : Tendsto (fun ρ => (k : ℝ≥0∞) * (ν (ball x ρ) / c ρ) +
+      R.measure (A k ∩ ball x ρ) / c ρ) (𝓝[>] 0) (𝓝 (k : ℝ≥0∞)) := by
+    have := (ENNReal.Tendsto.const_mul hb (Or.inr hk_top)).add he
+    simpa using this
+  have hlower : Tendsto (fun ρ => (k : ℝ≥0∞) * (ν (ball x ρ) / c ρ) -
+      (k : ℝ≥0∞) * (R.measure (A k ∩ ball x ρ) / c ρ)) (𝓝[>] 0) (𝓝 (k : ℝ≥0∞)) := by
+    have h1 := ENNReal.Tendsto.const_mul hb (Or.inr hk_top)
+    have h2 := ENNReal.Tendsto.const_mul he (Or.inr hk_top)
+    have := ENNReal.Tendsto.sub h1 h2 (Or.inl (by simp))
+    simpa using this
+  refine tendsto_of_tendsto_of_tendsto_of_le_of_le hlower hupper (fun ρ => ?_) (fun ρ => ?_)
+  · -- the lower bound, from (L)
+    simp only
+    rw [tsub_le_iff_right, ← mul_div_assoc, ← mul_div_assoc, ← ENNReal.add_div]
+    exact ENNReal.div_le_div_right (hlow ρ) _
+  · -- the upper bound, from (U)
+    simp only
+    rw [← mul_div_assoc, ← ENNReal.add_div]
+    exact ENNReal.div_le_div_right (hup ρ) _
+
+/-- **Simon Ch. 3, Remarks 1.8(1),(2) and Theorem 1.9** (with Ch. 1, 3.6 and Remark 3.7(2)): the
+density of `μ_R = θ Hⁿ⌞M` is `1_M θ` `Hⁿ`-a.e.  If `μ_R(K) < ∞` for every compact `K`, then
+`μ_R(B_ρ(x)) / (ωₙρⁿ) → 1_M(x) θ(x)` as `ρ ↓ 0` for `Hⁿ`-a.e. `x`.  At `Hⁿ`-a.e. `x ∈ M` this is
+`idtp_dema_density_on_carrier`.  Since `μ_R(ℝᴾ \ M) = 0`, `μ_R(B_ρ(x)) = μ_R(M ∩ B_ρ(x))`, so at
+`Hⁿ`-a.e. `x ∉ M` the upper density theorem `idtp_dema_upper_density_zero` (with `μ = μ_R` and
+`A = M`) gives the limit `0`. -/
+theorem Submission.idtp_imrep_measure_density_ae : ∀ (P n : ℕ) (U : Set (Euclid P)) (R : IMRep U n), 1 ≤ n → (∀ K : Set (Euclid P), IsCompact K → R.measure K ≠ ∞) → ∀ᵐ x ∂μHE[n], Tendsto (fun ρ : ℝ => R.measure (ball x ρ) / (unitBallVolume n * ENNReal.ofReal (ρ ^ n))) (𝓝[>] 0) (𝓝 (Set.indicator R.carrier (fun y => (R.mult y : ℝ≥0∞)) x)) := by
+  intro P n U R _hn hfin
+  -- `μ_R` is carried by `M`
+  have hnull : R.measure R.carrierᶜ = 0 := by
+    rw [IMRep.measure, withDensity_apply _ R.measurableSet_carrier.compl,
+      Measure.restrict_restrict R.measurableSet_carrier.compl, compl_inter_self,
+      Measure.restrict_empty, lintegral_zero_measure]
+  filter_upwards [Submission.idtp_dema_upper_density_zero P n R.measure R.carrier
+      R.measurableSet_carrier hfin, Submission.idtp_dema_density_on_carrier P n U R hfin]
+    with x hoff hon
+  by_cases hx : x ∈ R.carrier
+  · -- on `M` the density is `θ(x)`
+    rw [indicator_of_mem hx]
+    exact hon hx
+  · -- off `M` the density is that of `μ_R⌞M`, namely `0`
+    rw [indicator_of_notMem hx]
+    refine (hoff hx).congr fun ρ => ?_
+    rw [inter_comm, measure_inter_conull hnull]
+
 /-- **Support of a current vanishing away from a compact set** (Simon 6.2.11).  If `K ⊆ U` is
 compact and `F ∈ 𝒟ₙ(U)` kills every `ω ∈ 𝒟ⁿ(U)` with `spt ω ∩ K = ∅`, then `spt F ⊆ K` and
 `spt F` is compact.  For `y ∈ U \ K` choose `B_s(y) ⊆ U \ K`: the ball `W = B_{s/2}(y)` has compact
@@ -1764,234 +2066,6 @@ theorem Submission.dsmc_em_cutoff_integral_hasDerivAt : ∀ (P : ℕ) (μ : Meas
     have h2 := (hη.differentiable one_ne_zero (‖x - z‖ ^ 2 / t ^ 2)).hasDerivAt.comp t h1
     refine h2.congr_deriv ?_
     field_simp
-  have hlim : Tendsto (fun ρ : ℝ => ENNReal.ofReal (a ρ / w)) (𝓝[>] 0) (𝓝 1) := by
-    have := ENNReal.tendsto_ofReal (ha.div_const w)
-    rwa [div_self hw.ne', ENNReal.ofReal_one] at this
-  refine hlim.congr' ?_
-  filter_upwards [Ioc_mem_nhdsGT hs] with ρ hρ
-  exact (hconvert ρ hρ.1 hρ.2).symm
-/-- **Simon Ch. 1, 3.1–3.2** (densities may be computed with closed or open balls; cf. 6.2.8 and
-`HasMassDensity`): if `ν(B̄_ρ(x)) / (ωₙρⁿ) → θ ∈ [0, ∞]` as `ρ ↓ 0`, then also
-`ν(B_ρ(x)) / (ωₙρⁿ) → θ`.  The upper bound follows from `B_ρ(x) ⊆ B̄_ρ(x)`.  For the lower
-bound, given `a < θ` pick `t ∈ (0, 1)` with `a < tⁿθ`; then `B̄_{tρ}(x) ⊆ B_ρ(x)` and
-`ωₙ(tρ)ⁿ = tⁿ ωₙρⁿ` give `ν(B_ρ(x)) / (ωₙρⁿ) ≥ tⁿ · ν(B̄_{tρ}(x)) / (ωₙ(tρ)ⁿ) > a` for small
-`ρ`. -/
-theorem Submission.rsd_tendsto_ball_density_of_closedBall : ∀ (P n : ℕ) (ν : Measure (Euclid P)) (x : Euclid P) (θ : ℝ≥0∞), Tendsto (fun ρ : ℝ => ν (closedBall x ρ) / (unitBallVolume n * ENNReal.ofReal (ρ ^ n))) (𝓝[>] 0) (𝓝 θ) → Tendsto (fun ρ : ℝ => ν (ball x ρ) / (unitBallVolume n * ENNReal.ofReal (ρ ^ n))) (𝓝[>] 0) (𝓝 θ) := by
-  intro P n ν x θ hg
-  set ω := unitBallVolume n
-  rw [tendsto_order]
-  refine ⟨fun a ha => ?_, fun b hb => ?_⟩
-  · -- Step 2: choose `t ∈ (0, 1)` with `a < tⁿθ`, using `tⁿθ → θ` as `t ↑ 1`
-    have hlim : Tendsto (fun t : ℝ => ENNReal.ofReal (t ^ n) * θ) (𝓝[<] 1) (𝓝 (1 * θ)) := by
-      refine ENNReal.Tendsto.mul_const ?_ (Or.inl one_ne_zero)
-      have : Tendsto (fun t : ℝ => ENNReal.ofReal (t ^ n)) (𝓝 1) (𝓝 (ENNReal.ofReal (1 ^ n))) :=
-        (ENNReal.continuous_ofReal.comp (continuous_pow n)).tendsto 1
-      simpa using this.mono_left nhdsWithin_le_nhds
-    rw [one_mul] at hlim
-    obtain ⟨t, hta, ht0, ht1⟩ : ∃ t : ℝ, a < ENNReal.ofReal (t ^ n) * θ ∧ 0 < t ∧ t < 1 := by
-      have h1 := (tendsto_order.1 hlim).1 a ha
-      have h2 : ∀ᶠ t in 𝓝[<] (1 : ℝ), t ∈ Ioo (0 : ℝ) 1 := Ioo_mem_nhdsLT (by norm_num)
-      obtain ⟨t, ht, ht'⟩ := (h1.and h2).exists
-      exact ⟨t, ht, ht'.1, ht'.2⟩
-    have hc0 : ENNReal.ofReal (t ^ n) ≠ 0 := by
-      rw [Ne, ENNReal.ofReal_eq_zero, not_le]
-      positivity
-    have hctop : ENNReal.ofReal (t ^ n) ≠ ∞ := ENNReal.ofReal_ne_top
-    have ha' : a / ENNReal.ofReal (t ^ n) < θ := by
-      rw [ENNReal.div_lt_iff (Or.inl hc0) (Or.inl hctop), mul_comm]
-      exact hta
-    -- Step 3: the rescaled closed-ball ratio `g(tρ)` still tends to `θ`
-    have hmap : Tendsto (fun ρ : ℝ => t * ρ) (𝓝[>] 0) (𝓝[>] 0) := by
-      refine tendsto_nhdsWithin_of_tendsto_nhds_of_eventually_within _ ?_ ?_
-      · have h0 : Tendsto (fun ρ : ℝ => t * ρ) (𝓝 0) (𝓝 0) := by
-          simpa using (tendsto_id (x := 𝓝 (0 : ℝ))).const_mul t
-        exact h0.mono_left nhdsWithin_le_nhds
-      · filter_upwards [self_mem_nhdsWithin] with ρ hρ
-        exact mul_pos ht0 hρ
-    have hev := (tendsto_order.1 (hg.comp hmap)).1 _ ha'
-    filter_upwards [hev, self_mem_nhdsWithin] with ρ hρ hρpos
-    simp only [Function.comp] at hρ
-    have hρpos' : (0 : ℝ) < ρ := hρpos
-    -- Step 4: `ν(B̄_{tρ}(x)) / (ωₙ(tρ)ⁿ) · tⁿ = ν(B̄_{tρ}(x)) / (ωₙρⁿ)`
-    have hid : ν (closedBall x (t * ρ)) / (ω * ENNReal.ofReal ((t * ρ) ^ n)) * ENNReal.ofReal (t ^ n)
-        = ν (closedBall x (t * ρ)) / (ω * ENNReal.ofReal (ρ ^ n)) := by
-      rw [mul_pow, ENNReal.ofReal_mul (by positivity), mul_comm (ENNReal.ofReal (t ^ n)),
-        ← mul_assoc, div_eq_mul_inv, div_eq_mul_inv, ENNReal.mul_inv (Or.inr hctop) (Or.inr hc0),
-        mul_assoc, mul_assoc, ENNReal.inv_mul_cancel hc0 hctop, mul_one]
-    -- Step 5: `a < tⁿ g(tρ) ≤ h(ρ)`, as `B̄_{tρ}(x) ⊆ B_ρ(x)`
-    calc a = a / ENNReal.ofReal (t ^ n) * ENNReal.ofReal (t ^ n) :=
-          (ENNReal.div_mul_cancel hc0 hctop).symm
-      _ < ν (closedBall x (t * ρ)) / (ω * ENNReal.ofReal ((t * ρ) ^ n)) * ENNReal.ofReal (t ^ n) :=
-          (ENNReal.mul_lt_mul_iff_left hc0 hctop).2 hρ
-      _ = ν (closedBall x (t * ρ)) / (ω * ENNReal.ofReal (ρ ^ n)) := hid
-      _ ≤ ν (ball x ρ) / (ω * ENNReal.ofReal (ρ ^ n)) := by
-          gcongr
-          exact closedBall_subset_ball (by nlinarith)
-  · -- Step 1: `h(ρ) ≤ g(ρ)`, as `B_ρ(x) ⊆ B̄_ρ(x)`
-    filter_upwards [(tendsto_order.1 hg).2 b hb] with ρ hρ
-    refine lt_of_le_of_lt ?_ hρ
-    gcongr
-    exact ball_subset_closedBall
-
-/-- **Simon Ch. 3, Remarks 1.8(1)–(2) and Theorem 1.9** (with the upper density theorem, Ch. 1,
-3.6–3.7(2)): if `R = (M, θ, ξ)` has weight `μ_R = θ Hⁿ⌞M` finite on compact sets, then for
-`Hⁿ`-a.e. `x ∈ M`, `μ_R(B_ρ(x)) / (ωₙρⁿ) → θ(x)` as `ρ ↓ 0`.  As `θ ≥ 1` on `M`,
-`ν := Hⁿ⌞M ≤ μ_R`, so `ν(B_ρ(x)) / (ωₙρⁿ) → 1` at approximate tangent points.  With `k = θ(x)` and
-`A_k = M ∩ θ⁻¹(ℕ ∖ {k})`, `μ_R(A_k ∩ B_ρ(x)) = o(ρⁿ)` for `Hⁿ`-a.e. `x ∉ A_k`, and
-`kν(B) ≤ μ_R(B) + kμ_R(A_k ∩ B)`, `μ_R(B) ≤ kν(B) + μ_R(A_k ∩ B)` squeeze the ratio to `k`. -/
-theorem Submission.idtp_dema_density_on_carrier : ∀ (P n : ℕ) (U : Set (Euclid P)) (R : IMRep U n), (∀ K : Set (Euclid P), IsCompact K → R.measure K ≠ ∞) → ∀ᵐ x ∂(μHE[n] : Measure (Euclid P)), x ∈ R.carrier → Tendsto (fun ρ : ℝ => R.measure (ball x ρ) / (unitBallVolume n * ENNReal.ofReal (ρ ^ n))) (𝓝[>] 0) (𝓝 (R.mult x : ℝ≥0∞)) := by
-  intro P n U R hfin
-  set M := R.carrier with hM
-  have hMm : MeasurableSet M := R.measurableSet_carrier
-  set ν : Measure (Euclid P) := (μHE[n] : Measure (Euclid P)).restrict M with hν
-  -- `μ_R(S) = ∫_{S ∩ M} θ dHⁿ` for Borel `S`
-  have hmeas : ∀ S : Set (Euclid P), MeasurableSet S →
-      R.measure S = ∫⁻ y in S ∩ M, (R.mult y : ℝ≥0∞) ∂μHE[n] := by
-    intro S hS
-    simp only [IMRep.measure]
-    rw [withDensity_apply _ hS, Measure.restrict_restrict hS]
-  -- Step 1: `ν ≤ μ_R` on Borel sets, as `θ ≥ 1` on `M`
-  have hνle : ∀ S : Set (Euclid P), MeasurableSet S → ν S ≤ R.measure S := by
-    intro S hS
-    rw [hmeas S hS, hν, Measure.restrict_apply hS]
-    calc μHE[n] (S ∩ M) = ∫⁻ _y in S ∩ M, (1 : ℝ≥0∞) ∂μHE[n] := by simp
-      _ ≤ ∫⁻ y in S ∩ M, (R.mult y : ℝ≥0∞) ∂μHE[n] := by
-        apply setLIntegral_mono' (hS.inter hMm)
-        intro y hy
-        have h := R.mult_pos y hy.2
-        exact_mod_cast Nat.one_le_iff_ne_zero.mpr h.ne'
-  -- Step 2: the Borel sets `A_k = M ∩ θ⁻¹(ℕ ∖ {k})`
-  set A : ℕ → Set (Euclid P) := fun k => M ∩ R.mult ⁻¹' ({k}ᶜ) with hA
-  have hAm : ∀ k, MeasurableSet (A k) := fun k =>
-    hMm.inter (R.measurable_mult (measurableSet_singleton k).compl)
-  -- Step 3: `Hⁿ`-a.e., `μ_R(A_k ∩ B_ρ(x)) / (ωₙρⁿ) → 0` for every `k` with `x ∉ A_k`
-  have hUD : ∀ᵐ x ∂(μHE[n] : Measure (Euclid P)), ∀ k : ℕ, x ∉ A k →
-      Tendsto (fun ρ : ℝ => R.measure (A k ∩ ball x ρ) /
-        (unitBallVolume n * ENNReal.ofReal (ρ ^ n))) (𝓝[>] 0) (𝓝 0) :=
-    ae_all_iff.2 fun k => Submission.idtp_dema_upper_density_zero P n R.measure (A k) (hAm k) hfin
-  -- Step 4: `Hⁿ`-a.e. on `M` there is an approximate tangent space (field `orients`)
-  have htan : ∀ᵐ x ∂(μHE[n] : Measure (Euclid P)), x ∈ M →
-      ∃ Q, HasApproximateTangentSpaceAt n M x Q := by
-    have h := R.orients
-    rw [ae_restrict_iff' hMm] at h
-    filter_upwards [h] with x hx hxM
-    obtain ⟨Q, hQ, -⟩ := hx hxM
-    exact ⟨Q, hQ⟩
-  filter_upwards [hUD, htan] with x hxUD hxtan hxM
-  obtain ⟨Q, hQ⟩ := hxtan hxM
-  set k : ℕ := R.mult x with hk
-  have hxA : x ∉ A k := fun h => h.2 (by simp [hk])
-  have he := hxUD k hxA
-  -- `ν(B_ρ(x)) / (ωₙρⁿ) → 1`, using `Hⁿ(M ∩ B̄_1(x)) ≤ μ_R(B̄_1(x)) < ∞`
-  have hfinball : μHE[n] (M ∩ closedBall x 1) ≠ ∞ := by
-    have h1 := hνle (closedBall x 1) measurableSet_closedBall
-    have h2 := hfin (closedBall x 1) (isCompact_closedBall x 1)
-    rw [hν, Measure.restrict_apply measurableSet_closedBall] at h1
-    rw [inter_comm]
-    exact ne_top_of_le_ne_top h2 h1
-  have hTD := Submission.rsd_tendsto_closedBall_density_of_approxTangent P n M x Q 1 one_pos
-    hfinball hQ
-  have hTD' : Tendsto (fun ρ : ℝ => ν (closedBall x ρ) /
-      (unitBallVolume n * ENNReal.ofReal (ρ ^ n))) (𝓝[>] 0) (𝓝 1) := by
-    refine hTD.congr fun ρ => ?_
-    rw [hν, Measure.restrict_apply measurableSet_closedBall, inter_comm]
-  have hb := Submission.rsd_tendsto_ball_density_of_closedBall P n ν x 1 hTD'
-  -- Step 5: `μ_R(B) = k Hⁿ(B ∩ M ∩ θ⁻¹(k)) + μ_R(A_k ∩ B)`, whence the bounds (U) and (L)
-  set T : Set (Euclid P) := R.mult ⁻¹' {k} with hT
-  have hTm : MeasurableSet T := R.measurable_mult (measurableSet_singleton k)
-  have hsplit : ∀ ρ : ℝ, R.measure (ball x ρ) =
-      (k : ℝ≥0∞) * μHE[n] ((ball x ρ ∩ M) ∩ T) + R.measure (A k ∩ ball x ρ) := by
-    intro ρ
-    rw [hmeas _ measurableSet_ball, hmeas _ ((hAm k).inter measurableSet_ball),
-      ← lintegral_inter_add_sdiff (B := T) _ _ hTm]
-    congr 1
-    · rw [setLIntegral_congr_fun ((measurableSet_ball.inter hMm).inter hTm)
-        (g := fun _ => (k : ℝ≥0∞)) (fun y hy => by
-          have : R.mult y = k := hy.2
-          simp [this])]
-      simp
-    · have hset : (ball x ρ ∩ M) \ T = (A k ∩ ball x ρ) ∩ M := by
-        ext y
-        simp only [hA, hT, mem_inter_iff, Set.mem_sdiff, mem_preimage, mem_compl_iff,
-          mem_singleton_iff]
-        tauto
-      rw [hset]
-  have hνsplit : ∀ ρ : ℝ, ν (ball x ρ) =
-      μHE[n] ((ball x ρ ∩ M) ∩ T) + ν (A k ∩ ball x ρ) := by
-    intro ρ
-    rw [hν, Measure.restrict_apply measurableSet_ball,
-      Measure.restrict_apply ((hAm k).inter measurableSet_ball),
-      ← measure_inter_add_sdiff (ball x ρ ∩ M) hTm]
-    have hset : (ball x ρ ∩ M) \ T = (A k ∩ ball x ρ) ∩ M := by
-      ext y
-      simp only [hA, hT, mem_inter_iff, Set.mem_sdiff, mem_preimage, mem_compl_iff,
-        mem_singleton_iff]
-      tauto
-    rw [hset]
-  -- (U) `μ_R(B) ≤ kν(B) + μ_R(A_k ∩ B)`
-  have hup : ∀ ρ : ℝ, R.measure (ball x ρ) ≤
-      (k : ℝ≥0∞) * ν (ball x ρ) + R.measure (A k ∩ ball x ρ) := by
-    intro ρ
-    rw [hsplit ρ]
-    have h1 : μHE[n] ((ball x ρ ∩ M) ∩ T) ≤ ν (ball x ρ) := by
-      rw [hν, Measure.restrict_apply measurableSet_ball]
-      exact measure_mono inter_subset_left
-    exact add_le_add (mul_le_mul_right h1 _) le_rfl
-  -- (L) `kν(B) ≤ μ_R(B) + kμ_R(A_k ∩ B)`
-  have hlow : ∀ ρ : ℝ, (k : ℝ≥0∞) * ν (ball x ρ) ≤
-      R.measure (ball x ρ) + (k : ℝ≥0∞) * R.measure (A k ∩ ball x ρ) := by
-    intro ρ
-    rw [hνsplit ρ, mul_add, hsplit ρ, add_assoc]
-    have h2 := hνle (A k ∩ ball x ρ) ((hAm k).inter measurableSet_ball)
-    exact add_le_add le_rfl ((mul_le_mul_right h2 _).trans le_add_self)
-  -- Step 6: divide by `ωₙρⁿ`; both bounds tend to `k`, as `k < ∞`
-  set c : ℝ → ℝ≥0∞ := fun ρ => unitBallVolume n * ENNReal.ofReal (ρ ^ n) with hc
-  have hk_top : (k : ℝ≥0∞) ≠ ∞ := ENNReal.natCast_ne_top k
-  have hupper : Tendsto (fun ρ => (k : ℝ≥0∞) * (ν (ball x ρ) / c ρ) +
-      R.measure (A k ∩ ball x ρ) / c ρ) (𝓝[>] 0) (𝓝 (k : ℝ≥0∞)) := by
-    have := (ENNReal.Tendsto.const_mul hb (Or.inr hk_top)).add he
-    simpa using this
-  have hlower : Tendsto (fun ρ => (k : ℝ≥0∞) * (ν (ball x ρ) / c ρ) -
-      (k : ℝ≥0∞) * (R.measure (A k ∩ ball x ρ) / c ρ)) (𝓝[>] 0) (𝓝 (k : ℝ≥0∞)) := by
-    have h1 := ENNReal.Tendsto.const_mul hb (Or.inr hk_top)
-    have h2 := ENNReal.Tendsto.const_mul he (Or.inr hk_top)
-    have := ENNReal.Tendsto.sub h1 h2 (Or.inl (by simp))
-    simpa using this
-  refine tendsto_of_tendsto_of_tendsto_of_le_of_le hlower hupper (fun ρ => ?_) (fun ρ => ?_)
-  · -- the lower bound, from (L)
-    simp only
-    rw [tsub_le_iff_right, ← mul_div_assoc, ← mul_div_assoc, ← ENNReal.add_div]
-    exact ENNReal.div_le_div_right (hlow ρ) _
-  · -- the upper bound, from (U)
-    simp only
-    rw [← mul_div_assoc, ← ENNReal.add_div]
-    exact ENNReal.div_le_div_right (hup ρ) _
-
-/-- **Simon Ch. 3, Remarks 1.8(1),(2) and Theorem 1.9** (with Ch. 1, 3.6 and Remark 3.7(2)): the
-density of `μ_R = θ Hⁿ⌞M` is `1_M θ` `Hⁿ`-a.e.  If `μ_R(K) < ∞` for every compact `K`, then
-`μ_R(B_ρ(x)) / (ωₙρⁿ) → 1_M(x) θ(x)` as `ρ ↓ 0` for `Hⁿ`-a.e. `x`.  At `Hⁿ`-a.e. `x ∈ M` this is
-`idtp_dema_density_on_carrier`.  Since `μ_R(ℝᴾ \ M) = 0`, `μ_R(B_ρ(x)) = μ_R(M ∩ B_ρ(x))`, so at
-`Hⁿ`-a.e. `x ∉ M` the upper density theorem `idtp_dema_upper_density_zero` (with `μ = μ_R` and
-`A = M`) gives the limit `0`. -/
-theorem Submission.idtp_imrep_measure_density_ae : ∀ (P n : ℕ) (U : Set (Euclid P)) (R : IMRep U n), 1 ≤ n → (∀ K : Set (Euclid P), IsCompact K → R.measure K ≠ ∞) → ∀ᵐ x ∂μHE[n], Tendsto (fun ρ : ℝ => R.measure (ball x ρ) / (unitBallVolume n * ENNReal.ofReal (ρ ^ n))) (𝓝[>] 0) (𝓝 (Set.indicator R.carrier (fun y => (R.mult y : ℝ≥0∞)) x)) := by
-  intro P n U R _hn hfin
-  -- `μ_R` is carried by `M`
-  have hnull : R.measure R.carrierᶜ = 0 := by
-    rw [IMRep.measure, withDensity_apply _ R.measurableSet_carrier.compl,
-      Measure.restrict_restrict R.measurableSet_carrier.compl, compl_inter_self,
-      Measure.restrict_empty, lintegral_zero_measure]
-  filter_upwards [Submission.idtp_dema_upper_density_zero P n R.measure R.carrier
-      R.measurableSet_carrier hfin, Submission.idtp_dema_density_on_carrier P n U R hfin]
-    with x hoff hon
-  by_cases hx : x ∈ R.carrier
-  · -- on `M` the density is `θ(x)`
-    rw [indicator_of_mem hx]
-    exact hon hx
-  · -- off `M` the density is that of `μ_R⌞M`, namely `0`
-    rw [indicator_of_notMem hx]
-    refine (hoff hx).congr fun ρ => ?_
-    rw [inter_comm, measure_inter_conull hnull]
-
     ring
   refine ⟨?_, fun s hs => ?_⟩
   · -- (i) continuity on `(0, r]` by dominated convergence
@@ -3891,6 +3965,7 @@ theorem Submission.unit_orientations_common_unit_covector : ∀ (P n : ℕ) (Q :
       exact hδ b' τ' hb'
     · rw [h, abs_neg]
       exact hδ b' τ' hb'
+
 /-- Orientation step of the constancy theorem for an integer multiplicity current carried by an
 `n`-plane (Simon Ch. 3, Definition 1.4; Ch. 6, 3.1): if `Hⁿ(M \ Q) = 0` for the plane
 `Q = span{τ₁, …, τₙ}` of an orthonormal family `τ`, then `ξ(x) = ±τ₁ ∧ ⋯ ∧ τₙ` for `Hⁿ`-a.e.
@@ -4188,217 +4263,6 @@ theorem Submission.imrep_measure_eq_of_represents_same_current : ∀ (P n : ℕ)
   unfold IMRep.measure
   rw [withDensity_congr_ae hmult, hrestr]
 
-/-- **Simon Ch. 6, 2.4–2.8 and 3.2(3)**: if `T = τ(M, θ, ξ)` in the open set `U` and
-`μ_R = θHⁿ⌞M`, then (a) `M_W(T) = μ_R(W)` for every open `W ⊆ U`, (b) a point `x ∈ U` lies in
-`spt T` iff every ball `B_ε(x)` has positive `μ_R`-measure, and (c) `μ_R` does not depend on the
-representation.  (a) combines the upper and lower bounds `M_W(T) ≤ μ_R(W) ≤ M_W(T)`; by (a),
-`spt T = U ∩ spt μ_R`, and the balls about `x` form a neighbourhood basis, which gives (b). -/
-theorem Submission.dimred_im_mass_measure : ∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (R : IMRep U n), IsOpen U → R.Represents T → (∀ W : Set (Euclid P), IsOpen W → W ⊆ U → T.massOn W = R.measure W) ∧ (∀ x ∈ U, (x ∈ T.support ↔ ∀ ε : ℝ, 0 < ε → R.measure (ball x ε) ≠ 0)) ∧ ∀ R' : IMRep U n, R'.Represents T → R'.measure = R.measure := by
-  intro P n U T R hU hR
-  -- (a) `M_W(T) = μ_R(W)` for every open `W`, not only for `W ⊆ U`
-  have hmass : ∀ W : Set (Euclid P), IsOpen W → T.massOn W = R.measure W := fun W hW =>
-    le_antisymm (Submission.dor_ims_massOn_le_measure P n U T R hR W)
-      (Submission.dor_ims_measure_le_massOn P n U T R hU hR W hW)
-  refine ⟨fun W hW _ => hmass W hW, fun x hxU => ?_, fun R' hR' =>
-    Submission.imrep_measure_eq_of_represents_same_current P n U T R' R hU hR' hR⟩
-  -- (b) `spt T = U ∩ spt μ_R`, and `x ∈ spt μ_R` iff `μ_R(B_ε(x)) > 0` for every `ε > 0`
-  rw [Submission.dor_ims_support_of_massOn_eq P n U T R.measure hU hmass, mem_inter_iff,
-    and_iff_right hxU, Metric.nhds_basis_ball.mem_measureSupport]
-  exact forall₂_congr fun ε _ => pos_iff_ne_zero
-/-- Countable Lipschitz localization of a `C¹` map (Simon Ch. 3, §2 works with locally Lipschitz
-`f`).  If `Z ⊆ ℝᴾ` is open and `F : ℝᴾ → ℝⁿ` is `C¹` on `Z`, then countably many open balls
-`V l ⊆ Z` cover `Z`, `F` agrees on `V l` with a Lipschitz `G l : ℝᴾ → ℝⁿ`, and the Borel sets
-`Zs l = V l \ ⋃_{l' < l} V l'` partition `Z`.  `F` is Lipschitz on a closed ball in `Z` about each
-point (`C¹` on a convex compact set), Lindelöf gives a countable subcover, and `F|V l` extends to
-`ℝᴾ` because `ℝⁿ` is finite dimensional. -/
-theorem Submission.idtp_caf_lipschitz_localization : ∀ (P n : ℕ) (Z : Set (Euclid P)) (F : Euclid P → Euclid n), IsOpen Z → ContDiffOn ℝ 1 F Z → ∃ (V Zs : ℕ → Set (Euclid P)) (G : ℕ → Euclid P → Euclid n), (∀ l, IsOpen (V l)) ∧ (∀ l, V l ⊆ Z) ∧ (∀ l, MeasurableSet (Zs l)) ∧ (∀ l, Zs l ⊆ V l) ∧ Pairwise (fun l l' => Disjoint (Zs l) (Zs l')) ∧ (⋃ l, Zs l) = Z ∧ (∀ l, ∃ K : NNReal, LipschitzWith K (G l)) ∧ ∀ l, EqOn F (G l) (V l) := by
-  intro P n Z F hZ hF
-  -- Step 1: `Z = ∅`
-  rcases Z.eq_empty_or_nonempty with rfl | hZne
-  · exact ⟨fun _ => ∅, fun _ => ∅, fun _ _ => 0, fun _ => isOpen_empty, fun _ => empty_subset _,
-      fun _ => MeasurableSet.empty, fun _ => empty_subset _, fun _ _ _ => empty_disjoint _,
-      iUnion_empty, fun _ => ⟨0, LipschitzWith.const 0⟩, fun _ => eqOn_empty _ _⟩
-  -- Step 2: `F` is Lipschitz on a ball `B_{r(x)}(x)` with `B̄_{r(x)}(x) ⊆ Z`, for each `x ∈ Z`
-  have hloc : ∀ x ∈ Z, ∃ r > 0, ball x r ⊆ Z ∧ ∃ K, LipschitzOnWith K F (ball x r) := by
-    intro x hx
-    obtain ⟨ε, hε, hεZ⟩ := Metric.isOpen_iff.mp hZ x hx
-    have hcl : closedBall x (ε / 2) ⊆ Z := (closedBall_subset_ball (half_lt_self hε)).trans hεZ
-    obtain ⟨K, hK⟩ := (hF.mono hcl).exists_lipschitzOnWith one_ne_zero (convex_closedBall x _)
-      (isCompact_closedBall x _)
-    exact ⟨ε / 2, half_pos hε, ball_subset_closedBall.trans hcl, K, hK.mono ball_subset_closedBall⟩
-  choose! r hr hrZ K hK using hloc
-  -- Step 3: countably many of these balls cover `Z` (Lindelöf), enumerated by `ℕ`
-  have hcover : (⋃ x ∈ Z, ball x (r x)) = Z :=
-    (iUnion₂_subset hrZ).antisymm fun x hx => mem_biUnion hx (mem_ball_self (hr x hx))
-  obtain ⟨T, hTZ, hTc, hTU⟩ :=
-    TopologicalSpace.isOpen_biUnion_countable Z (fun x => ball x (r x)) fun _ _ => isOpen_ball
-  have hTne : T.Nonempty := by
-    obtain ⟨x, hx⟩ := hZne
-    rw [← hcover, ← hTU] at hx
-    obtain ⟨y, hy, -⟩ := mem_iUnion₂.mp hx
-    exact ⟨y, hy⟩
-  obtain ⟨c, rfl⟩ := hTc.exists_eq_range hTne
-  have hcZ : ∀ l, c l ∈ Z := fun l => hTZ (mem_range_self l)
-  have hVU : (⋃ l, ball (c l) (r (c l))) = Z := by
-    rw [← hcover, ← hTU, biUnion_range]
-  -- Step 4: Lipschitz extensions `G l` of `F|V l` to `ℝᴾ`
-  choose G hG hGF using fun l => (hK (c l) (hcZ l)).extend_finite_dimension
-  -- Step 5: `Zs = disjointed V`
-  exact ⟨fun l => ball (c l) (r (c l)), disjointed fun l => ball (c l) (r (c l)), G,
-    fun _ => isOpen_ball, fun l => hrZ _ (hcZ l),
-    MeasurableSet.disjointed fun _ => isOpen_ball.measurableSet, disjointed_subset _,
-    disjoint_disjointed _, iUnion_disjointed.trans hVU, fun l => ⟨_, hG l⟩, hGF⟩
-
-/-- **Simon Ch. 2, 1.8(i)**, for a `C¹` map: if `Z ⊆ ℝᴾ` is open, `F : ℝᴾ → ℝⁿ` is `C¹` on `Z`
-and `S ⊆ Z` has `Hⁿ(S) = 0`, then `Lⁿ(F(S)) = 0`.  Split `Z` into Borel pieces `Zₗ ⊆ Vₗ` with
-`F = Gₗ` on `Vₗ` for Lipschitz `Gₗ`; then `F(S) ⊆ ⋃ₗ Gₗ(S ∩ Zₗ)`,
-`Hⁿ(Gₗ(S ∩ Zₗ)) ≤ Kₗⁿ Hⁿ(S ∩ Zₗ) = 0`, and `Hⁿ = Lⁿ` on `ℝⁿ`. -/
-theorem Submission.idtp_caf_null_image : ∀ (P n : ℕ) (Z S : Set (Euclid P)) (F : Euclid P → Euclid n), IsOpen Z → ContDiffOn ℝ 1 F Z → S ⊆ Z → μHE[n] S = 0 → volume (F '' S) = 0 := by
-  intro P n Z S F hZ hF hSZ hS
-  have hvol : (μHE[n] : Measure (Euclid n)) = volume :=
-    EuclideanSpace.euclideanHausdorffMeasure_eq_volume n
-  -- Step 1: Lipschitz localization, `F = Gₗ` on `Vₗ ⊇ Zₗ` and `⋃ₗ Zₗ = Z`
-  obtain ⟨V, Zs, G, -, -, -, hZsV, -, hZs, hG, hFG⟩ :=
-    Submission.idtp_caf_lipschitz_localization P n Z F hZ hF
-  -- Step 2: `F(S) ⊆ ⋃ₗ Gₗ(S ∩ Zₗ)`
-  have hcover : F '' S ⊆ ⋃ l, G l '' (S ∩ Zs l) := by
-    rintro _ ⟨x, hxS, rfl⟩
-    obtain ⟨l, hxl⟩ := mem_iUnion.mp (hZs.symm.subset (hSZ hxS))
-    exact mem_iUnion.mpr ⟨l, x, ⟨hxS, hxl⟩, (hFG l (hZsV l hxl)).symm⟩
-  -- Step 3: `Hⁿ(Gₗ(S ∩ Zₗ)) ≤ Kₗⁿ Hⁿ(S ∩ Zₗ) = 0`
-  have hpiece : ∀ l, μHE[n] (G l '' (S ∩ Zs l)) = 0 := by
-    intro l
-    obtain ⟨K, hK⟩ := hG l
-    have hle := Poincare.SimonGMT.Chapter02.euclideanHausdorffMeasure_image_le_of_lipschitzOn n
-      (hK.lipschitzOnWith (s := S ∩ Zs l))
-    rw [measure_mono_null inter_subset_left hS, mul_zero] at hle
-    exact le_antisymm hle bot_le
-  -- Step 4: `Hⁿ = Lⁿ` on `ℝⁿ` and countable subadditivity
-  rw [← hvol]
-  exact measure_mono_null hcover (measure_iUnion_null hpiece)
-/-- **Simon Ch. 6, 1.1 and 1.7**: a unit orientation `ξ = ±τ₁ ∧ ⋯ ∧ τₙ` of a plane (`τ`
-orthonormal) is a nonzero `n`-vector of norm at most one.  `|ξ(α)| = |α(τ)| ≤ ‖α‖ ∏ᵢ ‖τᵢ‖ = ‖α‖`
-gives `‖ξ‖ ≤ 1`.  The covector `δ(w) = Σ_σ sgn σ ∏ᵢ ⟨τᵢ, w_{σ(i)}⟩ = det(⟨τᵢ, wⱼ⟩)`, the
-alternatization of `w ↦ ∏ᵢ ⟨τᵢ, wᵢ⟩`, has `δ(τ) = 1` by orthonormality, so `ξ(δ) = ±1 ≠ 0`. -/
-theorem Submission.imsupp_unit_orientation_ne_zero_norm_le_one : ∀ (P n : ℕ) (ξ : MultiVector P n) (Q : Submodule ℝ (Euclid P)), IsUnitOrientationOf ξ Q → ξ ≠ 0 ∧ ‖ξ‖ ≤ 1 := by
-  rintro P n ξ Q ⟨τ, hτ, -, hξ⟩
-  -- `|ξ(α)| = |α(τ)|` for either sign
-  have hnorm : ∀ α : Covector (Euclid P) n, ‖ξ α‖ = ‖α τ‖ := fun α => by
-    rcases hξ with h | h
-    · rw [h α]
-    · rw [h α, norm_neg]
-  refine ⟨fun h0 => ?_, ContinuousLinearMap.opNorm_le_bound ξ zero_le_one fun α => ?_⟩
-  · -- the covector `δ(w) = Σ_σ sgn σ ∏ᵢ ⟨τᵢ, w_{σ(i)}⟩` has `δ(τ) = 1`: the term `σ = 1` is
-    -- `∏ᵢ ‖τᵢ‖² = 1`, and for `σ ≠ 1` some factor `⟨τᵢ, τ_{σ(i)}⟩`, `σ(i) ≠ i`, vanishes
-    obtain ⟨δ, hδ⟩ : ∃ δ : Covector (Euclid P) n, δ τ = 1 := by
-      refine ⟨ContinuousMultilinearMap.alternatization
-        ((ContinuousMultilinearMap.mkPiAlgebra ℝ (Fin n) ℝ).compContinuousLinearMap
-          fun i => innerSL ℝ (τ i)), ?_⟩
-      rw [ContinuousMultilinearMap.alternatization_apply_apply,
-        Finset.sum_eq_single (1 : Equiv.Perm (Fin n))]
-      · rw [Equiv.Perm.sign_one, one_smul, Equiv.Perm.coe_one, Function.comp_id,
-          ContinuousMultilinearMap.compContinuousLinearMap_apply,
-          ContinuousMultilinearMap.mkPiAlgebra_apply]
-        refine Finset.prod_eq_one fun i _ => ?_
-        rw [innerSL_apply_apply, real_inner_self_eq_norm_sq, hτ.norm_eq_one, one_pow]
-      · intro σ _ hσ
-        obtain ⟨i, hi⟩ : ∃ i, σ i ≠ i := by
-          by_contra! h
-          exact hσ (Equiv.ext h)
-        rw [ContinuousMultilinearMap.compContinuousLinearMap_apply,
-          ContinuousMultilinearMap.mkPiAlgebra_apply,
-          Finset.prod_eq_zero (Finset.mem_univ i) ?_, smul_zero]
-        rw [innerSL_apply_apply, Function.comp_apply]
-        exact hτ.inner_eq_zero hi.symm
-      · exact fun h => absurd (Finset.mem_univ _) h
-    -- `ξ = 0` would give `0 = ‖ξ(δ)‖ = ‖δ(τ)‖ = 1`
-    have h := hnorm δ
-    rw [h0, hδ, zero_apply, norm_zero, norm_one] at h
-    exact zero_ne_one h
-  · -- `|ξ(α)| = |α(τ)| ≤ ‖α‖ ∏ᵢ ‖τᵢ‖ = ‖α‖`
-    rw [hnorm, one_mul]
-    calc ‖α τ‖ ≤ ‖α‖ * ∏ i, ‖τ i‖ := ContinuousAlternatingMap.le_opNorm α τ
-      _ = ‖α‖ := by rw [Finset.prod_eq_one fun i _ => hτ.norm_eq_one i, mul_one]
-/-- **Simon Ch. 6, 1.2 (p. 132)**: `Λⁿ(ℝᴾ)` is finite-dimensional.  An `n`-covector `α` is
-determined by its values `α(e_{I(1)}, …, e_{I(n)})` on tuples of standard basis vectors
-(alternating maps agreeing on distinct basis vectors are equal), so
-`Φ α = (α(e ∘ I))_{I : Fin n → Fin P}` is an injective linear map into the finite-dimensional
-space `ℝ^(Fin n → Fin P)`. -/
-theorem Submission.lcn_covector_finiteDimensional : ∀ (P n : ℕ), FiniteDimensional ℝ (Covector (Euclid P) n) := by
-  intro P n
-  -- the standard basis `e` of `ℝᴾ`
-  let e := (EuclideanSpace.basisFun (Fin P) ℝ).toBasis
-  -- `Φ α = (α(e ∘ I))_I`, linear since addition and scaling of covectors are pointwise
-  let Φ : Covector (Euclid P) n →ₗ[ℝ] ((Fin n → Fin P) → ℝ) :=
-    { toFun := fun α I => α fun i => e (I i)
-      map_add' := fun α β => rfl
-      map_smul' := fun c α => rfl }
-  -- `Φ α = Φ β` makes `α` and `β` agree on distinct basis vectors, hence everywhere
-  refine FiniteDimensional.of_injective Φ fun α β h => ?_
-  exact ContinuousAlternatingMap.toAlternatingMap_injective
-    (e.ext_alternating fun v _ => congr_fun h v)
-/-- **Simon Ch. 2, §5** (frame trace bound for a first-order perturbation of the identity): if
-`‖B‖ ≤ A`, `‖L − I − tB‖ ≤ η|t|` with `η ≤ 1`, and `τ₁, …, τₙ` is orthonormal in `ℝᴾ`, then
-(i) `|Σₐ τₐ · Bτₐ| ≤ nA` and (ii) `Σₐ |Lτₐ|² − n ≤ 2t Σₐ τₐ · Bτₐ + 2nη|t| + n(A + 1)²t²`.
-With `E = L − I − tB` and `wₐ = tBτₐ + Eτₐ` we have `Lτₐ = τₐ + wₐ`, `|wₐ| ≤ (A + 1)|t|` and
-`τₐ · Eτₐ ≤ η|t|`; expand `|τₐ + wₐ|² = 1 + 2t τₐ · Bτₐ + 2 τₐ · Eτₐ + |wₐ|²` and sum over `a`. -/
-theorem Submission.fvmb_perturbed_frame_sum_norm_sq_sub_le : ∀ (P n : ℕ) (A η t : ℝ) (B L : Euclid P →L[ℝ] Euclid P) (τ : Fin n → Euclid P), η ≤ 1 → ‖B‖ ≤ A → ‖L - ContinuousLinearMap.id ℝ (Euclid P) - t • B‖ ≤ η * |t| → Orthonormal ℝ τ → |∑ a, inner ℝ (τ a) (B (τ a))| ≤ (n : ℝ) * A ∧ ∑ a, ‖L (τ a)‖ ^ 2 - (n : ℝ) ≤ 2 * t * (∑ a, inner ℝ (τ a) (B (τ a))) + 2 * (n : ℝ) * η * |t| + (n : ℝ) * (A + 1) ^ 2 * t ^ 2 := by
-  intro P n A η t B L τ hη hB hE hτ
-  -- `E = L − I − tB`, so `‖E‖ ≤ η|t|`
-  set E : Euclid P →L[ℝ] Euclid P := L - ContinuousLinearMap.id ℝ (Euclid P) - t • B with hEdef
-  have hτ1 : ∀ a, ‖τ a‖ = 1 := hτ.1
-  -- unit vectors: `|Bτₐ| ≤ A`, `|Eτₐ| ≤ η|t|` and `|τₐ · Bτₐ| ≤ A`
-  have hBa : ∀ a, ‖B (τ a)‖ ≤ A := fun a =>
-    calc ‖B (τ a)‖ ≤ ‖B‖ * ‖τ a‖ := B.le_opNorm _
-      _ = ‖B‖ := by rw [hτ1 a, mul_one]
-      _ ≤ A := hB
-  have hEa : ∀ a, ‖E (τ a)‖ ≤ η * |t| := fun a =>
-    calc ‖E (τ a)‖ ≤ ‖E‖ * ‖τ a‖ := E.le_opNorm _
-      _ = ‖E‖ := by rw [hτ1 a, mul_one]
-      _ ≤ η * |t| := hE
-  have hDa : ∀ a, |inner ℝ (τ a) (B (τ a))| ≤ A := fun a =>
-    calc |inner ℝ (τ a) (B (τ a))| ≤ ‖τ a‖ * ‖B (τ a)‖ := abs_real_inner_le_norm _ _
-      _ = ‖B (τ a)‖ := by rw [hτ1 a, one_mul]
-      _ ≤ A := hBa a
-  refine ⟨?_, ?_⟩
-  · calc |∑ a, inner ℝ (τ a) (B (τ a))| ≤ ∑ a, |inner ℝ (τ a) (B (τ a))| :=
-          Finset.abs_sum_le_sum_abs _ _
-      _ ≤ ∑ _a : Fin n, A := Finset.sum_le_sum fun a _ => hDa a
-      _ = (n : ℝ) * A := by rw [Finset.sum_const, Finset.card_fin, nsmul_eq_mul]
-  · -- one column: `|Lτₐ|² = |τₐ + wₐ|²` with `wₐ = tBτₐ + Eτₐ`
-    have hcol : ∀ a, ‖L (τ a)‖ ^ 2 ≤
-        1 + 2 * t * inner ℝ (τ a) (B (τ a)) + 2 * η * |t| + (A + 1) ^ 2 * t ^ 2 := by
-      intro a
-      have hL : L (τ a) = τ a + (t • B (τ a) + E (τ a)) := by
-        simp only [hEdef, sub_apply, smul_apply, ContinuousLinearMap.id_apply]
-        abel
-      have hw : ‖t • B (τ a) + E (τ a)‖ ≤ (A + 1) * |t| :=
-        calc ‖t • B (τ a) + E (τ a)‖ ≤ ‖t • B (τ a)‖ + ‖E (τ a)‖ := norm_add_le _ _
-          _ = |t| * ‖B (τ a)‖ + ‖E (τ a)‖ := by rw [norm_smul, Real.norm_eq_abs]
-          _ ≤ |t| * A + η * |t| :=
-              add_le_add (mul_le_mul_of_nonneg_left (hBa a) (abs_nonneg t)) (hEa a)
-          _ ≤ |t| * A + 1 * |t| := by gcongr
-          _ = (A + 1) * |t| := by ring
-      have hwsq : ‖t • B (τ a) + E (τ a)‖ ^ 2 ≤ (A + 1) ^ 2 * t ^ 2 :=
-        calc ‖t • B (τ a) + E (τ a)‖ ^ 2 ≤ ((A + 1) * |t|) ^ 2 :=
-              pow_le_pow_left₀ (norm_nonneg _) hw 2
-          _ = (A + 1) ^ 2 * t ^ 2 := by rw [mul_pow, sq_abs]
-      have hcross : inner ℝ (τ a) (E (τ a)) ≤ η * |t| :=
-        calc inner ℝ (τ a) (E (τ a)) ≤ ‖τ a‖ * ‖E (τ a)‖ := real_inner_le_norm _ _
-          _ = ‖E (τ a)‖ := by rw [hτ1 a, one_mul]
-          _ ≤ η * |t| := hEa a
-      rw [hL, norm_add_sq_real, hτ1 a, inner_add_right, real_inner_smul_right]
-      linarith
-    calc ∑ a, ‖L (τ a)‖ ^ 2 - (n : ℝ)
-        ≤ ∑ a, (1 + 2 * t * inner ℝ (τ a) (B (τ a)) + 2 * η * |t| + (A + 1) ^ 2 * t ^ 2) -
-            (n : ℝ) := by
-          gcongr with a
-          exact hcol a
-      _ = 2 * t * (∑ a, inner ℝ (τ a) (B (τ a))) + 2 * (n : ℝ) * η * |t| +
-            (n : ℝ) * (A + 1) ^ 2 * t ^ 2 := by
-          rw [Finset.sum_add_distrib, Finset.sum_add_distrib, Finset.sum_add_distrib,
-            Finset.sum_const, Finset.sum_const, Finset.sum_const, ← Finset.mul_sum,
-            Finset.card_fin, nsmul_eq_mul, nsmul_eq_mul, nsmul_eq_mul]
 /-- **Simon Ch. 4, 3.8–3.11 and the remark after 3.17**: let `U` be open, let every `y ∈ U` be
 the centre of a ball of finite mass, and let every compact `K ⊆ U` have `Λ ≥ 0` such that
 `ρ ↦ e^{Λρ}ρ⁻ⁿ M_{B_ρ(y)}(T)` is nondecreasing on `(0, R)` whenever `B̄_R(y) ⊆ K`.  Then `T` has a
@@ -4543,283 +4407,6 @@ theorem Submission.dimred_mono_density_usc_of_monotone : ∀ (P n : ℕ) (U : Se
           exact mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_right
             (Real.exp_le_exp.2 hρΛ.le) (pow_nonneg (by linarith) n)) (by linarith [hΘy.1])
   exact (ENNReal.ofReal_lt_ofReal_iff hc0).1 ((ENNReal.mul_lt_mul_iff_right hω0 hωtop).1 hkey)
-/-- An approximate tangent plane forces unit `Hⁿ`-density on closed balls (Simon Ch. 3,
-Remark 1.5(3), with Definition 1.4).  If `Hⁿ(M ∩ B̄_s(x)) < ∞` and `Q` is an approximate tangent
-space of `M` at `x`, then `Hⁿ(M ∩ B̄_ρ(x)) / (ωₙρⁿ) → 1` as `ρ ↓ 0`.  Since
-`Hⁿ(η_{x,r}(M) ∩ B̄_1(0)) = r⁻ⁿHⁿ(M ∩ B̄_r(x))` and `Hⁿ(Q ∩ B̄_t(0)) = ωₙtⁿ`, the radial cut-offs
-`g_{1-ε,1} ≤ 1_{B̄_1(0)} ≤ g_{1,1+ε}` in `C_c` squeeze `r⁻ⁿHⁿ(M ∩ B̄_r(x))` between blow-up integrals
-whose limits lie within `ωₙ(1 ∓ ε)ⁿ`. -/
-theorem Submission.rsd_tendsto_closedBall_density_of_approxTangent : ∀ (P n : ℕ) (M : Set (Euclid P)) (x : Euclid P) (Q : Submodule ℝ (Euclid P)) (s : ℝ), 0 < s → μHE[n] (M ∩ closedBall x s) ≠ ∞ → HasApproximateTangentSpaceAt n M x Q → Tendsto (fun ρ : ℝ => μHE[n] (M ∩ closedBall x ρ) / (unitBallVolume n * ENNReal.ofReal (ρ ^ n))) (𝓝[>] 0) (𝓝 1) := by
-  intro P n M x Q s hs hfin hT
-  obtain ⟨hQ, hconv⟩ := hT
-  -- Step 1: `ωₙ ∈ (0, ∞)`
-  set ω := unitBallVolume n with hωdef
-  have hω0 : ω ≠ 0 := (measure_ball_pos volume (0 : Euclid n) one_pos).ne'
-  have hωtop : ω ≠ ∞ := measure_ball_lt_top.ne
-  set w := ω.toReal with hwdef
-  have hw : 0 < w := ENNReal.toReal_pos hω0 hωtop
-  -- Step 2: `Hⁿ(Q ∩ B̄_t(0)) = ωₙ tⁿ`, via a linear isometry `ℝⁿ ≅ Q`
-  have hplane0 : ∀ t : ℝ, 0 ≤ t →
-      μHE[n] ((Q : Set (Euclid P)) ∩ closedBall 0 t) = ω * ENNReal.ofReal (t ^ n) := by
-    intro t ht
-    let b : OrthonormalBasis (Fin n) ℝ Q := (stdOrthonormalBasis ℝ Q).reindex (finCongr hQ)
-    let ι : Euclid n →ₗᵢ[ℝ] Euclid P := Q.subtypeₗᵢ.comp b.repr.symm.toLinearIsometry
-    have himage : ι '' closedBall 0 t = (Q : Set (Euclid P)) ∩ closedBall 0 t := by
-      ext y
-      constructor
-      · rintro ⟨v, hv, rfl⟩
-        refine ⟨(b.repr.symm v).2, ?_⟩
-        rw [mem_closedBall, dist_zero_right] at hv ⊢
-        have : ‖((b.repr.symm v : Q) : Euclid P)‖ = ‖v‖ := b.repr.symm.norm_map v
-        simpa [ι, this] using hv
-      · rintro ⟨hyQ, hy⟩
-        refine ⟨b.repr ⟨y, hyQ⟩, ?_, ?_⟩
-        · rw [mem_closedBall, dist_zero_right] at hy ⊢
-          simpa using hy
-        · simp [ι]
-    rw [← himage, ι.isometry.euclideanHausdorffMeasure_image,
-      EuclideanSpace.euclideanHausdorffMeasure_eq_volume,
-      Measure.addHaar_closedBall _ _ ht, finrank_euclideanSpace_fin, hωdef, unitBallVolume, mul_comm]
-  -- Step 3: scaling `Hⁿ(η_{x,r}(A)) = r⁻ⁿ Hⁿ(A)` and `η_{x,r}(M) ∩ B̄_t(0) = η_{x,r}(M ∩ B̄_{tr}(x))`
-  have hscale : ∀ r : ℝ, 0 < r → ∀ A : Set (Euclid P),
-      μHE[n] (Poincare.SimonGMT.Chapter03.blowUpMap x r '' A) = ENNReal.ofReal (r⁻¹ ^ n) * μHE[n] A := by
-    intro r hr A
-    have h1 : Poincare.SimonGMT.Chapter03.blowUpMap x r '' A =
-        (fun y => r⁻¹ • y) '' ((fun y => y - x) '' A) := by
-      rw [image_image]
-      rfl
-    have hiso : Isometry (fun y : Euclid P => y - x) :=
-      Isometry.of_dist_eq (fun a c => by simp [dist_eq_norm])
-    rw [h1, Set.image_smul, Measure.euclideanHausdorffMeasure_smul₀ n (inv_ne_zero hr.ne'),
-      hiso.euclideanHausdorffMeasure_image, ENNReal.smul_def, smul_eq_mul]
-    congr 1
-    rw [← ENNReal.ofReal_coe_nnreal]
-    congr 1
-    simp [abs_of_pos hr]
-  have himg : ∀ r : ℝ, 0 < r → ∀ t : ℝ,
-      Poincare.SimonGMT.Chapter03.blowUpMap x r '' M ∩ closedBall 0 t =
-        Poincare.SimonGMT.Chapter03.blowUpMap x r '' (M ∩ closedBall x (t * r)) := by
-    intro r hr t
-    have key : ∀ z : Euclid P,
-        ‖Poincare.SimonGMT.Chapter03.blowUpMap x r z‖ ≤ t ↔ dist z x ≤ t * r := by
-      intro z
-      simp only [Poincare.SimonGMT.Chapter03.blowUpMap, norm_smul, Real.norm_eq_abs, abs_inv,
-        abs_of_pos hr, dist_eq_norm]
-      rw [inv_mul_le_iff₀ hr, mul_comm r t]
-    ext y
-    constructor
-    · rintro ⟨⟨z, hz, rfl⟩, hy⟩
-      rw [mem_closedBall, dist_zero_right, key] at hy
-      exact ⟨z, ⟨hz, hy⟩, rfl⟩
-    · rintro ⟨z, ⟨hz, hzb⟩, rfl⟩
-      refine ⟨⟨z, hz, rfl⟩, ?_⟩
-      rw [mem_closedBall, dist_zero_right, key]
-      exact hzb
-  have hνball : ∀ r : ℝ, 0 < r → ∀ t : ℝ,
-      (μHE[n].restrict (Poincare.SimonGMT.Chapter03.blowUpMap x r '' M)) (closedBall 0 t) =
-        ENNReal.ofReal (r⁻¹ ^ n) * μHE[n] (M ∩ closedBall x (t * r)) := by
-    intro r hr t
-    rw [Measure.restrict_apply measurableSet_closedBall, inter_comm, himg r hr t, hscale r hr]
-  have hmfin : ∀ r : ℝ, r ≤ s → μHE[n] (M ∩ closedBall x r) ≠ ∞ := fun r hr =>
-    ne_top_of_le_ne_top hfin (measure_mono (inter_subset_inter_right _ (closedBall_subset_closedBall hr)))
-  have hνfin : ∀ r : ℝ, 0 < r → ∀ t : ℝ, t * r ≤ s →
-      (μHE[n].restrict (Poincare.SimonGMT.Chapter03.blowUpMap x r '' M)) (closedBall 0 t) ≠ ∞ := by
-    intro r hr t ht
-    rw [hνball r hr t]
-    exact ENNReal.mul_ne_top ENNReal.ofReal_ne_top (hmfin _ ht)
-  -- Step 4: radial cut-off functions `g_{a,b}` in `C_c`
-  have hbump : ∀ a b : ℝ, 0 < a → a < b →
-      ∃ f : CompactlySupportedContinuousMap (Euclid P) ℝ, Continuous f ∧ (0 ≤ ⇑f) ∧
-        (closedBall (0 : Euclid P) a).indicator 1 ≤ ⇑f ∧ ⇑f ≤ (closedBall (0 : Euclid P) b).indicator 1 := by
-    intro a b ha hab
-    have hcont : Continuous (fun y : Euclid P => max 0 (min 1 ((b - ‖y‖) / (b - a)))) :=
-      continuous_const.max (continuous_const.min ((continuous_const.sub continuous_norm).div_const _))
-    have hzero : ∀ y : Euclid P, b ≤ ‖y‖ → max 0 (min 1 ((b - ‖y‖) / (b - a))) = 0 := by
-      intro y hy
-      have h1 : (b - ‖y‖) / (b - a) ≤ 0 := div_nonpos_of_nonpos_of_nonneg (by linarith) (by linarith)
-      rw [max_eq_left ((min_le_right _ _).trans h1)]
-    let f : CompactlySupportedContinuousMap (Euclid P) ℝ :=
-      { toFun := fun y => max 0 (min 1 ((b - ‖y‖) / (b - a)))
-        continuous_toFun := hcont
-        hasCompactSupport' := by
-          refine HasCompactSupport.intro (isCompact_closedBall (0 : Euclid P) b) ?_
-          intro y hy
-          rw [mem_closedBall, dist_zero_right, not_le] at hy
-          exact hzero y hy.le }
-    have hf : ∀ y, f y = max 0 (min 1 ((b - ‖y‖) / (b - a))) := fun y => rfl
-    refine ⟨f, f.continuous, fun y => by rw [hf]; exact le_max_left _ _, ?_, ?_⟩
-    · intro y
-      by_cases hy : y ∈ closedBall (0 : Euclid P) a
-      · rw [indicator_of_mem hy, Pi.one_apply, hf]
-        rw [mem_closedBall, dist_zero_right] at hy
-        have : 1 ≤ (b - ‖y‖) / (b - a) := by
-          rw [le_div_iff₀ (by linarith)]; linarith
-        rw [min_eq_left this, max_eq_right zero_le_one]
-      · rw [indicator_of_notMem hy, hf]; exact le_max_left _ _
-    · intro y
-      by_cases hy : y ∈ closedBall (0 : Euclid P) b
-      · rw [indicator_of_mem hy, Pi.one_apply, hf]
-        exact max_le zero_le_one (min_le_left _ _)
-      · rw [indicator_of_notMem hy, hf, hzero]
-        rw [mem_closedBall, dist_zero_right, not_le] at hy
-        exact hy.le
-  -- Step 5: integrability of functions dominated by the indicator of a finite-measure closed ball
-  have hindint : ∀ (ν : Measure (Euclid P)) (t : ℝ), ν (closedBall 0 t) ≠ ∞ →
-      Integrable ((closedBall (0 : Euclid P) t).indicator (1 : Euclid P → ℝ)) ν := fun ν t h =>
-    (integrable_indicator_iff measurableSet_closedBall).2 (integrableOn_const h)
-  have hdomint : ∀ (ν : Measure (Euclid P)) (f : Euclid P → ℝ) (t : ℝ), Continuous f →
-      ν (closedBall 0 t) ≠ ∞ → 0 ≤ f → f ≤ (closedBall (0 : Euclid P) t).indicator 1 →
-      Integrable f ν := by
-    intro ν f t hf hfin' h0 hle
-    refine (hindint ν t hfin').mono' hf.aestronglyMeasurable (Eventually.of_forall fun y => ?_)
-    rw [Real.norm_eq_abs, abs_of_nonneg (h0 y)]
-    exact hle y
-  -- Step 6: the normalised mass `a(r) = r⁻ⁿ Hⁿ(M ∩ B̄_r(x))` and the plane-ball values
-  set a : ℝ → ℝ := fun r => (r⁻¹) ^ n * (μHE[n] (M ∩ closedBall x r)).toReal with hadef
-  have hareal : ∀ r : ℝ, 0 < r →
-      (μHE[n].restrict (Poincare.SimonGMT.Chapter03.blowUpMap x r '' M)).real (closedBall 0 1) = a r := by
-    intro r hr
-    rw [measureReal_def, hνball r hr 1, one_mul, ENNReal.toReal_mul,
-      ENNReal.toReal_ofReal (by positivity)]
-  have hplane : ∀ t : ℝ, 0 ≤ t →
-      (μHE[n].restrict (Q : Set (Euclid P))) (closedBall 0 t) = ω * ENNReal.ofReal (t ^ n) := by
-    intro t ht
-    rw [Measure.restrict_apply measurableSet_closedBall, inter_comm, hplane0 t ht]
-  have hplanefin : ∀ t : ℝ, 0 ≤ t → (μHE[n].restrict (Q : Set (Euclid P))) (closedBall 0 t) ≠ ∞ := by
-    intro t ht
-    rw [hplane t ht]
-    exact ENNReal.mul_ne_top hωtop ENNReal.ofReal_ne_top
-  have hplanereal : ∀ t : ℝ, 0 ≤ t →
-      (μHE[n].restrict (Q : Set (Euclid P))).real (closedBall 0 t) = w * t ^ n := by
-    intro t ht
-    rw [measureReal_def, hplane t ht, ENNReal.toReal_mul, ENNReal.toReal_ofReal (by positivity)]
-  -- Step 7: `a r → ωₙ`
-  have ha : Tendsto a (𝓝[>] 0) (𝓝 w) := by
-    rw [tendsto_order]
-    constructor
-    · intro c hc
-      have hcont : Tendsto (fun ε : ℝ => w * (1 - ε) ^ n) (𝓝[>] 0) (𝓝 w) := by
-        have : Continuous (fun ε : ℝ => w * (1 - ε) ^ n) := by fun_prop
-        simpa using (this.tendsto 0).mono_left nhdsWithin_le_nhds
-      obtain ⟨ε, hcε, hε⟩ :=
-        ((hcont.eventually (lt_mem_nhds hc)).and (Ioo_mem_nhdsGT one_pos)).exists
-      obtain ⟨f, hfc, hf0, hfge, hfle⟩ := hbump (1 - ε) 1 (by linarith [hε.2]) (by linarith [hε.1])
-      -- `∫_Q f ≥ ωₙ (1-ε)ⁿ`
-      have hQ1 : w * (1 - ε) ^ n ≤ ∫ y in (Q : Set (Euclid P)), f y ∂μHE[n] := by
-        rw [← hplanereal (1 - ε) (by linarith [hε.2]), ← integral_indicator_one measurableSet_closedBall]
-        exact integral_mono (hindint _ _ (hplanefin _ (by linarith [hε.2])))
-          (hdomint _ _ 1 hfc (hplanefin _ zero_le_one) hf0 hfle) hfge
-      filter_upwards [(tendsto_order.1 (hconv f)).1 c (hcε.trans_le hQ1),
-        Ioc_mem_nhdsGT (half_pos hs)] with r hr1 hr2
-      -- `∫_{η(M)} f ≤ a r`
-      have h1 : (1 : ℝ) * r ≤ s := by linarith [hr2.2]
-      have hle : ∫ y in Poincare.SimonGMT.Chapter03.blowUpMap x r '' M, f y ∂μHE[n] ≤ a r := by
-        rw [← hareal r hr2.1, ← integral_indicator_one measurableSet_closedBall]
-        exact integral_mono (hdomint _ _ 1 hfc (hνfin r hr2.1 1 h1) hf0 hfle)
-          (hindint _ _ (hνfin r hr2.1 1 h1)) hfle
-      exact hr1.trans_le hle
-    · intro c hc
-      have hcont : Tendsto (fun ε : ℝ => w * (1 + ε) ^ n) (𝓝[>] 0) (𝓝 w) := by
-        have : Continuous (fun ε : ℝ => w * (1 + ε) ^ n) := by fun_prop
-        simpa using (this.tendsto 0).mono_left nhdsWithin_le_nhds
-      obtain ⟨ε, hcε, hε⟩ :=
-        ((hcont.eventually (gt_mem_nhds hc)).and (Ioo_mem_nhdsGT one_pos)).exists
-      obtain ⟨f, hfc, hf0, hfge, hfle⟩ := hbump 1 (1 + ε) one_pos (by linarith [hε.1])
-      -- `∫_Q f ≤ ωₙ (1+ε)ⁿ`
-      have hQ2 : ∫ y in (Q : Set (Euclid P)), f y ∂μHE[n] ≤ w * (1 + ε) ^ n := by
-        rw [← hplanereal (1 + ε) (by linarith [hε.1]), ← integral_indicator_one measurableSet_closedBall]
-        exact integral_mono (hdomint _ _ (1 + ε) hfc (hplanefin _ (by linarith [hε.1])) hf0 hfle)
-          (hindint _ _ (hplanefin _ (by linarith [hε.1]))) hfle
-      filter_upwards [(tendsto_order.1 (hconv f)).2 c (hQ2.trans_lt hcε),
-        Ioc_mem_nhdsGT (half_pos hs)] with r hr1 hr2
-      -- `a r ≤ ∫_{η(M)} f`
-      have h1 : (1 : ℝ) * r ≤ s := by linarith [hr2.2]
-      have h2 : (1 + ε) * r ≤ s := by nlinarith [hr2.1, hr2.2, hε.2]
-      have hge : a r ≤ ∫ y in Poincare.SimonGMT.Chapter03.blowUpMap x r '' M, f y ∂μHE[n] := by
-        rw [← hareal r hr2.1, ← integral_indicator_one measurableSet_closedBall]
-        exact integral_mono (hindint _ _ (hνfin r hr2.1 1 h1))
-          (hdomint _ _ (1 + ε) hfc (hνfin r hr2.1 _ h2) hf0 hfle) hfge
-      exact hge.trans_lt hr1
-  -- Step 8: back to the `ℝ≥0∞` quotient
-  have hconvert : ∀ ρ : ℝ, 0 < ρ → ρ ≤ s →
-      μHE[n] (M ∩ closedBall x ρ) / (ω * ENNReal.ofReal (ρ ^ n)) = ENNReal.ofReal (a ρ / w) := by
-    intro ρ hρ hρs
-    have hρn : 0 < ρ ^ n := pow_pos hρ n
-    rw [← ENNReal.ofReal_toReal (hmfin ρ hρs), ← ENNReal.ofReal_toReal hωtop,
-      ← ENNReal.ofReal_mul ENNReal.toReal_nonneg,
-      ← ENNReal.ofReal_div_of_pos (mul_pos hw hρn)]
-    congr 1
-    simp only [hadef, inv_pow]
-    field_simp
-  have hlim : Tendsto (fun ρ : ℝ => ENNReal.ofReal (a ρ / w)) (𝓝[>] 0) (𝓝 1) := by
-    have := ENNReal.tendsto_ofReal (ha.div_const w)
-    rwa [div_self hw.ne', ENNReal.ofReal_one] at this
-  refine hlim.congr' ?_
-  filter_upwards [Ioc_mem_nhdsGT hs] with ρ hρ
-  exact (hconvert ρ hρ.1 hρ.2).symm
-/-- **Simon Ch. 1, 3.1–3.2** (densities may be computed with closed or open balls; cf. 6.2.8 and
-`HasMassDensity`): if `ν(B̄_ρ(x)) / (ωₙρⁿ) → θ ∈ [0, ∞]` as `ρ ↓ 0`, then also
-`ν(B_ρ(x)) / (ωₙρⁿ) → θ`.  The upper bound follows from `B_ρ(x) ⊆ B̄_ρ(x)`.  For the lower
-bound, given `a < θ` pick `t ∈ (0, 1)` with `a < tⁿθ`; then `B̄_{tρ}(x) ⊆ B_ρ(x)` and
-`ωₙ(tρ)ⁿ = tⁿ ωₙρⁿ` give `ν(B_ρ(x)) / (ωₙρⁿ) ≥ tⁿ · ν(B̄_{tρ}(x)) / (ωₙ(tρ)ⁿ) > a` for small
-`ρ`. -/
-theorem Submission.rsd_tendsto_ball_density_of_closedBall : ∀ (P n : ℕ) (ν : Measure (Euclid P)) (x : Euclid P) (θ : ℝ≥0∞), Tendsto (fun ρ : ℝ => ν (closedBall x ρ) / (unitBallVolume n * ENNReal.ofReal (ρ ^ n))) (𝓝[>] 0) (𝓝 θ) → Tendsto (fun ρ : ℝ => ν (ball x ρ) / (unitBallVolume n * ENNReal.ofReal (ρ ^ n))) (𝓝[>] 0) (𝓝 θ) := by
-  intro P n ν x θ hg
-  set ω := unitBallVolume n
-  rw [tendsto_order]
-  refine ⟨fun a ha => ?_, fun b hb => ?_⟩
-  · -- Step 2: choose `t ∈ (0, 1)` with `a < tⁿθ`, using `tⁿθ → θ` as `t ↑ 1`
-    have hlim : Tendsto (fun t : ℝ => ENNReal.ofReal (t ^ n) * θ) (𝓝[<] 1) (𝓝 (1 * θ)) := by
-      refine ENNReal.Tendsto.mul_const ?_ (Or.inl one_ne_zero)
-      have : Tendsto (fun t : ℝ => ENNReal.ofReal (t ^ n)) (𝓝 1) (𝓝 (ENNReal.ofReal (1 ^ n))) :=
-        (ENNReal.continuous_ofReal.comp (continuous_pow n)).tendsto 1
-      simpa using this.mono_left nhdsWithin_le_nhds
-    rw [one_mul] at hlim
-    obtain ⟨t, hta, ht0, ht1⟩ : ∃ t : ℝ, a < ENNReal.ofReal (t ^ n) * θ ∧ 0 < t ∧ t < 1 := by
-      have h1 := (tendsto_order.1 hlim).1 a ha
-      have h2 : ∀ᶠ t in 𝓝[<] (1 : ℝ), t ∈ Ioo (0 : ℝ) 1 := Ioo_mem_nhdsLT (by norm_num)
-      obtain ⟨t, ht, ht'⟩ := (h1.and h2).exists
-      exact ⟨t, ht, ht'.1, ht'.2⟩
-    have hc0 : ENNReal.ofReal (t ^ n) ≠ 0 := by
-      rw [Ne, ENNReal.ofReal_eq_zero, not_le]
-      positivity
-    have hctop : ENNReal.ofReal (t ^ n) ≠ ∞ := ENNReal.ofReal_ne_top
-    have ha' : a / ENNReal.ofReal (t ^ n) < θ := by
-      rw [ENNReal.div_lt_iff (Or.inl hc0) (Or.inl hctop), mul_comm]
-      exact hta
-    -- Step 3: the rescaled closed-ball ratio `g(tρ)` still tends to `θ`
-    have hmap : Tendsto (fun ρ : ℝ => t * ρ) (𝓝[>] 0) (𝓝[>] 0) := by
-      refine tendsto_nhdsWithin_of_tendsto_nhds_of_eventually_within _ ?_ ?_
-      · have h0 : Tendsto (fun ρ : ℝ => t * ρ) (𝓝 0) (𝓝 0) := by
-          simpa using (tendsto_id (x := 𝓝 (0 : ℝ))).const_mul t
-        exact h0.mono_left nhdsWithin_le_nhds
-      · filter_upwards [self_mem_nhdsWithin] with ρ hρ
-        exact mul_pos ht0 hρ
-    have hev := (tendsto_order.1 (hg.comp hmap)).1 _ ha'
-    filter_upwards [hev, self_mem_nhdsWithin] with ρ hρ hρpos
-    simp only [Function.comp] at hρ
-    have hρpos' : (0 : ℝ) < ρ := hρpos
-    -- Step 4: `ν(B̄_{tρ}(x)) / (ωₙ(tρ)ⁿ) · tⁿ = ν(B̄_{tρ}(x)) / (ωₙρⁿ)`
-    have hid : ν (closedBall x (t * ρ)) / (ω * ENNReal.ofReal ((t * ρ) ^ n)) * ENNReal.ofReal (t ^ n)
-        = ν (closedBall x (t * ρ)) / (ω * ENNReal.ofReal (ρ ^ n)) := by
-      rw [mul_pow, ENNReal.ofReal_mul (by positivity), mul_comm (ENNReal.ofReal (t ^ n)),
-        ← mul_assoc, div_eq_mul_inv, div_eq_mul_inv, ENNReal.mul_inv (Or.inr hctop) (Or.inr hc0),
-        mul_assoc, mul_assoc, ENNReal.inv_mul_cancel hc0 hctop, mul_one]
-    -- Step 5: `a < tⁿ g(tρ) ≤ h(ρ)`, as `B̄_{tρ}(x) ⊆ B_ρ(x)`
-    calc a = a / ENNReal.ofReal (t ^ n) * ENNReal.ofReal (t ^ n) :=
-          (ENNReal.div_mul_cancel hc0 hctop).symm
-      _ < ν (closedBall x (t * ρ)) / (ω * ENNReal.ofReal ((t * ρ) ^ n)) * ENNReal.ofReal (t ^ n) :=
-          (ENNReal.mul_lt_mul_iff_left hc0 hctop).2 hρ
-      _ = ν (closedBall x (t * ρ)) / (ω * ENNReal.ofReal (ρ ^ n)) := hid
-      _ ≤ ν (ball x ρ) / (ω * ENNReal.ofReal (ρ ^ n)) := by
-          gcongr
-          exact closedBall_subset_ball (by nlinarith)
-  · -- Step 1: `h(ρ) ≤ g(ρ)`, as `B_ρ(x) ⊆ B̄_ρ(x)`
-    filter_upwards [(tendsto_order.1 hg).2 b hb] with ρ hρ
-    refine lt_of_le_of_lt ?_ hρ
-    gcongr
-    exact ball_subset_closedBall
-
 /-- **Simon Ch. 4, 3.11–3.13** (with Ch. 3, Remark 1.5(3)): the weight `μ = θHⁿ⌞M` of an integer
 multiplicity triple `(M, θ, ξ)` in an open `U` has density `≥ 1` at `μ`-a.e. `x`: every limit `θ₀`
 of `μ(B_ρ(x)) / (ωₙρⁿ)` as `ρ ↓ 0` satisfies `θ₀ ≥ 1`.  Since `μ ≪ ν = Hⁿ⌞M`, it suffices to take
@@ -4905,6 +4492,77 @@ theorem Submission.dimred_im_mass_measure : ∀ (P n : ℕ) (U : Set (Euclid P))
   rw [Submission.dor_ims_support_of_massOn_eq P n U T R.measure hU hmass, mem_inter_iff,
     and_iff_right hxU, Metric.nhds_basis_ball.mem_measureSupport]
   exact forall₂_congr fun ε _ => pos_iff_ne_zero
+/-- Countable Lipschitz localization of a `C¹` map (Simon Ch. 3, §2 works with locally Lipschitz
+`f`).  If `Z ⊆ ℝᴾ` is open and `F : ℝᴾ → ℝⁿ` is `C¹` on `Z`, then countably many open balls
+`V l ⊆ Z` cover `Z`, `F` agrees on `V l` with a Lipschitz `G l : ℝᴾ → ℝⁿ`, and the Borel sets
+`Zs l = V l \ ⋃_{l' < l} V l'` partition `Z`.  `F` is Lipschitz on a closed ball in `Z` about each
+point (`C¹` on a convex compact set), Lindelöf gives a countable subcover, and `F|V l` extends to
+`ℝᴾ` because `ℝⁿ` is finite dimensional. -/
+theorem Submission.idtp_caf_lipschitz_localization : ∀ (P n : ℕ) (Z : Set (Euclid P)) (F : Euclid P → Euclid n), IsOpen Z → ContDiffOn ℝ 1 F Z → ∃ (V Zs : ℕ → Set (Euclid P)) (G : ℕ → Euclid P → Euclid n), (∀ l, IsOpen (V l)) ∧ (∀ l, V l ⊆ Z) ∧ (∀ l, MeasurableSet (Zs l)) ∧ (∀ l, Zs l ⊆ V l) ∧ Pairwise (fun l l' => Disjoint (Zs l) (Zs l')) ∧ (⋃ l, Zs l) = Z ∧ (∀ l, ∃ K : NNReal, LipschitzWith K (G l)) ∧ ∀ l, EqOn F (G l) (V l) := by
+  intro P n Z F hZ hF
+  -- Step 1: `Z = ∅`
+  rcases Z.eq_empty_or_nonempty with rfl | hZne
+  · exact ⟨fun _ => ∅, fun _ => ∅, fun _ _ => 0, fun _ => isOpen_empty, fun _ => empty_subset _,
+      fun _ => MeasurableSet.empty, fun _ => empty_subset _, fun _ _ _ => empty_disjoint _,
+      iUnion_empty, fun _ => ⟨0, LipschitzWith.const 0⟩, fun _ => eqOn_empty _ _⟩
+  -- Step 2: `F` is Lipschitz on a ball `B_{r(x)}(x)` with `B̄_{r(x)}(x) ⊆ Z`, for each `x ∈ Z`
+  have hloc : ∀ x ∈ Z, ∃ r > 0, ball x r ⊆ Z ∧ ∃ K, LipschitzOnWith K F (ball x r) := by
+    intro x hx
+    obtain ⟨ε, hε, hεZ⟩ := Metric.isOpen_iff.mp hZ x hx
+    have hcl : closedBall x (ε / 2) ⊆ Z := (closedBall_subset_ball (half_lt_self hε)).trans hεZ
+    obtain ⟨K, hK⟩ := (hF.mono hcl).exists_lipschitzOnWith one_ne_zero (convex_closedBall x _)
+      (isCompact_closedBall x _)
+    exact ⟨ε / 2, half_pos hε, ball_subset_closedBall.trans hcl, K, hK.mono ball_subset_closedBall⟩
+  choose! r hr hrZ K hK using hloc
+  -- Step 3: countably many of these balls cover `Z` (Lindelöf), enumerated by `ℕ`
+  have hcover : (⋃ x ∈ Z, ball x (r x)) = Z :=
+    (iUnion₂_subset hrZ).antisymm fun x hx => mem_biUnion hx (mem_ball_self (hr x hx))
+  obtain ⟨T, hTZ, hTc, hTU⟩ :=
+    TopologicalSpace.isOpen_biUnion_countable Z (fun x => ball x (r x)) fun _ _ => isOpen_ball
+  have hTne : T.Nonempty := by
+    obtain ⟨x, hx⟩ := hZne
+    rw [← hcover, ← hTU] at hx
+    obtain ⟨y, hy, -⟩ := mem_iUnion₂.mp hx
+    exact ⟨y, hy⟩
+  obtain ⟨c, rfl⟩ := hTc.exists_eq_range hTne
+  have hcZ : ∀ l, c l ∈ Z := fun l => hTZ (mem_range_self l)
+  have hVU : (⋃ l, ball (c l) (r (c l))) = Z := by
+    rw [← hcover, ← hTU, biUnion_range]
+  -- Step 4: Lipschitz extensions `G l` of `F|V l` to `ℝᴾ`
+  choose G hG hGF using fun l => (hK (c l) (hcZ l)).extend_finite_dimension
+  -- Step 5: `Zs = disjointed V`
+  exact ⟨fun l => ball (c l) (r (c l)), disjointed fun l => ball (c l) (r (c l)), G,
+    fun _ => isOpen_ball, fun l => hrZ _ (hcZ l),
+    MeasurableSet.disjointed fun _ => isOpen_ball.measurableSet, disjointed_subset _,
+    disjoint_disjointed _, iUnion_disjointed.trans hVU, fun l => ⟨_, hG l⟩, hGF⟩
+
+/-- **Simon Ch. 2, 1.8(i)**, for a `C¹` map: if `Z ⊆ ℝᴾ` is open, `F : ℝᴾ → ℝⁿ` is `C¹` on `Z`
+and `S ⊆ Z` has `Hⁿ(S) = 0`, then `Lⁿ(F(S)) = 0`.  Split `Z` into Borel pieces `Zₗ ⊆ Vₗ` with
+`F = Gₗ` on `Vₗ` for Lipschitz `Gₗ`; then `F(S) ⊆ ⋃ₗ Gₗ(S ∩ Zₗ)`,
+`Hⁿ(Gₗ(S ∩ Zₗ)) ≤ Kₗⁿ Hⁿ(S ∩ Zₗ) = 0`, and `Hⁿ = Lⁿ` on `ℝⁿ`. -/
+theorem Submission.idtp_caf_null_image : ∀ (P n : ℕ) (Z S : Set (Euclid P)) (F : Euclid P → Euclid n), IsOpen Z → ContDiffOn ℝ 1 F Z → S ⊆ Z → μHE[n] S = 0 → volume (F '' S) = 0 := by
+  intro P n Z S F hZ hF hSZ hS
+  have hvol : (μHE[n] : Measure (Euclid n)) = volume :=
+    EuclideanSpace.euclideanHausdorffMeasure_eq_volume n
+  -- Step 1: Lipschitz localization, `F = Gₗ` on `Vₗ ⊇ Zₗ` and `⋃ₗ Zₗ = Z`
+  obtain ⟨V, Zs, G, -, -, -, hZsV, -, hZs, hG, hFG⟩ :=
+    Submission.idtp_caf_lipschitz_localization P n Z F hZ hF
+  -- Step 2: `F(S) ⊆ ⋃ₗ Gₗ(S ∩ Zₗ)`
+  have hcover : F '' S ⊆ ⋃ l, G l '' (S ∩ Zs l) := by
+    rintro _ ⟨x, hxS, rfl⟩
+    obtain ⟨l, hxl⟩ := mem_iUnion.mp (hZs.symm.subset (hSZ hxS))
+    exact mem_iUnion.mpr ⟨l, x, ⟨hxS, hxl⟩, (hFG l (hZsV l hxl)).symm⟩
+  -- Step 3: `Hⁿ(Gₗ(S ∩ Zₗ)) ≤ Kₗⁿ Hⁿ(S ∩ Zₗ) = 0`
+  have hpiece : ∀ l, μHE[n] (G l '' (S ∩ Zs l)) = 0 := by
+    intro l
+    obtain ⟨K, hK⟩ := hG l
+    have hle := Poincare.SimonGMT.Chapter02.euclideanHausdorffMeasure_image_le_of_lipschitzOn n
+      (hK.lipschitzOnWith (s := S ∩ Zs l))
+    rw [measure_mono_null inter_subset_left hS, mul_zero] at hle
+    exact le_antisymm hle bot_le
+  -- Step 4: `Hⁿ = Lⁿ` on `ℝⁿ` and countable subadditivity
+  rw [← hvol]
+  exact measure_mono_null hcover (measure_iUnion_null hpiece)
 /-- **Simon Ch. 6, 1.1 and 1.7**: a unit orientation `ξ = ±τ₁ ∧ ⋯ ∧ τₙ` of a plane (`τ`
 orthonormal) is a nonzero `n`-vector of norm at most one.  `|ξ(α)| = |α(τ)| ≤ ‖α‖ ∏ᵢ ‖τᵢ‖ = ‖α‖`
 gives `‖ξ‖ ≤ 1`.  The covector `δ(w) = Σ_σ sgn σ ∏ᵢ ⟨τᵢ, w_{σ(i)}⟩ = det(⟨τᵢ, wⱼ⟩)`, the
@@ -7554,30 +7212,6 @@ theorem Submission.dpf_exists_orthonormal_frame_det_gram : ∀ (P n : ℕ) (v : 
     calc |inner ℝ (σ i) (v i)| ≤ ‖σ i‖ * ‖v i‖ := abs_real_inner_le_norm _ _
       _ = ‖v i‖ := by rw [show ‖σ i‖ = 1 from b.norm_eq_one i, one_mul]
 
-/-- **Simon 6.2.11, 6.3.2(3)**: if `T = τ(M, θ, ξ)` in `U`, then `Hⁿ(M ∖ spt T) = 0`, i.e.
-`μ_T(U ∖ spt T) = 0`.  As `M ⊆ U` and `spt T = U ∖ Z`, `M ∖ spt T ⊆ M ∩ Z`, where the zero region
-`Z = ⋃ 𝒲` is the union of the open `W ⊂⊂ U` on which `T` vanishes.  `ℝᴾ` is second countable, so
-`Z = ⋃_{W ∈ 𝒮} W` for a countable `𝒮 ⊆ 𝒲`; each `Hⁿ(M ∩ W) = 0`
-(`imrep_carrier_inter_null_of_vanishesOn`), and countable subadditivity concludes. -/
-theorem Submission.imrep_carrier_sdiff_support_null : ∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (R : IMRep U n), IsOpen U → R.Represents T → μHE[n] (R.carrier \ T.support) = 0 := by
-  intro P n U T R _ hRT
-  -- the zero region `Z = ⋃₀ 𝒲` is the union of a countable subfamily `𝒮 ⊆ 𝒲`
-  obtain ⟨𝒮, h𝒮c, h𝒮W, h𝒮⟩ := TopologicalSpace.isOpen_sUnion_countable
-    {W : Set (Euclid P) | IsOpen W ∧ IsCompact (closure W) ∧ closure W ⊆ U ∧ T.VanishesOn W}
-    fun W hW => hW.1
-  -- `M ∖ spt T ⊆ ⋃_{W ∈ 𝒮} M ∩ W`: a point of `M ⊆ U` outside `spt T = U ∖ Z` lies in `Z`
-  have hsub : R.carrier \ T.support ⊆ ⋃ W ∈ 𝒮, R.carrier ∩ W := by
-    rintro x ⟨hxM, hxS⟩
-    have hxZ : x ∈ ⋃₀ 𝒮 := by
-      rw [h𝒮]
-      by_contra hxZ
-      exact hxS (mem_sdiff_of_mem (R.carrier_subset hxM) hxZ)
-    obtain ⟨W, hW, hxW⟩ := mem_sUnion.mp hxZ
-    exact mem_biUnion hW ⟨hxM, hxW⟩
-  -- `Hⁿ(M ∩ W) = 0` for each of the countably many `W ∈ 𝒮`
-  refine measure_mono_null hsub ((measure_biUnion_null_iff h𝒮c).mpr fun W hW => ?_)
-  obtain ⟨hWo, hWc, hWU, hTW⟩ := h𝒮W hW
-  exact Submission.imrep_carrier_inter_null_of_vanishesOn P n U W T R hRT hWo hWc hWU hTW
 /-- Hadamard's inequality for Gram determinants: `det(⟨vᵢ, vⱼ⟩) ≤ ∏ᵢ |vᵢ|²`.  If `v` is
 linearly dependent, a nonzero `c` with `∑ⱼ cⱼ vⱼ = 0` lies in the kernel of the Gram matrix, so
 its determinant vanishes; if `v` is independent, the Gram–Schmidt frame of
@@ -9382,6 +9016,400 @@ theorem Submission.ptd_tl_blowUp_measure_scaling : ∀ (P n : ℕ) (x : Euclid P
       smul_eq_mul, ENNReal.coe_pow, nnnorm_inv, ENNReal.coe_inv (nnnorm_ne_zero_iff.mpr hr.ne'),
       Real.nnnorm_of_nonneg hr.le, ← ENNReal.ofReal_eq_coe_nnreal hr.le]
   rw [hset, hscale]
+/-- **Upper density theorem for `Hⁿ` off a Borel set of finite measure** (Simon Ch. 1, 3.3 and
+3.6, with the crude covering constant `6ⁿ`; chapter-01.txt lines 602–721).  If `S ⊆ ℝᴾ` is Borel
+with `Hⁿ(S) < ∞`, then for `Hⁿ`-a.e. `x ∉ S`, `Hⁿ(S ∩ B̄_ρ(x)) / ρⁿ → 0` as `ρ ↓ 0`.  A failure
+at `x` puts `x` in a threshold set `{x ∉ S : Hⁿ(S ∩ B̄_ρ(x)) > t ρⁿ frequently as ρ ↓ 0}` with
+`t = (k + 1)⁻¹`.  Vitali's lemma (factor `2`, enlarged radius `3ρ`) and separability give
+`t · μH[n](E) ≤ 6ⁿ Hⁿ(G)` whenever each `x ∈ E` has arbitrarily small `ρ` with
+`t ρⁿ ≤ Hⁿ(G ∩ B̄_ρ(x))`.  Taking `G = S \ F` for a closed `F ⊆ S` with `Hⁿ(S \ F)` small (weak
+regularity of the finite measure `Hⁿ⌞S`), which agrees with `S` near `x ∉ F`, every threshold set
+is `μH[n]`-null, hence `Hⁿ`-null. -/
+theorem Submission.regcomp_atl_upper_density_zero : ∀ (P n : ℕ) (S : Set (Euclid P)), MeasurableSet S → μHE[n] S ≠ ∞ → ∀ᵐ x ∂(μHE[n] : Measure (Euclid P)), x ∉ S → Tendsto (fun ρ : ℝ => μHE[n] (S ∩ closedBall x ρ) / ENNReal.ofReal ρ ^ n) (𝓝[>] 0) (𝓝 0) := by
+  intro P n S hS hfin
+  -- Step 2, Vitali selection (Simon 1.3.4): a countable disjoint subfamily whose
+  -- 3-fold enlargements cover the centres.
+  have vitali : ∀ (E : Set (Euclid P)) (p : Euclid P → ℝ → Prop) (δ : ℝ),
+      (∀ x ∈ E, ∃ ρ : ℝ, 0 < ρ ∧ ρ < δ ∧ p x ρ) →
+      ∃ u : Set (Euclid P × ℝ), u.Countable ∧ (∀ a ∈ u, a.1 ∈ E ∧ 0 < a.2 ∧ a.2 < δ ∧ p a.1 a.2) ∧
+        u.PairwiseDisjoint (fun a => closedBall a.1 a.2) ∧
+        E ⊆ ⋃ a ∈ u, closedBall a.1 (3 * a.2) := by
+    intro E p δ hE
+    obtain ⟨u, huT, hdisj, hcov⟩ := Vitali.exists_disjoint_subfamily_covering_enlargement
+      (fun a : Euclid P × ℝ => closedBall a.1 a.2)
+      {a : Euclid P × ℝ | a.1 ∈ E ∧ 0 < a.2 ∧ a.2 < δ ∧ p a.1 a.2} (fun a => a.2) 2 (by norm_num)
+      (fun a ha => ha.2.1.le) δ (fun a ha => ha.2.2.1.le)
+      (fun a ha => nonempty_closedBall.2 ha.2.1.le)
+    refine ⟨u, ?_, fun a ha => huT ha, hdisj, ?_⟩
+    · apply hdisj.countable_of_nonempty_interior
+      intro a ha
+      refine ⟨a.1, interior_mono ball_subset_closedBall ?_⟩
+      rw [isOpen_ball.interior_eq]
+      exact mem_ball_self (huT ha).2.1
+    · intro x hx
+      obtain ⟨ρ, hρ0, hρδ, hp⟩ := hE x hx
+      obtain ⟨b, hbu, ⟨w, hw1, hw2⟩, hle⟩ := hcov (x, ρ) ⟨hx, hρ0, hρδ, hp⟩
+      refine mem_iUnion₂.2 ⟨b, hbu, ?_⟩
+      rw [mem_closedBall]
+      have h1 : dist w x ≤ ρ := hw1
+      have h2 : dist w b.1 ≤ b.2 := hw2
+      have hle' : ρ ≤ 2 * b.2 := hle
+      calc dist x b.1 ≤ dist x w + dist w b.1 := dist_triangle _ _ _
+        _ ≤ ρ + b.2 := add_le_add (by rw [dist_comm]; exact h1) h2
+        _ ≤ 3 * b.2 := by linarith
+  -- Step 2, comparison (Simon 1.3.3 with the crude constant 6 ^ n).
+  have comparison : ∀ (t : ℝ≥0∞) (E G : Set (Euclid P)), t ≠ 0 → t ≠ ∞ → MeasurableSet G →
+      (∀ x ∈ E, ∀ δ : ℝ, 0 < δ → ∃ ρ : ℝ, 0 < ρ ∧ ρ < δ ∧
+        t * ENNReal.ofReal ρ ^ n ≤ μHE[n] (G ∩ closedBall x ρ)) →
+      t * μH[(n : ℝ)] E ≤ 6 ^ n * μHE[n] G := by
+    intro t E G ht0 httop hG hE
+    have hfam : ∀ j : ℕ, ∃ u : Set (Euclid P × ℝ), u.Countable ∧
+        (∀ a ∈ u, a.1 ∈ E ∧ 0 < a.2 ∧ a.2 < 1 / ((j : ℝ) + 1) ∧
+          t * ENNReal.ofReal a.2 ^ n ≤ μHE[n] (G ∩ closedBall a.1 a.2)) ∧
+        u.PairwiseDisjoint (fun a => closedBall a.1 a.2) ∧
+        E ⊆ ⋃ a ∈ u, closedBall a.1 (3 * a.2) :=
+      fun j => vitali E (fun c ρ => t * ENNReal.ofReal ρ ^ n ≤ μHE[n] (G ∩ closedBall c ρ))
+        (1 / ((j : ℝ) + 1)) (fun x hx => hE x hx _ (by positivity))
+    choose u hucount hu hdisj hcover using hfam
+    have : ∀ j, Countable (u j) := fun j => (hucount j).to_subtype
+    -- packing estimate
+    have hsum : ∀ j, t * ∑' a : u j, ENNReal.ofReal (a : Euclid P × ℝ).2 ^ n ≤ μHE[n] G := by
+      intro j
+      rw [← ENNReal.tsum_mul_left]
+      calc ∑' a : u j, t * ENNReal.ofReal (a : Euclid P × ℝ).2 ^ n
+          ≤ ∑' a : u j, μHE[n] (G ∩ closedBall (a : Euclid P × ℝ).1 (a : Euclid P × ℝ).2) :=
+            ENNReal.tsum_le_tsum fun a => (hu j a a.2).2.2.2
+        _ = μHE[n] (⋃ a ∈ u j, G ∩ closedBall a.1 a.2) :=
+            (measure_biUnion (hucount j) ((hdisj j).mono fun a => inter_subset_right)
+              fun a _ => hG.inter measurableSet_closedBall).symm
+        _ ≤ μHE[n] G := measure_mono (iUnion₂_subset fun a _ => inter_subset_left)
+    -- diameter estimate
+    have hdiam : ∀ j (a : u j), ediam (closedBall (a : Euclid P × ℝ).1 (3 * (a : Euclid P × ℝ).2))
+        ≤ ENNReal.ofReal (6 * (a : Euclid P × ℝ).2) := by
+      intro j a
+      apply ediam_le_of_forall_dist_le
+      intro y hy z hz
+      rw [mem_closedBall] at hy hz
+      calc dist y z ≤ dist y (a : Euclid P × ℝ).1 + dist z (a : Euclid P × ℝ).1 :=
+            dist_triangle_right _ _ _
+        _ ≤ 6 * (a : Euclid P × ℝ).2 := by linarith
+    have hterm : ∀ j, t * ∑' a : u j,
+        ediam (closedBall (a : Euclid P × ℝ).1 (3 * (a : Euclid P × ℝ).2)) ^ (n : ℝ) ≤
+          6 ^ n * μHE[n] G := by
+      intro j
+      calc t * ∑' a : u j, ediam (closedBall (a : Euclid P × ℝ).1 (3 * (a : Euclid P × ℝ).2)) ^ (n : ℝ)
+          ≤ t * ∑' a : u j, 6 ^ n * ENNReal.ofReal (a : Euclid P × ℝ).2 ^ n := by
+            gcongr with a
+            rw [ENNReal.rpow_natCast]
+            calc ediam (closedBall (a : Euclid P × ℝ).1 (3 * (a : Euclid P × ℝ).2)) ^ n
+                ≤ ENNReal.ofReal (6 * (a : Euclid P × ℝ).2) ^ n := by gcongr; exact hdiam j a
+              _ = 6 ^ n * ENNReal.ofReal (a : Euclid P × ℝ).2 ^ n := by
+                rw [ENNReal.ofReal_mul (show (0 : ℝ) ≤ 6 by norm_num), mul_pow]
+                norm_num
+        _ = 6 ^ n * (t * ∑' a : u j, ENNReal.ofReal (a : Euclid P × ℝ).2 ^ n) := by
+            rw [ENNReal.tsum_mul_left]; ring
+        _ ≤ 6 ^ n * μHE[n] G := by gcongr; exact hsum j
+    have hH := MeasureTheory.Measure.hausdorffMeasure_le_liminf_tsum (X := Euclid P)
+      (ι := fun j => (u j)) (n : ℝ) E (l := atTop)
+      (fun j : ℕ => ENNReal.ofReal (6 * (1 / ((j : ℝ) + 1))))
+      (by
+        rw [← ENNReal.ofReal_zero]
+        apply ENNReal.tendsto_ofReal
+        have := tendsto_one_div_add_atTop_nhds_zero_nat (𝕜 := ℝ)
+        simpa using this.const_mul 6)
+      (fun j a => closedBall (a : Euclid P × ℝ).1 (3 * (a : Euclid P × ℝ).2))
+      (Eventually.of_forall fun j a => (hdiam j a).trans (ENNReal.ofReal_le_ofReal (by
+        have := (hu j a a.2).2.2.1
+        linarith)))
+      (Eventually.of_forall fun j x hx => by
+        obtain ⟨a, ha, hxa⟩ := mem_iUnion₂.1 (hcover j hx)
+        exact mem_iUnion.2 ⟨⟨a, ha⟩, hxa⟩)
+    have hbound : ∀ j, ∑' a : u j,
+        ediam (closedBall (a : Euclid P × ℝ).1 (3 * (a : Euclid P × ℝ).2)) ^ (n : ℝ) ≤
+          6 ^ n * μHE[n] G / t := by
+      intro j
+      rw [ENNReal.le_div_iff_mul_le (Or.inl ht0) (Or.inl httop), mul_comm]
+      exact hterm j
+    have hlim : μH[(n : ℝ)] E ≤ 6 ^ n * μHE[n] G / t :=
+      hH.trans (liminf_le_of_frequently_le' (Frequently.of_forall hbound))
+    calc t * μH[(n : ℝ)] E ≤ t * (6 ^ n * μHE[n] G / t) := by gcongr
+      _ = 6 ^ n * μHE[n] G := ENNReal.mul_div_cancel ht0 httop
+  -- Step 3, each threshold set is null (Simon 1.3.6).
+  have threshold : ∀ t : ℝ≥0∞, t ≠ 0 → t ≠ ∞ →
+      μHE[n] {x : Euclid P | x ∉ S ∧ ∃ᶠ ρ in 𝓝[>] (0 : ℝ),
+        t < μHE[n] (S ∩ closedBall x ρ) / ENNReal.ofReal ρ ^ n} = 0 := by
+    intro t ht0 httop
+    set N := {x : Euclid P | x ∉ S ∧ ∃ᶠ ρ in 𝓝[>] (0 : ℝ),
+      t < μHE[n] (S ∩ closedBall x ρ) / ENNReal.ofReal ρ ^ n} with hN
+    have key : ∀ ε : ℝ≥0∞, ε ≠ 0 → μH[(n : ℝ)] N < ε := by
+      intro ε hε
+      have : IsFiniteMeasure ((μHE[n] : Measure (Euclid P)).restrict S) :=
+        ⟨by rw [Measure.restrict_apply_univ]; exact hfin.lt_top⟩
+      have : ((μHE[n] : Measure (Euclid P)).restrict S).WeaklyRegular :=
+        Measure.WeaklyRegular.of_pseudoMetrizableSpace_of_isFiniteMeasure _
+      have hpos : t * ε / 6 ^ n ≠ 0 := by
+        apply ENNReal.div_ne_zero.2
+        exact ⟨mul_ne_zero ht0 hε, ENNReal.pow_ne_top (by norm_num)⟩
+      obtain ⟨F, hFS, hFc, hFlt⟩ := hS.exists_isClosed_sdiff_lt
+        (μ := (μHE[n] : Measure (Euclid P)).restrict S)
+        (by rw [Measure.restrict_apply hS, inter_self]; exact hfin) hpos
+      have hG : MeasurableSet (S \ F) := hS.diff hFc.measurableSet
+      have hμG : μHE[n] (S \ F) < t * ε / 6 ^ n := by
+        rwa [Measure.restrict_apply hG, inter_eq_left.2 sdiff_subset] at hFlt
+      have hhyp : ∀ x ∈ N, ∀ δ : ℝ, 0 < δ → ∃ ρ : ℝ, 0 < ρ ∧ ρ < δ ∧
+          t * ENNReal.ofReal ρ ^ n ≤ μHE[n] ((S \ F) ∩ closedBall x ρ) := by
+        intro x hx δ hδ
+        obtain ⟨hxS, hfreq⟩ := hx
+        have hxF : x ∉ F := fun h => hxS (hFS h)
+        obtain ⟨r₁, hr₁, hball⟩ := Metric.isOpen_iff.1 hFc.isOpen_compl x hxF
+        have hev : ∀ᶠ ρ in 𝓝[>] (0 : ℝ), ρ ∈ Ioo 0 (min δ (r₁ / 2)) :=
+          Ioo_mem_nhdsGT (by positivity)
+        obtain ⟨ρ, hρq, hρ⟩ := (hfreq.and_eventually hev).exists
+        refine ⟨ρ, hρ.1, lt_of_lt_of_le hρ.2 (min_le_left _ _), ?_⟩
+        have hρpos : ENNReal.ofReal ρ ^ n ≠ 0 :=
+          pow_ne_zero _ (ENNReal.ofReal_pos.2 hρ.1).ne'
+        have hρtop : ENNReal.ofReal ρ ^ n ≠ ∞ := ENNReal.pow_ne_top ENNReal.ofReal_ne_top
+        have h1 : t * ENNReal.ofReal ρ ^ n < μHE[n] (S ∩ closedBall x ρ) :=
+          (ENNReal.lt_div_iff_mul_lt (Or.inl hρpos) (Or.inl hρtop)).1 hρq
+        have h2 : S ∩ closedBall x ρ = (S \ F) ∩ closedBall x ρ := by
+          ext y
+          constructor
+          · rintro ⟨hyS, hyB⟩
+            refine ⟨⟨hyS, fun hyF => hball ?_ hyF⟩, hyB⟩
+            rw [mem_ball]
+            have := mem_closedBall.1 hyB
+            have := hρ.2
+            have := min_le_right δ (r₁ / 2)
+            linarith
+          · rintro ⟨⟨hyS, _⟩, hyB⟩
+            exact ⟨hyS, hyB⟩
+        rw [← h2]
+        exact h1.le
+      have hcomp := comparison t N (S \ F) ht0 httop hG hhyp
+      have h6 : (6 : ℝ≥0∞) ^ n ≠ 0 := pow_ne_zero _ (by norm_num)
+      have h6' : (6 : ℝ≥0∞) ^ n ≠ ∞ := ENNReal.pow_ne_top (by norm_num)
+      have hlt : t * μH[(n : ℝ)] N < t * ε := by
+        calc t * μH[(n : ℝ)] N ≤ 6 ^ n * μHE[n] (S \ F) := hcomp
+          _ < 6 ^ n * (t * ε / 6 ^ n) := ENNReal.mul_lt_mul_right h6 h6' hμG
+          _ = t * ε := ENNReal.mul_div_cancel h6 h6'
+      exact (ENNReal.mul_lt_mul_iff_right ht0 httop).1 hlt
+    have hH : μH[(n : ℝ)] N = 0 := by
+      by_contra h
+      exact lt_irrefl _ (key _ h)
+    rw [Measure.euclideanHausdorffMeasure_def, Measure.smul_apply, hH, smul_zero]
+  -- Steps 1 and 4, every failure of convergence lies in a threshold set.
+  rw [ae_iff]
+  apply measure_mono_null (t := ⋃ k : ℕ, {x : Euclid P | x ∉ S ∧ ∃ᶠ ρ in 𝓝[>] (0 : ℝ),
+    ((k : ℝ≥0∞) + 1)⁻¹ < μHE[n] (S ∩ closedBall x ρ) / ENNReal.ofReal ρ ^ n})
+  · intro x hx
+    simp only [mem_ofPred_eq, Classical.not_imp] at hx
+    obtain ⟨hxS, hnt⟩ := hx
+    rw [ENNReal.tendsto_nhds_zero] at hnt
+    push Not at hnt
+    obtain ⟨ε, hε, hfreq⟩ := hnt
+    obtain ⟨k, hk⟩ := ENNReal.exists_inv_nat_lt hε.ne'
+    refine mem_iUnion.2 ⟨k, hxS, hfreq.mono fun ρ hρ => ?_⟩
+    calc ((k : ℝ≥0∞) + 1)⁻¹ ≤ (k : ℝ≥0∞)⁻¹ := ENNReal.inv_le_inv.2 le_self_add
+      _ < ε := hk
+      _ < _ := hρ
+  · exact measure_iUnion_null fun k => threshold _ (by simp) (by simp)
+
+/-- **Upper density theorem for `Hⁿ` off a Borel set of locally finite measure in an open set**
+(Simon Ch. 1, 3.6 and Remark 3.7(2); chapter-01.txt lines 700–711).  If `U ⊆ ℝᴾ` is open and
+`S ⊆ ℝᴾ` is Borel with `Hⁿ(S ∩ K) < ∞` for every compact `K ⊆ U`, then for `Hⁿ`-a.e.
+`x ∈ U \ S`, `Hⁿ(S ∩ B̄_ρ(x)) / ρⁿ → 0` as `ρ ↓ 0`.  Countably many balls `B(y, r_y)` with
+`B̄(y, r_y) ⊆ U` cover `U` (Lindelöf); the upper density theorem applies to each piece
+`S ∩ B(y, r_y)`, of finite measure, and the piece agrees with `S` on small balls about
+`x ∈ B(y, r_y)`. -/
+theorem Submission.doraggt_local_density_zero : ∀ (P n : ℕ) (U S : Set (Euclid P)), IsOpen U → MeasurableSet S → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μHE[n] (S ∩ K) ≠ ∞) → ∀ᵐ x ∂(μHE[n] : Measure (Euclid P)), x ∈ U → x ∉ S → Tendsto (fun ρ : ℝ => μHE[n] (S ∩ closedBall x ρ) / ENNReal.ofReal ρ ^ n) (𝓝[>] 0) (𝓝 0) := by
+  intro P n U S hU hS hfin
+  -- Step 1, a countable cover of `U` by balls `B(y, r y)` with `B̄(y, r y) ⊆ U` (Lindelöf).
+  have hrad : ∀ y ∈ U, ∃ r : ℝ, 0 < r ∧ closedBall y r ⊆ U := by
+    intro y hy
+    obtain ⟨ε, hε, hball⟩ := Metric.isOpen_iff.1 hU y hy
+    exact ⟨ε / 2, half_pos hε, (closedBall_subset_ball (half_lt_self hε)).trans hball⟩
+  choose! r hr0 hrU using hrad
+  obtain ⟨D, hDU, hDc, hcover⟩ := TopologicalSpace.countable_cover_nhdsWithin
+    (f := fun y => ball y (r y)) (s := U)
+    (fun y hy => mem_nhdsWithin_of_mem_nhds (ball_mem_nhds y (hr0 y hy)))
+  -- Steps 2 and 3, the upper density theorem for each finite-measure piece `S ∩ B(y, r y)`,
+  -- simultaneously for the countably many `y ∈ D`.
+  have hae : ∀ᵐ x ∂(μHE[n] : Measure (Euclid P)), ∀ y ∈ D, x ∉ S ∩ ball y (r y) →
+      Tendsto (fun ρ : ℝ => μHE[n] ((S ∩ ball y (r y)) ∩ closedBall x ρ) / ENNReal.ofReal ρ ^ n)
+        (𝓝[>] 0) (𝓝 0) := by
+    rw [ae_ball_iff hDc]
+    intro y hy
+    refine Submission.regcomp_atl_upper_density_zero P n _ (hS.inter measurableSet_ball) ?_
+    exact ne_top_of_le_ne_top (hfin _ (isCompact_closedBall y (r y)) (hrU y (hDU hy)))
+      (measure_mono (inter_subset_inter_right _ ball_subset_closedBall))
+  -- Step 4, near `x ∈ B(y, r y)` the piece and `S` agree.
+  filter_upwards [hae] with x hx hxU hxS
+  obtain ⟨y, hyD, hxy⟩ := mem_iUnion₂.1 (hcover hxU)
+  obtain ⟨ε, hε, hεball⟩ := Metric.isOpen_iff.1 isOpen_ball x hxy
+  refine (hx y hyD fun h => hxS h.1).congr' ?_
+  filter_upwards [Ioo_mem_nhdsGT hε] with ρ hρ
+  rw [inter_assoc, inter_eq_right.2 ((closedBall_subset_ball hρ.2).trans hεball)]
+/-- Asymptotically equal blow-up integrals give equal approximate tangent spaces (Simon Ch. 3,
+Definition 1.4; last step of the proof of 3.1.6).  With `η_r = η_{x,r}`, `I(r) = ∫_{η_r(M)} f dHⁿ`,
+`I'(r) = ∫_{η_r(M')} f dHⁿ` and `I(r) − I'(r) → 0` as `r ↓ 0` for every `f ∈ C_c(ℝᴾ)`:
+`I' = I − (I − I')` and `I = I' + (I − I')` have the same limit `∫_Q f dHⁿ` as `I`, resp. `I'`,
+while the condition `dim Q = n` does not involve `M`, `M'`. -/
+theorem Submission.regcomp_atl_pc_tangent_iff_of_integral_sub_tendsto : ∀ (P n : ℕ) (M M' : Set (Euclid P)) (x : Euclid P), (∀ f : CompactlySupportedContinuousMap (Euclid P) ℝ, Tendsto (fun r : ℝ => (∫ y in Poincare.SimonGMT.Chapter03.blowUpMap x r '' M, f y ∂μHE[n]) - ∫ y in Poincare.SimonGMT.Chapter03.blowUpMap x r '' M', f y ∂μHE[n]) (𝓝[>] 0) (𝓝 0)) → ∀ Q : Submodule ℝ (Euclid P), HasApproximateTangentSpaceAt n M x Q ↔ HasApproximateTangentSpaceAt n M' x Q := by
+  intro P n M M' x hD Q
+  constructor
+  · -- (⇒) `I' = I − (I − I') → L − 0 = L`
+    rintro ⟨hQ, hM⟩
+    refine ⟨hQ, fun f => ?_⟩
+    have h := (hM f).sub (hD f)
+    rw [sub_zero] at h
+    exact h.congr fun r => sub_sub_cancel _ _
+  · -- (⇐) `I = I' + (I − I') → L + 0 = L`
+    rintro ⟨hQ, hM'⟩
+    refine ⟨hQ, fun f => ?_⟩
+    have h := (hM' f).add (hD f)
+    rw [add_zero] at h
+    exact h.congr fun r => add_sub_cancel _ _
+/-- Comparison of blow-up integrals (proof of Simon 3.1.6): for Borel `A ⊆ B`, `r > 0` and a
+continuous `f` with `|f| ≤ C` vanishing off `B̄_R(0)`,
+`|∫_{η_{x,r}(B)} f dHⁿ − ∫_{η_{x,r}(A)} f dHⁿ| ≤ C Hⁿ(η_{x,r}(B \ A) ∩ B̄_R(0))`.  Since `η_{x,r}` is
+injective, `η_{x,r}(B)` is the disjoint union of `η_{x,r}(A)` and `η_{x,r}(B \ A)`, both Borel
+(`η_{x,r}(T)` is the preimage of `T` under `y ↦ x + ry`); the difference of the integrals is the
+integral over `η_{x,r}(B \ A)`, which equals the integral over `η_{x,r}(B \ A) ∩ B̄_R(0)`. -/
+theorem Submission.regcomp_atl_pc_blowUp_setIntegral_sub_le : ∀ (P n : ℕ) (A B : Set (Euclid P)) (x : Euclid P) (r R C : ℝ) (f : Euclid P → ℝ), Continuous f → MeasurableSet A → MeasurableSet B → A ⊆ B → 0 < r → μHE[n] (Poincare.SimonGMT.Chapter03.blowUpMap x r '' B ∩ closedBall 0 R) ≠ ∞ → (∀ y : Euclid P, ‖f y‖ ≤ C) → (∀ y : Euclid P, y ∉ closedBall (0 : Euclid P) R → f y = 0) → ‖(∫ y in Poincare.SimonGMT.Chapter03.blowUpMap x r '' B, f y ∂μHE[n]) - ∫ y in Poincare.SimonGMT.Chapter03.blowUpMap x r '' A, f y ∂μHE[n]‖ ≤ C * (μHE[n] (Poincare.SimonGMT.Chapter03.blowUpMap x r '' (B \ A) ∩ closedBall 0 R)).toReal := by
+  intro P n A B x r R C f hf hA hB hAB hr hfin hC hzero
+  -- Step 1: `η = η_{x,r}` is injective
+  have hinj : Injective (Poincare.SimonGMT.Chapter03.blowUpMap x r : Euclid P → Euclid P) := by
+    intro z w h
+    have h' : z - x = w - x :=
+      smul_right_injective (Euclid P) (inv_ne_zero hr.ne') h
+    simpa using h'
+  -- Step 2: `η(T) = g⁻¹(T)` for `g y = x + r • y`, so `η` maps Borel sets to Borel sets
+  have himage : ∀ T : Set (Euclid P),
+      Poincare.SimonGMT.Chapter03.blowUpMap x r '' T = (fun y : Euclid P => x + r • y) ⁻¹' T := by
+    intro T
+    ext y
+    constructor
+    · rintro ⟨z, hz, rfl⟩
+      simpa [Poincare.SimonGMT.Chapter03.blowUpMap, smul_smul, mul_inv_cancel₀ hr.ne'] using hz
+    · intro hy
+      refine ⟨x + r • y, hy, ?_⟩
+      simp [Poincare.SimonGMT.Chapter03.blowUpMap, smul_smul, inv_mul_cancel₀ hr.ne']
+  have hmeas : ∀ T : Set (Euclid P), MeasurableSet T →
+      MeasurableSet (Poincare.SimonGMT.Chapter03.blowUpMap x r '' T) := by
+    intro T hT
+    rw [himage T]
+    exact (by fun_prop : Continuous fun y : Euclid P => x + r • y).measurable hT
+  -- Step 3: `f` is integrable on `η(T)` for Borel `T ⊆ B`
+  have hint : ∀ T : Set (Euclid P), MeasurableSet T → T ⊆ B →
+      IntegrableOn f (Poincare.SimonGMT.Chapter03.blowUpMap x r '' T) μHE[n] := by
+    intro T hT hTB
+    have hfinT : μHE[n] (Poincare.SimonGMT.Chapter03.blowUpMap x r '' T ∩ closedBall 0 R) ≠ ∞ :=
+      ne_top_of_le_ne_top hfin (measure_mono (inter_subset_inter_left _ (image_mono hTB)))
+    exact (Measure.integrableOn_of_bounded hfinT hf.aestronglyMeasurable
+      (Eventually.of_forall hC)).of_forall_sdiff_eq_zero (hmeas T hT)
+      fun y hy => hzero y fun h => hy.2 ⟨hy.1, h⟩
+  -- Step 4: `∫_{η(B)} f − ∫_{η(A)} f = ∫_{η(B∖A)} f`
+  have hBA : MeasurableSet (B \ A) := hB.diff hA
+  have hunion : ∫ y in Poincare.SimonGMT.Chapter03.blowUpMap x r '' B, f y ∂μHE[n] =
+      (∫ y in Poincare.SimonGMT.Chapter03.blowUpMap x r '' A, f y ∂μHE[n]) +
+        ∫ y in Poincare.SimonGMT.Chapter03.blowUpMap x r '' (B \ A), f y ∂μHE[n] := by
+    rw [← setIntegral_union ((disjoint_image_iff hinj).mpr disjoint_sdiff_right) (hmeas _ hBA)
+      (hint A hA hAB) (hint _ hBA sdiff_subset), ← image_union, union_sdiff_cancel hAB]
+  -- Step 5: localization to `B̄_R(0)`
+  have hloc : ∫ y in Poincare.SimonGMT.Chapter03.blowUpMap x r '' (B \ A), f y ∂μHE[n] =
+      ∫ y in Poincare.SimonGMT.Chapter03.blowUpMap x r '' (B \ A) ∩ closedBall 0 R, f y ∂μHE[n] :=
+    setIntegral_eq_of_subset_of_forall_sdiff_eq_zero (hmeas _ hBA) inter_subset_left
+      fun y hy => hzero y fun h => hy.2 ⟨hy.1, h⟩
+  -- Step 6: the estimate
+  have hfinS : μHE[n] (Poincare.SimonGMT.Chapter03.blowUpMap x r '' (B \ A) ∩ closedBall 0 R) < ∞ :=
+    (measure_mono (inter_subset_inter_left _ (image_mono sdiff_subset))).trans_lt hfin.lt_top
+  rw [hunion, add_sub_cancel_left, hloc, ← measureReal_def]
+  exact norm_setIntegral_le_of_norm_le_const hfinS fun y _ => hC y
+/-- Rescaling a vanishing `n`-density quotient (the final limit in the proof of Simon 3.1.6): if
+`g(ρ)/ρⁿ → 0` as `ρ ↓ 0` and `R > 0`, then `r⁻ⁿ g(rR) → 0` as `r ↓ 0`.  The substitution
+`ρ = rR` maps `𝓝[>] 0` to itself, multiplying by the finite constant `Rⁿ` keeps the limit `0`,
+and `Rⁿ · g(rR)/(rR)ⁿ = r⁻ⁿ g(rR)` for `r > 0`. -/
+theorem Submission.regcomp_atl_pc_density_rescale_tendsto : ∀ (n : ℕ) (g : ℝ → ℝ≥0∞) (R : ℝ), 0 < R → Tendsto (fun ρ : ℝ => g ρ / ENNReal.ofReal ρ ^ n) (𝓝[>] 0) (𝓝 0) → Tendsto (fun r : ℝ => (ENNReal.ofReal r)⁻¹ ^ n * g (r * R)) (𝓝[>] 0) (𝓝 0) := by
+  intro n g R hR hg
+  -- Step 1: `r ↦ r * R` maps `𝓝[>] 0` to `𝓝[>] 0`
+  have hmap : Tendsto (fun r : ℝ => r * R) (𝓝[>] 0) (𝓝[>] 0) := by
+    refine tendsto_nhdsWithin_of_tendsto_nhds_of_eventually_within _ ?_ ?_
+    · exact ((continuous_mul_const R).tendsto' 0 0 (zero_mul R)).mono_left nhdsWithin_le_nhds
+    · filter_upwards [self_mem_nhdsWithin] with r (hr : 0 < r)
+      exact mul_pos hr hR
+  -- Step 2: `g (r * R) / ofReal (r * R) ^ n → 0`
+  have hcomp : Tendsto (fun r : ℝ => g (r * R) / ENNReal.ofReal (r * R) ^ n) (𝓝[>] 0) (𝓝 0) :=
+    hg.comp hmap
+  -- Step 3: multiplication by the finite constant `ofReal R ^ n`
+  have hbtop : ENNReal.ofReal R ^ n ≠ ∞ := ENNReal.pow_ne_top ENNReal.ofReal_ne_top
+  have hconst : Tendsto
+      (fun r : ℝ => ENNReal.ofReal R ^ n * (g (r * R) / ENNReal.ofReal (r * R) ^ n))
+      (𝓝[>] 0) (𝓝 0) := by
+    have h := ENNReal.Tendsto.const_mul hcomp (Or.inr hbtop)
+    rwa [mul_zero] at h
+  -- Step 4: for `r > 0`, `Rⁿ · g(rR)/(rR)ⁿ = r⁻ⁿ g(rR)`
+  have heq : (fun r : ℝ => ENNReal.ofReal R ^ n * (g (r * R) / ENNReal.ofReal (r * R) ^ n))
+      =ᶠ[𝓝[>] 0] fun r : ℝ => (ENNReal.ofReal r)⁻¹ ^ n * g (r * R) := by
+    filter_upwards [self_mem_nhdsWithin] with r (hr : 0 < r)
+    have ha0 : ENNReal.ofReal r ^ n ≠ 0 := ENNReal.pow_ne_zero (ENNReal.ofReal_pos.mpr hr).ne' n
+    have hatop : ENNReal.ofReal r ^ n ≠ ∞ := ENNReal.pow_ne_top ENNReal.ofReal_ne_top
+    have hb0 : ENNReal.ofReal R ^ n ≠ 0 := ENNReal.pow_ne_zero (ENNReal.ofReal_pos.mpr hR).ne' n
+    calc ENNReal.ofReal R ^ n * (g (r * R) / ENNReal.ofReal (r * R) ^ n)
+        = ENNReal.ofReal R ^ n *
+            ((ENNReal.ofReal r ^ n)⁻¹ * (ENNReal.ofReal R ^ n)⁻¹ * g (r * R)) := by
+          rw [ENNReal.ofReal_mul hr.le, mul_pow, ENNReal.div_eq_inv_mul,
+            ENNReal.mul_inv (Or.inl ha0) (Or.inl hatop)]
+      _ = ENNReal.ofReal R ^ n * (ENNReal.ofReal R ^ n)⁻¹ *
+            ((ENNReal.ofReal r ^ n)⁻¹ * g (r * R)) := by ring
+      _ = (ENNReal.ofReal r)⁻¹ ^ n * g (r * R) := by
+          rw [ENNReal.mul_inv_cancel hb0 hbtop, one_mul, ENNReal.inv_pow]
+  -- Step 5: the two functions agree eventually along `𝓝[>] 0`
+  exact hconst.congr' heq
+/-- Scaling of `Hⁿ` under the blow-up `η_{x,r}(z) = r⁻¹(z − x)`, `r > 0` (proof of Simon 3.1.6):
+`Hⁿ(η_{x,r}(S) ∩ B̄_R(0)) = r⁻ⁿ Hⁿ(S ∩ B̄_{rR}(x))`.  Since `‖η_{x,r}(z)‖ = r⁻¹‖z − x‖`, the left
+side is `Hⁿ(η_{x,r}(S ∩ B̄_{rR}(x)))`; `η_{x,r}` is the homothety of centre `x` and ratio `r⁻¹`
+followed by the translation by `−x`, which preserves `Hⁿ`, while the homothety multiplies it by
+`‖r⁻¹‖₊ⁿ = r⁻ⁿ`. -/
+theorem Submission.regcomp_atl_blowUp_measure_scaling : ∀ (P n : ℕ) (x : Euclid P) (r R : ℝ) (S : Set (Euclid P)), 0 < r → μHE[n] (Poincare.SimonGMT.Chapter03.blowUpMap x r '' S ∩ closedBall 0 R) = (ENNReal.ofReal r)⁻¹ ^ n * μHE[n] (S ∩ closedBall x (r * R)) := by
+  intro P n x r R S hr
+  -- `‖η(z)‖ = r⁻¹‖z − x‖`
+  have hnorm : ∀ z : Euclid P,
+      ‖Poincare.SimonGMT.Chapter03.blowUpMap x r z‖ = r⁻¹ * ‖z - x‖ := by
+    intro z
+    rw [Poincare.SimonGMT.Chapter03.blowUpMap, norm_smul, Real.norm_eq_abs,
+      abs_of_pos (inv_pos.mpr hr)]
+  -- Step 1: `η(S) ∩ B̄(0, R) = η(S ∩ B̄(x, rR))`
+  have hset : Poincare.SimonGMT.Chapter03.blowUpMap x r '' S ∩ closedBall 0 R =
+      Poincare.SimonGMT.Chapter03.blowUpMap x r '' (S ∩ closedBall x (r * R)) := by
+    ext y
+    constructor
+    · rintro ⟨⟨z, hz, rfl⟩, hy⟩
+      refine ⟨z, ⟨hz, ?_⟩, rfl⟩
+      rw [mem_closedBall_zero_iff, hnorm] at hy
+      rw [mem_closedBall, dist_eq_norm]
+      calc ‖z - x‖ = r * (r⁻¹ * ‖z - x‖) := by field_simp
+        _ ≤ r * R := mul_le_mul_of_nonneg_left hy hr.le
+    · rintro ⟨z, ⟨hz, hzx⟩, rfl⟩
+      refine ⟨⟨z, hz, rfl⟩, ?_⟩
+      rw [mem_closedBall, dist_eq_norm] at hzx
+      rw [mem_closedBall_zero_iff, hnorm]
+      calc r⁻¹ * ‖z - x‖ ≤ r⁻¹ * (r * R) := mul_le_mul_of_nonneg_left hzx (inv_pos.mpr hr).le
+        _ = R := by field_simp
+  -- Step 2: `η = τ ∘ h` with `h = homothety x r⁻¹` and `τ y = y + (-x)`
+  have hcomp : Poincare.SimonGMT.Chapter03.blowUpMap x r =
+      (fun y : Euclid P => y + -x) ∘ AffineMap.homothety x r⁻¹ := by
+    funext z
+    simp [Poincare.SimonGMT.Chapter03.blowUpMap, AffineMap.homothety_apply]
+  -- Step 3: `μ(η(T)) = (ENNReal.ofReal r)⁻¹ ^ n * μ(T)`
+  have hscale : ∀ T : Set (Euclid P), μHE[n] (Poincare.SimonGMT.Chapter03.blowUpMap x r '' T) =
+      (ENNReal.ofReal r)⁻¹ ^ n * μHE[n] T := by
+    intro T
+    rw [hcomp, Set.image_comp, (isometry_add_right (-x)).euclideanHausdorffMeasure_image,
+      euclideanHausdorffMeasure_homothety_image n x (inv_ne_zero hr.ne') T, ENNReal.smul_def,
+      smul_eq_mul, ENNReal.coe_pow, nnnorm_inv, ENNReal.coe_inv (nnnorm_ne_zero_iff.mpr hr.ne'),
+      Real.nnnorm_of_nonneg hr.le, ← ENNReal.ofReal_eq_coe_nnreal hr.le]
+  -- Step 4: conclusion
+  rw [hset, hscale]
 /-- **Algebra of unit orientations** (Simon 6.1.1, 6.1.7, 6.2.2): for `n`-vectors on `ℝᴾ`,
 (a) two unit orientations `ξ`, `ξ'` of the same subspace `T` agree up to sign, `ξ' = ±ξ`;
 (b) a unit orientation `ξ` satisfies `|ξ(β)| ≤ ‖β‖` for every `n`-covector `β`;
@@ -9957,6 +9985,7 @@ theorem Submission.ptd_tl_excess_density_zero : ∀ (P n : ℕ) (A B : Set (Eucl
         gcongr
         exact hρB.trans (by gcongr; exact le_self_add)
     _ = δ * ENNReal.ofReal ρ ^ n := by rw [← mul_assoc, ENNReal.div_mul_cancel hκ₀ hκ₁]
+
 /-- Zero `n`-density of the excess `B ∖ A` (step 5 of the tangent-locality argument): if
 `Hⁿ(A ∩ B̄_ρ(x)) ≤ Cρⁿ` for `0 < ρ < r₁`, `Hⁿ(B ∩ B̄_{r₀}(x)) < ∞`, and for every `ε > 0`
 eventually `Hⁿ((B ∖ A) ∩ B̄_ρ(x)) ≤ ε Hⁿ(B ∩ B̄_ρ(x))`, then `ρ⁻ⁿ Hⁿ((B ∖ A) ∩ B̄_ρ(x)) → 0`.
@@ -10184,6 +10213,7 @@ theorem Submission.ptd_tl_tangent_iff_of_density_zero : ∀ (P n : ℕ) (A B : S
     have h := (hconv f).add (key f)
     rw [add_zero] at h
     exact h.congr fun ρ => add_sub_cancel _ _
+
 /-- **Simon Ch. 3, Remark 1.5(2)** (locality of approximate tangent spaces): if `A ⊆ B` are Borel,
 `Hⁿ(B ∩ B̄_{r₀}(x)) < ∞` and `Hⁿ((B ∖ A) ∩ B̄_ρ(x)) / ρⁿ → 0` as `ρ ↓ 0`, then `B` and `A` have
 the same approximate tangent spaces at `x`.  If `f ∈ C_c` vanishes off `B̄_R(0)` and `|f| ≤ M`,
@@ -13907,6 +13937,24 @@ theorem Submission.pit_fderiv_lower_bound_of_density : ∀ (P n : ℕ) (F : Eucl
     have hcont : Continuous (fun δ : ℝ => ‖L c‖ + δ * (m + ‖L‖ + ‖c‖ + δ)) := by fun_prop
     simpa using (hcont.tendsto 0).mono_left nhdsWithin_le_nhds
   exact ge_of_tendsto hlim (eventually_nhdsWithin_of_forall fun δ hδ => key δ hδ)
+/-- Integral over the range of a linear map with constant Jacobian: if `T : ℝⁿ → ℝᴾ` is linear
+and `Hⁿ(T(S)) = j λ(S)` for every `S ⊆ ℝⁿ` (`j ≥ 0`, `λ` Lebesgue measure), then for continuous
+`f`, `∫_{T(ℝⁿ)} f dHⁿ = j ∫ f(T(c)) dλ(c)`.  On Borel `A`, `A ∩ T(ℝⁿ) = T(T⁻¹(A))`, so
+`Hⁿ⌞T(ℝⁿ) = j T_#λ`. -/
+theorem Submission.pit_setIntegral_range_linear : ∀ (P n : ℕ) (T : Euclid n →L[ℝ] Euclid P) (j : ℝ) (f : Euclid P → ℝ), 0 ≤ j → (∀ S : Set (Euclid n), μHE[n] (T '' S) = ENNReal.ofReal j * volume S) → Continuous f → ∫ y in (LinearMap.range (T : Euclid n →ₗ[ℝ] Euclid P) : Set (Euclid P)), f y ∂μHE[n] = j * ∫ c, f (T c) ∂volume := by
+  intro P n T j f hj hT hf
+  -- the carrier of the submodule `range T` is the set `T(ℝⁿ)`
+  have hrange : (LinearMap.range (T : Euclid n →ₗ[ℝ] Euclid P) : Set (Euclid P)) = range T := by
+    rw [LinearMap.coe_range, ContinuousLinearMap.coe_coe]
+  -- `Hⁿ⌞T(ℝⁿ) = ofReal(j) • T_#λ`, checked on Borel sets
+  have hmeas : μHE[n].restrict (range T) = ENNReal.ofReal j • volume.map T := by
+    ext A hA
+    rw [Measure.restrict_apply hA, Measure.smul_apply, Measure.map_apply T.measurable hA,
+      ← image_preimage_eq_inter_range, hT, smul_eq_mul]
+  -- change of variables, with `(ofReal j).toReal = j` since `j ≥ 0`
+  rw [hrange, hmeas, integral_smul_measure,
+    integral_map T.measurable.aemeasurable hf.aestronglyMeasurable,
+    ENNReal.toReal_ofReal hj, smul_eq_mul]
 /-- If `F` has derivative `L` at `b` and `f` is continuous with compact support, then
 `∫_{B̄_R(0)} |f(r⁻¹(F(b + rc) − F(b))) − f(Lc)| dc → 0` as `r ↓ 0` (the error term `T₃` in the
 limit of rescaled integrals over the image of a `C¹` piece; cf. the tangent-plane limit in Simon
@@ -14226,6 +14274,39 @@ theorem Submission.pit_integral_closedBall_rescale_tendsto : ∀ (n : ℕ) (h : 
   filter_upwards [self_mem_nhdsWithin] with r hr
   exact (key r hr).symm
 
+/-- **Rescaled area integrals at a density point and a Lebesgue point** (Simon Ch. 3, proof of
+1.6 "⇒", the density argument for a carrier piece): let `m|a − b| ≤ |F(a) − F(b)|` on `B`,
+`m|c| ≤ |Lc|` for `L = DF(b)`, `0 ≤ J ≤ K`, let `B` have density `1` at `b` and
+`⨍_{B̄_ρ(b)} |J − J(b)| → 0`.  Then for `f ∈ C_c(ℝᴾ)`,
+`∫ 1_B(b + rc) J(b + rc) f(r⁻¹(F(b + rc) − F(b))) dc → J(b) ∫ f(Lc) dc` as `r → 0⁺`.
+With `f = 0` off `B_R(0)` and `|f| ≤ M`, the error is at most `K M T₁(r) + M T₂(r) + J(b) T₃(r)`,
+where `T₁, T₂, T₃` integrate `1_{Bᶜ}(b + rc)`, `|J(b + rc) − J(b)|` and
+`|f(r⁻¹(F(b + rc) − F(b))) − f(Lc)|` over `B̄_{R/m}(0)`; `T₁, T₂ → 0` by rescaling the ball
+averages at `b`, and `T₃ → 0` by differentiability of `F` at `b`. -/
+theorem Submission.idtp_caf_rescaled_integral_tendsto : ∀ (P n : ℕ) (F : Euclid n → Euclid P) (B : Set (Euclid n)) (J : Euclid n → ℝ) (K m : ℝ) (b : Euclid n) (f : Euclid P → ℝ), Continuous F → MeasurableSet B → Measurable J → (∀ a, 0 ≤ J a ∧ J a ≤ K) → 0 < m → (∀ a ∈ B, m * ‖a - b‖ ≤ ‖F a - F b‖) → DifferentiableAt ℝ F b → (∀ c, m * ‖c‖ ≤ ‖fderiv ℝ F b c‖) → Tendsto (fun ρ : ℝ => volume (B ∩ closedBall b ρ) / volume (closedBall b ρ)) (𝓝[>] 0) (𝓝 1) → Tendsto (fun ρ : ℝ => ⨍ a in closedBall b ρ, ‖J a - J b‖ ∂volume) (𝓝[>] 0) (𝓝 0) → Continuous f → HasCompactSupport f → Tendsto (fun r : ℝ => ∫ c, B.indicator J (b + r • c) * f (r⁻¹ • (F (b + r • c) - F b)) ∂volume) (𝓝[>] 0) (𝓝 (J b * ∫ c, f (fderiv ℝ F b c) ∂volume)) := by
+  intro P n F B J K m b f hF hB hJ hJK hm hFB hdiff hL hdens hLeb hf hfc
+  -- `f = 0` off `B_R(0)` and `|f| ≤ M`; both integrands vanish off `D = B̄_{R/m}(0)`
+  obtain ⟨R, hR, hRf⟩ := hfc.exists_pos_le_norm
+  obtain ⟨M, hM⟩ := hf.bounded_above_of_compact_support hfc
+  have hRm : 0 < R / m := div_pos hR hm
+  -- `T₁ → 0`: `⨍_{B̄_s(b)} 1_{Bᶜ} → 0` at the density point `b`, rescaled to `D`
+  have hT₁ := Submission.pit_integral_closedBall_rescale_tendsto n
+    (Bᶜ.indicator fun _ => (1 : ℝ)) b (R / m) hRm
+    (Submission.pit_ril_compl_average_tendsto n B b hB hdens)
+  -- `T₂ → 0`: `b` is a Lebesgue point of `J`, rescaled to `D`
+  have hT₂ := Submission.pit_integral_closedBall_rescale_tendsto n (fun a => ‖J a - J b‖) b
+    (R / m) hRm hLeb
+  -- `T₃ → 0`: `F` is differentiable at `b` with derivative `L = DF(b)`
+  have hT₃ := Submission.pit_ril_diffQuot_integral_tendsto P n F (fderiv ℝ F b) b f (R / m)
+    hdiff.hasFDerivAt hf hfc
+  have hlim := ((hT₁.const_mul (K * M)).add (hT₂.const_mul M)).add (hT₃.const_mul (J b))
+  simp only [mul_zero, add_zero] at hlim
+  -- squeeze `|I(r) − J(b) ∫ f(Lc) dc| ≤ K M T₁(r) + M T₂(r) + J(b) T₃(r)` for `r > 0`
+  rw [tendsto_iff_norm_sub_tendsto_zero]
+  refine squeeze_zero' (Eventually.of_forall fun r => norm_nonneg _) ?_ hlim
+  filter_upwards [self_mem_nhdsWithin] with r hr
+  exact Submission.pit_ril_three_term_bound P n F (fderiv ℝ F b) B J K m b f R M r hF hB hJ hJK
+    hm hFB hL hf hRf hM hr
 /-- **Rescaled integrals at a density point of `B` and a Lebesgue point of `J`**: let
 `m|a − b| ≤ |F(a) − F(b)|` on `B`, `m|c| ≤ |Lc|` for `L = DF(b)`, `0 ≤ J ≤ K`, let `B` have
 density `1` at `b` and `⨍_{B̄_ρ(b)} |J − J(b)| → 0`.  Then for `f ∈ C_c(ℝᴾ)`,
@@ -14257,24 +14338,6 @@ theorem Submission.pit_rescaled_integral_tendsto : ∀ (P n : ℕ) (F : Euclid n
   filter_upwards [self_mem_nhdsWithin] with r hr
   exact Submission.pit_ril_three_term_bound P n F (fderiv ℝ F b) B J K m b f R M r hF hB hJ hJK
     hm hFB hL hf hRf hM hr
-/-- Integral over the range of a linear map with constant Jacobian: if `T : ℝⁿ → ℝᴾ` is linear
-and `Hⁿ(T(S)) = j λ(S)` for every `S ⊆ ℝⁿ` (`j ≥ 0`, `λ` Lebesgue measure), then for continuous
-`f`, `∫_{T(ℝⁿ)} f dHⁿ = j ∫ f(T(c)) dλ(c)`.  On Borel `A`, `A ∩ T(ℝⁿ) = T(T⁻¹(A))`, so
-`Hⁿ⌞T(ℝⁿ) = j T_#λ`. -/
-theorem Submission.pit_setIntegral_range_linear : ∀ (P n : ℕ) (T : Euclid n →L[ℝ] Euclid P) (j : ℝ) (f : Euclid P → ℝ), 0 ≤ j → (∀ S : Set (Euclid n), μHE[n] (T '' S) = ENNReal.ofReal j * volume S) → Continuous f → ∫ y in (LinearMap.range (T : Euclid n →ₗ[ℝ] Euclid P) : Set (Euclid P)), f y ∂μHE[n] = j * ∫ c, f (T c) ∂volume := by
-  intro P n T j f hj hT hf
-  -- the carrier of the submodule `range T` is the set `T(ℝⁿ)`
-  have hrange : (LinearMap.range (T : Euclid n →ₗ[ℝ] Euclid P) : Set (Euclid P)) = range T := by
-    rw [LinearMap.coe_range, ContinuousLinearMap.coe_coe]
-  -- `Hⁿ⌞T(ℝⁿ) = ofReal(j) • T_#λ`, checked on Borel sets
-  have hmeas : μHE[n].restrict (range T) = ENNReal.ofReal j • volume.map T := by
-    ext A hA
-    rw [Measure.restrict_apply hA, Measure.smul_apply, Measure.map_apply T.measurable hA,
-      ← image_preimage_eq_inter_range, hT, smul_eq_mul]
-  -- change of variables, with `(ofReal j).toReal = j` since `j ≥ 0`
-  rw [hrange, hmeas, integral_smul_measure,
-    integral_map T.measurable.aemeasurable hf.aestronglyMeasurable,
-    ENNReal.toReal_ofReal hj, smul_eq_mul]
 /-- **Simon Ch. 3, 1.4** (approximate tangent spaces of a bi-Lipschitz piece): let `F : ℝⁿ → ℝᴾ`
 be `L`-Lipschitz, `B ⊆ ℝⁿ` Borel and `m > 0` with `m|a − a'| ≤ |F a − F a'|` on `B`, and let `F`
 be differentiable at every point of `B` with injective derivative.  Then for a.e. `b ∈ B`,
@@ -14386,6 +14449,7 @@ theorem Submission.dpf_approxTangent_ae_bilipschitz_piece : ∀ (P n : ℕ) (U Y
   filter_upwards [hpull _ hloc,
     Submission.ptd_piece_image_approxTangent_ae P n F B L m hF hB hm hbi hdiff] with b hYA hA'
   exact (hYA _).2 hA'
+
 /-- **Injective area formula with the Gram-determinant Jacobian** (Simon Ch. 2, (3.3) and (3.5)).
 For `f : ℝᵐ → ℝᴾ` let `Jf(x) = √det(⟨Df(x)eₖ, Df(x)eₗ⟩)`, `eₖ` the standard basis of `ℝᵐ`.  Then
 (i) `Jf` is Borel; (ii) if `s` is Borel, `f` is differentiable with injective `Df(x)` at every
@@ -19410,52 +19474,6 @@ theorem Submission.rsdic_imrep_action_int_combination : ∀ (P n : ℕ) (U : Set
   refine integral_congr_ae ?_
   filter_upwards [hF] with x hx
   rw [hx, add_apply, smul_apply, smul_apply, smul_eq_mul, smul_eq_mul]
-/-- Scaling of `Hⁿ` under the blow-up `η_{x,r}(z) = r⁻¹(z − x)`, `r > 0` (proof of Simon 3.1.6):
-`Hⁿ(η_{x,r}(S) ∩ B̄_R(0)) = r⁻ⁿ Hⁿ(S ∩ B̄_{rR}(x))`.  Since `‖η_{x,r}(z)‖ = r⁻¹‖z − x‖`, the left
-side is `Hⁿ(η_{x,r}(S ∩ B̄_{rR}(x)))`; `η_{x,r}` is the homothety of centre `x` and ratio `r⁻¹`
-followed by the translation by `−x`, which preserves `Hⁿ`, while the homothety multiplies it by
-`‖r⁻¹‖₊ⁿ = r⁻ⁿ`. -/
-theorem Submission.regcomp_atl_blowUp_measure_scaling : ∀ (P n : ℕ) (x : Euclid P) (r R : ℝ) (S : Set (Euclid P)), 0 < r → μHE[n] (Poincare.SimonGMT.Chapter03.blowUpMap x r '' S ∩ closedBall 0 R) = (ENNReal.ofReal r)⁻¹ ^ n * μHE[n] (S ∩ closedBall x (r * R)) := by
-  intro P n x r R S hr
-  -- `‖η(z)‖ = r⁻¹‖z − x‖`
-  have hnorm : ∀ z : Euclid P,
-      ‖Poincare.SimonGMT.Chapter03.blowUpMap x r z‖ = r⁻¹ * ‖z - x‖ := by
-    intro z
-    rw [Poincare.SimonGMT.Chapter03.blowUpMap, norm_smul, Real.norm_eq_abs,
-      abs_of_pos (inv_pos.mpr hr)]
-  -- Step 1: `η(S) ∩ B̄(0, R) = η(S ∩ B̄(x, rR))`
-  have hset : Poincare.SimonGMT.Chapter03.blowUpMap x r '' S ∩ closedBall 0 R =
-      Poincare.SimonGMT.Chapter03.blowUpMap x r '' (S ∩ closedBall x (r * R)) := by
-    ext y
-    constructor
-    · rintro ⟨⟨z, hz, rfl⟩, hy⟩
-      refine ⟨z, ⟨hz, ?_⟩, rfl⟩
-      rw [mem_closedBall_zero_iff, hnorm] at hy
-      rw [mem_closedBall, dist_eq_norm]
-      calc ‖z - x‖ = r * (r⁻¹ * ‖z - x‖) := by field_simp
-        _ ≤ r * R := mul_le_mul_of_nonneg_left hy hr.le
-    · rintro ⟨z, ⟨hz, hzx⟩, rfl⟩
-      refine ⟨⟨z, hz, rfl⟩, ?_⟩
-      rw [mem_closedBall, dist_eq_norm] at hzx
-      rw [mem_closedBall_zero_iff, hnorm]
-      calc r⁻¹ * ‖z - x‖ ≤ r⁻¹ * (r * R) := mul_le_mul_of_nonneg_left hzx (inv_pos.mpr hr).le
-        _ = R := by field_simp
-  -- Step 2: `η = τ ∘ h` with `h = homothety x r⁻¹` and `τ y = y + (-x)`
-  have hcomp : Poincare.SimonGMT.Chapter03.blowUpMap x r =
-      (fun y : Euclid P => y + -x) ∘ AffineMap.homothety x r⁻¹ := by
-    funext z
-    simp [Poincare.SimonGMT.Chapter03.blowUpMap, AffineMap.homothety_apply]
-  -- Step 3: `μ(η(T)) = (ENNReal.ofReal r)⁻¹ ^ n * μ(T)`
-  have hscale : ∀ T : Set (Euclid P), μHE[n] (Poincare.SimonGMT.Chapter03.blowUpMap x r '' T) =
-      (ENNReal.ofReal r)⁻¹ ^ n * μHE[n] T := by
-    intro T
-    rw [hcomp, Set.image_comp, (isometry_add_right (-x)).euclideanHausdorffMeasure_image,
-      euclideanHausdorffMeasure_homothety_image n x (inv_ne_zero hr.ne') T, ENNReal.smul_def,
-      smul_eq_mul, ENNReal.coe_pow, nnnorm_inv, ENNReal.coe_inv (nnnorm_ne_zero_iff.mpr hr.ne'),
-      Real.nnnorm_of_nonneg hr.le, ← ENNReal.ofReal_eq_coe_nnreal hr.le]
-  -- Step 4: conclusion
-  rw [hset, hscale]
-
 /-- **Simon Ch. 6, Remark 3.2(1)**: the difference of two integer multiplicity currents in the
 open set `U` is integer multiplicity.  Let `S = τ(M₁, θ₁, ξ₁)`, `T = τ(M₂, θ₂, ξ₂)`.  By the Upper
 Density Theorem (Ch. 1, 3.6) the carriers have density zero at `Hⁿ`-a.e. point outside them, and
@@ -23507,355 +23525,6 @@ theorem Submission.codim1_rdo_c1_piece_approxTangent : ∀ (P n : ℕ) (g : Eucl
     filter_upwards [self_mem_nhdsWithin] with s hs
     exact (Submission.codim1_rdo_c1pt_rescaled_area_formula P n g (ball c r) z s f
       measurableSet_ball (fun a _ => hdiff a) hinjOn hinj hs).symm
-/-- **Upper density theorem for `Hⁿ` off a Borel set of finite measure** (Simon Ch. 1, 3.3 and
-3.6, with the crude covering constant `6ⁿ`; chapter-01.txt lines 602–721).  If `S ⊆ ℝᴾ` is Borel
-with `Hⁿ(S) < ∞`, then for `Hⁿ`-a.e. `x ∉ S`, `Hⁿ(S ∩ B̄_ρ(x)) / ρⁿ → 0` as `ρ ↓ 0`.  A failure
-at `x` puts `x` in a threshold set `{x ∉ S : Hⁿ(S ∩ B̄_ρ(x)) > t ρⁿ frequently as ρ ↓ 0}` with
-`t = (k + 1)⁻¹`.  Vitali's lemma (factor `2`, enlarged radius `3ρ`) and separability give
-`t · μH[n](E) ≤ 6ⁿ Hⁿ(G)` whenever each `x ∈ E` has arbitrarily small `ρ` with
-`t ρⁿ ≤ Hⁿ(G ∩ B̄_ρ(x))`.  Taking `G = S \ F` for a closed `F ⊆ S` with `Hⁿ(S \ F)` small (weak
-regularity of the finite measure `Hⁿ⌞S`), which agrees with `S` near `x ∉ F`, every threshold set
-is `μH[n]`-null, hence `Hⁿ`-null. -/
-theorem Submission.regcomp_atl_upper_density_zero : ∀ (P n : ℕ) (S : Set (Euclid P)), MeasurableSet S → μHE[n] S ≠ ∞ → ∀ᵐ x ∂(μHE[n] : Measure (Euclid P)), x ∉ S → Tendsto (fun ρ : ℝ => μHE[n] (S ∩ closedBall x ρ) / ENNReal.ofReal ρ ^ n) (𝓝[>] 0) (𝓝 0) := by
-  intro P n S hS hfin
-  -- Step 2, Vitali selection (Simon 1.3.4): a countable disjoint subfamily whose
-  -- 3-fold enlargements cover the centres.
-  have vitali : ∀ (E : Set (Euclid P)) (p : Euclid P → ℝ → Prop) (δ : ℝ),
-      (∀ x ∈ E, ∃ ρ : ℝ, 0 < ρ ∧ ρ < δ ∧ p x ρ) →
-      ∃ u : Set (Euclid P × ℝ), u.Countable ∧ (∀ a ∈ u, a.1 ∈ E ∧ 0 < a.2 ∧ a.2 < δ ∧ p a.1 a.2) ∧
-        u.PairwiseDisjoint (fun a => closedBall a.1 a.2) ∧
-        E ⊆ ⋃ a ∈ u, closedBall a.1 (3 * a.2) := by
-    intro E p δ hE
-    obtain ⟨u, huT, hdisj, hcov⟩ := Vitali.exists_disjoint_subfamily_covering_enlargement
-      (fun a : Euclid P × ℝ => closedBall a.1 a.2)
-      {a : Euclid P × ℝ | a.1 ∈ E ∧ 0 < a.2 ∧ a.2 < δ ∧ p a.1 a.2} (fun a => a.2) 2 (by norm_num)
-      (fun a ha => ha.2.1.le) δ (fun a ha => ha.2.2.1.le)
-      (fun a ha => nonempty_closedBall.2 ha.2.1.le)
-    refine ⟨u, ?_, fun a ha => huT ha, hdisj, ?_⟩
-    · apply hdisj.countable_of_nonempty_interior
-      intro a ha
-      refine ⟨a.1, interior_mono ball_subset_closedBall ?_⟩
-      rw [isOpen_ball.interior_eq]
-      exact mem_ball_self (huT ha).2.1
-    · intro x hx
-      obtain ⟨ρ, hρ0, hρδ, hp⟩ := hE x hx
-      obtain ⟨b, hbu, ⟨w, hw1, hw2⟩, hle⟩ := hcov (x, ρ) ⟨hx, hρ0, hρδ, hp⟩
-      refine mem_iUnion₂.2 ⟨b, hbu, ?_⟩
-      rw [mem_closedBall]
-      have h1 : dist w x ≤ ρ := hw1
-      have h2 : dist w b.1 ≤ b.2 := hw2
-      have hle' : ρ ≤ 2 * b.2 := hle
-      calc dist x b.1 ≤ dist x w + dist w b.1 := dist_triangle _ _ _
-        _ ≤ ρ + b.2 := add_le_add (by rw [dist_comm]; exact h1) h2
-        _ ≤ 3 * b.2 := by linarith
-  -- Step 2, comparison (Simon 1.3.3 with the crude constant 6 ^ n).
-  have comparison : ∀ (t : ℝ≥0∞) (E G : Set (Euclid P)), t ≠ 0 → t ≠ ∞ → MeasurableSet G →
-      (∀ x ∈ E, ∀ δ : ℝ, 0 < δ → ∃ ρ : ℝ, 0 < ρ ∧ ρ < δ ∧
-        t * ENNReal.ofReal ρ ^ n ≤ μHE[n] (G ∩ closedBall x ρ)) →
-      t * μH[(n : ℝ)] E ≤ 6 ^ n * μHE[n] G := by
-    intro t E G ht0 httop hG hE
-    have hfam : ∀ j : ℕ, ∃ u : Set (Euclid P × ℝ), u.Countable ∧
-        (∀ a ∈ u, a.1 ∈ E ∧ 0 < a.2 ∧ a.2 < 1 / ((j : ℝ) + 1) ∧
-          t * ENNReal.ofReal a.2 ^ n ≤ μHE[n] (G ∩ closedBall a.1 a.2)) ∧
-        u.PairwiseDisjoint (fun a => closedBall a.1 a.2) ∧
-        E ⊆ ⋃ a ∈ u, closedBall a.1 (3 * a.2) :=
-      fun j => vitali E (fun c ρ => t * ENNReal.ofReal ρ ^ n ≤ μHE[n] (G ∩ closedBall c ρ))
-        (1 / ((j : ℝ) + 1)) (fun x hx => hE x hx _ (by positivity))
-    choose u hucount hu hdisj hcover using hfam
-    have : ∀ j, Countable (u j) := fun j => (hucount j).to_subtype
-    -- packing estimate
-    have hsum : ∀ j, t * ∑' a : u j, ENNReal.ofReal (a : Euclid P × ℝ).2 ^ n ≤ μHE[n] G := by
-      intro j
-      rw [← ENNReal.tsum_mul_left]
-      calc ∑' a : u j, t * ENNReal.ofReal (a : Euclid P × ℝ).2 ^ n
-          ≤ ∑' a : u j, μHE[n] (G ∩ closedBall (a : Euclid P × ℝ).1 (a : Euclid P × ℝ).2) :=
-            ENNReal.tsum_le_tsum fun a => (hu j a a.2).2.2.2
-        _ = μHE[n] (⋃ a ∈ u j, G ∩ closedBall a.1 a.2) :=
-            (measure_biUnion (hucount j) ((hdisj j).mono fun a => inter_subset_right)
-              fun a _ => hG.inter measurableSet_closedBall).symm
-        _ ≤ μHE[n] G := measure_mono (iUnion₂_subset fun a _ => inter_subset_left)
-    -- diameter estimate
-    have hdiam : ∀ j (a : u j), ediam (closedBall (a : Euclid P × ℝ).1 (3 * (a : Euclid P × ℝ).2))
-        ≤ ENNReal.ofReal (6 * (a : Euclid P × ℝ).2) := by
-      intro j a
-      apply ediam_le_of_forall_dist_le
-      intro y hy z hz
-      rw [mem_closedBall] at hy hz
-      calc dist y z ≤ dist y (a : Euclid P × ℝ).1 + dist z (a : Euclid P × ℝ).1 :=
-            dist_triangle_right _ _ _
-        _ ≤ 6 * (a : Euclid P × ℝ).2 := by linarith
-    have hterm : ∀ j, t * ∑' a : u j,
-        ediam (closedBall (a : Euclid P × ℝ).1 (3 * (a : Euclid P × ℝ).2)) ^ (n : ℝ) ≤
-          6 ^ n * μHE[n] G := by
-      intro j
-      calc t * ∑' a : u j, ediam (closedBall (a : Euclid P × ℝ).1 (3 * (a : Euclid P × ℝ).2)) ^ (n : ℝ)
-          ≤ t * ∑' a : u j, 6 ^ n * ENNReal.ofReal (a : Euclid P × ℝ).2 ^ n := by
-            gcongr with a
-            rw [ENNReal.rpow_natCast]
-            calc ediam (closedBall (a : Euclid P × ℝ).1 (3 * (a : Euclid P × ℝ).2)) ^ n
-                ≤ ENNReal.ofReal (6 * (a : Euclid P × ℝ).2) ^ n := by gcongr; exact hdiam j a
-              _ = 6 ^ n * ENNReal.ofReal (a : Euclid P × ℝ).2 ^ n := by
-                rw [ENNReal.ofReal_mul (show (0 : ℝ) ≤ 6 by norm_num), mul_pow]
-                norm_num
-        _ = 6 ^ n * (t * ∑' a : u j, ENNReal.ofReal (a : Euclid P × ℝ).2 ^ n) := by
-            rw [ENNReal.tsum_mul_left]; ring
-        _ ≤ 6 ^ n * μHE[n] G := by gcongr; exact hsum j
-    have hH := MeasureTheory.Measure.hausdorffMeasure_le_liminf_tsum (X := Euclid P)
-      (ι := fun j => (u j)) (n : ℝ) E (l := atTop)
-      (fun j : ℕ => ENNReal.ofReal (6 * (1 / ((j : ℝ) + 1))))
-      (by
-        rw [← ENNReal.ofReal_zero]
-        apply ENNReal.tendsto_ofReal
-        have := tendsto_one_div_add_atTop_nhds_zero_nat (𝕜 := ℝ)
-        simpa using this.const_mul 6)
-      (fun j a => closedBall (a : Euclid P × ℝ).1 (3 * (a : Euclid P × ℝ).2))
-      (Eventually.of_forall fun j a => (hdiam j a).trans (ENNReal.ofReal_le_ofReal (by
-        have := (hu j a a.2).2.2.1
-        linarith)))
-      (Eventually.of_forall fun j x hx => by
-        obtain ⟨a, ha, hxa⟩ := mem_iUnion₂.1 (hcover j hx)
-        exact mem_iUnion.2 ⟨⟨a, ha⟩, hxa⟩)
-    have hbound : ∀ j, ∑' a : u j,
-        ediam (closedBall (a : Euclid P × ℝ).1 (3 * (a : Euclid P × ℝ).2)) ^ (n : ℝ) ≤
-          6 ^ n * μHE[n] G / t := by
-      intro j
-      rw [ENNReal.le_div_iff_mul_le (Or.inl ht0) (Or.inl httop), mul_comm]
-      exact hterm j
-    have hlim : μH[(n : ℝ)] E ≤ 6 ^ n * μHE[n] G / t :=
-      hH.trans (liminf_le_of_frequently_le' (Frequently.of_forall hbound))
-    calc t * μH[(n : ℝ)] E ≤ t * (6 ^ n * μHE[n] G / t) := by gcongr
-      _ = 6 ^ n * μHE[n] G := ENNReal.mul_div_cancel ht0 httop
-  -- Step 3, each threshold set is null (Simon 1.3.6).
-  have threshold : ∀ t : ℝ≥0∞, t ≠ 0 → t ≠ ∞ →
-      μHE[n] {x : Euclid P | x ∉ S ∧ ∃ᶠ ρ in 𝓝[>] (0 : ℝ),
-        t < μHE[n] (S ∩ closedBall x ρ) / ENNReal.ofReal ρ ^ n} = 0 := by
-    intro t ht0 httop
-    set N := {x : Euclid P | x ∉ S ∧ ∃ᶠ ρ in 𝓝[>] (0 : ℝ),
-      t < μHE[n] (S ∩ closedBall x ρ) / ENNReal.ofReal ρ ^ n} with hN
-    have key : ∀ ε : ℝ≥0∞, ε ≠ 0 → μH[(n : ℝ)] N < ε := by
-      intro ε hε
-      have : IsFiniteMeasure ((μHE[n] : Measure (Euclid P)).restrict S) :=
-        ⟨by rw [Measure.restrict_apply_univ]; exact hfin.lt_top⟩
-      have : ((μHE[n] : Measure (Euclid P)).restrict S).WeaklyRegular :=
-        Measure.WeaklyRegular.of_pseudoMetrizableSpace_of_isFiniteMeasure _
-      have hpos : t * ε / 6 ^ n ≠ 0 := by
-        apply ENNReal.div_ne_zero.2
-        exact ⟨mul_ne_zero ht0 hε, ENNReal.pow_ne_top (by norm_num)⟩
-      obtain ⟨F, hFS, hFc, hFlt⟩ := hS.exists_isClosed_sdiff_lt
-        (μ := (μHE[n] : Measure (Euclid P)).restrict S)
-        (by rw [Measure.restrict_apply hS, inter_self]; exact hfin) hpos
-      have hG : MeasurableSet (S \ F) := hS.diff hFc.measurableSet
-      have hμG : μHE[n] (S \ F) < t * ε / 6 ^ n := by
-        rwa [Measure.restrict_apply hG, inter_eq_left.2 sdiff_subset] at hFlt
-      have hhyp : ∀ x ∈ N, ∀ δ : ℝ, 0 < δ → ∃ ρ : ℝ, 0 < ρ ∧ ρ < δ ∧
-          t * ENNReal.ofReal ρ ^ n ≤ μHE[n] ((S \ F) ∩ closedBall x ρ) := by
-        intro x hx δ hδ
-        obtain ⟨hxS, hfreq⟩ := hx
-        have hxF : x ∉ F := fun h => hxS (hFS h)
-        obtain ⟨r₁, hr₁, hball⟩ := Metric.isOpen_iff.1 hFc.isOpen_compl x hxF
-        have hev : ∀ᶠ ρ in 𝓝[>] (0 : ℝ), ρ ∈ Ioo 0 (min δ (r₁ / 2)) :=
-          Ioo_mem_nhdsGT (by positivity)
-        obtain ⟨ρ, hρq, hρ⟩ := (hfreq.and_eventually hev).exists
-        refine ⟨ρ, hρ.1, lt_of_lt_of_le hρ.2 (min_le_left _ _), ?_⟩
-        have hρpos : ENNReal.ofReal ρ ^ n ≠ 0 :=
-          pow_ne_zero _ (ENNReal.ofReal_pos.2 hρ.1).ne'
-        have hρtop : ENNReal.ofReal ρ ^ n ≠ ∞ := ENNReal.pow_ne_top ENNReal.ofReal_ne_top
-        have h1 : t * ENNReal.ofReal ρ ^ n < μHE[n] (S ∩ closedBall x ρ) :=
-          (ENNReal.lt_div_iff_mul_lt (Or.inl hρpos) (Or.inl hρtop)).1 hρq
-        have h2 : S ∩ closedBall x ρ = (S \ F) ∩ closedBall x ρ := by
-          ext y
-          constructor
-          · rintro ⟨hyS, hyB⟩
-            refine ⟨⟨hyS, fun hyF => hball ?_ hyF⟩, hyB⟩
-            rw [mem_ball]
-            have := mem_closedBall.1 hyB
-            have := hρ.2
-            have := min_le_right δ (r₁ / 2)
-            linarith
-          · rintro ⟨⟨hyS, _⟩, hyB⟩
-            exact ⟨hyS, hyB⟩
-        rw [← h2]
-        exact h1.le
-      have hcomp := comparison t N (S \ F) ht0 httop hG hhyp
-      have h6 : (6 : ℝ≥0∞) ^ n ≠ 0 := pow_ne_zero _ (by norm_num)
-      have h6' : (6 : ℝ≥0∞) ^ n ≠ ∞ := ENNReal.pow_ne_top (by norm_num)
-      have hlt : t * μH[(n : ℝ)] N < t * ε := by
-        calc t * μH[(n : ℝ)] N ≤ 6 ^ n * μHE[n] (S \ F) := hcomp
-          _ < 6 ^ n * (t * ε / 6 ^ n) := ENNReal.mul_lt_mul_right h6 h6' hμG
-          _ = t * ε := ENNReal.mul_div_cancel h6 h6'
-      exact (ENNReal.mul_lt_mul_iff_right ht0 httop).1 hlt
-    have hH : μH[(n : ℝ)] N = 0 := by
-      by_contra h
-      exact lt_irrefl _ (key _ h)
-    rw [Measure.euclideanHausdorffMeasure_def, Measure.smul_apply, hH, smul_zero]
-  -- Steps 1 and 4, every failure of convergence lies in a threshold set.
-  rw [ae_iff]
-  apply measure_mono_null (t := ⋃ k : ℕ, {x : Euclid P | x ∉ S ∧ ∃ᶠ ρ in 𝓝[>] (0 : ℝ),
-    ((k : ℝ≥0∞) + 1)⁻¹ < μHE[n] (S ∩ closedBall x ρ) / ENNReal.ofReal ρ ^ n})
-  · intro x hx
-    simp only [mem_ofPred_eq, Classical.not_imp] at hx
-    obtain ⟨hxS, hnt⟩ := hx
-    rw [ENNReal.tendsto_nhds_zero] at hnt
-    push Not at hnt
-    obtain ⟨ε, hε, hfreq⟩ := hnt
-    obtain ⟨k, hk⟩ := ENNReal.exists_inv_nat_lt hε.ne'
-    refine mem_iUnion.2 ⟨k, hxS, hfreq.mono fun ρ hρ => ?_⟩
-    calc ((k : ℝ≥0∞) + 1)⁻¹ ≤ (k : ℝ≥0∞)⁻¹ := ENNReal.inv_le_inv.2 le_self_add
-      _ < ε := hk
-      _ < _ := hρ
-  · exact measure_iUnion_null fun k => threshold _ (by simp) (by simp)
-
-/-- **Upper density theorem for `Hⁿ` off a Borel set of locally finite measure in an open set**
-(Simon Ch. 1, 3.6 and Remark 3.7(2); chapter-01.txt lines 700–711).  If `U ⊆ ℝᴾ` is open and
-`S ⊆ ℝᴾ` is Borel with `Hⁿ(S ∩ K) < ∞` for every compact `K ⊆ U`, then for `Hⁿ`-a.e.
-`x ∈ U \ S`, `Hⁿ(S ∩ B̄_ρ(x)) / ρⁿ → 0` as `ρ ↓ 0`.  Countably many balls `B(y, r_y)` with
-`B̄(y, r_y) ⊆ U` cover `U` (Lindelöf); the upper density theorem applies to each piece
-`S ∩ B(y, r_y)`, of finite measure, and the piece agrees with `S` on small balls about
-`x ∈ B(y, r_y)`. -/
-theorem Submission.doraggt_local_density_zero : ∀ (P n : ℕ) (U S : Set (Euclid P)), IsOpen U → MeasurableSet S → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μHE[n] (S ∩ K) ≠ ∞) → ∀ᵐ x ∂(μHE[n] : Measure (Euclid P)), x ∈ U → x ∉ S → Tendsto (fun ρ : ℝ => μHE[n] (S ∩ closedBall x ρ) / ENNReal.ofReal ρ ^ n) (𝓝[>] 0) (𝓝 0) := by
-  intro P n U S hU hS hfin
-  -- Step 1, a countable cover of `U` by balls `B(y, r y)` with `B̄(y, r y) ⊆ U` (Lindelöf).
-  have hrad : ∀ y ∈ U, ∃ r : ℝ, 0 < r ∧ closedBall y r ⊆ U := by
-    intro y hy
-    obtain ⟨ε, hε, hball⟩ := Metric.isOpen_iff.1 hU y hy
-    exact ⟨ε / 2, half_pos hε, (closedBall_subset_ball (half_lt_self hε)).trans hball⟩
-  choose! r hr0 hrU using hrad
-  obtain ⟨D, hDU, hDc, hcover⟩ := TopologicalSpace.countable_cover_nhdsWithin
-    (f := fun y => ball y (r y)) (s := U)
-    (fun y hy => mem_nhdsWithin_of_mem_nhds (ball_mem_nhds y (hr0 y hy)))
-  -- Steps 2 and 3, the upper density theorem for each finite-measure piece `S ∩ B(y, r y)`,
-  -- simultaneously for the countably many `y ∈ D`.
-  have hae : ∀ᵐ x ∂(μHE[n] : Measure (Euclid P)), ∀ y ∈ D, x ∉ S ∩ ball y (r y) →
-      Tendsto (fun ρ : ℝ => μHE[n] ((S ∩ ball y (r y)) ∩ closedBall x ρ) / ENNReal.ofReal ρ ^ n)
-        (𝓝[>] 0) (𝓝 0) := by
-    rw [ae_ball_iff hDc]
-    intro y hy
-    refine Submission.regcomp_atl_upper_density_zero P n _ (hS.inter measurableSet_ball) ?_
-    exact ne_top_of_le_ne_top (hfin _ (isCompact_closedBall y (r y)) (hrU y (hDU hy)))
-      (measure_mono (inter_subset_inter_right _ ball_subset_closedBall))
-  -- Step 4, near `x ∈ B(y, r y)` the piece and `S` agree.
-  filter_upwards [hae] with x hx hxU hxS
-  obtain ⟨y, hyD, hxy⟩ := mem_iUnion₂.1 (hcover hxU)
-  obtain ⟨ε, hε, hεball⟩ := Metric.isOpen_iff.1 isOpen_ball x hxy
-  refine (hx y hyD fun h => hxS h.1).congr' ?_
-  filter_upwards [Ioo_mem_nhdsGT hε] with ρ hρ
-  rw [inter_assoc, inter_eq_right.2 ((closedBall_subset_ball hρ.2).trans hεball)]
-/-- Asymptotically equal blow-up integrals give equal approximate tangent spaces (Simon Ch. 3,
-Definition 1.4; last step of the proof of 3.1.6).  With `η_r = η_{x,r}`, `I(r) = ∫_{η_r(M)} f dHⁿ`,
-`I'(r) = ∫_{η_r(M')} f dHⁿ` and `I(r) − I'(r) → 0` as `r ↓ 0` for every `f ∈ C_c(ℝᴾ)`:
-`I' = I − (I − I')` and `I = I' + (I − I')` have the same limit `∫_Q f dHⁿ` as `I`, resp. `I'`,
-while the condition `dim Q = n` does not involve `M`, `M'`. -/
-theorem Submission.regcomp_atl_pc_tangent_iff_of_integral_sub_tendsto : ∀ (P n : ℕ) (M M' : Set (Euclid P)) (x : Euclid P), (∀ f : CompactlySupportedContinuousMap (Euclid P) ℝ, Tendsto (fun r : ℝ => (∫ y in Poincare.SimonGMT.Chapter03.blowUpMap x r '' M, f y ∂μHE[n]) - ∫ y in Poincare.SimonGMT.Chapter03.blowUpMap x r '' M', f y ∂μHE[n]) (𝓝[>] 0) (𝓝 0)) → ∀ Q : Submodule ℝ (Euclid P), HasApproximateTangentSpaceAt n M x Q ↔ HasApproximateTangentSpaceAt n M' x Q := by
-  intro P n M M' x hD Q
-  constructor
-  · -- (⇒) `I' = I − (I − I') → L − 0 = L`
-    rintro ⟨hQ, hM⟩
-    refine ⟨hQ, fun f => ?_⟩
-    have h := (hM f).sub (hD f)
-    rw [sub_zero] at h
-    exact h.congr fun r => sub_sub_cancel _ _
-  · -- (⇐) `I = I' + (I − I') → L + 0 = L`
-    rintro ⟨hQ, hM'⟩
-    refine ⟨hQ, fun f => ?_⟩
-    have h := (hM' f).add (hD f)
-    rw [add_zero] at h
-    exact h.congr fun r => add_sub_cancel _ _
-/-- Comparison of blow-up integrals (proof of Simon 3.1.6): for Borel `A ⊆ B`, `r > 0` and a
-continuous `f` with `|f| ≤ C` vanishing off `B̄_R(0)`,
-`|∫_{η_{x,r}(B)} f dHⁿ − ∫_{η_{x,r}(A)} f dHⁿ| ≤ C Hⁿ(η_{x,r}(B \ A) ∩ B̄_R(0))`.  Since `η_{x,r}` is
-injective, `η_{x,r}(B)` is the disjoint union of `η_{x,r}(A)` and `η_{x,r}(B \ A)`, both Borel
-(`η_{x,r}(T)` is the preimage of `T` under `y ↦ x + ry`); the difference of the integrals is the
-integral over `η_{x,r}(B \ A)`, which equals the integral over `η_{x,r}(B \ A) ∩ B̄_R(0)`. -/
-theorem Submission.regcomp_atl_pc_blowUp_setIntegral_sub_le : ∀ (P n : ℕ) (A B : Set (Euclid P)) (x : Euclid P) (r R C : ℝ) (f : Euclid P → ℝ), Continuous f → MeasurableSet A → MeasurableSet B → A ⊆ B → 0 < r → μHE[n] (Poincare.SimonGMT.Chapter03.blowUpMap x r '' B ∩ closedBall 0 R) ≠ ∞ → (∀ y : Euclid P, ‖f y‖ ≤ C) → (∀ y : Euclid P, y ∉ closedBall (0 : Euclid P) R → f y = 0) → ‖(∫ y in Poincare.SimonGMT.Chapter03.blowUpMap x r '' B, f y ∂μHE[n]) - ∫ y in Poincare.SimonGMT.Chapter03.blowUpMap x r '' A, f y ∂μHE[n]‖ ≤ C * (μHE[n] (Poincare.SimonGMT.Chapter03.blowUpMap x r '' (B \ A) ∩ closedBall 0 R)).toReal := by
-  intro P n A B x r R C f hf hA hB hAB hr hfin hC hzero
-  -- Step 1: `η = η_{x,r}` is injective
-  have hinj : Injective (Poincare.SimonGMT.Chapter03.blowUpMap x r : Euclid P → Euclid P) := by
-    intro z w h
-    have h' : z - x = w - x :=
-      smul_right_injective (Euclid P) (inv_ne_zero hr.ne') h
-    simpa using h'
-  -- Step 2: `η(T) = g⁻¹(T)` for `g y = x + r • y`, so `η` maps Borel sets to Borel sets
-  have himage : ∀ T : Set (Euclid P),
-      Poincare.SimonGMT.Chapter03.blowUpMap x r '' T = (fun y : Euclid P => x + r • y) ⁻¹' T := by
-    intro T
-    ext y
-    constructor
-    · rintro ⟨z, hz, rfl⟩
-      simpa [Poincare.SimonGMT.Chapter03.blowUpMap, smul_smul, mul_inv_cancel₀ hr.ne'] using hz
-    · intro hy
-      refine ⟨x + r • y, hy, ?_⟩
-      simp [Poincare.SimonGMT.Chapter03.blowUpMap, smul_smul, inv_mul_cancel₀ hr.ne']
-  have hmeas : ∀ T : Set (Euclid P), MeasurableSet T →
-      MeasurableSet (Poincare.SimonGMT.Chapter03.blowUpMap x r '' T) := by
-    intro T hT
-    rw [himage T]
-    exact (by fun_prop : Continuous fun y : Euclid P => x + r • y).measurable hT
-  -- Step 3: `f` is integrable on `η(T)` for Borel `T ⊆ B`
-  have hint : ∀ T : Set (Euclid P), MeasurableSet T → T ⊆ B →
-      IntegrableOn f (Poincare.SimonGMT.Chapter03.blowUpMap x r '' T) μHE[n] := by
-    intro T hT hTB
-    have hfinT : μHE[n] (Poincare.SimonGMT.Chapter03.blowUpMap x r '' T ∩ closedBall 0 R) ≠ ∞ :=
-      ne_top_of_le_ne_top hfin (measure_mono (inter_subset_inter_left _ (image_mono hTB)))
-    exact (Measure.integrableOn_of_bounded hfinT hf.aestronglyMeasurable
-      (Eventually.of_forall hC)).of_forall_sdiff_eq_zero (hmeas T hT)
-      fun y hy => hzero y fun h => hy.2 ⟨hy.1, h⟩
-  -- Step 4: `∫_{η(B)} f − ∫_{η(A)} f = ∫_{η(B∖A)} f`
-  have hBA : MeasurableSet (B \ A) := hB.diff hA
-  have hunion : ∫ y in Poincare.SimonGMT.Chapter03.blowUpMap x r '' B, f y ∂μHE[n] =
-      (∫ y in Poincare.SimonGMT.Chapter03.blowUpMap x r '' A, f y ∂μHE[n]) +
-        ∫ y in Poincare.SimonGMT.Chapter03.blowUpMap x r '' (B \ A), f y ∂μHE[n] := by
-    rw [← setIntegral_union ((disjoint_image_iff hinj).mpr disjoint_sdiff_right) (hmeas _ hBA)
-      (hint A hA hAB) (hint _ hBA sdiff_subset), ← image_union, union_sdiff_cancel hAB]
-  -- Step 5: localization to `B̄_R(0)`
-  have hloc : ∫ y in Poincare.SimonGMT.Chapter03.blowUpMap x r '' (B \ A), f y ∂μHE[n] =
-      ∫ y in Poincare.SimonGMT.Chapter03.blowUpMap x r '' (B \ A) ∩ closedBall 0 R, f y ∂μHE[n] :=
-    setIntegral_eq_of_subset_of_forall_sdiff_eq_zero (hmeas _ hBA) inter_subset_left
-      fun y hy => hzero y fun h => hy.2 ⟨hy.1, h⟩
-  -- Step 6: the estimate
-  have hfinS : μHE[n] (Poincare.SimonGMT.Chapter03.blowUpMap x r '' (B \ A) ∩ closedBall 0 R) < ∞ :=
-    (measure_mono (inter_subset_inter_left _ (image_mono sdiff_subset))).trans_lt hfin.lt_top
-  rw [hunion, add_sub_cancel_left, hloc, ← measureReal_def]
-  exact norm_setIntegral_le_of_norm_le_const hfinS fun y _ => hC y
-/-- Rescaling a vanishing `n`-density quotient (the final limit in the proof of Simon 3.1.6): if
-`g(ρ)/ρⁿ → 0` as `ρ ↓ 0` and `R > 0`, then `r⁻ⁿ g(rR) → 0` as `r ↓ 0`.  The substitution
-`ρ = rR` maps `𝓝[>] 0` to itself, multiplying by the finite constant `Rⁿ` keeps the limit `0`,
-and `Rⁿ · g(rR)/(rR)ⁿ = r⁻ⁿ g(rR)` for `r > 0`. -/
-theorem Submission.regcomp_atl_pc_density_rescale_tendsto : ∀ (n : ℕ) (g : ℝ → ℝ≥0∞) (R : ℝ), 0 < R → Tendsto (fun ρ : ℝ => g ρ / ENNReal.ofReal ρ ^ n) (𝓝[>] 0) (𝓝 0) → Tendsto (fun r : ℝ => (ENNReal.ofReal r)⁻¹ ^ n * g (r * R)) (𝓝[>] 0) (𝓝 0) := by
-  intro n g R hR hg
-  -- Step 1: `r ↦ r * R` maps `𝓝[>] 0` to `𝓝[>] 0`
-  have hmap : Tendsto (fun r : ℝ => r * R) (𝓝[>] 0) (𝓝[>] 0) := by
-    refine tendsto_nhdsWithin_of_tendsto_nhds_of_eventually_within _ ?_ ?_
-    · exact ((continuous_mul_const R).tendsto' 0 0 (zero_mul R)).mono_left nhdsWithin_le_nhds
-    · filter_upwards [self_mem_nhdsWithin] with r (hr : 0 < r)
-      exact mul_pos hr hR
-  -- Step 2: `g (r * R) / ofReal (r * R) ^ n → 0`
-  have hcomp : Tendsto (fun r : ℝ => g (r * R) / ENNReal.ofReal (r * R) ^ n) (𝓝[>] 0) (𝓝 0) :=
-    hg.comp hmap
-  -- Step 3: multiplication by the finite constant `ofReal R ^ n`
-  have hbtop : ENNReal.ofReal R ^ n ≠ ∞ := ENNReal.pow_ne_top ENNReal.ofReal_ne_top
-  have hconst : Tendsto
-      (fun r : ℝ => ENNReal.ofReal R ^ n * (g (r * R) / ENNReal.ofReal (r * R) ^ n))
-      (𝓝[>] 0) (𝓝 0) := by
-    have h := ENNReal.Tendsto.const_mul hcomp (Or.inr hbtop)
-    rwa [mul_zero] at h
-  -- Step 4: for `r > 0`, `Rⁿ · g(rR)/(rR)ⁿ = r⁻ⁿ g(rR)`
-  have heq : (fun r : ℝ => ENNReal.ofReal R ^ n * (g (r * R) / ENNReal.ofReal (r * R) ^ n))
-      =ᶠ[𝓝[>] 0] fun r : ℝ => (ENNReal.ofReal r)⁻¹ ^ n * g (r * R) := by
-    filter_upwards [self_mem_nhdsWithin] with r (hr : 0 < r)
-    have ha0 : ENNReal.ofReal r ^ n ≠ 0 := ENNReal.pow_ne_zero (ENNReal.ofReal_pos.mpr hr).ne' n
-    have hatop : ENNReal.ofReal r ^ n ≠ ∞ := ENNReal.pow_ne_top ENNReal.ofReal_ne_top
-    have hb0 : ENNReal.ofReal R ^ n ≠ 0 := ENNReal.pow_ne_zero (ENNReal.ofReal_pos.mpr hR).ne' n
-    calc ENNReal.ofReal R ^ n * (g (r * R) / ENNReal.ofReal (r * R) ^ n)
-        = ENNReal.ofReal R ^ n *
-            ((ENNReal.ofReal r ^ n)⁻¹ * (ENNReal.ofReal R ^ n)⁻¹ * g (r * R)) := by
-          rw [ENNReal.ofReal_mul hr.le, mul_pow, ENNReal.div_eq_inv_mul,
-            ENNReal.mul_inv (Or.inl ha0) (Or.inl hatop)]
-      _ = ENNReal.ofReal R ^ n * (ENNReal.ofReal R ^ n)⁻¹ *
-            ((ENNReal.ofReal r ^ n)⁻¹ * g (r * R)) := by ring
-      _ = (ENNReal.ofReal r)⁻¹ ^ n * g (r * R) := by
-          rw [ENNReal.mul_inv_cancel hb0 hbtop, one_mul, ENNReal.inv_pow]
-  -- Step 5: the two functions agree eventually along `𝓝[>] 0`
-  exact hconst.congr' heq
 /-- Changing a set by parts of vanishing `n`-density at `x` does not change its approximate
 tangent spaces at `x` (Simon Ch. 3, Definition 1.4 and Remark 1.5(2); proof of 3.1.6).  For
 `f ∈ C_c(ℝᴾ)` with `|f| ≤ C`, `f = 0` off `B̄_R(0)` and `0 < r < r₀/R`, comparing both blow-up
@@ -33977,471 +33646,6 @@ theorem Submission.cmcs_level_cutoff : ∀ (P : ℕ) (f : Euclid P → ℝ) (L :
     rw [mem_ball] at hy
     have : (L : ℝ) * dist y x ≤ L * (2 * σ) := mul_le_mul_of_nonneg_left hy.le hL0
     linarith
-  -- Step 6: enumerate the pieces by `i ↦ (unpair i)`; their images are Borel (Lusin–Souslin)
-  set Fi : ℕ → Euclid n → Euclid P := fun i => F₀ (Nat.unpair i).1 with hFi
-  set Di : ℕ → Set (Euclid n) := fun i =>
-    G (Nat.unpair i).1 ∩ t (Nat.unpair i).1 (Nat.unpair i).2 with hDi
-  set mi : ℕ → ℝ := fun i =>
-    ((c (A (Nat.unpair i).1 (Nat.unpair i).2) / 2 : NNReal) : ℝ) with hmi
-  have hDmeas : ∀ i, MeasurableSet (Di i) := fun i =>
-    (hGmeas _).inter (htmeas _ _)
-  have hmipos : ∀ i, 0 < mi i := fun i => by
-    simp only [hmi, NNReal.coe_div, NNReal.coe_ofNat]
-    exact div_pos (hcpos _) two_pos
-  have hlowi : ∀ i, ∀ a ∈ Di i, ∀ a' ∈ Di i, mi i * ‖a - a'‖ ≤ ‖Fi i a - Fi i a'‖ :=
-    fun i => hlow _ _
-  have hNmeas : ∀ i, MeasurableSet (Fi i '' Di i) := by
-    intro i
-    refine (hDmeas i).image_of_continuousOn_injOn (hK _).continuous.continuousOn ?_
-    intro a ha a' ha' h
-    have := hlowi i a ha a' ha'
-    rw [h, sub_self, norm_zero] at this
-    have h0 : ‖a - a'‖ = 0 := by
-      rcases (norm_nonneg (a - a')).eq_or_lt with h0 | h0
-      · exact h0.symm
-      · linarith [mul_pos (hmipos i) h0]
-    exact sub_eq_zero.mp (norm_eq_zero.mp h0)
-  -- Step 7: disjointify the images inside `M`
-  set Ñ : ℕ → Set (Euclid P) := fun i => Fi i '' Di i ∩ M
-  have hÑmeas : ∀ i, MeasurableSet (Ñ i) := fun i => (hNmeas i).inter hM
-  set B : ℕ → Set (Euclid n) := fun i => Di i ∩ Fi i ⁻¹' disjointed Ñ i with hB
-  have himg : ∀ i, Fi i '' B i = disjointed Ñ i := by
-    intro i
-    rw [hB, image_inter_preimage]
-    exact inter_eq_right.mpr ((disjointed_subset Ñ i).trans inter_subset_left)
-  refine ⟨Fi, B, mi, fun i => ⟨K _, hK _⟩,
-    fun i => (hDmeas i).inter ((hK _).continuous.measurable (MeasurableSet.disjointed hÑmeas i)),
-    hmipos, fun i a ha a' ha' => hlowi i a ha.1 a' ha'.1, fun i a ha => ha.1.1,
-    fun i => himg i ▸ MeasurableSet.disjointed hÑmeas i,
-    fun i => himg i ▸ ((disjointed_subset Ñ i).trans inter_subset_right), ?_, ?_⟩
-  · intro i j hij
-    rw [himg i, himg j]
-    exact disjoint_disjointed Ñ hij
-  -- Step 8: the remainder lies in `M₀ ∪ ⋃ⱼ Fⱼ(ℝⁿ ∖ Gⱼ)`
-  · have hU : (⋃ i, Fi i '' B i) = ⋃ i, Ñ i := by
-      simp_rw [himg]
-      exact iUnion_disjointed
-    rw [hU]
-    refine measure_mono_null ?_ (measure_union_null hM₀ (measure_iUnion_null hGnull))
-    rintro x ⟨hxM, hxN⟩
-    rcases hcover hxM with hx0 | hx
-    · exact Or.inl hx0
-    · obtain ⟨j, a, rfl⟩ := mem_iUnion.mp hx
-      by_cases ha : a ∈ G j
-      · exfalso
-        obtain ⟨k, hk⟩ := mem_iUnion.mp (hGt j ha)
-        apply hxN
-        refine mem_iUnion.mpr ⟨Nat.pair j k, ⟨a, ?_, ?_⟩, hxM⟩
-        · simp only [hDi, Nat.unpair_pair]
-          exact ⟨ha, hk⟩
-        · simp only [hFi, Nat.unpair_pair]
-      · exact Or.inr (mem_iUnion.mpr ⟨j, a, ha, rfl⟩)
-/-- Scaling of `Hⁿ` under the blow-up `η_{x,r}(z) = r⁻¹(z − x)`, `r > 0`:
-`Hⁿ(η_{x,r}(S) ∩ B̄_R(0)) = r⁻ⁿ Hⁿ(S ∩ B̄_{rR}(x))`.  As `‖η_{x,r}(z)‖ = r⁻¹‖z − x‖`, the left side
-is `Hⁿ(η_{x,r}(S ∩ B̄_{rR}(x)))`; and `η_{x,r}` is the homothety of centre `x` and ratio `r⁻¹`,
-which multiplies `Hⁿ` by `‖r⁻¹‖₊ⁿ = r⁻ⁿ`, followed by the translation by `−x`, an isometry. -/
-theorem Submission.ptd_tl_blowUp_measure_scaling : ∀ (P n : ℕ) (x : Euclid P) (r R : ℝ) (S : Set (Euclid P)), 0 < r → μHE[n] (Poincare.SimonGMT.Chapter03.blowUpMap x r '' S ∩ closedBall 0 R) = (ENNReal.ofReal r)⁻¹ ^ n * μHE[n] (S ∩ closedBall x (r * R)) := by
-  intro P n x r R S hr
-  -- `‖η(z)‖ = r⁻¹‖z − x‖`, since `r > 0`
-  have hnorm : ∀ z : Euclid P,
-      ‖Poincare.SimonGMT.Chapter03.blowUpMap x r z‖ = r⁻¹ * ‖z - x‖ := by
-    intro z
-    rw [Poincare.SimonGMT.Chapter03.blowUpMap, norm_smul, Real.norm_eq_abs,
-      abs_of_pos (inv_pos.mpr hr)]
-  -- `η(S) ∩ B̄_R(0) = η(S ∩ B̄_{rR}(x))`
-  have hset : Poincare.SimonGMT.Chapter03.blowUpMap x r '' S ∩ closedBall 0 R =
-      Poincare.SimonGMT.Chapter03.blowUpMap x r '' (S ∩ closedBall x (r * R)) := by
-    ext y
-    constructor
-    · rintro ⟨⟨z, hz, rfl⟩, hy⟩
-      refine ⟨z, ⟨hz, ?_⟩, rfl⟩
-      rw [mem_closedBall_zero_iff, hnorm] at hy
-      rw [mem_closedBall, dist_eq_norm, ← mul_inv_cancel_left₀ hr.ne' ‖z - x‖]
-      exact mul_le_mul_of_nonneg_left hy hr.le
-    · rintro ⟨z, ⟨hz, hzx⟩, rfl⟩
-      refine ⟨⟨z, hz, rfl⟩, ?_⟩
-      rw [mem_closedBall, dist_eq_norm] at hzx
-      rw [mem_closedBall_zero_iff, hnorm, ← inv_mul_cancel_left₀ hr.ne' R]
-      exact mul_le_mul_of_nonneg_left hzx (inv_pos.mpr hr).le
-  -- `η = τ ∘ h`: the homothety `h` of centre `x` and ratio `r⁻¹`, then the translation by `−x`
-  have hcomp : Poincare.SimonGMT.Chapter03.blowUpMap x r =
-      (fun y : Euclid P => y + -x) ∘ AffineMap.homothety x r⁻¹ := by
-    funext z
-    simp [Poincare.SimonGMT.Chapter03.blowUpMap, AffineMap.homothety_apply]
-  -- `μ(η(T)) = μ(h(T)) = ‖r⁻¹‖₊ⁿ μ(T) = (ofReal r)⁻¹ⁿ μ(T)`
-  have hscale : ∀ T : Set (Euclid P), μHE[n] (Poincare.SimonGMT.Chapter03.blowUpMap x r '' T) =
-      (ENNReal.ofReal r)⁻¹ ^ n * μHE[n] T := by
-    intro T
-    rw [hcomp, Set.image_comp, (isometry_add_right (-x)).euclideanHausdorffMeasure_image,
-      euclideanHausdorffMeasure_homothety_image n x (inv_ne_zero hr.ne') T, ENNReal.smul_def,
-      smul_eq_mul, ENNReal.coe_pow, nnnorm_inv, ENNReal.coe_inv (nnnorm_ne_zero_iff.mpr hr.ne'),
-      Real.nnnorm_of_nonneg hr.le, ← ENNReal.ofReal_eq_coe_nnreal hr.le]
-  rw [hset, hscale]
-/-- **Upper density theorem for `Hⁿ` off a Borel set of finite measure** (Simon Ch. 1, 3.3 and
-3.6, with the crude covering constant `6ⁿ`; chapter-01.txt lines 602–721).  If `S ⊆ ℝᴾ` is Borel
-with `Hⁿ(S) < ∞`, then for `Hⁿ`-a.e. `x ∉ S`, `Hⁿ(S ∩ B̄_ρ(x)) / ρⁿ → 0` as `ρ ↓ 0`.  A failure
-at `x` puts `x` in a threshold set `{x ∉ S : Hⁿ(S ∩ B̄_ρ(x)) > t ρⁿ frequently as ρ ↓ 0}` with
-`t = (k + 1)⁻¹`.  Vitali's lemma (factor `2`, enlarged radius `3ρ`) and separability give
-`t · μH[n](E) ≤ 6ⁿ Hⁿ(G)` whenever each `x ∈ E` has arbitrarily small `ρ` with
-`t ρⁿ ≤ Hⁿ(G ∩ B̄_ρ(x))`.  Taking `G = S \ F` for a closed `F ⊆ S` with `Hⁿ(S \ F)` small (weak
-regularity of the finite measure `Hⁿ⌞S`), which agrees with `S` near `x ∉ F`, every threshold set
-is `μH[n]`-null, hence `Hⁿ`-null. -/
-theorem Submission.regcomp_atl_upper_density_zero : ∀ (P n : ℕ) (S : Set (Euclid P)), MeasurableSet S → μHE[n] S ≠ ∞ → ∀ᵐ x ∂(μHE[n] : Measure (Euclid P)), x ∉ S → Tendsto (fun ρ : ℝ => μHE[n] (S ∩ closedBall x ρ) / ENNReal.ofReal ρ ^ n) (𝓝[>] 0) (𝓝 0) := by
-  intro P n S hS hfin
-  -- Step 2, Vitali selection (Simon 1.3.4): a countable disjoint subfamily whose
-  -- 3-fold enlargements cover the centres.
-  have vitali : ∀ (E : Set (Euclid P)) (p : Euclid P → ℝ → Prop) (δ : ℝ),
-      (∀ x ∈ E, ∃ ρ : ℝ, 0 < ρ ∧ ρ < δ ∧ p x ρ) →
-      ∃ u : Set (Euclid P × ℝ), u.Countable ∧ (∀ a ∈ u, a.1 ∈ E ∧ 0 < a.2 ∧ a.2 < δ ∧ p a.1 a.2) ∧
-        u.PairwiseDisjoint (fun a => closedBall a.1 a.2) ∧
-        E ⊆ ⋃ a ∈ u, closedBall a.1 (3 * a.2) := by
-    intro E p δ hE
-    obtain ⟨u, huT, hdisj, hcov⟩ := Vitali.exists_disjoint_subfamily_covering_enlargement
-      (fun a : Euclid P × ℝ => closedBall a.1 a.2)
-      {a : Euclid P × ℝ | a.1 ∈ E ∧ 0 < a.2 ∧ a.2 < δ ∧ p a.1 a.2} (fun a => a.2) 2 (by norm_num)
-      (fun a ha => ha.2.1.le) δ (fun a ha => ha.2.2.1.le)
-      (fun a ha => nonempty_closedBall.2 ha.2.1.le)
-    refine ⟨u, ?_, fun a ha => huT ha, hdisj, ?_⟩
-    · apply hdisj.countable_of_nonempty_interior
-      intro a ha
-      refine ⟨a.1, interior_mono ball_subset_closedBall ?_⟩
-      rw [isOpen_ball.interior_eq]
-      exact mem_ball_self (huT ha).2.1
-    · intro x hx
-      obtain ⟨ρ, hρ0, hρδ, hp⟩ := hE x hx
-      obtain ⟨b, hbu, ⟨w, hw1, hw2⟩, hle⟩ := hcov (x, ρ) ⟨hx, hρ0, hρδ, hp⟩
-      refine mem_iUnion₂.2 ⟨b, hbu, ?_⟩
-      rw [mem_closedBall]
-      have h1 : dist w x ≤ ρ := hw1
-      have h2 : dist w b.1 ≤ b.2 := hw2
-      have hle' : ρ ≤ 2 * b.2 := hle
-      calc dist x b.1 ≤ dist x w + dist w b.1 := dist_triangle _ _ _
-        _ ≤ ρ + b.2 := add_le_add (by rw [dist_comm]; exact h1) h2
-        _ ≤ 3 * b.2 := by linarith
-  -- Step 2, comparison (Simon 1.3.3 with the crude constant 6 ^ n).
-  have comparison : ∀ (t : ℝ≥0∞) (E G : Set (Euclid P)), t ≠ 0 → t ≠ ∞ → MeasurableSet G →
-      (∀ x ∈ E, ∀ δ : ℝ, 0 < δ → ∃ ρ : ℝ, 0 < ρ ∧ ρ < δ ∧
-        t * ENNReal.ofReal ρ ^ n ≤ μHE[n] (G ∩ closedBall x ρ)) →
-      t * μH[(n : ℝ)] E ≤ 6 ^ n * μHE[n] G := by
-    intro t E G ht0 httop hG hE
-    have hfam : ∀ j : ℕ, ∃ u : Set (Euclid P × ℝ), u.Countable ∧
-        (∀ a ∈ u, a.1 ∈ E ∧ 0 < a.2 ∧ a.2 < 1 / ((j : ℝ) + 1) ∧
-          t * ENNReal.ofReal a.2 ^ n ≤ μHE[n] (G ∩ closedBall a.1 a.2)) ∧
-        u.PairwiseDisjoint (fun a => closedBall a.1 a.2) ∧
-        E ⊆ ⋃ a ∈ u, closedBall a.1 (3 * a.2) :=
-      fun j => vitali E (fun c ρ => t * ENNReal.ofReal ρ ^ n ≤ μHE[n] (G ∩ closedBall c ρ))
-        (1 / ((j : ℝ) + 1)) (fun x hx => hE x hx _ (by positivity))
-    choose u hucount hu hdisj hcover using hfam
-    have : ∀ j, Countable (u j) := fun j => (hucount j).to_subtype
-    -- packing estimate
-    have hsum : ∀ j, t * ∑' a : u j, ENNReal.ofReal (a : Euclid P × ℝ).2 ^ n ≤ μHE[n] G := by
-      intro j
-      rw [← ENNReal.tsum_mul_left]
-      calc ∑' a : u j, t * ENNReal.ofReal (a : Euclid P × ℝ).2 ^ n
-          ≤ ∑' a : u j, μHE[n] (G ∩ closedBall (a : Euclid P × ℝ).1 (a : Euclid P × ℝ).2) :=
-            ENNReal.tsum_le_tsum fun a => (hu j a a.2).2.2.2
-        _ = μHE[n] (⋃ a ∈ u j, G ∩ closedBall a.1 a.2) :=
-            (measure_biUnion (hucount j) ((hdisj j).mono fun a => inter_subset_right)
-              fun a _ => hG.inter measurableSet_closedBall).symm
-        _ ≤ μHE[n] G := measure_mono (iUnion₂_subset fun a _ => inter_subset_left)
-    -- diameter estimate
-    have hdiam : ∀ j (a : u j), ediam (closedBall (a : Euclid P × ℝ).1 (3 * (a : Euclid P × ℝ).2))
-        ≤ ENNReal.ofReal (6 * (a : Euclid P × ℝ).2) := by
-      intro j a
-      apply ediam_le_of_forall_dist_le
-      intro y hy z hz
-      rw [mem_closedBall] at hy hz
-      calc dist y z ≤ dist y (a : Euclid P × ℝ).1 + dist z (a : Euclid P × ℝ).1 :=
-            dist_triangle_right _ _ _
-        _ ≤ 6 * (a : Euclid P × ℝ).2 := by linarith
-    have hterm : ∀ j, t * ∑' a : u j,
-        ediam (closedBall (a : Euclid P × ℝ).1 (3 * (a : Euclid P × ℝ).2)) ^ (n : ℝ) ≤
-          6 ^ n * μHE[n] G := by
-      intro j
-      calc t * ∑' a : u j, ediam (closedBall (a : Euclid P × ℝ).1 (3 * (a : Euclid P × ℝ).2)) ^ (n : ℝ)
-          ≤ t * ∑' a : u j, 6 ^ n * ENNReal.ofReal (a : Euclid P × ℝ).2 ^ n := by
-            gcongr with a
-            rw [ENNReal.rpow_natCast]
-            calc ediam (closedBall (a : Euclid P × ℝ).1 (3 * (a : Euclid P × ℝ).2)) ^ n
-                ≤ ENNReal.ofReal (6 * (a : Euclid P × ℝ).2) ^ n := by gcongr; exact hdiam j a
-              _ = 6 ^ n * ENNReal.ofReal (a : Euclid P × ℝ).2 ^ n := by
-                rw [ENNReal.ofReal_mul (show (0 : ℝ) ≤ 6 by norm_num), mul_pow]
-                norm_num
-        _ = 6 ^ n * (t * ∑' a : u j, ENNReal.ofReal (a : Euclid P × ℝ).2 ^ n) := by
-            rw [ENNReal.tsum_mul_left]; ring
-        _ ≤ 6 ^ n * μHE[n] G := by gcongr; exact hsum j
-    have hH := MeasureTheory.Measure.hausdorffMeasure_le_liminf_tsum (X := Euclid P)
-      (ι := fun j => (u j)) (n : ℝ) E (l := atTop)
-      (fun j : ℕ => ENNReal.ofReal (6 * (1 / ((j : ℝ) + 1))))
-      (by
-        rw [← ENNReal.ofReal_zero]
-        apply ENNReal.tendsto_ofReal
-        have := tendsto_one_div_add_atTop_nhds_zero_nat (𝕜 := ℝ)
-        simpa using this.const_mul 6)
-      (fun j a => closedBall (a : Euclid P × ℝ).1 (3 * (a : Euclid P × ℝ).2))
-      (Eventually.of_forall fun j a => (hdiam j a).trans (ENNReal.ofReal_le_ofReal (by
-        have := (hu j a a.2).2.2.1
-        linarith)))
-      (Eventually.of_forall fun j x hx => by
-        obtain ⟨a, ha, hxa⟩ := mem_iUnion₂.1 (hcover j hx)
-        exact mem_iUnion.2 ⟨⟨a, ha⟩, hxa⟩)
-    have hbound : ∀ j, ∑' a : u j,
-        ediam (closedBall (a : Euclid P × ℝ).1 (3 * (a : Euclid P × ℝ).2)) ^ (n : ℝ) ≤
-          6 ^ n * μHE[n] G / t := by
-      intro j
-      rw [ENNReal.le_div_iff_mul_le (Or.inl ht0) (Or.inl httop), mul_comm]
-      exact hterm j
-    have hlim : μH[(n : ℝ)] E ≤ 6 ^ n * μHE[n] G / t :=
-      hH.trans (liminf_le_of_frequently_le' (Frequently.of_forall hbound))
-    calc t * μH[(n : ℝ)] E ≤ t * (6 ^ n * μHE[n] G / t) := by gcongr
-      _ = 6 ^ n * μHE[n] G := ENNReal.mul_div_cancel ht0 httop
-  -- Step 3, each threshold set is null (Simon 1.3.6).
-  have threshold : ∀ t : ℝ≥0∞, t ≠ 0 → t ≠ ∞ →
-      μHE[n] {x : Euclid P | x ∉ S ∧ ∃ᶠ ρ in 𝓝[>] (0 : ℝ),
-        t < μHE[n] (S ∩ closedBall x ρ) / ENNReal.ofReal ρ ^ n} = 0 := by
-    intro t ht0 httop
-    set N := {x : Euclid P | x ∉ S ∧ ∃ᶠ ρ in 𝓝[>] (0 : ℝ),
-      t < μHE[n] (S ∩ closedBall x ρ) / ENNReal.ofReal ρ ^ n} with hN
-    have key : ∀ ε : ℝ≥0∞, ε ≠ 0 → μH[(n : ℝ)] N < ε := by
-      intro ε hε
-      have : IsFiniteMeasure ((μHE[n] : Measure (Euclid P)).restrict S) :=
-        ⟨by rw [Measure.restrict_apply_univ]; exact hfin.lt_top⟩
-      have : ((μHE[n] : Measure (Euclid P)).restrict S).WeaklyRegular :=
-        Measure.WeaklyRegular.of_pseudoMetrizableSpace_of_isFiniteMeasure _
-      have hpos : t * ε / 6 ^ n ≠ 0 := by
-        apply ENNReal.div_ne_zero.2
-        exact ⟨mul_ne_zero ht0 hε, ENNReal.pow_ne_top (by norm_num)⟩
-      obtain ⟨F, hFS, hFc, hFlt⟩ := hS.exists_isClosed_sdiff_lt
-        (μ := (μHE[n] : Measure (Euclid P)).restrict S)
-        (by rw [Measure.restrict_apply hS, inter_self]; exact hfin) hpos
-      have hG : MeasurableSet (S \ F) := hS.diff hFc.measurableSet
-      have hμG : μHE[n] (S \ F) < t * ε / 6 ^ n := by
-        rwa [Measure.restrict_apply hG, inter_eq_left.2 sdiff_subset] at hFlt
-      have hhyp : ∀ x ∈ N, ∀ δ : ℝ, 0 < δ → ∃ ρ : ℝ, 0 < ρ ∧ ρ < δ ∧
-          t * ENNReal.ofReal ρ ^ n ≤ μHE[n] ((S \ F) ∩ closedBall x ρ) := by
-        intro x hx δ hδ
-        obtain ⟨hxS, hfreq⟩ := hx
-        have hxF : x ∉ F := fun h => hxS (hFS h)
-        obtain ⟨r₁, hr₁, hball⟩ := Metric.isOpen_iff.1 hFc.isOpen_compl x hxF
-        have hev : ∀ᶠ ρ in 𝓝[>] (0 : ℝ), ρ ∈ Ioo 0 (min δ (r₁ / 2)) :=
-          Ioo_mem_nhdsGT (by positivity)
-        obtain ⟨ρ, hρq, hρ⟩ := (hfreq.and_eventually hev).exists
-        refine ⟨ρ, hρ.1, lt_of_lt_of_le hρ.2 (min_le_left _ _), ?_⟩
-        have hρpos : ENNReal.ofReal ρ ^ n ≠ 0 :=
-          pow_ne_zero _ (ENNReal.ofReal_pos.2 hρ.1).ne'
-        have hρtop : ENNReal.ofReal ρ ^ n ≠ ∞ := ENNReal.pow_ne_top ENNReal.ofReal_ne_top
-        have h1 : t * ENNReal.ofReal ρ ^ n < μHE[n] (S ∩ closedBall x ρ) :=
-          (ENNReal.lt_div_iff_mul_lt (Or.inl hρpos) (Or.inl hρtop)).1 hρq
-        have h2 : S ∩ closedBall x ρ = (S \ F) ∩ closedBall x ρ := by
-          ext y
-          constructor
-          · rintro ⟨hyS, hyB⟩
-            refine ⟨⟨hyS, fun hyF => hball ?_ hyF⟩, hyB⟩
-            rw [mem_ball]
-            have := mem_closedBall.1 hyB
-            have := hρ.2
-            have := min_le_right δ (r₁ / 2)
-            linarith
-          · rintro ⟨⟨hyS, _⟩, hyB⟩
-            exact ⟨hyS, hyB⟩
-        rw [← h2]
-        exact h1.le
-      have hcomp := comparison t N (S \ F) ht0 httop hG hhyp
-      have h6 : (6 : ℝ≥0∞) ^ n ≠ 0 := pow_ne_zero _ (by norm_num)
-      have h6' : (6 : ℝ≥0∞) ^ n ≠ ∞ := ENNReal.pow_ne_top (by norm_num)
-      have hlt : t * μH[(n : ℝ)] N < t * ε := by
-        calc t * μH[(n : ℝ)] N ≤ 6 ^ n * μHE[n] (S \ F) := hcomp
-          _ < 6 ^ n * (t * ε / 6 ^ n) := ENNReal.mul_lt_mul_right h6 h6' hμG
-          _ = t * ε := ENNReal.mul_div_cancel h6 h6'
-      exact (ENNReal.mul_lt_mul_iff_right ht0 httop).1 hlt
-    have hH : μH[(n : ℝ)] N = 0 := by
-      by_contra h
-      exact lt_irrefl _ (key _ h)
-    rw [Measure.euclideanHausdorffMeasure_def, Measure.smul_apply, hH, smul_zero]
-  -- Steps 1 and 4, every failure of convergence lies in a threshold set.
-  rw [ae_iff]
-  apply measure_mono_null (t := ⋃ k : ℕ, {x : Euclid P | x ∉ S ∧ ∃ᶠ ρ in 𝓝[>] (0 : ℝ),
-    ((k : ℝ≥0∞) + 1)⁻¹ < μHE[n] (S ∩ closedBall x ρ) / ENNReal.ofReal ρ ^ n})
-  · intro x hx
-    simp only [mem_ofPred_eq, Classical.not_imp] at hx
-    obtain ⟨hxS, hnt⟩ := hx
-    rw [ENNReal.tendsto_nhds_zero] at hnt
-    push Not at hnt
-    obtain ⟨ε, hε, hfreq⟩ := hnt
-    obtain ⟨k, hk⟩ := ENNReal.exists_inv_nat_lt hε.ne'
-    refine mem_iUnion.2 ⟨k, hxS, hfreq.mono fun ρ hρ => ?_⟩
-    calc ((k : ℝ≥0∞) + 1)⁻¹ ≤ (k : ℝ≥0∞)⁻¹ := ENNReal.inv_le_inv.2 le_self_add
-      _ < ε := hk
-      _ < _ := hρ
-  · exact measure_iUnion_null fun k => threshold _ (by simp) (by simp)
-
-/-- **Upper density theorem for `Hⁿ` off a Borel set of locally finite measure in an open set**
-(Simon Ch. 1, 3.6 and Remark 3.7(2); chapter-01.txt lines 700–711).  If `U ⊆ ℝᴾ` is open and
-`S ⊆ ℝᴾ` is Borel with `Hⁿ(S ∩ K) < ∞` for every compact `K ⊆ U`, then for `Hⁿ`-a.e.
-`x ∈ U \ S`, `Hⁿ(S ∩ B̄_ρ(x)) / ρⁿ → 0` as `ρ ↓ 0`.  Countably many balls `B(y, r_y)` with
-`B̄(y, r_y) ⊆ U` cover `U` (Lindelöf); the upper density theorem applies to each piece
-`S ∩ B(y, r_y)`, of finite measure, and the piece agrees with `S` on small balls about
-`x ∈ B(y, r_y)`. -/
-theorem Submission.doraggt_local_density_zero : ∀ (P n : ℕ) (U S : Set (Euclid P)), IsOpen U → MeasurableSet S → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μHE[n] (S ∩ K) ≠ ∞) → ∀ᵐ x ∂(μHE[n] : Measure (Euclid P)), x ∈ U → x ∉ S → Tendsto (fun ρ : ℝ => μHE[n] (S ∩ closedBall x ρ) / ENNReal.ofReal ρ ^ n) (𝓝[>] 0) (𝓝 0) := by
-  intro P n U S hU hS hfin
-  -- Step 1, a countable cover of `U` by balls `B(y, r y)` with `B̄(y, r y) ⊆ U` (Lindelöf).
-  have hrad : ∀ y ∈ U, ∃ r : ℝ, 0 < r ∧ closedBall y r ⊆ U := by
-    intro y hy
-    obtain ⟨ε, hε, hball⟩ := Metric.isOpen_iff.1 hU y hy
-    exact ⟨ε / 2, half_pos hε, (closedBall_subset_ball (half_lt_self hε)).trans hball⟩
-  choose! r hr0 hrU using hrad
-  obtain ⟨D, hDU, hDc, hcover⟩ := TopologicalSpace.countable_cover_nhdsWithin
-    (f := fun y => ball y (r y)) (s := U)
-    (fun y hy => mem_nhdsWithin_of_mem_nhds (ball_mem_nhds y (hr0 y hy)))
-  -- Steps 2 and 3, the upper density theorem for each finite-measure piece `S ∩ B(y, r y)`,
-  -- simultaneously for the countably many `y ∈ D`.
-  have hae : ∀ᵐ x ∂(μHE[n] : Measure (Euclid P)), ∀ y ∈ D, x ∉ S ∩ ball y (r y) →
-      Tendsto (fun ρ : ℝ => μHE[n] ((S ∩ ball y (r y)) ∩ closedBall x ρ) / ENNReal.ofReal ρ ^ n)
-        (𝓝[>] 0) (𝓝 0) := by
-    rw [ae_ball_iff hDc]
-    intro y hy
-    refine Submission.regcomp_atl_upper_density_zero P n _ (hS.inter measurableSet_ball) ?_
-    exact ne_top_of_le_ne_top (hfin _ (isCompact_closedBall y (r y)) (hrU y (hDU hy)))
-      (measure_mono (inter_subset_inter_right _ ball_subset_closedBall))
-  -- Step 4, near `x ∈ B(y, r y)` the piece and `S` agree.
-  filter_upwards [hae] with x hx hxU hxS
-  obtain ⟨y, hyD, hxy⟩ := mem_iUnion₂.1 (hcover hxU)
-  obtain ⟨ε, hε, hεball⟩ := Metric.isOpen_iff.1 isOpen_ball x hxy
-  refine (hx y hyD fun h => hxS h.1).congr' ?_
-  filter_upwards [Ioo_mem_nhdsGT hε] with ρ hρ
-  rw [inter_assoc, inter_eq_right.2 ((closedBall_subset_ball hρ.2).trans hεball)]
-/-- Asymptotically equal blow-up integrals give equal approximate tangent spaces (Simon Ch. 3,
-Definition 1.4; last step of the proof of 3.1.6).  With `η_r = η_{x,r}`, `I(r) = ∫_{η_r(M)} f dHⁿ`,
-`I'(r) = ∫_{η_r(M')} f dHⁿ` and `I(r) − I'(r) → 0` as `r ↓ 0` for every `f ∈ C_c(ℝᴾ)`:
-`I' = I − (I − I')` and `I = I' + (I − I')` have the same limit `∫_Q f dHⁿ` as `I`, resp. `I'`,
-while the condition `dim Q = n` does not involve `M`, `M'`. -/
-theorem Submission.regcomp_atl_pc_tangent_iff_of_integral_sub_tendsto : ∀ (P n : ℕ) (M M' : Set (Euclid P)) (x : Euclid P), (∀ f : CompactlySupportedContinuousMap (Euclid P) ℝ, Tendsto (fun r : ℝ => (∫ y in Poincare.SimonGMT.Chapter03.blowUpMap x r '' M, f y ∂μHE[n]) - ∫ y in Poincare.SimonGMT.Chapter03.blowUpMap x r '' M', f y ∂μHE[n]) (𝓝[>] 0) (𝓝 0)) → ∀ Q : Submodule ℝ (Euclid P), HasApproximateTangentSpaceAt n M x Q ↔ HasApproximateTangentSpaceAt n M' x Q := by
-  intro P n M M' x hD Q
-  constructor
-  · -- (⇒) `I' = I − (I − I') → L − 0 = L`
-    rintro ⟨hQ, hM⟩
-    refine ⟨hQ, fun f => ?_⟩
-    have h := (hM f).sub (hD f)
-    rw [sub_zero] at h
-    exact h.congr fun r => sub_sub_cancel _ _
-  · -- (⇐) `I = I' + (I − I') → L + 0 = L`
-    rintro ⟨hQ, hM'⟩
-    refine ⟨hQ, fun f => ?_⟩
-    have h := (hM' f).add (hD f)
-    rw [add_zero] at h
-    exact h.congr fun r => add_sub_cancel _ _
-/-- Comparison of blow-up integrals (proof of Simon 3.1.6): for Borel `A ⊆ B`, `r > 0` and a
-continuous `f` with `|f| ≤ C` vanishing off `B̄_R(0)`,
-`|∫_{η_{x,r}(B)} f dHⁿ − ∫_{η_{x,r}(A)} f dHⁿ| ≤ C Hⁿ(η_{x,r}(B \ A) ∩ B̄_R(0))`.  Since `η_{x,r}` is
-injective, `η_{x,r}(B)` is the disjoint union of `η_{x,r}(A)` and `η_{x,r}(B \ A)`, both Borel
-(`η_{x,r}(T)` is the preimage of `T` under `y ↦ x + ry`); the difference of the integrals is the
-integral over `η_{x,r}(B \ A)`, which equals the integral over `η_{x,r}(B \ A) ∩ B̄_R(0)`. -/
-theorem Submission.regcomp_atl_pc_blowUp_setIntegral_sub_le : ∀ (P n : ℕ) (A B : Set (Euclid P)) (x : Euclid P) (r R C : ℝ) (f : Euclid P → ℝ), Continuous f → MeasurableSet A → MeasurableSet B → A ⊆ B → 0 < r → μHE[n] (Poincare.SimonGMT.Chapter03.blowUpMap x r '' B ∩ closedBall 0 R) ≠ ∞ → (∀ y : Euclid P, ‖f y‖ ≤ C) → (∀ y : Euclid P, y ∉ closedBall (0 : Euclid P) R → f y = 0) → ‖(∫ y in Poincare.SimonGMT.Chapter03.blowUpMap x r '' B, f y ∂μHE[n]) - ∫ y in Poincare.SimonGMT.Chapter03.blowUpMap x r '' A, f y ∂μHE[n]‖ ≤ C * (μHE[n] (Poincare.SimonGMT.Chapter03.blowUpMap x r '' (B \ A) ∩ closedBall 0 R)).toReal := by
-  intro P n A B x r R C f hf hA hB hAB hr hfin hC hzero
-  -- Step 1: `η = η_{x,r}` is injective
-  have hinj : Injective (Poincare.SimonGMT.Chapter03.blowUpMap x r : Euclid P → Euclid P) := by
-    intro z w h
-    have h' : z - x = w - x :=
-      smul_right_injective (Euclid P) (inv_ne_zero hr.ne') h
-    simpa using h'
-  -- Step 2: `η(T) = g⁻¹(T)` for `g y = x + r • y`, so `η` maps Borel sets to Borel sets
-  have himage : ∀ T : Set (Euclid P),
-      Poincare.SimonGMT.Chapter03.blowUpMap x r '' T = (fun y : Euclid P => x + r • y) ⁻¹' T := by
-    intro T
-    ext y
-    constructor
-    · rintro ⟨z, hz, rfl⟩
-      simpa [Poincare.SimonGMT.Chapter03.blowUpMap, smul_smul, mul_inv_cancel₀ hr.ne'] using hz
-    · intro hy
-      refine ⟨x + r • y, hy, ?_⟩
-      simp [Poincare.SimonGMT.Chapter03.blowUpMap, smul_smul, inv_mul_cancel₀ hr.ne']
-  have hmeas : ∀ T : Set (Euclid P), MeasurableSet T →
-      MeasurableSet (Poincare.SimonGMT.Chapter03.blowUpMap x r '' T) := by
-    intro T hT
-    rw [himage T]
-    exact (by fun_prop : Continuous fun y : Euclid P => x + r • y).measurable hT
-  -- Step 3: `f` is integrable on `η(T)` for Borel `T ⊆ B`
-  have hint : ∀ T : Set (Euclid P), MeasurableSet T → T ⊆ B →
-      IntegrableOn f (Poincare.SimonGMT.Chapter03.blowUpMap x r '' T) μHE[n] := by
-    intro T hT hTB
-    have hfinT : μHE[n] (Poincare.SimonGMT.Chapter03.blowUpMap x r '' T ∩ closedBall 0 R) ≠ ∞ :=
-      ne_top_of_le_ne_top hfin (measure_mono (inter_subset_inter_left _ (image_mono hTB)))
-    exact (Measure.integrableOn_of_bounded hfinT hf.aestronglyMeasurable
-      (Eventually.of_forall hC)).of_forall_sdiff_eq_zero (hmeas T hT)
-      fun y hy => hzero y fun h => hy.2 ⟨hy.1, h⟩
-  -- Step 4: `∫_{η(B)} f − ∫_{η(A)} f = ∫_{η(B∖A)} f`
-  have hBA : MeasurableSet (B \ A) := hB.diff hA
-  have hunion : ∫ y in Poincare.SimonGMT.Chapter03.blowUpMap x r '' B, f y ∂μHE[n] =
-      (∫ y in Poincare.SimonGMT.Chapter03.blowUpMap x r '' A, f y ∂μHE[n]) +
-        ∫ y in Poincare.SimonGMT.Chapter03.blowUpMap x r '' (B \ A), f y ∂μHE[n] := by
-    rw [← setIntegral_union ((disjoint_image_iff hinj).mpr disjoint_sdiff_right) (hmeas _ hBA)
-      (hint A hA hAB) (hint _ hBA sdiff_subset), ← image_union, union_sdiff_cancel hAB]
-  -- Step 5: localization to `B̄_R(0)`
-  have hloc : ∫ y in Poincare.SimonGMT.Chapter03.blowUpMap x r '' (B \ A), f y ∂μHE[n] =
-      ∫ y in Poincare.SimonGMT.Chapter03.blowUpMap x r '' (B \ A) ∩ closedBall 0 R, f y ∂μHE[n] :=
-    setIntegral_eq_of_subset_of_forall_sdiff_eq_zero (hmeas _ hBA) inter_subset_left
-      fun y hy => hzero y fun h => hy.2 ⟨hy.1, h⟩
-  -- Step 6: the estimate
-  have hfinS : μHE[n] (Poincare.SimonGMT.Chapter03.blowUpMap x r '' (B \ A) ∩ closedBall 0 R) < ∞ :=
-    (measure_mono (inter_subset_inter_left _ (image_mono sdiff_subset))).trans_lt hfin.lt_top
-  rw [hunion, add_sub_cancel_left, hloc, ← measureReal_def]
-  exact norm_setIntegral_le_of_norm_le_const hfinS fun y _ => hC y
-/-- Rescaling a vanishing `n`-density quotient (the final limit in the proof of Simon 3.1.6): if
-`g(ρ)/ρⁿ → 0` as `ρ ↓ 0` and `R > 0`, then `r⁻ⁿ g(rR) → 0` as `r ↓ 0`.  The substitution
-`ρ = rR` maps `𝓝[>] 0` to itself, multiplying by the finite constant `Rⁿ` keeps the limit `0`,
-and `Rⁿ · g(rR)/(rR)ⁿ = r⁻ⁿ g(rR)` for `r > 0`. -/
-theorem Submission.regcomp_atl_pc_density_rescale_tendsto : ∀ (n : ℕ) (g : ℝ → ℝ≥0∞) (R : ℝ), 0 < R → Tendsto (fun ρ : ℝ => g ρ / ENNReal.ofReal ρ ^ n) (𝓝[>] 0) (𝓝 0) → Tendsto (fun r : ℝ => (ENNReal.ofReal r)⁻¹ ^ n * g (r * R)) (𝓝[>] 0) (𝓝 0) := by
-  intro n g R hR hg
-  -- Step 1: `r ↦ r * R` maps `𝓝[>] 0` to `𝓝[>] 0`
-  have hmap : Tendsto (fun r : ℝ => r * R) (𝓝[>] 0) (𝓝[>] 0) := by
-    refine tendsto_nhdsWithin_of_tendsto_nhds_of_eventually_within _ ?_ ?_
-    · exact ((continuous_mul_const R).tendsto' 0 0 (zero_mul R)).mono_left nhdsWithin_le_nhds
-    · filter_upwards [self_mem_nhdsWithin] with r (hr : 0 < r)
-      exact mul_pos hr hR
-  -- Step 2: `g (r * R) / ofReal (r * R) ^ n → 0`
-  have hcomp : Tendsto (fun r : ℝ => g (r * R) / ENNReal.ofReal (r * R) ^ n) (𝓝[>] 0) (𝓝 0) :=
-    hg.comp hmap
-  -- Step 3: multiplication by the finite constant `ofReal R ^ n`
-  have hbtop : ENNReal.ofReal R ^ n ≠ ∞ := ENNReal.pow_ne_top ENNReal.ofReal_ne_top
-  have hconst : Tendsto
-      (fun r : ℝ => ENNReal.ofReal R ^ n * (g (r * R) / ENNReal.ofReal (r * R) ^ n))
-      (𝓝[>] 0) (𝓝 0) := by
-    have h := ENNReal.Tendsto.const_mul hcomp (Or.inr hbtop)
-    rwa [mul_zero] at h
-  -- Step 4: for `r > 0`, `Rⁿ · g(rR)/(rR)ⁿ = r⁻ⁿ g(rR)`
-  have heq : (fun r : ℝ => ENNReal.ofReal R ^ n * (g (r * R) / ENNReal.ofReal (r * R) ^ n))
-      =ᶠ[𝓝[>] 0] fun r : ℝ => (ENNReal.ofReal r)⁻¹ ^ n * g (r * R) := by
-    filter_upwards [self_mem_nhdsWithin] with r (hr : 0 < r)
-    have ha0 : ENNReal.ofReal r ^ n ≠ 0 := ENNReal.pow_ne_zero (ENNReal.ofReal_pos.mpr hr).ne' n
-    have hatop : ENNReal.ofReal r ^ n ≠ ∞ := ENNReal.pow_ne_top ENNReal.ofReal_ne_top
-    have hb0 : ENNReal.ofReal R ^ n ≠ 0 := ENNReal.pow_ne_zero (ENNReal.ofReal_pos.mpr hR).ne' n
-    calc ENNReal.ofReal R ^ n * (g (r * R) / ENNReal.ofReal (r * R) ^ n)
-        = ENNReal.ofReal R ^ n *
-            ((ENNReal.ofReal r ^ n)⁻¹ * (ENNReal.ofReal R ^ n)⁻¹ * g (r * R)) := by
-          rw [ENNReal.ofReal_mul hr.le, mul_pow, ENNReal.div_eq_inv_mul,
-            ENNReal.mul_inv (Or.inl ha0) (Or.inl hatop)]
-      _ = ENNReal.ofReal R ^ n * (ENNReal.ofReal R ^ n)⁻¹ *
-            ((ENNReal.ofReal r ^ n)⁻¹ * g (r * R)) := by ring
-      _ = (ENNReal.ofReal r)⁻¹ ^ n * g (r * R) := by
-          rw [ENNReal.mul_inv_cancel hb0 hbtop, one_mul, ENNReal.inv_pow]
-  -- Step 5: the two functions agree eventually along `𝓝[>] 0`
-  exact hconst.congr' heq
-/-- Scaling of `Hⁿ` under the blow-up `η_{x,r}(z) = r⁻¹(z − x)`, `r > 0` (proof of Simon 3.1.6):
-`Hⁿ(η_{x,r}(S) ∩ B̄_R(0)) = r⁻ⁿ Hⁿ(S ∩ B̄_{rR}(x))`.  Since `‖η_{x,r}(z)‖ = r⁻¹‖z − x‖`, the left
-side is `Hⁿ(η_{x,r}(S ∩ B̄_{rR}(x)))`; `η_{x,r}` is the homothety of centre `x` and ratio `r⁻¹`
-followed by the translation by `−x`, which preserves `Hⁿ`, while the homothety multiplies it by
-`‖r⁻¹‖₊ⁿ = r⁻ⁿ`. -/
-theorem Submission.regcomp_atl_blowUp_measure_scaling : ∀ (P n : ℕ) (x : Euclid P) (r R : ℝ) (S : Set (Euclid P)), 0 < r → μHE[n] (Poincare.SimonGMT.Chapter03.blowUpMap x r '' S ∩ closedBall 0 R) = (ENNReal.ofReal r)⁻¹ ^ n * μHE[n] (S ∩ closedBall x (r * R)) := by
-  intro P n x r R S hr
-  -- `‖η(z)‖ = r⁻¹‖z − x‖`
-  have hnorm : ∀ z : Euclid P,
-      ‖Poincare.SimonGMT.Chapter03.blowUpMap x r z‖ = r⁻¹ * ‖z - x‖ := by
-    intro z
-    rw [Poincare.SimonGMT.Chapter03.blowUpMap, norm_smul, Real.norm_eq_abs,
-      abs_of_pos (inv_pos.mpr hr)]
-  -- Step 1: `η(S) ∩ B̄(0, R) = η(S ∩ B̄(x, rR))`
-  have hset : Poincare.SimonGMT.Chapter03.blowUpMap x r '' S ∩ closedBall 0 R =
-      Poincare.SimonGMT.Chapter03.blowUpMap x r '' (S ∩ closedBall x (r * R)) := by
   have hlow : ∀ x, f x ≤ t - h → g x = 1 ∧ fderiv ℝ g x = 0 := fun x hx =>
     hnear x 1 fun y hy => hG1 y (by linarith [(abs_lt.1 (hclose x y hy)).2])
   have hup : ∀ x, t ≤ f x → g x = 0 ∧ fderiv ℝ g x = 0 := fun x hx =>
@@ -34972,38 +34176,6 @@ theorem Submission.cbr_cipi_affine_plane_measure : ∀ (P m : ℕ) (w : Fin m �
     ext y
     rw [hS, mem_range, mem_ofPred_eq, Submodule.mem_span_range_iff_exists_fun]
     constructor
-    · rintro ⟨⟨z, hz, rfl⟩, hy⟩
-      refine ⟨z, ⟨hz, ?_⟩, rfl⟩
-      rw [mem_closedBall_zero_iff, hnorm] at hy
-      rw [mem_closedBall, dist_eq_norm]
-      calc ‖z - x‖ = r * (r⁻¹ * ‖z - x‖) := by field_simp
-        _ ≤ r * R := mul_le_mul_of_nonneg_left hy hr.le
-    · rintro ⟨z, ⟨hz, hzx⟩, rfl⟩
-      refine ⟨⟨z, hz, rfl⟩, ?_⟩
-      rw [mem_closedBall, dist_eq_norm] at hzx
-      rw [mem_closedBall_zero_iff, hnorm]
-      calc r⁻¹ * ‖z - x‖ ≤ r⁻¹ * (r * R) := mul_le_mul_of_nonneg_left hzx (inv_pos.mpr hr).le
-        _ = R := by field_simp
-  -- Step 2: `η = τ ∘ h` with `h = homothety x r⁻¹` and `τ y = y + (-x)`
-  have hcomp : Poincare.SimonGMT.Chapter03.blowUpMap x r =
-      (fun y : Euclid P => y + -x) ∘ AffineMap.homothety x r⁻¹ := by
-    funext z
-    simp [Poincare.SimonGMT.Chapter03.blowUpMap, AffineMap.homothety_apply]
-  -- Step 3: `μ(η(T)) = (ENNReal.ofReal r)⁻¹ ^ n * μ(T)`
-  have hscale : ∀ T : Set (Euclid P), μHE[n] (Poincare.SimonGMT.Chapter03.blowUpMap x r '' T) =
-      (ENNReal.ofReal r)⁻¹ ^ n * μHE[n] T := by
-    intro T
-    rw [hcomp, Set.image_comp, (isometry_add_right (-x)).euclideanHausdorffMeasure_image,
-      euclideanHausdorffMeasure_homothety_image n x (inv_ne_zero hr.ne') T, ENNReal.smul_def,
-      smul_eq_mul, ENNReal.coe_pow, nnnorm_inv, ENNReal.coe_inv (nnnorm_ne_zero_iff.mpr hr.ne'),
-      Real.nnnorm_of_nonneg hr.le, ← ENNReal.ofReal_eq_coe_nnreal hr.le]
-  -- Step 4: conclusion
-  rw [hset, hscale]
-/-- Localized Besicovitch density (Simon Ch. 3, Remark 1.5(2) and the proof of Theorem 1.6, with
-Simon Ch. 1, Theorem 3.16 = Mathlib's `Besicovitch.ae_tendsto_measure_inter_div`).  Let `U` be
-open, `A ⊆ B ⊆ U` Borel, and `Hⁿ(B ∩ K) < ∞` for every compact `K ⊆ U`.  Then for `Hⁿ⌞A`-a.e.
-`x` and every `ε > 0`, `Hⁿ((B \ A) ∩ B̄_ρ(x)) ≤ ε Hⁿ(B ∩ B̄_ρ(x))` for all small `ρ > 0`; the
-exceptional set does not depend on `ε`.
     · rintro ⟨u, rfl⟩
       exact ⟨fun i => u i, by simp [J]⟩
     · rintro ⟨c, hc⟩
@@ -47014,122 +46186,6 @@ theorem Submission.codim1_rdo_dg_ce_annular_bound : ∀ (P : ℕ) (D F : Set (Eu
     have key : (1 / 2 : ℝ) * (μ (closedBall y ρ)).toReal ≤
         3 / (2 * δ) * (volume (F ∩ A)).toReal := by
       linarith
-    exact le_of_mul_le_mul_left hfin hr
-  -- let `δ → 0⁺`
-  have hlim : Tendsto (fun δ : ℝ => ‖L c‖ + δ * (m + ‖L‖ + ‖c‖ + δ)) (𝓝[>] 0) (𝓝 ‖L c‖) := by
-    have hcont : Continuous (fun δ : ℝ => ‖L c‖ + δ * (m + ‖L‖ + ‖c‖ + δ)) := by fun_prop
-    simpa using (hcont.tendsto 0).mono_left nhdsWithin_le_nhds
-  exact ge_of_tendsto hlim (eventually_nhdsWithin_of_forall fun δ hδ => key δ hδ)
-/-- Integral over the range of a linear map with constant Jacobian: if `T : ℝⁿ → ℝᴾ` is linear
-and `Hⁿ(T(S)) = j λ(S)` for every `S ⊆ ℝⁿ` (`j ≥ 0`, `λ` Lebesgue measure), then for continuous
-`f`, `∫_{T(ℝⁿ)} f dHⁿ = j ∫ f(T(c)) dλ(c)`.  On Borel `A`, `A ∩ T(ℝⁿ) = T(T⁻¹(A))`, so
-`Hⁿ⌞T(ℝⁿ) = j T_#λ`. -/
-theorem Submission.pit_setIntegral_range_linear : ∀ (P n : ℕ) (T : Euclid n →L[ℝ] Euclid P) (j : ℝ) (f : Euclid P → ℝ), 0 ≤ j → (∀ S : Set (Euclid n), μHE[n] (T '' S) = ENNReal.ofReal j * volume S) → Continuous f → ∫ y in (LinearMap.range (T : Euclid n →ₗ[ℝ] Euclid P) : Set (Euclid P)), f y ∂μHE[n] = j * ∫ c, f (T c) ∂volume := by
-  intro P n T j f hj hT hf
-  -- the carrier of the submodule `range T` is the set `T(ℝⁿ)`
-  have hrange : (LinearMap.range (T : Euclid n →ₗ[ℝ] Euclid P) : Set (Euclid P)) = range T := by
-    rw [LinearMap.coe_range, ContinuousLinearMap.coe_coe]
-  -- `Hⁿ⌞T(ℝⁿ) = ofReal(j) • T_#λ`, checked on Borel sets
-  have hmeas : μHE[n].restrict (range T) = ENNReal.ofReal j • volume.map T := by
-    ext A hA
-    rw [Measure.restrict_apply hA, Measure.smul_apply, Measure.map_apply T.measurable hA,
-      ← image_preimage_eq_inter_range, hT, smul_eq_mul]
-  -- change of variables, with `(ofReal j).toReal = j` since `j ≥ 0`
-  rw [hrange, hmeas, integral_smul_measure,
-    integral_map T.measurable.aemeasurable hf.aestronglyMeasurable,
-    ENNReal.toReal_ofReal hj, smul_eq_mul]
-/-- If `F` has derivative `L` at `b` and `f` is continuous with compact support, then
-`∫_{B̄_R(0)} |f(r⁻¹(F(b + rc) − F(b))) − f(Lc)| dc → 0` as `r ↓ 0` (the error term `T₃` in the
-limit of rescaled integrals over the image of a `C¹` piece; cf. the tangent-plane limit in Simon
-Ch. 3, proof of 1.6 "⇒").  With `V = |B̄_R(0)|` and `S = |R| + 1`, take `η` from the uniform
-continuity of `f` for `ε / (V + 1)`, then `δ₀` with `‖F(b + k) − F(b) − Lk‖ ≤ (η / 2S)‖k‖` for
-`‖k‖ < δ₀`; for `0 < r < δ₀ / S` the integrand is `≤ ε / (V + 1)` on the ball. -/
-theorem Submission.pit_ril_diffQuot_integral_tendsto : ∀ (P n : ℕ) (F : Euclid n → Euclid P) (L : Euclid n →L[ℝ] Euclid P) (b : Euclid n) (f : Euclid P → ℝ) (R : ℝ), HasFDerivAt F L b → Continuous f → HasCompactSupport f → Tendsto (fun r : ℝ => ∫ c in closedBall (0 : Euclid n) R, ‖f (r⁻¹ • (F (b + r • c) - F b)) - f (L c)‖ ∂volume) (𝓝[>] 0) (𝓝 0) := by
-  intro P n F L b f R hF hfc hfs
-  -- `D = B̄_R(0)` has finite measure `V`, and `‖c‖ < S = |R| + 1` on `D`
-  have hDfin : (volume : Measure (Euclid n)) (closedBall 0 R) < ∞ := measure_closedBall_lt_top
-  set V : ℝ := (volume : Measure (Euclid n)).real (closedBall 0 R)
-  have hV : 0 ≤ V := measureReal_nonneg
-  set S : ℝ := |R| + 1
-  have hS : 0 < S := by positivity
-  have hcS : ∀ c ∈ closedBall (0 : Euclid n) R, ‖c‖ < S := fun c hc =>
-    ((mem_closedBall_zero_iff.1 hc).trans (le_abs_self R)).trans_lt (lt_add_one _)
-  -- uniform continuity of `f` and the little-o form of `HasFDerivAt`
-  have huc := Metric.uniformContinuous_iff.1 (hfs.uniformContinuous_of_continuous hfc)
-  have hlo := hasFDerivAt_iff_isLittleO_nhds_zero.1 hF
-  rw [Metric.tendsto_nhdsWithin_nhds]
-  intro ε hε
-  have hV1 : 0 < V + 1 := by linarith
-  set ε₁ : ℝ := ε / (V + 1) with hε₁_def
-  have hε₁ : 0 < ε₁ := div_pos hε hV1
-  obtain ⟨η, hη, hηf⟩ := huc ε₁ hε₁
-  set θ : ℝ := η / (2 * S) with hθ_def
-  have hθ : 0 < θ := div_pos hη (by linarith)
-  obtain ⟨δ₀, hδ₀, hδ₀F⟩ := Metric.eventually_nhds_iff.1 (hlo.bound hθ)
-  refine ⟨δ₀ / S, div_pos hδ₀ hS, fun r hr hrδ => ?_⟩
-  rw [mem_Ioi] at hr
-  rw [Real.dist_eq, sub_zero, abs_of_pos hr] at hrδ
-  have hrS : r * S < δ₀ := (lt_div_iff₀ hS).1 hrδ
-  -- pointwise bound on the integrand
-  have hpt : ∀ c ∈ closedBall (0 : Euclid n) R,
-      ‖‖f (r⁻¹ • (F (b + r • c) - F b)) - f (L c)‖‖ ≤ ε₁ := by
-    intro c hc
-    have hc' := hcS c hc
-    have hnorm : ‖r • c‖ = r * ‖c‖ := by
-      rw [norm_smul, Real.norm_eq_abs, abs_of_pos hr]
-    have hrc : dist (r • c) 0 < δ₀ := by
-      rw [dist_zero_right, hnorm]
-      calc r * ‖c‖ ≤ r * S := mul_le_mul_of_nonneg_left hc'.le hr.le
-        _ < δ₀ := hrS
-    have hbound := hδ₀F hrc
-    have heq : r⁻¹ • (F (b + r • c) - F b) - L c
-        = r⁻¹ • (F (b + r • c) - F b - L (r • c)) := by
-      rw [map_smul, smul_sub _ (F (b + r • c) - F b), inv_smul_smul₀ hr.ne']
-    have hclose : dist (r⁻¹ • (F (b + r • c) - F b)) (L c) < η := by
-      rw [dist_eq_norm, heq, norm_smul, Real.norm_eq_abs, abs_inv, abs_of_pos hr]
-      calc r⁻¹ * ‖F (b + r • c) - F b - L (r • c)‖
-          ≤ r⁻¹ * (θ * ‖r • c‖) := mul_le_mul_of_nonneg_left hbound (inv_nonneg.2 hr.le)
-        _ = θ * ‖c‖ := by rw [hnorm]; field_simp
-        _ ≤ θ * S := mul_le_mul_of_nonneg_left hc'.le hθ.le
-        _ = η / 2 := by rw [hθ_def]; field_simp
-        _ < η := half_lt_self hη
-    have := hηf hclose
-    rw [Real.dist_eq] at this
-    rw [norm_norm, Real.norm_eq_abs]
-    exact this.le
-  -- integral bound
-  have hint := norm_setIntegral_le_of_norm_le_const hDfin hpt
-  rw [dist_zero_right]
-  calc ‖∫ c in closedBall (0 : Euclid n) R, ‖f (r⁻¹ • (F (b + r • c) - F b)) - f (L c)‖‖
-      ≤ ε₁ * V := hint
-    _ < ε := by
-      rw [hε₁_def, div_mul_eq_mul_div, div_lt_iff₀ hV1]
-      nlinarith
-/-- At a point `b` of Lebesgue density one of the Borel set `B` (`λ(B ∩ B̄_ρ(b))/λ(B̄_ρ(b)) → 1`
-as `ρ ↓ 0`, the quotient taken in `[0, ∞]`), the averages `⨍_{B̄_s(b)} 1_{ℝⁿ∖B} dλ` tend to `0`
-as `s ↓ 0`.  For `s > 0`, `0 < λ(B̄_s(b)) < ∞` and, by additivity, the average equals
-`1 − (λ(B ∩ B̄_s(b))/λ(B̄_s(b))).toReal`; `toReal` is continuous at `1`. -/
-theorem Submission.pit_ril_compl_average_tendsto : ∀ (n : ℕ) (B : Set (Euclid n)) (b : Euclid n), MeasurableSet B → Tendsto (fun ρ : ℝ => volume (B ∩ closedBall b ρ) / volume (closedBall b ρ)) (𝓝[>] 0) (𝓝 1) → Tendsto (fun s : ℝ => ⨍ a in closedBall b s, Bᶜ.indicator (fun _ => (1 : ℝ)) a ∂volume) (𝓝[>] 0) (𝓝 0) := by
-  intro n B b hB hlim
-  -- `q(ρ).toReal → 1` (`toReal` is continuous at `1 ≠ ∞`), so `1 - q(ρ).toReal → 0`
-  have h1 : Tendsto (fun ρ : ℝ =>
-      1 - (volume (B ∩ closedBall b ρ) / volume (closedBall b ρ)).toReal) (𝓝[>] 0) (𝓝 0) := by
-    have h := (tendsto_const_nhds : Tendsto (fun _ : ℝ => (1 : ℝ)) (𝓝[>] 0) (𝓝 1)).sub
-      ((ENNReal.tendsto_toReal ENNReal.one_ne_top).comp hlim)
-    rwa [ENNReal.toReal_one, sub_self] at h
-  refine h1.congr' ?_
-  -- for `s > 0`, `0 < λ(C_s) < ∞` and the average equals `1 - q(s).toReal`
-  filter_upwards [self_mem_nhdsWithin] with s (hs : 0 < s)
-  have hfin : volume (closedBall b s) ≠ ∞ := measure_closedBall_lt_top.ne
-  have hC : volume.real (closedBall b s) ≠ 0 :=
-    (ENNReal.toReal_pos (measure_closedBall_pos volume b hs).ne' hfin).ne'
-  -- `λ_ℝ(C_s ∩ B) + λ_ℝ(C_s \ B) = λ_ℝ(C_s)`
-  have hsplit := measureReal_inter_add_sdiff (μ := volume) (s := closedBall b s) hB hfin
-  rw [setAverage_eq, setIntegral_indicator hB.compl, setIntegral_const, smul_eq_mul, smul_eq_mul,
-    mul_one, ENNReal.toReal_div, ← measureReal_def, ← measureReal_def, inter_comm B,
-    ← Set.sdiff_eq, ← hsplit]
-  rw [← hsplit] at hC
-  field_simp
     have h3 : 3 / (2 * δ) * (volume (F ∩ A)).toReal * (2 * δ) = 3 * (volume (F ∩ A)).toReal := by
       field_simp
     nlinarith [key, hδ]
@@ -52744,83 +51800,6 @@ theorem Submission.cbr_ci_pw_td_finite_ac_density : ∀ (n : ℕ) (μ : Measure 
       _ = ∫ y, (ρ y).toReal * h' y * g y := by
           congr 1; funext y; rw [smul_eq_mul]; ring
 
-/-- **Rescaled area integrals at a density point and a Lebesgue point** (Simon Ch. 3, proof of
-1.6 "⇒", the density argument for a carrier piece): let `m|a − b| ≤ |F(a) − F(b)|` on `B`,
-`m|c| ≤ |Lc|` for `L = DF(b)`, `0 ≤ J ≤ K`, let `B` have density `1` at `b` and
-`⨍_{B̄_ρ(b)} |J − J(b)| → 0`.  Then for `f ∈ C_c(ℝᴾ)`,
-`∫ 1_B(b + rc) J(b + rc) f(r⁻¹(F(b + rc) − F(b))) dc → J(b) ∫ f(Lc) dc` as `r → 0⁺`.
-With `f = 0` off `B_R(0)` and `|f| ≤ M`, the error is at most `K M T₁(r) + M T₂(r) + J(b) T₃(r)`,
-where `T₁, T₂, T₃` integrate `1_{Bᶜ}(b + rc)`, `|J(b + rc) − J(b)|` and
-`|f(r⁻¹(F(b + rc) − F(b))) − f(Lc)|` over `B̄_{R/m}(0)`; `T₁, T₂ → 0` by rescaling the ball
-averages at `b`, and `T₃ → 0` by differentiability of `F` at `b`. -/
-theorem Submission.idtp_caf_rescaled_integral_tendsto : ∀ (P n : ℕ) (F : Euclid n → Euclid P) (B : Set (Euclid n)) (J : Euclid n → ℝ) (K m : ℝ) (b : Euclid n) (f : Euclid P → ℝ), Continuous F → MeasurableSet B → Measurable J → (∀ a, 0 ≤ J a ∧ J a ≤ K) → 0 < m → (∀ a ∈ B, m * ‖a - b‖ ≤ ‖F a - F b‖) → DifferentiableAt ℝ F b → (∀ c, m * ‖c‖ ≤ ‖fderiv ℝ F b c‖) → Tendsto (fun ρ : ℝ => volume (B ∩ closedBall b ρ) / volume (closedBall b ρ)) (𝓝[>] 0) (𝓝 1) → Tendsto (fun ρ : ℝ => ⨍ a in closedBall b ρ, ‖J a - J b‖ ∂volume) (𝓝[>] 0) (𝓝 0) → Continuous f → HasCompactSupport f → Tendsto (fun r : ℝ => ∫ c, B.indicator J (b + r • c) * f (r⁻¹ • (F (b + r • c) - F b)) ∂volume) (𝓝[>] 0) (𝓝 (J b * ∫ c, f (fderiv ℝ F b c) ∂volume)) := by
-  intro P n F B J K m b f hF hB hJ hJK hm hFB hdiff hL hdens hLeb hf hfc
-  -- `f = 0` off `B_R(0)` and `|f| ≤ M`; both integrands vanish off `D = B̄_{R/m}(0)`
-  obtain ⟨R, hR, hRf⟩ := hfc.exists_pos_le_norm
-  obtain ⟨M, hM⟩ := hf.bounded_above_of_compact_support hfc
-  have hRm : 0 < R / m := div_pos hR hm
-  -- `T₁ → 0`: `⨍_{B̄_s(b)} 1_{Bᶜ} → 0` at the density point `b`, rescaled to `D`
-  have hT₁ := Submission.pit_integral_closedBall_rescale_tendsto n
-    (Bᶜ.indicator fun _ => (1 : ℝ)) b (R / m) hRm
-    (Submission.pit_ril_compl_average_tendsto n B b hB hdens)
-  -- `T₂ → 0`: `b` is a Lebesgue point of `J`, rescaled to `D`
-  have hT₂ := Submission.pit_integral_closedBall_rescale_tendsto n (fun a => ‖J a - J b‖) b
-    (R / m) hRm hLeb
-  -- `T₃ → 0`: `F` is differentiable at `b` with derivative `L = DF(b)`
-  have hT₃ := Submission.pit_ril_diffQuot_integral_tendsto P n F (fderiv ℝ F b) b f (R / m)
-    hdiff.hasFDerivAt hf hfc
-  have hlim := ((hT₁.const_mul (K * M)).add (hT₂.const_mul M)).add (hT₃.const_mul (J b))
-  simp only [mul_zero, add_zero] at hlim
-  -- squeeze `|I(r) − J(b) ∫ f(Lc) dc| ≤ K M T₁(r) + M T₂(r) + J(b) T₃(r)` for `r > 0`
-  rw [tendsto_iff_norm_sub_tendsto_zero]
-  refine squeeze_zero' (Eventually.of_forall fun r => norm_nonneg _) ?_ hlim
-  filter_upwards [self_mem_nhdsWithin] with r hr
-  exact Submission.pit_ril_three_term_bound P n F (fderiv ℝ F b) B J K m b f R M r hF hB hJ hJK
-    hm hFB hL hf hRf hM hr
-/-- **Rescaled integrals at a density point of `B` and a Lebesgue point of `J`**: let
-`m|a − b| ≤ |F(a) − F(b)|` on `B`, `m|c| ≤ |Lc|` for `L = DF(b)`, `0 ≤ J ≤ K`, let `B` have
-density `1` at `b` and `⨍_{B̄_ρ(b)} |J − J(b)| → 0`.  Then for `f ∈ C_c(ℝᴾ)`,
-`∫ 1_B(b + rc) J(b + rc) f(r⁻¹(F(b + rc) − F(b))) dc → J(b) ∫ f(Lc) dc` as `r → 0⁺`.
-With `f = 0` off `B_R(0)` and `|f| ≤ M`, the error is at most `K M T₁ + M T₂ + J(b) T₃`, where
-`T₁, T₂, T₃` integrate `1_{Bᶜ}(b + rc)`, `|J(b + rc) − J(b)|` and
-`|f(r⁻¹(F(b + rc) − F(b))) − f(Lc)|` over `B̄_{R/m}(0)`; each tends to `0`. -/
-theorem Submission.pit_rescaled_integral_tendsto : ∀ (P n : ℕ) (F : Euclid n → Euclid P) (B : Set (Euclid n)) (J : Euclid n → ℝ) (K m : ℝ) (b : Euclid n) (f : Euclid P → ℝ), Continuous F → MeasurableSet B → Measurable J → (∀ a, 0 ≤ J a ∧ J a ≤ K) → 0 < m → (∀ a ∈ B, m * ‖a - b‖ ≤ ‖F a - F b‖) → DifferentiableAt ℝ F b → (∀ c, m * ‖c‖ ≤ ‖fderiv ℝ F b c‖) → Tendsto (fun ρ : ℝ => volume (B ∩ closedBall b ρ) / volume (closedBall b ρ)) (𝓝[>] 0) (𝓝 1) → Tendsto (fun ρ : ℝ => ⨍ a in closedBall b ρ, ‖J a - J b‖ ∂volume) (𝓝[>] 0) (𝓝 0) → Continuous f → HasCompactSupport f → Tendsto (fun r : ℝ => ∫ c, B.indicator J (b + r • c) * f (r⁻¹ • (F (b + r • c) - F b)) ∂volume) (𝓝[>] 0) (𝓝 (J b * ∫ c, f (fderiv ℝ F b c) ∂volume)) := by
-  intro P n F B J K m b f hF hB hJ hJK hm hFB hdiff hL hdens hLeb hf hfc
-  -- `f = 0` off `B_R(0)` and `|f| ≤ M`; the integrals live on `B̄_{R/m}(0)`
-  obtain ⟨R, hR, hRf⟩ := hfc.exists_pos_le_norm
-  obtain ⟨M, hM⟩ := hf.bounded_above_of_compact_support hfc
-  have hRm : 0 < R / m := div_pos hR hm
-  -- `T₁ → 0`: `B` has density `1` at `b`
-  have hT₁ := Submission.pit_integral_closedBall_rescale_tendsto n
-    (Bᶜ.indicator fun _ => (1 : ℝ)) b (R / m) hRm
-    (Submission.pit_ril_compl_average_tendsto n B b hB hdens)
-  -- `T₂ → 0`: `b` is a Lebesgue point of `J`
-  have hT₂ := Submission.pit_integral_closedBall_rescale_tendsto n (fun a => ‖J a - J b‖) b
-    (R / m) hRm hLeb
-  -- `T₃ → 0`: `r⁻¹(F(b + rc) − F(b)) → Lc` uniformly on `B̄_{R/m}(0)`
-  have hT₃ := Submission.pit_ril_diffQuot_integral_tendsto P n F (fderiv ℝ F b) b f (R / m)
-    hdiff.hasFDerivAt hf hfc
-  have hlim := ((hT₁.const_mul (K * M)).add (hT₂.const_mul M)).add (hT₃.const_mul (J b))
-  simp only [mul_zero, add_zero] at hlim
-  -- squeeze `|I(r) − J(b) ∫ f(Lc) dc| ≤ K M T₁(r) + M T₂(r) + J(b) T₃(r)` for `r > 0`
-  rw [tendsto_iff_norm_sub_tendsto_zero]
-  refine squeeze_zero' (Eventually.of_forall fun r => norm_nonneg _) ?_ hlim
-  filter_upwards [self_mem_nhdsWithin] with r hr
-  exact Submission.pit_ril_three_term_bound P n F (fderiv ℝ F b) B J K m b f R M r hF hB hJ hJK
-    hm hFB hL hf hRf hM hr
-/-- **Simon Ch. 3, 1.4** (approximate tangent spaces of a bi-Lipschitz piece): let `F : ℝⁿ → ℝᴾ`
-be `L`-Lipschitz, `B ⊆ ℝⁿ` Borel and `m > 0` with `m|a − a'| ≤ |F a − F a'|` on `B`, and let `F`
-be differentiable at every point of `B` with injective derivative.  Then for a.e. `b ∈ B`,
-`F(B)` has approximate tangent space `range DF(b)` at `F b`.
-With `J := normDet DF` (Borel, `0 ≤ J ≤ Lⁿ`) the injective area formula holds on `B`.  A.e.
-`b ∈ B` is a density point of `B` and a Lebesgue point of `J`; there
-`∫_{η_{F b,r}(F(B))} f dHⁿ = ∫ 1_B J(b + rc) f(r⁻¹(F(b + rc) − F b)) dc` tends to
-`J(b) ∫ f(DF(b)c) dc = ∫_{range DF(b)} f dHⁿ` as `r ↓ 0`. -/
-theorem Submission.ptd_piece_image_approxTangent_ae : ∀ (P n : ℕ) (F : Euclid n → Euclid P) (B : Set (Euclid n)) (L : NNReal) (m : ℝ), LipschitzWith L F → MeasurableSet B → 0 < m → (∀ a ∈ B, ∀ a' ∈ B, m * ‖a - a'‖ ≤ ‖F a - F a'‖) → (∀ a ∈ B, DifferentiableAt ℝ F a ∧ Injective (fderiv ℝ F a)) → ∀ᵐ b ∂(volume.restrict B), HasApproximateTangentSpaceAt n (F '' B) (F b) (LinearMap.range (fderiv ℝ F b : Euclid n →ₗ[ℝ] Euclid P)) := by
-  intro P n F B L m hF hB hm hcolip hreg
-  have hfin : Module.finrank ℝ (Euclid n) = n := finrank_euclideanSpace_fin
-  -- the area Jacobian `J = normDet DF`
-  obtain ⟨J, hJ⟩ : ∃ J : Euclid n → ℝ, J = Poincare.SimonGMT.Chapter02.areaJacobianAt F :=
 /-- **Top-dimensional currents with finite mass and locally finite boundary mass have `L¹`
 densities.**  Assume the mass representation (REP).  If `U ⊆ ℝⁿ` is open (`n = d + 1`),
 `Y ∈ 𝒟ₙ(U)`, `M_U(Y) < ∞` and `M_W(∂Y) < ∞` for `W ⊂⊂ U`, then `Y(ω) = ∫_U u ω(e) dy` for an
@@ -74912,6 +73891,7 @@ theorem Submission.stationaryAlong_of_minimizing_in_submanifold :
   by_contra ha
   have h := hbound (|R.firstVariation X| / 2) (half_pos (abs_pos.2 ha))
   linarith [abs_pos.2 ha]
+
 /-- **`TₓM ⊆ TₓN`** (Simon Ch. 3, 1.4 and Ch. 2, §4, (4.1)–(4.3); used in Ch. 4, 2.6–2.7).  Let
 `N` be an embedded `C¹` `d`-dimensional submanifold, `Hⁿ(M \ N) = 0` and `x ∈ N`.  Then every
 approximate tangent plane `Q` of `M` at `x` lies in `TₓN`.  Write `x = ψ(v)` for a chart `ψ` of
@@ -75282,6 +74262,1233 @@ theorem Submission.minimizing_implies_stationary : MinimizingImpliesStationary :
       hmin hbdry hR hnull
   exact ⟨hstat, Submission.meanCurvature_bounded_of_stationaryAlong (n + k) n (n + ℓ) U N R hU hN
     hNcl hnull hstat⟩
+/-- **Approximate tangent planes of a bi-Lipschitz piece image** (Simon Ch. 3, 1.4, by the density
+argument of Theorem 1.6): if `g : ℝⁿ → ℝᴾ` is `L`-Lipschitz, `A` is Borel,
+`c‖a − a'‖ ≤ ‖g(a) − g(a')‖` on `A` (`c > 0`) and `g` is differentiable with injective derivative
+on `A`, then for a.e. `b ∈ A`, `g(A)` has approximate tangent space `range Dg(b)` at `g(b)`.
+At a density point `b` of `A` that is a Lebesgue point of the Jacobian `0 ≤ J_g ≤ Lⁿ`, the
+injective area formula turns the blow-up integrals into
+`∫ 1_A(b + rv) J_g(b + rv) f(r⁻¹(g(b + rv) − g(b))) dv`, which tends to
+`J_g(b) ∫ f(Dg(b)v) dv = ∫_{range Dg(b)} f dHⁿ`. -/
+theorem Submission.idtp_caf_piece_image_approxTangent_ae : ∀ (P n : ℕ) (g : Euclid n → Euclid P) (A : Set (Euclid n)) (L : NNReal) (c : ℝ), 1 ≤ n → LipschitzWith L g → MeasurableSet A → 0 < c → (∀ a ∈ A, ∀ a' ∈ A, c * ‖a - a'‖ ≤ ‖g a - g a'‖) → (∀ a ∈ A, DifferentiableAt ℝ g a ∧ Injective (fderiv ℝ g a)) → ∀ᵐ a ∂(volume.restrict A), HasApproximateTangentSpaceAt n (g '' A) (g a) (LinearMap.range (fderiv ℝ g a : Euclid n →ₗ[ℝ] Euclid P)) := by
+  intro P n g A L c _ hg hA hc hco hdiff
+  -- the area Jacobian `J = J_g` is Borel and nonnegative
+  set J : Euclid n → ℝ := Poincare.SimonGMT.Chapter02.areaJacobianAt g with hJ_def
+  have hJm : Measurable J := Poincare.SimonGMT.Chapter02.measurable_areaJacobianAt g
+  have hJ0 : ∀ a, 0 ≤ J a := Poincare.SimonGMT.Chapter02.areaJacobianAt_nonneg g
+  -- `Hⁿ(Dg(a)(S)) = J(a) λ(S)` for every `a` and every `S`
+  have hlin : ∀ (a : Euclid n) (S : Set (Euclid n)),
+      μHE[n] (fderiv ℝ g a '' S) = ENNReal.ofReal (J a) * volume S := by
+    intro a S
+    have h := LinearMap.euclideanHausdorffMeasure_image_eq_normDet_mul_volume
+      (fderiv ℝ g a : Euclid n →ₗ[ℝ] Euclid P) S
+    rw [finrank_euclideanSpace_fin, ContinuousLinearMap.coe_coe] at h
+    rw [h, hJ_def, Poincare.SimonGMT.Chapter02.areaJacobianAt_eq_normDet]
+  -- `J ≤ Lⁿ`: `Dg(a)` is `L`-Lipschitz, so `J(a) λ(B̄₁(0)) = Hⁿ(Dg(a)(B̄₁(0))) ≤ Lⁿ λ(B̄₁(0))`
+  have hJL : ∀ a, J a ≤ (L : ℝ) ^ n := by
+    intro a
+    have hTL : LipschitzWith L (fderiv ℝ g a) :=
+      (fderiv ℝ g a).lipschitzWith.weaken (by
+        rw [← NNReal.coe_le_coe, coe_nnnorm]
+        exact norm_fderiv_le_of_lipschitz ℝ hg)
+    have hle := Poincare.SimonGMT.Chapter02.euclideanHausdorffMeasure_image_le_of_lipschitzOn n
+      (hTL.lipschitzOnWith (s := closedBall (0 : Euclid n) 1))
+    rw [hlin, EuclideanSpace.euclideanHausdorffMeasure_eq_volume] at hle
+    have hle' := (ENNReal.mul_le_mul_iff_left
+      (measure_closedBall_pos volume (0 : Euclid n) one_pos).ne' measure_closedBall_lt_top.ne).1 hle
+    rw [← ENNReal.ofReal_coe_nnreal, ← ENNReal.ofReal_pow NNReal.zero_le_coe,
+      ENNReal.ofReal_le_ofReal_iff (pow_nonneg NNReal.zero_le_coe n)] at hle'
+    exact hle'
+  -- `g` is injective on `A`, so the injective Lipschitz area formula holds on `A`
+  have hinj : InjOn g A := by
+    intro a ha a' ha' h
+    have h1 := hco a ha a' ha'
+    rw [h, sub_self, norm_zero, ← mul_zero c] at h1
+    exact sub_eq_zero.1 (norm_le_zero_iff.1 (le_of_mul_le_mul_left h1 hc))
+  have harea : ∀ φ : Euclid P → ℝ≥0∞,
+      ∫⁻ y in g '' A, φ y ∂μHE[n] = ∫⁻ x in A, ENNReal.ofReal (J x) * φ (g x) ∂volume := by
+    intro φ
+    have h := Poincare.SimonGMT.Chapter02.weighted_area_formula_lipschitz_injOn hg hA hinj φ
+    rw [finrank_euclideanSpace_fin] at h
+    exact h
+  -- a.e. point of `A` is a density point of `A` and a Lebesgue point of the bounded Borel `J`
+  have hdens := Besicovitch.ae_tendsto_measure_inter_div (volume : Measure (Euclid n)) A
+  have hJloc : LocallyIntegrable J volume :=
+    (locallyIntegrable_const ((L : ℝ) ^ n)).mono hJm.aestronglyMeasurable
+      (Eventually.of_forall fun a => by
+        rw [Real.norm_of_nonneg (hJ0 a), Real.norm_of_nonneg (pow_nonneg NNReal.zero_le_coe n)]
+        exact hJL a)
+  have hleb : ∀ᵐ b ∂(volume : Measure (Euclid n)),
+      Tendsto (fun ρ : ℝ => ⨍ a in closedBall b ρ, ‖J a - J b‖ ∂volume) (𝓝[>] 0) (𝓝 0) := by
+    filter_upwards [(Besicovitch.vitaliFamily
+      (volume : Measure (Euclid n))).ae_tendsto_average_norm_sub hJloc] with b hb
+    exact hb.comp (Besicovitch.tendsto_filterAt volume b)
+  filter_upwards [ae_restrict_mem hA, hdens, ae_restrict_of_ae hleb] with b hbA hbdens hbleb
+  obtain ⟨hgb, hinjb⟩ := hdiff b hbA
+  have hcob : ∀ a ∈ A, c * ‖a - b‖ ≤ ‖g a - g b‖ := fun a ha => hco a ha b hbA
+  -- at a density point, `c‖v‖ ≤ ‖Dg(b)v‖`
+  have hγ := Submission.pit_fderiv_lower_bound_of_density P n g A c b hc hcob hgb hbdens
+  refine ⟨?_, fun f => ?_⟩
+  · rw [LinearMap.finrank_range_of_inj hinjb, finrank_euclideanSpace_fin]
+  · -- `∫_{range Dg(b)} f dHⁿ = J(b) ∫ f(Dg(b)v) dv`
+    rw [Submission.pit_setIntegral_range_linear P n (fderiv ℝ g b) (J b) f (hJ0 b) (hlin b)
+      (map_continuous f)]
+    -- the rescaled area integrals converge to it, and equal the blow-up integrals for `r > 0`
+    refine (Submission.idtp_caf_rescaled_integral_tendsto P n g A J ((L : ℝ) ^ n) c b f
+      hg.continuous hA hJm (fun a => ⟨hJ0 a, hJL a⟩) hc hcob hgb hγ hbdens hbleb
+      (map_continuous f) f.hasCompactSupport).congr' ?_
+    filter_upwards [self_mem_nhdsWithin] with r (hr : 0 < r)
+    exact (Submission.pit_blowUp_image_setIntegral_eq_rescaled P n g A J b r f hg.continuous hA
+      hJm hJ0 harea hr (map_continuous f)).symm
+/-- **Approximate tangent planes along a bi-Lipschitz piece** (Simon Ch. 3, 1.4–1.5).  Let
+`M ⊆ ℝᴾ` be Borel with `Hⁿ(M ∩ K) < ∞` for compact `K`, and `g : ℝⁿ → ℝᴾ` Lipschitz with
+`c‖a − a'‖ ≤ ‖g a − g a'‖` on the Borel set `A`, differentiable with injective derivative on `A`,
+and `g(A) ⊆ M`.  Then `T_{g(a)}M = range Dg(a)` for Lebesgue-a.e. `a ∈ A`: `g(A) ⊆ M` is Borel and
+locally `Hⁿ`-finite, so `g(A)` and `M` have the same approximate tangent planes `Hⁿ`-a.e. on
+`g(A)`; this pulls back to a.e. `a ∈ A`, where `g(A)` has approximate tangent space
+`range Dg(a)` at `g(a)`. -/
+theorem Submission.idtp_caf_piece_approxTangentPlane_ae : ∀ (P n : ℕ) (M : Set (Euclid P)) (g : Euclid n → Euclid P) (A : Set (Euclid n)) (L : NNReal) (c : ℝ), 1 ≤ n → MeasurableSet M → (∀ K : Set (Euclid P), IsCompact K → μHE[n] (M ∩ K) ≠ ∞) → LipschitzWith L g → MeasurableSet A → 0 < c → (∀ a ∈ A, ∀ a' ∈ A, c * ‖a - a'‖ ≤ ‖g a - g a'‖) → (∀ a ∈ A, DifferentiableAt ℝ g a ∧ Injective (fderiv ℝ g a)) → g '' A ⊆ M → ∀ᵐ a ∂(volume.restrict A), approxTangentPlane n M (g a) = LinearMap.range (fderiv ℝ g a : Euclid n →ₗ[ℝ] Euclid P) := by
+  intro P n M g A L c hn hM hMfin hg hA hc hlow hdiff hAM
+  -- Step 1: `g(A)` is Borel, and `Hⁿ⌞g(A)`-a.e. properties hold at `g a` for a.e. `a ∈ A`
+  obtain ⟨hgA, hpull⟩ :=
+    Submission.ptd_piece_image_measurable_ae_pullback P n g A L c hg hA hc hlow
+  -- Step 2: `g(A) ⊆ M` is locally `Hⁿ`-finite
+  have hgAfin : ∀ K : Set (Euclid P), IsCompact K → K ⊆ univ → μHE[n] (g '' A ∩ K) ≠ ∞ :=
+    fun K hK _ => ne_top_of_le_ne_top (hMfin K hK) (measure_mono (inter_subset_inter_left K hAM))
+  -- Step 3: `g(A)` and `M` have the same approximate tangent planes `Hⁿ⌞g(A)`-a.e.
+  have htrans : ∀ᵐ y ∂(μHE[n].restrict (g '' A)), ∀ Q : Submodule ℝ (Euclid P),
+      HasApproximateTangentSpaceAt n (g '' A) y Q ↔ HasApproximateTangentSpaceAt n M y Q := by
+    rw [ae_restrict_iff' hgA]
+    filter_upwards [Submission.doraggt_ae_approxTangent_transfer P n univ (g '' A) M isOpen_univ
+      hgA hM hgAfin fun K hK _ => hMfin K hK] with y hy hyA using hy (mem_univ y) hyA (hAM hyA)
+  -- Step 4: pull back to a.e. `a ∈ A`; step 5: the tangent plane of the piece at `g a`
+  filter_upwards [hpull _ htrans,
+    Submission.idtp_caf_piece_image_approxTangent_ae P n g A L c hn hg hA hc hlow hdiff]
+    with a hQ hT
+  -- Step 6: `range Dg(a)` is the approximate tangent space of `M` at `g a`
+  exact Submission.dpf_itt_approxTangentPlane_eq P n M (g a) _ ((hQ _).1 hT)
+/-- **Fibre sums of `Hⁿ`-a.e. equal weights agree `Lⁿ`-a.e.** (Simon Ch. 2, 1.8(i): Lipschitz
+images of `Hⁿ`-null sets are `Hⁿ`-null).  Let `S ⊆ V`, `F = G` on `V` with `G` Lipschitz, and
+`h = h'` `Hⁿ⌞S`-a.e.  Enlarge `{h ≠ h'}` to a Borel `Hⁿ⌞S`-null set `N`; then `Hⁿ(N ∩ S) = 0`, so
+`F(N ∩ S) = G(N ∩ S)` is `Hⁿ = Lⁿ`-null.  For `y ∉ F(N ∩ S)` every `x ∈ S` with `F(x) = y` lies
+outside `N`, so `h(x) = h'(x)` and the fibre sums `Σ_{x ∈ S, F(x) = y}` of `h` and `h'` agree. -/
+theorem Submission.idtp_caf_paf_fiberSum_ae_congr : ∀ (P n : ℕ) (S V : Set (Euclid P)) (F G : Euclid P → Euclid n) (LG : NNReal) (h h' : Euclid P → ℝ≥0∞), S ⊆ V → LipschitzWith LG G → EqOn F G V → h =ᵐ[μHE[n].restrict S] h' → (fun y : Euclid n => ∑' x : ↥(S ∩ F ⁻¹' {y}), h x) =ᵐ[volume] (fun y : Euclid n => ∑' x : ↥(S ∩ F ⁻¹' {y}), h' x) := by
+  intro P n S V F G LG h h' hSV hG hFG hh
+  -- a Borel `Hⁿ⌞S`-null set `N ⊇ {h ≠ h'}`; then `Hⁿ(N ∩ S) = 0`
+  obtain ⟨N, hNsub, hNmeas, hN0⟩ := exists_measurable_superset_of_null (ae_iff.1 hh)
+  rw [Measure.restrict_apply hNmeas] at hN0
+  -- `F(N ∩ S) = G(N ∩ S)` is `Hⁿ`-null (Lipschitz image), i.e. `Lⁿ`-null
+  have hFG' : F '' (N ∩ S) = G '' (N ∩ S) := image_congr fun x hx => hFG (hSV hx.2)
+  have hM : volume (F '' (N ∩ S)) = 0 := by
+    rw [hFG', ← EuclideanSpace.euclideanHausdorffMeasure_eq_volume]
+    refine le_antisymm ?_ zero_le
+    calc μHE[n] (G '' (N ∩ S)) ≤ (LG : ℝ≥0∞) ^ n * μHE[n] (N ∩ S) :=
+          Poincare.SimonGMT.Chapter02.euclideanHausdorffMeasure_image_le_of_lipschitzOn n
+            hG.lipschitzOnWith
+      _ = 0 := by rw [hN0, mul_zero]
+  -- off `F(N ∩ S)` every fibre point lies outside `N`, where `h = h'`
+  filter_upwards [measure_eq_zero_iff_ae_notMem.1 hM] with y hy
+  refine tsum_congr fun x => ?_
+  by_contra hne
+  exact hy ⟨x, ⟨hNsub hne, x.2.1⟩, x.2.2⟩
+/-- **Weighted area formula, fibre side** (Simon Ch. 2, §3, (3.4)–(3.5), for the Lipschitz map
+`Φ : ℝⁿ → ℝⁿ`).  Let `g` be continuous and injective on the Borel set `A`, let `F ∘ g = Φ` on `A`
+with `Φ` Lipschitz, and let `h ≥ 0` be Borel.  Then `y ↦ Σ_{x ∈ g(A), F(x) = y} h(x)` is
+`Lⁿ`-a.e. measurable and its integral is `∫_A |det DΦ(a)| h(g(a)) dLⁿ(a)`.  The carrier fibre
+over `y` is `g(A ∩ Φ⁻¹{y})`, so the fibre sum is `Σ_{a ∈ A, Φ(a) = y} h(g(a))`.  The formula for
+`Φ` is proved in place from Mathlib's change of variables, as the SimonGMT area formula is not
+available in this file.  Off the null images of the non-differentiability set (Rademacher and
+the Lipschitz image bound) and of the critical set (Sard), the fibre sum splits over a countable
+partition of `A` into pieces on which `Φ` is injective, and on each piece the injective change
+of variables formula applies. -/
+theorem Submission.idtp_caf_paf_fiber_side : ∀ (P n : ℕ) (g : Euclid n → Euclid P) (A : Set (Euclid n)) (F : Euclid P → Euclid n) (Φ : Euclid n → Euclid n) (LΦ : NNReal) (h : Euclid P → ℝ≥0∞), Continuous g → MeasurableSet A → InjOn g A → LipschitzWith LΦ Φ → (∀ a ∈ A, F (g a) = Φ a) → Measurable h → AEMeasurable (fun y : Euclid n => ∑' x : ↥(g '' A ∩ F ⁻¹' {y}), h x) volume ∧ ∫⁻ y, (∑' x : ↥(g '' A ∩ F ⁻¹' {y}), h x) ∂volume = ∫⁻ a in A, ENNReal.ofReal |LinearMap.det (fderiv ℝ Φ a : Euclid n →ₗ[ℝ] Euclid n)| * h (g a) ∂volume := by
+  intro P n g A F Φ LΦ h hg hA hgA hΦ hFg hh
+  -- the weight `w = h ∘ g` on the parameter side is Borel
+  set w : Euclid n → ℝ≥0∞ := fun a => h (g a)
+  have hw : Measurable w := hh.comp hg.measurable
+  -- `g(A) ∩ F⁻¹{y} = g(A ∩ Φ⁻¹{y})`, and `tsum_image` reindexes the fibre sum
+  have hfib : ∀ y, (∑' x : ↥(g '' A ∩ F ⁻¹' {y}), h x) = ∑' a : ↥(A ∩ Φ ⁻¹' {y}), w a := by
+    intro y
+    have hset : g '' A ∩ F ⁻¹' {y} = g '' (A ∩ Φ ⁻¹' {y}) := by
+      ext x
+      simp only [mem_inter_iff, mem_image, mem_preimage, mem_singleton_iff]
+      constructor
+      · rintro ⟨⟨a, ha, rfl⟩, hy⟩
+        exact ⟨a, ⟨ha, (hFg a ha).symm.trans hy⟩, rfl⟩
+      · rintro ⟨a, ⟨ha, hy⟩, rfl⟩
+        exact ⟨⟨a, ha, rfl⟩, (hFg a ha).trans hy⟩
+    rw [hset, tsum_image h (hgA.mono inter_subset_left)]
+  simp only [hfib]
+  -- `D`: differentiability points of `Φ`; `s`: the points of `A ∩ D` with `det DΦ ≠ 0`
+  set D : Set (Euclid n) := {x | DifferentiableAt ℝ Φ x}
+  have hDm : MeasurableSet D := measurableSet_of_differentiableAt ℝ Φ
+  have hdetm : Measurable fun x => (fderiv ℝ Φ x).det :=
+    ContinuousLinearMap.continuous_det.measurable.comp (measurable_fderiv ℝ Φ)
+  set s : Set (Euclid n) := A ∩ D ∩ {x | (fderiv ℝ Φ x).det ≠ 0}
+  have hsm : MeasurableSet s := (hA.inter hDm).inter (hdetm (measurableSet_singleton 0).compl)
+  -- precision `r B` with `r B * ‖B⁻¹‖ < 1` whenever `B` is invertible
+  let r : (Euclid n →L[ℝ] Euclid n) → NNReal := fun B =>
+    if hB : B.det ≠ 0 then
+      (‖((B.toContinuousLinearEquivOfDetNeZero hB).symm : Euclid n →L[ℝ] Euclid n)‖₊ + 1)⁻¹
+    else 1
+  have rpos : ∀ B, r B ≠ 0 := by
+    intro B
+    simp only [r]
+    split_ifs
+    · exact inv_ne_zero (by positivity)
+    · exact one_ne_zero
+  -- a countable measurable partition of `s` into pieces `S k` on which `Φ` is close to `B k`
+  obtain ⟨t, B, ht_disj, ht_meas, hst, happrox, hB⟩ :=
+    exists_partition_approximatesLinearOn_of_hasFDerivWithinAt Φ s (fderiv ℝ Φ)
+      (fun x hx => (hx.1.2 : DifferentiableAt ℝ Φ x).hasFDerivAt.hasFDerivWithinAt) r rpos
+  set S : ℕ → Set (Euclid n) := fun k => s ∩ t k
+  have hSm : ∀ k, MeasurableSet (S k) := fun k => hsm.inter (ht_meas k)
+  have hSdisj : Pairwise (Disjoint on S) := fun i j hij =>
+    (ht_disj hij).mono inter_subset_right inter_subset_right
+  have hSU : ⋃ k, S k = s := by
+    simp only [S, ← inter_iUnion]
+    exact inter_eq_left.mpr hst
+  have hSder : ∀ k, ∀ x ∈ S k, HasFDerivWithinAt Φ (fderiv ℝ Φ x) (S k) x := fun k x hx =>
+    (hx.1.1.2 : DifferentiableAt ℝ Φ x).hasFDerivAt.hasFDerivWithinAt
+  -- `Φ` is injective on each piece: `B k = DΦ(z)` is invertible and `r (B k) * ‖(B k)⁻¹‖ < 1`
+  have hSinj : ∀ k, InjOn Φ (S k) := by
+    intro k x hx y hy hxy
+    obtain ⟨z, hz, hBz⟩ := hB ⟨x, hx.1⟩ k
+    have hdet : (B k).det ≠ 0 := hBz ▸ hz.2
+    set e := (B k).toContinuousLinearEquivOfDetNeZero hdet
+    set N : ℝ := ‖(e.symm : Euclid n →L[ℝ] Euclid n)‖
+    have hr : ((r (B k) : NNReal) : ℝ) = (N + 1)⁻¹ := by
+      simp only [r, dite_eq_left hdet, NNReal.coe_inv, NNReal.coe_add, coe_nnnorm,
+        NNReal.coe_one, N, e]
+    have happ := happrox k x hx y hy
+    rw [hxy, sub_self, zero_sub, norm_neg, hr] at happ
+    have h1 : ‖x - y‖ ≤ N * ‖B k (x - y)‖ := by
+      have hxy' : e.symm (B k (x - y)) = x - y := by
+        rw [show B k (x - y) = e (x - y) from rfl, ContinuousLinearEquiv.symm_apply_apply]
+      calc ‖x - y‖ = ‖(e.symm : Euclid n →L[ℝ] Euclid n) (B k (x - y))‖ := by
+              rw [ContinuousLinearEquiv.coe_coe, hxy']
+        _ ≤ N * ‖B k (x - y)‖ := (e.symm : Euclid n →L[ℝ] Euclid n).le_opNorm _
+    have hN : 0 ≤ N := norm_nonneg _
+    have h2 : ‖x - y‖ ≤ N * ((N + 1)⁻¹ * ‖x - y‖) :=
+      h1.trans (mul_le_mul_of_nonneg_left happ hN)
+    have h3 : ‖x - y‖ ≤ 0 := by
+      have hN1 : 0 < N + 1 := by linarith
+      have h4 : N * ((N + 1)⁻¹ * ‖x - y‖) = ‖x - y‖ - (N + 1)⁻¹ * ‖x - y‖ := by
+        field_simp
+        ring
+      rw [h4] at h2
+      have h5 : (N + 1)⁻¹ * ‖x - y‖ ≤ 0 := by linarith
+      have h6 : 0 < (N + 1)⁻¹ := inv_pos.mpr hN1
+      nlinarith [norm_nonneg (x - y)]
+    exact sub_eq_zero.mp (norm_le_zero_iff.mp h3)
+  -- `G k y`: the fibre sum of `w` over `S k ∩ Φ⁻¹{y}`, which has at most one point
+  set G : ℕ → Euclid n → ℝ≥0∞ := fun k y => ∑' a, (S k ∩ Φ ⁻¹' {y}).indicator w a
+  have hG_apply : ∀ k, ∀ x ∈ S k, G k (Φ x) = w x := by
+    intro k x hx
+    simp only [G]
+    rw [tsum_eq_single x]
+    · exact indicator_of_mem (show x ∈ S k ∩ Φ ⁻¹' {Φ x} from ⟨hx, rfl⟩) w
+    · intro a hax
+      exact indicator_of_notMem (fun ha => hax (hSinj k ha.1 hx ha.2)) w
+  have hG_zero : ∀ k y, y ∉ Φ '' S k → G k y = 0 := by
+    intro k y hy
+    simp only [G]
+    exact (tsum_congr fun a => indicator_of_notMem (fun ha => hy ⟨a, ha.1, ha.2⟩) w).trans
+      tsum_zero
+  have hG_meas : ∀ k, Measurable (G k) := by
+    intro k
+    have hemb := measurableEmbedding_of_fderivWithin (hSm k) (hSder k) (hSinj k)
+    have hGe : G k = Function.extend ((S k).domRestrict Φ) (fun x => w x) 0 := by
+      funext y
+      by_cases hy : ∃ x : S k, (S k).domRestrict Φ x = y
+      · obtain ⟨x, rfl⟩ := hy
+        rw [hemb.injective.extend_apply]
+        exact hG_apply k x x.2
+      · rw [extend_apply' _ _ _ hy, hG_zero k y]
+        · rfl
+        · rintro ⟨x, hx, rfl⟩
+          exact hy ⟨⟨x, hx⟩, rfl⟩
+    rw [hGe]
+    exact hemb.measurable_extend (hw.comp measurable_subtype_coe) measurable_const
+  -- injective change of variables on each piece
+  have hG_int : ∀ k, ∫⁻ y, G k y =
+      ∫⁻ x in S k, ENNReal.ofReal |(fderiv ℝ Φ x).det| * w x := by
+    intro k
+    rw [← setLIntegral_eq_of_support_subset (s := Φ '' S k) (fun y hy => by
+        by_contra hy'
+        exact hy (hG_zero k y hy')),
+      lintegral_image_eq_lintegral_abs_det_fderiv_mul volume (hSm k) (hSder k) (hSinj k)]
+    exact setLIntegral_congr_fun (hSm k) (fun x hx => by rw [hG_apply k x hx])
+  -- null images: of `Dᶜ` (Rademacher, Lipschitz image bound) and of the critical set (Sard)
+  have hDc : volume Dᶜ = 0 := ae_iff.mp (hΦ.ae_differentiableAt (μ := volume))
+  have hnull1 : volume (Φ '' Dᶜ) = 0 := by
+    have h1 := Poincare.SimonGMT.Chapter02.euclideanHausdorffMeasure_image_le_of_lipschitzOn n
+      (hΦ.lipschitzOnWith (s := Dᶜ))
+    rw [EuclideanSpace.euclideanHausdorffMeasure_eq_volume, hDc, mul_zero] at h1
+    exact nonpos_iff_eq_zero.mp h1
+  have hnull2 : volume (Φ '' (A ∩ D ∩ {x | (fderiv ℝ Φ x).det = 0})) = 0 :=
+    addHaar_image_eq_zero_of_det_fderivWithin_eq_zero volume
+      (fun x hx => (hx.1.2 : DifferentiableAt ℝ Φ x).hasFDerivAt.hasFDerivWithinAt)
+      (fun x hx => hx.2)
+  -- off these null sets, the fibre sum over `A` splits over the pieces
+  have hae : ∀ᵐ y ∂volume, (∑' a : ↥(A ∩ Φ ⁻¹' {y}), w a) = ∑' k, G k y := by
+    filter_upwards [measure_eq_zero_iff_ae_notMem.mp (measure_union_null hnull1 hnull2)] with y hy
+    rw [tsum_subtype (A ∩ Φ ⁻¹' {y}) w]
+    simp only [G]
+    rw [ENNReal.tsum_comm]
+    refine tsum_congr fun a => ?_
+    by_cases ha : a ∈ A ∩ Φ ⁻¹' {y}
+    · have haD : a ∈ D := by
+        by_contra hD
+        exact hy (Or.inl ⟨a, hD, ha.2⟩)
+      have hadet : (fderiv ℝ Φ a).det ≠ 0 := by
+        intro h0
+        exact hy (Or.inr ⟨a, ⟨⟨ha.1, haD⟩, h0⟩, ha.2⟩)
+      have has : a ∈ s := ⟨⟨ha.1, haD⟩, hadet⟩
+      obtain ⟨k, hk⟩ := mem_iUnion.mp (hst has)
+      rw [indicator_of_mem ha, tsum_eq_single k]
+      · exact (indicator_of_mem (show a ∈ S k ∩ Φ ⁻¹' {y} from ⟨⟨has, hk⟩, ha.2⟩) w).symm
+      · intro j hj
+        exact indicator_of_notMem (fun haj => Set.disjoint_left.mp (ht_disj hj) haj.1.2 hk) w
+    · rw [indicator_of_notMem ha]
+      exact ((tsum_congr fun k => indicator_of_notMem
+        (fun hak => ha ⟨hak.1.1.1.1, hak.2⟩) w).trans tsum_zero).symm
+  have hGsum : Measurable fun y => ∑' k, G k y := Measurable.tsum hG_meas
+  refine ⟨hGsum.aemeasurable.congr (Filter.EventuallyEq.symm hae), ?_⟩
+  rw [lintegral_congr_ae hae, lintegral_tsum (fun k => (hG_meas k).aemeasurable)]
+  simp only [hG_int]
+  rw [← lintegral_iUnion hSm hSdisj, hSU]
+  -- the integrand vanishes a.e. on `A \ s`
+  rw [← inter_eq_left.mpr (show s ⊆ A from fun x hx => hx.1.1), ← setLIntegral_indicator hsm]
+  apply lintegral_congr_ae
+  filter_upwards [ae_restrict_of_ae (hΦ.ae_differentiableAt (μ := volume)), ae_restrict_mem hA]
+    with x hxD hxA
+  by_cases hxs : x ∈ s
+  · rw [indicator_of_mem hxs]
+  · rw [indicator_of_notMem hxs]
+    have h0 : (fderiv ℝ Φ x).det = 0 := by
+      by_contra h0
+      exact hxs ⟨⟨hxA, hxD⟩, h0⟩
+    have h0' : LinearMap.det (fderiv ℝ Φ x : Euclid n →ₗ[ℝ] Euclid n) = 0 := h0
+    simp [h0']
+/-- **Carrier side of the area formula on one piece** (Simon Ch. 3, 2.4–2.5, with the injective
+area formula of Ch. 2, §3).  Let `g : ℝⁿ → ℝᴾ` be Lipschitz, injective on the Borel set `A` and
+differentiable at every point of `A`, let `F = G` on an open `V ⊇ g(A)` with `F` differentiable on
+`g(A)`, and let `T(g(a)) = range Dg(a)` for a.e. `a ∈ A`.  With `u` the standard orthonormal basis
+of `T(x)` and `J_T(x) = √det(DF(x)uᵢ · DF(x)uⱼ)`, every `h ≥ 0` has
+`∫_{g(A)} J_T h dHⁿ = ∫_A |det D(G ∘ g)| h ∘ g dLⁿ`.
+
+The area formula is proved inline.  `J L = √det(L eᵢ · L eⱼ)` is the Jacobian of a linear
+`L : ℝᵐ → Y`; for injective `L`, `L = ι ∘ M` with `ι` an isometry and `J L = |det M|`, so
+`Hᵐ(L(S)) = J L · Hᵐ(S)`.  On pieces where `g` is close to an injective linear map, Hausdorff
+measure of the image is comparable to `J`, giving `Hⁿ(g(E)) = ∫_E J(Dg)` where `Dg` is injective;
+where `Dg` is not injective, the graphs `x ↦ (g x, εx)` show `Hⁿ(g(E)) = 0` as `ε → 0`.  A.e. on
+`A`, `D(G ∘ g)(a) = DF(g(a)) ∘ Dg(a)` and comparing volumes of the image of the unit ball gives
+`|det D(G ∘ g)(a)| = J_T(g(a)) · J(Dg(a))`. -/
+theorem Submission.idtp_caf_paf_carrier_side : ∀ (P n : ℕ) (g : Euclid n → Euclid P) (A : Set (Euclid n)) (Lg : NNReal) (V : Set (Euclid P)) (F G : Euclid P → Euclid n) (T : Euclid P → Submodule ℝ (Euclid P)) (h : Euclid P → ℝ≥0∞), LipschitzWith Lg g → MeasurableSet A → InjOn g A → (∀ a ∈ A, DifferentiableAt ℝ g a) → IsOpen V → g '' A ⊆ V → EqOn F G V → (∀ x ∈ g '' A, DifferentiableAt ℝ F x) → (∀ᵐ a ∂(volume.restrict A), T (g a) = LinearMap.range (fderiv ℝ g a : Euclid n →ₗ[ℝ] Euclid P)) → ∫⁻ x in g '' A, ENNReal.ofReal (Real.sqrt (Matrix.det (Matrix.of fun i j : Fin (Module.finrank ℝ (T x)) => inner ℝ (fderiv ℝ F x (stdOrthonormalBasis ℝ (T x) i)) (fderiv ℝ F x (stdOrthonormalBasis ℝ (T x) j))))) * h x ∂μHE[n] = ∫⁻ a in A, ENNReal.ofReal |LinearMap.det (fderiv ℝ (G ∘ g) a : Euclid n →ₗ[ℝ] Euclid n)| * h (g a) ∂volume := by
+  classical
+  -- the Jacobian `J L = √det(L eᵢ · L eⱼ)` of a linear map `L : ℝᵐ → Y`
+  obtain ⟨Jac, hJac⟩ : ∃ Jac : ∀ {m : ℕ} {Y : Type} [NormedAddCommGroup Y] [InnerProductSpace ℝ Y],
+      (EuclideanSpace ℝ (Fin m) →L[ℝ] Y) → ℝ,
+      ∀ {m : ℕ} {Y : Type} [NormedAddCommGroup Y] [InnerProductSpace ℝ Y]
+        (L : EuclideanSpace ℝ (Fin m) →L[ℝ] Y),
+        Jac L = Real.sqrt (Matrix.det (Matrix.of fun i j : Fin m =>
+          inner ℝ (L (EuclideanSpace.single i 1)) (L (EuclideanSpace.single j 1)))) :=
+    ⟨fun {m} {_} [_] [_] L => Real.sqrt (Matrix.det (Matrix.of fun i j : Fin m =>
+      inner ℝ (L (EuclideanSpace.single i 1)) (L (EuclideanSpace.single j 1)))),
+      fun _ => rfl⟩
+  have jac_nonneg : ∀ {m : ℕ} {Y : Type} [NormedAddCommGroup Y] [InnerProductSpace ℝ Y]
+      (L : EuclideanSpace ℝ (Fin m) →L[ℝ] Y), 0 ≤ Jac L := by
+    intro m Y _ _ L
+    rw [hJac]
+    exact Real.sqrt_nonneg _
+  -- an injective `L` factors as `ι ∘ M` with `ι` an isometry, and `J L = |det M| ≠ 0`
+  have jac_factor : ∀ {m : ℕ} {Y : Type} [NormedAddCommGroup Y] [InnerProductSpace ℝ Y]
+      [FiniteDimensional ℝ Y] (L : EuclideanSpace ℝ (Fin m) →L[ℝ] Y), Injective L →
+      ∃ (ι : EuclideanSpace ℝ (Fin m) →ₗᵢ[ℝ] Y)
+        (M : EuclideanSpace ℝ (Fin m) →ₗ[ℝ] EuclideanSpace ℝ (Fin m)),
+        (∀ x, ι (M x) = L x) ∧ Jac L = |LinearMap.det M| ∧ LinearMap.det M ≠ 0 := by
+    intro m Y _ _ _ L hL
+    have hW : Module.finrank ℝ (LinearMap.range (L : EuclideanSpace ℝ (Fin m) →ₗ[ℝ] Y)) = m := by
+      rw [LinearMap.finrank_range_of_inj hL, finrank_euclideanSpace_fin]
+    obtain ⟨u⟩ : Nonempty (OrthonormalBasis (Fin m) ℝ
+        (LinearMap.range (L : EuclideanSpace ℝ (Fin m) →ₗ[ℝ] Y))) :=
+      ⟨(stdOrthonormalBasis ℝ _).reindex (finCongr hW)⟩
+    obtain ⟨ι, M, hιM⟩ : ∃ (ι : EuclideanSpace ℝ (Fin m) →ₗᵢ[ℝ] Y)
+        (M : EuclideanSpace ℝ (Fin m) →ₗ[ℝ] EuclideanSpace ℝ (Fin m)), ∀ x, ι (M x) = L x := by
+      refine ⟨(LinearMap.range (L : EuclideanSpace ℝ (Fin m) →ₗ[ℝ] Y)).subtypeₗᵢ.comp
+          u.repr.symm.toLinearIsometry,
+        u.repr.toLinearEquiv.toLinearMap ∘ₗ (L : EuclideanSpace ℝ (Fin m) →ₗ[ℝ] Y).rangeRestrict,
+        fun x => ?_⟩
+      change ((u.repr.symm (u.repr ((L : EuclideanSpace ℝ (Fin m) →ₗ[ℝ] Y).rangeRestrict x)) :
+        LinearMap.range (L : EuclideanSpace ℝ (Fin m) →ₗ[ℝ] Y)) : Y) = L x
+      rw [LinearIsometryEquiv.symm_apply_apply]
+      rfl
+    have hdetM : LinearMap.det M ≠ 0 := by
+      rw [Ne, LinearMap.det_eq_zero_iff_ker_ne_bot, not_not, LinearMap.ker_eq_bot]
+      intro x y hxy
+      apply hL
+      rw [← hιM x, ← hιM y, hxy]
+    refine ⟨ι, M, hιM, ?_, hdetM⟩
+    have hgram : (Matrix.of fun i j : Fin m =>
+        inner ℝ (L (EuclideanSpace.single i 1)) (L (EuclideanSpace.single j 1))) =
+        Matrix.transpose (LinearMap.toMatrix (EuclideanSpace.basisFun (Fin m) ℝ).toBasis
+          (EuclideanSpace.basisFun (Fin m) ℝ).toBasis M) *
+          LinearMap.toMatrix (EuclideanSpace.basisFun (Fin m) ℝ).toBasis
+            (EuclideanSpace.basisFun (Fin m) ℝ).toBasis M := by
+      ext i j
+      rw [Matrix.of_apply, ← hιM, ← hιM, LinearIsometry.inner_map_map, Matrix.mul_apply,
+        PiLp.inner_apply]
+      refine Finset.sum_congr rfl fun k _ => ?_
+      simp only [Matrix.transpose_apply, LinearMap.toMatrix_apply, OrthonormalBasis.coe_toBasis,
+        OrthonormalBasis.coe_toBasis_repr_apply, EuclideanSpace.basisFun_apply,
+        EuclideanSpace.basisFun_repr, RCLike.inner_apply, conj_trivial]
+      ring
+    rw [hJac, hgram, Matrix.det_mul, Matrix.det_transpose, LinearMap.det_toMatrix, ← sq,
+      Real.sqrt_sq_eq_abs]
+  -- the linear area formula `Hᵈ(L(S)) = J L · Hᵈ(S)` for injective `L` (`d = m`)
+  have linear_area : ∀ {m d : ℕ}, m = d → ∀ {Y : Type} [NormedAddCommGroup Y]
+      [InnerProductSpace ℝ Y] [FiniteDimensional ℝ Y] [MeasurableSpace Y] [BorelSpace Y]
+      (L : EuclideanSpace ℝ (Fin m) →L[ℝ] Y), Injective L →
+      ∀ (s : Set (EuclideanSpace ℝ (Fin m))), μHE[d] (L '' s) = ENNReal.ofReal (Jac L) * μHE[d] s := by
+    intro m d hd Y _ _ _ _ _ L hL s
+    subst hd
+    obtain ⟨ι, M, hιM, hJ, -⟩ := jac_factor L hL
+    have himage : L '' s = ι '' (M '' s) := by
+      rw [image_image]
+      exact image_congr fun x _ => (hιM x).symm
+    rw [himage, ι.isometry.euclideanHausdorffMeasure_image,
+      EuclideanSpace.euclideanHausdorffMeasure_eq_volume, Measure.addHaar_image_linearMap, hJ]
+  have jac_eq_zero : ∀ {m : ℕ} {Y : Type} [NormedAddCommGroup Y] [InnerProductSpace ℝ Y]
+      (L : EuclideanSpace ℝ (Fin m) →L[ℝ] Y), ¬ Injective L → Jac L = 0 := by
+    intro m Y _ _ L hL
+    obtain ⟨w, hw0, hLw⟩ : ∃ w, w ≠ 0 ∧ L w = 0 := by
+      have hker : LinearMap.ker (L : EuclideanSpace ℝ (Fin m) →ₗ[ℝ] Y) ≠ ⊥ := fun h =>
+        hL (LinearMap.ker_eq_bot.mp h)
+      obtain ⟨w, hw, hw0⟩ := Submodule.exists_mem_ne_zero_of_ne_bot hker
+      exact ⟨w, hw0, hw⟩
+    have hdet : Matrix.det (Matrix.of fun i j : Fin m =>
+        inner ℝ (L (EuclideanSpace.single i 1)) (L (EuclideanSpace.single j 1))) = 0 := by
+      rw [← Matrix.exists_mulVec_eq_zero_iff]
+      refine ⟨fun j => w j, ?_, ?_⟩
+      · intro h
+        apply hw0
+        ext j
+        exact congrFun h j
+      · ext i
+        have hw : w = ∑ j, w j • EuclideanSpace.single j (1 : ℝ) := by
+          ext k
+          simp [Finset.sum_apply, Pi.single_apply]
+        have : ∑ j, inner ℝ (L (EuclideanSpace.single i 1)) (L (EuclideanSpace.single j 1)) * w j
+            = inner ℝ (L (EuclideanSpace.single i 1)) (L w) := by
+          conv_rhs => rw [hw]
+          simp [map_sum, map_smul, inner_sum, inner_smul_right, mul_comm]
+        simp only [Matrix.mulVec, dotProduct, Matrix.of_apply, Pi.zero_apply]
+        rw [this, hLw, inner_zero_right]
+    rw [hJac, hdet, Real.sqrt_zero]
+  have jac_pos : ∀ {m : ℕ} {Y : Type} [NormedAddCommGroup Y] [InnerProductSpace ℝ Y]
+      [FiniteDimensional ℝ Y] (L : EuclideanSpace ℝ (Fin m) →L[ℝ] Y), Injective L → 0 < Jac L := by
+    intro m Y _ _ _ L hL
+    obtain ⟨ι, M, -, hJ, hdet⟩ := jac_factor L hL
+    rw [hJ]
+    exact abs_pos.mpr hdet
+  have continuous_jac : ∀ {m : ℕ} {Y : Type} [NormedAddCommGroup Y] [InnerProductSpace ℝ Y],
+      Continuous (fun L : EuclideanSpace ℝ (Fin m) →L[ℝ] Y => Jac L) := by
+    intro m Y _ _
+    simp only [hJac]
+    apply Real.continuous_sqrt.comp
+    apply Continuous.matrix_det
+    refine continuous_pi fun i => continuous_pi fun j => ?_
+    simp only [Matrix.of_apply]
+    exact ((ContinuousLinearMap.apply ℝ Y _).continuous).inner
+      ((ContinuousLinearMap.apply ℝ Y _).continuous)
+  -- comparing pairwise distances compares Hausdorff measures of images
+  have image_le_of_dist_le : ∀ {X Z : Type} [MetricSpace X] [MeasurableSpace X] [BorelSpace X]
+      [MetricSpace Z] [MeasurableSpace Z] [BorelSpace Z] [Nonempty X]
+      {f g : X → Z} {s : Set X} {K : NNReal}, InjOn g s →
+      (∀ x ∈ s, ∀ y ∈ s, dist (f x) (f y) ≤ K * dist (g x) (g y)) →
+      ∀ (d : ℕ), μHE[d] (f '' s) ≤ (K : ℝ≥0∞) ^ d * μHE[d] (g '' s) := by
+    intro X Z _ _ _ _ _ _ _ f g s K hg hfg d
+    have hh : LipschitzOnWith K (f ∘ invFunOn g s) (g '' s) := by
+      rw [lipschitzOnWith_iff_dist_le_mul]
+      rintro _ ⟨x, hx, rfl⟩ _ ⟨y, hy, rfl⟩
+      simpa only [comp_apply, hg.leftInvOn_invFunOn hx,
+        hg.leftInvOn_invFunOn hy] using hfg x hx y hy
+    have himage : (f ∘ invFunOn g s) '' (g '' s) = f '' s := by
+      rw [image_comp, hg.invFunOn_image Subset.rfl]
+    simpa only [himage] using
+      Poincare.SimonGMT.Chapter02.euclideanHausdorffMeasure_image_le_of_lipschitzOn d hh
+  -- sharp comparisons for a map approximating an injective linear map
+  have approx_upper : ∀ {n : ℕ} {Y : Type} [NormedAddCommGroup Y] [InnerProductSpace ℝ Y]
+      [FiniteDimensional ℝ Y] [MeasurableSpace Y] [BorelSpace Y]
+      {f : EuclideanSpace ℝ (Fin n) → Y} {L : EuclideanSpace ℝ (Fin n) →L[ℝ] Y}
+      {s : Set (EuclideanSpace ℝ (Fin n))} {δ K : NNReal},
+      ApproximatesLinearOn f L s δ → AntilipschitzWith K L →
+      μHE[n] (f '' s) ≤ ((1 + δ * K : NNReal) : ℝ≥0∞) ^ n * (ENNReal.ofReal (Jac L) * μHE[n] s) := by
+    intro n Y _ _ _ _ _ f L s δ K hf hL
+    rw [← linear_area rfl L hL.injective s]
+    apply image_le_of_dist_le hL.injective.injOn
+    intro x hx y hy
+    have hb : ‖x - y‖ ≤ K * ‖L x - L y‖ := by
+      simpa only [dist_eq_norm] using hL.le_mul_dist x y
+    have herror : ‖f x - f y - (L x - L y)‖ ≤ (δ : ℝ) * K * ‖L x - L y‖ := by
+      calc
+        _ ≤ δ * ‖x - y‖ := by simpa only [map_sub] using hf x hx y hy
+        _ ≤ δ * (K * ‖L x - L y‖) := mul_le_mul_of_nonneg_left hb δ.2
+        _ = _ := by ring
+    simp only [dist_eq_norm, NNReal.coe_add, NNReal.coe_one, NNReal.coe_mul]
+    calc
+      ‖f x - f y‖ ≤ ‖f x - f y - (L x - L y)‖ + ‖L x - L y‖ := norm_le_norm_sub_add _ _
+      _ ≤ (δ : ℝ) * K * ‖L x - L y‖ + ‖L x - L y‖ := add_le_add herror le_rfl
+      _ = (1 + (δ : ℝ) * K) * ‖L x - L y‖ := by ring
+  have approx_lower : ∀ {n : ℕ} {Y : Type} [NormedAddCommGroup Y] [InnerProductSpace ℝ Y]
+      [FiniteDimensional ℝ Y] [MeasurableSpace Y] [BorelSpace Y]
+      {f : EuclideanSpace ℝ (Fin n) → Y} {L : EuclideanSpace ℝ (Fin n) →L[ℝ] Y}
+      {s : Set (EuclideanSpace ℝ (Fin n))} {δ K : NNReal},
+      ApproximatesLinearOn f L s δ → AntilipschitzWith K L → δ * K < 1 →
+      ENNReal.ofReal (Jac L) * μHE[n] s ≤
+        (((1 - δ * K)⁻¹ : NNReal) : ℝ≥0∞) ^ n * μHE[n] (f '' s) := by
+    intro n Y _ _ _ _ _ f L s δ K hf hL hδ
+    have hδR : (δ : ℝ) * K < 1 := hδ
+    have hdist : ∀ x ∈ s, ∀ y ∈ s, dist (L x) (L y) ≤
+        ((1 - δ * K)⁻¹ : NNReal) * dist (f x) (f y) := by
+      intro x hx y hy
+      have hb : ‖x - y‖ ≤ K * ‖L x - L y‖ := by
+        simpa only [dist_eq_norm] using hL.le_mul_dist x y
+      have herror : ‖f x - f y - (L x - L y)‖ ≤ (δ : ℝ) * K * ‖L x - L y‖ := by
+        calc
+          _ ≤ δ * ‖x - y‖ := by simpa only [map_sub] using hf x hx y hy
+          _ ≤ δ * (K * ‖L x - L y‖) := mul_le_mul_of_nonneg_left hb δ.2
+          _ = _ := by ring
+      have htriangle : ‖L x - L y‖ ≤ ‖f x - f y‖ + ‖f x - f y - (L x - L y)‖ := by
+        simpa only [norm_sub_rev, add_comm] using
+          (norm_le_norm_sub_add (L x - L y) (f x - f y))
+      simp only [dist_eq_norm, NNReal.coe_inv, NNReal.coe_sub hδ.le,
+        NNReal.coe_one, NNReal.coe_mul, inv_mul_eq_div]
+      apply (le_div_iff₀ (sub_pos.mpr hδR)).mpr
+      nlinarith
+    have hfinj : InjOn f s := by
+      intro x hx y hy hxy
+      apply hL.injective
+      apply dist_le_zero.mp
+      simpa only [hxy, dist_self, mul_zero] using hdist x hx y hy
+    rw [← linear_area rfl L hL.injective s]
+    exact image_le_of_dist_le hfinj hdist _
+  -- one radius controlling both the image measure and the Jacobians of nearby maps
+  have radius_area : ∀ {n : ℕ} {Y : Type} [NormedAddCommGroup Y] [InnerProductSpace ℝ Y]
+      [FiniteDimensional ℝ Y] [MeasurableSpace Y] [BorelSpace Y]
+      (L : EuclideanSpace ℝ (Fin n) →L[ℝ] Y), Injective L → ∀ {q : NNReal}, 1 < q →
+      ∃ δ : NNReal, 0 < δ ∧
+        (∀ B : EuclideanSpace ℝ (Fin n) →L[ℝ] Y, ‖B - L‖ ≤ δ →
+          ENNReal.ofReal (Jac B) ≤ q * ENNReal.ofReal (Jac L) ∧
+          ENNReal.ofReal (Jac L) ≤ q * ENNReal.ofReal (Jac B)) ∧
+        (∀ (s : Set (EuclideanSpace ℝ (Fin n))) (f : EuclideanSpace ℝ (Fin n) → Y),
+          ApproximatesLinearOn f L s δ →
+          μHE[n] (f '' s) ≤ q * (ENNReal.ofReal (Jac L) * μHE[n] s) ∧
+            ENNReal.ofReal (Jac L) * μHE[n] s ≤ q * μHE[n] (f '' s)) := by
+    intro n Y _ _ _ _ _ L hL q hq
+    obtain ⟨K, _, hK⟩ := (L : EuclideanSpace ℝ (Fin n) →ₗ[ℝ] Y).exists_antilipschitzWith
+      (LinearMap.ker_eq_bot.mpr hL)
+    have hsmall : ∀ᶠ δ : NNReal in 𝓝 0, δ * K < 1 := by
+      exact (continuousAt_id.mul continuousAt_const).eventually_lt
+        continuousAt_const (by simp)
+    have hupper : ∀ᶠ δ : NNReal in 𝓝 0, (1 + δ * K) ^ n < q := by
+      exact ((continuousAt_const.add (continuousAt_id.mul continuousAt_const)).pow _).eventually_lt
+        continuousAt_const (by simpa using hq)
+    have hlower : ∀ᶠ δ : NNReal in 𝓝 0, ((1 - δ * K)⁻¹) ^ n < q := by
+      apply ContinuousAt.eventually_lt _ continuousAt_const (by simpa using hq)
+      apply ContinuousAt.pow
+      apply ContinuousAt.inv₀
+      · exact continuousAt_const.sub (continuousAt_id.mul continuousAt_const)
+      · simp
+    have hJ : 0 < Jac L := jac_pos L hL
+    have hqR : (1 : ℝ) < q := hq
+    have hmul : Jac L < (q : ℝ) * Jac L := by nlinarith
+    have hnear : ∀ᶠ B : EuclideanSpace ℝ (Fin n) →L[ℝ] Y in 𝓝 L,
+        Jac B < (q : ℝ) * Jac L ∧ Jac L < (q : ℝ) * Jac B :=
+      (continuous_jac.continuousAt.eventually_lt continuousAt_const hmul).and
+        (continuousAt_const.eventually_lt
+          (continuousAt_const.mul continuous_jac.continuousAt) hmul)
+    obtain ⟨ε, hε, hnear⟩ := Metric.eventually_nhds_iff.mp hnear
+    have hevent : ∀ᶠ δ : NNReal in 𝓝[>] 0,
+        0 < δ ∧ δ * K < 1 ∧ (1 + δ * K) ^ n < q ∧ ((1 - δ * K)⁻¹) ^ n < q ∧ (δ : ℝ) < ε := by
+      have hεnhds : ∀ᶠ δ : NNReal in 𝓝 0, (δ : ℝ) < ε :=
+        (NNReal.continuous_coe.continuousAt.eventually_lt continuousAt_const (by simpa using hε))
+      filter_upwards [self_mem_nhdsWithin,
+        hsmall.filter_mono nhdsWithin_le_nhds, hupper.filter_mono nhdsWithin_le_nhds,
+        hlower.filter_mono nhdsWithin_le_nhds, hεnhds.filter_mono nhdsWithin_le_nhds]
+        with δ hδ hsmall hupper hlower hδε
+      exact ⟨hδ, hsmall, hupper, hlower, hδε⟩
+    obtain ⟨δ, hδ, hδsmall, hδupper, hδlower, hδε⟩ := hevent.exists
+    refine ⟨δ, hδ, ?_, fun s f hf => ⟨?_, ?_⟩⟩
+    · intro B hB
+      have hdist : dist B L < ε := by
+        rw [dist_eq_norm]
+        exact hB.trans_lt hδε
+      obtain ⟨hupper, hlower⟩ := hnear hdist
+      constructor
+      · simpa only [ENNReal.ofReal_mul (NNReal.coe_nonneg q), ENNReal.ofReal_coe_nnreal] using
+          ENNReal.ofReal_le_ofReal hupper.le
+      · simpa only [ENNReal.ofReal_mul (NNReal.coe_nonneg q), ENNReal.ofReal_coe_nnreal] using
+          ENNReal.ofReal_le_ofReal hlower.le
+    · refine (approx_upper hf hK).trans ?_
+      gcongr
+      exact_mod_cast hδupper.le
+    · refine (approx_lower hf hK hδsmall).trans ?_
+      gcongr
+      exact_mod_cast hδlower.le
+  -- on a.e. point of an approximation piece the derivative is close to the linear map
+  have approx_fderiv : ∀ {n : ℕ} {Y : Type} [NormedAddCommGroup Y] [NormedSpace ℝ Y]
+      {f : EuclideanSpace ℝ (Fin n) → Y} {s : Set (EuclideanSpace ℝ (Fin n))}
+      {A : EuclideanSpace ℝ (Fin n) →L[ℝ] Y} {δ : NNReal},
+      ApproximatesLinearOn f A s δ → MeasurableSet s →
+      ∀ (f' : EuclideanSpace ℝ (Fin n) → EuclideanSpace ℝ (Fin n) →L[ℝ] Y),
+      (∀ x ∈ s, HasFDerivWithinAt f (f' x) s x) →
+      ∀ᵐ x ∂(volume : Measure (EuclideanSpace ℝ (Fin n))).restrict s, ‖f' x - A‖₊ ≤ δ := by
+    intro n Y _ _ f s A δ hf hs f' hf'
+    open scoped Pointwise in
+    filter_upwards [Besicovitch.ae_tendsto_measure_inter_div volume s, ae_restrict_mem hs]
+    intro x hx xs
+    apply ContinuousLinearMap.opNorm_le_bound _ δ.2 fun z => ?_
+    suffices H : ∀ ε, 0 < ε → ‖(f' x - A) z‖ ≤ (δ + ε) * (‖z‖ + ε) + ‖f' x - A‖ * ε by
+      have :
+          Tendsto (fun ε : ℝ => ((δ : ℝ) + ε) * (‖z‖ + ε) + ‖f' x - A‖ * ε) (𝓝[>] 0)
+            (𝓝 ((δ + 0) * (‖z‖ + 0) + ‖f' x - A‖ * 0)) :=
+        Tendsto.mono_left (Continuous.tendsto
+          (((continuous_const.add continuous_id).mul (continuous_const.add continuous_id)).add
+            (continuous_const.mul continuous_id)) 0) nhdsWithin_le_nhds
+      simp only [add_zero, mul_zero] at this
+      apply le_of_tendsto_of_tendsto tendsto_const_nhds this
+      filter_upwards [self_mem_nhdsWithin]
+      exact H
+    intro ε εpos
+    have B₁ : ∀ᶠ r in 𝓝[>] (0 : ℝ), (s ∩ ({x} + r • closedBall z ε)).Nonempty :=
+      Measure.eventually_nonempty_inter_smul_of_density_one volume s x hx _ measurableSet_closedBall
+        (Metric.measure_closedBall_pos volume z εpos).ne'
+    obtain ⟨ρ, ρpos, hρ⟩ :
+        ∃ ρ > 0, ball x ρ ∩ s ⊆ {y | ‖f y - f x - (f' x) (y - x)‖ ≤ ε * ‖y - x‖} :=
+      mem_nhdsWithin_iff.1 ((hf' x xs).isLittleO.bound εpos)
+    have B₂ : ∀ᶠ r in 𝓝[>] (0 : ℝ), {x} + r • closedBall z ε ⊆ ball x ρ := by
+      apply nhdsWithin_le_nhds
+      exact eventually_singleton_add_smul_subset isBounded_closedBall (ball_mem_nhds x ρpos)
+    obtain ⟨r, ⟨y, ⟨ys, hy⟩⟩, rρ, rpos⟩ :
+        ∃ r : ℝ, (s ∩ ({x} + r • closedBall z ε)).Nonempty ∧
+          {x} + r • closedBall z ε ⊆ ball x ρ ∧ 0 < r :=
+      (B₁.and (B₂.and self_mem_nhdsWithin)).exists
+    obtain ⟨a, az, ya⟩ : ∃ a, a ∈ closedBall z ε ∧ y = x + r • a := by
+      simp only [mem_smul_set, image_add_left, mem_preimage, singleton_add] at hy
+      rcases hy with ⟨a, az, ha⟩
+      exact ⟨a, az, by simp only [ha, add_neg_cancel_left]⟩
+    have norm_a : ‖a‖ ≤ ‖z‖ + ε :=
+      calc
+        ‖a‖ = ‖z + (a - z)‖ := by simp only [add_sub_cancel]
+        _ ≤ ‖z‖ + ‖a - z‖ := norm_add_le _ _
+        _ ≤ ‖z‖ + ε := by grw [mem_closedBall_iff_norm.1 az]
+    have I : r * ‖(f' x - A) a‖ ≤ r * (δ + ε) * (‖z‖ + ε) :=
+      calc
+        r * ‖(f' x - A) a‖ = ‖(f' x - A) (r • a)‖ := by
+          simp only [map_smul, norm_smul, Real.norm_eq_abs, abs_of_nonneg rpos.le]
+        _ = ‖f y - f x - A (y - x) - (f y - f x - (f' x) (y - x))‖ := by
+          simp only [ya, add_sub_cancel_left, sub_sub_sub_cancel_left, sub_apply, map_smul,
+            smul_sub]
+        _ ≤ ‖f y - f x - A (y - x)‖ + ‖f y - f x - (f' x) (y - x)‖ := norm_sub_le _ _
+        _ ≤ δ * ‖y - x‖ + ε * ‖y - x‖ := (add_le_add (hf _ ys _ xs) (hρ ⟨rρ hy, ys⟩))
+        _ = r * (δ + ε) * ‖a‖ := by
+          simp only [ya, add_sub_cancel_left, norm_smul, Real.norm_eq_abs, abs_of_nonneg rpos.le]
+          ring
+        _ ≤ r * (δ + ε) * (‖z‖ + ε) := by gcongr
+    calc
+      ‖(f' x - A) z‖ = ‖(f' x - A) a + (f' x - A) (z - a)‖ := by
+        congr 1
+        simp only [sub_apply, map_sub]
+        abel
+      _ ≤ ‖(f' x - A) a‖ + ‖(f' x - A) (z - a)‖ := norm_add_le _ _
+      _ ≤ (δ + ε) * (‖z‖ + ε) + ‖f' x - A‖ * ‖z - a‖ := by
+        apply add_le_add
+        · rw [mul_assoc] at I; exact (mul_le_mul_iff_right₀ rpos).1 I
+        · apply ContinuousLinearMap.le_opNorm
+      _ ≤ (δ + ε) * (‖z‖ + ε) + ‖f' x - A‖ * ε := by
+        rw [mem_closedBall_iff_norm'] at az
+        gcongr
+  -- the area formula with injective derivative, up to a factor `q²`
+  have regular_comparison : ∀ {n : ℕ} {Y : Type} [NormedAddCommGroup Y] [InnerProductSpace ℝ Y]
+      [FiniteDimensional ℝ Y] [MeasurableSpace Y] [BorelSpace Y]
+      {s : Set (EuclideanSpace ℝ (Fin n))} {f : EuclideanSpace ℝ (Fin n) → Y}
+      {f' : EuclideanSpace ℝ (Fin n) → EuclideanSpace ℝ (Fin n) →L[ℝ] Y},
+      MeasurableSet s → (∀ x ∈ s, HasFDerivWithinAt f (f' x) s x) →
+      (∀ x ∈ s, Injective (f' x)) → InjOn f s → ∀ {q : NNReal}, 1 < q →
+      μHE[n] (f '' s) ≤ (q : ℝ≥0∞) ^ 2 * ∫⁻ x in s, ENNReal.ofReal (Jac (f' x)) ∂volume ∧
+        (∫⁻ x in s, ENNReal.ofReal (Jac (f' x)) ∂volume) ≤ (q : ℝ≥0∞) ^ 2 * μHE[n] (f '' s) := by
+    intro n Y _ _ _ _ _ s f f' hs hf' hreg hinj q hq
+    rcases eq_empty_or_nonempty s with rfl | hsne
+    · simp
+    have hchoice : ∀ L : EuclideanSpace ℝ (Fin n) →L[ℝ] Y, ∃ δ : NNReal, 0 < δ ∧ (Injective L →
+        (∀ B : EuclideanSpace ℝ (Fin n) →L[ℝ] Y, ‖B - L‖ ≤ δ →
+          ENNReal.ofReal (Jac B) ≤ q * ENNReal.ofReal (Jac L) ∧
+          ENNReal.ofReal (Jac L) ≤ q * ENNReal.ofReal (Jac B)) ∧
+        (∀ (t : Set (EuclideanSpace ℝ (Fin n))) (g : EuclideanSpace ℝ (Fin n) → Y),
+          ApproximatesLinearOn g L t δ →
+          μHE[n] (g '' t) ≤ q * (ENNReal.ofReal (Jac L) * μHE[n] t) ∧
+            ENNReal.ofReal (Jac L) * μHE[n] t ≤ q * μHE[n] (g '' t))) := by
+      intro L
+      by_cases hL : Injective L
+      · obtain ⟨δ, hδ, hJ, harea⟩ := radius_area L hL hq
+        exact ⟨δ, hδ, fun _ => ⟨hJ, harea⟩⟩
+      · exact ⟨1, zero_lt_one, fun h => (hL h).elim⟩
+    choose δ hδpos hδ using hchoice
+    obtain ⟨t, L, hdisj, ht, hcover, happrox, hactual⟩ :=
+      exists_partition_approximatesLinearOn_of_hasFDerivWithinAt f s f' hf'
+        δ (fun L => (hδpos L).ne')
+    have hLreg (i : ℕ) : Injective (L i) := by
+      obtain ⟨x, hx, hL⟩ := hactual hsne i
+      rw [hL]
+      exact hreg x hx
+    have hseq : s = ⋃ i, s ∩ t i := by
+      rw [← inter_iUnion]
+      exact Subset.antisymm (subset_inter Subset.rfl hcover) inter_subset_left
+    have hsumimage : μHE[n] (f '' s) = ∑' i, μHE[n] (f '' (s ∩ t i)) := by
+      conv_lhs => rw [hseq, image_iUnion]
+      apply measure_iUnion
+      · intro i j hij
+        exact Disjoint.image (Disjoint.mono inter_subset_right inter_subset_right (hdisj hij))
+          hinj inter_subset_left inter_subset_left
+      · intro i
+        apply (hs.inter (ht i)).image_of_continuousOn_injOn
+        · exact (fun x hx => (hf' x hx.1).continuousWithinAt.mono inter_subset_left)
+        · exact hinj.mono inter_subset_left
+    have hsumintegral :
+        (∫⁻ x in s, ENNReal.ofReal (Jac (f' x)) ∂volume) =
+          ∑' i, ∫⁻ x in s ∩ t i, ENNReal.ofReal (Jac (f' x)) ∂volume := by
+      conv_lhs => rw [hseq]
+      exact lintegral_iUnion (fun i => hs.inter (ht i))
+        (pairwise_disjoint_mono hdisj (fun _ => inter_subset_right)) _
+    have hvol : (μHE[n] : Measure (EuclideanSpace ℝ (Fin n))) = volume :=
+      EuclideanSpace.euclideanHausdorffMeasure_eq_volume n
+    have hpiece (i : ℕ) :
+        μHE[n] (f '' (s ∩ t i)) ≤ (q : ℝ≥0∞) ^ 2 *
+            ∫⁻ x in s ∩ t i, ENNReal.ofReal (Jac (f' x)) ∂volume ∧
+          (∫⁻ x in s ∩ t i, ENNReal.ofReal (Jac (f' x)) ∂volume) ≤
+            (q : ℝ≥0∞) ^ 2 * μHE[n] (f '' (s ∩ t i)) := by
+      have hJ := (hδ (L i) (hLreg i)).1
+      obtain ⟨harea_upper, harea_lower⟩ := (hδ (L i) (hLreg i)).2 (s ∩ t i) f (happrox i)
+      rw [hvol] at harea_upper harea_lower
+      have hderiv := approx_fderiv (happrox i) (hs.inter (ht i)) f'
+        (fun x hx => (hf' x hx.1).mono inter_subset_left)
+      have hJupper :
+          (∫⁻ x in s ∩ t i, ENNReal.ofReal (Jac (f' x)) ∂volume) ≤
+            q * (ENNReal.ofReal (Jac (L i)) * volume (s ∩ t i)) := by
+        calc
+          _ ≤ ∫⁻ _ in s ∩ t i, (q : ℝ≥0∞) * ENNReal.ofReal (Jac (L i)) ∂volume := by
+            apply lintegral_mono_ae
+            filter_upwards [hderiv] with x hx
+            exact (hJ (f' x) hx).1
+          _ = _ := by rw [setLIntegral_const, mul_assoc]
+      have hJlower : ENNReal.ofReal (Jac (L i)) * volume (s ∩ t i) ≤
+          q * ∫⁻ x in s ∩ t i, ENNReal.ofReal (Jac (f' x)) ∂volume := by
+        calc
+          _ = ∫⁻ _ in s ∩ t i, ENNReal.ofReal (Jac (L i)) ∂volume :=
+            (setLIntegral_const _ _).symm
+          _ ≤ ∫⁻ x in s ∩ t i, (q : ℝ≥0∞) * ENNReal.ofReal (Jac (f' x)) ∂volume := by
+            apply lintegral_mono_ae
+            filter_upwards [hderiv] with x hx
+            exact (hJ (f' x) hx).2
+          _ = _ := lintegral_const_mul' _ _ ENNReal.coe_ne_top
+      constructor
+      · calc
+          _ ≤ q * (ENNReal.ofReal (Jac (L i)) * volume (s ∩ t i)) := harea_upper
+          _ ≤ q * (q * ∫⁻ x in s ∩ t i, ENNReal.ofReal (Jac (f' x)) ∂volume) := by gcongr
+          _ = _ := by rw [pow_two, mul_assoc]
+      · calc
+          _ ≤ q * (ENNReal.ofReal (Jac (L i)) * volume (s ∩ t i)) := hJupper
+          _ ≤ q * (q * μHE[n] (f '' (s ∩ t i))) := by gcongr
+          _ = _ := by rw [pow_two, mul_assoc]
+    rw [hsumimage, hsumintegral]
+    constructor
+    · calc
+        _ ≤ ∑' i, (q : ℝ≥0∞) ^ 2 * ∫⁻ x in s ∩ t i, ENNReal.ofReal (Jac (f' x)) ∂volume :=
+          ENNReal.tsum_le_tsum (fun i => (hpiece i).1)
+        _ = _ := ENNReal.tsum_mul_left
+    · calc
+        _ ≤ ∑' i, (q : ℝ≥0∞) ^ 2 * μHE[n] (f '' (s ∩ t i)) :=
+          ENNReal.tsum_le_tsum (fun i => (hpiece i).2)
+        _ = _ := ENNReal.tsum_mul_left
+  -- the area formula with injective derivative
+  have regular_area : ∀ {n : ℕ} {Y : Type} [NormedAddCommGroup Y] [InnerProductSpace ℝ Y]
+      [FiniteDimensional ℝ Y] [MeasurableSpace Y] [BorelSpace Y]
+      {s : Set (EuclideanSpace ℝ (Fin n))} {f : EuclideanSpace ℝ (Fin n) → Y}
+      {f' : EuclideanSpace ℝ (Fin n) → EuclideanSpace ℝ (Fin n) →L[ℝ] Y},
+      MeasurableSet s → (∀ x ∈ s, HasFDerivWithinAt f (f' x) s x) →
+      (∀ x ∈ s, Injective (f' x)) → InjOn f s →
+      μHE[n] (f '' s) = ∫⁻ x in s, ENNReal.ofReal (Jac (f' x)) ∂volume := by
+    intro n Y _ _ _ _ _ s f f' hs hf' hreg hinj
+    have hlimit (a : ℝ≥0∞) :
+        Tendsto (fun q : NNReal => (q : ℝ≥0∞) ^ 2 * a) (𝓝[>] 1) (𝓝 a) := by
+      have hcoe : Tendsto (fun q : NNReal => (q : ℝ≥0∞)) (𝓝[>] 1) (𝓝 1) :=
+        (ENNReal.tendsto_coe.2 tendsto_id).mono_left nhdsWithin_le_nhds
+      simpa only [one_pow, one_mul] using
+        ENNReal.Tendsto.mul_const (ENNReal.Tendsto.pow (n := 2) hcoe) (Or.inl (by simp))
+    apply le_antisymm
+    · apply ge_of_tendsto (hlimit _)
+      filter_upwards [self_mem_nhdsWithin] with q hq
+      exact (regular_comparison hs hf' hreg hinj hq).1
+    · apply ge_of_tendsto (hlimit _)
+      filter_upwards [self_mem_nhdsWithin] with q hq
+      exact (regular_comparison hs hf' hreg hinj hq).2
+  -- critical points: the graphs `x ↦ (f x, εx)` have injective derivatives and shrinking area
+  have critical_finite : ∀ {P n : ℕ} {s : Set (EuclideanSpace ℝ (Fin n))}
+      {f : EuclideanSpace ℝ (Fin n) → EuclideanSpace ℝ (Fin P)}, MeasurableSet s →
+      (∀ x ∈ s, DifferentiableAt ℝ f x) → (∀ x ∈ s, ¬ Injective (fderiv ℝ f x)) →
+      volume s ≠ ⊤ → ∀ {B : ℝ}, (∀ x ∈ s, ‖fderiv ℝ f x‖ ≤ B) → μHE[n] (f '' s) = 0 := by
+    intro P n s f hs hf hcrit hfinite B hB
+    obtain ⟨G, hGapply, hGcont, hGderiv⟩ : ∃ G : (EuclideanSpace ℝ (Fin n) →L[ℝ]
+        EuclideanSpace ℝ (Fin P)) → ℝ → (EuclideanSpace ℝ (Fin n) →L[ℝ]
+          WithLp 2 (EuclideanSpace ℝ (Fin P) × EuclideanSpace ℝ (Fin n))),
+        (∀ L ε x, G L ε x = WithLp.toLp 2 (L x, ε • x)) ∧
+        Continuous (fun p : (EuclideanSpace ℝ (Fin n) →L[ℝ] EuclideanSpace ℝ (Fin P)) × ℝ =>
+          G p.1 p.2) ∧
+        ∀ (L : EuclideanSpace ℝ (Fin n) →L[ℝ] EuclideanSpace ℝ (Fin P))
+          (x : EuclideanSpace ℝ (Fin n)), HasFDerivAt f L x → ∀ ε : ℝ,
+            HasFDerivAt (fun y => (WithLp.toLp 2 (f y, ε • y) :
+              WithLp 2 (EuclideanSpace ℝ (Fin P) × EuclideanSpace ℝ (Fin n)))) (G L ε) x := by
+      refine ⟨fun L ε => (WithLp.prodContinuousLinearEquiv 2 ℝ (EuclideanSpace ℝ (Fin P))
+          (EuclideanSpace ℝ (Fin n))).symm.toContinuousLinearMap.comp
+          (L.prod (ε • ContinuousLinearMap.id ℝ (EuclideanSpace ℝ (Fin n)))),
+        fun _ _ _ => rfl, ?_, ?_⟩
+      · apply Continuous.clm_comp continuous_const
+        exact (ContinuousLinearMap.prodₗᵢ ℝ).continuous.comp
+          (continuous_fst.prodMk (continuous_snd.smul continuous_const))
+      · intro L x hL ε
+        exact (WithLp.prodContinuousLinearEquiv 2 ℝ (EuclideanSpace ℝ (Fin P))
+          (EuclideanSpace ℝ (Fin n))).symm.toContinuousLinearMap.hasFDerivAt.comp
+          x (hL.prodMk ((hasFDerivAt_id x).const_smul ε))
+    have hc : Continuous (fun p : (EuclideanSpace ℝ (Fin n) →L[ℝ] EuclideanSpace ℝ (Fin P)) × ℝ =>
+        Jac (G p.1 p.2)) := continuous_jac.comp hGcont
+    have hzero : ∀ x ∈ s, Jac (G (fderiv ℝ f x) 0) = 0 := by
+      intro x hx
+      apply jac_eq_zero
+      intro hg
+      apply hcrit x hx
+      intro y z hyz
+      apply hg
+      rw [hGapply, hGapply, zero_smul, zero_smul, hyz]
+    have hgraph : ∀ ε : ℝ, ε ≠ 0 →
+        μHE[n] (f '' s) ≤ ∫⁻ x in s, ENNReal.ofReal (Jac (G (fderiv ℝ f x) ε)) ∂volume := by
+      intro ε hε
+      have hinj : Injective (fun y : EuclideanSpace ℝ (Fin n) => (WithLp.toLp 2 (f y, ε • y) :
+          WithLp 2 (EuclideanSpace ℝ (Fin P) × EuclideanSpace ℝ (Fin n)))) := by
+        intro x y h
+        have he : ε • x = ε • y := congrArg WithLp.snd h
+        exact (smul_right_injective _ hε) he
+      have hp : LipschitzWith 1 (WithLp.fst :
+          WithLp 2 (EuclideanSpace ℝ (Fin P) × EuclideanSpace ℝ (Fin n)) →
+            EuclideanSpace ℝ (Fin P)) :=
+        LipschitzWith.of_dist_le_mul (fun x y => by
+          rw [NNReal.coe_one, one_mul]; exact WithLp.dist_fst_le x y)
+      have himg : f '' s = WithLp.fst '' ((fun y : EuclideanSpace ℝ (Fin n) =>
+          (WithLp.toLp 2 (f y, ε • y) :
+            WithLp 2 (EuclideanSpace ℝ (Fin P) × EuclideanSpace ℝ (Fin n)))) '' s) := by
+        rw [image_image]
+        rfl
+      have hproj := Poincare.SimonGMT.Chapter02.euclideanHausdorffMeasure_image_le_of_lipschitzOn n
+        (hp.lipschitzOnWith (s := (fun y : EuclideanSpace ℝ (Fin n) =>
+          (WithLp.toLp 2 (f y, ε • y) :
+            WithLp 2 (EuclideanSpace ℝ (Fin P) × EuclideanSpace ℝ (Fin n)))) '' s))
+      rw [ENNReal.coe_one, one_pow, one_mul, ← himg] at hproj
+      refine hproj.trans_eq ?_
+      refine regular_area hs (fun x hx => (hGderiv _ x (hf x hx).hasFDerivAt ε).hasFDerivWithinAt)
+        (fun x _ y z h => ?_) hinj.injOn
+      rw [hGapply, hGapply] at h
+      have he : ε • y = ε • z := congrArg WithLp.snd h
+      exact (smul_right_injective _ hε) he
+    obtain ⟨C, hC⟩ := ((isCompact_closedBall
+      (0 : EuclideanSpace ℝ (Fin n) →L[ℝ] EuclideanSpace ℝ (Fin P)) B).prod
+      (isCompact_Icc : IsCompact (Icc (-1 : ℝ) 1))).exists_bound_of_continuousOn hc.continuousOn
+    have hlim : Tendsto (fun ε : ℝ => ∫⁻ x in s,
+        ENNReal.ofReal (Jac (G (fderiv ℝ f x) ε)) ∂volume) (𝓝[>] 0) (𝓝 0) := by
+      have hmeas (ε : ℝ) : Measurable (fun x : EuclideanSpace ℝ (Fin n) =>
+          ENNReal.ofReal (Jac (G (fderiv ℝ f x) ε))) :=
+        (hc.measurable.comp ((measurable_fderiv ℝ f).prodMk measurable_const)).ennreal_ofReal
+      have hbound : ∀ᶠ ε : ℝ in 𝓝[>] 0, ∀ᵐ x ∂volume.restrict s,
+          ENNReal.ofReal (Jac (G (fderiv ℝ f x) ε)) ≤ ENNReal.ofReal C := by
+        have hnear : Icc (-1 : ℝ) 1 ∈ 𝓝[>] (0 : ℝ) := nhdsWithin_le_nhds
+          (Icc_mem_nhds (by norm_num : (-1 : ℝ) < 0) (by norm_num : (0 : ℝ) < 1))
+        filter_upwards [hnear] with ε hε
+        filter_upwards [ae_restrict_mem hs] with x hx
+        apply ENNReal.ofReal_le_ofReal
+        exact (le_abs_self _).trans (hC ⟨fderiv ℝ f x, ε⟩
+          ⟨by simpa only [mem_closedBall, dist_zero_right] using hB x hx, hε⟩)
+      have hfin : (∫⁻ _ : EuclideanSpace ℝ (Fin n), ENNReal.ofReal C ∂volume.restrict s) ≠ ⊤ := by
+        rw [lintegral_const, Measure.restrict_apply_univ]
+        exact ENNReal.mul_ne_top ENNReal.ofReal_ne_top hfinite
+      have hpoint : ∀ᵐ x ∂volume.restrict s,
+          Tendsto (fun ε : ℝ => ENNReal.ofReal (Jac (G (fderiv ℝ f x) ε))) (𝓝[>] 0) (𝓝 0) := by
+        filter_upwards [ae_restrict_mem hs] with x hx
+        have hc' : Continuous (fun ε : ℝ => ENNReal.ofReal (Jac (G (fderiv ℝ f x) ε))) :=
+          ENNReal.continuous_ofReal.comp (hc.comp (continuous_const.prodMk continuous_id))
+        have h0 := (hc'.continuousAt (x := (0 : ℝ))).tendsto.mono_left
+          (nhdsWithin_le_nhds (s := Ioi (0 : ℝ)))
+        rwa [hzero x hx, ENNReal.ofReal_zero] at h0
+      have := tendsto_lintegral_filter_of_dominated_convergence
+        (fun _ : EuclideanSpace ℝ (Fin n) => ENNReal.ofReal C)
+        (Eventually.of_forall hmeas) hbound hfin hpoint
+      rwa [lintegral_zero] at this
+    apply le_antisymm _ bot_le
+    apply ge_of_tendsto hlim
+    filter_upwards [self_mem_nhdsWithin] with ε hε
+    exact hgraph ε (ne_of_gt hε)
+  have critical : ∀ {P n : ℕ} {s : Set (EuclideanSpace ℝ (Fin n))}
+      {f : EuclideanSpace ℝ (Fin n) → EuclideanSpace ℝ (Fin P)}, MeasurableSet s →
+      (∀ x ∈ s, DifferentiableAt ℝ f x) → (∀ x ∈ s, ¬ Injective (fderiv ℝ f x)) →
+      μHE[n] (f '' s) = 0 := by
+    intro P n s f hs hf hcrit
+    have hnull (k : ℕ) : μHE[n] (f '' (s ∩ closedBall 0 k ∩ {x | ‖fderiv ℝ f x‖ ≤ k})) = 0 := by
+      apply critical_finite ((hs.inter measurableSet_closedBall).inter
+          (measurableSet_le (measurable_fderiv ℝ f).norm measurable_const))
+        (fun x hx => hf x hx.1.1) (fun x hx => hcrit x hx.1.1)
+      · exact ne_top_of_le_ne_top measure_closedBall_lt_top.ne
+          (measure_mono (fun _ hx => hx.1.2))
+      · exact fun _ hx => hx.2
+    have hcover : s ⊆ ⋃ k : ℕ, s ∩ closedBall 0 k ∩ {x | ‖fderiv ℝ f x‖ ≤ k} := by
+      intro x hx
+      obtain ⟨k, hk⟩ := exists_nat_gt (max ‖x‖ ‖fderiv ℝ f x‖)
+      refine mem_iUnion.mpr ⟨k, ⟨hx, ?_⟩, (le_max_right _ _).trans hk.le⟩
+      simpa only [mem_closedBall, dist_zero_right] using (le_max_left _ _).trans hk.le
+    apply measure_mono_null (image_mono hcover)
+    rw [image_iUnion]
+    exact measure_iUnion_null hnull
+  -- the area formula for sets `E ⊆ A`
+  have area_set : ∀ {P n : ℕ} {g : EuclideanSpace ℝ (Fin n) → EuclideanSpace ℝ (Fin P)}
+      {A : Set (EuclideanSpace ℝ (Fin n))}, InjOn g A → (∀ a ∈ A, DifferentiableAt ℝ g a) →
+      ∀ {E : Set (EuclideanSpace ℝ (Fin n))}, MeasurableSet E → E ⊆ A →
+      μHE[n] (g '' E) = ∫⁻ x in E, ENNReal.ofReal (Jac (fderiv ℝ g x)) ∂volume := by
+    intro P n g A hgi hgd E hE hEA
+    have hSm : MeasurableSet {x : EuclideanSpace ℝ (Fin n) | Jac (fderiv ℝ g x) ≠ 0} :=
+      (measurableSet_eq_fun (continuous_jac.measurable.comp (measurable_fderiv ℝ g))
+        measurable_const).compl
+    have hreg : μHE[n] (g '' (E ∩ {x | Jac (fderiv ℝ g x) ≠ 0})) =
+        ∫⁻ x in E ∩ {x | Jac (fderiv ℝ g x) ≠ 0}, ENNReal.ofReal (Jac (fderiv ℝ g x)) ∂volume :=
+      regular_area (hE.inter hSm)
+        (fun x hx => (hgd x (hEA hx.1)).hasFDerivAt.hasFDerivWithinAt)
+        (fun x hx => by
+          by_contra hni
+          exact hx.2 (jac_eq_zero _ hni))
+        (hgi.mono (inter_subset_left.trans hEA))
+    have hcrit : μHE[n] (g '' (E \ {x | Jac (fderiv ℝ g x) ≠ 0})) = 0 :=
+      critical (hE.diff hSm) (fun x hx => hgd x (hEA hx.1))
+        (fun x hx hinj => hx.2 (jac_pos _ hinj).ne')
+    have hzero : ∫⁻ x in E \ {x | Jac (fderiv ℝ g x) ≠ 0},
+        ENNReal.ofReal (Jac (fderiv ℝ g x)) ∂volume = 0 := by
+      have h0 : ∀ x ∈ E \ {x | Jac (fderiv ℝ g x) ≠ 0},
+          ENNReal.ofReal (Jac (fderiv ℝ g x)) = 0 := fun x hx => by
+        have hx0 : Jac (fderiv ℝ g x) = 0 := not_not.mp hx.2
+        rw [hx0, ENNReal.ofReal_zero]
+      rw [setLIntegral_congr_fun (hE.diff hSm) h0, lintegral_zero]
+    rw [← lintegral_inter_add_sdiff _ E hSm, hzero, add_zero, ← hreg]
+    apply le_antisymm
+    · calc μHE[n] (g '' E)
+          = μHE[n] (g '' (E ∩ {x | Jac (fderiv ℝ g x) ≠ 0}) ∪
+              g '' (E \ {x | Jac (fderiv ℝ g x) ≠ 0})) := by
+            rw [← image_union, inter_union_sdiff]
+        _ ≤ μHE[n] (g '' (E ∩ {x | Jac (fderiv ℝ g x) ≠ 0})) +
+              μHE[n] (g '' (E \ {x | Jac (fderiv ℝ g x) ≠ 0})) := measure_union_le _ _
+        _ = _ := by rw [hcrit, add_zero]
+    · exact measure_mono (image_mono inter_subset_left)
+  -- the weighted area formula (no measurability of the weight)
+  have area_weighted : ∀ {P n : ℕ} {g : EuclideanSpace ℝ (Fin n) → EuclideanSpace ℝ (Fin P)}
+      {A : Set (EuclideanSpace ℝ (Fin n))}, MeasurableSet A → InjOn g A →
+      (∀ a ∈ A, DifferentiableAt ℝ g a) → ∀ (w : EuclideanSpace ℝ (Fin P) → ℝ≥0∞),
+      ∫⁻ y in g '' A, w y ∂μHE[n] =
+        ∫⁻ x in A, ENNReal.ofReal (Jac (fderiv ℝ g x)) * w (g x) ∂volume := by
+    intro P n g A hA hgi hgd w
+    have hcont : ContinuousOn g A := fun x hx => (hgd x hx).continuousAt.continuousWithinAt
+    have hemb := hcont.measurableEmbedding hA hgi
+    have hsub := MeasurableEmbedding.subtype_coe hA
+    have hJm : Measurable (fun x : EuclideanSpace ℝ (Fin n) =>
+        ENNReal.ofReal (Jac (fderiv ℝ g x))) :=
+      (continuous_jac.measurable.comp (measurable_fderiv ℝ g)).ennreal_ofReal
+    have hmap : Measure.map (A.domRestrict g)
+        (((volume : Measure (EuclideanSpace ℝ (Fin n))).withDensity
+          (fun x => ENNReal.ofReal (Jac (fderiv ℝ g x)))).comap (Subtype.val : A → _)) =
+        (μHE[n] : Measure (EuclideanSpace ℝ (Fin P))).restrict (g '' A) := by
+      ext t ht
+      rw [Measure.map_apply hemb.measurable ht, hsub.comap_apply]
+      have hB : MeasurableSet (Subtype.val '' ((A.domRestrict g) ⁻¹' t)) :=
+        hsub.measurableSet_image' (hemb.measurable ht)
+      have hBs : Subtype.val '' ((A.domRestrict g) ⁻¹' t) ⊆ A := by
+        rintro x ⟨u, _, rfl⟩
+        exact u.property
+      rw [withDensity_apply _ hB, ← area_set hgi hgd hB hBs, Measure.restrict_apply ht]
+      congr 1
+      ext y
+      constructor
+      · rintro ⟨x, ⟨u, hu, rfl⟩, rfl⟩
+        exact ⟨hu, ⟨u, u.property, rfl⟩⟩
+      · rintro ⟨hy, x, hx, rfl⟩
+        exact ⟨x, ⟨⟨x, hx⟩, hy, rfl⟩, rfl⟩
+    rw [← hmap, hemb.lintegral_map]
+    change (∫⁻ x : A, (fun x : EuclideanSpace ℝ (Fin n) => w (g x)) x ∂
+      (((volume : Measure (EuclideanSpace ℝ (Fin n))).withDensity
+        (fun x => ENNReal.ofReal (Jac (fderiv ℝ g x)))).comap (Subtype.val : A → _))) = _
+    rw [lintegral_subtype_comap hA (fun x : EuclideanSpace ℝ (Fin n) => w (g x)),
+      setLIntegral_withDensity_eq_setLIntegral_mul_non_measurable₀ _ _ _ hA]
+    · rfl
+    · exact Eventually.of_forall fun _ => ENNReal.ofReal_lt_top
+    · exact hJm.aemeasurable
+  -- `|det (B ∘ L)| = √det(B uᵢ · B uⱼ) · J L` for `u` the standard basis of `range L`
+  have stepA : ∀ {P n : ℕ} (B : EuclideanSpace ℝ (Fin P) →L[ℝ] EuclideanSpace ℝ (Fin n))
+      (L : EuclideanSpace ℝ (Fin n) →L[ℝ] EuclideanSpace ℝ (Fin P))
+      (T : Submodule ℝ (EuclideanSpace ℝ (Fin P))),
+      T = LinearMap.range (L : EuclideanSpace ℝ (Fin n) →ₗ[ℝ] EuclideanSpace ℝ (Fin P)) →
+      |LinearMap.det ((B.comp L : EuclideanSpace ℝ (Fin n) →L[ℝ] EuclideanSpace ℝ (Fin n)) :
+          EuclideanSpace ℝ (Fin n) →ₗ[ℝ] EuclideanSpace ℝ (Fin n))| =
+        Real.sqrt (Matrix.det (Matrix.of fun i j : Fin (Module.finrank ℝ T) =>
+          inner ℝ (B (stdOrthonormalBasis ℝ T i)) (B (stdOrthonormalBasis ℝ T j)))) * Jac L := by
+    intro P n B L T hT
+    obtain ⟨ιu, hιiso, hιsingle, hιmem, hιsurj⟩ : ∃ ιu : EuclideanSpace ℝ (Fin (Module.finrank ℝ T))
+        →L[ℝ] EuclideanSpace ℝ (Fin P), Isometry ιu ∧
+        (∀ i, ιu (EuclideanSpace.single i 1) = stdOrthonormalBasis ℝ T i) ∧
+        (∀ v, ιu v ∈ T) ∧ (∀ y ∈ T, ∃ v, ιu v = y) := by
+      refine ⟨(T.subtypeₗᵢ.comp
+          (stdOrthonormalBasis ℝ T).repr.symm.toLinearIsometry).toContinuousLinearMap,
+        (T.subtypeₗᵢ.comp (stdOrthonormalBasis ℝ T).repr.symm.toLinearIsometry).isometry,
+        fun i => ?_, fun v => ?_, fun y hy => ?_⟩
+      · change ((((stdOrthonormalBasis ℝ T).repr.symm (EuclideanSpace.single i 1)) : T) :
+          EuclideanSpace ℝ (Fin P)) = _
+        rw [OrthonormalBasis.repr_symm_single]
+      · exact ((stdOrthonormalBasis ℝ T).repr.symm v).2
+      · refine ⟨(stdOrthonormalBasis ℝ T).repr ⟨y, hy⟩, ?_⟩
+        change ((((stdOrthonormalBasis ℝ T).repr.symm
+          ((stdOrthonormalBasis ℝ T).repr ⟨y, hy⟩)) : T) : EuclideanSpace ℝ (Fin P)) = y
+        rw [LinearIsometryEquiv.symm_apply_apply]
+    have hJT : Real.sqrt (Matrix.det (Matrix.of fun i j : Fin (Module.finrank ℝ T) =>
+          inner ℝ (B (stdOrthonormalBasis ℝ T i)) (B (stdOrthonormalBasis ℝ T j)))) =
+        Jac (B.comp ιu) := by
+      rw [hJac]
+      simp only [ContinuousLinearMap.comp_apply, hιsingle]
+    rw [hJT]
+    by_cases hL : Injective L
+    · have hdim : Module.finrank ℝ T = n := by
+        rw [hT, LinearMap.finrank_range_of_inj hL, finrank_euclideanSpace_fin]
+      by_cases hBι : Injective (B.comp ιu)
+      · -- compare the volumes of the image of the unit ball
+        have hball0 : volume (ball (0 : EuclideanSpace ℝ (Fin n)) 1) ≠ 0 :=
+          (measure_ball_pos volume _ one_pos).ne'
+        have hballtop : volume (ball (0 : EuclideanSpace ℝ (Fin n)) 1) ≠ ⊤ :=
+          measure_ball_lt_top.ne
+        have hvol : (μHE[n] : Measure (EuclideanSpace ℝ (Fin n))) = volume :=
+          EuclideanSpace.euclideanHausdorffMeasure_eq_volume n
+        have hS : ιu '' (ιu ⁻¹' (L '' ball 0 1)) = L '' ball 0 1 := by
+          apply image_preimage_eq_of_subset
+          rintro _ ⟨x, -, rfl⟩
+          obtain ⟨v, hv⟩ := hιsurj (L x) (hT ▸ LinearMap.mem_range_self _ x)
+          exact ⟨v, hv⟩
+        have h1 := Measure.addHaar_image_linearMap volume
+          ((B.comp L : EuclideanSpace ℝ (Fin n) →L[ℝ] EuclideanSpace ℝ (Fin n)) :
+            EuclideanSpace ℝ (Fin n) →ₗ[ℝ] EuclideanSpace ℝ (Fin n)) (ball 0 1)
+        have h2 : (B.comp L) '' ball 0 1 = (B.comp ιu) '' (ιu ⁻¹' (L '' ball 0 1)) := by
+          rw [ContinuousLinearMap.coe_comp, ContinuousLinearMap.coe_comp, image_comp,
+            image_comp, hS]
+        have h3 := linear_area hdim (B.comp ιu) hBι (ιu ⁻¹' (L '' ball 0 1))
+        have h4 := linear_area rfl L hL (ball 0 1)
+        have h5 : μHE[n] (ιu ⁻¹' (L '' ball 0 1)) = μHE[n] (L '' ball 0 1) := by
+          rw [← hιiso.euclideanHausdorffMeasure_image, hS]
+        change volume ((B.comp L) '' ball 0 1) = _ at h1
+        rw [h2, ← hvol, h3, h5, h4, hvol] at h1
+        rw [← mul_assoc, ← ENNReal.ofReal_mul (jac_nonneg _)] at h1
+        have h6 := (ENNReal.mul_left_inj hball0 hballtop).mp h1
+        rw [ENNReal.ofReal_eq_ofReal_iff (mul_nonneg (jac_nonneg _) (jac_nonneg _))
+          (abs_nonneg _)] at h6
+        exact h6.symm
+      · rw [jac_eq_zero _ hBι, zero_mul, abs_eq_zero, LinearMap.det_eq_zero_iff_ker_ne_bot]
+        intro hker
+        apply hBι
+        intro v w hvw
+        obtain ⟨x, hx⟩ : ιu v ∈ LinearMap.range
+            (L : EuclideanSpace ℝ (Fin n) →ₗ[ℝ] EuclideanSpace ℝ (Fin P)) := hT ▸ hιmem v
+        obtain ⟨y, hy⟩ : ιu w ∈ LinearMap.range
+            (L : EuclideanSpace ℝ (Fin n) →ₗ[ℝ] EuclideanSpace ℝ (Fin P)) := hT ▸ hιmem w
+        have hxy : x = y := by
+          have hinj := LinearMap.ker_eq_bot.mp hker
+          apply hinj
+          change B (L x) = B (L y)
+          rw [show L x = ιu v from hx, show L y = ιu w from hy]
+          exact hvw
+        apply hιiso.injective
+        rw [← hx, ← hy, hxy]
+    · rw [jac_eq_zero _ hL, mul_zero, abs_eq_zero, LinearMap.det_eq_zero_iff_ker_ne_bot]
+      intro hker
+      apply hL
+      intro x y hxy
+      have hinj := LinearMap.ker_eq_bot.mp hker
+      apply hinj
+      change B (L x) = B (L y)
+      rw [hxy]
+  -- the statement: apply the weighted area formula to `g`, then compare integrands a.e.
+  intro P n g A Lg V F G T h hg hA hgi hgd hV hgV hFG hFd hT
+  rw [area_weighted hA hgi hgd]
+  refine lintegral_congr_ae ?_
+  filter_upwards [hT, ae_restrict_mem hA] with a hTa ha
+  have hFG' : F =ᶠ[𝓝 (g a)] G :=
+    Filter.eventuallyEq_of_mem (hV.mem_nhds (hgV (mem_image_of_mem g ha))) hFG
+  rw [fderiv_comp a ((hFd (g a) (mem_image_of_mem g ha)).congr_of_eventuallyEq hFG'.symm)
+      (hgd a ha), ← hFG'.fderiv_eq, stepA _ _ _ hTa, ENNReal.ofReal_mul (Real.sqrt_nonneg _)]
+  ring
+
+/-- **Area formula on one parametrized piece** (Simon Ch. 3, (2.4)–(2.5), from the Euclidean area
+formula of Ch. 2, 3.4–3.5).  Let `g : ℝⁿ → ℝᴾ` be Lipschitz, injective and differentiable on the
+Borel set `A`, let `F = G` on an open `V ⊇ g(A)` with `G` Lipschitz and `F` differentiable on
+`g(A)`, and let `T(g(a)) = range Dg(a)` for a.e. `a ∈ A`.  With `u` the standard orthonormal basis
+of `T(x)` and `J_T(x) = √det(DF(x)uᵢ · DF(x)uⱼ)`, every `Hⁿ⌞g(A)`-measurable `h ≥ 0` has an
+a.e. measurable fibre sum `Σ_h(y) = ∑_{x ∈ g(A), F(x) = y} h(x)` and
+`∫ Σ_h dLⁿ = ∫_{g(A)} J_T h dHⁿ`.  Replace `h` by a Borel `h̃ = h` `Hⁿ⌞g(A)`-a.e. (`Σ_h = Σ_h̃`
+`Lⁿ`-a.e., `G` being Lipschitz); the area formula for `Φ = G ∘ g` gives
+`∫ Σ_h̃ dLⁿ = ∫_A |det DΦ| h̃ ∘ g dLⁿ`, which the Jacobian chain rule and the area formula for `g`
+identify with `∫_{g(A)} J_T h̃ dHⁿ`. -/
+theorem Submission.idtp_caf_piece_area_formula : ∀ (P n : ℕ) (g : Euclid n → Euclid P) (A : Set (Euclid n)) (Lg : NNReal) (V : Set (Euclid P)) (F G : Euclid P → Euclid n) (LG : NNReal) (T : Euclid P → Submodule ℝ (Euclid P)) (h : Euclid P → ℝ≥0∞), LipschitzWith Lg g → MeasurableSet A → InjOn g A → (∀ a ∈ A, DifferentiableAt ℝ g a) → IsOpen V → g '' A ⊆ V → LipschitzWith LG G → EqOn F G V → (∀ x ∈ g '' A, DifferentiableAt ℝ F x) → (∀ᵐ a ∂(volume.restrict A), T (g a) = LinearMap.range (fderiv ℝ g a : Euclid n →ₗ[ℝ] Euclid P)) → AEMeasurable h (μHE[n].restrict (g '' A)) → AEMeasurable (fun y : Euclid n => ∑' x : ↥(g '' A ∩ F ⁻¹' {y}), h x) volume ∧ ∫⁻ y, (∑' x : ↥(g '' A ∩ F ⁻¹' {y}), h x) ∂volume = ∫⁻ x in g '' A, ENNReal.ofReal (Real.sqrt (Matrix.det (Matrix.of fun i j : Fin (Module.finrank ℝ (T x)) => inner ℝ (fderiv ℝ F x (stdOrthonormalBasis ℝ (T x) i)) (fderiv ℝ F x (stdOrthonormalBasis ℝ (T x) j))))) * h x ∂μHE[n] := by
+  intro P n g A Lg V F G LG T h hg hA hgi hgd hV hgV hG hFG hFd hT hh
+  -- Borel representative `h̃ = hh.mk h` of `h`; the fibre sums of `h` and `h̃` agree `Lⁿ`-a.e.
+  have hfib := Submission.idtp_caf_paf_fiberSum_ae_congr P n (g '' A) V F G LG h (hh.mk h) hgV hG
+    hFG hh.ae_eq_mk
+  -- fibre side for the Lipschitz `Φ = G ∘ g` (`F = G` at `g(a) ∈ V`), carrier side for `h̃`
+  obtain ⟨hmeas, hint⟩ := Submission.idtp_caf_paf_fiber_side P n g A F (G ∘ g) (LG * Lg)
+    (hh.mk h) hg.continuous hA hgi (hG.comp hg) (fun a ha => hFG (hgV (mem_image_of_mem g ha)))
+    hh.measurable_mk
+  have hcar := Submission.idtp_caf_paf_carrier_side P n g A Lg V F G T (hh.mk h) hg hA hgi hgd hV
+    hgV hFG hFd hT
+  refine ⟨hmeas.congr hfib.symm, ?_⟩
+  rw [lintegral_congr_ae hfib, hint, ← hcar]
+  -- back from `h̃` to `h`, `Hⁿ⌞g(A)`-a.e.
+  refine lintegral_congr_ae ?_
+  filter_upwards [hh.ae_eq_mk] with x hx
+  rw [hx]
+/-- Gluing step of the weighted area formula on a rectifiable carrier (Simon Ch. 3, 2.4–2.5).
+Let `S ⊆ ℝᴾ` contain the pairwise disjoint Borel pieces `Sₖ` (`k` in a countable type), with
+`Hⁿ(S ∖ ⋃ₖ Sₖ) = 0` and `Lⁿ(F(S ∖ ⋃ₖ Sₖ)) = 0`.  If on every piece the fibre sum
+`y ↦ ∑_{x ∈ Sₖ, F(x) = y} h(x)` is `Lⁿ`-a.e. measurable with integral `∫_{Sₖ} φ h dHⁿ`, then the
+same holds on `S`.  Off the null set `F(S ∖ ⋃ₖ Sₖ)` the fibre of `S` is the disjoint union of the
+fibres of the `Sₖ`, so the fibre sum over `S` is a.e. the sum over `k` of the fibre sums over the
+`Sₖ`; integrate term by term and use `Hⁿ⌞S = ∑ₖ Hⁿ⌞Sₖ`. -/
+theorem Submission.idtp_caf_glue_pieces : ∀ (P n : ℕ) (ι : Type) [Countable ι] (S : Set (Euclid P)) (pieces : ι → Set (Euclid P)) (F : Euclid P → Euclid n) (φ h : Euclid P → ℝ≥0∞), (∀ k, MeasurableSet (pieces k)) → (∀ k, pieces k ⊆ S) → Pairwise (fun k k' => Disjoint (pieces k) (pieces k')) → μHE[n] (S \ ⋃ k, pieces k) = 0 → volume (F '' (S \ ⋃ k, pieces k)) = 0 → (∀ k, AEMeasurable (fun y : Euclid n => ∑' x : ↥(pieces k ∩ F ⁻¹' {y}), h x) volume ∧ ∫⁻ y, (∑' x : ↥(pieces k ∩ F ⁻¹' {y}), h x) ∂volume = ∫⁻ x in pieces k, φ x * h x ∂μHE[n]) → AEMeasurable (fun y : Euclid n => ∑' x : ↥(S ∩ F ⁻¹' {y}), h x) volume ∧ ∫⁻ y, (∑' x : ↥(S ∩ F ⁻¹' {y}), h x) ∂volume = ∫⁻ x in S, φ x * h x ∂μHE[n] := by
+  intro P n ι _ S pieces F φ h hmeas hsub hdisj hnull himg hpiece
+  -- Off the null set `F(S \ ⋃ₖ Sₖ)` the fibre of `S` is the disjoint union of the fibres of the
+  -- pieces, so the fibre sum over `S` splits as the sum over `k` of the fibre sums over `Sₖ`
+  have hfib : ∀ᵐ y ∂(volume : Measure (Euclid n)),
+      ∑' x : ↥(S ∩ F ⁻¹' {y}), h x = ∑' k, ∑' x : ↥(pieces k ∩ F ⁻¹' {y}), h x := by
+    filter_upwards [measure_eq_zero_iff_ae_notMem.mp himg] with y hy
+    have hset : S ∩ F ⁻¹' {y} = ⋃ k, (pieces k ∩ F ⁻¹' {y}) := by
+      ext x
+      simp only [mem_inter_iff, mem_preimage, mem_singleton_iff, mem_iUnion]
+      constructor
+      · rintro ⟨hxS, hxy⟩
+        by_contra hx
+        refine hy ⟨x, ⟨hxS, ?_⟩, hxy⟩
+        simp only [mem_iUnion, not_exists]
+        exact fun k hk => hx ⟨k, hk, hxy⟩
+      · rintro ⟨k, hxk, hxy⟩
+        exact ⟨hsub k hxk, hxy⟩
+    rw [hset]
+    exact ENNReal.tsum_biUnion fun i _ j _ hij =>
+      (hdisj hij).mono inter_subset_left inter_subset_left
+  -- A countable sum of a.e. measurable fibre sums is a.e. measurable
+  have hsum : AEMeasurable
+      (fun y : Euclid n => ∑' k, ∑' x : ↥(pieces k ∩ F ⁻¹' {y}), h x) volume :=
+    AEMeasurable.tsum fun k => (hpiece k).1
+  refine ⟨hsum.congr (hfib.mono fun y hy => hy.symm), ?_⟩
+  -- `S` and `⋃ₖ Sₖ` agree up to an `Hⁿ`-null set
+  have hae : (⋃ k, pieces k) =ᵐ[μHE[n]] S :=
+    ae_eq_set.mpr ⟨by rw [Set.sdiff_eq_empty.mpr (iUnion_subset hsub), measure_empty], hnull⟩
+  calc ∫⁻ y, (∑' x : ↥(S ∩ F ⁻¹' {y}), h x) ∂volume
+      = ∫⁻ y, ∑' k, ∑' x : ↥(pieces k ∩ F ⁻¹' {y}), h x ∂volume := lintegral_congr_ae hfib
+    _ = ∑' k, ∫⁻ y, ∑' x : ↥(pieces k ∩ F ⁻¹' {y}), h x ∂volume :=
+      lintegral_tsum fun k => (hpiece k).1
+    _ = ∑' k, ∫⁻ x in pieces k, φ x * h x ∂μHE[n] := tsum_congr fun k => (hpiece k).2
+    _ = ∫⁻ x in ⋃ k, pieces k, φ x * h x ∂μHE[n] := (lintegral_iUnion hmeas hdisj _).symm
+    _ = ∫⁻ x in S, φ x * h x ∂μHE[n] := setLIntegral_congr hae
+
+/-- **Simon Ch. 3, 2.4–2.5** (weighted area formula on a countably `n`-rectifiable carrier) for a
+map `F : ℝᴾ → ℝⁿ` that is `C¹` on an open set `Z`: the fibre sums
+`y ↦ Σ_{x ∈ M ∩ Z, F(x) = y} h(x)` are `Lⁿ`-a.e. measurable and
+`∫ Σ_{x ∈ M ∩ Z, F(x) = y} h(x) dLⁿ(y) = ∫_{M ∩ Z} J*(x) h(x) dHⁿ(x)`, where `J*(x)` is the
+square root of the Gram determinant of `DF(x)` on the standard orthonormal basis of the
+approximate tangent plane `TₓM`.  As in Simon's proof, `M ∩ Z` is cut, up to an `Hⁿ`-null set
+with `Lⁿ`-null `F`-image, into countably many disjoint Borel pieces
+`gᵢ(Bᵢ ∩ gᵢ⁻¹(Zₗ)) = gᵢ(Bᵢ) ∩ Zₗ`: the `gᵢ(Bᵢ)` are bi-Lipschitz images covering `M` up to a
+null set (Lemma 1.2 and Remark 1.3, with bi-Lipschitz pieces in place of `C¹` submanifolds), and
+`F` agrees with a Lipschitz map `Gₗ` on an open `Vₗ ⊇ Zₗ`.  On each piece `TₓM = range Dgᵢ`
+a.e., so the single-piece area formula applies, and the pieces are glued by countable
+additivity. -/
+theorem Submission.idtp_carrier_area_formula : ∀ (P n : ℕ) (M Z : Set (Euclid P)) (F : Euclid P → Euclid n) (h : Euclid P → ℝ≥0∞), 1 ≤ n → MeasurableSet M → CountablyRectifiable n M → (∀ K : Set (Euclid P), IsCompact K → μHE[n] (M ∩ K) ≠ ∞) → IsOpen Z → ContDiffOn ℝ 1 F Z → AEMeasurable h (μHE[n].restrict M) → AEMeasurable (fun y : Euclid n => ∑' x : ↥(M ∩ Z ∩ F ⁻¹' {y}), h x) volume ∧ ∫⁻ y, (∑' x : ↥(M ∩ Z ∩ F ⁻¹' {y}), h x) ∂volume = ∫⁻ x in M ∩ Z, ENNReal.ofReal (Real.sqrt (Matrix.det (Matrix.of fun i j : Fin (Module.finrank ℝ (approxTangentPlane n M x)) => inner ℝ (fderiv ℝ F x (stdOrthonormalBasis ℝ (approxTangentPlane n M x) i)) (fderiv ℝ F x (stdOrthonormalBasis ℝ (approxTangentPlane n M x) j))))) * h x ∂μHE[n] := by
+  intro P n M Z F h hn hM hrect hfin hZ hF hh
+  -- Step 1: `Z = ⋃ₗ Zₗ` (disjoint Borel), `Zₗ ⊆ Vₗ ⊆ Z`, `Vₗ` open, `F = Gₗ` on `Vₗ` with `Gₗ`
+  -- Lipschitz
+  obtain ⟨V, Zs, G, hVo, -, hZsm, hZsV, hZsd, hZsU, hGL, hFG⟩ :=
+    Submission.idtp_caf_lipschitz_localization P n Z F hZ hF
+  choose LG hLG using hGL
+  have hZsZ : ∀ l, Zs l ⊆ Z := fun l => by rw [← hZsU]; exact subset_iUnion Zs l
+  -- Step 2: up to an `Hⁿ`-null set, `M` is the disjoint union of the Borel bi-Lipschitz images
+  -- `gᵢ(Bᵢ) ⊆ M`, `Dgᵢ` existing and injective on `Bᵢ`
+  obtain ⟨g, B, m, hgL, hBm, hm, hlow, hdiff, hgBm, hgBM, hgBd, hnull⟩ :=
+    Submission.dpf_rectifiable_bilipschitz_pieces P n M hM hrect
+  choose Lg hLg using hgL
+  -- Step 3: the parameter sets `Aᵢₗ = Bᵢ ∩ gᵢ⁻¹(Zₗ)` and the pieces `gᵢ(Aᵢₗ) = gᵢ(Bᵢ) ∩ Zₗ`,
+  -- indexed by `k = (i, l)`
+  obtain ⟨A, hA⟩ : ∃ A : ℕ × ℕ → Set (Euclid n), ∀ k, A k = B k.1 ∩ g k.1 ⁻¹' Zs k.2 :=
+    ⟨fun k => B k.1 ∩ g k.1 ⁻¹' Zs k.2, fun _ => rfl⟩
+  have hAm : ∀ k, MeasurableSet (A k) := fun k => by
+    rw [hA]
+    exact (hBm k.1).inter ((hLg k.1).continuous.measurable (hZsm k.2))
+  have hAB : ∀ k, A k ⊆ B k.1 := fun k => by
+    rw [hA]
+    exact inter_subset_left
+  have hAimg : ∀ k, g k.1 '' A k = g k.1 '' B k.1 ∩ Zs k.2 := fun k => by
+    rw [hA]
+    exact image_inter_preimage _ _ _
+  have hAm' : ∀ k, MeasurableSet (g k.1 '' A k) := fun k => by
+    rw [hAimg]
+    exact (hgBm k.1).inter (hZsm k.2)
+  have hAM : ∀ k, g k.1 '' A k ⊆ M := fun k => (image_mono (hAB k)).trans (hgBM k.1)
+  have hAZ : ∀ k, g k.1 '' A k ⊆ Zs k.2 := fun k => by
+    rw [hAimg]
+    exact inter_subset_right
+  -- Step 4: the remainder `(M ∩ Z) ∖ ⋃ₖ gᵢ(Aᵢₗ) ⊆ M ∖ ⋃ᵢ gᵢ(Bᵢ)` is `Hⁿ`-null
+  have hrem : μHE[n] ((M ∩ Z) \ ⋃ k : ℕ × ℕ, g k.1 '' A k) = 0 := by
+    refine measure_mono_null ?_ hnull
+    rintro x ⟨⟨hxM, hxZ⟩, hxA⟩
+    refine ⟨hxM, fun hxB => hxA ?_⟩
+    obtain ⟨i, hi⟩ := mem_iUnion.1 hxB
+    obtain ⟨l, hl⟩ := mem_iUnion.1 (show x ∈ ⋃ l, Zs l by rwa [hZsU])
+    refine mem_iUnion.2 ⟨(i, l), ?_⟩
+    rw [hAimg]
+    exact ⟨hi, hl⟩
+  -- Step 5: glue the pieces; the `F`-image of the remainder is `Lⁿ`-null (`F` is `C¹` on `Z`)
+  refine Submission.idtp_caf_glue_pieces P n (ℕ × ℕ) (M ∩ Z) (fun k => g k.1 '' A k) F _ h hAm'
+    (fun k => subset_inter (hAM k) ((hAZ k).trans (hZsZ k.2))) ?_ hrem
+    (Submission.idtp_caf_null_image P n Z ((M ∩ Z) \ ⋃ k : ℕ × ℕ, g k.1 '' A k) F hZ hF
+      (fun x hx => hx.1.2) hrem) fun k => ?_
+  · -- the pieces are pairwise disjoint: distinct `i` by Step 2, distinct `l` by Step 1
+    intro k k' hkk'
+    show Disjoint (g k.1 '' A k) (g k'.1 '' A k')
+    rw [hAimg k, hAimg k']
+    by_cases h1 : k.1 = k'.1
+    · have h2 : k.2 ≠ k'.2 := fun h2 => hkk' (Prod.ext h1 h2)
+      exact (hZsd h2).mono inter_subset_right inter_subset_right
+    · exact (hgBd h1).mono inter_subset_left inter_subset_left
+  · -- Step 6: on the piece `gᵢ(Aᵢₗ)`, `TₓM = range Dgᵢ` a.e. and the single-piece area formula
+    -- applies with the Lipschitz extension `Gₗ` of `F|Vₗ`
+    have hlowA : ∀ a ∈ A k, ∀ a' ∈ A k, m k.1 * ‖a - a'‖ ≤ ‖g k.1 a - g k.1 a'‖ :=
+      fun a ha a' ha' => hlow k.1 a (hAB k ha) a' (hAB k ha')
+    have hinj : InjOn (g k.1) (A k) := fun a ha a' ha' he => by
+      have hle := hlowA a ha a' ha'
+      rw [he, sub_self, norm_zero] at hle
+      exact sub_eq_zero.1 (norm_le_zero_iff.1 (nonpos_of_mul_nonpos_right hle (hm k.1)))
+    exact Submission.idtp_caf_piece_area_formula P n (g k.1) (A k) (Lg k.1) (V k.2) F (G k.2)
+      (LG k.2) (approxTangentPlane n M) h (hLg k.1) (hAm k) hinj
+      (fun a ha => (hdiff k.1 a (hAB k ha)).1) (hVo k.2) ((hAZ k).trans (hZsV k.2)) (hLG k.2)
+      (hFG k.2)
+      (fun x hx => hF.differentiableOn_one.differentiableAt (hZ.mem_nhds (hZsZ k.2 (hAZ k hx))))
+      (Submission.idtp_caf_piece_approxTangentPlane_ae P n M (g k.1) (A k) (Lg k.1) (m k.1) hn hM
+        hfin (hLg k.1) (hAm k) (hm k.1) hlowA (fun a ha => hdiff k.1 a (hAB k ha)) (hAM k))
+      (hh.mono_set (hAM k))
 
 /-- **Simon A.4** (proof, p. 228; chapter-A.txt lines 125–131), moving test functions: if every
 `μⱼ` is finite on compact sets, `∫ g dμⱼ → ∫ g dμ` for every `g ∈ C_c(ℝᴾ)` and `sⱼ → 1`, then
@@ -83798,1354 +84005,6 @@ theorem Submission.idtp_cttp_ctc_minimizing_stationary : MinimizingImpliesStatio
   -- tangential and normal parts of an arbitrary `X ∈ C¹_c(U; ℝⁿ⁺ᵏ)` along `N`
   exact ⟨hstat, Submission.meanCurvature_bounded_of_stationaryAlong (n + k) n (n + ℓ) U N R hU hN
     hNcl hnull hstat⟩
-/-- **Approximate tangent planes of a bi-Lipschitz piece image** (Simon Ch. 3, 1.4, by the density
-argument of Theorem 1.6): if `g : ℝⁿ → ℝᴾ` is `L`-Lipschitz, `A` is Borel,
-`c‖a − a'‖ ≤ ‖g(a) − g(a')‖` on `A` (`c > 0`) and `g` is differentiable with injective derivative
-on `A`, then for a.e. `b ∈ A`, `g(A)` has approximate tangent space `range Dg(b)` at `g(b)`.
-At a density point `b` of `A` that is a Lebesgue point of the Jacobian `0 ≤ J_g ≤ Lⁿ`, the
-injective area formula turns the blow-up integrals into
-`∫ 1_A(b + rv) J_g(b + rv) f(r⁻¹(g(b + rv) − g(b))) dv`, which tends to
-`J_g(b) ∫ f(Dg(b)v) dv = ∫_{range Dg(b)} f dHⁿ`. -/
-theorem Submission.idtp_caf_piece_image_approxTangent_ae : ∀ (P n : ℕ) (g : Euclid n → Euclid P) (A : Set (Euclid n)) (L : NNReal) (c : ℝ), 1 ≤ n → LipschitzWith L g → MeasurableSet A → 0 < c → (∀ a ∈ A, ∀ a' ∈ A, c * ‖a - a'‖ ≤ ‖g a - g a'‖) → (∀ a ∈ A, DifferentiableAt ℝ g a ∧ Injective (fderiv ℝ g a)) → ∀ᵐ a ∂(volume.restrict A), HasApproximateTangentSpaceAt n (g '' A) (g a) (LinearMap.range (fderiv ℝ g a : Euclid n →ₗ[ℝ] Euclid P)) := by
-  intro P n g A L c _ hg hA hc hco hdiff
-  -- the area Jacobian `J = J_g` is Borel and nonnegative
-  set J : Euclid n → ℝ := Poincare.SimonGMT.Chapter02.areaJacobianAt g with hJ_def
-  have hJm : Measurable J := Poincare.SimonGMT.Chapter02.measurable_areaJacobianAt g
-  have hJ0 : ∀ a, 0 ≤ J a := Poincare.SimonGMT.Chapter02.areaJacobianAt_nonneg g
-  -- `Hⁿ(Dg(a)(S)) = J(a) λ(S)` for every `a` and every `S`
-  have hlin : ∀ (a : Euclid n) (S : Set (Euclid n)),
-      μHE[n] (fderiv ℝ g a '' S) = ENNReal.ofReal (J a) * volume S := by
-    intro a S
-    have h := LinearMap.euclideanHausdorffMeasure_image_eq_normDet_mul_volume
-      (fderiv ℝ g a : Euclid n →ₗ[ℝ] Euclid P) S
-    rw [finrank_euclideanSpace_fin, ContinuousLinearMap.coe_coe] at h
-    rw [h, hJ_def, Poincare.SimonGMT.Chapter02.areaJacobianAt_eq_normDet]
-  -- `J ≤ Lⁿ`: `Dg(a)` is `L`-Lipschitz, so `J(a) λ(B̄₁(0)) = Hⁿ(Dg(a)(B̄₁(0))) ≤ Lⁿ λ(B̄₁(0))`
-  have hJL : ∀ a, J a ≤ (L : ℝ) ^ n := by
-    intro a
-    have hTL : LipschitzWith L (fderiv ℝ g a) :=
-      (fderiv ℝ g a).lipschitzWith.weaken (by
-        rw [← NNReal.coe_le_coe, coe_nnnorm]
-        exact norm_fderiv_le_of_lipschitz ℝ hg)
-    have hle := Poincare.SimonGMT.Chapter02.euclideanHausdorffMeasure_image_le_of_lipschitzOn n
-      (hTL.lipschitzOnWith (s := closedBall (0 : Euclid n) 1))
-    rw [hlin, EuclideanSpace.euclideanHausdorffMeasure_eq_volume] at hle
-    have hle' := (ENNReal.mul_le_mul_iff_left
-      (measure_closedBall_pos volume (0 : Euclid n) one_pos).ne' measure_closedBall_lt_top.ne).1 hle
-    rw [← ENNReal.ofReal_coe_nnreal, ← ENNReal.ofReal_pow NNReal.zero_le_coe,
-      ENNReal.ofReal_le_ofReal_iff (pow_nonneg NNReal.zero_le_coe n)] at hle'
-    exact hle'
-  -- `g` is injective on `A`, so the injective Lipschitz area formula holds on `A`
-  have hinj : InjOn g A := by
-    intro a ha a' ha' h
-    have h1 := hco a ha a' ha'
-    rw [h, sub_self, norm_zero, ← mul_zero c] at h1
-    exact sub_eq_zero.1 (norm_le_zero_iff.1 (le_of_mul_le_mul_left h1 hc))
-  have harea : ∀ φ : Euclid P → ℝ≥0∞,
-      ∫⁻ y in g '' A, φ y ∂μHE[n] = ∫⁻ x in A, ENNReal.ofReal (J x) * φ (g x) ∂volume := by
-    intro φ
-    have h := Poincare.SimonGMT.Chapter02.weighted_area_formula_lipschitz_injOn hg hA hinj φ
-    rw [finrank_euclideanSpace_fin] at h
-    exact h
-  -- a.e. point of `A` is a density point of `A` and a Lebesgue point of the bounded Borel `J`
-  have hdens := Besicovitch.ae_tendsto_measure_inter_div (volume : Measure (Euclid n)) A
-  have hJloc : LocallyIntegrable J volume :=
-    (locallyIntegrable_const ((L : ℝ) ^ n)).mono hJm.aestronglyMeasurable
-      (Eventually.of_forall fun a => by
-        rw [Real.norm_of_nonneg (hJ0 a), Real.norm_of_nonneg (pow_nonneg NNReal.zero_le_coe n)]
-        exact hJL a)
-  have hleb : ∀ᵐ b ∂(volume : Measure (Euclid n)),
-      Tendsto (fun ρ : ℝ => ⨍ a in closedBall b ρ, ‖J a - J b‖ ∂volume) (𝓝[>] 0) (𝓝 0) := by
-    filter_upwards [(Besicovitch.vitaliFamily
-      (volume : Measure (Euclid n))).ae_tendsto_average_norm_sub hJloc] with b hb
-    exact hb.comp (Besicovitch.tendsto_filterAt volume b)
-  filter_upwards [ae_restrict_mem hA, hdens, ae_restrict_of_ae hleb] with b hbA hbdens hbleb
-  obtain ⟨hgb, hinjb⟩ := hdiff b hbA
-  have hcob : ∀ a ∈ A, c * ‖a - b‖ ≤ ‖g a - g b‖ := fun a ha => hco a ha b hbA
-  -- at a density point, `c‖v‖ ≤ ‖Dg(b)v‖`
-  have hγ := Submission.pit_fderiv_lower_bound_of_density P n g A c b hc hcob hgb hbdens
-  refine ⟨?_, fun f => ?_⟩
-  · rw [LinearMap.finrank_range_of_inj hinjb, finrank_euclideanSpace_fin]
-  · -- `∫_{range Dg(b)} f dHⁿ = J(b) ∫ f(Dg(b)v) dv`
-    rw [Submission.pit_setIntegral_range_linear P n (fderiv ℝ g b) (J b) f (hJ0 b) (hlin b)
-      (map_continuous f)]
-    -- the rescaled area integrals converge to it, and equal the blow-up integrals for `r > 0`
-    refine (Submission.idtp_caf_rescaled_integral_tendsto P n g A J ((L : ℝ) ^ n) c b f
-      hg.continuous hA hJm (fun a => ⟨hJ0 a, hJL a⟩) hc hcob hgb hγ hbdens hbleb
-      (map_continuous f) f.hasCompactSupport).congr' ?_
-    filter_upwards [self_mem_nhdsWithin] with r (hr : 0 < r)
-    exact (Submission.pit_blowUp_image_setIntegral_eq_rescaled P n g A J b r f hg.continuous hA
-      hJm hJ0 harea hr (map_continuous f)).symm
-/-- Changing a set by parts of vanishing `n`-density at `x` does not change its approximate
-tangent spaces at `x` (Simon Ch. 3, Definition 1.4 and Remark 1.5(2); proof of 3.1.6).  For
-`f ∈ C_c(ℝᴾ)` with `|f| ≤ C`, `f = 0` off `B̄_R(0)` and `0 < r < r₀/R`, comparing both blow-up
-integrals with the one over `η_{x,r}(A ∩ B)` gives `|∫_{η_{x,r}(A)} f dHⁿ − ∫_{η_{x,r}(B)} f dHⁿ| ≤
-C Hⁿ(η_{x,r}(A \ B) ∩ B̄_R(0)) + C Hⁿ(η_{x,r}(B \ A) ∩ B̄_R(0))`, and
-`Hⁿ(η_{x,r}(S) ∩ B̄_R(0)) = r⁻ⁿ Hⁿ(S ∩ B̄_{rR}(x)) → 0` for `S = A \ B`, `B \ A`. -/
-theorem Submission.doraggt_approxTangent_iff_of_density_zero : ∀ (P n : ℕ) (A B : Set (Euclid P)) (x : Euclid P) (r₀ : ℝ), MeasurableSet A → MeasurableSet B → 0 < r₀ → μHE[n] (A ∩ closedBall x r₀) ≠ ∞ → μHE[n] (B ∩ closedBall x r₀) ≠ ∞ → Tendsto (fun ρ : ℝ => μHE[n] ((A \ B) ∩ closedBall x ρ) / ENNReal.ofReal ρ ^ n) (𝓝[>] 0) (𝓝 0) → Tendsto (fun ρ : ℝ => μHE[n] ((B \ A) ∩ closedBall x ρ) / ENNReal.ofReal ρ ^ n) (𝓝[>] 0) (𝓝 0) → ∀ Q : Submodule ℝ (Euclid P), HasApproximateTangentSpaceAt n A x Q ↔ HasApproximateTangentSpaceAt n B x Q := by
-  intro P n A B x r₀ hA hB hr₀ hAfin hBfin hAB hBA
-  -- Step 1: it suffices that `∫_{η_r(A)} f − ∫_{η_r(B)} f → 0` for every `f ∈ C_c`
-  refine Submission.regcomp_atl_pc_tangent_iff_of_integral_sub_tendsto P n A B x fun f => ?_
-  -- Step 2: `|f| ≤ C`, and `f = 0` off `B̄_R(0)` for some `R > 0`
-  obtain ⟨C, hC⟩ := f.continuous.bounded_above_of_compact_support f.hasCompactSupport
-  obtain ⟨R, hR, hzero⟩ : ∃ R : ℝ, 0 < R ∧
-      ∀ y : Euclid P, y ∉ closedBall (0 : Euclid P) R → f y = 0 := by
-    obtain ⟨R₁, hR₁⟩ := (isBounded_iff_subset_closedBall (0 : Euclid P)).mp
-      f.hasCompactSupport.isCompact.isBounded
-    exact ⟨max R₁ 1, lt_max_of_lt_right one_pos, fun y hy => image_eq_zero_of_notMem_tsupport
-      fun h => hy (closedBall_subset_closedBall (le_max_left _ _) (hR₁ h))⟩
-  -- Step 3: for `0 < r < r₀ / R`, `Hⁿ(η_r(S) ∩ B̄_R(0)) ≤ r⁻ⁿ Hⁿ(S ∩ B̄_{r₀}(x)) < ∞`
-  have hfin : ∀ S : Set (Euclid P), μHE[n] (S ∩ closedBall x r₀) ≠ ∞ → ∀ r ∈ Ioo 0 (r₀ / R),
-      μHE[n] (Poincare.SimonGMT.Chapter03.blowUpMap x r '' S ∩ closedBall 0 R) ≠ ∞ := by
-    intro S hS r hr
-    rw [Submission.regcomp_atl_blowUp_measure_scaling P n x r R S hr.1]
-    exact ENNReal.mul_ne_top
-      (ENNReal.pow_ne_top (ENNReal.inv_ne_top.mpr (ENNReal.ofReal_pos.mpr hr.1).ne'))
-      (ne_top_of_le_ne_top hS (measure_mono (inter_subset_inter_right _
-        (closedBall_subset_closedBall ((lt_div_iff₀ hR).mp hr.2).le))))
-  -- Step 4: `C Hⁿ(η_r(S) ∩ B̄_R(0)) = C r⁻ⁿ Hⁿ(S ∩ B̄_{rR}(x)) → 0` for `S = A \ B`, `B \ A`
-  have herr : ∀ S : Set (Euclid P),
-      Tendsto (fun ρ : ℝ => μHE[n] (S ∩ closedBall x ρ) / ENNReal.ofReal ρ ^ n) (𝓝[>] 0) (𝓝 0) →
-      Tendsto (fun r : ℝ => C *
-        (μHE[n] (Poincare.SimonGMT.Chapter03.blowUpMap x r '' S ∩ closedBall 0 R)).toReal)
-        (𝓝[>] 0) (𝓝 0) := by
-    intro S hS
-    have h := ((ENNReal.tendsto_toReal ENNReal.zero_ne_top).comp
-      (Submission.regcomp_atl_pc_density_rescale_tendsto n
-        (fun ρ => μHE[n] (S ∩ closedBall x ρ)) R hR hS)).const_mul C
-    rw [ENNReal.toReal_zero, mul_zero] at h
-    refine h.congr' ?_
-    filter_upwards [self_mem_nhdsWithin] with r (hr : 0 < r)
-    rw [Function.comp_apply, Submission.regcomp_atl_blowUp_measure_scaling P n x r R S hr]
-  -- Step 5: for `0 < r < r₀ / R`, compare both integrals with the one over `η_r(A ∩ B)`
-  have hle : ∀ᶠ r in 𝓝[>] (0 : ℝ),
-      ‖(∫ y in Poincare.SimonGMT.Chapter03.blowUpMap x r '' A, f y ∂μHE[n]) -
-          ∫ y in Poincare.SimonGMT.Chapter03.blowUpMap x r '' B, f y ∂μHE[n]‖ ≤
-        C * (μHE[n] (Poincare.SimonGMT.Chapter03.blowUpMap x r '' (A \ B) ∩
-            closedBall 0 R)).toReal +
-          C * (μHE[n] (Poincare.SimonGMT.Chapter03.blowUpMap x r '' (B \ A) ∩
-            closedBall 0 R)).toReal := by
-    filter_upwards [Ioo_mem_nhdsGT (div_pos hr₀ hR)] with r hr
-    have hA' := Submission.regcomp_atl_pc_blowUp_setIntegral_sub_le P n (A ∩ B) A x r R C f
-      f.continuous (hA.inter hB) hA inter_subset_left hr.1 (hfin A hAfin r hr) hC hzero
-    have hB' := Submission.regcomp_atl_pc_blowUp_setIntegral_sub_le P n (A ∩ B) B x r R C f
-      f.continuous (hA.inter hB) hB inter_subset_right hr.1 (hfin B hBfin r hr) hC hzero
-    rw [Set.sdiff_self_inter] at hA'
-    rw [Set.sdiff_inter_self_eq_sdiff] at hB'
-    rw [← sub_sub_sub_cancel_right _ _
-      (∫ y in Poincare.SimonGMT.Chapter03.blowUpMap x r '' (A ∩ B), f y ∂μHE[n])]
-    exact (norm_sub_le _ _).trans (add_le_add hA' hB')
-  -- Step 6: squeeze
-  have hlim := (herr _ hAB).add (herr _ hBA)
-  rw [add_zero] at hlim
-  exact squeeze_zero_norm' hle hlim
-
-/-- **Approximate tangent planes of two locally finite sets agree a.e. on their overlap** (Simon
-Ch. 3, Remark 1.5(2) and the proof of Theorem 1.6 "⇒", chapter-03.txt lines 86–90 and 113–146,
-stated symmetrically for two sets).  Let `W ⊆ ℝᴾ` be open and `A`, `B` Borel with `Hⁿ(A ∩ K)` and
-`Hⁿ(B ∩ K)` finite for every compact `K ⊆ W`.  By the upper density theorem the densities of
-`A ∖ B` and `B ∖ A` vanish at `Hⁿ`-a.e. `x ∈ W ∩ A ∩ B`; a closed ball about such `x` inside `W`
-has finite measure in `A` and in `B`, so `A` and `B` have the same approximate tangent planes at
-`x`. -/
-theorem Submission.doraggt_ae_approxTangent_transfer : ∀ (P n : ℕ) (W A B : Set (Euclid P)), IsOpen W → MeasurableSet A → MeasurableSet B → (∀ K : Set (Euclid P), IsCompact K → K ⊆ W → μHE[n] (A ∩ K) ≠ ∞) → (∀ K : Set (Euclid P), IsCompact K → K ⊆ W → μHE[n] (B ∩ K) ≠ ∞) → ∀ᵐ x ∂(μHE[n] : Measure (Euclid P)), x ∈ W → x ∈ A → x ∈ B → ∀ Q : Submodule ℝ (Euclid P), HasApproximateTangentSpaceAt n A x Q ↔ HasApproximateTangentSpaceAt n B x Q := by
-  intro P n W A B hW hA hB hAfin hBfin
-  -- Step 1, the densities of `A ∖ B` and `B ∖ A` vanish `Hⁿ`-a.e. on `W` off these sets.
-  have hAB := Submission.doraggt_local_density_zero P n W (A \ B) hW (hA.diff hB)
-    fun K hK hKW => ne_top_of_le_ne_top (hAfin K hK hKW)
-      (measure_mono (inter_subset_inter_left K sdiff_subset))
-  have hBA := Submission.doraggt_local_density_zero P n W (B \ A) hW (hB.diff hA)
-    fun K hK hKW => ne_top_of_le_ne_top (hBfin K hK hKW)
-      (measure_mono (inter_subset_inter_left K sdiff_subset))
-  -- Step 2, at such `x ∈ W ∩ A ∩ B`, `x ∉ A ∖ B` and `x ∉ B ∖ A`, so both densities vanish.
-  filter_upwards [hAB, hBA] with x hxAB hxBA hxW hxA hxB
-  -- Step 3, `B̄(x, ε/2) ⊆ B(x, ε) ⊆ W` is compact, so `A` and `B` have finite measure in it.
-  obtain ⟨ε, hε, hball⟩ := Metric.isOpen_iff.1 hW x hxW
-  have hsub : closedBall x (ε / 2) ⊆ W := (closedBall_subset_ball (half_lt_self hε)).trans hball
-  -- Step 4, the approximate tangent planes of `A` and `B` at `x` agree.
-  exact Submission.doraggt_approxTangent_iff_of_density_zero P n A B x (ε / 2) hA hB
-    (half_pos hε) (hAfin _ (isCompact_closedBall x (ε / 2)) hsub)
-    (hBfin _ (isCompact_closedBall x (ε / 2)) hsub) (hxAB hxW fun h => h.2 hxB)
-    (hxBA hxW fun h => h.2 hxA)
-
-/-- **Approximate tangent planes along a bi-Lipschitz piece** (Simon Ch. 3, 1.4–1.5).  Let
-`M ⊆ ℝᴾ` be Borel with `Hⁿ(M ∩ K) < ∞` for compact `K`, and `g : ℝⁿ → ℝᴾ` Lipschitz with
-`c‖a − a'‖ ≤ ‖g a − g a'‖` on the Borel set `A`, differentiable with injective derivative on `A`,
-and `g(A) ⊆ M`.  Then `T_{g(a)}M = range Dg(a)` for Lebesgue-a.e. `a ∈ A`: `g(A) ⊆ M` is Borel and
-locally `Hⁿ`-finite, so `g(A)` and `M` have the same approximate tangent planes `Hⁿ`-a.e. on
-`g(A)`; this pulls back to a.e. `a ∈ A`, where `g(A)` has approximate tangent space
-`range Dg(a)` at `g(a)`. -/
-theorem Submission.idtp_caf_piece_approxTangentPlane_ae : ∀ (P n : ℕ) (M : Set (Euclid P)) (g : Euclid n → Euclid P) (A : Set (Euclid n)) (L : NNReal) (c : ℝ), 1 ≤ n → MeasurableSet M → (∀ K : Set (Euclid P), IsCompact K → μHE[n] (M ∩ K) ≠ ∞) → LipschitzWith L g → MeasurableSet A → 0 < c → (∀ a ∈ A, ∀ a' ∈ A, c * ‖a - a'‖ ≤ ‖g a - g a'‖) → (∀ a ∈ A, DifferentiableAt ℝ g a ∧ Injective (fderiv ℝ g a)) → g '' A ⊆ M → ∀ᵐ a ∂(volume.restrict A), approxTangentPlane n M (g a) = LinearMap.range (fderiv ℝ g a : Euclid n →ₗ[ℝ] Euclid P) := by
-  intro P n M g A L c hn hM hMfin hg hA hc hlow hdiff hAM
-  -- Step 1: `g(A)` is Borel, and `Hⁿ⌞g(A)`-a.e. properties hold at `g a` for a.e. `a ∈ A`
-  obtain ⟨hgA, hpull⟩ :=
-    Submission.ptd_piece_image_measurable_ae_pullback P n g A L c hg hA hc hlow
-  -- Step 2: `g(A) ⊆ M` is locally `Hⁿ`-finite
-  have hgAfin : ∀ K : Set (Euclid P), IsCompact K → K ⊆ univ → μHE[n] (g '' A ∩ K) ≠ ∞ :=
-    fun K hK _ => ne_top_of_le_ne_top (hMfin K hK) (measure_mono (inter_subset_inter_left K hAM))
-  -- Step 3: `g(A)` and `M` have the same approximate tangent planes `Hⁿ⌞g(A)`-a.e.
-  have htrans : ∀ᵐ y ∂(μHE[n].restrict (g '' A)), ∀ Q : Submodule ℝ (Euclid P),
-      HasApproximateTangentSpaceAt n (g '' A) y Q ↔ HasApproximateTangentSpaceAt n M y Q := by
-    rw [ae_restrict_iff' hgA]
-    filter_upwards [Submission.doraggt_ae_approxTangent_transfer P n univ (g '' A) M isOpen_univ
-      hgA hM hgAfin fun K hK _ => hMfin K hK] with y hy hyA using hy (mem_univ y) hyA (hAM hyA)
-  -- Step 4: pull back to a.e. `a ∈ A`; step 5: the tangent plane of the piece at `g a`
-  filter_upwards [hpull _ htrans,
-    Submission.idtp_caf_piece_image_approxTangent_ae P n g A L c hn hg hA hc hlow hdiff]
-    with a hQ hT
-  -- Step 6: `range Dg(a)` is the approximate tangent space of `M` at `g a`
-  exact Submission.dpf_itt_approxTangentPlane_eq P n M (g a) _ ((hQ _).1 hT)
-/-- **Fibre sums of `Hⁿ`-a.e. equal weights agree `Lⁿ`-a.e.** (Simon Ch. 2, 1.8(i): Lipschitz
-images of `Hⁿ`-null sets are `Hⁿ`-null).  Let `S ⊆ V`, `F = G` on `V` with `G` Lipschitz, and
-`h = h'` `Hⁿ⌞S`-a.e.  Enlarge `{h ≠ h'}` to a Borel `Hⁿ⌞S`-null set `N`; then `Hⁿ(N ∩ S) = 0`, so
-`F(N ∩ S) = G(N ∩ S)` is `Hⁿ = Lⁿ`-null.  For `y ∉ F(N ∩ S)` every `x ∈ S` with `F(x) = y` lies
-outside `N`, so `h(x) = h'(x)` and the fibre sums `Σ_{x ∈ S, F(x) = y}` of `h` and `h'` agree. -/
-theorem Submission.idtp_caf_paf_fiberSum_ae_congr : ∀ (P n : ℕ) (S V : Set (Euclid P)) (F G : Euclid P → Euclid n) (LG : NNReal) (h h' : Euclid P → ℝ≥0∞), S ⊆ V → LipschitzWith LG G → EqOn F G V → h =ᵐ[μHE[n].restrict S] h' → (fun y : Euclid n => ∑' x : ↥(S ∩ F ⁻¹' {y}), h x) =ᵐ[volume] (fun y : Euclid n => ∑' x : ↥(S ∩ F ⁻¹' {y}), h' x) := by
-  intro P n S V F G LG h h' hSV hG hFG hh
-  -- a Borel `Hⁿ⌞S`-null set `N ⊇ {h ≠ h'}`; then `Hⁿ(N ∩ S) = 0`
-  obtain ⟨N, hNsub, hNmeas, hN0⟩ := exists_measurable_superset_of_null (ae_iff.1 hh)
-  rw [Measure.restrict_apply hNmeas] at hN0
-  -- `F(N ∩ S) = G(N ∩ S)` is `Hⁿ`-null (Lipschitz image), i.e. `Lⁿ`-null
-  have hFG' : F '' (N ∩ S) = G '' (N ∩ S) := image_congr fun x hx => hFG (hSV hx.2)
-  have hM : volume (F '' (N ∩ S)) = 0 := by
-    rw [hFG', ← EuclideanSpace.euclideanHausdorffMeasure_eq_volume]
-    refine le_antisymm ?_ zero_le
-    calc μHE[n] (G '' (N ∩ S)) ≤ (LG : ℝ≥0∞) ^ n * μHE[n] (N ∩ S) :=
-          Poincare.SimonGMT.Chapter02.euclideanHausdorffMeasure_image_le_of_lipschitzOn n
-            hG.lipschitzOnWith
-      _ = 0 := by rw [hN0, mul_zero]
-  -- off `F(N ∩ S)` every fibre point lies outside `N`, where `h = h'`
-  filter_upwards [measure_eq_zero_iff_ae_notMem.1 hM] with y hy
-  refine tsum_congr fun x => ?_
-  by_contra hne
-  exact hy ⟨x, ⟨hNsub hne, x.2.1⟩, x.2.2⟩
-/-- **Weighted area formula, fibre side** (Simon Ch. 2, §3, (3.4)–(3.5), for the Lipschitz map
-`Φ : ℝⁿ → ℝⁿ`).  Let `g` be continuous and injective on the Borel set `A`, let `F ∘ g = Φ` on `A`
-with `Φ` Lipschitz, and let `h ≥ 0` be Borel.  Then `y ↦ Σ_{x ∈ g(A), F(x) = y} h(x)` is
-`Lⁿ`-a.e. measurable and its integral is `∫_A |det DΦ(a)| h(g(a)) dLⁿ(a)`.  The carrier fibre
-over `y` is `g(A ∩ Φ⁻¹{y})`, so the fibre sum is `Σ_{a ∈ A, Φ(a) = y} h(g(a))`.  The formula for
-`Φ` is proved in place from Mathlib's change of variables, as the SimonGMT area formula is not
-available in this file.  Off the null images of the non-differentiability set (Rademacher and
-the Lipschitz image bound) and of the critical set (Sard), the fibre sum splits over a countable
-partition of `A` into pieces on which `Φ` is injective, and on each piece the injective change
-of variables formula applies. -/
-theorem Submission.idtp_caf_paf_fiber_side : ∀ (P n : ℕ) (g : Euclid n → Euclid P) (A : Set (Euclid n)) (F : Euclid P → Euclid n) (Φ : Euclid n → Euclid n) (LΦ : NNReal) (h : Euclid P → ℝ≥0∞), Continuous g → MeasurableSet A → InjOn g A → LipschitzWith LΦ Φ → (∀ a ∈ A, F (g a) = Φ a) → Measurable h → AEMeasurable (fun y : Euclid n => ∑' x : ↥(g '' A ∩ F ⁻¹' {y}), h x) volume ∧ ∫⁻ y, (∑' x : ↥(g '' A ∩ F ⁻¹' {y}), h x) ∂volume = ∫⁻ a in A, ENNReal.ofReal |LinearMap.det (fderiv ℝ Φ a : Euclid n →ₗ[ℝ] Euclid n)| * h (g a) ∂volume := by
-  intro P n g A F Φ LΦ h hg hA hgA hΦ hFg hh
-  -- the weight `w = h ∘ g` on the parameter side is Borel
-  set w : Euclid n → ℝ≥0∞ := fun a => h (g a)
-  have hw : Measurable w := hh.comp hg.measurable
-  -- `g(A) ∩ F⁻¹{y} = g(A ∩ Φ⁻¹{y})`, and `tsum_image` reindexes the fibre sum
-  have hfib : ∀ y, (∑' x : ↥(g '' A ∩ F ⁻¹' {y}), h x) = ∑' a : ↥(A ∩ Φ ⁻¹' {y}), w a := by
-    intro y
-    have hset : g '' A ∩ F ⁻¹' {y} = g '' (A ∩ Φ ⁻¹' {y}) := by
-      ext x
-      simp only [mem_inter_iff, mem_image, mem_preimage, mem_singleton_iff]
-      constructor
-      · rintro ⟨⟨a, ha, rfl⟩, hy⟩
-        exact ⟨a, ⟨ha, (hFg a ha).symm.trans hy⟩, rfl⟩
-      · rintro ⟨a, ⟨ha, hy⟩, rfl⟩
-        exact ⟨⟨a, ha, rfl⟩, (hFg a ha).trans hy⟩
-    rw [hset, tsum_image h (hgA.mono inter_subset_left)]
-  simp only [hfib]
-  -- `D`: differentiability points of `Φ`; `s`: the points of `A ∩ D` with `det DΦ ≠ 0`
-  set D : Set (Euclid n) := {x | DifferentiableAt ℝ Φ x}
-  have hDm : MeasurableSet D := measurableSet_of_differentiableAt ℝ Φ
-  have hdetm : Measurable fun x => (fderiv ℝ Φ x).det :=
-    ContinuousLinearMap.continuous_det.measurable.comp (measurable_fderiv ℝ Φ)
-  set s : Set (Euclid n) := A ∩ D ∩ {x | (fderiv ℝ Φ x).det ≠ 0}
-  have hsm : MeasurableSet s := (hA.inter hDm).inter (hdetm (measurableSet_singleton 0).compl)
-  -- precision `r B` with `r B * ‖B⁻¹‖ < 1` whenever `B` is invertible
-  let r : (Euclid n →L[ℝ] Euclid n) → NNReal := fun B =>
-    if hB : B.det ≠ 0 then
-      (‖((B.toContinuousLinearEquivOfDetNeZero hB).symm : Euclid n →L[ℝ] Euclid n)‖₊ + 1)⁻¹
-    else 1
-  have rpos : ∀ B, r B ≠ 0 := by
-    intro B
-    simp only [r]
-    split_ifs
-    · exact inv_ne_zero (by positivity)
-    · exact one_ne_zero
-  -- a countable measurable partition of `s` into pieces `S k` on which `Φ` is close to `B k`
-  obtain ⟨t, B, ht_disj, ht_meas, hst, happrox, hB⟩ :=
-    exists_partition_approximatesLinearOn_of_hasFDerivWithinAt Φ s (fderiv ℝ Φ)
-      (fun x hx => (hx.1.2 : DifferentiableAt ℝ Φ x).hasFDerivAt.hasFDerivWithinAt) r rpos
-  set S : ℕ → Set (Euclid n) := fun k => s ∩ t k
-  have hSm : ∀ k, MeasurableSet (S k) := fun k => hsm.inter (ht_meas k)
-  have hSdisj : Pairwise (Disjoint on S) := fun i j hij =>
-    (ht_disj hij).mono inter_subset_right inter_subset_right
-  have hSU : ⋃ k, S k = s := by
-    simp only [S, ← inter_iUnion]
-    exact inter_eq_left.mpr hst
-  have hSder : ∀ k, ∀ x ∈ S k, HasFDerivWithinAt Φ (fderiv ℝ Φ x) (S k) x := fun k x hx =>
-    (hx.1.1.2 : DifferentiableAt ℝ Φ x).hasFDerivAt.hasFDerivWithinAt
-  -- `Φ` is injective on each piece: `B k = DΦ(z)` is invertible and `r (B k) * ‖(B k)⁻¹‖ < 1`
-  have hSinj : ∀ k, InjOn Φ (S k) := by
-    intro k x hx y hy hxy
-    obtain ⟨z, hz, hBz⟩ := hB ⟨x, hx.1⟩ k
-    have hdet : (B k).det ≠ 0 := hBz ▸ hz.2
-    set e := (B k).toContinuousLinearEquivOfDetNeZero hdet
-    set N : ℝ := ‖(e.symm : Euclid n →L[ℝ] Euclid n)‖
-    have hr : ((r (B k) : NNReal) : ℝ) = (N + 1)⁻¹ := by
-      simp only [r, dite_eq_left hdet, NNReal.coe_inv, NNReal.coe_add, coe_nnnorm,
-        NNReal.coe_one, N, e]
-    have happ := happrox k x hx y hy
-    rw [hxy, sub_self, zero_sub, norm_neg, hr] at happ
-    have h1 : ‖x - y‖ ≤ N * ‖B k (x - y)‖ := by
-      have hxy' : e.symm (B k (x - y)) = x - y := by
-        rw [show B k (x - y) = e (x - y) from rfl, ContinuousLinearEquiv.symm_apply_apply]
-      calc ‖x - y‖ = ‖(e.symm : Euclid n →L[ℝ] Euclid n) (B k (x - y))‖ := by
-              rw [ContinuousLinearEquiv.coe_coe, hxy']
-        _ ≤ N * ‖B k (x - y)‖ := (e.symm : Euclid n →L[ℝ] Euclid n).le_opNorm _
-    have hN : 0 ≤ N := norm_nonneg _
-    have h2 : ‖x - y‖ ≤ N * ((N + 1)⁻¹ * ‖x - y‖) :=
-      h1.trans (mul_le_mul_of_nonneg_left happ hN)
-    have h3 : ‖x - y‖ ≤ 0 := by
-      have hN1 : 0 < N + 1 := by linarith
-      have h4 : N * ((N + 1)⁻¹ * ‖x - y‖) = ‖x - y‖ - (N + 1)⁻¹ * ‖x - y‖ := by
-        field_simp
-        ring
-      rw [h4] at h2
-      have h5 : (N + 1)⁻¹ * ‖x - y‖ ≤ 0 := by linarith
-      have h6 : 0 < (N + 1)⁻¹ := inv_pos.mpr hN1
-      nlinarith [norm_nonneg (x - y)]
-    exact sub_eq_zero.mp (norm_le_zero_iff.mp h3)
-  -- `G k y`: the fibre sum of `w` over `S k ∩ Φ⁻¹{y}`, which has at most one point
-  set G : ℕ → Euclid n → ℝ≥0∞ := fun k y => ∑' a, (S k ∩ Φ ⁻¹' {y}).indicator w a
-  have hG_apply : ∀ k, ∀ x ∈ S k, G k (Φ x) = w x := by
-    intro k x hx
-    simp only [G]
-    rw [tsum_eq_single x]
-    · exact indicator_of_mem (show x ∈ S k ∩ Φ ⁻¹' {Φ x} from ⟨hx, rfl⟩) w
-    · intro a hax
-      exact indicator_of_notMem (fun ha => hax (hSinj k ha.1 hx ha.2)) w
-  have hG_zero : ∀ k y, y ∉ Φ '' S k → G k y = 0 := by
-    intro k y hy
-    simp only [G]
-    exact (tsum_congr fun a => indicator_of_notMem (fun ha => hy ⟨a, ha.1, ha.2⟩) w).trans
-      tsum_zero
-  have hG_meas : ∀ k, Measurable (G k) := by
-    intro k
-    have hemb := measurableEmbedding_of_fderivWithin (hSm k) (hSder k) (hSinj k)
-    have hGe : G k = Function.extend ((S k).domRestrict Φ) (fun x => w x) 0 := by
-      funext y
-      by_cases hy : ∃ x : S k, (S k).domRestrict Φ x = y
-      · obtain ⟨x, rfl⟩ := hy
-        rw [hemb.injective.extend_apply]
-        exact hG_apply k x x.2
-      · rw [extend_apply' _ _ _ hy, hG_zero k y]
-        · rfl
-        · rintro ⟨x, hx, rfl⟩
-          exact hy ⟨⟨x, hx⟩, rfl⟩
-    rw [hGe]
-    exact hemb.measurable_extend (hw.comp measurable_subtype_coe) measurable_const
-  -- injective change of variables on each piece
-  have hG_int : ∀ k, ∫⁻ y, G k y =
-      ∫⁻ x in S k, ENNReal.ofReal |(fderiv ℝ Φ x).det| * w x := by
-    intro k
-    rw [← setLIntegral_eq_of_support_subset (s := Φ '' S k) (fun y hy => by
-        by_contra hy'
-        exact hy (hG_zero k y hy')),
-      lintegral_image_eq_lintegral_abs_det_fderiv_mul volume (hSm k) (hSder k) (hSinj k)]
-    exact setLIntegral_congr_fun (hSm k) (fun x hx => by rw [hG_apply k x hx])
-  -- null images: of `Dᶜ` (Rademacher, Lipschitz image bound) and of the critical set (Sard)
-  have hDc : volume Dᶜ = 0 := ae_iff.mp (hΦ.ae_differentiableAt (μ := volume))
-  have hnull1 : volume (Φ '' Dᶜ) = 0 := by
-    have h1 := Poincare.SimonGMT.Chapter02.euclideanHausdorffMeasure_image_le_of_lipschitzOn n
-      (hΦ.lipschitzOnWith (s := Dᶜ))
-    rw [EuclideanSpace.euclideanHausdorffMeasure_eq_volume, hDc, mul_zero] at h1
-    exact nonpos_iff_eq_zero.mp h1
-  have hnull2 : volume (Φ '' (A ∩ D ∩ {x | (fderiv ℝ Φ x).det = 0})) = 0 :=
-    addHaar_image_eq_zero_of_det_fderivWithin_eq_zero volume
-      (fun x hx => (hx.1.2 : DifferentiableAt ℝ Φ x).hasFDerivAt.hasFDerivWithinAt)
-      (fun x hx => hx.2)
-  -- off these null sets, the fibre sum over `A` splits over the pieces
-  have hae : ∀ᵐ y ∂volume, (∑' a : ↥(A ∩ Φ ⁻¹' {y}), w a) = ∑' k, G k y := by
-    filter_upwards [measure_eq_zero_iff_ae_notMem.mp (measure_union_null hnull1 hnull2)] with y hy
-    rw [tsum_subtype (A ∩ Φ ⁻¹' {y}) w]
-    simp only [G]
-    rw [ENNReal.tsum_comm]
-    refine tsum_congr fun a => ?_
-    by_cases ha : a ∈ A ∩ Φ ⁻¹' {y}
-    · have haD : a ∈ D := by
-        by_contra hD
-        exact hy (Or.inl ⟨a, hD, ha.2⟩)
-      have hadet : (fderiv ℝ Φ a).det ≠ 0 := by
-        intro h0
-        exact hy (Or.inr ⟨a, ⟨⟨ha.1, haD⟩, h0⟩, ha.2⟩)
-      have has : a ∈ s := ⟨⟨ha.1, haD⟩, hadet⟩
-      obtain ⟨k, hk⟩ := mem_iUnion.mp (hst has)
-      rw [indicator_of_mem ha, tsum_eq_single k]
-      · exact (indicator_of_mem (show a ∈ S k ∩ Φ ⁻¹' {y} from ⟨⟨has, hk⟩, ha.2⟩) w).symm
-      · intro j hj
-        exact indicator_of_notMem (fun haj => Set.disjoint_left.mp (ht_disj hj) haj.1.2 hk) w
-    · rw [indicator_of_notMem ha]
-      exact ((tsum_congr fun k => indicator_of_notMem
-        (fun hak => ha ⟨hak.1.1.1.1, hak.2⟩) w).trans tsum_zero).symm
-  have hGsum : Measurable fun y => ∑' k, G k y := Measurable.tsum hG_meas
-  refine ⟨hGsum.aemeasurable.congr (Filter.EventuallyEq.symm hae), ?_⟩
-  rw [lintegral_congr_ae hae, lintegral_tsum (fun k => (hG_meas k).aemeasurable)]
-  simp only [hG_int]
-  rw [← lintegral_iUnion hSm hSdisj, hSU]
-  -- the integrand vanishes a.e. on `A \ s`
-  rw [← inter_eq_left.mpr (show s ⊆ A from fun x hx => hx.1.1), ← setLIntegral_indicator hsm]
-  apply lintegral_congr_ae
-  filter_upwards [ae_restrict_of_ae (hΦ.ae_differentiableAt (μ := volume)), ae_restrict_mem hA]
-    with x hxD hxA
-  by_cases hxs : x ∈ s
-  · rw [indicator_of_mem hxs]
-  · rw [indicator_of_notMem hxs]
-    have h0 : (fderiv ℝ Φ x).det = 0 := by
-      by_contra h0
-      exact hxs ⟨⟨hxA, hxD⟩, h0⟩
-    have h0' : LinearMap.det (fderiv ℝ Φ x : Euclid n →ₗ[ℝ] Euclid n) = 0 := h0
-    simp [h0']
-/-- **Carrier side of the area formula on one piece** (Simon Ch. 3, 2.4–2.5, with the injective
-area formula of Ch. 2, §3).  Let `g : ℝⁿ → ℝᴾ` be Lipschitz, injective on the Borel set `A` and
-differentiable at every point of `A`, let `F = G` on an open `V ⊇ g(A)` with `F` differentiable on
-`g(A)`, and let `T(g(a)) = range Dg(a)` for a.e. `a ∈ A`.  With `u` the standard orthonormal basis
-of `T(x)` and `J_T(x) = √det(DF(x)uᵢ · DF(x)uⱼ)`, every `h ≥ 0` has
-`∫_{g(A)} J_T h dHⁿ = ∫_A |det D(G ∘ g)| h ∘ g dLⁿ`.
-
-The area formula is proved inline.  `J L = √det(L eᵢ · L eⱼ)` is the Jacobian of a linear
-`L : ℝᵐ → Y`; for injective `L`, `L = ι ∘ M` with `ι` an isometry and `J L = |det M|`, so
-`Hᵐ(L(S)) = J L · Hᵐ(S)`.  On pieces where `g` is close to an injective linear map, Hausdorff
-measure of the image is comparable to `J`, giving `Hⁿ(g(E)) = ∫_E J(Dg)` where `Dg` is injective;
-where `Dg` is not injective, the graphs `x ↦ (g x, εx)` show `Hⁿ(g(E)) = 0` as `ε → 0`.  A.e. on
-`A`, `D(G ∘ g)(a) = DF(g(a)) ∘ Dg(a)` and comparing volumes of the image of the unit ball gives
-`|det D(G ∘ g)(a)| = J_T(g(a)) · J(Dg(a))`. -/
-theorem Submission.idtp_caf_paf_carrier_side : ∀ (P n : ℕ) (g : Euclid n → Euclid P) (A : Set (Euclid n)) (Lg : NNReal) (V : Set (Euclid P)) (F G : Euclid P → Euclid n) (T : Euclid P → Submodule ℝ (Euclid P)) (h : Euclid P → ℝ≥0∞), LipschitzWith Lg g → MeasurableSet A → InjOn g A → (∀ a ∈ A, DifferentiableAt ℝ g a) → IsOpen V → g '' A ⊆ V → EqOn F G V → (∀ x ∈ g '' A, DifferentiableAt ℝ F x) → (∀ᵐ a ∂(volume.restrict A), T (g a) = LinearMap.range (fderiv ℝ g a : Euclid n →ₗ[ℝ] Euclid P)) → ∫⁻ x in g '' A, ENNReal.ofReal (Real.sqrt (Matrix.det (Matrix.of fun i j : Fin (Module.finrank ℝ (T x)) => inner ℝ (fderiv ℝ F x (stdOrthonormalBasis ℝ (T x) i)) (fderiv ℝ F x (stdOrthonormalBasis ℝ (T x) j))))) * h x ∂μHE[n] = ∫⁻ a in A, ENNReal.ofReal |LinearMap.det (fderiv ℝ (G ∘ g) a : Euclid n →ₗ[ℝ] Euclid n)| * h (g a) ∂volume := by
-  classical
-  -- the Jacobian `J L = √det(L eᵢ · L eⱼ)` of a linear map `L : ℝᵐ → Y`
-  obtain ⟨Jac, hJac⟩ : ∃ Jac : ∀ {m : ℕ} {Y : Type} [NormedAddCommGroup Y] [InnerProductSpace ℝ Y],
-      (EuclideanSpace ℝ (Fin m) →L[ℝ] Y) → ℝ,
-      ∀ {m : ℕ} {Y : Type} [NormedAddCommGroup Y] [InnerProductSpace ℝ Y]
-        (L : EuclideanSpace ℝ (Fin m) →L[ℝ] Y),
-        Jac L = Real.sqrt (Matrix.det (Matrix.of fun i j : Fin m =>
-          inner ℝ (L (EuclideanSpace.single i 1)) (L (EuclideanSpace.single j 1)))) :=
-    ⟨fun {m} {_} [_] [_] L => Real.sqrt (Matrix.det (Matrix.of fun i j : Fin m =>
-      inner ℝ (L (EuclideanSpace.single i 1)) (L (EuclideanSpace.single j 1)))),
-      fun _ => rfl⟩
-  have jac_nonneg : ∀ {m : ℕ} {Y : Type} [NormedAddCommGroup Y] [InnerProductSpace ℝ Y]
-      (L : EuclideanSpace ℝ (Fin m) →L[ℝ] Y), 0 ≤ Jac L := by
-    intro m Y _ _ L
-    rw [hJac]
-    exact Real.sqrt_nonneg _
-  -- an injective `L` factors as `ι ∘ M` with `ι` an isometry, and `J L = |det M| ≠ 0`
-  have jac_factor : ∀ {m : ℕ} {Y : Type} [NormedAddCommGroup Y] [InnerProductSpace ℝ Y]
-      [FiniteDimensional ℝ Y] (L : EuclideanSpace ℝ (Fin m) →L[ℝ] Y), Injective L →
-      ∃ (ι : EuclideanSpace ℝ (Fin m) →ₗᵢ[ℝ] Y)
-        (M : EuclideanSpace ℝ (Fin m) →ₗ[ℝ] EuclideanSpace ℝ (Fin m)),
-        (∀ x, ι (M x) = L x) ∧ Jac L = |LinearMap.det M| ∧ LinearMap.det M ≠ 0 := by
-    intro m Y _ _ _ L hL
-    have hW : Module.finrank ℝ (LinearMap.range (L : EuclideanSpace ℝ (Fin m) →ₗ[ℝ] Y)) = m := by
-      rw [LinearMap.finrank_range_of_inj hL, finrank_euclideanSpace_fin]
-    obtain ⟨u⟩ : Nonempty (OrthonormalBasis (Fin m) ℝ
-        (LinearMap.range (L : EuclideanSpace ℝ (Fin m) →ₗ[ℝ] Y))) :=
-      ⟨(stdOrthonormalBasis ℝ _).reindex (finCongr hW)⟩
-    obtain ⟨ι, M, hιM⟩ : ∃ (ι : EuclideanSpace ℝ (Fin m) →ₗᵢ[ℝ] Y)
-        (M : EuclideanSpace ℝ (Fin m) →ₗ[ℝ] EuclideanSpace ℝ (Fin m)), ∀ x, ι (M x) = L x := by
-      refine ⟨(LinearMap.range (L : EuclideanSpace ℝ (Fin m) →ₗ[ℝ] Y)).subtypeₗᵢ.comp
-          u.repr.symm.toLinearIsometry,
-        u.repr.toLinearEquiv.toLinearMap ∘ₗ (L : EuclideanSpace ℝ (Fin m) →ₗ[ℝ] Y).rangeRestrict,
-        fun x => ?_⟩
-      change ((u.repr.symm (u.repr ((L : EuclideanSpace ℝ (Fin m) →ₗ[ℝ] Y).rangeRestrict x)) :
-        LinearMap.range (L : EuclideanSpace ℝ (Fin m) →ₗ[ℝ] Y)) : Y) = L x
-      rw [LinearIsometryEquiv.symm_apply_apply]
-      rfl
-    have hdetM : LinearMap.det M ≠ 0 := by
-      rw [Ne, LinearMap.det_eq_zero_iff_ker_ne_bot, not_not, LinearMap.ker_eq_bot]
-      intro x y hxy
-      apply hL
-      rw [← hιM x, ← hιM y, hxy]
-    refine ⟨ι, M, hιM, ?_, hdetM⟩
-    have hgram : (Matrix.of fun i j : Fin m =>
-        inner ℝ (L (EuclideanSpace.single i 1)) (L (EuclideanSpace.single j 1))) =
-        Matrix.transpose (LinearMap.toMatrix (EuclideanSpace.basisFun (Fin m) ℝ).toBasis
-          (EuclideanSpace.basisFun (Fin m) ℝ).toBasis M) *
-          LinearMap.toMatrix (EuclideanSpace.basisFun (Fin m) ℝ).toBasis
-            (EuclideanSpace.basisFun (Fin m) ℝ).toBasis M := by
-      ext i j
-      rw [Matrix.of_apply, ← hιM, ← hιM, LinearIsometry.inner_map_map, Matrix.mul_apply,
-        PiLp.inner_apply]
-      refine Finset.sum_congr rfl fun k _ => ?_
-      simp only [Matrix.transpose_apply, LinearMap.toMatrix_apply, OrthonormalBasis.coe_toBasis,
-        OrthonormalBasis.coe_toBasis_repr_apply, EuclideanSpace.basisFun_apply,
-        EuclideanSpace.basisFun_repr, RCLike.inner_apply, conj_trivial]
-      ring
-    rw [hJac, hgram, Matrix.det_mul, Matrix.det_transpose, LinearMap.det_toMatrix, ← sq,
-      Real.sqrt_sq_eq_abs]
-  -- the linear area formula `Hᵈ(L(S)) = J L · Hᵈ(S)` for injective `L` (`d = m`)
-  have linear_area : ∀ {m d : ℕ}, m = d → ∀ {Y : Type} [NormedAddCommGroup Y]
-      [InnerProductSpace ℝ Y] [FiniteDimensional ℝ Y] [MeasurableSpace Y] [BorelSpace Y]
-      (L : EuclideanSpace ℝ (Fin m) →L[ℝ] Y), Injective L →
-      ∀ (s : Set (EuclideanSpace ℝ (Fin m))), μHE[d] (L '' s) = ENNReal.ofReal (Jac L) * μHE[d] s := by
-    intro m d hd Y _ _ _ _ _ L hL s
-    subst hd
-    obtain ⟨ι, M, hιM, hJ, -⟩ := jac_factor L hL
-    have himage : L '' s = ι '' (M '' s) := by
-      rw [image_image]
-      exact image_congr fun x _ => (hιM x).symm
-    rw [himage, ι.isometry.euclideanHausdorffMeasure_image,
-      EuclideanSpace.euclideanHausdorffMeasure_eq_volume, Measure.addHaar_image_linearMap, hJ]
-  have jac_eq_zero : ∀ {m : ℕ} {Y : Type} [NormedAddCommGroup Y] [InnerProductSpace ℝ Y]
-      (L : EuclideanSpace ℝ (Fin m) →L[ℝ] Y), ¬ Injective L → Jac L = 0 := by
-    intro m Y _ _ L hL
-    obtain ⟨w, hw0, hLw⟩ : ∃ w, w ≠ 0 ∧ L w = 0 := by
-      have hker : LinearMap.ker (L : EuclideanSpace ℝ (Fin m) →ₗ[ℝ] Y) ≠ ⊥ := fun h =>
-        hL (LinearMap.ker_eq_bot.mp h)
-      obtain ⟨w, hw, hw0⟩ := Submodule.exists_mem_ne_zero_of_ne_bot hker
-      exact ⟨w, hw0, hw⟩
-    have hdet : Matrix.det (Matrix.of fun i j : Fin m =>
-        inner ℝ (L (EuclideanSpace.single i 1)) (L (EuclideanSpace.single j 1))) = 0 := by
-      rw [← Matrix.exists_mulVec_eq_zero_iff]
-      refine ⟨fun j => w j, ?_, ?_⟩
-      · intro h
-        apply hw0
-        ext j
-        exact congrFun h j
-      · ext i
-        have hw : w = ∑ j, w j • EuclideanSpace.single j (1 : ℝ) := by
-          ext k
-          simp [Finset.sum_apply, Pi.single_apply]
-        have : ∑ j, inner ℝ (L (EuclideanSpace.single i 1)) (L (EuclideanSpace.single j 1)) * w j
-            = inner ℝ (L (EuclideanSpace.single i 1)) (L w) := by
-          conv_rhs => rw [hw]
-          simp [map_sum, map_smul, inner_sum, inner_smul_right, mul_comm]
-        simp only [Matrix.mulVec, dotProduct, Matrix.of_apply, Pi.zero_apply]
-        rw [this, hLw, inner_zero_right]
-    rw [hJac, hdet, Real.sqrt_zero]
-  have jac_pos : ∀ {m : ℕ} {Y : Type} [NormedAddCommGroup Y] [InnerProductSpace ℝ Y]
-      [FiniteDimensional ℝ Y] (L : EuclideanSpace ℝ (Fin m) →L[ℝ] Y), Injective L → 0 < Jac L := by
-    intro m Y _ _ _ L hL
-    obtain ⟨ι, M, -, hJ, hdet⟩ := jac_factor L hL
-    rw [hJ]
-    exact abs_pos.mpr hdet
-  have continuous_jac : ∀ {m : ℕ} {Y : Type} [NormedAddCommGroup Y] [InnerProductSpace ℝ Y],
-      Continuous (fun L : EuclideanSpace ℝ (Fin m) →L[ℝ] Y => Jac L) := by
-    intro m Y _ _
-    simp only [hJac]
-    apply Real.continuous_sqrt.comp
-    apply Continuous.matrix_det
-    refine continuous_pi fun i => continuous_pi fun j => ?_
-    simp only [Matrix.of_apply]
-    exact ((ContinuousLinearMap.apply ℝ Y _).continuous).inner
-      ((ContinuousLinearMap.apply ℝ Y _).continuous)
-  -- comparing pairwise distances compares Hausdorff measures of images
-  have image_le_of_dist_le : ∀ {X Z : Type} [MetricSpace X] [MeasurableSpace X] [BorelSpace X]
-      [MetricSpace Z] [MeasurableSpace Z] [BorelSpace Z] [Nonempty X]
-      {f g : X → Z} {s : Set X} {K : NNReal}, InjOn g s →
-      (∀ x ∈ s, ∀ y ∈ s, dist (f x) (f y) ≤ K * dist (g x) (g y)) →
-      ∀ (d : ℕ), μHE[d] (f '' s) ≤ (K : ℝ≥0∞) ^ d * μHE[d] (g '' s) := by
-    intro X Z _ _ _ _ _ _ _ f g s K hg hfg d
-    have hh : LipschitzOnWith K (f ∘ invFunOn g s) (g '' s) := by
-      rw [lipschitzOnWith_iff_dist_le_mul]
-      rintro _ ⟨x, hx, rfl⟩ _ ⟨y, hy, rfl⟩
-      simpa only [comp_apply, hg.leftInvOn_invFunOn hx,
-        hg.leftInvOn_invFunOn hy] using hfg x hx y hy
-    have himage : (f ∘ invFunOn g s) '' (g '' s) = f '' s := by
-      rw [image_comp, hg.invFunOn_image Subset.rfl]
-    simpa only [himage] using
-      Poincare.SimonGMT.Chapter02.euclideanHausdorffMeasure_image_le_of_lipschitzOn d hh
-  -- sharp comparisons for a map approximating an injective linear map
-  have approx_upper : ∀ {n : ℕ} {Y : Type} [NormedAddCommGroup Y] [InnerProductSpace ℝ Y]
-      [FiniteDimensional ℝ Y] [MeasurableSpace Y] [BorelSpace Y]
-      {f : EuclideanSpace ℝ (Fin n) → Y} {L : EuclideanSpace ℝ (Fin n) →L[ℝ] Y}
-      {s : Set (EuclideanSpace ℝ (Fin n))} {δ K : NNReal},
-      ApproximatesLinearOn f L s δ → AntilipschitzWith K L →
-      μHE[n] (f '' s) ≤ ((1 + δ * K : NNReal) : ℝ≥0∞) ^ n * (ENNReal.ofReal (Jac L) * μHE[n] s) := by
-    intro n Y _ _ _ _ _ f L s δ K hf hL
-    rw [← linear_area rfl L hL.injective s]
-    apply image_le_of_dist_le hL.injective.injOn
-    intro x hx y hy
-    have hb : ‖x - y‖ ≤ K * ‖L x - L y‖ := by
-      simpa only [dist_eq_norm] using hL.le_mul_dist x y
-    have herror : ‖f x - f y - (L x - L y)‖ ≤ (δ : ℝ) * K * ‖L x - L y‖ := by
-      calc
-        _ ≤ δ * ‖x - y‖ := by simpa only [map_sub] using hf x hx y hy
-        _ ≤ δ * (K * ‖L x - L y‖) := mul_le_mul_of_nonneg_left hb δ.2
-        _ = _ := by ring
-    simp only [dist_eq_norm, NNReal.coe_add, NNReal.coe_one, NNReal.coe_mul]
-    calc
-      ‖f x - f y‖ ≤ ‖f x - f y - (L x - L y)‖ + ‖L x - L y‖ := norm_le_norm_sub_add _ _
-      _ ≤ (δ : ℝ) * K * ‖L x - L y‖ + ‖L x - L y‖ := add_le_add herror le_rfl
-      _ = (1 + (δ : ℝ) * K) * ‖L x - L y‖ := by ring
-  have approx_lower : ∀ {n : ℕ} {Y : Type} [NormedAddCommGroup Y] [InnerProductSpace ℝ Y]
-      [FiniteDimensional ℝ Y] [MeasurableSpace Y] [BorelSpace Y]
-      {f : EuclideanSpace ℝ (Fin n) → Y} {L : EuclideanSpace ℝ (Fin n) →L[ℝ] Y}
-      {s : Set (EuclideanSpace ℝ (Fin n))} {δ K : NNReal},
-      ApproximatesLinearOn f L s δ → AntilipschitzWith K L → δ * K < 1 →
-      ENNReal.ofReal (Jac L) * μHE[n] s ≤
-        (((1 - δ * K)⁻¹ : NNReal) : ℝ≥0∞) ^ n * μHE[n] (f '' s) := by
-    intro n Y _ _ _ _ _ f L s δ K hf hL hδ
-    have hδR : (δ : ℝ) * K < 1 := hδ
-    have hdist : ∀ x ∈ s, ∀ y ∈ s, dist (L x) (L y) ≤
-        ((1 - δ * K)⁻¹ : NNReal) * dist (f x) (f y) := by
-      intro x hx y hy
-      have hb : ‖x - y‖ ≤ K * ‖L x - L y‖ := by
-        simpa only [dist_eq_norm] using hL.le_mul_dist x y
-      have herror : ‖f x - f y - (L x - L y)‖ ≤ (δ : ℝ) * K * ‖L x - L y‖ := by
-        calc
-          _ ≤ δ * ‖x - y‖ := by simpa only [map_sub] using hf x hx y hy
-          _ ≤ δ * (K * ‖L x - L y‖) := mul_le_mul_of_nonneg_left hb δ.2
-          _ = _ := by ring
-      have htriangle : ‖L x - L y‖ ≤ ‖f x - f y‖ + ‖f x - f y - (L x - L y)‖ := by
-        simpa only [norm_sub_rev, add_comm] using
-          (norm_le_norm_sub_add (L x - L y) (f x - f y))
-      simp only [dist_eq_norm, NNReal.coe_inv, NNReal.coe_sub hδ.le,
-        NNReal.coe_one, NNReal.coe_mul, inv_mul_eq_div]
-      apply (le_div_iff₀ (sub_pos.mpr hδR)).mpr
-      nlinarith
-    have hfinj : InjOn f s := by
-      intro x hx y hy hxy
-      apply hL.injective
-      apply dist_le_zero.mp
-      simpa only [hxy, dist_self, mul_zero] using hdist x hx y hy
-    rw [← linear_area rfl L hL.injective s]
-    exact image_le_of_dist_le hfinj hdist _
-  -- one radius controlling both the image measure and the Jacobians of nearby maps
-  have radius_area : ∀ {n : ℕ} {Y : Type} [NormedAddCommGroup Y] [InnerProductSpace ℝ Y]
-      [FiniteDimensional ℝ Y] [MeasurableSpace Y] [BorelSpace Y]
-      (L : EuclideanSpace ℝ (Fin n) →L[ℝ] Y), Injective L → ∀ {q : NNReal}, 1 < q →
-      ∃ δ : NNReal, 0 < δ ∧
-        (∀ B : EuclideanSpace ℝ (Fin n) →L[ℝ] Y, ‖B - L‖ ≤ δ →
-          ENNReal.ofReal (Jac B) ≤ q * ENNReal.ofReal (Jac L) ∧
-          ENNReal.ofReal (Jac L) ≤ q * ENNReal.ofReal (Jac B)) ∧
-        (∀ (s : Set (EuclideanSpace ℝ (Fin n))) (f : EuclideanSpace ℝ (Fin n) → Y),
-          ApproximatesLinearOn f L s δ →
-          μHE[n] (f '' s) ≤ q * (ENNReal.ofReal (Jac L) * μHE[n] s) ∧
-            ENNReal.ofReal (Jac L) * μHE[n] s ≤ q * μHE[n] (f '' s)) := by
-    intro n Y _ _ _ _ _ L hL q hq
-    obtain ⟨K, _, hK⟩ := (L : EuclideanSpace ℝ (Fin n) →ₗ[ℝ] Y).exists_antilipschitzWith
-      (LinearMap.ker_eq_bot.mpr hL)
-    have hsmall : ∀ᶠ δ : NNReal in 𝓝 0, δ * K < 1 := by
-      exact (continuousAt_id.mul continuousAt_const).eventually_lt
-        continuousAt_const (by simp)
-    have hupper : ∀ᶠ δ : NNReal in 𝓝 0, (1 + δ * K) ^ n < q := by
-      exact ((continuousAt_const.add (continuousAt_id.mul continuousAt_const)).pow _).eventually_lt
-        continuousAt_const (by simpa using hq)
-    have hlower : ∀ᶠ δ : NNReal in 𝓝 0, ((1 - δ * K)⁻¹) ^ n < q := by
-      apply ContinuousAt.eventually_lt _ continuousAt_const (by simpa using hq)
-      apply ContinuousAt.pow
-      apply ContinuousAt.inv₀
-      · exact continuousAt_const.sub (continuousAt_id.mul continuousAt_const)
-      · simp
-    have hJ : 0 < Jac L := jac_pos L hL
-    have hqR : (1 : ℝ) < q := hq
-    have hmul : Jac L < (q : ℝ) * Jac L := by nlinarith
-    have hnear : ∀ᶠ B : EuclideanSpace ℝ (Fin n) →L[ℝ] Y in 𝓝 L,
-        Jac B < (q : ℝ) * Jac L ∧ Jac L < (q : ℝ) * Jac B :=
-      (continuous_jac.continuousAt.eventually_lt continuousAt_const hmul).and
-        (continuousAt_const.eventually_lt
-          (continuousAt_const.mul continuous_jac.continuousAt) hmul)
-    obtain ⟨ε, hε, hnear⟩ := Metric.eventually_nhds_iff.mp hnear
-    have hevent : ∀ᶠ δ : NNReal in 𝓝[>] 0,
-        0 < δ ∧ δ * K < 1 ∧ (1 + δ * K) ^ n < q ∧ ((1 - δ * K)⁻¹) ^ n < q ∧ (δ : ℝ) < ε := by
-      have hεnhds : ∀ᶠ δ : NNReal in 𝓝 0, (δ : ℝ) < ε :=
-        (NNReal.continuous_coe.continuousAt.eventually_lt continuousAt_const (by simpa using hε))
-      filter_upwards [self_mem_nhdsWithin,
-        hsmall.filter_mono nhdsWithin_le_nhds, hupper.filter_mono nhdsWithin_le_nhds,
-        hlower.filter_mono nhdsWithin_le_nhds, hεnhds.filter_mono nhdsWithin_le_nhds]
-        with δ hδ hsmall hupper hlower hδε
-      exact ⟨hδ, hsmall, hupper, hlower, hδε⟩
-    obtain ⟨δ, hδ, hδsmall, hδupper, hδlower, hδε⟩ := hevent.exists
-    refine ⟨δ, hδ, ?_, fun s f hf => ⟨?_, ?_⟩⟩
-    · intro B hB
-      have hdist : dist B L < ε := by
-        rw [dist_eq_norm]
-        exact hB.trans_lt hδε
-      obtain ⟨hupper, hlower⟩ := hnear hdist
-      constructor
-      · simpa only [ENNReal.ofReal_mul (NNReal.coe_nonneg q), ENNReal.ofReal_coe_nnreal] using
-          ENNReal.ofReal_le_ofReal hupper.le
-      · simpa only [ENNReal.ofReal_mul (NNReal.coe_nonneg q), ENNReal.ofReal_coe_nnreal] using
-          ENNReal.ofReal_le_ofReal hlower.le
-    · refine (approx_upper hf hK).trans ?_
-      gcongr
-      exact_mod_cast hδupper.le
-    · refine (approx_lower hf hK hδsmall).trans ?_
-      gcongr
-      exact_mod_cast hδlower.le
-  -- on a.e. point of an approximation piece the derivative is close to the linear map
-  have approx_fderiv : ∀ {n : ℕ} {Y : Type} [NormedAddCommGroup Y] [NormedSpace ℝ Y]
-      {f : EuclideanSpace ℝ (Fin n) → Y} {s : Set (EuclideanSpace ℝ (Fin n))}
-      {A : EuclideanSpace ℝ (Fin n) →L[ℝ] Y} {δ : NNReal},
-      ApproximatesLinearOn f A s δ → MeasurableSet s →
-      ∀ (f' : EuclideanSpace ℝ (Fin n) → EuclideanSpace ℝ (Fin n) →L[ℝ] Y),
-      (∀ x ∈ s, HasFDerivWithinAt f (f' x) s x) →
-      ∀ᵐ x ∂(volume : Measure (EuclideanSpace ℝ (Fin n))).restrict s, ‖f' x - A‖₊ ≤ δ := by
-    intro n Y _ _ f s A δ hf hs f' hf'
-    open scoped Pointwise in
-    filter_upwards [Besicovitch.ae_tendsto_measure_inter_div volume s, ae_restrict_mem hs]
-    intro x hx xs
-    apply ContinuousLinearMap.opNorm_le_bound _ δ.2 fun z => ?_
-    suffices H : ∀ ε, 0 < ε → ‖(f' x - A) z‖ ≤ (δ + ε) * (‖z‖ + ε) + ‖f' x - A‖ * ε by
-      have :
-          Tendsto (fun ε : ℝ => ((δ : ℝ) + ε) * (‖z‖ + ε) + ‖f' x - A‖ * ε) (𝓝[>] 0)
-            (𝓝 ((δ + 0) * (‖z‖ + 0) + ‖f' x - A‖ * 0)) :=
-        Tendsto.mono_left (Continuous.tendsto
-          (((continuous_const.add continuous_id).mul (continuous_const.add continuous_id)).add
-            (continuous_const.mul continuous_id)) 0) nhdsWithin_le_nhds
-      simp only [add_zero, mul_zero] at this
-      apply le_of_tendsto_of_tendsto tendsto_const_nhds this
-      filter_upwards [self_mem_nhdsWithin]
-      exact H
-    intro ε εpos
-    have B₁ : ∀ᶠ r in 𝓝[>] (0 : ℝ), (s ∩ ({x} + r • closedBall z ε)).Nonempty :=
-      Measure.eventually_nonempty_inter_smul_of_density_one volume s x hx _ measurableSet_closedBall
-        (Metric.measure_closedBall_pos volume z εpos).ne'
-    obtain ⟨ρ, ρpos, hρ⟩ :
-        ∃ ρ > 0, ball x ρ ∩ s ⊆ {y | ‖f y - f x - (f' x) (y - x)‖ ≤ ε * ‖y - x‖} :=
-      mem_nhdsWithin_iff.1 ((hf' x xs).isLittleO.bound εpos)
-    have B₂ : ∀ᶠ r in 𝓝[>] (0 : ℝ), {x} + r • closedBall z ε ⊆ ball x ρ := by
-      apply nhdsWithin_le_nhds
-      exact eventually_singleton_add_smul_subset isBounded_closedBall (ball_mem_nhds x ρpos)
-    obtain ⟨r, ⟨y, ⟨ys, hy⟩⟩, rρ, rpos⟩ :
-        ∃ r : ℝ, (s ∩ ({x} + r • closedBall z ε)).Nonempty ∧
-          {x} + r • closedBall z ε ⊆ ball x ρ ∧ 0 < r :=
-      (B₁.and (B₂.and self_mem_nhdsWithin)).exists
-    obtain ⟨a, az, ya⟩ : ∃ a, a ∈ closedBall z ε ∧ y = x + r • a := by
-      simp only [mem_smul_set, image_add_left, mem_preimage, singleton_add] at hy
-      rcases hy with ⟨a, az, ha⟩
-      exact ⟨a, az, by simp only [ha, add_neg_cancel_left]⟩
-    have norm_a : ‖a‖ ≤ ‖z‖ + ε :=
-      calc
-        ‖a‖ = ‖z + (a - z)‖ := by simp only [add_sub_cancel]
-        _ ≤ ‖z‖ + ‖a - z‖ := norm_add_le _ _
-        _ ≤ ‖z‖ + ε := by grw [mem_closedBall_iff_norm.1 az]
-    have I : r * ‖(f' x - A) a‖ ≤ r * (δ + ε) * (‖z‖ + ε) :=
-      calc
-        r * ‖(f' x - A) a‖ = ‖(f' x - A) (r • a)‖ := by
-          simp only [map_smul, norm_smul, Real.norm_eq_abs, abs_of_nonneg rpos.le]
-        _ = ‖f y - f x - A (y - x) - (f y - f x - (f' x) (y - x))‖ := by
-          simp only [ya, add_sub_cancel_left, sub_sub_sub_cancel_left, sub_apply, map_smul,
-            smul_sub]
-        _ ≤ ‖f y - f x - A (y - x)‖ + ‖f y - f x - (f' x) (y - x)‖ := norm_sub_le _ _
-        _ ≤ δ * ‖y - x‖ + ε * ‖y - x‖ := (add_le_add (hf _ ys _ xs) (hρ ⟨rρ hy, ys⟩))
-        _ = r * (δ + ε) * ‖a‖ := by
-          simp only [ya, add_sub_cancel_left, norm_smul, Real.norm_eq_abs, abs_of_nonneg rpos.le]
-          ring
-        _ ≤ r * (δ + ε) * (‖z‖ + ε) := by gcongr
-    calc
-      ‖(f' x - A) z‖ = ‖(f' x - A) a + (f' x - A) (z - a)‖ := by
-        congr 1
-        simp only [sub_apply, map_sub]
-        abel
-      _ ≤ ‖(f' x - A) a‖ + ‖(f' x - A) (z - a)‖ := norm_add_le _ _
-      _ ≤ (δ + ε) * (‖z‖ + ε) + ‖f' x - A‖ * ‖z - a‖ := by
-        apply add_le_add
-        · rw [mul_assoc] at I; exact (mul_le_mul_iff_right₀ rpos).1 I
-        · apply ContinuousLinearMap.le_opNorm
-      _ ≤ (δ + ε) * (‖z‖ + ε) + ‖f' x - A‖ * ε := by
-        rw [mem_closedBall_iff_norm'] at az
-        gcongr
-  -- the area formula with injective derivative, up to a factor `q²`
-  have regular_comparison : ∀ {n : ℕ} {Y : Type} [NormedAddCommGroup Y] [InnerProductSpace ℝ Y]
-      [FiniteDimensional ℝ Y] [MeasurableSpace Y] [BorelSpace Y]
-      {s : Set (EuclideanSpace ℝ (Fin n))} {f : EuclideanSpace ℝ (Fin n) → Y}
-      {f' : EuclideanSpace ℝ (Fin n) → EuclideanSpace ℝ (Fin n) →L[ℝ] Y},
-      MeasurableSet s → (∀ x ∈ s, HasFDerivWithinAt f (f' x) s x) →
-      (∀ x ∈ s, Injective (f' x)) → InjOn f s → ∀ {q : NNReal}, 1 < q →
-      μHE[n] (f '' s) ≤ (q : ℝ≥0∞) ^ 2 * ∫⁻ x in s, ENNReal.ofReal (Jac (f' x)) ∂volume ∧
-        (∫⁻ x in s, ENNReal.ofReal (Jac (f' x)) ∂volume) ≤ (q : ℝ≥0∞) ^ 2 * μHE[n] (f '' s) := by
-    intro n Y _ _ _ _ _ s f f' hs hf' hreg hinj q hq
-    rcases eq_empty_or_nonempty s with rfl | hsne
-    · simp
-    have hchoice : ∀ L : EuclideanSpace ℝ (Fin n) →L[ℝ] Y, ∃ δ : NNReal, 0 < δ ∧ (Injective L →
-        (∀ B : EuclideanSpace ℝ (Fin n) →L[ℝ] Y, ‖B - L‖ ≤ δ →
-          ENNReal.ofReal (Jac B) ≤ q * ENNReal.ofReal (Jac L) ∧
-          ENNReal.ofReal (Jac L) ≤ q * ENNReal.ofReal (Jac B)) ∧
-        (∀ (t : Set (EuclideanSpace ℝ (Fin n))) (g : EuclideanSpace ℝ (Fin n) → Y),
-          ApproximatesLinearOn g L t δ →
-          μHE[n] (g '' t) ≤ q * (ENNReal.ofReal (Jac L) * μHE[n] t) ∧
-            ENNReal.ofReal (Jac L) * μHE[n] t ≤ q * μHE[n] (g '' t))) := by
-      intro L
-      by_cases hL : Injective L
-      · obtain ⟨δ, hδ, hJ, harea⟩ := radius_area L hL hq
-        exact ⟨δ, hδ, fun _ => ⟨hJ, harea⟩⟩
-      · exact ⟨1, zero_lt_one, fun h => (hL h).elim⟩
-    choose δ hδpos hδ using hchoice
-    obtain ⟨t, L, hdisj, ht, hcover, happrox, hactual⟩ :=
-      exists_partition_approximatesLinearOn_of_hasFDerivWithinAt f s f' hf'
-        δ (fun L => (hδpos L).ne')
-    have hLreg (i : ℕ) : Injective (L i) := by
-      obtain ⟨x, hx, hL⟩ := hactual hsne i
-      rw [hL]
-      exact hreg x hx
-    have hseq : s = ⋃ i, s ∩ t i := by
-      rw [← inter_iUnion]
-      exact Subset.antisymm (subset_inter Subset.rfl hcover) inter_subset_left
-    have hsumimage : μHE[n] (f '' s) = ∑' i, μHE[n] (f '' (s ∩ t i)) := by
-      conv_lhs => rw [hseq, image_iUnion]
-      apply measure_iUnion
-      · intro i j hij
-        exact Disjoint.image (Disjoint.mono inter_subset_right inter_subset_right (hdisj hij))
-          hinj inter_subset_left inter_subset_left
-      · intro i
-        apply (hs.inter (ht i)).image_of_continuousOn_injOn
-        · exact (fun x hx => (hf' x hx.1).continuousWithinAt.mono inter_subset_left)
-        · exact hinj.mono inter_subset_left
-    have hsumintegral :
-        (∫⁻ x in s, ENNReal.ofReal (Jac (f' x)) ∂volume) =
-          ∑' i, ∫⁻ x in s ∩ t i, ENNReal.ofReal (Jac (f' x)) ∂volume := by
-      conv_lhs => rw [hseq]
-      exact lintegral_iUnion (fun i => hs.inter (ht i))
-        (pairwise_disjoint_mono hdisj (fun _ => inter_subset_right)) _
-    have hvol : (μHE[n] : Measure (EuclideanSpace ℝ (Fin n))) = volume :=
-      EuclideanSpace.euclideanHausdorffMeasure_eq_volume n
-    have hpiece (i : ℕ) :
-        μHE[n] (f '' (s ∩ t i)) ≤ (q : ℝ≥0∞) ^ 2 *
-            ∫⁻ x in s ∩ t i, ENNReal.ofReal (Jac (f' x)) ∂volume ∧
-          (∫⁻ x in s ∩ t i, ENNReal.ofReal (Jac (f' x)) ∂volume) ≤
-            (q : ℝ≥0∞) ^ 2 * μHE[n] (f '' (s ∩ t i)) := by
-      have hJ := (hδ (L i) (hLreg i)).1
-      obtain ⟨harea_upper, harea_lower⟩ := (hδ (L i) (hLreg i)).2 (s ∩ t i) f (happrox i)
-      rw [hvol] at harea_upper harea_lower
-      have hderiv := approx_fderiv (happrox i) (hs.inter (ht i)) f'
-        (fun x hx => (hf' x hx.1).mono inter_subset_left)
-      have hJupper :
-          (∫⁻ x in s ∩ t i, ENNReal.ofReal (Jac (f' x)) ∂volume) ≤
-            q * (ENNReal.ofReal (Jac (L i)) * volume (s ∩ t i)) := by
-        calc
-          _ ≤ ∫⁻ _ in s ∩ t i, (q : ℝ≥0∞) * ENNReal.ofReal (Jac (L i)) ∂volume := by
-            apply lintegral_mono_ae
-            filter_upwards [hderiv] with x hx
-            exact (hJ (f' x) hx).1
-          _ = _ := by rw [setLIntegral_const, mul_assoc]
-      have hJlower : ENNReal.ofReal (Jac (L i)) * volume (s ∩ t i) ≤
-          q * ∫⁻ x in s ∩ t i, ENNReal.ofReal (Jac (f' x)) ∂volume := by
-        calc
-          _ = ∫⁻ _ in s ∩ t i, ENNReal.ofReal (Jac (L i)) ∂volume :=
-            (setLIntegral_const _ _).symm
-          _ ≤ ∫⁻ x in s ∩ t i, (q : ℝ≥0∞) * ENNReal.ofReal (Jac (f' x)) ∂volume := by
-            apply lintegral_mono_ae
-            filter_upwards [hderiv] with x hx
-            exact (hJ (f' x) hx).2
-          _ = _ := lintegral_const_mul' _ _ ENNReal.coe_ne_top
-      constructor
-      · calc
-          _ ≤ q * (ENNReal.ofReal (Jac (L i)) * volume (s ∩ t i)) := harea_upper
-          _ ≤ q * (q * ∫⁻ x in s ∩ t i, ENNReal.ofReal (Jac (f' x)) ∂volume) := by gcongr
-          _ = _ := by rw [pow_two, mul_assoc]
-      · calc
-          _ ≤ q * (ENNReal.ofReal (Jac (L i)) * volume (s ∩ t i)) := hJupper
-          _ ≤ q * (q * μHE[n] (f '' (s ∩ t i))) := by gcongr
-          _ = _ := by rw [pow_two, mul_assoc]
-    rw [hsumimage, hsumintegral]
-    constructor
-    · calc
-        _ ≤ ∑' i, (q : ℝ≥0∞) ^ 2 * ∫⁻ x in s ∩ t i, ENNReal.ofReal (Jac (f' x)) ∂volume :=
-          ENNReal.tsum_le_tsum (fun i => (hpiece i).1)
-        _ = _ := ENNReal.tsum_mul_left
-    · calc
-        _ ≤ ∑' i, (q : ℝ≥0∞) ^ 2 * μHE[n] (f '' (s ∩ t i)) :=
-          ENNReal.tsum_le_tsum (fun i => (hpiece i).2)
-        _ = _ := ENNReal.tsum_mul_left
-  -- the area formula with injective derivative
-  have regular_area : ∀ {n : ℕ} {Y : Type} [NormedAddCommGroup Y] [InnerProductSpace ℝ Y]
-      [FiniteDimensional ℝ Y] [MeasurableSpace Y] [BorelSpace Y]
-      {s : Set (EuclideanSpace ℝ (Fin n))} {f : EuclideanSpace ℝ (Fin n) → Y}
-      {f' : EuclideanSpace ℝ (Fin n) → EuclideanSpace ℝ (Fin n) →L[ℝ] Y},
-      MeasurableSet s → (∀ x ∈ s, HasFDerivWithinAt f (f' x) s x) →
-      (∀ x ∈ s, Injective (f' x)) → InjOn f s →
-      μHE[n] (f '' s) = ∫⁻ x in s, ENNReal.ofReal (Jac (f' x)) ∂volume := by
-    intro n Y _ _ _ _ _ s f f' hs hf' hreg hinj
-    have hlimit (a : ℝ≥0∞) :
-        Tendsto (fun q : NNReal => (q : ℝ≥0∞) ^ 2 * a) (𝓝[>] 1) (𝓝 a) := by
-      have hcoe : Tendsto (fun q : NNReal => (q : ℝ≥0∞)) (𝓝[>] 1) (𝓝 1) :=
-        (ENNReal.tendsto_coe.2 tendsto_id).mono_left nhdsWithin_le_nhds
-      simpa only [one_pow, one_mul] using
-        ENNReal.Tendsto.mul_const (ENNReal.Tendsto.pow (n := 2) hcoe) (Or.inl (by simp))
-    apply le_antisymm
-    · apply ge_of_tendsto (hlimit _)
-      filter_upwards [self_mem_nhdsWithin] with q hq
-      exact (regular_comparison hs hf' hreg hinj hq).1
-    · apply ge_of_tendsto (hlimit _)
-      filter_upwards [self_mem_nhdsWithin] with q hq
-      exact (regular_comparison hs hf' hreg hinj hq).2
-  -- critical points: the graphs `x ↦ (f x, εx)` have injective derivatives and shrinking area
-  have critical_finite : ∀ {P n : ℕ} {s : Set (EuclideanSpace ℝ (Fin n))}
-      {f : EuclideanSpace ℝ (Fin n) → EuclideanSpace ℝ (Fin P)}, MeasurableSet s →
-      (∀ x ∈ s, DifferentiableAt ℝ f x) → (∀ x ∈ s, ¬ Injective (fderiv ℝ f x)) →
-      volume s ≠ ⊤ → ∀ {B : ℝ}, (∀ x ∈ s, ‖fderiv ℝ f x‖ ≤ B) → μHE[n] (f '' s) = 0 := by
-    intro P n s f hs hf hcrit hfinite B hB
-    obtain ⟨G, hGapply, hGcont, hGderiv⟩ : ∃ G : (EuclideanSpace ℝ (Fin n) →L[ℝ]
-        EuclideanSpace ℝ (Fin P)) → ℝ → (EuclideanSpace ℝ (Fin n) →L[ℝ]
-          WithLp 2 (EuclideanSpace ℝ (Fin P) × EuclideanSpace ℝ (Fin n))),
-        (∀ L ε x, G L ε x = WithLp.toLp 2 (L x, ε • x)) ∧
-        Continuous (fun p : (EuclideanSpace ℝ (Fin n) →L[ℝ] EuclideanSpace ℝ (Fin P)) × ℝ =>
-          G p.1 p.2) ∧
-        ∀ (L : EuclideanSpace ℝ (Fin n) →L[ℝ] EuclideanSpace ℝ (Fin P))
-          (x : EuclideanSpace ℝ (Fin n)), HasFDerivAt f L x → ∀ ε : ℝ,
-            HasFDerivAt (fun y => (WithLp.toLp 2 (f y, ε • y) :
-              WithLp 2 (EuclideanSpace ℝ (Fin P) × EuclideanSpace ℝ (Fin n)))) (G L ε) x := by
-      refine ⟨fun L ε => (WithLp.prodContinuousLinearEquiv 2 ℝ (EuclideanSpace ℝ (Fin P))
-          (EuclideanSpace ℝ (Fin n))).symm.toContinuousLinearMap.comp
-          (L.prod (ε • ContinuousLinearMap.id ℝ (EuclideanSpace ℝ (Fin n)))),
-        fun _ _ _ => rfl, ?_, ?_⟩
-      · apply Continuous.clm_comp continuous_const
-        exact (ContinuousLinearMap.prodₗᵢ ℝ).continuous.comp
-          (continuous_fst.prodMk (continuous_snd.smul continuous_const))
-      · intro L x hL ε
-        exact (WithLp.prodContinuousLinearEquiv 2 ℝ (EuclideanSpace ℝ (Fin P))
-          (EuclideanSpace ℝ (Fin n))).symm.toContinuousLinearMap.hasFDerivAt.comp
-          x (hL.prodMk ((hasFDerivAt_id x).const_smul ε))
-    have hc : Continuous (fun p : (EuclideanSpace ℝ (Fin n) →L[ℝ] EuclideanSpace ℝ (Fin P)) × ℝ =>
-        Jac (G p.1 p.2)) := continuous_jac.comp hGcont
-    have hzero : ∀ x ∈ s, Jac (G (fderiv ℝ f x) 0) = 0 := by
-      intro x hx
-      apply jac_eq_zero
-      intro hg
-      apply hcrit x hx
-      intro y z hyz
-      apply hg
-      rw [hGapply, hGapply, zero_smul, zero_smul, hyz]
-    have hgraph : ∀ ε : ℝ, ε ≠ 0 →
-        μHE[n] (f '' s) ≤ ∫⁻ x in s, ENNReal.ofReal (Jac (G (fderiv ℝ f x) ε)) ∂volume := by
-      intro ε hε
-      have hinj : Injective (fun y : EuclideanSpace ℝ (Fin n) => (WithLp.toLp 2 (f y, ε • y) :
-          WithLp 2 (EuclideanSpace ℝ (Fin P) × EuclideanSpace ℝ (Fin n)))) := by
-        intro x y h
-        have he : ε • x = ε • y := congrArg WithLp.snd h
-        exact (smul_right_injective _ hε) he
-      have hp : LipschitzWith 1 (WithLp.fst :
-          WithLp 2 (EuclideanSpace ℝ (Fin P) × EuclideanSpace ℝ (Fin n)) →
-            EuclideanSpace ℝ (Fin P)) :=
-        LipschitzWith.of_dist_le_mul (fun x y => by
-          rw [NNReal.coe_one, one_mul]; exact WithLp.dist_fst_le x y)
-      have himg : f '' s = WithLp.fst '' ((fun y : EuclideanSpace ℝ (Fin n) =>
-          (WithLp.toLp 2 (f y, ε • y) :
-            WithLp 2 (EuclideanSpace ℝ (Fin P) × EuclideanSpace ℝ (Fin n)))) '' s) := by
-        rw [image_image]
-        rfl
-      have hproj := Poincare.SimonGMT.Chapter02.euclideanHausdorffMeasure_image_le_of_lipschitzOn n
-        (hp.lipschitzOnWith (s := (fun y : EuclideanSpace ℝ (Fin n) =>
-          (WithLp.toLp 2 (f y, ε • y) :
-            WithLp 2 (EuclideanSpace ℝ (Fin P) × EuclideanSpace ℝ (Fin n)))) '' s))
-      rw [ENNReal.coe_one, one_pow, one_mul, ← himg] at hproj
-      refine hproj.trans_eq ?_
-      refine regular_area hs (fun x hx => (hGderiv _ x (hf x hx).hasFDerivAt ε).hasFDerivWithinAt)
-        (fun x _ y z h => ?_) hinj.injOn
-      rw [hGapply, hGapply] at h
-      have he : ε • y = ε • z := congrArg WithLp.snd h
-      exact (smul_right_injective _ hε) he
-    obtain ⟨C, hC⟩ := ((isCompact_closedBall
-      (0 : EuclideanSpace ℝ (Fin n) →L[ℝ] EuclideanSpace ℝ (Fin P)) B).prod
-      (isCompact_Icc : IsCompact (Icc (-1 : ℝ) 1))).exists_bound_of_continuousOn hc.continuousOn
-    have hlim : Tendsto (fun ε : ℝ => ∫⁻ x in s,
-        ENNReal.ofReal (Jac (G (fderiv ℝ f x) ε)) ∂volume) (𝓝[>] 0) (𝓝 0) := by
-      have hmeas (ε : ℝ) : Measurable (fun x : EuclideanSpace ℝ (Fin n) =>
-          ENNReal.ofReal (Jac (G (fderiv ℝ f x) ε))) :=
-        (hc.measurable.comp ((measurable_fderiv ℝ f).prodMk measurable_const)).ennreal_ofReal
-      have hbound : ∀ᶠ ε : ℝ in 𝓝[>] 0, ∀ᵐ x ∂volume.restrict s,
-          ENNReal.ofReal (Jac (G (fderiv ℝ f x) ε)) ≤ ENNReal.ofReal C := by
-        have hnear : Icc (-1 : ℝ) 1 ∈ 𝓝[>] (0 : ℝ) := nhdsWithin_le_nhds
-          (Icc_mem_nhds (by norm_num : (-1 : ℝ) < 0) (by norm_num : (0 : ℝ) < 1))
-        filter_upwards [hnear] with ε hε
-        filter_upwards [ae_restrict_mem hs] with x hx
-        apply ENNReal.ofReal_le_ofReal
-        exact (le_abs_self _).trans (hC ⟨fderiv ℝ f x, ε⟩
-          ⟨by simpa only [mem_closedBall, dist_zero_right] using hB x hx, hε⟩)
-      have hfin : (∫⁻ _ : EuclideanSpace ℝ (Fin n), ENNReal.ofReal C ∂volume.restrict s) ≠ ⊤ := by
-        rw [lintegral_const, Measure.restrict_apply_univ]
-        exact ENNReal.mul_ne_top ENNReal.ofReal_ne_top hfinite
-      have hpoint : ∀ᵐ x ∂volume.restrict s,
-          Tendsto (fun ε : ℝ => ENNReal.ofReal (Jac (G (fderiv ℝ f x) ε))) (𝓝[>] 0) (𝓝 0) := by
-        filter_upwards [ae_restrict_mem hs] with x hx
-        have hc' : Continuous (fun ε : ℝ => ENNReal.ofReal (Jac (G (fderiv ℝ f x) ε))) :=
-          ENNReal.continuous_ofReal.comp (hc.comp (continuous_const.prodMk continuous_id))
-        have h0 := (hc'.continuousAt (x := (0 : ℝ))).tendsto.mono_left
-          (nhdsWithin_le_nhds (s := Ioi (0 : ℝ)))
-        rwa [hzero x hx, ENNReal.ofReal_zero] at h0
-      have := tendsto_lintegral_filter_of_dominated_convergence
-        (fun _ : EuclideanSpace ℝ (Fin n) => ENNReal.ofReal C)
-        (Eventually.of_forall hmeas) hbound hfin hpoint
-      rwa [lintegral_zero] at this
-    apply le_antisymm _ bot_le
-    apply ge_of_tendsto hlim
-    filter_upwards [self_mem_nhdsWithin] with ε hε
-    exact hgraph ε (ne_of_gt hε)
-  have critical : ∀ {P n : ℕ} {s : Set (EuclideanSpace ℝ (Fin n))}
-      {f : EuclideanSpace ℝ (Fin n) → EuclideanSpace ℝ (Fin P)}, MeasurableSet s →
-      (∀ x ∈ s, DifferentiableAt ℝ f x) → (∀ x ∈ s, ¬ Injective (fderiv ℝ f x)) →
-      μHE[n] (f '' s) = 0 := by
-    intro P n s f hs hf hcrit
-    have hnull (k : ℕ) : μHE[n] (f '' (s ∩ closedBall 0 k ∩ {x | ‖fderiv ℝ f x‖ ≤ k})) = 0 := by
-      apply critical_finite ((hs.inter measurableSet_closedBall).inter
-          (measurableSet_le (measurable_fderiv ℝ f).norm measurable_const))
-        (fun x hx => hf x hx.1.1) (fun x hx => hcrit x hx.1.1)
-      · exact ne_top_of_le_ne_top measure_closedBall_lt_top.ne
-          (measure_mono (fun _ hx => hx.1.2))
-      · exact fun _ hx => hx.2
-    have hcover : s ⊆ ⋃ k : ℕ, s ∩ closedBall 0 k ∩ {x | ‖fderiv ℝ f x‖ ≤ k} := by
-      intro x hx
-      obtain ⟨k, hk⟩ := exists_nat_gt (max ‖x‖ ‖fderiv ℝ f x‖)
-      refine mem_iUnion.mpr ⟨k, ⟨hx, ?_⟩, (le_max_right _ _).trans hk.le⟩
-      simpa only [mem_closedBall, dist_zero_right] using (le_max_left _ _).trans hk.le
-    apply measure_mono_null (image_mono hcover)
-    rw [image_iUnion]
-    exact measure_iUnion_null hnull
-  -- the area formula for sets `E ⊆ A`
-  have area_set : ∀ {P n : ℕ} {g : EuclideanSpace ℝ (Fin n) → EuclideanSpace ℝ (Fin P)}
-      {A : Set (EuclideanSpace ℝ (Fin n))}, InjOn g A → (∀ a ∈ A, DifferentiableAt ℝ g a) →
-      ∀ {E : Set (EuclideanSpace ℝ (Fin n))}, MeasurableSet E → E ⊆ A →
-      μHE[n] (g '' E) = ∫⁻ x in E, ENNReal.ofReal (Jac (fderiv ℝ g x)) ∂volume := by
-    intro P n g A hgi hgd E hE hEA
-    have hSm : MeasurableSet {x : EuclideanSpace ℝ (Fin n) | Jac (fderiv ℝ g x) ≠ 0} :=
-      (measurableSet_eq_fun (continuous_jac.measurable.comp (measurable_fderiv ℝ g))
-        measurable_const).compl
-    have hreg : μHE[n] (g '' (E ∩ {x | Jac (fderiv ℝ g x) ≠ 0})) =
-        ∫⁻ x in E ∩ {x | Jac (fderiv ℝ g x) ≠ 0}, ENNReal.ofReal (Jac (fderiv ℝ g x)) ∂volume :=
-      regular_area (hE.inter hSm)
-        (fun x hx => (hgd x (hEA hx.1)).hasFDerivAt.hasFDerivWithinAt)
-        (fun x hx => by
-          by_contra hni
-          exact hx.2 (jac_eq_zero _ hni))
-        (hgi.mono (inter_subset_left.trans hEA))
-    have hcrit : μHE[n] (g '' (E \ {x | Jac (fderiv ℝ g x) ≠ 0})) = 0 :=
-      critical (hE.diff hSm) (fun x hx => hgd x (hEA hx.1))
-        (fun x hx hinj => hx.2 (jac_pos _ hinj).ne')
-    have hzero : ∫⁻ x in E \ {x | Jac (fderiv ℝ g x) ≠ 0},
-        ENNReal.ofReal (Jac (fderiv ℝ g x)) ∂volume = 0 := by
-      have h0 : ∀ x ∈ E \ {x | Jac (fderiv ℝ g x) ≠ 0},
-          ENNReal.ofReal (Jac (fderiv ℝ g x)) = 0 := fun x hx => by
-        have hx0 : Jac (fderiv ℝ g x) = 0 := not_not.mp hx.2
-        rw [hx0, ENNReal.ofReal_zero]
-      rw [setLIntegral_congr_fun (hE.diff hSm) h0, lintegral_zero]
-    rw [← lintegral_inter_add_sdiff _ E hSm, hzero, add_zero, ← hreg]
-    apply le_antisymm
-    · calc μHE[n] (g '' E)
-          = μHE[n] (g '' (E ∩ {x | Jac (fderiv ℝ g x) ≠ 0}) ∪
-              g '' (E \ {x | Jac (fderiv ℝ g x) ≠ 0})) := by
-            rw [← image_union, inter_union_sdiff]
-        _ ≤ μHE[n] (g '' (E ∩ {x | Jac (fderiv ℝ g x) ≠ 0})) +
-              μHE[n] (g '' (E \ {x | Jac (fderiv ℝ g x) ≠ 0})) := measure_union_le _ _
-        _ = _ := by rw [hcrit, add_zero]
-    · exact measure_mono (image_mono inter_subset_left)
-  -- the weighted area formula (no measurability of the weight)
-  have area_weighted : ∀ {P n : ℕ} {g : EuclideanSpace ℝ (Fin n) → EuclideanSpace ℝ (Fin P)}
-      {A : Set (EuclideanSpace ℝ (Fin n))}, MeasurableSet A → InjOn g A →
-      (∀ a ∈ A, DifferentiableAt ℝ g a) → ∀ (w : EuclideanSpace ℝ (Fin P) → ℝ≥0∞),
-      ∫⁻ y in g '' A, w y ∂μHE[n] =
-        ∫⁻ x in A, ENNReal.ofReal (Jac (fderiv ℝ g x)) * w (g x) ∂volume := by
-    intro P n g A hA hgi hgd w
-    have hcont : ContinuousOn g A := fun x hx => (hgd x hx).continuousAt.continuousWithinAt
-    have hemb := hcont.measurableEmbedding hA hgi
-    have hsub := MeasurableEmbedding.subtype_coe hA
-    have hJm : Measurable (fun x : EuclideanSpace ℝ (Fin n) =>
-        ENNReal.ofReal (Jac (fderiv ℝ g x))) :=
-      (continuous_jac.measurable.comp (measurable_fderiv ℝ g)).ennreal_ofReal
-    have hmap : Measure.map (A.domRestrict g)
-        (((volume : Measure (EuclideanSpace ℝ (Fin n))).withDensity
-          (fun x => ENNReal.ofReal (Jac (fderiv ℝ g x)))).comap (Subtype.val : A → _)) =
-        (μHE[n] : Measure (EuclideanSpace ℝ (Fin P))).restrict (g '' A) := by
-      ext t ht
-      rw [Measure.map_apply hemb.measurable ht, hsub.comap_apply]
-      have hB : MeasurableSet (Subtype.val '' ((A.domRestrict g) ⁻¹' t)) :=
-        hsub.measurableSet_image' (hemb.measurable ht)
-      have hBs : Subtype.val '' ((A.domRestrict g) ⁻¹' t) ⊆ A := by
-        rintro x ⟨u, _, rfl⟩
-        exact u.property
-      rw [withDensity_apply _ hB, ← area_set hgi hgd hB hBs, Measure.restrict_apply ht]
-      congr 1
-      ext y
-      constructor
-      · rintro ⟨x, ⟨u, hu, rfl⟩, rfl⟩
-        exact ⟨hu, ⟨u, u.property, rfl⟩⟩
-      · rintro ⟨hy, x, hx, rfl⟩
-        exact ⟨x, ⟨⟨x, hx⟩, hy, rfl⟩, rfl⟩
-    rw [← hmap, hemb.lintegral_map]
-    change (∫⁻ x : A, (fun x : EuclideanSpace ℝ (Fin n) => w (g x)) x ∂
-      (((volume : Measure (EuclideanSpace ℝ (Fin n))).withDensity
-        (fun x => ENNReal.ofReal (Jac (fderiv ℝ g x)))).comap (Subtype.val : A → _))) = _
-    rw [lintegral_subtype_comap hA (fun x : EuclideanSpace ℝ (Fin n) => w (g x)),
-      setLIntegral_withDensity_eq_setLIntegral_mul_non_measurable₀ _ _ _ hA]
-    · rfl
-    · exact Eventually.of_forall fun _ => ENNReal.ofReal_lt_top
-    · exact hJm.aemeasurable
-  -- `|det (B ∘ L)| = √det(B uᵢ · B uⱼ) · J L` for `u` the standard basis of `range L`
-  have stepA : ∀ {P n : ℕ} (B : EuclideanSpace ℝ (Fin P) →L[ℝ] EuclideanSpace ℝ (Fin n))
-      (L : EuclideanSpace ℝ (Fin n) →L[ℝ] EuclideanSpace ℝ (Fin P))
-      (T : Submodule ℝ (EuclideanSpace ℝ (Fin P))),
-      T = LinearMap.range (L : EuclideanSpace ℝ (Fin n) →ₗ[ℝ] EuclideanSpace ℝ (Fin P)) →
-      |LinearMap.det ((B.comp L : EuclideanSpace ℝ (Fin n) →L[ℝ] EuclideanSpace ℝ (Fin n)) :
-          EuclideanSpace ℝ (Fin n) →ₗ[ℝ] EuclideanSpace ℝ (Fin n))| =
-        Real.sqrt (Matrix.det (Matrix.of fun i j : Fin (Module.finrank ℝ T) =>
-          inner ℝ (B (stdOrthonormalBasis ℝ T i)) (B (stdOrthonormalBasis ℝ T j)))) * Jac L := by
-    intro P n B L T hT
-    obtain ⟨ιu, hιiso, hιsingle, hιmem, hιsurj⟩ : ∃ ιu : EuclideanSpace ℝ (Fin (Module.finrank ℝ T))
-        →L[ℝ] EuclideanSpace ℝ (Fin P), Isometry ιu ∧
-        (∀ i, ιu (EuclideanSpace.single i 1) = stdOrthonormalBasis ℝ T i) ∧
-        (∀ v, ιu v ∈ T) ∧ (∀ y ∈ T, ∃ v, ιu v = y) := by
-      refine ⟨(T.subtypeₗᵢ.comp
-          (stdOrthonormalBasis ℝ T).repr.symm.toLinearIsometry).toContinuousLinearMap,
-        (T.subtypeₗᵢ.comp (stdOrthonormalBasis ℝ T).repr.symm.toLinearIsometry).isometry,
-        fun i => ?_, fun v => ?_, fun y hy => ?_⟩
-      · change ((((stdOrthonormalBasis ℝ T).repr.symm (EuclideanSpace.single i 1)) : T) :
-          EuclideanSpace ℝ (Fin P)) = _
-        rw [OrthonormalBasis.repr_symm_single]
-      · exact ((stdOrthonormalBasis ℝ T).repr.symm v).2
-      · refine ⟨(stdOrthonormalBasis ℝ T).repr ⟨y, hy⟩, ?_⟩
-        change ((((stdOrthonormalBasis ℝ T).repr.symm
-          ((stdOrthonormalBasis ℝ T).repr ⟨y, hy⟩)) : T) : EuclideanSpace ℝ (Fin P)) = y
-        rw [LinearIsometryEquiv.symm_apply_apply]
-    have hJT : Real.sqrt (Matrix.det (Matrix.of fun i j : Fin (Module.finrank ℝ T) =>
-          inner ℝ (B (stdOrthonormalBasis ℝ T i)) (B (stdOrthonormalBasis ℝ T j)))) =
-        Jac (B.comp ιu) := by
-      rw [hJac]
-      simp only [ContinuousLinearMap.comp_apply, hιsingle]
-    rw [hJT]
-    by_cases hL : Injective L
-    · have hdim : Module.finrank ℝ T = n := by
-        rw [hT, LinearMap.finrank_range_of_inj hL, finrank_euclideanSpace_fin]
-      by_cases hBι : Injective (B.comp ιu)
-      · -- compare the volumes of the image of the unit ball
-        have hball0 : volume (ball (0 : EuclideanSpace ℝ (Fin n)) 1) ≠ 0 :=
-          (measure_ball_pos volume _ one_pos).ne'
-        have hballtop : volume (ball (0 : EuclideanSpace ℝ (Fin n)) 1) ≠ ⊤ :=
-          measure_ball_lt_top.ne
-        have hvol : (μHE[n] : Measure (EuclideanSpace ℝ (Fin n))) = volume :=
-          EuclideanSpace.euclideanHausdorffMeasure_eq_volume n
-        have hS : ιu '' (ιu ⁻¹' (L '' ball 0 1)) = L '' ball 0 1 := by
-          apply image_preimage_eq_of_subset
-          rintro _ ⟨x, -, rfl⟩
-          obtain ⟨v, hv⟩ := hιsurj (L x) (hT ▸ LinearMap.mem_range_self _ x)
-          exact ⟨v, hv⟩
-        have h1 := Measure.addHaar_image_linearMap volume
-          ((B.comp L : EuclideanSpace ℝ (Fin n) →L[ℝ] EuclideanSpace ℝ (Fin n)) :
-            EuclideanSpace ℝ (Fin n) →ₗ[ℝ] EuclideanSpace ℝ (Fin n)) (ball 0 1)
-        have h2 : (B.comp L) '' ball 0 1 = (B.comp ιu) '' (ιu ⁻¹' (L '' ball 0 1)) := by
-          rw [ContinuousLinearMap.coe_comp, ContinuousLinearMap.coe_comp, image_comp,
-            image_comp, hS]
-        have h3 := linear_area hdim (B.comp ιu) hBι (ιu ⁻¹' (L '' ball 0 1))
-        have h4 := linear_area rfl L hL (ball 0 1)
-        have h5 : μHE[n] (ιu ⁻¹' (L '' ball 0 1)) = μHE[n] (L '' ball 0 1) := by
-          rw [← hιiso.euclideanHausdorffMeasure_image, hS]
-        change volume ((B.comp L) '' ball 0 1) = _ at h1
-        rw [h2, ← hvol, h3, h5, h4, hvol] at h1
-        rw [← mul_assoc, ← ENNReal.ofReal_mul (jac_nonneg _)] at h1
-        have h6 := (ENNReal.mul_left_inj hball0 hballtop).mp h1
-        rw [ENNReal.ofReal_eq_ofReal_iff (mul_nonneg (jac_nonneg _) (jac_nonneg _))
-          (abs_nonneg _)] at h6
-        exact h6.symm
-      · rw [jac_eq_zero _ hBι, zero_mul, abs_eq_zero, LinearMap.det_eq_zero_iff_ker_ne_bot]
-        intro hker
-        apply hBι
-        intro v w hvw
-        obtain ⟨x, hx⟩ : ιu v ∈ LinearMap.range
-            (L : EuclideanSpace ℝ (Fin n) →ₗ[ℝ] EuclideanSpace ℝ (Fin P)) := hT ▸ hιmem v
-        obtain ⟨y, hy⟩ : ιu w ∈ LinearMap.range
-            (L : EuclideanSpace ℝ (Fin n) →ₗ[ℝ] EuclideanSpace ℝ (Fin P)) := hT ▸ hιmem w
-        have hxy : x = y := by
-          have hinj := LinearMap.ker_eq_bot.mp hker
-          apply hinj
-          change B (L x) = B (L y)
-          rw [show L x = ιu v from hx, show L y = ιu w from hy]
-          exact hvw
-        apply hιiso.injective
-        rw [← hx, ← hy, hxy]
-    · rw [jac_eq_zero _ hL, mul_zero, abs_eq_zero, LinearMap.det_eq_zero_iff_ker_ne_bot]
-      intro hker
-      apply hL
-      intro x y hxy
-      have hinj := LinearMap.ker_eq_bot.mp hker
-      apply hinj
-      change B (L x) = B (L y)
-      rw [hxy]
-  -- the statement: apply the weighted area formula to `g`, then compare integrands a.e.
-  intro P n g A Lg V F G T h hg hA hgi hgd hV hgV hFG hFd hT
-  rw [area_weighted hA hgi hgd]
-  refine lintegral_congr_ae ?_
-  filter_upwards [hT, ae_restrict_mem hA] with a hTa ha
-  have hFG' : F =ᶠ[𝓝 (g a)] G :=
-    Filter.eventuallyEq_of_mem (hV.mem_nhds (hgV (mem_image_of_mem g ha))) hFG
-  rw [fderiv_comp a ((hFd (g a) (mem_image_of_mem g ha)).congr_of_eventuallyEq hFG'.symm)
-      (hgd a ha), ← hFG'.fderiv_eq, stepA _ _ _ hTa, ENNReal.ofReal_mul (Real.sqrt_nonneg _)]
-  ring
-
-/-- **Area formula on one parametrized piece** (Simon Ch. 3, (2.4)–(2.5), from the Euclidean area
-formula of Ch. 2, 3.4–3.5).  Let `g : ℝⁿ → ℝᴾ` be Lipschitz, injective and differentiable on the
-Borel set `A`, let `F = G` on an open `V ⊇ g(A)` with `G` Lipschitz and `F` differentiable on
-`g(A)`, and let `T(g(a)) = range Dg(a)` for a.e. `a ∈ A`.  With `u` the standard orthonormal basis
-of `T(x)` and `J_T(x) = √det(DF(x)uᵢ · DF(x)uⱼ)`, every `Hⁿ⌞g(A)`-measurable `h ≥ 0` has an
-a.e. measurable fibre sum `Σ_h(y) = ∑_{x ∈ g(A), F(x) = y} h(x)` and
-`∫ Σ_h dLⁿ = ∫_{g(A)} J_T h dHⁿ`.  Replace `h` by a Borel `h̃ = h` `Hⁿ⌞g(A)`-a.e. (`Σ_h = Σ_h̃`
-`Lⁿ`-a.e., `G` being Lipschitz); the area formula for `Φ = G ∘ g` gives
-`∫ Σ_h̃ dLⁿ = ∫_A |det DΦ| h̃ ∘ g dLⁿ`, which the Jacobian chain rule and the area formula for `g`
-identify with `∫_{g(A)} J_T h̃ dHⁿ`. -/
-theorem Submission.idtp_caf_piece_area_formula : ∀ (P n : ℕ) (g : Euclid n → Euclid P) (A : Set (Euclid n)) (Lg : NNReal) (V : Set (Euclid P)) (F G : Euclid P → Euclid n) (LG : NNReal) (T : Euclid P → Submodule ℝ (Euclid P)) (h : Euclid P → ℝ≥0∞), LipschitzWith Lg g → MeasurableSet A → InjOn g A → (∀ a ∈ A, DifferentiableAt ℝ g a) → IsOpen V → g '' A ⊆ V → LipschitzWith LG G → EqOn F G V → (∀ x ∈ g '' A, DifferentiableAt ℝ F x) → (∀ᵐ a ∂(volume.restrict A), T (g a) = LinearMap.range (fderiv ℝ g a : Euclid n →ₗ[ℝ] Euclid P)) → AEMeasurable h (μHE[n].restrict (g '' A)) → AEMeasurable (fun y : Euclid n => ∑' x : ↥(g '' A ∩ F ⁻¹' {y}), h x) volume ∧ ∫⁻ y, (∑' x : ↥(g '' A ∩ F ⁻¹' {y}), h x) ∂volume = ∫⁻ x in g '' A, ENNReal.ofReal (Real.sqrt (Matrix.det (Matrix.of fun i j : Fin (Module.finrank ℝ (T x)) => inner ℝ (fderiv ℝ F x (stdOrthonormalBasis ℝ (T x) i)) (fderiv ℝ F x (stdOrthonormalBasis ℝ (T x) j))))) * h x ∂μHE[n] := by
-  intro P n g A Lg V F G LG T h hg hA hgi hgd hV hgV hG hFG hFd hT hh
-  -- Borel representative `h̃ = hh.mk h` of `h`; the fibre sums of `h` and `h̃` agree `Lⁿ`-a.e.
-  have hfib := Submission.idtp_caf_paf_fiberSum_ae_congr P n (g '' A) V F G LG h (hh.mk h) hgV hG
-    hFG hh.ae_eq_mk
-  -- fibre side for the Lipschitz `Φ = G ∘ g` (`F = G` at `g(a) ∈ V`), carrier side for `h̃`
-  obtain ⟨hmeas, hint⟩ := Submission.idtp_caf_paf_fiber_side P n g A F (G ∘ g) (LG * Lg)
-    (hh.mk h) hg.continuous hA hgi (hG.comp hg) (fun a ha => hFG (hgV (mem_image_of_mem g ha)))
-    hh.measurable_mk
-  have hcar := Submission.idtp_caf_paf_carrier_side P n g A Lg V F G T (hh.mk h) hg hA hgi hgd hV
-    hgV hFG hFd hT
-  refine ⟨hmeas.congr hfib.symm, ?_⟩
-  rw [lintegral_congr_ae hfib, hint, ← hcar]
-  -- back from `h̃` to `h`, `Hⁿ⌞g(A)`-a.e.
-  refine lintegral_congr_ae ?_
-  filter_upwards [hh.ae_eq_mk] with x hx
-  rw [hx]
-/-- Gluing step of the weighted area formula on a rectifiable carrier (Simon Ch. 3, 2.4–2.5).
-Let `S ⊆ ℝᴾ` contain the pairwise disjoint Borel pieces `Sₖ` (`k` in a countable type), with
-`Hⁿ(S ∖ ⋃ₖ Sₖ) = 0` and `Lⁿ(F(S ∖ ⋃ₖ Sₖ)) = 0`.  If on every piece the fibre sum
-`y ↦ ∑_{x ∈ Sₖ, F(x) = y} h(x)` is `Lⁿ`-a.e. measurable with integral `∫_{Sₖ} φ h dHⁿ`, then the
-same holds on `S`.  Off the null set `F(S ∖ ⋃ₖ Sₖ)` the fibre of `S` is the disjoint union of the
-fibres of the `Sₖ`, so the fibre sum over `S` is a.e. the sum over `k` of the fibre sums over the
-`Sₖ`; integrate term by term and use `Hⁿ⌞S = ∑ₖ Hⁿ⌞Sₖ`. -/
-theorem Submission.idtp_caf_glue_pieces : ∀ (P n : ℕ) (ι : Type) [Countable ι] (S : Set (Euclid P)) (pieces : ι → Set (Euclid P)) (F : Euclid P → Euclid n) (φ h : Euclid P → ℝ≥0∞), (∀ k, MeasurableSet (pieces k)) → (∀ k, pieces k ⊆ S) → Pairwise (fun k k' => Disjoint (pieces k) (pieces k')) → μHE[n] (S \ ⋃ k, pieces k) = 0 → volume (F '' (S \ ⋃ k, pieces k)) = 0 → (∀ k, AEMeasurable (fun y : Euclid n => ∑' x : ↥(pieces k ∩ F ⁻¹' {y}), h x) volume ∧ ∫⁻ y, (∑' x : ↥(pieces k ∩ F ⁻¹' {y}), h x) ∂volume = ∫⁻ x in pieces k, φ x * h x ∂μHE[n]) → AEMeasurable (fun y : Euclid n => ∑' x : ↥(S ∩ F ⁻¹' {y}), h x) volume ∧ ∫⁻ y, (∑' x : ↥(S ∩ F ⁻¹' {y}), h x) ∂volume = ∫⁻ x in S, φ x * h x ∂μHE[n] := by
-  intro P n ι _ S pieces F φ h hmeas hsub hdisj hnull himg hpiece
-  -- Off the null set `F(S \ ⋃ₖ Sₖ)` the fibre of `S` is the disjoint union of the fibres of the
-  -- pieces, so the fibre sum over `S` splits as the sum over `k` of the fibre sums over `Sₖ`
-  have hfib : ∀ᵐ y ∂(volume : Measure (Euclid n)),
-      ∑' x : ↥(S ∩ F ⁻¹' {y}), h x = ∑' k, ∑' x : ↥(pieces k ∩ F ⁻¹' {y}), h x := by
-    filter_upwards [measure_eq_zero_iff_ae_notMem.mp himg] with y hy
-    have hset : S ∩ F ⁻¹' {y} = ⋃ k, (pieces k ∩ F ⁻¹' {y}) := by
-      ext x
-      simp only [mem_inter_iff, mem_preimage, mem_singleton_iff, mem_iUnion]
-      constructor
-      · rintro ⟨hxS, hxy⟩
-        by_contra hx
-        refine hy ⟨x, ⟨hxS, ?_⟩, hxy⟩
-        simp only [mem_iUnion, not_exists]
-        exact fun k hk => hx ⟨k, hk, hxy⟩
-      · rintro ⟨k, hxk, hxy⟩
-        exact ⟨hsub k hxk, hxy⟩
-    rw [hset]
-    exact ENNReal.tsum_biUnion fun i _ j _ hij =>
-      (hdisj hij).mono inter_subset_left inter_subset_left
-  -- A countable sum of a.e. measurable fibre sums is a.e. measurable
-  have hsum : AEMeasurable
-      (fun y : Euclid n => ∑' k, ∑' x : ↥(pieces k ∩ F ⁻¹' {y}), h x) volume :=
-    AEMeasurable.tsum fun k => (hpiece k).1
-  refine ⟨hsum.congr (hfib.mono fun y hy => hy.symm), ?_⟩
-  -- `S` and `⋃ₖ Sₖ` agree up to an `Hⁿ`-null set
-  have hae : (⋃ k, pieces k) =ᵐ[μHE[n]] S :=
-    ae_eq_set.mpr ⟨by rw [Set.sdiff_eq_empty.mpr (iUnion_subset hsub), measure_empty], hnull⟩
-  calc ∫⁻ y, (∑' x : ↥(S ∩ F ⁻¹' {y}), h x) ∂volume
-      = ∫⁻ y, ∑' k, ∑' x : ↥(pieces k ∩ F ⁻¹' {y}), h x ∂volume := lintegral_congr_ae hfib
-    _ = ∑' k, ∫⁻ y, ∑' x : ↥(pieces k ∩ F ⁻¹' {y}), h x ∂volume :=
-      lintegral_tsum fun k => (hpiece k).1
-    _ = ∑' k, ∫⁻ x in pieces k, φ x * h x ∂μHE[n] := tsum_congr fun k => (hpiece k).2
-    _ = ∫⁻ x in ⋃ k, pieces k, φ x * h x ∂μHE[n] := (lintegral_iUnion hmeas hdisj _).symm
-    _ = ∫⁻ x in S, φ x * h x ∂μHE[n] := setLIntegral_congr hae
-
-/-- **Simon Ch. 3, 2.4–2.5** (weighted area formula on a countably `n`-rectifiable carrier) for a
-map `F : ℝᴾ → ℝⁿ` that is `C¹` on an open set `Z`: the fibre sums
-`y ↦ Σ_{x ∈ M ∩ Z, F(x) = y} h(x)` are `Lⁿ`-a.e. measurable and
-`∫ Σ_{x ∈ M ∩ Z, F(x) = y} h(x) dLⁿ(y) = ∫_{M ∩ Z} J*(x) h(x) dHⁿ(x)`, where `J*(x)` is the
-square root of the Gram determinant of `DF(x)` on the standard orthonormal basis of the
-approximate tangent plane `TₓM`.  As in Simon's proof, `M ∩ Z` is cut, up to an `Hⁿ`-null set
-with `Lⁿ`-null `F`-image, into countably many disjoint Borel pieces
-`gᵢ(Bᵢ ∩ gᵢ⁻¹(Zₗ)) = gᵢ(Bᵢ) ∩ Zₗ`: the `gᵢ(Bᵢ)` are bi-Lipschitz images covering `M` up to a
-null set (Lemma 1.2 and Remark 1.3, with bi-Lipschitz pieces in place of `C¹` submanifolds), and
-`F` agrees with a Lipschitz map `Gₗ` on an open `Vₗ ⊇ Zₗ`.  On each piece `TₓM = range Dgᵢ`
-a.e., so the single-piece area formula applies, and the pieces are glued by countable
-additivity. -/
-theorem Submission.idtp_carrier_area_formula : ∀ (P n : ℕ) (M Z : Set (Euclid P)) (F : Euclid P → Euclid n) (h : Euclid P → ℝ≥0∞), 1 ≤ n → MeasurableSet M → CountablyRectifiable n M → (∀ K : Set (Euclid P), IsCompact K → μHE[n] (M ∩ K) ≠ ∞) → IsOpen Z → ContDiffOn ℝ 1 F Z → AEMeasurable h (μHE[n].restrict M) → AEMeasurable (fun y : Euclid n => ∑' x : ↥(M ∩ Z ∩ F ⁻¹' {y}), h x) volume ∧ ∫⁻ y, (∑' x : ↥(M ∩ Z ∩ F ⁻¹' {y}), h x) ∂volume = ∫⁻ x in M ∩ Z, ENNReal.ofReal (Real.sqrt (Matrix.det (Matrix.of fun i j : Fin (Module.finrank ℝ (approxTangentPlane n M x)) => inner ℝ (fderiv ℝ F x (stdOrthonormalBasis ℝ (approxTangentPlane n M x) i)) (fderiv ℝ F x (stdOrthonormalBasis ℝ (approxTangentPlane n M x) j))))) * h x ∂μHE[n] := by
-  intro P n M Z F h hn hM hrect hfin hZ hF hh
-  -- Step 1: `Z = ⋃ₗ Zₗ` (disjoint Borel), `Zₗ ⊆ Vₗ ⊆ Z`, `Vₗ` open, `F = Gₗ` on `Vₗ` with `Gₗ`
-  -- Lipschitz
-  obtain ⟨V, Zs, G, hVo, -, hZsm, hZsV, hZsd, hZsU, hGL, hFG⟩ :=
-    Submission.idtp_caf_lipschitz_localization P n Z F hZ hF
-  choose LG hLG using hGL
-  have hZsZ : ∀ l, Zs l ⊆ Z := fun l => by rw [← hZsU]; exact subset_iUnion Zs l
-  -- Step 2: up to an `Hⁿ`-null set, `M` is the disjoint union of the Borel bi-Lipschitz images
-  -- `gᵢ(Bᵢ) ⊆ M`, `Dgᵢ` existing and injective on `Bᵢ`
-  obtain ⟨g, B, m, hgL, hBm, hm, hlow, hdiff, hgBm, hgBM, hgBd, hnull⟩ :=
-    Submission.dpf_rectifiable_bilipschitz_pieces P n M hM hrect
-  choose Lg hLg using hgL
-  -- Step 3: the parameter sets `Aᵢₗ = Bᵢ ∩ gᵢ⁻¹(Zₗ)` and the pieces `gᵢ(Aᵢₗ) = gᵢ(Bᵢ) ∩ Zₗ`,
-  -- indexed by `k = (i, l)`
-  obtain ⟨A, hA⟩ : ∃ A : ℕ × ℕ → Set (Euclid n), ∀ k, A k = B k.1 ∩ g k.1 ⁻¹' Zs k.2 :=
-    ⟨fun k => B k.1 ∩ g k.1 ⁻¹' Zs k.2, fun _ => rfl⟩
-  have hAm : ∀ k, MeasurableSet (A k) := fun k => by
-    rw [hA]
-    exact (hBm k.1).inter ((hLg k.1).continuous.measurable (hZsm k.2))
-  have hAB : ∀ k, A k ⊆ B k.1 := fun k => by
-    rw [hA]
-    exact inter_subset_left
-  have hAimg : ∀ k, g k.1 '' A k = g k.1 '' B k.1 ∩ Zs k.2 := fun k => by
-    rw [hA]
-    exact image_inter_preimage _ _ _
-  have hAm' : ∀ k, MeasurableSet (g k.1 '' A k) := fun k => by
-    rw [hAimg]
-    exact (hgBm k.1).inter (hZsm k.2)
-  have hAM : ∀ k, g k.1 '' A k ⊆ M := fun k => (image_mono (hAB k)).trans (hgBM k.1)
-  have hAZ : ∀ k, g k.1 '' A k ⊆ Zs k.2 := fun k => by
-    rw [hAimg]
-    exact inter_subset_right
-  -- Step 4: the remainder `(M ∩ Z) ∖ ⋃ₖ gᵢ(Aᵢₗ) ⊆ M ∖ ⋃ᵢ gᵢ(Bᵢ)` is `Hⁿ`-null
-  have hrem : μHE[n] ((M ∩ Z) \ ⋃ k : ℕ × ℕ, g k.1 '' A k) = 0 := by
-    refine measure_mono_null ?_ hnull
-    rintro x ⟨⟨hxM, hxZ⟩, hxA⟩
-    refine ⟨hxM, fun hxB => hxA ?_⟩
-    obtain ⟨i, hi⟩ := mem_iUnion.1 hxB
-    obtain ⟨l, hl⟩ := mem_iUnion.1 (show x ∈ ⋃ l, Zs l by rwa [hZsU])
-    refine mem_iUnion.2 ⟨(i, l), ?_⟩
-    rw [hAimg]
-    exact ⟨hi, hl⟩
-  -- Step 5: glue the pieces; the `F`-image of the remainder is `Lⁿ`-null (`F` is `C¹` on `Z`)
-  refine Submission.idtp_caf_glue_pieces P n (ℕ × ℕ) (M ∩ Z) (fun k => g k.1 '' A k) F _ h hAm'
-    (fun k => subset_inter (hAM k) ((hAZ k).trans (hZsZ k.2))) ?_ hrem
-    (Submission.idtp_caf_null_image P n Z ((M ∩ Z) \ ⋃ k : ℕ × ℕ, g k.1 '' A k) F hZ hF
-      (fun x hx => hx.1.2) hrem) fun k => ?_
-  · -- the pieces are pairwise disjoint: distinct `i` by Step 2, distinct `l` by Step 1
-    intro k k' hkk'
-    show Disjoint (g k.1 '' A k) (g k'.1 '' A k')
-    rw [hAimg k, hAimg k']
-    by_cases h1 : k.1 = k'.1
-    · have h2 : k.2 ≠ k'.2 := fun h2 => hkk' (Prod.ext h1 h2)
-      exact (hZsd h2).mono inter_subset_right inter_subset_right
-    · exact (hgBd h1).mono inter_subset_left inter_subset_left
-  · -- Step 6: on the piece `gᵢ(Aᵢₗ)`, `TₓM = range Dgᵢ` a.e. and the single-piece area formula
-    -- applies with the Lipschitz extension `Gₗ` of `F|Vₗ`
-    have hlowA : ∀ a ∈ A k, ∀ a' ∈ A k, m k.1 * ‖a - a'‖ ≤ ‖g k.1 a - g k.1 a'‖ :=
-      fun a ha a' ha' => hlow k.1 a (hAB k ha) a' (hAB k ha')
-    have hinj : InjOn (g k.1) (A k) := fun a ha a' ha' he => by
-      have hle := hlowA a ha a' ha'
-      rw [he, sub_self, norm_zero] at hle
-      exact sub_eq_zero.1 (norm_le_zero_iff.1 (nonpos_of_mul_nonpos_right hle (hm k.1)))
-    exact Submission.idtp_caf_piece_area_formula P n (g k.1) (A k) (Lg k.1) (V k.2) F (G k.2)
-      (LG k.2) (approxTangentPlane n M) h (hLg k.1) (hAm k) hinj
-      (fun a ha => (hdiff k.1 a (hAB k ha)).1) (hVo k.2) ((hAZ k).trans (hZsV k.2)) (hLG k.2)
-      (hFG k.2)
-      (fun x hx => hF.differentiableOn_one.differentiableAt (hZ.mem_nhds (hZsZ k.2 (hAZ k hx))))
-      (Submission.idtp_caf_piece_approxTangentPlane_ae P n M (g k.1) (A k) (Lg k.1) (m k.1) hn hM
-        hfin (hLg k.1) (hAm k) (hm k.1) hlowA (fun a ha => hdiff k.1 a (hAB k ha)) (hAM k))
-      (hh.mono_set (hAM k))
-
-/-- **Simon Ch. 6, 3.1, 3.2(3) and 2.34** (chapter-06.txt lines 569–604 and 733–768; the
-constancy step of 7.3.2(1) and 7.3.3, chapter-07.txt lines 311–314 and 504–507): an integer
-multiplicity `S = τ(M, θ, ξ) ∈ 𝒟ₙ(V)` with `spt S ⊆ Q = span{τ₁, …, τₙ}` (`τ` orthonormal) is
-`g[[Q]]` for an integer density `g`, i.e. `S(ω) = ∫_{V∩Q} g ⟨ω, τ₁ ∧ ⋯ ∧ τₙ⟩ dHⁿ` and
-`M_W(S) = ∫_{W∩Q} |g| dHⁿ` for open `W ⊆ V`.  `Hⁿ(M ∖ Q) ≤ Hⁿ(M ∖ spt S) = 0`
-(`imrep_carrier_sdiff_support_null`), so `ξ = ±τ₁ ∧ ⋯ ∧ τₙ` `Hⁿ`-a.e. on `M`
-(`idtp_pc_orient_ae_eq_or_neg`).  The sign is `ε = ⟨β₀, ξ⟩` for the covector
-`β₀(w) = det(⟨τᵢ, wⱼ⟩)`, which has `β₀(τ) = 1`, and `g = 1_M θ ε`.  Then `θ⟨ω, ξ⟩ = g ω(τ)` and
-`|g| = 1_M θ` `Hⁿ`-a.e., while `M_W(S) = μ_S(W) = ∫_{W∩M} θ dHⁿ` (`dimred_im_mass_measure`). -/
-theorem Submission.idtp_pc_signed_density : ∀ (P n : ℕ) (V : Set (Euclid P)) (S : GeometricCurrentOn V n) (τ : Fin n → Euclid P), IsOpen V → Orthonormal ℝ τ → IsIntegerMultiplicity S → S.support ⊆ (Submodule.span ℝ (Set.range τ) : Set (Euclid P)) → ∃ g : Euclid P → ℝ, AEStronglyMeasurable g (μHE[n].restrict (Submodule.span ℝ (Set.range τ) : Set (Euclid P))) ∧ (∀ᵐ x ∂(μHE[n].restrict (Submodule.span ℝ (Set.range τ) : Set (Euclid P))), ∃ m : ℤ, g x = m) ∧ (∀ K : Set (Euclid P), IsCompact K → K ⊆ V → ∫⁻ x in K ∩ (Submodule.span ℝ (Set.range τ) : Set (Euclid P)), ‖g x‖ₑ ∂μHE[n] ≠ ∞) ∧ (∀ ω : TestFormOn V n, S ω = ∫ x in V ∩ (Submodule.span ℝ (Set.range τ) : Set (Euclid P)), g x * (ω : DifferentialForm (Euclid P) n) x τ ∂μHE[n]) ∧ ∀ W : Set (Euclid P), IsOpen W → W ⊆ V → S.massOn W = ∫⁻ x in W ∩ (Submodule.span ℝ (Set.range τ) : Set (Euclid P)), ‖g x‖ₑ ∂μHE[n] := by
-  intro P n V S τ hV hτ hS hspt
-  obtain ⟨R, hR⟩ := hS
-  set Q : Set (Euclid P) := (Submodule.span ℝ (Set.range τ) : Set (Euclid P))
-  have hQm : MeasurableSet Q := (Submodule.closed_of_finiteDimensional _).measurableSet
-  have hMm : MeasurableSet R.carrier := R.measurableSet_carrier
-  -- `Hⁿ(M ∖ Q) ≤ Hⁿ(M ∖ spt S) = 0`, as `spt S ⊆ Q`
-  have hnull : μHE[n] (R.carrier \ Q) = 0 :=
-    measure_mono_null (sdiff_subset_sdiff_right hspt)
-      (Submission.imrep_carrier_sdiff_support_null P n V S R hV hR)
-  -- `ξ = ±τ₁ ∧ ⋯ ∧ τₙ` `Hⁿ`-a.e. on `M`
-  have hor := Submission.idtp_pc_orient_ae_eq_or_neg P n V R τ hτ hnull
-  -- the covector `β₀(w) = δ(Ls w₁, …, Ls wₙ) = det(⟨τᵢ, wⱼ⟩)`, `δ` the determinant of `ℝⁿ`,
-  -- `Ls w = (⟨τₖ, w⟩)ₖ`; `Ls τᵢ = eᵢ`, so `β₀(τ) = 1`
-  obtain ⟨β₀, hβ₀⟩ : ∃ β₀ : Covector (Euclid P) n, β₀ τ = 1 := by
-    classical
-    let b : Module.Basis (Fin n) ℝ (Euclid n) := (EuclideanSpace.basisFun (Fin n) ℝ).toBasis
-    have hdet : ∀ c : Fin n → Euclid n, b.det c = (Matrix.of fun r l => c l r).det := by
-      intro c
-      rw [Module.Basis.det_apply]
 /-- **Product of a Borel piece of a frame span with an integer multiplicity current** (Simon
 Ch. 6, 2.17–2.20 and 3.9; the product formula of Federer 2.10.45 / 3.2.23).  Let `g` be
 orthonormal, `G = span g`, `E ⊆ G` Borel, `ι a = ∑ aᵢ gᵢ`, `E' = ι⁻¹(E)`, `q` the orthogonal
@@ -92970,21 +91829,6 @@ theorem Submission.dtc_bc_lc_flat_decomposition : ∀ (P m : ℕ) (Ts : ℕ → 
       ext ω
       show T ω - Ts j ω - (T ω - Ts j ω) = _
       simp
-    · intro i _ hij
-      simp [hij]
-    · simp
-  -- `0 = ∂S(φ) = S(dφ) = ∫_{V ∩ Q} g · dφ(τ) dHⁿ = ∫_{V ∩ Q} g · D_{τⱼ} f dHⁿ`.
-  have h0 : S.boundary φt = 0 := by rw [hbd']; rfl
-  rw [GeometricCurrentOn.boundary_apply] at h0
-  have h2 := hrep (exteriorDerivativeTestOn V m φt)
-  rw [h0] at h2
-  rw [h2]
-  refine integral_congr_ae (Eventually.of_forall fun x => ?_)
-  simp only
-  rw [← hd x]
-  rfl
-/-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
-theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
     · obtain ⟨x, hx, hlt⟩ := sInf_lt_iff.1
         (ENNReal.lt_add_right htop (pow_ne_zero j (by norm_num) : (2⁻¹ : ℝ≥0∞) ^ j ≠ 0))
       obtain ⟨R, S, hR, hS, hdec, rfl⟩ := (hD j x).1 hx
@@ -93958,6 +92802,7 @@ theorem Submission.idtp_planar_cycle_eq_const_mul : ∀ (P n : ℕ) (V : Set (Eu
     filter_upwards [ae_restrict_of_ae_restrict_of_subset (inter_subset_inter_left _ hWV) hc]
       with x hx
     rw [hx, Real.enorm_eq_ofReal_abs, ← Int.cast_abs, ← Nat.cast_natAbs, ENNReal.ofReal_natCast]
+
 /-- **Tangent cones of a 2-dimensional minimizing cone at `p ≠ 0` are planes through `p`**
 (proof of 7.3.3(1), case `n − d = 2`, chapter-07.txt lines 497–510, where the structure of
 2-dimensional minimizing cones is cited to [Whi82]).  If `C ∈ 𝒟₂(ℝᴾ)` is a minimizing cone with
