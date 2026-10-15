@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "9f9e7e6af21d7bbda550a2263e9dc68ebf0742e5eab10f0be190413d495d5df2",
+  "git_delta": {
+    "base_commit": "88fe3b2fdb94c0d13be9b15696429b19552e0071",
+    "candidate_commit": "ff106069bd10420c10505b170c5883e4f79e49c8",
+    "target": "GMT/Ch07/Submission.lean",
+    "changed_files": [
+      "GMT/Ch07/Submission.lean"
+    ],
+    "diff_sha256": "707c41c7c5aaacba93e0f988a831ce9ef80c3cc4b17528907778215d6f686cb6",
+    "source_sha256": "43585e877f0cd54f22e6c56e12fb34b05db20c3f035f41566f8160b69c164851",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dor_minimizing_limsup_mass_bound",
+      "statement": "∀ (n k ℓ : ℕ), ℓ ≤ k → 0 < n → ∀ (U N : Set (Euclid (n + k))) (Ts : ℕ → GeometricCurrentOn U n) (T : GeometricCurrentOn U n) (y : Euclid (n + k)), IsOpen U → IsEmbeddedSubmanifold 2 (n + ℓ) N → (closure N \\ N) ∩ U = ∅ → (∀ j, IsMinimizingIn (Ts j) (U ∩ N)) → IsIntegerMultiplicity T → (∀ j, (Ts j).support ⊆ N) → (∀ j, BoundaryVanishes (Ts j)) → BoundaryVanishes T → (∀ j, ∀ R : IMRep U n, R.Represents (Ts j) → R.IsStationaryAlong N) → (∀ W : Set (Euclid (n + k)), IsOpen W → CompactlyContained W U → ⨆ j, (Ts j).massOn W < ∞) → WeaklyConvergesOn Ts T → y ∈ N ∩ U → ∃ r₁ c c₁ : ℝ, 0 < r₁ ∧ 0 ≤ c ∧ 0 ≤ c₁ ∧ ∀ ρ ε : ℝ, 0 < ε → ε < ρ → ρ < r₁ → limsup (fun j => (Ts j).massOn (ball y ρ)) atTop ≤ ENNReal.ofReal ((1 + c * ρ) ^ n) * T.massOn (ball y (ρ + ε)) + ENNReal.ofReal (c₁ * ρ ^ (n + 1))",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
