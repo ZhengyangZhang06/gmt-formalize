@@ -1,0 +1,66 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cbr_ci_cp_fp_|idtp_tdc_subspace_ball_measure",
+        "euclideanHausdorffMeasure_(image|preimage|eq_volume)",
+        "sum_apply|sum_fintype",
+        "summable|sum_le_tsum|tsum_const_eq_top_of_ne_zero|le_tsum",
+        "norm_add_sq_eq_norm_sq_add_norm_sq_real|inner_right_of_mem_orthogonal",
+        "mul_le_mul_iff_right|le_div_iff_mul_le|ofReal_div_of_pos",
+        "toReal_sum|ofReal_le_iff_le_toReal|ofReal_toReal",
+        "git show a029156d2b71053da5c6d27b9abcc46011c9cfac:GMT/Ch07/Submission.lean",
+        "python3 -I /tmp/fp-independent-audit-m7w6eomx/audit.py",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/fp-independent-audit-m7w6eomx/ChallengeTypes.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/fp-independent-audit-m7w6eomx/ExactContracts.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Sum.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/InfiniteSum/ENNReal.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Orthogonal.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Basic/ENNReal/Operations.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Basic/ENNReal/Inv.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-b3595d6587/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-b3595d6587/decomposition-v1.json",
+        "/tmp/fp-independent-audit-m7w6eomx/audit.py",
+        "/tmp/fp-independent-audit-m7w6eomx/ChallengeTypes.lean",
+        "/tmp/fp-independent-audit-m7w6eomx/ExactContracts.lean"
+      ],
+      "conclusion": "The split appropriately separates the geometric ball formula, analytic weight bound, and finite-family zero-offset argument. Dependencies are correctly directed and acyclic: subspace_ball → plane_ball → total_weight; zero_offset is independent. The supplied finiteness, enumeration, and coefficient-conversion argument establishes the exact selected parent. All four names are bare identifiers; the three new names have no ownership conflicts in the current 1609-node DAG and no matches in the searched project sources. The reused accepted declaration has a byte-identical frozen type and compatible contract at commit a029156d2b71053da5c6d27b9abcc46011c9cfac. The workspace contract matches the snapshot, and Mathlib matches revision 25730c7c759d108ef87ab70af2342a196760f79d. All four frozen propositions independently elaborate without their implementations. Recompiled proof witnesses establish all four exact declarations and the frozen parent, with only propext, Classical.choice, and Quot.sound. Measure scalar actions and ENNReal operations infer the intended instances; no Matrix/IsUnit construction occurs."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "subspace_ball",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and exact one-line proposition include dimension, centre membership, and positive radius. The inclusion isometry, Hausdorff-to-volume identification, Haar scaling, and orthonormal coordinates prove the formula, including n = 0. Independently checked the reproduced proof and accepted declaration; identical-type reuse is valid and non-circular."
+    },
+    {
+      "key": "plane_ball",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose matches the standalone Lean proposition. The norm bound implies positive R and square-root radius. Both translation-image containments follow from Pythagoras; isometry invariance and the declared subspace_ball dependency then give the exact formula. All hypotheses are used correctly, with no omitted case or circular reliance."
+    },
+    {
+      "key": "total_weight",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof establishes the exact unconditional ENNReal sum bound. Measurable-ball evaluation permits arbitrary Z. For each finite partial sum, the common offset bound gives the stated inequality; cancellation and division use explicitly positive finite factors. The limit at infinity and finite-partial-sum criterion complete the argument, including n = 0 and potentially infinite weights. Only plane_ball is needed."
+    },
+    {
+      "key": "zero_offset",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact type correctly allows arbitrary dimension and real coefficients. Assuming all offsets are nonzero, the finite-family radius construction also handles N = 0. Pythagoras makes every plane miss that ball, so measure evaluation contradicts positivity. The proof is complete without sibling or parent reliance."
+    }
+  ],
+  "required_changes": []
+}

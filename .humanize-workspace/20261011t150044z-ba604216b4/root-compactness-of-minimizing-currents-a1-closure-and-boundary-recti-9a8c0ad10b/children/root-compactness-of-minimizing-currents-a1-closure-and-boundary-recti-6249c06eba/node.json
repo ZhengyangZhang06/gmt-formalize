@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.im_local-a1.imrep_measure-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.im_local-a1",
+  "depth": 4,
+  "title": "Basic properties of the weight measure θHᵏ⌞M of an IMRep: absolute continuity both ways, formula on Borel sets, local finiteness, and R.action ω = ∫ ξ(ω) dR.measure",
+  "statement": "Let P, k ∈ ℕ, W ⊆ ℝ^P (no openness is assumed) and let R = (M, θ, ξ) be an IMRep in W (IMRep W k): M = R.carrier is a Borel set with M ⊆ W, θ = R.mult : ℝ^P → ℕ is measurable with θ(x) ≥ 1 for x ∈ M and ∫_{M∩K} θ dHᵏ < ∞ for every compact K ⊆ W, and ξ = R.orient : ℝ^P → Λ_k(ℝ^P) is a.e. strongly measurable for Hᵏ⌞M; here Hᵏ = μHE[k], R.measure = (Hᵏ⌞M).withDensity θ (the weight θHᵏ⌞M, contract IMRep.measure) and R.action ω = ∫_M θ(x) ξ(x)(ω(x)) dHᵏ(x) (contract IMRep.action). Then: (a) R.measure ≪ Hᵏ⌞M; (b) Hᵏ⌞M ≪ R.measure; (c) R.measure(A) = ∫_{M∩A} θ dHᵏ (lower Lebesgue integral of the [0,∞]-valued cast of θ) for every Borel set A ⊆ ℝ^P; (d) R.measure(ℝ^P ∖ M) = 0; (e) R.measure(K) < ∞ for every compact K ⊆ W; (f) ξ is a.e. strongly measurable for R.measure; (g) for every k-form ω : ℝ^P → Λ^k(ℝ^P) (an arbitrary DifferentialForm; no smoothness or integrability is assumed), R.action ω = ∫ ξ(x)(ω(x)) dR.measure(x).",
+  "lean_statement": "∀ (P k : ℕ) (W : Set (Euclid P)) (R : IMRep W k), R.measure ≪ μHE[k].restrict R.carrier ∧ μHE[k].restrict R.carrier ≪ R.measure ∧ (∀ A : Set (Euclid P), MeasurableSet A → R.measure A = ∫⁻ x in R.carrier ∩ A, (R.mult x : ℝ≥0∞) ∂μHE[k]) ∧ R.measure R.carrierᶜ = 0 ∧ (∀ K : Set (Euclid P), IsCompact K → K ⊆ W → R.measure K < ∞) ∧ AEStronglyMeasurable R.orient R.measure ∧ ∀ ω : DifferentialForm (Euclid P) k, R.action ω = ∫ x, R.orient x (ω x) ∂R.measure",
+  "lean_name": "cbr_imRep_measure_basic",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-6249c06eba-a1"
+}

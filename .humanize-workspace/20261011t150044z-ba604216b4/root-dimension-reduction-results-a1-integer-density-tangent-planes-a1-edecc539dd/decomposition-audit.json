@@ -1,0 +1,89 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "rg -n 'def (HasMassDensity|IsConeCurrent|IsMinimizingIn|IMRep.measure)|locallyIntegrable_mult|def IsEmbeddedSubmanifold' .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "euclideanHausdorffMeasure_preimage|euclideanHausdorffMeasure_eq_volume|euclideanHausdorffMeasure_zero_or_top|euclideanHausdorffMeasure_zero",
+        "theorem isConnected_sphere|theorem isConnected_compl_singleton_of_one_lt_rank|theorem addHaar_ball_of_pos|of_pseudoMetrizableSpace_of_isFiniteMeasure|theorem ext_of_generateFrom_of_iUnion|theorem mul_le_sin",
+        "rg --hidden --no-ignore -l 'idtp_tdc_' .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes -g '*.json'",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/independent-tdc-audit/Assembly.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/independent-tdc-audit/Accepted_dimred_im_mass_measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/independent-tdc-audit/Accepted_dtc_blowUp_massOn_image.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/independent-tdc-audit/Accepted_dtc_restrictDomain_isIntegerMultiplicity.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/EqHaar.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Regular.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/Connected.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/SpecialFunctions/Trigonometric/Bounds.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-edecc539dd/parent-child-handoff.json",
+        "/tmp/independent-tdc-audit/Assembly.lean",
+        "/tmp/independent-tdc-audit/Type_cone_dilation.lean",
+        "/tmp/independent-tdc-audit/Type_subspace_ball_measure.lean",
+        "/tmp/independent-tdc-audit/Type_no_infinite_planar_pieces.lean",
+        "/tmp/independent-tdc-audit/Type_arc_continuation.lean",
+        "/tmp/independent-tdc-audit/Type_density_locally_constant.lean",
+        "/tmp/independent-tdc-audit/Type_cone_set_finite_planes.lean",
+        "/tmp/independent-tdc-audit/Type_planes_union_vertex_density.lean",
+        "/tmp/independent-tdc-audit/Accepted_dimred_im_mass_measure.lean",
+        "/tmp/independent-tdc-audit/Accepted_dtc_blowUp_massOn_image.lean",
+        "/tmp/independent-tdc-audit/Accepted_dtc_restrictDomain_isIntegerMultiplicity.lean"
+      ],
+      "conclusion": "The pinned revisions and frozen contract match. All seven exact child propositions independently elaborate without child implementations. Their names are bare identifiers, with no reservation conflicts or accepted exact-type replacements found. Scalar, measure, and submodule instances match the prose; no Matrix/IsUnit construction occurs. Internal dependencies are acyclic, and the cited prerequisite closures do not reach the selected parent. The three reused accepted declarations match their frozen types and independently kernel-check with only propext, Classical.choice, and Quot.sound. The hypothesis-only assembly also checks with those axioms and proves the exact selected parent type. Splitting is appropriate: every child contributes directly or transitively to this assembly. The snapshot supplies the measure-normalization, regularity, connectedness, and restriction facts used. Public corroboration of the classification appears in [Chang, Appendix A, pp. 761–762](https://www.math.stonybrook.edu/~bishop/classes/math638.F20/Chang_Reg_Min_2_currents.pdf#page=64)."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "cone_dilation",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Prose and exact type agree, including arbitrary support regions and dimensions. Equality on admissible forms gives mass scaling; the mass-support characterization and positive finite ENNReal cancellation then prove support and density invariance. No circular reliance."
+    },
+    {
+      "key": "subspace_ball_measure",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The inclusion isometry, Hausdorff-volume identification, and Haar scaling establish precisely the stated normalization. The proof also covers n = 0; all hypotheses match the Lean proposition."
+    },
+    {
+      "key": "no_infinite_planar_pieces",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Outer regularity correctly extends the local open-set inequality to Borel pieces. Disjointification yields a uniform positive mass for every disc, contradicting finite mass on the common bounded ball. The dependency on subspace_ball_measure is correctly directed."
+    },
+    {
+      "key": "arc_continuation",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The first failure lies strictly between 0 and L. The backward sector satisfies the frozen endpoint lemma, hypothesis (ii) supplies local constant density, and two independent arc directions identify the local plane with Q. This closes the contradiction; L ≤ 0 is vacuous."
+    },
+    {
+      "key": "density_locally_constant",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof supplies all intermediate obligations: integer densities and sufficient ambient dimension, a locally minimal jump value, accumulating light points, continued arcs, uniformly sized good discs, disjointness for distinct planes, and finite fibres. The resulting infinite family satisfies the finite-mass contradiction exactly, without assuming the parent classification."
+    },
+    {
+      "key": "cone_set_finite_planes",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The local-plane uniqueness and clopen great-circle argument are valid. Compactness gives finitely many distinct planes, intersections are reduced to the origin, and positive dilation covers every nonzero point of S. The empty-link case correctly permits q = 0."
+    },
+    {
+      "key": "planes_union_vertex_density",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Restriction preserves the required cycle, support, and mass properties. Connected punctured planes permit planar constancy; measure uniqueness extends the formula to Borel pieces. Null mass at the origin and off the planes then gives the constant integer density ratio, including q = 0. No cone or minimizing hypothesis is silently required."
+    }
+  ],
+  "required_changes": []
+}

@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.weight_ge_one-a1.top_density-a1.finite_ac_density-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.weight_ge_one-a1.top_density-a1",
+  "depth": 6,
+  "title": "L¹ density of a bounded field against a finite measure absolutely continuous with respect to Lebesgue measure",
+  "statement": "Let n ∈ ℕ and let μ be a measure on ℝⁿ = Euclid n with μ(ℝⁿ) < ∞ and μ ≪ Lⁿ, where Lⁿ = volume (i.e. μ(E) = 0 whenever Lⁿ(E) = 0). Let h : ℝⁿ → ℝ be μ-a.e. strongly measurable with |h(y)| ≤ 1 for μ-a.e. y. Then there is a Lebesgue integrable u : ℝⁿ → ℝ such that:\n- ∫|u(y)| dy ≤ μ(ℝⁿ), as the real number (μ univ).toReal;\n- ∫ g(y)·h(y) dμ(y) = ∫ u(y)·g(y) dy for every function g : ℝⁿ → ℝ.\nThe integrals are Bochner integrals, with Mathlib's convention that a non-integrable integrand has integral 0. No measurability or integrability of g is assumed.",
+  "lean_statement": "∀ (n : ℕ) (μ : Measure (Euclid n)) (h : Euclid n → ℝ), μ univ < ∞ → μ ≪ volume → AEStronglyMeasurable h μ → (∀ᵐ y ∂μ, |h y| ≤ 1) → ∃ u : Euclid n → ℝ, Integrable u ∧ ∫ y, |u y| ≤ (μ univ).toReal ∧ ∀ g : Euclid n → ℝ, ∫ y, g y * h y ∂μ = ∫ y, u y * g y",
+  "lean_name": "cbr_ci_pw_td_finite_ac_density",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-dad2ea0971-a1"
+}
