@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.closure_compact-a1.segment_current-a1.zero_form_ftc-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.closure_compact-a1.segment_current-a1",
+  "depth": 5,
+  "title": "Fundamental theorem of calculus for a smooth 0-form along a segment",
+  "statement": "Let P ∈ ℕ and let g be a C^∞ differential 0-form on ℝ^P (IsSmoothForm g). For every a, v ∈ ℝ^P and ℓ ≥ 0: ∫_{(0,ℓ)} (dg)(a + uv)(v) du = g(a + ℓv)⟨⟩ − g(a)⟨⟩. Here dg = exteriorDerivative g is a 1-form, (dg)(y)(v) is the value of the 1-covector dg(y) on the 1-tuple (v), and g(y)⟨⟩ is the value of the 0-covector g(y) on the empty tuple (fun i => i.elim0). The integral is the Lebesgue (Bochner) integral over the open interval (0, ℓ).",
+  "lean_statement": "∀ (P : ℕ) (g : DifferentialForm (Euclid P) 0), IsSmoothForm g → ∀ (a v : Euclid P) (ℓ : ℝ), 0 ≤ ℓ → ∫ u in Ioo 0 ℓ, exteriorDerivative g (a + u • v) (fun _ => v) = g (a + ℓ • v) (fun i => i.elim0) - g a (fun i => i.elim0)",
+  "lean_name": "cbr_cc_seg_zero_form_ftc",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-a0328cc6d3-a1"
+}
