@@ -53206,4 +53206,49 @@ theorem Submission.dimred_mbl_local_comparison : ∀ (P m : ℕ) (Us As : ℕ �
       (ENNReal.Tendsto.mul_const hb (Or.inr hc))
   exact ge_of_tendsto hlimη (eventually_nhdsWithin_of_forall fun η hη => hkey η hη)
 
+/-- **Simon Remark 7.2.5(2)** (the proof of 7.2.4 for blow-ups at moving centres): if `T` is
+minimizing in `U ∩ N`, `spt T ⊆ U ∩ N`, `∂T = 0` in `U`, `xⱼ → x ∈ U` and `λⱼ → 0`, then along a
+subsequence `η_{xⱼ,λⱼ#}T ⇀ C` in `ℝ^{n+k}` and `μ_{η_{xⱼ,λⱼ#}T} → μ_C`, with `C` minimizing in
+`ℝ^{n+k}` and `∂C = 0`.  Write `n = m + 1`.  Monotonicity at the centres `xⱼ` makes the blow-ups
+integer multiplicity cycles, minimizing in `ηⱼ(U ∩ N)`, with locally bounded masses and
+retractions onto `ηⱼ(U ∩ N)` whose Lipschitz constants tend to `1`; compactness gives `φ` and an
+integer multiplicity cycle `C`; comparison with retracted competitors along `φ` gives the
+minimality of `C` and the convergence of the mass measures. -/
+theorem Submission.dimred_blowup_limit_moving_centres : ∀ (n k ℓ : ℕ), ℓ ≤ k → ∀ (U N : Set (Euclid (n + k))) (T : GeometricCurrentOn U n), 1 ≤ n → IsOpen U → IsEmbeddedSubmanifold 2 (n + ℓ) N → (closure N \ N) ∩ U = ∅ → IsMinimizingIn T (U ∩ N) → T.support ⊆ U ∩ N → BoundaryVanishes T → ∀ (x : Euclid (n + k)) (xs : ℕ → Euclid (n + k)) (lams : ℕ → ℝ) (hlams : ∀ j, 0 < lams j), x ∈ U → Tendsto xs atTop (𝓝 x) → Tendsto lams atTop (𝓝 0) → ∃ (φ : ℕ → ℕ) (C : GeometricCurrentOn (univ : Set (Euclid (n + k))) n), StrictMono φ ∧ ConvergesWeakly (fun j => blowUp T (xs (φ j)) (lams (φ j)) (hlams (φ j)).ne') C ∧ MassMeasuresConverge (fun j => blowUp T (xs (φ j)) (lams (φ j)) (hlams (φ j)).ne') C ∧ IsMinimizingIn C univ ∧ BoundaryVanishes C := by
+  intro n k ℓ hℓk U N T hn hU hN hNU hTmin hTspt hTbd x xs lams hlams hxU hxs hlams0
+  -- the children are stated in degree `n = m + 1`
+  obtain ⟨m, rfl⟩ : ∃ m, n = m + 1 := ⟨n - 1, by omega⟩
+  -- monotonicity (Simon 7.3.1(1)) with `P = m + 1 + k` and `d = m + 1 + ℓ`
+  have hmon := (Submission.dimred_minimizing_monotonicity (m + 1 + k) (m + 1) (m + 1 + ℓ) U N T
+    hn (by omega) (by omega) hU hN hNU hTmin hTspt hTbd).1
+  -- the blow-ups `Sⱼ = η_{xⱼ,λⱼ#}T` (steps 1, 2, 4 and 5)
+  obtain ⟨hopen, hball, hmin, hspt, hmass, hbd, hret⟩ :=
+    Submission.dimred_mbl_blowUp_hypotheses m k ℓ hℓk U N T hU hN hNU hTmin hTspt hTbd hmon x xs
+      lams hlams hxU hxs hlams0
+  -- `S_{φ(j)} ⇀ C` for an integer multiplicity cycle `C` (step 3)
+  obtain ⟨φ, C, Ŝ, ρ, hφ, hCim, hCbd, hconv, hŜim, hŜmass, hŜconv, hρ, hρU, hŜ⟩ :=
+    Submission.dimred_mbl_truncated_compactness (m + 1 + k) m
+      (fun j => dilation (xs j) (lams j) '' U) (fun j => blowUp T (xs j) (lams j) (hlams j).ne')
+      hopen hball (fun j => (hmin j).1) hmass hbd
+  have hφ' : Tendsto φ atTop atTop := hφ.tendsto_atTop
+  -- the comparison inequality along every further subsequence of `φ` (step 6)
+  have hcomp := Submission.dimred_mbl_local_comparison (m + 1 + k) m
+    (fun j => dilation (xs (φ j)) (lams (φ j)) '' U)
+    (fun j => dilation (xs (φ j)) (lams (φ j)) '' (U ∩ N))
+    (fun j => blowUp T (xs (φ j)) (lams (φ j)) (hlams (φ j)).ne') Ŝ C ρ
+    (fun j => hopen (φ j)) (fun j => hmin (φ j)) (fun j => hspt (φ j))
+    (fun R => by
+      obtain ⟨c, hc, hev⟩ := hmass R
+      exact ⟨c, hc, hφ'.eventually hev⟩)
+    (fun G hG => by
+      obtain ⟨πs, G', h₁, h₂⟩ := hret G hG
+      exact ⟨fun j => πs (φ j), G', hφ'.eventually h₁, fun η hη => hφ'.eventually (h₂ η hη)⟩)
+    hCim hŜim hŜmass hŜconv hρ hρU hŜ
+  -- `C` is minimizing in `ℝ^{n+k}` and `μ_{S_{φ(j)}} → μ_C` (steps 7 and 8)
+  obtain ⟨hCmin, hμ⟩ := Submission.dimred_mbl_minimizing_and_measures (m + 1 + k) (m + 1)
+    (fun j => dilation (xs (φ j)) (lams (φ j)) '' U)
+    (fun j => blowUp T (xs (φ j)) (lams (φ j)) (hlams (φ j)).ne') C (fun j => hopen (φ j))
+    (fun R => hφ'.eventually (hball R)) hCim hconv hcomp
+  exact ⟨φ, C, hφ, hconv, hμ, hCmin, hCbd⟩
+
 end GMT.Ch07
