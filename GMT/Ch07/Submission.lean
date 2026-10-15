@@ -55677,7 +55677,4 @@ theorem Submission.idtp_ccd_cone_support_smul : ∀ (P n : ℕ) (C : GeometricCu
     refine (tsupport_affinePullbackForm_subset _ _ _).trans fun z hz => ?_
     simpa [dilationCLM, ht.ne'] using hω hz
 
-/-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
-theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
-
 end GMT.Ch07
