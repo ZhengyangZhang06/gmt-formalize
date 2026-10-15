@@ -1,0 +1,79 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.dimension_reduction_results-a1.threshold_reduction-a1.measure_class_reduction-a1.threshold_limit-a1`
+- Child DAG node: `root.dimension_reduction_results-a1.threshold_reduction-a1.measure_class_reduction-a1.threshold_limit-a1.density_lower_bound-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: steps 8–9 of the parent's supplied proof (Ratio bound; Conclusion), the final limit in Simon 7.3.3, proof of 3.3(1), display (12) (book/chapter-07.txt lines 478–482), whose details the book omits ("one readily checks"). There, q(μ, w, ·) is replaced by an arbitrary radius function m and its limit ofReal(Θ(μ, w)) by an arbitrary L. The parent applies this lemma with m(t) = μ(B_t(w)), s = 2r and L = ofReal(Θ(μ, w)). It obtains the lower bound from the sibling lower_bound_transfer and the limit from the sibling monotone_density (i). Notation: ω := unitBallVolume n. Limits t → 0⁺ are along 𝓝[>]0, which is a nontrivial filter on ℝ.
+1. (Constants.) The open unit ball of Euclid n is nonempty and open, and volume is open-positive, so ω > 0 (measure_ball_pos). Euclid n is proper and volume is finite on compact sets, so ω < ∞ (measure_ball_lt_top).
+2. (Ratio bound.) Let t ∈ (0, s). Then tⁿ > 0, so D := ω·ofReal(tⁿ) satisfies D ≠ 0 (both factors are nonzero) and D ≠ ∞ (both factors are finite). Since tⁿ ≥ 0, ofReal(tⁿe^{−Λt}) = ofReal(tⁿ)·ofReal(e^{−Λt}) (ENNReal.ofReal_mul). Hence, by commutativity and associativity in [0, ∞], [ofReal(c)·ofReal(e^{−Λt})]·D = ω·ofReal(c)·ofReal(tⁿe^{−Λt}), and this is ≤ m(t) by hypothesis. By ENNReal.le_div_iff_mul_le (applicable since D ≠ 0 and D ≠ ∞), ofReal(c)·ofReal(e^{−Λt}) ≤ m(t)/D = m(t)/(ω·ofReal(tⁿ)).
+3. (Limit of the left side.) The map t ↦ ofReal(c)·ofReal(e^{−Λt}) is continuous from ℝ to [0, ∞]: t ↦ e^{−Λt} is continuous, ofReal is continuous, and multiplication by the finite constant ofReal(c) is continuous (ENNReal.continuous_const_mul). Its value at t = 0 is ofReal(c)·ofReal(1) = ofReal(c), so it tends to ofReal(c) as t → 0⁺.
+4. (Conclusion.) The inequality of step 2 holds for every t ∈ (0, s), and this set belongs to 𝓝[>]0 (Ioo_mem_nhdsGT, since s > 0). The left side tends to ofReal(c) (step 3) and the right side tends to L (hypothesis). Since 𝓝[>]0 is nontrivial and [0, ∞] is order-closed, le_of_tendsto_of_tendsto gives ofReal(c) ≤ L. ∎
+
+## Key steps
+
+1. 0 < ω < ∞ (measure_ball_pos, measure_ball_lt_top).
+2. For t ∈ (0, s): ω·ofReal(c)·ofReal(tⁿe^{−Λt}) = [ofReal(c)·ofReal(e^{−Λt})]·[ω·ofReal(tⁿ)], with ω·ofReal(tⁿ) ∈ (0, ∞). So ENNReal.le_div_iff_mul_le gives ofReal(c)·ofReal(e^{−Λt}) ≤ m(t)/(ω·ofReal(tⁿ)).
+3. By continuity, ofReal(c)·ofReal(e^{−Λt}) → ofReal(c) as t → 0⁺.
+4. Since (0, s) ∈ 𝓝[>]0, le_of_tendsto_of_tendsto gives ofReal(c) ≤ L.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat <snapshot>/manifest.json (project b4d606db1da5…, mathlib 25730c7c759d…); cat lean-toolchain lakefile.toml (workspace mathlib rev 25730c7c759d…)`
+- `rg -n --no-ignore --hidden "theorem MonotoneOn.tendsto_nhdsWithin_Ioo_right|lemma le_limsup_of_frequently_le|theorem Ioo_mem_nhdsLT|protected theorem Tendsto.mul |protected theorem Tendsto.div_const|theorem le_div_iff_mul_le|theorem ofReal_inv_of_pos|theorem continuous_const_mul|theorem le_of_tendsto_of_tendsto |theorem measure_ball_pos|theorem measure_ball_lt_top|protected theorem mul_inv |theorem div_ne_top|theorem ofReal_toReal |theorem closedBall_subset_ball |theorem ofReal_le_ofReal_iff |protected theorem mul_inv_cancel |theorem le_of_tendsto |theorem ofReal_mul " <snapshot>/mathlib/Mathlib --glob '*.lean'`
+- `rg -n --no-ignore --hidden "tendsto_nhdsWithin_Ioo_right|theorem Ioo_mem_nhdsGT|Tendsto.limsup_eq" <snapshot>/mathlib/Mathlib --glob '*.lean'; sed -n 276,290p <snapshot>/mathlib/Mathlib/Topology/Order/OrderClosed.lean (Ioo_mem_nhdsGT is the @[to_dual] of Ioo_mem_nhdsLT)`
+- `sed -n 455,470p Topology/Order/Monotone.lean; sed -n 335,345p Topology/Instances/ENNReal/Lemmas.lean; sed -n 238,246p Order/LiminfLimsup.lean (exact signatures in the snapshot)`
+- `rg -n --no-ignore --hidden "dimred_tr_mcr_tl_|dimred_tr_mcr_threshold_limit" <snapshot>/project (exit 1, no match); rg -n --no-ignore --hidden "monotone_density|density_lower_bound|lower_bound_transfer" <snapshot>/project --glob '*.lean' (exit 1, no match); rg -n "dimred_tr_mcr_tl_" GMT .lake/packages/simongmt --glob '*.lean' (exit 1, no match); grep -rl dimred_tr_mcr_tl_ <run dir> (exit 1, no match)`
+- `rg -n "unitBallVolume|def Euclid" <snapshot>/project/GMT/Ch07/Contract.lean`
+- `python3 over dag.json (2417 nodes): lean_statement scans for MonotoneOn+Real.exp, MonotoneOn+Tendsto+unitBallVolume and limsup+unitBallVolume; lean_name collision check for the three new names`
+- `python3 -I /tmp/thl-scripts/validate.py (verifier/lean_contract.py validate_lean_statement on the three child types; declarations verbatim in All.lean and Assembly.lean)`
+- `lake env lean /tmp/thl-decomp/Scope.lean; lake env lean /tmp/thl-decomp/All.lean; lake env lean /tmp/thl-decomp/Assembly.lean (#print axioms)`
+- `sed -n 326,328p; sed -n 478,482p book/chapter-07.txt`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Order/Monotone.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Order/LiminfLimsup.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Order/OrderClosed.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Order/LiminfLimsup.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Instances/ENNReal/Lemmas.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Basic/ENNReal/Inv.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Basic/ENNReal/Real.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Basic/ENNReal/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/OpenPos.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Typeclasses/Finite.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/Pseudo/Defs.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-threshold-reduction-a1-measure-cl-64c33e67d4/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-threshold-reduction-a1-measure-cl-095240e0d0/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/tmp/thl-decomp/All.lean`
+- `/tmp/thl-decomp/Assembly.lean`
+- `/tmp/thl-scripts/stmts.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-07.txt`
+
+Pins match: the snapshot manifest records project b4d606db1da5… and mathlib 25730c7c759d…, which equal the workspace HEAD and its lakefile mathlib rev. Every library fact used by the three children and the parent assembly exists in the snapshot mathlib:
+- MonotoneOn.tendsto_nhdsWithin_Ioo_right (Topology/Order/Monotone.lean:457);
+- le_limsup_of_frequently_le (Order/LiminfLimsup.lean:241);
+- Ioo_mem_nhdsLT and its @[to_dual] Ioo_mem_nhdsGT (Topology/Order/OrderClosed.lean:280–282);
+- le_of_tendsto / le_of_tendsto_of_tendsto (OrderClosed.lean:133/472);
+- ENNReal.Tendsto.mul / continuous_const_mul / Tendsto.div_const (Topology/Instances/ENNReal/Lemmas.lean:337/390/481);
+- ENNReal.mul_inv_cancel / div_ne_top / mul_inv / le_div_iff_mul_le / ofReal_inv_of_pos (Basic/ENNReal/Inv.lean:103/218/245/369/945);
+- ENNReal.ofReal_toReal (Basic/ENNReal/Basic.lean:248);
+- ENNReal.ofReal_le_ofReal_iff / ofReal_mul (Basic/ENNReal/Real.lean:147/297);
+- measure_ball_pos (MeasureTheory/Measure/OpenPos.lean:212);
+- measure_ball_lt_top (MeasureTheory/Measure/Typeclasses/Finite.lean:373);
+- closedBall_subset_ball (Topology/MetricSpace/Pseudo/Defs.lean:554);
+- Filter.Tendsto.limsup_eq (Topology/Order/LiminfLimsup.lean:190).
+unitBallVolume is defined at project/GMT/Ch07/Contract.lean:143.
+No existing declaration states any of the three children: the snapshot project has no match for the new or similar names, and the closest DAG node, idtp_fons_cc_mb_monotone_lower_bound, requires 1 ≤ θ and takes the density limit as an input. The children are therefore new, and their names are unreserved in dag.json, the run directory, GMT, simongmt and the snapshot project.
+Lean checks: all three child types pass lean_contract validation and elaborate in the replayed contract scope. Each child is fully proved, using only propext, Classical.choice and Quot.sound. The selected frozen type compiles from the three children plus cbr_vague_portmanteau, declared as verbatim axioms.

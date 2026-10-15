@@ -1,0 +1,105 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_off_null_set-a1.cone_class-a1.tangent_measures-a1`
+- Child DAG node: `root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_off_null_set-a1.cone_class-a1.tangent_measures-a1.zero_cycle-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: parent proof step 2 (case p ∉ spt T: "Take … C := 0 ∈ 𝒟_n(ℝ^P) and R_C := the empty triple (carrier ∅, multiplicity 1, orientation 0)" and the verification that follows it); Simon 6.3.1 (integer multiplicity currents τ(M, θ, ξ)) and 7.1.1 (minimizing currents).
+Notation: Hⁿ := μHE[n] on ℝ^P. For an IMRep R, R.action(ω) = ∫_{R.carrier} R.mult(x)·R.orient(x)(ω(x)) dHⁿ(x) and R.measure = (Hⁿ⌞R.carrier).withDensity(R.mult).
+1. (The current.) Let C := 0 ∈ 𝒟_n(ℝ^P), the zero element of GeometricCurrentOn univ n. It satisfies C(ω) = 0 for every ω ∈ 𝒟ⁿ(ℝ^P) (GeometricCurrentOn.zero_apply).
+2. (The empty triple is an IMRep in ℝ^P.) Let R_C have carrier ∅, multiplicity the constant function 1 and orientation the constant function 0. Its fields hold:
+ (a) ∅ is measurable (MeasurableSet.empty) and ∅ ⊆ univ;
+ (b) ∅ is countably n-rectifiable by countablyRectifiable_of_measure_zero, since Hⁿ(∅) = 0 (measure_empty);
+ (c) the constant multiplicity is measurable (measurable_const), and positivity on the carrier is vacuous because the carrier is empty;
+ (d) for every compact K ⊆ univ, ∫⁻_{∅ ∩ K} 1 dHⁿ = 0 ≠ ∞, because ∅ ∩ K = ∅ and the restriction of a measure to ∅ is the zero measure;
+ (e) Hⁿ⌞∅ = 0 (Measure.restrict_empty). So the orientation is a.e. strongly measurable for it (aestronglyMeasurable_zero_measure). The a.e. orientation condition holds because the almost-everywhere filter of the zero measure is ⊥ (ae_zero), so every property holds a.e.
+3. (R_C represents C.) For every ω ∈ 𝒟ⁿ(ℝ^P), R_C.action(ω) is an integral over the zero measure Hⁿ⌞∅, hence equals 0 (integral_zero_measure). By step 1, C(ω) = 0. Thus C(ω) = R_C.action(ω) for all ω, i.e. R_C.Represents C.
+4. (Zero weight.) R_C.measure = (Hⁿ⌞∅).withDensity(1) = (0).withDensity(1) = 0. Indeed, every set has withDensity-measure ∫⁻ over the zero measure, which is 0.
+5. (Minimality.)
+ (a) C is integer multiplicity, witnessed by R_C (step 3).
+ (b) For every W ⊆ ℝ^P, M_W(C) = sSup{ofReal(C(ω)) : ω admissible for W}, and every element of this set is ofReal(0) = 0. So M_W(C) ≤ 0 (sSup_le), hence M_W(C) = 0.
+ Therefore, for every open W ⊂⊂ ℝ^P and every competitor S (whatever further properties IsMinimizingIn imposes on S), M_W(C) = 0 ≤ M_W(S). Hence IsMinimizingIn C univ.
+6. (Cycle.) If n = 0, BoundaryVanishes C is True by definition. If n = m + 1, BoundaryVanishes C means ∂C = 0. For every ω ∈ 𝒟^m(ℝ^P), (∂C)(ω) = C(dω) = 0 = 0(ω) (GeometricCurrentOn.boundary_apply, GeometricCurrentOn.zero_apply), so ∂C = 0 by GeometricCurrentOn.ext.
+7. Steps 1–6 show that C := 0 and R_C := (∅, 1, 0) satisfy IsMinimizingIn C univ, BoundaryVanishes C, R_C.Represents C and R_C.measure = 0. ∎
+
+## Key steps
+
+1. Take C = 0 and R_C = (∅, 1, 0). All IMRep conditions hold because Hⁿ⌞∅ = 0, and ∅ is rectifiable by countablyRectifiable_of_measure_zero.
+2. R_C.action(ω) = 0 = C(ω), so R_C represents C, and R_C.measure = (0).withDensity 1 = 0.
+3. M_W(0) is the supremum of zeros, so M_W(0) = 0 ≤ M_W(S); with C integer multiplicity, C is minimizing in ℝ^P.
+4. ∂0 = 0: trivial in degree 0; in degree m + 1, (∂0)(ω) = 0(dω) = 0.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cmp local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean GMT/Ch07/Contract.lean; cmp GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean; git rev-parse HEAD; git -C .lake/packages/mathlib rev-parse HEAD; git -C .lake/packages/simongmt rev-parse HEAD; python3 -I json.load(local-references/123e8435b4a2469b/manifest.json)`
+- `python3 scan of dag.json lean_statement fields for 'measure = 0', 'ball (t • w)', 'restrict G', 'HasCompactSupport f → ∀ᶠ', 'boundarySupport T = ∅', '(0 : GeometricCurrentOn', 'IsMinimizingIn (0', 'BoundaryVanishes (0', 'limsup (fun ρ', 'map (dilation' (status and lean_name of each match)`
+- `python3 lookup in dag.json of dtc_blowUp_scaling, idtp_tpf_blowUp_limit_boundaryVanishes, dimred_im_mass_measure, cone_current_imrep_measure_smul_image, idtp_fons_cc_ambient_calculus, cmcsd_zero_isIntegerMultiplicity, cmcsd_support_calculus, cbr_cc_current_algebra and the cone_class-a1 children (status, candidate_commit, lean_statement); extraction of subproblem fields from the reused nodes' parent-child-handoff.json and from cone_class decomposition-v1.json`
+- `grep -n '^theorem|^def|^instance|^structure' .lake/packages/simongmt/Poincare/SimonGMT/Chapter06/{Currents,CurrentLocalEquality,Mass}.lean; sed -n 95,160p and 275,340p Currents.lean; sed -n 95,140p CurrentLocalEquality.lean; sed -n 50,100p Mass.lean; grep -n countablyRectifiable_of_measure_zero Chapter03/Rectifiable.lean`
+- `grep -rn in local-references/123e8435b4a2469b/mathlib/Mathlib: setIntegral_eq_integral_of_forall_compl_eq_zero, restrict_map, restrict_smul, Homeomorph.measurableEmbedding, integral_eq_zero_of_ae, ae_zero, aestronglyMeasurable_zero_measure, tendsto_inv_nhdsGT_zero, Tendsto.const_mul_atTop, comap_mulLeft_nhdsGT_zero, map_eq_comap_of_inverse, limsup_comp, limsup_congr, mul_div_mul_left, smul_ball, image_smul, self_mem_nhdsWithin, tendsto_nhdsWithin_iff, isCompact_closedBall`
+- `python3 scan of dag.json lean_name for idtp_fons_cc_tm_* ; git log --all --oneline -S idtp_fons_cc_tm_ (both empty)`
+- `sed -n 300,312p, 324,340p, 452,468p /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-07.txt`
+- `runtime.py: _decompose (max_depth gate), _solve_children (existing_by_name reuse), _existing_lean_name_problem, _dependency_problem, _topological, _accepted_checkpoint, _install_parent_supplied_child_handoff, _overlay_accepted_children; store.py ensure`
+- `lake env lean /tmp/tm_split_q7/Types.lean, AssemblyAx.lean, N1.lean, N2.lean, N3.lean, N4.lean, Combined.lean (#print axioms); python3 -I /tmp/tm_split_q7/replay.py dag.json`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-a534f08451/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-5982ed9bb9/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-scaling-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-34a94daa02/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Constructions/BorelSpace/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Filter.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/StronglyMeasurable/AEStronglyMeasurable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Order/Field.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Order/Filter/Map.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Order/LiminfLimsup.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Basic/ENNReal/Inv.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/Ball/Pointwise.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Algebra/Group/Pointwise/Set/Scalar.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Order/Filter/AtTopBot/Field.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/NhdsWithin.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-07.txt`
+- `/runtime/flows/gmt-claude-d253855dab51/_recursive_lean/runtime.py`
+- `/runtime/flows/gmt-claude-d253855dab51/_recursive_lean/store.py`
+- `/tmp/tm_split_q7/Types.lean`
+- `/tmp/tm_split_q7/AssemblyAx.lean`
+- `/tmp/tm_split_q7/N1.lean`
+- `/tmp/tm_split_q7/N2.lean`
+- `/tmp/tm_split_q7/N3.lean`
+- `/tmp/tm_split_q7/N4.lean`
+- `/tmp/tm_split_q7/Combined.lean`
+- `/tmp/tm_split_q7/replay.py`
+
+Pins match. The manifest's project_commit b4d606db1 equals the workspace HEAD; Mathlib is 25730c7c and SimonGMT 2b366308. The snapshot Contract.lean is byte-identical to the workspace Contract.lean, which equals Submission.lean.
+
+No DAG node, commit or name uses the prefix idtp_fons_cc_tm_. No DAG lean_statement states the zero minimizing cycle with zero weight, the blow-up integral localization or null-ball facts, or the homogeneity of limsup density ratios; 'ball (t • w)' and 'restrict G' occur only in the selected node. The accepted cmcsd_zero_isIntegerMultiplicity and cmcsd_support_calculus give only IsIntegerMultiplicity 0 and spt 0 = ∅ in univ.
+
+Reused at byte-identical types: dtc_blowUp_scaling (accepted, a94d596c) and idtp_tpf_blowUp_limit_boundaryVanishes (accepted, f498a8ef). The sibling idtp_fons_cc_ambient_calculus is still decomposing under cone_class, so it cannot be registered here. Its items (2)–(4) and (9) are reproved inside blowup_integrals; the selected node keeps it as a dependency for Part (B).
+
+Library facts used, SimonGMT:
+- Zero instance and zero_apply (Chapter06/Currents.lean:313, 317); GeometricCurrentOn.ext (:305); boundary_apply (:333).
+- zeroRegion, support and support_subset_domain (CurrentLocalEquality.lean:108, 115, 125); massOn (Mass.lean:68).
+- countablyRectifiable_of_measure_zero (Chapter03/Rectifiable.lean:45).
+
+Library facts used, snapshot Mathlib:
+- Measure theory: setIntegral_eq_integral_of_forall_compl_eq_zero (Integral/Bochner/Set.lean:486, no measurability hypothesis); MeasurableEmbedding.restrict_map (Measure/Restrict.lean:890); Measure.restrict_smul (Restrict.lean:193); Homeomorph.measurableEmbedding (BorelSpace/Basic.lean:567); integral_eq_zero_of_ae (Bochner/Basic.lean:349); ae_zero (Measure/Filter.lean:50); aestronglyMeasurable_zero_measure (AEStronglyMeasurable.lean:129).
+- Filters and limits: tendsto_inv_nhdsGT_zero (Topology/Algebra/Order/Field.lean:61); comap_mulLeft_nhdsGT_zero (same file, :308); Filter.map_eq_comap_of_inverse (Order/Filter/Map.lean:750); limsup_comp and limsup_congr (Order/LiminfLimsup.lean:90, 201); Tendsto.const_mul_atTop (AtTopBot/Field.lean:72).
+- Arithmetic and geometry: ENNReal.mul_div_mul_left (Basic/ENNReal/Inv.lean:264); smul_ball (Normed/Module/Ball/Pointwise.lean:79); Set.image_smul (Pointwise/Set/Scalar.lean:155).
+
+Lean results: all child types elaborate. zero_cycle, blowup_integrals and density_homogeneous are fully proved using only the standard axioms. support_blowup is proved from DTC and the two reused frozen types. The selected type is proved from the four new children and its registered dependencies dimred_im_mass_measure, cone_current_imrep_measure_smul_image and idtp_fons_cc_ambient_calculus. The runtime replay accepts the split.

@@ -1,0 +1,130 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.dimension_reduction_results-a1.threshold_reduction-a1`
+- Child DAG node: `root.dimension_reduction_results-a1.threshold_reduction-a1.measure_class_reduction-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: parent proof, steps 3(iv)–(vii), 4, 5, 6 and the measure-theoretic part of step 7, applied to the class of mass measures 𝓜 = {μ_S : (S, U_S) ∈ 𝒯}, with F := {φ_μ : μ ∈ 𝓜}, φ_μ := dens μ·e₁ and the threshold map sing φ := closure{⟨φ, e₁⟩ ≥ c} (departure [D1] of the parent). The semicontinuity statement of parent step 4 is proved first, as Lemma D in Step 0. The leading hypothesis (ADR) of the statement is, verbatim, the frozen Lean type of Submission.abstract_dimension_reduction (Appendix A.4 with (H0), DAG node root.abstract_dimension_reduction-a1). It is used only in step 8, exactly where the parent proof (step 6) cites that node. No other result outside the sibling set is used, and every library fact cited below is reachable from the frozen header.
+
+Step 0 (Lemma D; formerly the separate sibling density_usc_vague of attempt 4, merged here because this child is its only user). Within this step the letters below denote the objects of Lemma D only.
+Lemma D (parent step 4, for measures). Let P, n ∈ ℕ, Λ ∈ ℝ, and let μ_j (j ∈ ℕ) and μ be Borel measures on ℝ^P, each finite on compact sets, with ∫ f dμ_j → ∫ f dμ for every continuous compactly supported f : ℝ^P → ℝ. Assume that for every j, every y ∈ ℝ^P and every R with B̄_R(y) ⊆ B̄_2(0), the function ρ ↦ ofReal(e^{Λρ}/ρⁿ)·μ_j(B_ρ(y)) is nondecreasing on (0, R). Let w_j → w in ℝ^P with |w| < 2, and let θ_j, θ, c ∈ ℝ with θ ≥ 0, μ_j(B_ρ(w_j))/(ω_nρⁿ) → ofReal(θ_j) and μ(B_ρ(w))/(ω_nρⁿ) → ofReal(θ) as ρ ↓ 0 (ω_n = unitBallVolume n, in [0, ∞]), and c ≤ θ_j for every j. Then c ≤ θ.
+Proof of Lemma D.
+Source: parent proof, step 4 ("Semicontinuity along members"): Θ_S(w) ≥ limsup_k Θ_{S_k}(w_k), via the monotonicity bound at w_k, inclusion of balls, upper semicontinuity of vague limits on compact sets, then η ↓ 0 and ρ ↓ 0. It is stated here for measures, with only what the argument uses.
+D1. (Radii.) Put R₀ := (2 − |w|)/2 > 0 and choose j₁ with |w_j − w| < R₀/2 for j ≥ j₁. For such j, B̄_{R₀/2}(w_j) ⊆ B̄_2(0), since |w_j| + R₀/2 < |w| + R₀ < 2. So the monotonicity hypothesis applies at centre w_j on (0, R₀/2).
+D2. (Lower bound for μ_j.) Fix j ≥ j₁ and set g_j(ρ) := ofReal(e^{Λρ}/ρⁿ)·μ_j(B_ρ(w_j)) for ρ > 0. Then g_j(ρ) = ofReal(e^{Λρ})·ω_n·[μ_j(B_ρ(w_j))/(ω_nρⁿ)], with ω_n ∈ (0, ∞). As ρ ↓ 0, ofReal(e^{Λρ}) → 1, so g_j(ρ) → ω_n·ofReal(θ_j). Since g_j is nondecreasing on (0, R₀/2), for every ρ in that interval ω_n·ofReal(θ_j) = lim_{t↓0} g_j(t) ≤ g_j(ρ). As ofReal(c) ≤ ofReal(θ_j), we get μ_j(B_ρ(w_j)) ≥ ofReal(c)·ω_n·ofReal(ρⁿe^{−Λρ}) for all j ≥ j₁ and ρ ∈ (0, R₀/2).
+D3. (Passing to μ.) Fix ρ ∈ (0, R₀/2) and η > 0. For large j, |w_j − w| ≤ η, so B_ρ(w_j) ⊆ K := B̄_{ρ+η}(w), which is compact.
+Claim: limsup_j μ_j(K) ≤ μ(K). For ε > 0 let K_ε := {p : dist(p, K) ≤ ε} (compact) and f_ε(p) := max(0, 1 − dist(p, K)/ε). Then f_ε is continuous with compact support and 1_K ≤ f_ε ≤ 1_{K_ε}. Since μ_j is finite on compact sets, f_ε is μ_j-integrable and μ_j(K) ≤ ∫ f_ε dμ_j → ∫ f_ε dμ ≤ μ(K_ε). Finally μ(K_ε) ↓ μ(K) as ε ↓ 0, because K = ⋂_ε K_ε and μ(K_1) < ∞.
+By the claim and step D2, μ(B̄_{ρ+η}(w)) ≥ ofReal(c)·ω_n·ofReal(ρⁿe^{−Λρ}) for every η > 0. Letting η ↓ 0 (μ is finite on B̄_{ρ+1}(w) and B̄_ρ(w) = ⋂_η B̄_{ρ+η}(w)) gives μ(B̄_ρ(w)) ≥ ofReal(c)·ω_n·ofReal(ρⁿe^{−Λρ}).
+D4. (Back to open balls.) For t ∈ (0, R₀/2) and ε > 0 put ρ := t/(1 + ε) < t. Then μ(B_t(w)) ≥ μ(B̄_ρ(w)) ≥ ofReal(c)·ω_n·ofReal(tⁿ(1 + ε)^{−n}e^{−Λρ}). Since |Λρ| ≤ |Λ|t, this gives μ(B_t(w))/(ω_ntⁿ) ≥ ofReal(c)·ofReal((1 + ε)^{−n}e^{−|Λ|t}). If c ≤ 0 the bound is trivial. Letting t ↓ 0 gives ofReal(θ) ≥ ofReal(c)·ofReal((1 + ε)^{−n}), and letting ε ↓ 0 gives ofReal(θ) ≥ ofReal(c).
+D5. (Conclusion.) If c ≤ 0, then c ≤ 0 ≤ θ. If c > 0, then ofReal(θ) ≥ ofReal(c) = c > 0, so θ > 0 and θ = (ofReal θ).toReal ≥ c. ∎
+
+Main argument.
+Notation: Hⁿ := μHE[n]. c_n := addHaarScalarFactor(volume, μH[n]) ∈ ℝ≥0, with Hⁿ = c_n·μH[n] (euclideanHausdorffMeasure_def) and c_n ≠ 0 (addHaarScalarFactor_volume_hausdorffMeasure_ne_zero). So μH[n] and Hⁿ have the same null sets, and ∫ g dμH[n] = c_n⁻¹∫ g dHⁿ. q(μ, x, ρ) := μ(B_ρ(x))/(ω_nρⁿ) ∈ [0, ∞], so dens μ x = (limsup_{ρ↓0} q(μ, x, ρ)).toReal ≥ 0. e := EuclideanSpace.single 0 1 ∈ Euclid 1, so ⟨v, e⟩ = v 0 and e 0 = 1. φ_μ(x) := dens μ x • e. F := {φ_μ : μ ∈ 𝓜}. For φ : ℝ^P → Euclid 1, sing φ := closure{x : c ≤ φ(x) 0}. Note c ≤ φ_μ(x) 0 iff c ≤ dens μ x.
+1. (Measurability; parent 3(ii).) Let μ be any Borel measure. For fixed ρ > 0, x ↦ μ(B_ρ(x)) is lower semicontinuous: if x_j → x then B_ρ(x) ⊆ ⋃_m ⋂_{j≥m} B_ρ(x_j), so μ(B_ρ(x)) ≤ liminf_j μ(B_ρ(x_j)) by continuity from below. Equivalently, in filter form: if y < μ(B_ρ(x)), pick r < ρ with y < μ(B_r(x)); then B_r(x) ⊆ B_ρ(x′) whenever |x′ − x| < ρ − r. For fixed x, ρ ↦ q(μ, x, ρ) is left-continuous on (0, ∞): B_ρ(x) = ⋃_{ρ′<ρ} B_{ρ′}(x), and ρⁿ is continuous and positive. Hence limsup_{ρ↓0} q(μ, x, ρ) = inf_{δ ∈ ℚ_{>0}} sup_{ρ ∈ ℚ∩(0,δ)} q(μ, x, ρ), a countable infimum of countable suprema of Borel functions of x. So dens μ is Borel. Here "left-continuous" is used through the following elementary fact, proved the same way as for right-continuity: if g : (0, δ) → [0, ∞] is left-continuous at every ρ ∈ (0, δ), then sup_{(0,δ)} g = sup_{ℚ∩(0,δ)} g, because each ρ ∈ (0, δ) is the limit of rationals q_m ↑ ρ with q_m ∈ (0, ρ), so g(ρ) = lim g(q_m) ≤ sup_{ℚ∩(0,δ)} g. Lower semicontinuous functions are Borel (LowerSemicontinuous.measurable), and countable infima and suprema of measurable [0, ∞]-valued functions are measurable; toReal is measurable. (Both facts are proved directly here. SimonGMT's Chapter01/Densities.lean is not imported by the frozen header, and its lemma iSup_rat_Ioo_eq_of_tendsto_right assumes right-continuity in the radius, which fails for open balls, e.g. for a Dirac mass at distance 1 from x.)
+2. (Rescaling identity; parent 3(vi).) For any measure μ, y ∈ ℝ^P and λ > 0, dilation y λ ⁻¹' B_ρ(x) = B_{λρ}(y + λx). So μ^{y,λ}(B_ρ(x)) = ofReal(λ^{−n})μ(B_{λρ}(y + λx)) and q(μ^{y,λ}, x, ρ) = q(μ, y + λx, λρ). The map ρ ↦ λρ sends 𝓝[>]0 onto 𝓝[>]0 (Filter.map of 𝓝[>]0 under multiplication by λ > 0 is 𝓝[>]0, a small lemma), so the limsups coincide: dens μ^{y,λ} x = dens μ (y + λx), i.e. φ_{μ^{y,λ}} = φ_μ(y + λ·).
+3. (Homogeneity; parent 3(vii).) If ν(λ·s) = λⁿν(s) for all λ > 0 and Borel s, then ν(B_ρ(λx)) = ν(λ·B_{ρ/λ}(x)) = λⁿν(B_{ρ/λ}(x)). So q(ν, λx, ρ) = q(ν, x, ρ/λ), and dens ν (λx) = dens ν x.
+4. (Normalized pairings; parent 3(iv),(v).) Let μ ∈ 𝓜 and f be continuous with compact support. By (2), μ = Hⁿ.withDensity(ofReal∘dens μ) = (c_n • μH[n]).withDensity(ofReal∘dens μ), with dens μ Borel (step 1) and finite, and c_n ∈ ℝ≥0. By integral_withDensity_eq_integral_toReal_smul over the measure c_n • μH[n], then integral_smul_nnreal_measure, ∫ f dμ = c_n∫ dens μ·f dμH[n]. This route compiles; withDensity_smul_measure would need an ℝ≥0∞ scalar. Therefore ∫ f(x)•φ_μ(x) dμH[n](x) = (∫ f·dens μ dμH[n])•e = c_n⁻¹(∫ f dμ)•e. This identity needs no integrability hypothesis: it holds for every f : ℝ^P → ℝ (integral_withDensity_eq_integral_toReal_smul, integral_smul_nnreal_measure and integral_smul_const are unconditional, non-integrable integrands having Bochner integral 0 on both sides), so the uses in (A.2) and (A.3)(3) below carry no side conditions. Likewise ∫_K dens μ dμH[n] = c_n⁻¹μ(K) < ∞ for compact K, by (1).
+5. (Densities exist on B_2(0).) Let μ ∈ 𝓜 and |x| < 2, and put R := 2 − |x|, so B̄_R(x) ⊆ B̄_2(0). By (5), g(ρ) := ofReal(e^{Λρ}/ρⁿ)μ(B_ρ(x)) is nondecreasing on (0, R), and it is finite by (1). Hence g(ρ) → L := inf_{(0,R)} g < ∞ as ρ ↓ 0 (MonotoneOn.tendsto_nhdsWithin_Ioo_right), and q(μ, x, ρ) = ofReal(e^{−Λρ})·g(ρ)/ω_n → L/ω_n. So the limsup is a finite limit, and q(μ, x, ρ) → ofReal(dens μ x).
+6. (Upper semicontinuity on B_2(0); parent 5(γ).) Let μ ∈ 𝓜, x ∈ B_2(0), and x_j → x with c ≤ dens μ x_j for all j; passing to a tail, x_j ∈ B_2(0). Apply Lemma D (Step 0) with μ_j := μ (constant sequence, so vague convergence is trivial), w_j := x_j, w := x, θ_j := dens μ x_j, θ := dens μ x ≥ 0. Its hypotheses hold by (1), (5) and step 5. So c ≤ dens μ x. Consequently, for μ ∈ 𝓜, sing φ_μ ∩ B_2(0) ⊆ {x : c ≤ dens μ x}, since a point of the closure lying in the open set B_2(0) is a limit of such x_j.
+7. (Hypotheses of (ADR) for (P, n, Q := 1, F, sing).)
+(H0) Let μ, ν ∈ 𝓜 with φ_μ = φ_ν μH[n]-a.e. Taking coordinate 0, dens μ = dens ν μH[n]-a.e., hence Hⁿ-a.e. By (2) and withDensity_congr_ae, μ = Hⁿ.withDensity(ofReal∘dens μ) = Hⁿ.withDensity(ofReal∘dens ν) = ν. Hence dens μ = dens ν everywhere and φ_μ = φ_ν.
+(Loc), the second hypothesis of (ADR), local integrability; not the parent's (H1). φ_μ is Borel (step 1) and ∫_K ‖φ_μ‖ dμH[n] = ∫_K dens μ dμH[n] < ∞ for compact K (step 4, ‖e‖ = 1). So φ_μ is locally μH[n]-integrable (each point has the compact neighbourhood B̄_1(x)).
+(A.1) For μ ∈ 𝓜, 0 < λ < 1 and |y| ≤ 1 − λ, the function x ↦ φ_μ(y + λx) equals φ_{μ^{y,λ}} (step 2), and μ^{y,λ} ∈ 𝓜 by (3).
+(A.2) Let μ ∈ 𝓜, |y| < 1, and λ_k > 0 strictly decreasing to 0. Hypothesis (4) gives sub and a homogeneous ν ∈ 𝓜 with ∫ f dμ^{y,λ_{sub(j)}} → ∫ f dν for all continuous compactly supported f. Put ψ := φ_ν ∈ F; then ψ(λx) = ψ(x) by step 3. For j large, λ_{sub(j)} < 1 − |y| ≤ 1, so μ^{y,λ_{sub(j)}} ∈ 𝓜 by (3). By steps 2 and 4, ∫ f(x)•φ_μ(y + λ_{sub(j)}x) dμH[n] = ∫ f•φ_{μ^{y,λ_{sub(j)}}} dμH[n] = c_n⁻¹(∫ f dμ^{y,λ_{sub(j)}})•e → c_n⁻¹(∫ f dν)•e = ∫ f•ψ dμH[n].
+(A.3) Closedness: sing φ is a closure.
+(A.3)(1) Let μ ∈ 𝓜, L an n-dimensional subspace and c″ ∈ Euclid 1 with φ_μ = 1_L·c″. Put c′ := c″ 0. Comparing coordinate 0, dens μ x = c′ for x ∈ L and = 0 for x ∉ L.
+– If c′ < c, then {x : c ≤ dens μ x} = ∅ (on L the value is c′ < c, off L it is 0 < c), so sing φ_μ = closure ∅ = ∅.
+– If c′ ≥ c, then by (2), μ = Hⁿ.withDensity(ofReal(c′)·1_L) and μ(ℝ^P) = ofReal(c′)·Hⁿ(L) = ∞. Here c′ ≥ c > 0, and Hⁿ(L) = ∞ because L with the induced inner product is isometric to ℝⁿ, Hⁿ restricted to L is its volume (Isometry.euclideanHausdorffMeasure_image, InnerProductSpace.euclideanHausdorffMeasure_eq_volume), and volume(ℝⁿ) = ∞ for n ≥ 1 (MeasureTheory.measure_univ_of_isAddLeftInvariant: ℝⁿ is not compact for n ≥ 1). Hypothesis (6) is contradicted.
+So sing φ_μ = ∅ in all cases.
+(A.3)(2) For λ > 0, w ↦ y + λw is a homeomorphism of ℝ^P. Hence sing(φ(y + λ·)) = closure((y + λ·)⁻¹{c ≤ φ(·) 0}) = (y + λ·)⁻¹(closure{c ≤ φ(·) 0}) = (y + λ·)⁻¹(sing φ) for every φ.
+(A.3)(3) (parent 5(ε).) Let μ ∈ 𝓜 and φ_k ∈ F with ∫ f•φ_k dμH[n] → ∫ f•φ_μ dμH[n] for all continuous compactly supported f, and let ε > 0. Choose μ_k ∈ 𝓜 with φ_k = φ_{μ_k}. By step 4 (apply ⟨·, e⟩ and multiply by c_n), ∫ f dμ_k → ∫ f dμ. Suppose the conclusion fails. Then there are k_1 < k_2 < … and w_j ∈ B_1(0) ∩ sing φ_{μ_{k_j}} with dist(w_j, z) ≥ ε for all z ∈ sing φ_μ. By step 6, c ≤ dens μ_{k_j} w_j. After passing to a further subsequence, w_j → w with |w| ≤ 1 < 2. Apply Lemma D (Step 0) to the measures μ_{k_j} and μ: (1) and (5) hold, vague convergence holds along the subsequence, the densities at w_j and at w exist by step 5, and θ := dens μ w ≥ 0. It gives c ≤ dens μ w, so w ∈ {c ≤ dens μ} ⊆ sing φ_μ. Then dist(w_j, w) ≥ ε for all j, contradicting w_j → w. Hence there is k₀ with B_1(0) ∩ sing φ_k ⊆ {x : ∃ z ∈ sing φ_μ, dist(x, z) < ε} for all k ≥ k₀.
+8. (Application of A.4; parent steps 6, 7.) Hypothesis (ADR), applied to (P, n, Q := 1, F, sing) with the hypotheses verified in step 7, gives (I) or (II).
+(I) B_1(0) ∩ sing φ = ∅ for every φ ∈ F. For μ ∈ 𝓜, {x ∈ B_1(0) : c ≤ dens μ x} ⊆ B_1(0) ∩ sing φ_μ = ∅, which is the first alternative.
+(II) There is d with d + 1 ≤ n such that μH[d + α](sing φ ∩ B_1(0)) = 0 for φ ∈ F and α > 0; if d = 0, sing φ ∩ B_σ(0) is finite for φ ∈ F and σ < 1; and there are ψ ∈ F and L with dim L = d, sing ψ = L and ψ(y + λx) = ψ(x) for y ∈ L, λ > 0. For μ ∈ 𝓜, {x ∈ B_1(0) : c ≤ dens μ x} ⊆ sing φ_μ ∩ B_1(0), so it is μH[d + α]-null by monotonicity. If d = 0, {x ∈ B_σ(0) : c ≤ dens μ x} ⊆ sing φ_μ ∩ B_σ(0) is finite. Write ψ = φ_ν with ν ∈ 𝓜; coordinate 0 gives dens ν (y + λx) = dens ν x for y ∈ L, λ > 0.
+Let E := {x : c ≤ dens ν x}, so closure E = L.
+– E ⊆ L.
+– E ≠ ∅, since otherwise closure ∅ = ∅ ≠ L ∋ 0.
+– dens ν is constant on L: for y ∈ L, dens ν y = dens ν (y + 1•0) = dens ν 0.
+Taking x₀ ∈ E ⊆ L, we get c ≤ dens ν x₀ = dens ν 0 = dens ν y for all y ∈ L. Hence E = L.
+Finally ν(ℝ^P) = ∞. First, ν ≠ 0, since otherwise dens ν ≡ 0 < c and E = ∅. With y = 0, dens ν(λx) = dens ν x. By (2) and Hⁿ(λ·s) = λⁿHⁿ(s), the change of variables x = λx′ gives ν(λ·s) = ∫_{λ·s} ofReal(dens ν) dHⁿ = λⁿ∫_s ofReal(dens ν(λ·)) dHⁿ = λⁿν(s). Choose R₁ with ν(B_{R₁}(0)) > 0, which exists because ν(ℝ^P) = sup_R ν(B_R(0)) > 0. Then ν(B_{tR₁}(0)) = tⁿν(B_{R₁}(0)) → ∞ as t → ∞ (n ≥ 1), so ν(ℝ^P) = ∞. This gives the second alternative with this d, ν and L. ∎
+
+## Key steps
+
+1. Lemma D (parent step 4): monotonicity at moving centres, limsup μ_j(K) ≤ μ(K) for compact K under vague convergence, and the closed-to-open ball comparison give c ≤ θ.
+2. dens μ is Borel (lower semicontinuity in x, left continuity in ρ, rational radii); dens μ^{y,λ} = dens μ(y + λ·), and homogeneous ν have dilation-invariant dens ν.
+3. From μ = Hⁿ.withDensity(dens μ) with Hⁿ = c_nμH[n]: ∫ f·φ_μ dμH[n] = c_n⁻¹(∫ f dμ)e₁, so weak convergence of the φ_μ is vague convergence of the μ, and local integrability and (H0) hold.
+4. Monotonicity gives existence of densities on B_2(0); Lemma D gives upper semicontinuity there, so sing φ_μ ∩ B_2(0) ⊆ {dens μ ≥ c}.
+5. Verify A.1 (closure (3)), A.2 (hypothesis (4) plus normalized pairings), A.3(1) (c′ < c gives an empty superlevel set; c′ ≥ c gives infinite mass, contradicting (6)), A.3(2) (homeomorphism), and A.3(3) (subsequence argument with Lemma D).
+6. Apply hypothesis (ADR); in case (II), the extremal ν has dens ν constant on L, so {dens ν ≥ c} = L, and ν is nonzero and n-homogeneous, hence ν(ℝ^P) = ∞.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json; git rev-parse HEAD; git -C .lake/packages/mathlib rev-parse HEAD; git -C .lake/packages/simongmt rev-parse HEAD`
+- `sha256sum GMT/Ch07/Submission.lean GMT/Ch07/Contract.lean .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `grep -n 'theorem hausdorffMeasure_image_le' <snapshot>/mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean`
+- `grep -n 'addHaarScalarFactor_volume_hausdorffMeasure_ne_zero\|theorem euclideanHausdorffMeasure_def' <snapshot>/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean`
+- `rg -c dimred_tr_ <snapshot>/project (exit 1, no match); rg -l dimred_tr_ GMT .lake/packages/simongmt/Poincare --glob '*.lean' (exit 1, no match)`
+- `grep -n 'def HasApproximateTangentSpaceAt' -A 14 and grep -n 'def blowUpMap' -A 5 .lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `sed -n 85,125p .lake/packages/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean (VanishesOn, zeroRegion, support)`
+- `python3 inspection of dag.json: status, candidate_commit and lean_statement of the selected node, of its registered dependencies im_mass_measure, monotonicity and moving_blowups, of root.abstract_dimension_reduction-a1 and of the six reused nodes; string comparison of the children's leading premises with these frozen types`
+- `python3 /tmp/tr-a7/scripts/check_reuse_types.py dag.json (git show <candidate>:GMT/Ch07/Submission.lean, declared type vs dag.json up to whitespace, sorry occurrences); git cat-file -e <candidate>^{commit}; isolated-comparator-result.json and comparator-v1.log of the six reused nodes`
+- `python3 /tmp/tr-a7/scripts/graph_check.py decomposition-v6.json dag.json 5000 12 (replica of _dependency_problem, _existing_lean_name_problem and the max_nodes bound)`
+- `lake env lean /tmp/tr-a7/lean/Types.lean; lake env lean /tmp/tr-a7/lean/Assembly.lean; lake env lean /tmp/tr-a7/lean/TangentCheck.lean`
+- `python3 reading of decomposition-v1..v6.json, decomposition-audit-v*.json, decomposition-review-receipt-v*.json and decomposition-scope-v*.json of the selected node; grep -l 'threshold_reduction' cluster-state/logs/gmt-ch07/*.log; max_nodes in .humanize/swarm-configs/9619fab3de46466e954c3c0e22455dff.json and 53f9bac0ca76443b9b296465895cebc9.json`
+- `gh api repos/humanfia/math-lean-flow/contents/_recursive_lean/{runtime,store,github_runtime,decomposition_scope}.py?ref=feature/humanize-api-update-claude; grep -n '_decompose\|_solve_children\|_existing_lean_name_problem\|_overlay_accepted_children\|_reference_use_problem\|def ensure' on the fetched copies`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-threshold-reduction-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-threshold-reduction-a1/decomposition-v6.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-threshold-reduction-a1/decomposition-audit-v6.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-threshold-reduction-a1/decomposition-review-receipt-v5.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-threshold-reduction-a1/decomposition-scope-v6.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-abstract-dimension-reduction-a1/isolated-comparator-result.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-stationary-of-minimizing-a1/isolated-comparator-result.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-density-a1/isolated-comparator-result.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-cone-a1/isolated-comparator-result.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-half-space-cone-lies-in-boundary-a1-cone-measure-homogeneous-a1/isolated-comparator-result.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-scaling-a1-rep-pushforward-a1/isolated-comparator-result.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/swarm-configs/9619fab3de46466e954c3c0e22455dff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/swarm-configs/53f9bac0ca76443b9b296465895cebc9.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/logs/gmt-ch07/9619fab3de46466e954c3c0e22455dff.log`
+- `/tmp/tr-a7/lean/Types.lean`
+- `/tmp/tr-a7/lean/Assembly.lean`
+- `/tmp/tr-a7/lean/TangentCheck.lean`
+- `/tmp/tr-a7/scripts/graph_check.py`
+- `/tmp/tr-a7/scripts/check_reuse_types.py`
+- `/tmp/tr7-mlf/runtime.py`
+
+Pins match. The snapshot manifest records project b4d606d and mathlib 25730c7c, equal to the workspace HEAD and to .lake/packages/mathlib; simongmt is 2b36630 as pinned in lakefile.toml. The snapshot Contract.lean, the workspace Contract.lean and Submission.lean are byte-identical (sha256 e4148e7f…).
+
+Library facts the children use exist where cited:
+- The snapshot mathlib has LipschitzWith.hausdorffMeasure_image_le (Hausdorff.lean:745), used in the parent assembly.
+- It has addHaarScalarFactor_volume_hausdorffMeasure_ne_zero (Measure.lean:96), used for the normalization Hⁿ = c_n·μH[n].
+- SimonGMT's HasApproximateTangentSpaceAt (Rectifiable.lean:102) and support = U ∖ zeroRegion are as the children's proofs use them. zeroRegion is a union of open sets with compact closure in U on which the current vanishes (CurrentLocalEquality.lean:99–117).
+
+No dimred_tr_ identifier exists in the snapshot project, GMT, SimonGMT or dag.json.
+
+The six reused declarations are accepted, and their candidate commits are present. Their dag.json types equal the children's lean_statements and the candidates' declarations (up to whitespace). Each candidate's only sorry is the frozen main_theorem, and each isolated comparator result passed.
+
+Lean checks:
+- All 12 child types elaborate after import GMT.Ch07.Submission.
+- The parent assembly compiles from exactly the three registered dependencies, abstract_dimension_reduction and the three new children it uses, with no sorryAx.
+- The tangent child compiles from exactly its four reused siblings.
+
+The graph and name replica passes against the current 2327-node DAG, with room for 6 new nodes under max_nodes = 5000.
+
+Attempt 6 was audited acceptable. It failed activation only because the old worker's max_nodes was 1000, below the DAG size, so it is resubmitted unchanged.

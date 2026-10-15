@@ -1,0 +1,87 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat <snapshot>/manifest.json; git rev-parse HEAD; git -C .lake/packages/mathlib rev-parse HEAD",
+        "sha256sum GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean <snapshot>/project/GMT/Ch07/Contract.lean <snapshot>/project/GMT/Ch07/Submission.lean",
+        "rg -n dimred_tr_bc <snapshot>/project (exit 1, no match); grep -rn dimred_tr_bc GMT .lake/packages/simongmt/Poincare (no match)",
+        "rg -n 'def VanishesOn|def zeroRegion|def support|def blowUp|def currentEval|def ConvergesWeakly|def MassMeasuresConverge|structure IMRep|def IMRep.measure' <snapshot>/project/GMT/Ch07/Contract.lean",
+        "rg -n 'theorem tendsto_nhds_unique |theorem integral_smul_measure|theorem integral_map |theorem setIntegral_eq_integral_of_forall_compl_eq_zero|theorem withDensity_congr_ae|theorem withDensity_indicator |theorem tendsto_add_atTop_nat|theorem integral_zero_measure|theorem integral_eq_zero_of_ae|theorem StrictMono.id_le' <snapshot>/mathlib/Mathlib",
+        "rg -n -e '(theorem|lemma) [A-Za-z_.]*(StrictMono.tendsto_atTop|Tendsto.limsup_eq|closedBall_subset_closedBall_iff|Homeomorph.isProperMap|withDensity_apply |restrict_restrict )' <snapshot>/mathlib/Mathlib",
+        "rg -n 'theorem countablyRectifiable_of_measure_zero|theorem tsupport_affinePullbackForm_subset|theorem affinePullbackForm_isTestForm' .lake/packages/simongmt/Poincare/SimonGMT; sed -n on SimonGMT Chapter06 Currents.lean, CurrentLocalEquality.lean, Mass.lean, AffineCurrentPushforward.lean",
+        "python3 inspection of dag.json: selected node, its four registered dependencies, all ancestors' dependencies (lean names and status), and accepted lean_statements matching 'IsEmbeddedSubmanifold … univ', '∀ᵐ x ∂μHE[n], Tendsto', 'Set (Measure', 'ConvergesWeakly' uniqueness",
+        "python3 reading of the accepted precedent cone_class decomposition-v1.json and of the parent-child-handoff.json of ambient_calculus, density_representation and borel_restriction",
+        "python3 /tmp/bc-a1/scripts/check_reuse.py (git show <candidate>:GMT/Ch07/Submission.lean; declared type vs dag.json; sorry count) for aebb2ae, 1f0fe9f, 90d679a, cb3c7f3; git show 90d679a:GMT/Ch07/Submission.lean | grep '^theorem Submission'",
+        "lake env lean /tmp/bc-a1/lean/Types.lean; lake env lean /tmp/bc-a1/lean/Assembly.lean; lake env lean /tmp/bc-a1/lean/Skeleton.lean; lake env lean /tmp/bc-a1/lean/Skeleton2.lean",
+        "gh api repos/humanfia/math-lean-flow/contents/_recursive_lean/{runtime,inherited,store}.py?ref=feature/humanize-api-update-claude; grep -n '_inherited_prerequisites|_overlay_accepted_children|_render_parent_supplied_natural|_dependency_problem'",
+        "grep -n on book/chapter-07.txt (class 𝒯 in the proof of 7.3.3, lines 443–486) and book/chapter-A.txt (A.4, line 35)"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Separation/Hausdorff.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Order/Filter/AtTopBot/Tendsto.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Order/Filter/AtTopBot/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/WithDensity.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Order/LiminfLimsup.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Maps/Proper/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Order/WellFounded.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/AffineCurrentPushforward.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-threshold-reduction-a1-blowup-class-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-threshold-reduction-a1-blowup-class-a1/parent-supplied-natural-proof.md",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-5982ed9bb9/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-4e8b16732b/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-699466b76b/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-limsup-mass-bound-a1-borel-restriction-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-07.txt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-A.txt",
+        "/tmp/bc-a1/lean/Types.lean",
+        "/tmp/bc-a1/lean/Assembly.lean",
+        "/tmp/bc-a1/lean/Skeleton.lean",
+        "/tmp/bc-a1/lean/Skeleton2.lean",
+        "/tmp/bc-a1/scripts/check_reuse.py",
+        "/tmp/bc-a1/scripts/build.py",
+        "/tmp/bc-a1/mlf/inherited.py",
+        "/tmp/bc-a1/mlf/runtime.py"
+      ],
+      "conclusion": "Pins and contract:\n- The snapshot manifest pins project b4d606d and Mathlib 25730c7c. These equal the workspace HEAD and .lake/packages/mathlib.\n- The snapshot Contract.lean, snapshot Submission.lean and the workspace Contract.lean and Submission.lean are byte-identical (sha256 e4148e7f…).\n- No dimred_tr_bc_* identifier exists in the snapshot (rg exit 1), in GMT, in SimonGMT or in dag.json.\n\nLibrary facts cited by the children exist at these paths:\n- tendsto_nhds_unique (Topology/Separation/Hausdorff.lean:180)\n- StrictMono.tendsto_atTop (Order/Filter/AtTopBot/Tendsto.lean:84)\n- integral_smul_measure and integral_map (MeasureTheory/Integral/Bochner/Basic.lean:1052, 1081)\n- setIntegral_eq_integral_of_forall_compl_eq_zero (Bochner/Set.lean:486)\n- withDensity_apply, withDensity_congr_ae and withDensity_indicator (Measure/WithDensity.lean:44, 88, 192)\n- Filter.Tendsto.limsup_eq (Topology/Order/LiminfLimsup.lean:190)\n- tendsto_add_atTop_nat (AtTopBot/Basic.lean:331)\n- Homeomorph.isProperMap (Topology/Maps/Proper/Basic.lean:264)\n- StrictMono.id_le (Order/WellFounded.lean:267)\n- integral_eq_zero_of_ae and integral_zero_measure (Bochner/Basic.lean:349, 1020)\nclosedBall_subset_closedBall_iff has no match; the children use a unit-vector argument instead.\n\nSimonGMT facts:\n- affinePullbackForm, tsupport_affinePullbackForm_subset and affinePullbackForm_isTestForm are at AffineCurrentPushforward.lean:35–64.\n- countablyRectifiable_of_measure_zero is at Rectifiable.lean:45.\n- support = U ∖ zeroRegion, with VanishesOn, is at CurrentLocalEquality.lean:101–118.\n\nReuse:\n- ambient_calculus (aebb2ae), density_representation (1f0fe9f) and dor_lmb_imrep_restrict_current (90d679a) are accepted, and their isolated comparators passed.\n- Their candidates' declared types equal the DAG types, and each candidate's only sorry is main_theorem.\n- The precedent cone_class decomposition reused the same three in the same way.\n\nLean checks:\n- All 8 new child types elaborate.\n- The assembly of the selected frozen type compiles from the 5 class children and the 4 registered dependencies, with only standard axioms otherwise.\n- class_rescale is fully proved from its siblings.\n- The key steps of class_tangent, class_monotone and class_finite_density compile.\n\nFramework (math-lean-flow inherited.py) and its effect on the split:\n- A child inherits every ancestor dependency whose Lean name appears in its proof text, and waits for it to be accepted.\n- So new children take unaccepted results as hypotheses, and a script checks that their proofs avoid all twelve ancestor-dependency names."
+    }
+  ],
+  "parent_id": "root.dimension_reduction_results-a1.threshold_reduction-a1.blowup_class-a1",
+  "child_id": "root.dimension_reduction_results-a1.threshold_reduction-a1.blowup_class-a1.zero_limit_minimizing-a1",
+  "subproblem": {
+    "key": "zero_limit_minimizing",
+    "title": "Weak blow-up limits with convergent centres are minimizing cycles of ℝ^{n+k} (conditional on (MB))",
+    "statement": "Assume (MB) — the frozen type of the grandparent's registered dependency moving_blowups (the selected node's third leading hypothesis): for all n, k, ℓ ∈ ℕ with ℓ ≤ k, U, N ⊆ ℝ^{n+k} and T ∈ 𝒟_n(U) with 1 ≤ n, U open, N an embedded C² (n+ℓ)-dimensional submanifold, (closure N ∖ N) ∩ U = ∅, T minimizing in U ∩ N, spt T ⊆ U ∩ N and ∂T = 0 in U, and for all x ∈ U, x_j → x and λ_j > 0 with λ_j → 0, there are a strictly increasing φ and C ∈ 𝒟_n(ℝ^{n+k}) such that blowUp T x_{φ(j)} λ_{φ(j)} ⇀ C in ℝ^{n+k} (ConvergesWeakly), MassMeasuresConverge holds for the same sequence, C is minimizing in ℝ^{n+k} and ∂C = 0. Then, for n, k, ℓ, U, N, T satisfying the same hypotheses (ℓ ≤ k, 1 ≤ n, U open, N an embedded C² (n+ℓ)-dimensional submanifold with (closure N ∖ N) ∩ U = ∅, T minimizing in U ∩ N, spt T ⊆ U ∩ N, ∂T = 0 in U), every x ∈ U, every sequence x_i → x, every sequence λ_i > 0 with λ_i → 0 and every S ∈ 𝒟_n(ℝ^{n+k}) with blowUp T x_i λ_i ⇀ S in ℝ^{n+k} (ConvergesWeakly), S is minimizing in ℝ^{n+k} (IsMinimizingIn S univ) and ∂S = 0 (BoundaryVanishes S).",
+    "lean_statement": "(∀ (n k ℓ : ℕ), ℓ ≤ k → ∀ (U N : Set (Euclid (n + k))) (T : GeometricCurrentOn U n), 1 ≤ n → IsOpen U → IsEmbeddedSubmanifold 2 (n + ℓ) N → (closure N \\ N) ∩ U = ∅ → IsMinimizingIn T (U ∩ N) → T.support ⊆ U ∩ N → BoundaryVanishes T → ∀ (x : Euclid (n + k)) (xs : ℕ → Euclid (n + k)) (lams : ℕ → ℝ) (hlams : ∀ j, 0 < lams j), x ∈ U → Tendsto xs atTop (𝓝 x) → Tendsto lams atTop (𝓝 0) → ∃ (φ : ℕ → ℕ) (C : GeometricCurrentOn (univ : Set (Euclid (n + k))) n), StrictMono φ ∧ ConvergesWeakly (fun j => blowUp T (xs (φ j)) (lams (φ j)) (hlams (φ j)).ne') C ∧ MassMeasuresConverge (fun j => blowUp T (xs (φ j)) (lams (φ j)) (hlams (φ j)).ne') C ∧ IsMinimizingIn C univ ∧ BoundaryVanishes C) → ∀ (n k ℓ : ℕ), ℓ ≤ k → ∀ (U N : Set (Euclid (n + k))) (T : GeometricCurrentOn U n), 1 ≤ n → IsOpen U → IsEmbeddedSubmanifold 2 (n + ℓ) N → (closure N \\ N) ∩ U = ∅ → IsMinimizingIn T (U ∩ N) → T.support ⊆ U ∩ N → BoundaryVanishes T → ∀ (x : Euclid (n + k)) (xs : ℕ → Euclid (n + k)) (lams : ℕ → ℝ) (hlams : ∀ i, 0 < lams i) (S : GeometricCurrentOn (univ : Set (Euclid (n + k))) n), x ∈ U → Tendsto xs atTop (𝓝 x) → Tendsto lams atTop (𝓝 0) → ConvergesWeakly (fun i => blowUp T (xs i) (lams i) (hlams i).ne') S → IsMinimizingIn S univ ∧ BoundaryVanishes S",
+    "lean_name": "dimred_tr_bc_zero_limit_minimizing",
+    "depends_on": [],
+    "natural_proof": "Source: step 2 of the selected node's supplied proof (parent 2(b): zero-scale currents are minimizing), together with its (0f) (uniqueness of weak limits). Simon 7.3.3, proof of (1), (8) (chapter-07.txt lines 443–462): weak limits of η_{x_i,λ_i#}T with λ_i → 0 minimize in all of ℝ^{n+ℓ}. Only hypothesis (MB) is used.\n1. Apply (MB) to n, k, ℓ, U, N, T (with the given hypotheses), the point x ∈ U, the centres xs := (x_i), the scales lams := (λ_i) with their positivity proofs, and the convergences x_i → x, λ_i → 0. It yields a strictly increasing φ : ℕ → ℕ and C ∈ 𝒟_n(ℝ^{n+k}) with ConvergesWeakly (j ↦ blowUp T x_{φ(j)} λ_{φ(j)}) C, IsMinimizingIn C univ and BoundaryVanishes C. The MassMeasuresConverge part is not needed.\n2. Let ω ∈ 𝒟ⁿ(ℝ^{n+k}) (TestFormOn univ n) and put a_i := currentEval (blowUp T x_i λ_i) ω. By hypothesis, a_i → S ω. Since φ is strictly increasing, φ(j) → ∞ (StrictMono.tendsto_atTop), so a_{φ(j)} → S ω (Tendsto.comp). The sequence of step 1 evaluated at ω is literally j ↦ a_{φ(j)}, so a_{φ(j)} → C ω. Limits in ℝ are unique (tendsto_nhds_unique), hence S ω = C ω.\n3. As ω was arbitrary, S = C (GeometricCurrentOn.ext).\n4. Rewriting the conclusions of step 1 with S = C gives IsMinimizingIn S univ and BoundaryVanishes S. ∎",
+    "proof_key_steps": [
+      "Apply (MB) at the limit point x ∈ U of the centres: a subsequence of the blow-ups converges weakly to some C minimizing in ℝ^{n+k} with ∂C = 0.",
+      "Weak limits are unique: along φ the evaluations converge both to S ω and to C ω, so S = C by GeometricCurrentOn.ext.",
+      "Transfer IsMinimizingIn univ and BoundaryVanishes from C to S."
+    ]
+  },
+  "audit": {
+    "key": "zero_limit_minimizing",
+    "acceptable": true,
+    "natural_proof_acceptable": true,
+    "reason": "Prose and type match. Applying MB and uniqueness of real-valued test-form limits proves S = C, transferring minimality and vanishing boundary without circularity."
+  },
+  "resolved_dependencies": [],
+  "plan_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-threshold-reduction-a1-blowup-cla-dbeb1da811/parent-supplied-plan.md",
+  "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-threshold-reduction-a1-blowup-cla-dbeb1da811/parent-supplied-natural-proof.md",
+  "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-threshold-reduction-a1-blowup-cla-dbeb1da811/parent-supplied-natural-proof.json"
+}

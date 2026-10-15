@@ -1,0 +1,53 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "massOn_add|massOn_sub|mass_add|mass_sub|massOn_le_add|cmc_fc_sl_|instance : (Add|Neg|Sub)|massAdmissibleOn",
+        "ofReal_add_le",
+        "sqrt_mul|sqrt_sq_eq_abs",
+        "tsupport_smul_subset_right",
+        "tsum_add|tsum_mul_left|sum_le_tsum",
+        "tendsto_sum_nat|tendsto_prod_nat",
+        "tsum_geometric",
+        "sum_range_succ|prod_range_succ",
+        "cmc_fc_sl_massOn_le_add_of_eval_eq",
+        "cmc_fc_sl_im_partial_sum",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/sl-independent-review-c58a58/Audit.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Basic/ENNReal/Real.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Real/Sqrt.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Support.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/InfiniteSum/ENNReal.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/InfiniteSum/NatInt.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Algebra/BigOperators/Group/Finset/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/SpecificLimits/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-flat-convergence-a1-series-limit-a1/parent-child-handoff.json",
+        "/tmp/sl-independent-review-c58a58/Audit.lean"
+      ],
+      "conclusion": "Verified pinned revisions and compatibility with compiler sources. No existing mass-triangle lemma was found in the searched project or SimonGMT Chapter06 files; the required subtraction, mass, support, and boundary definitions match the proofs. The split appropriately isolates two genuine obligations used by this selected parent. Both names are bare, unused identifiers. The dependency im_partial_sum → mass_triangle and the inherited series_current dependency are correctly directed and acyclic. A fresh Lean harness elaborated both exact frozen child propositions before their implementations, checked the typeclass-sensitive constructions, and verified both proofs under Submission. It also verified the exact selected parent conclusion with the identical inherited series_current contract as an explicit premise. All three proofs depend only on propext, Classical.choice, and Quot.sound."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "mass_triangle",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line proposition exactly matches the prose, including arbitrary U and G and the support-restricted evaluation hypothesis. The supplied proof correctly derives coefficient-norm homogeneity, preserves admissibility under scaling, applies linearity and ofReal_add_le, and takes the defining supremum. No openness or finite-mass hypothesis is missing. The proof is complete, non-circular, and directly formalizable; the frozen type is independently usable."
+    },
+    {
+      "key": "im_partial_sum",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line proposition exactly states the inclusive partial sum and a single witness satisfying every evaluation and local-mass bound. The base case and induction are complete: three valid applications of IS_U establish integer multiplicity, contract subtraction gives addition on evaluations, and mass_triangle at c = 1 supplies the mass estimate. Openness is unnecessary because subtraction closure is an explicit hypothesis. Its sole child dependency is correctly declared and non-circular. Choosing these witnesses supplies the partial-sum sequences needed by the selected parent."
+    }
+  ],
+  "required_changes": []
+}

@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.moving_blowups-a1.pushforward-a1.pf_integer-a1.bilip_partition-a1",
+  "parent_id": "root.dimension_reduction_results-a1.moving_blowups-a1.pushforward-a1.pf_integer-a1",
+  "depth": 5,
+  "title": "A map with injective derivative on a Borel set is countably piecewise bi-Lipschitz there",
+  "statement": "Let P, n ∈ ℕ, H : ℝⁿ → ℝ^P and B ⊆ ℝⁿ Borel such that H is differentiable at every a ∈ B with injective derivative DH(a) (fderiv ℝ H a). Then there are Borel sets C_l ⊆ ℝⁿ (l ∈ ℕ), pairwise disjoint, with ⋃_l C_l = B, and constants m_l > 0 such that m_l·|a − a'| ≤ |H(a) − H(a')| for all l and all a, a' ∈ C_l.",
+  "lean_statement": "∀ (P n : ℕ) (H : Euclid n → Euclid P) (B : Set (Euclid n)), MeasurableSet B → (∀ a ∈ B, DifferentiableAt ℝ H a ∧ Injective (fderiv ℝ H a)) → ∃ (C : ℕ → Set (Euclid n)) (m : ℕ → ℝ), (∀ l, MeasurableSet (C l)) ∧ Pairwise (fun k l => Disjoint (C k) (C l)) ∧ (⋃ l, C l) = B ∧ (∀ l, 0 < m l) ∧ ∀ l, ∀ a ∈ C l, ∀ a' ∈ C l, m l * ‖a - a'‖ ≤ ‖H a - H a'‖",
+  "lean_name": "dimred_mbl_pfi_bilipschitz_partition",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-moving-blowups-a1-pushforward-a1-c914ed0408-a1"
+}

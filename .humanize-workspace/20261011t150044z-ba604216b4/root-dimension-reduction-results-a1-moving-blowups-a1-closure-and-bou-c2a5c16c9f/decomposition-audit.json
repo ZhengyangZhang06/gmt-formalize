@@ -1,0 +1,65 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "dmcbr_ci_gp_",
+        "theorem exists_disjoint_subfamily_covering_enlargement |countable_of_nonempty_interior|theorem tendsto_tsum_compl_atTop_zero|theorem hausdorffMeasure_le_liminf_tsum|theorem hausdorffMeasure_apply|theorem ae_tendsto_lintegral_enorm_sub_div|def vitaliFamily|theorem tendsto_filterAt|exists_isOpen_lt_of_lt|theorem le_opNorm|theorem opNorm_le_bound|eventually_lt_of_limsup_lt|frequently_lt_of_lt_limsup",
+        "sed -n '596,705p' /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-01.txt",
+        "sed -n '1185,1225p' /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-01.txt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/good-points-independent-audit-c0r81zma/ChallengeTypes.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/good-points-independent-audit-c0r81zma/SuppliedProofs.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/good-points-independent-audit-c0r81zma/InPlace.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/good-points-independent-audit-c0r81zma/Instances.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Covering/Vitali.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Covering/Besicovitch.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Covering/Differentiation.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Regular.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Operator/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-closure-and-bou-c2a5c16c9f/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-01.txt",
+        "/tmp/good-points-independent-audit-c0r81zma/ChallengeTypes.lean",
+        "/tmp/good-points-independent-audit-c0r81zma/SuppliedProofs.lean",
+        "/tmp/good-points-independent-audit-c0r81zma/InPlace.lean",
+        "/tmp/good-points-independent-audit-c0r81zma/Instances.lean"
+      ],
+      "conclusion": "Independently verified the handoff and recomputed the requested digest. Project, Mathlib, and SimonGMT revisions match their pins; the snapshot contract matches Submission.lean. The cited covering, differentiation, and regularity lemmas support the supplied arguments. No proposed name occurs in the searched Lean sources or current DAG; all four names are bare identifiers. Every frozen type passes validation unchanged and elaborates before any child implementation. The supplied scripts compile unchanged, including under the original header. All four children and the exact-parent assembly, conditional only on the existing isodiametric dependency, use solely propext, Classical.choice, and Quot.sound. The original root placeholder is absent from these axiom closures. Separate instance checks confirm the operator norm, its ENNReal extension, scalar multiplication, and definitionally compatible topology. The four-way split is appropriate: each child is substantive and non-circular, and the sole child dependency, upper_density on density_comparison, is correctly directed and acyclic."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "density_comparison",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and one-line type match, including arbitrary μ, nonmeasurable A, positive extended-real t, and explicit IB. The proof handles infinite total measure and empty A, establishes fineness and countable packing, constructs the finite-part/tail cover, and applies Hausdorff approximation and valid ENNReal cancellations. It proves the exact sharp inequality without circular reliance."
+    },
+    {
+      "key": "upper_density",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All hypotheses match the frozen type. Outer regularity applies to the finite restriction, including nonmeasurable superlevel sets. Eventual agreement of restricted-ball measures permits the declared density_comparison dependency; epsilon exhaustion and countably many thresholds prove the exact almost-everywhere conclusion."
+    },
+    {
+      "key": "lebesgue_error",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The finite-density premise is correctly placed inside the almost-everywhere implication. Besicovitch differentiation gives the vanishing ENNReal average. The proof explicitly handles zero-measure balls, justifies cancellation for positive finite ball measures, and squeezes using a finite eventual density bound. The norm and measurability instances are compatible, and no parent conclusion is assumed."
+    },
+    {
+      "key": "weighted_field",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose includes every hypothesis in the exact one-line type. The coefficient estimate gives the finite operator-norm bound √(Pⁿ), including zero-dimensional cases. Strong measurability of the product and positivity only on M justify the pointwise bound and finite lintegral for arbitrary μ. The supplied proof is complete and independent."
+    }
+  ],
+  "required_changes": []
+}

@@ -1,0 +1,74 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "^(def|structure|theorem|instance)|DensityAndTangentCones|MassMeasuresConverge|BoundaryVanishes|IsMinimizingIn|dilation|IsConeCurrent|IMRep|namespace",
+        "setIntegral_eq_integral_of_forall_compl_eq_zero|theorem restrict_map|restrict_smul|mul_div_mul_left|limsup_comp|limsup_congr|comap_mulLeft_nhdsGT_zero|map_eq_comap_of_inverse",
+        "git show a94d596c81cfb78de36a706eb0e81f430f835418:GMT/Ch07/Submission.lean",
+        "git show f498a8efc56f20a419c00b83bd2efcfe9a10712c:GMT/Ch07/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/tm_independent_audit_3tby81tm/Types.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/tm_independent_audit_3tby81tm/Combined.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/lake-manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Basic/ENNReal/Inv.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Order/LiminfLimsup.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Order/Filter/Map.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Order/Field.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-a534f08451/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-a534f08451/decomposition-v1.json",
+        "/tmp/tm_independent_audit_3tby81tm/Types.lean",
+        "/tmp/tm_independent_audit_3tby81tm/Combined.lean",
+        "/tmp/tm_independent_audit_3tby81tm/blowup_scaling.lean",
+        "/tmp/tm_independent_audit_3tby81tm/blowup_limit_cycle.lean"
+      ],
+      "conclusion": "The project, Mathlib and SimonGMT revisions match the pins; the frozen contract matches the workspace definitions. All six types independently elaborate using the frozen definitions without child implementations. All names are bare identifiers; the four new names have no DAG reservation. Both reused declarations have byte-identical accepted types, preserve the frozen header, and independently compile with only propext, Classical.choice and Quot.sound. The proposed dependency closure is acyclic and correctly directed. The three elementary new proofs compile with standard axioms only; support_blowup uses precisely its two declared dependencies. The exact selected parent type compiles from the supplied assembly and registered dependencies, covering both cases of A and the specialization B. The pending ambient_calculus remains an existing dependency, not a falsely accepted reuse. Inline measure and vector operations have the intended instances; no Matrix/IsUnit construction occurs. The split into four focused new obligations and two accepted reuses is appropriate."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "zero_cycle",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and type agree. The empty triple satisfies every IMRep field for arbitrary P and n, represents zero and has zero weight. Zero mass establishes minimality; the proof handles degree zero and successor-degree boundaries separately. This is a complete, non-circular construction."
+    },
+    {
+      "key": "blowup_integrals",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Both conjuncts match the prose. The proof establishes the dilation homeomorphism, expanding-ball containment, restriction identity and null-ball calculation. The cited integral identities require neither continuity nor integrability, so the stronger compact-support-only contract is justified. No undeclared sibling result is needed."
+    },
+    {
+      "key": "density_homogeneous",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Scaled measurable balls give the numerator identity, and cancellation uses a finite nonzero ENNReal factor, including when n = 0. The positive-neighborhood filter is preserved by division by t. Thus the exact ENNReal limsup equality follows without additional finiteness, boundedness or density-existence assumptions."
+    },
+    {
+      "key": "support_blowup",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All hypotheses appear in the prose and type; p ∈ U follows from p ∈ support T. Relatively compact balls justify empty boundary support. DTC supplies the subsequence and cone; the two declared dependencies establish its vanishing boundary and identify the rescaled weights. MassMeasuresConverge then gives precisely the stated convergence. DTC is used only as an explicit hypothesis."
+    },
+    {
+      "key": "blowup_scaling",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Valid reuse of accepted commit a94d596c81cfb78de36a706eb0e81f430f835418 at an identical frozen type. The supplied proof establishes all three conjuncts through test-form correspondence, Hausdorff scaling, transported representations and pulled-back competitors, including their boundary and support conditions. Independent compilation confirms standard axioms only and no circular reliance on DTC."
+    },
+    {
+      "key": "blowup_limit_cycle",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Valid reuse of accepted commit f498a8efc56f20a419c00b83bd2efcfe9a10712c at an identical frozen type. Degree zero is handled explicitly. In positive degree, compact test supports eventually lie in the blow-up domains; boundary compatibility makes derivative evaluations eventually zero, and weak convergence passes this identity to C. The proof is complete and non-circular; independent compilation confirms standard axioms only."
+    }
+  ],
+  "required_changes": []
+}
