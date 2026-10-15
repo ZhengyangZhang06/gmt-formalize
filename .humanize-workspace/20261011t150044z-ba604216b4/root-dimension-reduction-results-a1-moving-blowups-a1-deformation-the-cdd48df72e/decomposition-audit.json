@@ -1,0 +1,67 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "theorem volume_preserving_piFinSuccAbove|theorem PiLp.volume_preserving_toLp|theorem integral_prod_symm|theorem Integrable.integral_prod_right|theorem ContinuousOn.integrableOn_compact|theorem prod_restrict|theorem integral_deriv_eq_sub|theorem integral_mono_interval|theorem norm_integral_le_abs_integral_norm|lemma trace_eq_sum_inner|theorem norm_apply_le|theorem norm_single",
+        "def Euclid|abbrev Euclid|piFinSuccAbove|insertNth|trace_eq_sum_inner|integral_divergence|divergence|BVExtension|BVPoincare|dimred_mbl_dt_cbm_st_",
+        "norm_single|continuous_toLp",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/gmt-smooth-trace-independent-audit-9vyci9e1/Types.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/gmt-smooth-trace-independent-audit-9vyci9e1/All.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch02/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/LocallyIntegrable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Constructions/Pi.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Haar/InnerProductSpace.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Prod.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/IntervalIntegral/FundThmCalculus.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/IntervalIntegral/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Lp/PiLp.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Trace.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-deformation-the-cdd48df72e/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-deformation-the-cdd48df72e/decomposition-v1.json",
+        "/tmp/gmt-smooth-trace-independent-audit-9vyci9e1/Types.lean",
+        "/tmp/gmt-smooth-trace-independent-audit-9vyci9e1/All.lean"
+      ],
+      "conclusion": "The project and Mathlib revisions match the manifest; the inspected Mathlib sources match the snapshot, and Submission matches the frozen contract. The required compact-integrability, measure-preserving slicing, Fubini, FTC, norm and trace lemmas are present. The project search found no proved cube trace estimate; Ch02 contains unproved specifications. Independently extracted all five supplied proofs and the parent assembly unchanged: all compile, with only propext, Classical.choice and Quot.sound. All six frozen propositions also elaborate before any child declaration exists. Every proposed name is a bare, unreserved identifier. The split is appropriate: its dependencies are acyclic and exactly match the proof calls, and its assembly proves the selected parent with the exact coefficients. One identical-type twin is now accepted, but no twin declaration is reused."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "box_integrable",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line proposition matches all prose hypotheses, including arbitrary endpoints and n = 0. The proof places the open box inside a compact closed box, applies continuous integrability there, and restricts to the subset. It is complete, independent and non-circular."
+    },
+    {
+      "key": "slice_integral",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type states both promised conclusions under exactly a ≤ b and integrability on the cube. The supplied measurable equivalence preserves the intended product and Euclidean volume measures. Its preimage calculation, restricted-measure Fubini argument and null-endpoint conversion prove both conclusions, including m = 0 and a = b, without an isometry assumption."
+    },
+    {
+      "key": "interval_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type exactly matches the C¹, boundedness and strict endpoint hypotheses. FTC gives the product boundary term; the proof handles both segment orientations, averages the pointwise estimate over a positive interval length, and bounds both endpoints. This establishes precisely the stated constants without circular reliance."
+    },
+    {
+      "key": "coord_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and type agree on the domain, regularity, bound, derivative and constants. The proof correctly uses only its three declared dependencies, verifies the affine slice derivative and Euclidean unit-vector norm, obtains 2/(1−2δ) ≤ 4, and justifies integration of the line estimate. The unused assumption 0 ≤ δ is harmless. No further proof planning is needed."
+    },
+    {
+      "key": "div_product",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type matches the pointwise identity and requires only differentiability at x. Coordinate differentiation, the scalar product rule, the orthonormal-basis trace formula and linear expansion of G(x) establish the identity completely. The derivative-to-linear-map coercion is correct, and subtraction is outside the coordinate sum. The proof has no child or parent dependency."
+    }
+  ],
+  "required_changes": []
+}

@@ -1,0 +1,123 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.regular_set_dense-a1.integer_combination-a1.tangent_locality-a1`
+- Child DAG node: `root.regular_set_dense-a1.integer_combination-a1.tangent_locality-a1.ae_excess-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: steps 1–4 of the parent proof (Simon Ch. 1, Theorem 3.16, chapter-01.txt lines 905–925; Mathlib Besicovitch.ae_tendsto_measure_inter_div). Notation: μ := μHE[n]; B̄_r(z) and B_r(z) are the closed and open balls; all measures and quotients lie in [0, ∞], with u/v := u·v⁻¹ (so u/0 = ∞ for u ≠ 0, 0/0 = 0) and 0·∞ = 0. For x ∈ ℝ^P and ρ ∈ ℝ write a(ρ) := μ(B ∩ B̄_ρ(x)), b(ρ) := μ(A ∩ B̄_ρ(x)), e(ρ) := μ((B ∖ A) ∩ B̄_ρ(x)) (x will be fixed in steps 3–4).
+
+1. Countable compact cover. ℝ^P is separable; let 𝒟 ⊆ ℝ^P be a countable dense set and 𝒥 := {(c, q) ∈ 𝒟 × ℚ : q > 0 and B̄_q(c) ⊆ U}, a countable set (a subset of the countable set 𝒟 × ℚ). Claim: every y ∈ U lies in B_q(c) for some (c, q) ∈ 𝒥. Since U is open, choose t > 0 with B_t(y) ⊆ U; by density choose c ∈ 𝒟 with |c − y| < t/3, and choose q ∈ ℚ with t/3 < q < 2t/3. Then q > 0 and |y − c| < t/3 < q, so y ∈ B_q(c); and if |z − c| ≤ q then |z − y| ≤ |z − c| + |c − y| < 2t/3 + t/3 = t, so B̄_q(c) ⊆ B_t(y) ⊆ U and (c, q) ∈ 𝒥.
+
+2. Density theorem on one ball. Fix j = (c, q) ∈ 𝒥 and put K := B̄_q(c); K is compact (closed balls of ℝ^P are compact), Borel, and K ⊆ U. Let ν := μ⌞(B ∩ K) (the restriction of μ to B ∩ K). Then ν(ℝ^P) = μ(B ∩ K) < ∞ by hypothesis, so ν is a finite, hence locally finite, Borel measure on ℝ^P. ℝ^P is a second-countable finite-dimensional normed space, so it has the Besicovitch covering property, and Besicovitch's density theorem (Mathlib Besicovitch.ae_tendsto_measure_inter_div, applied to ν and the set A) gives: for ν⌞A-a.e. x,
+   ν(A ∩ B̄_ρ(x)) / ν(B̄_ρ(x)) → 1 as ρ → 0 in 𝓝[>]0.   (2.1)
+Since A and K are Borel and A ⊆ B, ν⌞A = μ⌞(A ∩ B ∩ K) = μ⌞(A ∩ K) = (μ⌞A)⌞K. Restriction to the Borel set K turns an a.e. statement for (μ⌞A)⌞K into: for μ⌞A-a.e. x, if x ∈ K then (2.1) holds at x. Let N_j be the μ⌞A-null set of points x for which this implication fails.
+
+3. Identification of the quotient. Let x ∉ N_j with x ∈ B_q(c) (so x ∈ K and (2.1) holds at x). Put δ₀ := q − |x − c| > 0. For 0 < ρ < δ₀ we have B̄_ρ(x) ⊆ B_q(c) ⊆ K, because |y − x| ≤ ρ implies |y − c| ≤ ρ + |x − c| < q. Since B ∩ K is Borel, ν(Z) = μ(Z ∩ B ∩ K) for every Z ⊆ ℝ^P; for 0 < ρ < δ₀ this gives ν(A ∩ B̄_ρ(x)) = μ(A ∩ B̄_ρ(x)) = b(ρ) (because A ∩ B̄_ρ(x) ⊆ B ∩ K) and ν(B̄_ρ(x)) = μ(B ∩ B̄_ρ(x)) = a(ρ). The two quotients therefore agree for all ρ ∈ (0, δ₀), a set belonging to 𝓝[>]0, so by (2.1)
+   b(ρ)/a(ρ) → 1 as ρ → 0 in 𝓝[>]0.   (3.1)
+Moreover, for 0 < ρ < δ₀: a(ρ) ≤ μ(B ∩ K) < ∞ and b(ρ) ≤ a(ρ) (as A ⊆ B).
+
+4. The excess estimate. Keep x as in step 3 and let ε ∈ (0, ∞].
+   (a) If ε ≥ 1: for every ρ, (B ∖ A) ∩ B̄_ρ(x) ⊆ B ∩ B̄_ρ(x), so e(ρ) ≤ a(ρ) = 1·a(ρ) ≤ ε·a(ρ).
+   (b) If ε < 1: then 1 − ε < 1 (truncated subtraction, ε > 0), so (1 − ε, ∞] is a neighbourhood of 1 and by (3.1) eventually b(ρ)/a(ρ) > 1 − ε; also eventually 0 < ρ < δ₀. Fix such a ρ. Then a(ρ) ≠ 0: otherwise b(ρ) ≤ a(ρ) = 0 and b(ρ)/a(ρ) = 0/0 = 0, which is not > 1 − ε. Since 0 < a(ρ) < ∞, the inequality b(ρ)/a(ρ) > 1 − ε is equivalent to (1 − ε)·a(ρ) < b(ρ); in particular (1 − ε)·a(ρ) ≤ b(ρ). Next, (B ∖ A) ∩ B̄_ρ(x) = (B ∩ B̄_ρ(x)) ∖ (A ∩ B̄_ρ(x)), where A ∩ B̄_ρ(x) ⊆ B ∩ B̄_ρ(x) is Borel with finite measure b(ρ) ≤ a(ρ) < ∞; hence e(ρ) = a(ρ) − b(ρ). Therefore, using a(ρ) < ∞ and ε ≤ 1,
+      e(ρ) = a(ρ) − b(ρ) ≤ a(ρ) − (1 − ε)·a(ρ) = (1 − (1 − ε))·a(ρ) = ε·a(ρ).
+   In both cases, e(ρ) ≤ ε·a(ρ) holds eventually as ρ → 0 in 𝓝[>]0.
+
+5. Conclusion. By steps 2–4, for each j = (c, q) ∈ 𝒥, every x ∉ N_j with x ∈ B_q(c) satisfies: for all ε ∈ (0, ∞], eventually in 𝓝[>]0, μ((B ∖ A) ∩ B̄_ρ(x)) ≤ ε·μ(B ∩ B̄_ρ(x)). Since 𝒥 is countable, N := ⋃_{j∈𝒥} N_j is μ⌞A-null (a countable family of a.e. statements holds simultaneously a.e.; Mathlib ae_ball_iff). Also μ⌞A-a.e. x lies in A, since A is Borel and (μ⌞A)(ℝ^P ∖ A) = 0. Let x ∈ A ∖ N. As A ⊆ B ⊆ U, step 1 gives (c, q) ∈ 𝒥 with x ∈ B_q(c), and x ∉ N_{(c,q)}, so x satisfies the conclusion for every ε ∈ (0, ∞]. The exceptional set N ∪ (ℝ^P ∖ A) does not depend on ε. The cases n = 0 and P = 0 need no change. ∎
+
+## Key steps
+
+1. Cover U by the open balls B_q(c) of countably many compact balls B̄_q(c) ⊆ U (c in a countable dense set, q ∈ ℚ₊).
+2. For each such K, ν := μ⌞(B ∩ K) is finite; Besicovitch gives ν(A ∩ B̄_ρ(x))/ν(B̄_ρ(x)) → 1 for ν⌞A = (μ⌞A)⌞K-a.e. x.
+3. For x ∈ B_q(c) and ρ < q − |x − c|, that quotient equals μ(A ∩ B̄_ρ(x))/μ(B ∩ B̄_ρ(x)), with finite denominator.
+4. ε ≥ 1: monotonicity. ε < 1: quotient > 1 − ε forces a positive finite denominator and μ((B ∖ A) ∩ B̄_ρ(x)) = a − b ≤ (1 − (1 − ε))a = εa.
+5. Countably many null sets; the exceptional set is independent of ε.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat local-references/123e8435b4a2469b/manifest.json`
+- `cmp local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean GMT/Ch07/Contract.lean; cmp GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean`
+- `grep -n -E 'blowUpMap|HasApproximateTangentSpaceAt|^theorem|^def' simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `grep -n 'theorem ae_tendsto_measure_inter_div ' mathlib/Mathlib/MeasureTheory/Covering/Besicovitch.lean; grep -n 'instHasBesicovitchCovering' mathlib/Mathlib/MeasureTheory/Covering/BesicovitchVectorSpace.lean`
+- `grep -n 'theorem Isometry.euclideanHausdorffMeasure_image|theorem MeasureTheory.euclideanHausdorffMeasure_homothety_image' mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean`
+- `grep -n 'theorem setIntegral_union |theorem norm_setIntegral_le_of_norm_le_const |theorem setIntegral_eq_of_subset_of_forall_sdiff_eq_zero' mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean`
+- `grep -rn "theorem ae_ball_iff|theorem ae_restrict_iff' |theorem restrict_restrict |theorem restrict_apply' |theorem measure_sdiff " mathlib/Mathlib/MeasureTheory/Measure mathlib/Mathlib/MeasureTheory/OuterMeasure`
+- `grep -n 'protected theorem tendsto_nhds_zero|protected theorem Tendsto.const_mul' mathlib/Mathlib/Topology/Instances/ENNReal/Lemmas.lean`
+- `grep -c rsdic_tl_ dag.json issue-workers.json; grep -rl rsdic_tl_ nodes GMT local-references/123e8435b4a2469b; git log --all --oneline -S rsdic_tl_; git ls-remote origin | grep integer-combination-a1-tangent-locality`
+- `python3 listing of dag.json nodes tangent_locality-a1, tangent_growth-a1 and regular_components_are_minimizing-a1.approx_tangent_locality-a1 subtree (status, lean_name, lean_statement, children)`
+- `diff Contract.lean Submission.lean in .swarm-worktrees/0dab999dcad4a9dc99a8 (rsdic_measure_closedBall_le_of_tangent) and .swarm-worktrees/b405db921480df316392 (regcomp_atl_blowUp_measure_scaling)`
+- `grep -n '_existing_lean_name_problem|node bound|An accepted theorem may be reused' /runtime/flows/gmt-claude-8a1588a65b86/_recursive_lean/runtime.py`
+- `sed -n 80,96p chapter-03.txt; sed -n 296,306p chapter-03.txt; sed -n 903,926p chapter-01.txt`
+- `python3 -I /tmp/rsdic-tl-v3-scripts/gen_challenges.py children.json /tmp/rsdic-tl-v3/cmp (gmt-compare.py child_modules/contract_scope + lean_contract.validate_lean_statement)`
+- `lake env lean /tmp/rsdic-tl-v3/Assembly.lean`
+- `lake env lean /tmp/rsdic-tl-v3/All.lean`
+- `lake env lean /tmp/rsdic-tl-v3/CmpAll.lean; lake env lean /tmp/rsdic-tl-v3/cmp/{ae_excess,excess_density,blowup_scaling,pointwise_comparison}_Challenge.lean`
+- `lake env lean /tmp/rsdic-tl-v3/Inst.lean (set_option pp.explicit true instance check)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Covering/Besicovitch.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Covering/BesicovitchVectorSpace.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/OuterMeasure/AE.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Instances/ENNReal/Lemmas.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/issue-workers.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-regular-set-dense-a1-integer-combination-a1-tangent-locality-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-regular-set-dense-a1-integer-combination-a1-tangent-locality-a1/parent-supplied-natural-proof.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-regular-set-dense-a1-integer-combination-a1-tangent-locality-a1/decomposition-v2.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-regular-set-dense-a1-integer-combination-a1-tangent-locality-a1/decomposition-audit-v2.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/.swarm-worktrees/0dab999dcad4a9dc99a8/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/.swarm-worktrees/b405db921480df316392/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/runtime/flows/gmt-claude-8a1588a65b86/_recursive_lean/runtime.py`
+- `/runtime/flows/gmt-claude-8a1588a65b86/_recursive_lean/store.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-01.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-03.txt`
+- `/tmp/rsdic-tl-v3/Assembly.lean`
+- `/tmp/rsdic-tl-v3/All.lean`
+- `/tmp/rsdic-tl-v3/CmpAll.lean`
+- `/tmp/rsdic-tl-v3/cmp/ae_excess_Challenge.lean`
+- `/tmp/rsdic-tl-v3/cmp/excess_density_Challenge.lean`
+- `/tmp/rsdic-tl-v3/cmp/blowup_scaling_Challenge.lean`
+- `/tmp/rsdic-tl-v3/cmp/pointwise_comparison_Challenge.lean`
+- `/tmp/rsdic-tl-v3/Inst.lean`
+- `/tmp/rsdic-tl-review-jOkZ/MyAssembly.lean`
+- `/tmp/rsdic-tl-review-jOkZ/CmpMine.lean`
+
+**Snapshot.** The snapshot (project b4d606d, Mathlib 25730c7c) Ch07 Contract.lean is byte-identical to the workspace Contract.lean and Submission.lean.
+
+**No reusable locality theorem.** None exists in the snapshot, GMT or SimonGMT. The only declarations with the same type are DAG nodes of the regcomp branch:
+- accepted: `regcomp_atl_blowUp_measure_scaling`;
+- still decomposing: `regcomp_atl_tangent_iff_of_density_zero` and `regcomp_approx_tangent_locality`.
+
+**Reusable library facts found.**
+- SimonGMT: `HasApproximateTangentSpaceAt` and `blowUpMap` (Def. 1.4 with Bochner set integrals along 𝓝[>]0).
+- Mathlib:
+  - `Besicovitch.ae_tendsto_measure_inter_div`, with `instHasBesicovitchCovering` for finite-dimensional spaces;
+  - `Isometry.euclideanHausdorffMeasure_image`, `euclideanHausdorffMeasure_homothety_image`;
+  - `setIntegral_union`, `setIntegral_eq_of_subset_of_forall_sdiff_eq_zero`, `norm_setIntegral_le_of_norm_le_const`;
+  - `ae_ball_iff`, `ae_restrict_iff'`, `Measure.restrict_restrict`, `Measure.restrict_apply'`, `measure_sdiff`;
+  - `ENNReal.tendsto_nhds_zero`, `ENNReal.Tendsto.const_mul`.
+
+**Runtime rules (runtime.py).** Reusing an accepted cross-branch name with an identical type is allowed. A node still active under another parent requires a fresh name. Decompositions that exceed `max_nodes` are refused; the bound is now 1000 and the DAG has 230 nodes.
+
+**Names.** `rsdic_tl_*` is unused everywhere except this node's own unpublished drafts.
+
+**Lean checks.**
+- The four child types elaborate in the comparator's replayed scope, with the intended instances.
+- All four have sorry-free proofs using only propext, Classical.choice and Quot.sound.
+- The exact frozen parent type follows from them plus tangent_growth: only sorryAx from stubs; axiom-clean with the accepted tangent_growth proof.
+- An independent reviewer reproduced the assembly and accepted.

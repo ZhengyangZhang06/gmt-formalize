@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.moving_blowups-a1.deformation_theorem-a1.lipschitz_pushforward-a1.im_cylinder-a1.cylinder_rectifiable-a1",
+  "parent_id": "root.dimension_reduction_results-a1.moving_blowups-a1.deformation_theorem-a1.lipschitz_pushforward-a1.im_cylinder-a1",
+  "depth": 6,
+  "title": "Rectifiability of a cylinder I × M (parent step 6, rectifiability)",
+  "statement": "For N, n ∈ ℕ, every set I ⊆ ℝ and every countably n-rectifiable M ⊆ ℝ^N, the set Ψ(I × M) ⊆ ℝ^{N+1} is countably (n+1)-rectifiable, where Ψ(t, x) := (t, x_1, …, x_N) (WithLp.toLp 2 (Fin.cons t (WithLp.ofLp x))).",
+  "lean_statement": "∀ (N n : ℕ) (I : Set ℝ) (M : Set (Euclid N)), CountablyRectifiable n M → CountablyRectifiable (n + 1) ((fun p : ℝ × Euclid N => (WithLp.toLp 2 (Fin.cons p.1 (WithLp.ofLp p.2)) : Euclid (N + 1))) '' (I ×ˢ M))",
+  "lean_name": "dimred_mbl_dt_lp_imc_cylinder_rectifiable",
+  "depends_on": [
+    "root.dimension_reduction_results-a1.moving_blowups-a1.deformation_theorem-a1.lipschitz_pushforward-a1.im_cylinder-a1.suspension-a1",
+    "root.dimension_reduction_results-a1.moving_blowups-a1.deformation_theorem-a1.lipschitz_pushforward-a1.im_cylinder-a1.product_null-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.dimension_reduction_results-a1.moving_blowups-a1.deformation_theorem-a1.lipschitz_pushforward-a1.im_cylinder-a1.suspension-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.dimension_reduction_results-a1.moving_blowups-a1.deformation_theorem-a1.lipschitz_pushforward-a1.im_cylinder-a1.product_null-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-moving-blowups-a1-deformation-the-f173994900-a1"
+}
