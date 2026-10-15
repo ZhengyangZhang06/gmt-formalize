@@ -1,0 +1,86 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json (project b4d606d, mathlib 25730c7c)",
+        "python3 -I: read nodes/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-pushforwa-b3d596d026/parent-child-handoff.json and nodes/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1/decomposition-v3.json (frozen sibling type dpf_smooth_approx_compact_perturbation)",
+        "python3 -I: dag.json scan of lean_statements/lean_names for pullback|IsUnitOrientationOf|compContinuousLinearMap|IsTestForm|exteriorDerivative|tendsto_integral|dominated",
+        "rg -n 'pullback|Pullback|compContinuousLinearMap|tendsto_integral_of_dominated|IsTestForm' project/GMT --glob '*.lean'",
+        "rg -n 'theorem .*pullback|def .*[Pp]ullback' lake-packages-25730c7c/simongmt/Poincare/SimonGMT --glob '*.lean'",
+        "rg -n -F in mathlib/Mathlib: 'theorem extDeriv_pullback', 'lemma analyticOnNhd_compContinuousLinearMapCLM', 'theorem continuous_compContinuousLinearMapCLM', 'theorem norm_compContinuousLinearMap_le', 'theorem AnalyticOnNhd.contDiff ', 'theorem ContDiff.clm_apply', 'theorem Continuous.clm_apply', 'theorem tendsto_integral_of_dominated_convergence', 'bounded_above_of_compact_support', 'theorem isBoundedBilinearMap_apply', 'theorem _root_.Continuous.comp_aestronglyMeasurable₂', 'theorem IntegrableOn.integrable_indicator ', 'theorem restrict_restrict (hs : MeasurableSet s)', 'image_eq_one_of_notMem_mulTSupport', 'theorem ContDiff.continuous_fderiv ', 'theorem ContDiff.fderiv_right'",
+        "grep/git grep over dag.json, issue-workers.json, DAG.md, nodes/* and GMT/ on all 1178 local branches for dpf_pb_smooth_pullback_isTestForm and dpf_pb_imrep_pullback_integral_tendsto (no match)",
+        "python3 -I: gmt-compare.contract_scope(GMT/Ch07/Contract.lean, GMT.Ch07.main_theorem) and lean_contract.validate_lean_statement on both child types, the parent type and the sibling type",
+        "lake env lean /tmp/pb-split-review/Types.lean",
+        "lake env lean /tmp/pb-split-review/Assembly.lean (#print axioms assembly_conditional)",
+        "lake env lean /tmp/pb-split-review/ChildA.lean; lake env lean /tmp/pb-split-review/ChildC.lean",
+        "lake env lean /tmp/pb-split-review/final/Final.lean (#print axioms Submission.dpf_pb_smooth_pullback_isTestForm, Submission.dpf_pb_imrep_pullback_integral_tendsto, Submission.parent_from_children)",
+        "sed -n 400,430p book/chapter-06.txt (Simon 6.2.23-6.2.24)"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-pushforwa-b3d596d026/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1/decomposition-v3.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/DifferentialForm/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Analytic/CPolynomial.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/Alternating/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Module/Alternating/Topology.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/Defs.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/Comp.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Operator/BoundedLinearMaps.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Group/Bounded.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/DominatedConvergence.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/StronglyMeasurable/AEStronglyMeasurable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/StronglyMeasurable/Lemmas.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Support.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/AffineCurrentPushforward.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt",
+        "/tmp/pb-split-review/Types.lean",
+        "/tmp/pb-split-review/Assembly.lean",
+        "/tmp/pb-split-review/ChildA.lean",
+        "/tmp/pb-split-review/ChildC.lean",
+        "/tmp/pb-split-review/final/Final.lean",
+        "/tmp/pb-split-review/final/stmts.json"
+      ],
+      "conclusion": "Neither child exists anywhere in the local snapshot (project b4d606d, Mathlib 25730c7c) or in the pinned SimonGMT (2b36630), so both are new:\n- No lemma says a pullback by a non-affine smooth map is a test form. SimonGMT has only affinePullbackForm_isTestForm and the domain-restricted exteriorDerivativeOn_pullbackFormWithin.\n- No dominated-convergence lemma covers IMRep pull-back integrals. The project's only IsTestForm use is currentEval in the Ch07 contract.\n- In the DAG, only unrelated unit-orientation norm lemmas from other branches appear (e.g. the accepted unit_orientation_norm_le_one). The three-line orientation bound is inlined in child 2 instead of being imported from another branch.\n\nEvery library fact the child proofs use exists in the pinned versions with compatible hypotheses:\n- extDeriv_pullback (DifferentialForm/Basic.lean:259);\n- analyticOnNhd_compContinuousLinearMapCLM (CPolynomial.lean:271) and AnalyticOnNhd.contDiff (ContDiff/Defs.lean:1186);\n- ContDiff.clm_apply, ContDiff.fderiv_right and ContDiff.continuous_fderiv;\n- continuous_compContinuousLinearMapCLM and norm_compContinuousLinearMap_le (Alternating/Basic.lean:437, :432);\n- isBoundedBilinearMap_apply and Continuous.clm_apply;\n- Continuous.comp_aestronglyMeasurable₂;\n- Continuous.bounded_above_of_compact_support (Group/Bounded.lean:153);\n- Measure.restrict_restrict and IntegrableOn.integrable_indicator;\n- image_eq_zero_of_notMem_tsupport (to_additive of Topology/Algebra/Support.lean:111);\n- tendsto_integral_of_dominated_convergence (DominatedConvergence.lean:57).\n\nLean checks:\n- Both child types pass validate_lean_statement and elaborate in the comparator's replayed Contract scope.\n- Both children were proved sorry-free under their exact frozen strings.\n- The exact frozen parent type was derived from the two children, with the exact frozen sibling type (dpf_smooth_approx_compact_perturbation) taken as a hypothesis.\n- All three use only [propext, Classical.choice, Quot.sound].\n\nNeither proposed name collides with any DAG node, stored proposal, or the GMT sources on any of the 1178 local branches."
+    }
+  ],
+  "parent_id": "root.minimizing_implies_stationary-a1.diffeo_pushforward-a1.pushforward_boundary-a1",
+  "child_id": "root.minimizing_implies_stationary-a1.diffeo_pushforward-a1.pushforward_boundary-a1.smooth_pullback_test_form-a1",
+  "subproblem": {
+    "key": "smooth_pullback_test_form",
+    "title": "Smooth pullback of a test form by a compactly supported perturbation of the identity is a test form",
+    "statement": "Let P, d ∈ ℕ, E := ℝ^P, K' ⊆ E compact, ψ : E → E a C^∞ map with ψ(x) = x for every x ∉ K', and α a test d-form on E (C^∞ with compact support; IsTestForm α). Define the pullback ψ^#α by (ψ^#α)(x) := α(ψ(x))∘Dψ(x), i.e. (α (ψ x)).compContinuousLinearMap (fderiv ℝ ψ x). Then ψ^#α is a test form (IsTestForm (ψ^#α)) and tsupport(ψ^#α) ⊆ tsupport α ∪ K'.",
+    "lean_statement": "∀ (P d : ℕ) (K' : Set (Euclid P)) (ψ : Euclid P → Euclid P) (α : DifferentialForm (Euclid P) d), IsCompact K' → ContDiff ℝ (⊤ : ℕ∞) ψ → (∀ x, x ∉ K' → ψ x = x) → IsTestForm α → IsTestForm (fun x => (α (ψ x)).compContinuousLinearMap (fderiv ℝ ψ x)) ∧ tsupport (fun x => (α (ψ x)).compContinuousLinearMap (fderiv ℝ ψ x)) ⊆ tsupport α ∪ K'",
+    "lean_name": "dpf_pb_smooth_pullback_isTestForm",
+    "depends_on": [],
+    "natural_proof": "Source: step 3 of the parent proof (the pull-back ψ^#ω of a test form under a smooth map, Simon 6.2.23–6.2.24), with details filled in.\n\nNotation:\n- E := ℝ^P.\n- For L ∈ E →L[ℝ] E, Φ(L) := ContinuousAlternatingMap.compContinuousLinearMapCLM L, the continuous linear map γ ↦ γ∘L on d-covectors. Thus (ψ^#α)(x) = Φ(Dψ(x))(α(ψ(x))) by compContinuousLinearMapCLM_apply.\n- F₀ := tsupport α ∪ K'.\n\n1. Properties of α. IsTestForm α = IsSmoothForm α ∧ HasCompactSupport α, and IsSmoothForm α means ContDiff ℝ ∞ α. So α is C^∞ and tsupport α is compact.\n\n2. Smoothness of ψ^#α.\n (a) Φ is analytic on all of E →L[ℝ] E (Mathlib ContinuousAlternatingMap.analyticOnNhd_compContinuousLinearMapCLM univ), hence C^∞ (AnalyticOnNhd.contDiff).\n (b) Since ψ is C^∞, x ↦ Dψ(x) = fderiv ℝ ψ x is C^∞ (ContDiff.fderiv_right with m = ∞, using ∞ + 1 ≤ ∞).\n (c) x ↦ α(ψ(x)) is C^∞, as the composition of the C^∞ maps α (step 1) and ψ (ContDiff.comp).\n (d) By (a) and (b), x ↦ Φ(Dψ(x)) is a C^∞ map into the continuous linear maps on d-covectors. Applying a C^∞ family of continuous linear maps to the C^∞ family of vectors in (c) is C^∞ (ContDiff.clm_apply).\n Hence x ↦ Φ(Dψ(x))(α(ψ(x))) = (ψ^#α)(x) is C^∞, i.e. IsSmoothForm (ψ^#α) (unfold IsSmoothForm to ContDiff ℝ ∞).\n\n3. F₀ is closed. tsupport α is closed by definition. K' is compact in the Hausdorff space E, hence closed. A union of two closed sets is closed.\n\n4. ψ^#α vanishes off F₀. Let z ∉ F₀.\n - Then z ∉ K', so ψ(z) = z by hypothesis.\n - Also z ∉ tsupport α, so α(z) = 0 (image_eq_zero_of_notMem_tsupport).\n - Hence (ψ^#α)(z) = α(z)∘Dψ(z) = 0∘Dψ(z) = 0, since the zero d-covector composed with any linear map is zero (both sides give 0 on every d-tuple of vectors).\n Thus support(ψ^#α) ⊆ F₀.\n\n5. Support bound. By steps 3 and 4, tsupport(ψ^#α) = closure(support(ψ^#α)) ⊆ F₀ = tsupport α ∪ K' (closure_minimal). This is the second conjunct.\n\n6. Compact support. tsupport α is compact (step 1) and K' is compact, so F₀ is compact. tsupport(ψ^#α) is closed and contained in F₀ (step 5), hence compact (IsCompact.of_isClosed_subset), i.e. HasCompactSupport (ψ^#α).\n\n7. Conclusion. Steps 2 and 6 give IsTestForm (ψ^#α) = IsSmoothForm (ψ^#α) ∧ HasCompactSupport (ψ^#α), the first conjunct. Step 5 is the second conjunct.",
+    "proof_key_steps": [
+      "IsTestForm α gives α C^∞ with compact tsupport.",
+      "ψ^#α(x) = Φ(Dψ(x))(α(ψ(x))) where Φ(L) = compContinuousLinearMapCLM L is analytic, hence C^∞. Since Dψ and α∘ψ are also C^∞, ψ^#α is C^∞ (ContDiff.clm_apply).",
+      "F₀ = tsupport α ∪ K' is closed (K' is compact in a Hausdorff space) and compact.",
+      "For z ∉ F₀, ψ(z) = z and α(z) = 0, so ψ^#α(z) = 0. Since F₀ is closed, tsupport ψ^#α ⊆ F₀.",
+      "tsupport ψ^#α is a closed subset of the compact set F₀, so ψ^#α has compact support and is a test form."
+    ]
+  },
+  "audit": {
+    "key": "smooth_pullback_test_form",
+    "acceptable": true,
+    "natural_proof_acceptable": true,
+    "reason": "The prose includes every hypothesis and exactly matches the standalone Lean proposition. Analytic dependence of covector precomposition on the derivative proves smoothness. Vanishing outside the closed compact union tsupport α ∪ K' proves the support inclusion and compact support. Every step is justified without invoking this child or its parent. The conclusion supplies the pulled-back test forms needed by the parent. The bare declaration name is unreserved."
+  },
+  "resolved_dependencies": [],
+  "plan_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-pushforwa-72cd9bd2a7/parent-supplied-plan.md",
+  "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-pushforwa-72cd9bd2a7/parent-supplied-natural-proof.md",
+  "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-pushforwa-72cd9bd2a7/parent-supplied-natural-proof.json"
+}
