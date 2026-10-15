@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.constant_planes-a1.translation-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.constant_planes-a1",
+  "depth": 5,
+  "title": "Vanishing directional-derivative integrals force translation invariance of a locally finite measure",
+  "statement": "Let P ∈ ℕ, ν a Borel measure on ℝ^P = Euclid P with ν(K) < ∞ for every compact K ⊆ ℝ^P, and v ∈ ℝ^P. Assume ∫Dφ(y)[v] dν(y) = 0 (the Bochner integral of y ↦ fderiv ℝ φ y v) for every C^∞ function φ : ℝ^P → ℝ with compact support. Then ν({x : v + x ∈ A}) = ν(A) for every Borel set A ⊆ ℝ^P, i.e. ν is invariant under the translation by v.",
+  "lean_statement": "∀ (P : ℕ) (ν : Measure (Euclid P)) (v : Euclid P), (∀ K : Set (Euclid P), IsCompact K → ν K < ∞) → (∀ φ : Euclid P → ℝ, ContDiff ℝ (⊤ : ℕ∞) φ → HasCompactSupport φ → ∫ y, fderiv ℝ φ y v ∂ν = 0) → ∀ A : Set (Euclid P), MeasurableSet A → ν ((fun x => v + x) ⁻¹' A) = ν A",
+  "lean_name": "cbr_ci_cp_translation_invariant_of_fderiv",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-9be3bbafd6-a1"
+}

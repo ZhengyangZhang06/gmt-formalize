@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.flat_convergence-a1.total_bounded-a1.high_degree_zero-a1",
+  "parent_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.flat_convergence-a1.total_bounded-a1",
+  "depth": 5,
+  "title": "Every current of degree d > P on a subset of ℝ^P is zero",
+  "statement": "Let P, d ∈ ℕ with P < d, let U ⊆ ℝ^P be any set and let A ∈ 𝒟_d(U). Then A = 0. Conventions: ℝ^P = Euclid P and Hᵈ = μHE[d]. For D ⊆ ℝ^P, 𝒟^d(D) = TestFormOn D d (smooth d-forms on ℝ^P with compact support contained in D) and 𝒟_d(D) = GeometricCurrentOn D d; ∂X = X.boundary (∂X(ω) = X(dω)). For G ⊆ ℝ^P, M_G(X) = X.massOn G is the supremum of ofReal(X(ω)) over ω ∈ 𝒟^d(D) with tsupport ω ⊆ G and covectorEuclideanNorm(ω(x)) ≤ 1 for all x; M(X) = X.mass = M_D(X). An IMRep R = (M, θ, ξ) in D is the contract structure IMRep D d; R.action(ω) = ∫_M θ(x) ξ(x)(ω(x)) dHᵈ(x); R represents X when X(ω) = R.action(ω) for every ω ∈ 𝒟^d(D); μ_R = R.measure = (Hᵈ⌞M).withDensity θ; X is integer multiplicity (IM, IsIntegerMultiplicity X) if some IMRep in D represents it. For V ⊆ D, ι = testFormOnInclusion regards ω ∈ 𝒟^d(V) as an element of 𝒟^d(D) with the same underlying form, and X⌞V = X.restrictDomain (V ⊆ D) ∈ 𝒟_d(V) is given by X⌞V(ω) = X(ιω). X vanishes off a set K if X(ω) = 0 for every test form ω whose tsupport is disjoint from K.",
+  "lean_statement": "∀ (P d : ℕ) (U : Set (Euclid P)) (A : GeometricCurrentOn U d), P < d → A = 0",
+  "lean_name": "dor_lmb_fc_tb_eq_zero_of_lt_degree",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-limsup-mass-bound-a1-flat-converg-f0e8ed9b4e-a1"
+}

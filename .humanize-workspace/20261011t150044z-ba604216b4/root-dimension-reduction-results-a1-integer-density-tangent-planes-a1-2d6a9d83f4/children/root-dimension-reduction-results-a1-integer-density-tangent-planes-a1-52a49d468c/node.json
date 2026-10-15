@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_sector_endpoint_density-a1.fibre_area-a1.area_formula_prod-a1",
+  "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_sector_endpoint_density-a1.fibre_area-a1",
+  "depth": 5,
+  "title": "Carrier area formula for C¹ maps into ℝ × ℝ (transport through Euclid 2)",
+  "statement": "Let P ∈ ℕ, M, Z ⊆ ℝ^P, F : ℝ^P → ℝ × ℝ and h : ℝ^P → [0, ∞]. Assume M is Borel and countably 2-rectifiable, H²(M ∩ K) < ∞ for every compact K (H² := μHE[2]), Z is open, F is C¹ on Z, and h is a.e.-measurable for H²⌞M. For x ∈ ℝ^P let T_x := approxTangentPlane 2 M x, (u_i) := stdOrthonormalBasis ℝ T_x (indexed by Fin(dim T_x)), and J_F(x) := sqrt(det Γ(x)) with Γ(x)_ij := (DF(x)u_i)_1(DF(x)u_j)_1 + (DF(x)u_i)_2(DF(x)u_j)_2, DF(x) := fderiv ℝ F x. Then p ↦ Σ_{x ∈ M ∩ Z ∩ F⁻¹{p}} h(x) (tsum over the subtype) is a.e.-measurable for Lebesgue measure on ℝ × ℝ, and ∫_{ℝ×ℝ} Σ_{x ∈ M ∩ Z ∩ F⁻¹{p}} h(x) dp = ∫_{M ∩ Z} ofReal(J_F(x))·h(x) dH²(x) (lower Lebesgue integrals).",
+  "lean_statement": "∀ (P : ℕ) (M Z : Set (Euclid P)) (F : Euclid P → ℝ × ℝ) (h : Euclid P → ℝ≥0∞), MeasurableSet M → CountablyRectifiable 2 M → (∀ K : Set (Euclid P), IsCompact K → μHE[2] (M ∩ K) ≠ ∞) → IsOpen Z → ContDiffOn ℝ 1 F Z → AEMeasurable h (μHE[2].restrict M) → AEMeasurable (fun p : ℝ × ℝ => ∑' x : ↥(M ∩ Z ∩ F ⁻¹' {p}), h x) volume ∧ ∫⁻ p : ℝ × ℝ, (∑' x : ↥(M ∩ Z ∩ F ⁻¹' {p}), h x) = ∫⁻ x in M ∩ Z, ENNReal.ofReal (Real.sqrt (Matrix.det (Matrix.of fun i j : Fin (Module.finrank ℝ (approxTangentPlane 2 M x)) => (fderiv ℝ F x (stdOrthonormalBasis ℝ (approxTangentPlane 2 M x) i)).1 * (fderiv ℝ F x (stdOrthonormalBasis ℝ (approxTangentPlane 2 M x) j)).1 + (fderiv ℝ F x (stdOrthonormalBasis ℝ (approxTangentPlane 2 M x) i)).2 * (fderiv ℝ F x (stdOrthonormalBasis ℝ (approxTangentPlane 2 M x) j)).2))) * h x ∂μHE[2]",
+  "lean_name": "idtp_cse_fa_area_formula_prod",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-52a49d468c-a1"
+}

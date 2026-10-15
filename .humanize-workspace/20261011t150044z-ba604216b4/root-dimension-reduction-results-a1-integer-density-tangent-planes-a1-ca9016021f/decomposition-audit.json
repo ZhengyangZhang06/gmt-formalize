@@ -1,0 +1,74 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "HasMassDensity|IsConeCurrent|IsMinimizingIn|IsIntegerMultiplicity|IsEmbeddedSubmanifold|BoundaryVanishes|namespace|open |axiom|sorry",
+        "idtp_tdc_dlc_",
+        "dimred_cs_mi_hasMassDensity_unique",
+        "theorem mul_le_sin|one_sub_sq_div_two_le_cos|pi_le_four|theorem cos_arccos|theorem sin_arccos|theorem arccos_nonneg|theorem arccos_le_pi|cos_two_mul_eq_one_sub",
+        "def Infinite.natEmbedding|theorem Finite.preimage.|isBounded_range_of_tendsto|theorem closed_of_finiteDimensional|upperSemicontinuousOn_univ_iff|abs_norm_sub_norm_le|ofReal_eq_ofReal_iff",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/dlc-independent-audit-663t1zpb/Types.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/dlc-split-a1/gen/Assembly.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/dlc-independent-audit-663t1zpb/Uniqueness.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/SpecialFunctions/Trigonometric/Bounds.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/SpecialFunctions/Trigonometric/Inverse.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Complex/Trigonometric.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Module/FiniteDimension.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/Bounded.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Data/Set/Finite/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Data/Set/Finite/Lattice.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-ca9016021f/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-ca9016021f/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/.swarm-worktrees/64b6194259deebd2d7f5/gmt-ch07/GMT/Ch07/Submission.lean",
+        "/tmp/dlc-independent-audit-663t1zpb/Types.lean",
+        "/tmp/dlc-independent-audit-663t1zpb/Uniqueness.lean",
+        "/tmp/dlc-split-a1/gen/Assembly.lean",
+        "/tmp/dlc-split-a1/agents/small/Check.lean",
+        "/tmp/dlc-split-a1/agents/cone_density_function/Check.lean",
+        "/tmp/dlc-split-a1/agents/light_disc/Check.lean",
+        "/tmp/dlc-split-a1/agents/accumulating_discs/Check.lean"
+      ],
+      "conclusion": "The split appropriately serves the exact selected contract idtp_tdc_density_locally_constant. Project and mathlib revisions match the manifest; the snapshot contract matches the workspace contract and submission. All five frozen propositions independently elaborate without child implementations, with the intended real scalar actions, radii, density coercions and ENNReal mass inequalities. All names are bare identifiers; no reservations were found in the refreshed 1055-node DAG, and source searches found only this proposal's records. Proposed dependencies are correctly directed and acyclic; inspected prerequisite closures do not reach the selected theorem or its ancestors. The reused density-uniqueness declaration has the identical frozen type, and its extracted proof passes the axiom check. Independently reread every supplied natural proof and reran all four supplied child-proof files and the assembly: they pass using only propext, Classical.choice and Quot.sound. The larger proof checks are conditional on exactly the cited frozen prerequisites. The assembly establishes the selected parent type from the child contracts and retained jump-set argument."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "subspace_eq_of_inter_ball_eq",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and one-line type agree. Positive radius puts the centre in both subspaces; the explicit positive scaling argument proves both inclusions. The proof is complete and independent of the parent."
+    },
+    {
+      "key": "normalize_dist_le",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact nonzero and unit-vector hypotheses justify normalization and the norm identity. Reverse triangle inequality followed by triangle inequality gives precisely the stated factor-two bound."
+    },
+    {
+      "key": "cone_density_function",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The nonzero support point establishes P ≥ 2. The identity chart satisfies every frozen submanifold requirement, so monotonicity supplies global densities and upper semicontinuity. Tangent-planarity, density uniqueness and cone dilation then establish the positive integer values and dilation invariance. All prerequisite types match; no circular use occurs."
+    },
+    {
+      "key": "light_disc",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All hypotheses and quantifiers match the prose. The proof constructs the orthonormal partner, verifies both arc-continuation applications using H, and proves the angle bound for every L > 0. Normalization and dilation cover the specified disc. Shrinking the neighborhood and identifying the second plane yield all three conclusions at one positive radius, including the mass bound from k ≥ 1."
+    },
+    {
+      "key": "accumulating_discs",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The generalized statement matches its Lean type. Plane uniqueness proves disjointness; an infinite fibre places b in a closed plane and then in a good disc, contradicting exactly the stated instability. Finite fibres provide distinct planes, convergence bounds the centres, and the local mass hypothesis supplies every requirement of the finite-mass contradiction. No additional support assumption on b is needed."
+    }
+  ],
+  "required_changes": []
+}

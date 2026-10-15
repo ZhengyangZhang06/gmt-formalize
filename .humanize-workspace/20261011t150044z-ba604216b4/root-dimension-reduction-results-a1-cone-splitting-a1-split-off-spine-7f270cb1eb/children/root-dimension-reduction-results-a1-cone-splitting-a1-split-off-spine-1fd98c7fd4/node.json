@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.cone_splitting-a1.split_off_spine-a1.minimality_transfer-a1.measure_comparison-a1",
+  "parent_id": "root.dimension_reduction_results-a1.cone_splitting-a1.split_off_spine-a1.minimality_transfer-a1",
+  "depth": 5,
+  "title": "Integer multiplicity currents differing by a current supported in W₀ have equal measures outside W₀ (additive form)",
+  "statement": "Let P, j ∈ ℕ, let S₁, S₂ ∈ 𝒟_j(ℝ^P) (GeometricCurrentOn univ j) have integer multiplicity representations R₁, R₂ (IMRep univ j, R_i.Represents S_i), and let W₀ ⊆ B ⊆ ℝ^P be open sets with spt(S₁ − S₂) ⊆ W₀, where S₁ − S₂ is the contract difference ((S₁ − S₂)(ω) = S₁(ω) − S₂(ω)). Then R₁.measure(B) + R₂.measure(W₀) = R₂.measure(B) + R₁.measure(W₀) in [0, ∞].",
+  "lean_statement": "∀ (P j : ℕ) (S₁ S₂ : GeometricCurrentOn (univ : Set (Euclid P)) j) (R₁ R₂ : IMRep (univ : Set (Euclid P)) j) (W₀ B : Set (Euclid P)), R₁.Represents S₁ → R₂.Represents S₂ → IsOpen W₀ → IsOpen B → (S₁ - S₂).support ⊆ W₀ → W₀ ⊆ B → R₁.measure B + R₂.measure W₀ = R₂.measure B + R₁.measure W₀",
+  "lean_name": "dimred_cs_sos_mt_measure_comparison",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-cone-splitting-a1-split-off-spine-1fd98c7fd4-a1"
+}

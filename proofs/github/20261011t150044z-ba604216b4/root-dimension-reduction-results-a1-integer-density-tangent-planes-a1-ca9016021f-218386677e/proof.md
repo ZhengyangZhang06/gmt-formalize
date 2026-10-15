@@ -1,0 +1,111 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.two_dim_cone_density-a1`
+- Child DAG node: `root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.two_dim_cone_density-a1.density_locally_constant-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: paragraph (M) and steps 1–6 of the parent proof (its jump set J is shown to be empty; Departure [D3]: the book, chapter-07.txt lines 497–510, only cites [Whi82] for the classification of 2-dimensional area minimizing cones; cf. F. Morgan, Math. Ann. 261 (1982) 101–110). Steps 4 and 6 of the parent proof are packaged in the sibling idtp_tdc_arc_continuation and the finite-mass count of its step 5 in the sibling idtp_tdc_no_infinite_planar_pieces. Notation: 𝕊 := {x ∈ ℝ^P : |x| = 1}; B_r(x) = ball x r; H² = μHE[2]; M_W = massOn.
+0. Facts. (a) Uniqueness of densities: HasMassDensity C y θ and HasMassDensity C y θ' imply θ = θ' (both are ≥ 0, limits in the Hausdorff space [0, ∞] are unique, and ENNReal.ofReal is injective on [0, ∞)). (b) Uniqueness of planes: if Q₁, Q₂ are linear subspaces, x ∈ Q₁, t > 0 and Q₁ ∩ B_t(x) = Q₂ ∩ B_t(x), then Q₁ = Q₂. [x ∈ Q₁ ∩ B_t(x) ⊆ Q₂; for v ∈ Q₁ and 0 < s < t/(|v| + 1), x + s·v ∈ Q₁ ∩ B_t(x) ⊆ Q₂, so s·v ∈ Q₂ and v ∈ Q₂; symmetrically Q₂ ⊆ Q₁.] (c) C is integer multiplicity (first component of IsMinimizingIn C univ), so the sibling idtp_tdc_cone_dilation gives, for s > 0 and all x, θ: s·x ∈ spt C ⟺ x ∈ spt C, and HasMassDensity C (s·x) θ ⟺ HasMassDensity C x θ. (d) spt C is closed (the complement of the open zero region). (e) For w ∈ 𝕊 and y ≠ 0: |y/|y| − w| ≤ |y/|y| − y| + |y − w| = ||y| − |w|| + |y − w| ≤ 2|y − w|.
+1. Suppose, for a contradiction, that some p₀ ∈ spt C with p₀ ≠ 0 admits no δ > 0 and k ∈ ℕ as in the claim.
+2. (Integer densities; P ≥ 2.) For q ∈ spt C ∖ {0}, the parent's sibling prerequisite Submission.idtp_cone_tangent_cone_planar (with λ_j := 1/(j + 1) > 0, λ_j → 0) gives an orthonormal family τ : Fin 2 → ℝ^P and c ∈ ℤ with |c| ≥ 1 and HasMassDensity C q |c|. Applied at q = p₀, the orthonormal (hence linearly independent) family τ shows P = finrank ℝ^P ≥ 2.
+3. (Monotonicity.) Since 1 ≤ 2 ≤ P, the cross-branch theorem Submission.dimred_minimizing_monotonicity applies with n := 2, d := P, U := N := ℝ^P and T := C: ℝ^P is open; IsEmbeddedSubmanifold 2 P ℝ^P holds (for every y take V := W := ℝ^P and ψ := id, which is C², injective, with ψ(V) = W ∩ ℝ^P, V ∩ ψ⁻¹(K) = K compact for every compact K, and injective derivative id); (closure ℝ^P ∖ ℝ^P) ∩ ℝ^P = ∅; C is minimizing in ℝ^P ∩ ℝ^P = ℝ^P; spt C ⊆ ℝ^P ∩ ℝ^P; BoundaryVanishes C. Its part (iii) gives Θ : ℝ^P → ℝ with HasMassDensity C y Θ(y) for every y and Θ upper semicontinuous on ℝ^P. By step 2 and (a), for q ∈ spt C ∖ {0}, Θ(q) = κ(q) for a natural number κ(q) ≥ 1. By (c) and (a), Θ(s·x) = Θ(x) for all s > 0 and x.
+4. (The jump set.) Let J := {q ∈ spt C ∖ {0} : for every δ > 0 some y ∈ spt C ∩ B_δ(q) has Θ(y) ≠ Θ(q)}. If q ∈ spt C ∖ {0} and q ∉ J, there is δ > 0 with Θ(y) = Θ(q) = κ(q) for every y ∈ spt C ∩ B_δ(q), i.e. HasMassDensity C y κ(q) there, so the claim holds at q with k := κ(q). Hence p₀ ∈ J. J is dilation invariant: if q ∈ J and s > 0, then s·q ∈ spt C ∖ {0} by (c), and for δ > 0 a point y ∈ spt C ∩ B_{δ/s}(q) with Θ(y) ≠ Θ(q) gives s·y ∈ spt C ∩ B_δ(s·q) with Θ(s·y) = Θ(y) ≠ Θ(q) = Θ(s·q). Thus b' := p₀/|p₀| ∈ J ∩ 𝕊.
+5. (A jump point of locally minimal density.) The set {κ(q) : q ∈ J ∩ 𝕊 ∩ B_{1/8}(b')} of natural numbers is nonempty (it contains κ(b')); let m₀ be its least element, attained at b ∈ J ∩ 𝕊 ∩ B_{1/8}(b'). Since Θ(b) = m₀ < m₀ + 1 and Θ is upper semicontinuous at b, there is r₀ > 0 with Θ(y) < m₀ + 1 for every y ∈ B_{r₀}(b). Let r := min(r₀, 1/8 − |b − b'|, 1/2) > 0, so B_r(b) ⊆ B_{1/8}(b'). (5a) If y ∈ spt C ∩ B_r(b), then |y| ≥ 1 − |y − b| > 1/2, so y ≠ 0, Θ(y) = κ(y) ∈ ℕ and κ(y) < m₀ + 1, i.e. κ(y) ≤ m₀. (5b) If q ∈ J ∩ 𝕊 ∩ B_r(b), then κ(q) ≥ m₀ by minimality (q ∈ B_{1/8}(b')) and κ(q) ≤ m₀ by (5a), so κ(q) = m₀.
+6. (Light points accumulate at b.) Let r' := r/2. For every η ∈ (0, r'/2) there is z ∈ (spt C ∩ 𝕊) ∖ J with |z − b| < η and κ(z) < m₀. Indeed, b ∈ J gives y ∈ spt C ∩ B_{η/2}(b) with Θ(y) ≠ Θ(b) = m₀, and κ(y) < m₀ by (5a) (η/2 < r). Let z := y/|y|. Then z ∈ spt C by (c), |z| = 1, |z − b| ≤ 2|y − b| < η < r by (e), and Θ(z) = Θ(y) < m₀; if z ∈ J, (5b) would give κ(z) = m₀, so z ∉ J. For each i ∈ ℕ fix such a point z_i for η_i := r'/(4(i + 1)) and let k_i := κ(z_i); then 1 ≤ k_i < m₀ and |z_i − b| < η_i → 0.
+7. (Planes at the light points.) Fix i. Since z_i ∈ spt C ∖ {0} and z_i ∉ J, step 4 gives δ_i > 0 with HasMassDensity C y k_i for every y ∈ spt C ∩ B_{δ_i}(z_i). The parent's sibling prerequisite Submission.idtp_cone_constant_density_planar (p := z_i, k := k_i, δ := δ_i) gives δ'_i > 0 and a linear subspace Q_i with finrank Q_i = 2, z_i ∈ Q_i and spt C ∩ B_{δ'_i}(z_i) = Q_i ∩ B_{δ'_i}(z_i). Choose e_i ∈ Q_i with |e_i| = 1 and ⟨z_i, e_i⟩ = 0 (Gram–Schmidt: if (u, v) is a basis of Q_i, then u − ⟨u, z_i⟩z_i and v − ⟨v, z_i⟩z_i lie in Q_i, are orthogonal to z_i, and are not both 0 because u, v are not both multiples of z_i; normalize a nonzero one). For w ∈ ℝ^P let Good_i(w) mean: there is ε > 0 with spt C ∩ B_ε(w) = Q_i ∩ B_ε(w) and HasMassDensity C y k_i for every y ∈ spt C ∩ B_ε(w).
+8. (Long light arcs.) Let L := r'/2. Apply the sibling idtp_tdc_arc_continuation to (Q_i, z_i, e_i, k_i, L) and to (Q_i, z_i, −e_i, k_i, L) (−e_i ∈ Q_i is also a unit vector orthogonal to z_i). Its hypotheses hold: C is minimizing in ℝ^P with ∂C = 0 and is a cone; finrank Q_i = 2; z_i, ±e_i ∈ Q_i are orthonormal; k_i ≥ 1; (i) holds with ε := min(δ_i, δ'_i); for (ii), let 0 < φ < L and a := cos φ·z_i + sin φ·(±e_i) with a ∈ spt C and HasMassDensity C a k_i. Then |a| = 1 and |a − z_i| ≤ φ (|a − z_i|² = 2 − 2cos φ = 4sin²(φ/2) ≤ φ²), so |a − b| < φ + η_i < r'/2 + r'/2 = r' < r. If a ∈ J, then (5b) gives Θ(a) = κ(a) = m₀, while (a) gives Θ(a) = k_i < m₀; so a ∉ J, and step 4 gives δ > 0 with HasMassDensity C y κ(a) for every y ∈ spt C ∩ B_δ(a), which is (ii) with k' := κ(a). The sibling yields Good_i(cos φ·z_i + sin φ·e_i) for every φ ∈ (−L, L) (for φ < 0 use −e_i and −φ).
+9. (Discs of good points.) Let ρ₀ := min(1/2, r'/8) > 0 and D_i := Q_i ∩ B_{ρ₀}(z_i). Claim: Good_i(x) for every x ∈ D_i. Let x ∈ D_i; then 1/2 < |x| < 3/2, x̂ := x/|x| ∈ Q_i ∩ 𝕊, and |x̂ − z_i| ≤ 2|x − z_i| < 2ρ₀ ≤ r'/4 by (e). Since (z_i, e_i) is an orthonormal basis of Q_i, x̂ = α·z_i + β·e_i with α² + β² = 1; choose φ ∈ (−π, π] with cos φ = α and sin φ = β (φ := arg(α + iβ)). Then |x̂ − z_i|² = 2 − 2cos φ = 4sin²(|φ|/2), and Jordan's inequality sin u ≥ (2/π)u for 0 ≤ u ≤ π/2 (Mathlib Real.mul_le_sin) with u = |φ|/2 gives |x̂ − z_i| ≥ (2/π)|φ|, so |φ| ≤ (π/2)|x̂ − z_i| < πr'/8 < r'/2 = L. By step 8, Good_i(x̂) holds with some ε. Let s := |x|. By (c), y ∈ spt C ∩ B_{sε}(x) iff y/s ∈ spt C ∩ B_ε(x̂) = Q_i ∩ B_ε(x̂) iff y ∈ Q_i ∩ B_{sε}(x); so spt C ∩ B_{sε}(x) = Q_i ∩ B_{sε}(x). For such y, HasMassDensity C (y/s) k_i, hence HasMassDensity C y k_i by (c). So Good_i(x) holds with sε.
+10. (Local mass bound.) Let x ∈ D_i and let ε_x witness Good_i(x). Then x ∈ spt C (x ∈ Q_i ∩ B_{ε_x}(x)) and x ≠ 0, so Submission.idtp_cone_constant_density_planar (p := x, k := k_i, δ := ε_x) gives δ''_x > 0 and a subspace Q''_x with spt C ∩ B_{δ''_x}(x) = Q''_x ∩ B_{δ''_x}(x) and M_W(C) = k_i·H²(W ∩ Q''_x) for every open W ⊆ B_{δ''_x}(x). With t := min(ε_x, δ''_x): Q_i ∩ B_t(x) = spt C ∩ B_t(x) = Q''_x ∩ B_t(x) and x ∈ Q_i, so Q''_x = Q_i by (b). Hence for every open W ⊆ B_t(x): H²(W ∩ Q_i) ≤ k_i·H²(W ∩ Q_i) = M_W(C), as k_i ≥ 1.
+11. (Disjoint discs.) If Q_i ≠ Q_j, then D_i ∩ D_j = ∅: for x ∈ D_i ∩ D_j, step 9 gives Good_i(x) and Good_j(x); with t the smaller of the two radii, Q_i ∩ B_t(x) = spt C ∩ B_t(x) = Q_j ∩ B_t(x) and x ∈ Q_i, so Q_i = Q_j by (b).
+12. (Each plane occurs finitely often.) Suppose Q' is a subspace such that I := {i : Q_i = Q'} is infinite. The points z_i, i ∈ I, lie in the closed set Q' (Submodule.closed_of_finiteDimensional) and converge to b, so b ∈ Q'. Choose i ∈ I with η_i < ρ₀; then |b − z_i| < ρ₀, so b ∈ D_i, and Good_i(b) holds by step 9 with some ε: HasMassDensity C y k_i for all y ∈ spt C ∩ B_ε(b). As b ∈ spt C, (a) gives Θ(b) = k_i and Θ(y) = k_i = Θ(b) for all y ∈ spt C ∩ B_ε(b), so b ∉ J — contradicting b ∈ J. Hence every fibre {i : Q_i = Q'} is finite.
+13. (Infinitely many distinct planes.) Let i_0 := 0 and, recursively, i_{l+1} := the least i with Q_i ∉ {Q_{i_0}, …, Q_{i_l}}; it exists because {i : Q_i ∈ {Q_{i_0}, …, Q_{i_l}}} is a finite union of finite fibres (step 12) while ℕ is infinite. The planes Q*_l := Q_{i_l} (l ∈ ℕ) are pairwise distinct.
+14. (Contradiction.) Apply the sibling idtp_tdc_no_infinite_planar_pieces to C, the families Q*_l and z*_l := z_{i_l}, ρ := ρ₀ and R := 1: C is integer multiplicity; ρ₀ > 0; finrank Q*_l = 2; z*_l ∈ Q*_l; |z*_l| = 1 ≤ 1; for l ≠ l', Q*_l ≠ Q*_{l'}, so the discs Q*_l ∩ B_{ρ₀}(z*_l) = D_{i_l} and D_{i_{l'}} are disjoint by step 11; and every w ∈ D_{i_l} has ε > 0 with H²(W ∩ Q*_l) ≤ M_W(C) for every open W ⊆ B_ε(w) by step 10. The sibling yields False. This contradiction proves the claim at every p ∈ spt C ∖ {0}. ∎
+
+## Key steps
+
+1. Densities on spt C ∖ {0} are integers ≥ 1 (idtp_cone_tangent_cone_planar), P ≥ 2, and Θ is upper semicontinuous (dimred_minimizing_monotonicity); spt C, Θ and the jump set J are dilation invariant (idtp_tdc_cone_dilation).
+2. If J ≠ ∅, pick b ∈ J ∩ 𝕊 of locally minimal density m₀ and r > 0 with Θ ≤ m₀ on spt C ∩ B_r(b) and Θ = m₀ on J ∩ 𝕊 ∩ B_r(b).
+3. Light points z_i ∉ J of density k_i < m₀ accumulate at b, and each has a local plane Q_i (idtp_cone_constant_density_planar).
+4. idtp_tdc_arc_continuation, whose endpoint hypothesis follows from (5b), extends each light point to a Good arc of half-length r'/2; by dilation every point of D_i = Q_i ∩ B_{ρ₀}(z_i) is Good, which gives H²(W ∩ Q_i) ≤ M_W(C) locally.
+5. Discs on distinct planes are disjoint, and each plane occurs only finitely often (otherwise b would be Good); infinitely many disjoint discs contradict idtp_tdc_no_infinite_planar_pieces.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cmp local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean GMT/Ch07/Contract.lean; cmp GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean`
+- `git rev-parse HEAD; git -C .lake/packages/mathlib rev-parse HEAD; git -C .lake/packages/simongmt rev-parse HEAD (compared with manifest.json)`
+- `sed -n 1,140p simongmt Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean; sed -n 20,100p Chapter06/Mass.lean; sed -n 30,135p,305,340p Chapter06/Currents.lean; sed -n 36,60p Chapter06/Forms.lean`
+- `grep -rn 'μHE\[' mathlib/Mathlib (notation and API in Geometry/Euclidean/Volume/Measure.lean)`
+- `rg -n 'theorem isConnected_sphere|theorem isConnected_compl_singleton_of_one_lt_rank|theorem addHaar_ball |theorem addHaar_ball_of_pos|theorem hausdorffMeasure_zero_singleton|theorem ext_of_generateFrom_of_iUnion|theorem mul_le_sin|theorem closed_of_finiteDimensional|theorem isCompact_sphere|measure_compl_support' mathlib/Mathlib`
+- `rg -n 'closed_of_finiteDimensional|class OuterRegular|of_pseudoMetrizableSpace_of_isFiniteMeasure|Regular.of_sigmaCompactSpace_of_isLocallyFiniteMeasure|exists_isOpen_lt_of_lt' mathlib/Mathlib/MeasureTheory/Measure/Regular.lean mathlib/Mathlib/Topology/Algebra/Module/FiniteDimension.lean mathlib/Mathlib/Analysis/Normed/Module/FiniteDimension.lean`
+- `rg -n 'measurePreserving' Haar/InnerProductSpace.lean; rg -n 'volume_ball' Lebesgue/VolumeOfBalls.lean; rg -n 'theorem isOpen_iUnion_countable|theorem cos_arg|theorem sin_arg|theorem euclideanHausdorffMeasure_preimage|theorem Orthonormal.linearIndependent' mathlib/Mathlib`
+- `python3 scan of dag.json: lean_name collisions for the seven idtp_tdc_* names (none among 817 nodes); exact types and statuses of idtp_cone_tangent_cone_planar, idtp_cone_constant_density_planar, idtp_cone_sector_endpoint_density, idtp_planar_cycle_eq_const_mul, dimred_minimizing_monotonicity, dimred_im_mass_measure, dtc_blowUp_massOn_image, dtc_restrictDomain_isIntegerMultiplicity, cone_current_imrep_measure_smul_image, dtc_density_usc, rsd_massOn_eq_measure, rsd_mem_support_iff_measure_ball_pos, codim1_subspace_ball_euclideanHausdorff`
+- `grep for idtp_tdc_ in nodes/*/*.json and workspaces/*/GMT (no match)`
+- `sed -n 480,520p book/chapter-07.txt`
+- `lake env lean /tmp/tdcd-split-a1/gen/Child_<key>.lean for each of the 7 children; lake env lean /tmp/tdcd-split-a1/gen/Assembly.lean (#print axioms tdc_assembly_check); lake env lean /tmp/tdcd-split-a1/gen/Probe.lean`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/EqHaar.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/Connected.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Regular.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Support.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Module/FiniteDimension.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/FiniteDimension.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/SpecialFunctions/Trigonometric/Bounds.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Haar/InnerProductSpace.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/VolumeOfBalls.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Bases.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/ProperSpace.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/SpecialFunctions/Complex/Arg.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Orthonormal.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-edecc539dd/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1/decomposition-v3.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-07.txt`
+- `/tmp/tdcd-split-a1/gen/Assembly.lean`
+- `/tmp/tdcd-split-a1/gen/Probe.lean`
+- `/tmp/tdcd-split-a1/gen/Child_cone_dilation.lean`
+- `/tmp/tdcd-split-a1/gen/Child_subspace_ball_measure.lean`
+- `/tmp/tdcd-split-a1/gen/Child_no_infinite_planar_pieces.lean`
+- `/tmp/tdcd-split-a1/gen/Child_arc_continuation.lean`
+- `/tmp/tdcd-split-a1/gen/Child_density_locally_constant.lean`
+- `/tmp/tdcd-split-a1/gen/Child_cone_set_finite_planes.lean`
+- `/tmp/tdcd-split-a1/gen/Child_planes_union_vertex_density.lean`
+
+Pins and contract:
+- The pins match manifest.json: project b4d606db, mathlib 25730c7c, SimonGMT 2b366308.
+- The snapshot Contract.lean is byte-identical to the workspace Contract.lean and Submission.lean.
+
+SimonGMT Chapter06 definitions used by the children:
+- support = U \ zeroRegion with zeroRegion open, so spt C is closed when U = univ.
+- restrictDomain, massOn (sSup over admissible test forms), boundary and TestFormOn (IsTestForm ∧ tsupport ⊆ U).
+
+Mathlib snapshot: it contains every library fact the child proofs cite:
+- Isometry.euclideanHausdorffMeasure_preimage, InnerProductSpace.euclideanHausdorffMeasure_eq_volume, euclideanHausdorffMeasure_zero_or_top, euclideanHausdorffMeasure_zero, hausdorffMeasure_zero_singleton.
+- Measure.addHaar_ball_of_pos (no Nontrivial hypothesis), LinearIsometryEquiv.measurePreserving.
+- isConnected_sphere, isConnected_compl_singleton_of_one_lt_rank, Submodule.closed_of_finiteDimensional, isCompact_sphere.
+- Measure.ext_of_generateFrom_of_iUnion, WeaklyRegular.of_pseudoMetrizableSpace_of_isFiniteMeasure, Set.exists_isOpen_lt_of_lt, isOpen_iUnion_countable, Real.mul_le_sin, Complex.cos_arg/sin_arg.
+
+Reuse:
+- No accepted DAG declaration has the exact type of any proposed child. codim1_subspace_ball_euclideanHausdorff is closest, but it is not accepted and is centred at 0. cone_current_imrep_measure_smul_image is accepted but states something different.
+- Seven new idtp_tdc_* names are therefore used. None occurs in dag.json (817 nodes), in any node JSON file, or in the workspace GMT sources.
+- The cited black boxes have their frozen DAG types and elaborate (Probe.lean). dimred_im_mass_measure, dtc_blowUp_massOn_image and dtc_restrictDomain_isIntegerMultiplicity are accepted. dimred_minimizing_monotonicity is in progress, and the parent's own proof already cites it.
+
+Lean checks:
+- All seven exact lean_statement strings elaborate after import GMT.Ch07.Submission, each in its own file.
+- The hypothesis-only assembly derives the exact selected type idtp_two_dim_cone_integer_density. It uses children cone_dilation, density_locally_constant, cone_set_finite_planes and planes_union_vertex_density, plus the frozen type of idtp_cone_constant_density_planar taken from dag.json. Its axioms are propext, Classical.choice and Quot.sound.

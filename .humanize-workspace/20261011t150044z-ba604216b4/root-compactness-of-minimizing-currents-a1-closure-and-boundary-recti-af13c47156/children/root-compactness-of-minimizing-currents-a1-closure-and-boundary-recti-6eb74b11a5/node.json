@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.density_rep-a1.bounded_mod-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.density_rep-a1",
+  "depth": 5,
+  "title": "A strongly measurable, everywhere-bounded modification of an a.e. dual-norm-bounded n-vector field",
+  "statement": "Let P, n ∈ ℕ, μ a measure on ℝ^P, and ξ : ℝ^P → Λ_n(ℝ^P) a μ-a.e. strongly measurable field of n-vectors with |ξ(x)(α)| ≤ |α| for μ-a.e. x and all n-covectors α (|·| = covectorEuclideanNorm). Then there is a strongly measurable ζ : ℝ^P → Λ_n(ℝ^P) with |ζ(x)(α)| ≤ |α| for every x ∈ ℝ^P and every n-covector α, and ζ = ξ μ-a.e.",
+  "lean_statement": "∀ (P n : ℕ) (μ : Measure (Euclid P)) (ξ : Euclid P → MultiVector P n), AEStronglyMeasurable ξ μ → (∀ᵐ x ∂μ, ∀ α : Covector (Euclid P) n, |ξ x α| ≤ covectorEuclideanNorm α) → ∃ ζ : Euclid P → MultiVector P n, StronglyMeasurable ζ ∧ (∀ (x : Euclid P) (α : Covector (Euclid P) n), |ζ x α| ≤ covectorEuclideanNorm α) ∧ ζ =ᵐ[μ] ξ",
+  "lean_name": "cbr_ci_dr_bounded_stronglyMeasurable_modification",
+  "depends_on": [
+    "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.density_rep-a1.dual_norm-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.density_rep-a1.dual_norm-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-6eb74b11a5-a1"
+}

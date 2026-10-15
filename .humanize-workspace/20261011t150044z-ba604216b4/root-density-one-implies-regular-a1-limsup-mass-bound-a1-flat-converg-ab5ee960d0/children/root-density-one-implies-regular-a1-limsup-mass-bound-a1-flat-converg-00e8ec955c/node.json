@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.flat_convergence-a1.deformation-a1.face_replacement-a1.local_plane_tangent-a1",
+  "parent_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.flat_convergence-a1.deformation-a1.face_replacement-a1",
+  "depth": 6,
+  "title": "A set that coincides near x with the affine plane x + V has approximate tangent space V at x (Simon Ch. 3, 1.4; used for the open faces in step 6 of the parent proof)",
+  "statement": "Let P, n ∈ ℕ, N ⊆ ℝ^P (Euclid P), x ∈ ℝ^P, V a linear subspace of ℝ^P with dim V = n (Module.finrank ℝ V = n), and r > 0 such that for every y with |y − x| < r: y ∈ N if and only if y − x ∈ V. Then N has approximate tangent space V at x (HasApproximateTangentSpaceAt n N x V, Simon Ch. 3, 1.4: dim V = n and ∫_{blowUpMap x λ '' N} f dHⁿ → ∫_V f dHⁿ as λ ↓ 0 for every f ∈ C_c(ℝ^P), where blowUpMap x λ y = λ⁻¹(y − x) and Hⁿ = μHE[n]).",
+  "lean_statement": "∀ (P n : ℕ) (N : Set (Euclid P)) (x : Euclid P) (V : Submodule ℝ (Euclid P)) (r : ℝ), Module.finrank ℝ V = n → 0 < r → (∀ y ∈ Metric.ball x r, y ∈ N ↔ y - x ∈ V) → HasApproximateTangentSpaceAt n N x V",
+  "lean_name": "dor_lmb_fcd_fr_local_plane_tangent",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-limsup-mass-bound-a1-flat-converg-00e8ec955c-a1"
+}

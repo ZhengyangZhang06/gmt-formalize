@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_constant_density_planar-a1.regular_point_support-a1",
+  "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_constant_density_planar-a1",
+  "depth": 4,
+  "title": "Near a regular point the support of a current is the regular submanifold",
+  "statement": "For all P, n ∈ ℕ, every open U ⊆ ℝ^P, every T ∈ 𝒟_n(U) and every y ∈ reg T (y ∈ regularSet T): there are ρ > 0 and a set M ⊆ ℝ^P such that B_ρ(y) ⊆ U, y ∈ M, M is an embedded C¹ n-dimensional submanifold (IsEmbeddedSubmanifold 1 n M), H^n(M ∩ K) < ∞ for every compact K ⊆ B_ρ(y) (H^n := μHE[n]), and spt T ∩ B_ρ(y) = M ∩ B_ρ(y).",
+  "lean_statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (y : Euclid P), IsOpen U → y ∈ regularSet T → ∃ (ρ : ℝ) (M : Set (Euclid P)), 0 < ρ ∧ ball y ρ ⊆ U ∧ y ∈ M ∧ IsEmbeddedSubmanifold 1 n M ∧ (∀ K : Set (Euclid P), IsCompact K → K ⊆ ball y ρ → μHE[n] (M ∩ K) ≠ ∞) ∧ T.support ∩ ball y ρ = M ∩ ball y ρ",
+  "lean_name": "idtp_ccd_regular_point_support",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-7b656aa468-a1"
+}

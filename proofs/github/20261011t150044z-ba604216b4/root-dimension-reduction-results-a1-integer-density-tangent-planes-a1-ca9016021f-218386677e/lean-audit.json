@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "d72edacf6a2a82c3db915c03f3d80eeed6ac8c33de931ba970e03a68ef0716c8",
+  "git_delta": {
+    "base_commit": "abe15dd073917268cbc866402576cb30f575f2ed",
+    "candidate_commit": "b5d34975122116187d58a46104be2ec9c5e3a8cc",
+    "target": "GMT/Ch07/Submission.lean",
+    "changed_files": [
+      "GMT/Ch07/Submission.lean"
+    ],
+    "diff_sha256": "abd91985e96c2cb92d6881a8ae0ce9bfa9841d93669395e830e2b9ae57d0c155",
+    "source_sha256": "6e14f15003cabd41a69f7c36f6dc223bc478f603e03c07f8b3d8468c23ac6746",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.idtp_tdc_density_locally_constant",
+      "statement": "∀ (P : ℕ) (C : GeometricCurrentOn (univ : Set (Euclid P)) 2), IsMinimizingIn C univ → BoundaryVanishes C → IsConeCurrent C → ∀ p ∈ C.support, p ≠ 0 → ∃ (δ : ℝ) (k : ℕ), 0 < δ ∧ ∀ y ∈ C.support, y ∈ ball p δ → HasMassDensity C y k",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
