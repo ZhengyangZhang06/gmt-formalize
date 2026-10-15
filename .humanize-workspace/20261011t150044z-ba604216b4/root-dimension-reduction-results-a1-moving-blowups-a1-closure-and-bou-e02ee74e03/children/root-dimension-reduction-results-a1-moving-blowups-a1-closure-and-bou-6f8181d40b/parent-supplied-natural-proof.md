@@ -1,0 +1,81 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.dimension_reduction_results-a1.moving_blowups-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.blowup_limit-a1`
+- Child DAG node: `root.dimension_reduction_results-a1.moving_blowups-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.blowup_limit-a1.covector_norm-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: step 0, fact (F1), of the parent proof (blow-ups at a good point); the parent uses it for (F2) in step 1 and for ‖ω(y)‖_op ≤ Pⁿ|ω(y)| ≤ Pⁿ in step 10.
+Notation: e_i := EuclideanSpace.basisFun (Fin P) ℝ i for i ∈ Fin P; for J : Fin n → Fin P write e∘J for the n-tuple (e_{J(0)}, …, e_{J(n−1)}).
+1. (Coefficient bound.) For every J : Fin n → Fin P we have |α(e∘J)| ≤ |α|.
+ (a) If J is not injective, choose i ≠ j with J(i) = J(j). Then the tuple e∘J has equal entries in the positions i ≠ j, so α(e∘J) = 0 because α is alternating (ContinuousAlternatingMap.map_eq_zero_of_eq), and 0 ≤ |α| (covectorEuclideanNorm_nonneg).
+ (b) If J is injective, let σ := Tuple.sort J; it is a permutation of Fin n with J∘σ monotone (Tuple.monotone_sort). J∘σ is injective and monotone, hence strictly monotone (Monotone.strictMono_of_injective). Since α is alternating, α((e∘J)∘σ) = sign(σ)·α(e∘J) (AlternatingMap.map_perm applied to α.toAlternatingMap with the tuple e∘J passed explicitly), and sign(σ) = ±1 (Int.units_eq_one_or), so |α(e∘J)| = |α(e∘I)| with I := J∘σ strictly increasing. Now α(e∘I)² is one of the summands in Σ_{I'} (if I' strictly increasing then α(e∘I')² else 0), all summands being ≥ 0, so α(e∘I)² ≤ that sum (Finset.single_le_sum) and therefore |α(e∘I)| ≤ √(sum) = |α| (Real.abs_le_sqrt).
+2. (Multilinear expansion.) Let v = (v_0, …, v_{n−1}) ∈ (ℝ^P)^n and write v_k(i) for the i-th coordinate of v_k. Each v_k = Σ_{i ∈ Fin P} v_k(i)·e_i (OrthonormalBasis.sum_repr for basisFun). By multilinearity (ContinuousAlternatingMap.map_sum), α(v) = Σ_{J : Fin n → Fin P} α((v_k(J(k))·e_{J(k)})_k), and pulling out the scalars (ContinuousMultilinearMap.map_smul_univ for α.toContinuousMultilinearMap) α((v_k(J(k))·e_{J(k)})_k) = (Π_k v_k(J(k)))·α(e∘J).
+3. (Estimate.) |v_k(i)| ≤ ‖v_k‖ for every coordinate (PiLp.norm_apply_le). By the triangle inequality (Finset.abs_sum_le_sum_abs), |Π_k v_k(J(k))| = Π_k |v_k(J(k))| ≤ Π_k ‖v_k‖ (Finset.abs_prod, Finset.prod_le_prod₀) and step 1, |α(v)| ≤ Σ_J (Π_k ‖v_k‖)·|α| = #(Fin n → Fin P)·|α|·Π_k ‖v_k‖ = P^n·|α|·Π_k ‖v_k‖ (Finset.sum_const, Fintype.card_fun, Fintype.card_fin).
+4. (Conclusion.) Since P^n·|α| ≥ 0 and |α(v)| ≤ (P^n·|α|)·Π_k ‖v_k‖ for all v, the operator-norm bound ContinuousAlternatingMap.opNorm_le_bound gives ‖α‖ ≤ P^n·|α|. The degenerate cases need no separate treatment: for n = 0 there is exactly one J (the empty map, strictly increasing) and the estimate reads |α()| ≤ |α|; for P = 0 < n there is no J, the sum is empty and α(v) = 0. ∎
+Lean remarks (checked against the pinned Mathlib 25730c7c): ContinuousAlternatingMap.map_perm does not exist, so use α.toAlternatingMap.map_perm with the tuple given explicitly; Finset.prod_le_prod needs MulLeftMono and does not apply on ℝ, so use Finset.prod_le_prod₀; push_neg is deprecated in favour of push Not.
+
+## Key steps
+
+1. Each basis coefficient α(e_{J(0)},…,e_{J(n−1)}) has absolute value ≤ |α|: it is 0 if J is not injective, and ± a strictly increasing coefficient otherwise (sort J, alternating sign).
+2. Expand α(v) multilinearly in the standard basis: α(v) = Σ_J (Π_k v_k(J(k)))·α(e∘J).
+3. Bound |v_k(i)| ≤ ‖v_k‖ and count the P^n terms: |α(v)| ≤ P^n|α|Π_k‖v_k‖.
+4. Conclude ‖α‖ ≤ P^n|α| by ContinuousAlternatingMap.opNorm_le_bound.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat SNAP/manifest.json -> mode local-project, project_commit b4d606db1da5da8fa2c0292ad4924d97de8b3c4b, mathlib_commit 25730c7c759d108ef87ab70af2342a196760f79d; git log -1 (workspace HEAD b4d606db1); cmp SNAP/project/GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean -> identical`
+- `python3 -I scans of RUN/dag.json (2102 nodes): dmcbr_ci_blowup_limit vs cbr_ci_blowup_limit (identical lean_statement and natural_proof; statements differ only in sibling names); twin subtree statuses (blowup_measure accepted ef60a96f, covector_norm rlcr-lean, blowup_scale/density_bounds/rescaled_bounds/constant_limit/mass_bound/pairing_tendsto speculative-ready, other depth-6 leaves decomposing); frozen types of dmcbr_ci_dilation_calculus, dmcbr_ci_dilation_slice_property (identical to the accepted cbr_ci_* twins), cbr_ci_const_vector_massOn (accepted bc226ec6), cmcs_restrict_current (accepted a7cb2361), cbr_ci_bl_blowUp_restrict_scaling; lean_name lookup of the ten proposed dmcbr_ci_bl_* names -> none present`
+- `read NODES/<twin>/decomposition-v1.json and decomposition-audit-v1.json for d8eab44069 (blowup_limit), 2a563f59dd (density_bounds), 6264bc6f37 (rescaled_bounds), 5981b082bc (constant_limit): all acceptable, every node natural_proof_acceptable; atomic decisions 9d402d3e08 (covector_norm, ~60-line scratch proof) and 6da3570ebf (blowup_scale, ~90-line scratch proof)`
+- `git show 89c100ef / c23d5415 / a0358e1b / 84ebb489 / 80516330 / e4102347 / 7ebe5255 (twin speculative drafts); git show ef60a96f:, a7cb2361:, bc226ec6:GMT/Ch07/Submission.lean -> accepted declarations cbr_ci_bl_blowUp_restrict_scaling, cmcs_restrict_current, cbr_ci_const_vector_massOn with types identical to dag.json`
+- `sed /runtime/flows/gmt-claude-b888e19cffb1/_recursive_lean/runtime.py (_decompose: node.depth >= max_depth stops splitting; _existing_lean_name_problem: only accepted identical-type names are shareable; _leaf_author_task: a child adds only its single theorem, no helper declarations; child proof_base_commit = parent dispatch commit) and swarm-project.json (max_depth 6, max_children 12)`
+- `rg -c dmcbr_ci_bl SNAP/project (no match, exit 1); rg -l dmcbr_ci_bl GMT .lake/packages/simongmt (no match, exit 1); rg -c 'cbr_ci_bl_blowUp_restrict_scaling|cmcs_restrict_current' SNAP/project (no match: DAG-accepted, not in the frozen base)`
+- `rg -n in SNAP/mathlib/Mathlib: integral_withDensity_eq_integral_toReal_smul (MeasureTheory/Integral/Bochner/ContinuousLinearMap.lean:318, root namespace), ENNReal.limsup_const_mul_of_ne_top (Order/Filter/ENNReal.lean:165), tendsto_measure_cthickening_of_isClosed (MeasureTheory/Constructions/BorelSpace/Metric.lean:143), enorm_integral_le_lintegral_enorm (MeasureTheory/Integral/Bochner/Basic.lean:333), ContinuousAlternatingMap.opNorm_le_bound (Analysis/Normed/Module/Alternating/Basic.lean:241)`
+- `lake env lean Names.lean: #check of 165 library names cited by the child proofs -> all resolve (integral_withDensity_eq_integral_toReal_smul is root-level, measure_ball_pos is Metric.measure_ball_pos); deprecated ContinuousLinearMap.smul_apply (use smul_apply) and ofReal_norm_eq_enorm (use ofReal_norm)`
+- `lake env lean Remarks.lean: ContinuousAlternatingMap.map_perm unknown (AlternatingMap.map_perm on toAlternatingMap exists); Finset.prod_le_prod needs MulLeftMono; push_neg deprecated (push Not); ofReal_norm d : ofReal ‖d‖ = ‖d‖ₑ for d : MultiVector P n; dilation a lam y = blowUpMap a lam y by simp [dilation, dilationCLM, blowUpMap, smul_sub]; abel`
+- `lake env lean Types.lean (the 12 child types as theorems after import GMT.Ch07.Submission in namespace GMT.Ch07 with the contract opens: sorry warnings only)`
+- `lake env lean Assembly.lean (exact frozen parent type proved from the 12 child types and the 3 sibling types as axioms, no sorry; #print axioms: propext, Classical.choice, Quot.sound plus 14 of the 15 stubs, pairing_error entering only through pairing_tendsto and mass_bound)`
+- `python3 -I: _recursive_lean.lean_contract.validate_lean_statement on all 12 child types -> valid and unchanged`
+- `sed SimonGMT Chapter06/Mass.lean (covectorEuclideanNorm, massAdmissibleOn, massOn = sSup ofReal T ω), Chapter06/Currents.lean (TestFormOn, GeometricCurrentOn, WeaklyConvergesOn, boundary, WeaklyConvergesOn.boundary), Chapter06/Forms.lean (Covector, IsTestForm)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/swarm-project.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-closure-and-bou-e02ee74e03/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-closure-and-bou-e02ee74e03/parent-supplied-plan.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-d8eab44069/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-d8eab44069/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-d8eab44069/decomposition-audit-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-d8eab44069/speculative-process-v1.log`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-2a563f59dd/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-2a563f59dd/decomposition-audit-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-6264bc6f37/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-6264bc6f37/decomposition-audit-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-5981b082bc/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-5981b082bc/decomposition-audit-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-9d402d3e08/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-6da3570ebf/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-d8eab44069/speculative-prompt-v1.md`
+- `/runtime/flows/gmt-claude-b888e19cffb1/_recursive_lean/runtime.py`
+- `/runtime/flows/gmt-claude-b888e19cffb1/_recursive_lean/lean_contract.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/ContinuousLinearMap.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Order/Filter/ENNReal.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Constructions/BorelSpace/Metric.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/Alternating/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean`
+- `/tmp/dmcbr_bl_decomp/Types.lean`
+- `/tmp/dmcbr_bl_decomp/Assembly.lean`
+- `/tmp/dmcbr_bl_decomp/Names.lean`
+- `/tmp/dmcbr_bl_decomp/Remarks.lean`
+
+The snapshot is compatible: its pins match and its contract is byte-identical to Submission.lean. The snapshot and SimonGMT contain no blow-up-limit declaration and no dmcbr_ci_bl name. The selected node has the same frozen type and supplied proof as the twin cbr_ci_blowup_limit, whose split and sub-splits were all audited acceptable. Because this node sits at depth 5 of 6, the twin's audited leaf statements are lifted to give 12 children with identical types. Two of them reuse the accepted cbr_ci_bl_blowUp_restrict_scaling and cmcs_restrict_current; the other ten have fresh dmcbr_ci_bl_* names. Every library name the child proofs cite resolves at the pinned revisions under the non-deprecated name given. All 12 child types elaborate and pass the validator. A sorry-free assembly proves the exact parent type from them and the three sibling types, using only propext, Classical.choice and Quot.sound beyond the stubs.

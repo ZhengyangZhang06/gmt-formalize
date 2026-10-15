@@ -1,0 +1,82 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.dimension_reduction_results-a1.moving_blowups-a1.deformation_theorem-a1.face_replacement-a1.chain_boundary-a1`
+- Child DAG node: `root.dimension_reduction_results-a1.moving_blowups-a1.deformation_theorem-a1.face_replacement-a1.chain_boundary-a1.cube_partial_ftc-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: step 3 ("The cube identity") of the parent proof, for one coordinate i and one C¹ function. In this split the sibling cube_stokes applies it with G := G_i, the i-th coordinate of the divergence field. The frozen contract does not import Mathlib.MeasureTheory.Integral.DivergenceTheorem, so the identity is proved, as in the parent proof, from Fubini and the one-variable fundamental theorem of calculus. Every lemma named below resolves under `import GMT.Ch07.Submission`.
+
+Notation. For d ∈ ℕ: Q^d := {y ∈ Euclid d | ∀ j, 0 < y j ∧ y j < 1}; B^d := Set.pi univ (fun _ : Fin d => Ioo 0 1) ⊆ (Fin d → ℝ), the open box; C^d := Set.pi univ (fun _ : Fin d => Icc 0 1), the closed box. toLp := WithLp.toLp 2 and ofLp := WithLp.ofLp are mutually inverse, and (toLp x) j = x j. e_i := EuclideanSpace.single i 1. g(y) := DG(y)e_i = fderiv ℝ G y e_i.
+
+1. Regularity. G is C¹ and 1 ≠ 0, so G is differentiable (ContDiff.differentiable) and y ↦ fderiv ℝ G y is continuous (ContDiff.continuous_fderiv). Applying a continuous family of continuous linear maps to the constant vector e_i is continuous (Continuous.clm_apply), so g is continuous.
+
+2. Integrability (first conjunct). C^d is compact (isCompact_univ_pi with isCompact_Icc), so its image toLp '' C^d ⊆ Euclid d under the continuous map toLp (PiLp.continuous_toLp) is compact. Every y ∈ Q^d equals toLp (ofLp y) with ofLp y ∈ C^d, so Q^d ⊆ toLp '' C^d. A continuous function is integrable on a compact set (ContinuousOn.integrableOn_compact), hence on every subset (IntegrableOn.mono_set). With d = k + 1 and the function g this is the first conjunct.
+
+3. Transport to boxes. For every d and every f : Euclid d → ℝ, ∫_{Q^d} f(y) dy = ∫_{B^d} f(toLp x) dx. Indeed toLp ⁻¹' Q^d = B^d (both say 0 < x j < 1 for every j), toLp is measure preserving (PiLp.volume_preserving_toLp) and a measurable embedding (MeasurableEquiv.toLp 2 (Fin d → ℝ), whose coercion is toLp), so MeasurePreserving.setIntegral_preimage_emb applies. Apply this to the three integrals of the claim; since ofLp (toLp z) = z, it remains to prove
+   (∗) ∫_{B^{k+1}} g(toLp x) dx = ∫_{B^k} G(toLp (insertNth i 1 z)) dz − ∫_{B^k} G(toLp (insertNth i 0 z)) dz.
+
+4. Splitting off coordinate i. Let e := MeasurableEquiv.piFinSuccAbove (fun _ => ℝ) i : (Fin (k+1) → ℝ) ≃ᵐ ℝ × (Fin k → ℝ). Its inverse is e.symm (t, z) = Fin.insertNth i t z (MeasurableEquiv.piFinSuccAbove_symm_apply, Fin.insertNthEquiv), and e.symm is measure preserving from volume.prod volume to volume (volume_preserving_piFinSuccAbove, MeasurePreserving.symm). Moreover e.symm ⁻¹' B^{k+1} = Ioo 0 1 ×ˢ B^k: insertNth i t z lies in B^{k+1} iff t ∈ Ioo 0 1 and z l ∈ Ioo 0 1 for every l (Fin.forall_iff_succAbove i, Fin.insertNth_apply_same, Fin.insertNth_apply_succAbove). Put F(t, z) := g(toLp (insertNth i t z)). MeasurePreserving.setIntegral_preimage_emb for the measurable embedding e.symm gives ∫_{B^{k+1}} g(toLp x) dx = ∫_{Ioo 0 1 ×ˢ B^k} F d(volume.prod volume).
+
+5. Fubini. F is continuous on ℝ × (Fin k → ℝ) (Continuous.finInsertNth with continuous_fst and continuous_snd, then toLp and g). Hence F is integrable on the compact set Icc 0 1 ×ˢ C^k (IsCompact.prod) and so on its subset Ioo 0 1 ×ˢ B^k, for volume.prod volume. By Measure.prod_restrict, (volume.restrict (Ioo 0 1)).prod (volume.restrict B^k) = (volume.prod volume).restrict (Ioo 0 1 ×ˢ B^k), so F is integrable for the product of the restricted measures, and integral_prod_symm gives ∫_{Ioo 0 1 ×ˢ B^k} F = ∫_{z ∈ B^k} (∫_{t ∈ Ioo 0 1} F(t, z) dt) dz.
+
+6. FTC in coordinate i. Fix z and put φ(t) := G(toLp (insertNth i t z)). First, toLp (insertNth i t z) = toLp (insertNth i 0 z) + t • e_i for every t: compare coordinates j (Fin.eq_self_or_eq_succAbove i j); at j = i both sides equal t, and at j = succAbove i l both equal z l, since e_i vanishes there (Fin.succAbove_ne). So t ↦ toLp (insertNth i t z) has derivative e_i at every t ((hasDerivAt_id t).smul_const e_i, then HasDerivAt.const_add). By the chain rule (HasFDerivAt.comp_hasDerivAt with the derivative of G at toLp (insertNth i t z)), φ has derivative fderiv ℝ G (toLp (insertNth i t z)) e_i = F(t, z) at every t. The map t ↦ F(t, z) is continuous (F composed with t ↦ (t, z)), hence interval integrable on [0, 1], and intervalIntegral.integral_eq_sub_of_hasDerivAt gives ∫_0^1 F(t, z) dt = φ(1) − φ(0). As 0 ≤ 1, ∫_0^1 equals the integral over Ioc 0 1 (intervalIntegral.integral_of_le), which equals the integral over Ioo 0 1 for Lebesgue measure (integral_Ioc_eq_integral_Ioo). So ∫_{t ∈ Ioo 0 1} F(t, z) dt = G(toLp (insertNth i 1 z)) − G(toLp (insertNth i 0 z)).
+
+7. Conclusion. For c ∈ {0, 1}, z ↦ G(toLp (insertNth i c z)) is continuous (Continuous.finInsertNth with a constant first argument), hence integrable on the compact C^k and on B^k ⊆ C^k. By integral_sub, the right-hand side of (∗) equals ∫_{B^k} (G(toLp (insertNth i 1 z)) − G(toLp (insertNth i 0 z))) dz. By step 6 and setIntegral_congr_fun (B^k is measurable: MeasurableSet.univ_pi with measurableSet_Ioo), this equals ∫_{z ∈ B^k} ∫_{t ∈ Ioo 0 1} F(t, z) dt dz. By steps 4 and 5, that is the left-hand side of (∗). So (∗) holds, and with step 3 so does the second conjunct. For k = 0, Fin 0 → ℝ is a single point, B^0 is all of it and has volume 1, and every step applies verbatim. ∎
+
+## Key steps
+
+1. g(y) = DG(y)e_i is continuous because G is C¹; Q^{k+1} lies in the compact set toLp '' [0,1]^{k+1}, so g is integrable on Q^{k+1}.
+2. Transport each cube integral to the open box B^d ⊆ Fin d → ℝ with the measure-preserving embedding toLp (PiLp.volume_preserving_toLp, setIntegral_preimage_emb).
+3. Split off coordinate i with the measure-preserving map (t, z) ↦ insertNth i t z (volume_preserving_piFinSuccAbove); B^{k+1} pulls back to Ioo 0 1 ×ˢ B^k.
+4. Fubini (Measure.prod_restrict, integral_prod_symm) for the continuous integrand F(t, z) = g(toLp(insertNth i t z)), with the t-integral inside.
+5. FTC in t: toLp(insertNth i t z) = toLp(insertNth i 0 z) + t e_i, so d/dt G(…) = F(t, z) and ∫_{Ioo 0 1} F(t, z) dt = G(…1…) − G(…0…).
+6. Recombine with integral_sub and setIntegral_congr_fun to obtain the difference of the two face integrals.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat SNAPSHOT/manifest.json (mode local-project, project_commit b4d606db1da5da8fa2c0292ad4924d97de8b3c4b, mathlib_commit 25730c7c759d108ef87ab70af2342a196760f79d); git -C SNAPSHOT/mathlib rev-parse HEAD and git -C SNAPSHOT/project rev-parse HEAD (both match the manifest); cmp SNAPSHOT/project/GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean (identical)`
+- `rg -n 'dimred_mbl_dtfrcb' SNAPSHOT/project SNAPSHOT/mathlib/Mathlib lake-packages-25730c7c/simongmt GMT -g '*.lean' (no match, exit 1)`
+- `python3 -I scan of RUN/dag.json lean_name fields (2235 nodes, updated 2026-10-14T03:00:34Z): dimred_mbl_dtfrcb_cube_partial_ftc, dimred_mbl_dtfrcb_cube_stokes and dimred_mbl_dtfrcb_face_regroup each occur 0 times. The only *dtfrcb* names are the twin's cmcdtfrcb_cube_partial_ftc (accepted), cmcdtfrcb_cube_stokes (speculative-ready), cmcdtfrcb_face_regroup (accepted at 02:06:25Z, after v1's rejection) and cmcdtfrcb_pullback_divergence. The face_divergence frozen type was read from its node.`
+- `rg -n on SNAPSHOT/mathlib/Mathlib: 'theorem volume_preserving_piFinSuccAbove' (MeasureTheory/Constructions/Pi.lean:818), 'theorem integral_eq_sub_of_hasDerivAt ' (MeasureTheory/Integral/IntervalIntegral/FundThmCalculus.lean:1148), 'theorem integral_prod_symm' (MeasureTheory/Integral/Prod.lean:463), 'theorem MeasurePreserving.setIntegral_preimage_emb' (MeasureTheory/Integral/Bochner/Set.lean:571), 'theorem integral_Ioc_eq_integral_Ioo' (MeasureTheory/Integral/Bochner/Set.lean:709), 'volume_preserving_toLp' (MeasureTheory/Measure/Haar/InnerProductSpace.lean:139), 'trace_eq_sum_inner' (Analysis/InnerProductSpace/Trace.lean:25), 'theorem prod_restrict' (MeasureTheory/Measure/Prod.lean:778), 'theorem Continuous.finInsertNth' (Topology/Constructions.lean:1037), 'forall_iff_succAbove|eq_self_or_eq_succAbove|insertNthEquiv' (Data/Fin/Tuple/Basic.lean:827/841/1065), 'strictMono_succAbove' (Order/Fin/Basic.lean:191)`
+- `rg -n "theorem integral_divergence_of_hasFDerivAt_off_countable'" SNAPSHOT/mathlib/Mathlib/MeasureTheory/Integral/DivergenceTheorem.lean (line 296; this module is not imported by the frozen contract)`
+- `rg -n 'boundary_apply|exteriorDerivativeTestOn|GeometricCurrentOn|TestFormOn' lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean (TestFormOn :123, GeometricCurrentOn :145, exteriorDerivativeTestOn :193, GeometricCurrentOn.boundary_apply :333)`
+- `grep/sed of /runtime/flows/gmt-claude-5675b49b7aec/_recursive_lean/runtime.py (_decompose depth gate :1397, _existing_lean_name_problem :6812, _accepted_checkpoint :2414, _reference_use_problem :900) and speculation.py (resolve_accepted_duplicates, keyed by declaration name); swarm-project.json (max_depth 6); verifier/gmt-compare.py (contract_scope, child_modules)`
+- `lake env lean /tmp/cbdec-dimred-v2/lean/{Types,Full2,HB50k,SubmissionSim,Names}.lean (run from the project root)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Constructions/Pi.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/IntervalIntegral/FundThmCalculus.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Prod.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Haar/InnerProductSpace.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Prod.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Trace.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Constructions.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Data/Fin/Tuple/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Order/Fin/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/DivergenceTheorem.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-deformation-the-b2e9e03a5f/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-deformation-the-b2e9e03a5f/decomposition-v1.json`
+- `/runtime/flows/gmt-claude-5675b49b7aec/_recursive_lean/runtime.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/tmp/cbdec-dimred-v2/lean/Types.lean`
+- `/tmp/cbdec-dimred-v2/lean/Full2.lean`
+- `/tmp/cbdec-dimred-v2/lean/HB50k.lean`
+- `/tmp/cbdec-dimred-v2/lean/SubmissionSim.lean`
+- `/tmp/cbdec-dimred-v2/lean/Names.lean`
+
+Pins match: snapshot project b4d606db and Mathlib 25730c7c, and Submission.lean is byte-identical to the frozen contract.
+No lattice-face current, cubical Stokes or face-regrouping lemma exists under the frozen imports, in the snapshot project, Mathlib or SimonGMT. Mathlib's box divergence theorem (integral_divergence_of_hasFDerivAt_off_countable', DivergenceTheorem.lean:296) lives in a module the contract does not import. So the cube identity is proved from Fubini and the one-variable FTC. The Fubini side uses integral_prod_symm, Measure.prod_restrict, volume_preserving_piFinSuccAbove, PiLp.volume_preserving_toLp and MeasurePreserving.setIntegral_preimage_emb; the FTC side uses intervalIntegral.integral_eq_sub_of_hasDerivAt. All are present in the pinned snapshot.
+The twin branch's cmcdtfrcb_cube_partial_ftc and cmcdtfrcb_face_regroup have byte-identical types, but per the correction nothing is reused. The three children get the fresh names dimred_mbl_dtfrcb_cube_partial_ftc, dimred_mbl_dtfrcb_cube_stokes and dimred_mbl_dtfrcb_face_regroup, which occur nowhere in dag.json, the snapshot, Mathlib, SimonGMT or GMT/.
+Every cited Mathlib and SimonGMT name resolves under import GMT.Ch07.Submission.
+In the comparator scope, the three child types and the selected type elaborate. Each child is proved as a single theorem using only [propext, Classical.choice, Quot.sound], within 50k heartbeats. The parent's exact frozen type follows from the children plus face_divergence's frozen type; its only sorryAx is the face_divergence stand-in. This also holds when everything is inserted in place into a copy of Submission.lean.

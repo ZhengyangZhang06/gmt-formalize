@@ -1,0 +1,94 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "rg searches: cbr_cipi|regcomp_covector|dmcbr_cipi; map_euclideanHausdorffMeasure|euclideanHausdorffMeasure_eq_volume; volume_preserving_toLp|volume_preserving_piFinSuccAbove; ae_eq_of_forall_setLIntegral_eq_of_sigmaFinite",
+        "rg searches: theorem integral_smul_measure|theorem restrict_smul|theorem restrict_restrict|theorem setIntegral_map|theorem integral_of_hasDerivAt_of_tendsto|theorem integral_Iic_of_hasDerivAt_of_tendsto|theorem ext_of_generateFrom_of_iUnion",
+        "Python comparisons of decomposition-v2.json against dag.json, parent-child-handoff.json, accepted-candidate.json and isolated-comparator-result.json; exact frozen types, candidate commits and source SHA-256 hashes checked",
+        "git show <candidate_commit>:GMT/Ch07/Submission.lean for all eight reused declarations and const_mass",
+        "validate_lean_statement applied independently to all nine child propositions; dependency traversal checked proposed edges and retained prerequisite closures",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/plane_integer_independent_audit/Types.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/plane_integer_independent_audit/AcceptedAssembly.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Haar/InnerProductSpace.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Constructions/Pi.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/IntegralEqImproper.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/AEEqOfLIntegral.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-closure-and-bou-d3a83e819f/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-closure-and-bou-d3a83e819f/decomposition-v2.json",
+        "/tmp/plane_integer_independent_audit/Types.lean",
+        "/tmp/plane_integer_independent_audit/AcceptedAssembly.lean"
+      ],
+      "conclusion": "Project and mathlib pins match; the snapshot contract equals workspace Submission.lean. No proposed declaration was found in the snapshot. All eight reused declarations have matching accepted certificates, source hashes and byte-identical frozen types; the new name is unreserved. All nine types elaborate independently before child declarations exist. An independent assembly using actual accepted proofs, retained prerequisites and the supplied slice/parent proof bodies compiled successfully without stubs or sorry. Every child, const_mass and the exact selected parent depend only on propext, Classical.choice and Quot.sound. The split is appropriate: all children contribute to the selected statement, and proposed and retained dependencies are acyclic. All names are bare identifiers. No matrix-unit contract occurs; the determinant construction uses Matrix.of."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "plane_measure",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and exact type agree. The proof correctly separates product coordinates from Euclidean geometry using the measure-preserving toLp map, then proves the image-measure identity, closedness, compact finiteness and ball positivity. The argument includes m = 0."
+    },
+    {
+      "key": "halfspace_ftc",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof establishes derivative integrability and coordinate change of variables before applying Fubini and FTC. Transverse derivatives integrate to zero; the first derivative gives the stated trace integral. The d = 0 case is covered, and the Lean type matches exactly."
+    },
+    {
+      "key": "extderiv_coords",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The closed linear embedding preserves compact support under pullback. Continuous linear evaluation and the chain rule give the required C¹ functions and directional derivatives; exteriorDerivative_apply supplies the exact signs and omitted-vector tuples. No additional hypothesis or circular reliance is needed."
+    },
+    {
+      "key": "halfspace_boundary",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "PM and FTC are explicit hypotheses with exactly the stated frozen types. The sole dependency extderiv_coords supplies the coordinate formula and regularity. The proof justifies measure transport and termwise integration, then identifies the surviving term with the correctly oriented affine-plane integral."
+    },
+    {
+      "key": "boundary_zero",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The all-level half-space identity is explicitly assumed. Choosing a level beyond the support makes the boundary-plane integrand vanish and leaves the whole-plane derivative integral unchanged. This proves the exact conclusion without assuming that the plane current is already a cycle."
+    },
+    {
+      "key": "covector_eval_le",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The supplied proof establishes basis invariance and factorial counting, then compares the permuted frame terms and cancels the positive factorial. It proves the coefficient-norm bound, including n = 0. Identical-type accepted reuse and retained prerequisites are valid and acyclic."
+    },
+    {
+      "key": "covector_norming",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The determinant defines a continuous alternating covector with value one on the frame. Its values on an extending orthonormal basis, together with the proved square-sum identity, establish norm one. The empty-frame case is included; accepted reuse preserves the exact type."
+    },
+    {
+      "key": "weight_nat",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Local finiteness supplies the finite ball cover needed for measure uniqueness. A positive finite-measure subset then supports the density comparison, yielding equality with the natural-valued multiplicity almost everywhere and hence at a point. All measurability, positivity and finiteness hypotheses match the Lean proposition."
+    },
+    {
+      "key": "slice_im",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof composes the declared Stokes dependencies, verifies the plane and zero-boundary representations, and applies SL and ISP to the same data. It identifies the resulting integer-multiplicity slices with the stated affine-plane currents. Its exact conclusion, together with plane_measure, the covector lemmas, const_mass, MR and weight_nat, proves the selected parent. The fresh name is unreserved."
+    }
+  ],
+  "required_changes": []
+}

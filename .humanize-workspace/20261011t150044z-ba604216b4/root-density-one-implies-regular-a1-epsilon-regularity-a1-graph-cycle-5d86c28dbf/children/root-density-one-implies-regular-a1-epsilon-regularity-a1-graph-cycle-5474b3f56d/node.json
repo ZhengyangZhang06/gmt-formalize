@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.graph_cycle_regular-a1.boundary_weak_derivatives-a1.coordinate_covector-a1",
+  "parent_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.graph_cycle_regular-a1.boundary_weak_derivatives-a1",
+  "depth": 5,
+  "title": "The coordinate covector e_j ⌟ det on ℝ^{m+1} and its values on the basis with one vector removed",
+  "statement": "For every m ∈ ℕ and j ∈ Fin (m+1) there is a continuous alternating m-linear form β on ℝ^{m+1} (β ∈ Covector (Euclid (m+1)) m) such that, for every i ∈ Fin (m+1), β evaluated on the standard basis family (e₀, …, e_m) of ℝ^{m+1} with e_i removed (Fin.removeNth i) equals (−1)^j if i = j and 0 if i ≠ j. (Concretely β = e_j ⌟ δ, the interior product of e_j with the standard determinant form δ of ℝ^{m+1}.)",
+  "lean_statement": "∀ (m : ℕ) (j : Fin (m + 1)), ∃ β : Covector (Euclid (m + 1)) m, ∀ i : Fin (m + 1), β (i.removeNth (fun l : Fin (m + 1) => EuclideanSpace.single l (1 : ℝ))) = if i = j then (-1 : ℝ) ^ (j : ℕ) else 0",
+  "lean_name": "dgcr_bwd_coordinate_covector",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-graph-cycle-5474b3f56d-a1"
+}
