@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "0955cba6564928ae090d0cfcc1c3cd4cea54b883af2ac7a2a0c223b6e9e278a9",
+  "git_delta": {
+    "base_commit": "e4a5ee5167082fde910f13dfaafcabf807177489",
+    "candidate_commit": "e70236b47c9f1b89ec87a17bffa2ddf9e4fd1fa1",
+    "target": "GMT/Ch07/Submission.lean",
+    "changed_files": [
+      "GMT/Ch07/Submission.lean"
+    ],
+    "diff_sha256": "5af13e1cd897e894ebff3495d7f7cd654918ab001d4d638399141d242b204aa6",
+    "source_sha256": "f530bbc143392ccd941812bf69a4de86533feda0925b85f06b778b268ffa7fba",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.idtp_cone_constant_density_planar",
+      "statement": "∀ (P : ℕ) (C : GeometricCurrentOn (univ : Set (Euclid P)) 2) (p : Euclid P) (k : ℕ) (δ : ℝ), IsMinimizingIn C univ → BoundaryVanishes C → IsConeCurrent C → p ∈ C.support → p ≠ 0 → 0 < δ → (∀ y ∈ C.support, y ∈ ball p δ → HasMassDensity C y k) → ∃ (δ' : ℝ) (Q : Submodule ℝ (Euclid P)), 0 < δ' ∧ Module.finrank ℝ Q = 2 ∧ p ∈ Q ∧ C.support ∩ ball p δ' = (Q : Set (Euclid P)) ∩ ball p δ' ∧ ∀ W : Set (Euclid P), IsOpen W → W ⊆ ball p δ' → C.massOn W = (k : ℝ≥0∞) * μHE[2] (W ∩ (Q : Set (Euclid P)))",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
