@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "1052710b694e1e79d7af27a4a6a2380c713bca10868aad44e46bc03c76ec2e39",
+  "git_delta": {
+    "base_commit": "a52e528c5f26949f95bbef06862b82ae461f8a7d",
+    "candidate_commit": "7cfb2ffdbd7b8665f3086548329342febae088a7",
+    "target": "GMT/Ch07/Submission.lean",
+    "changed_files": [
+      "GMT/Ch07/Submission.lean"
+    ],
+    "diff_sha256": "bc7072531bccc4faba3716673211e8c434eeba54c1d726d76b2fbf5361c49de5",
+    "source_sha256": "9baa8679485e406ad434370f780cf6327e0a2ed472b9675087b8cf9c9cb85a7a",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.compactness_of_minimizing_currents",
+      "statement": "CompactnessOfMinimizingCurrents",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
