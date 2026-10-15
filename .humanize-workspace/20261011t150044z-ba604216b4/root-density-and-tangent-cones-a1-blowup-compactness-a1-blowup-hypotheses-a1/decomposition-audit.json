@@ -1,0 +1,80 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "^import|^open|^namespace|^def (dilation|dilationCLM|blowUp|HasMassDensity|unitBallVolume|boundarySupport|IsMinimizingIn|IsEmbeddedSubmanifold)|^structure IMRep",
+        "dtc_bc_bh_|dtc_blowUp_scaling|dtc_blowUp_algebra|dtc_vanish_off_support",
+        "theorem div_lt_iff|theorem ofReal_mul|theorem ofReal_lt_ofReal_iff|lemma nhdsGT_basis|theorem ContDiffOn.comp|theorem ContDiff.comp_contDiffOn",
+        "SmoothPartitionOfUnity.exists_isSubordinate|exists_isSubordinate|tsupport_finsum|sum_eq_one",
+        "python3 -I /tmp/bh_independent_audit/run.py Types.lean",
+        "python3 -I /tmp/bh_independent_audit/run.py NewProofs.lean",
+        "python3 -I /tmp/bh_independent_audit/run.py Assembly.lean",
+        "python3 -I /tmp/bh_independent_audit/run.py ReuseBU.lean",
+        "python3 -I /tmp/bh_independent_audit/run.py ReuseV.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Basic/ENNReal/Inv.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Basic/ENNReal/Real.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Order/LeftRightNhds.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/Comp.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Manifold/PartitionOfUnity.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/AffineCurrentPushforward.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-compactness-a1-blowup-hypotheses-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-compactness-a1-blowup-hypotheses-a1/decomposition-v1.json",
+        "/tmp/bh_independent_audit/Types.lean",
+        "/tmp/bh_independent_audit/NewProofs.lean",
+        "/tmp/bh_independent_audit/Assembly.lean",
+        "/tmp/bh_independent_audit/ReuseBU.lean",
+        "/tmp/bh_independent_audit/ReuseV.lean"
+      ],
+      "conclusion": "Verified pins b4d606db and 25730c7c, frozen-file compatibility, and the relevant definitions and library lemmas. The new names are unreserved; the three reused declarations are comparator-accepted with byte-identical frozen types. No proposed declaration occurs in the reference snapshot. All six types independently elaborate in the comparator scope and match their prose, with no problematic inline typeclass construction. Independently compiled the supplied three new proofs under their exact dependency hypotheses, the exact selected-parent assembly, and the accepted reused implementations; their axiom reports contain only propext, Classical.choice and Quot.sound. The split is appropriate: three distinct new obligations plus valid reuse establish all seven selected-parent clauses, with correctly directed, acyclic dependencies."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "mass_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Prose and frozen type agree. The proof handles nonpositive radii, obtains a uniform small-radius density bound, checks the ENNReal denominator is positive and finite, and cancels the dilation factors to obtain a finite eventual bound. Its sole dependency is sufficient and correctly directed."
+    },
+    {
+      "key": "domain_boundary",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact hypotheses suffice. A ball inside U and the boundary zero region yields exhaustion for every real radius. Support transport and boundary commutation then justify applying vanish_off_support uniformly to all eligible test forms. The supplied proof establishes all three conjuncts without circularity."
+    },
+    {
+      "key": "rescaled_retraction",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All local-retraction hypotheses appear in both statements. The explicit rescaling proves C¹ regularity, membership in the image of U ∩ N, identity and growth. One fixed family works for every positive tolerance, preserving the required quantifier order. No additional theorem dependency is needed."
+    },
+    {
+      "key": "blowup_scaling",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Valid reuse of the accepted declaration with an identical frozen type. The supplied proof establishes mass scaling, every representation field and the measure identity, then transports competitors to prove minimality. Clauses (1) and (3) directly support the selected parent; independent compilation confirms standard axioms only."
+    },
+    {
+      "key": "vanish_off_support",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Valid exact-type reuse. Compactness gives a finite cover by vanishing regions; the smooth partition of unity produces admissible test-form pieces annihilated by the current. Linearity completes the proof, including arbitrary U. No openness hypothesis is missing."
+    },
+    {
+      "key": "blowup_algebra",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Valid exact-type reuse. Evaluation proves subtraction compatibility, the retained accepted testform_correspondence prerequisite proves injectivity and zero-region transport, and affine pullback proves boundary commutation. The original prerequisite remains acyclic under reuse. Support transport supplies parent clause (4) and supports domain_boundary."
+    }
+  ],
+  "required_changes": []
+}

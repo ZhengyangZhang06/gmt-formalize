@@ -1,0 +1,69 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "dimred_mbl_fnd_tfe|cmr_tfe|dor_ims_sua_mollify_unit_field|cmr_abs_apply_le_massOn|testForm_extension",
+        "theorem continuous_extend_one|theorem mulTSupport_extend_one_subset|theorem extend_one : HasCompactMulSupport|tsupport_smul_subset_right|tsupport_add",
+        "dist_convolution_le|contDiff_convolution_left|convolutionExists_left|support_convolution_subset",
+        "exists_bound_of_continuous",
+        "cauchySeq_tendsto_of_complete",
+        "exists_open_between_and_isCompact_closure",
+        "abbrev Covector|abbrev DifferentialForm|def IsTestForm|def TestFormOn|def covectorEuclideanNorm|structure GeometricCurrentOn|def Current|def massOn|theorem le_massOn",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/tfe-independent-audit-3_fykj33/Types.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/dmf-tfe-split/E2E.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Submission.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Support.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Separation/Regular.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/UniformSpace/Cauchy.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Group/Bounded.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Convolution.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/Convolution.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-foundations-a1-ff007b1424/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-foundations-a1-ff007b1424/decomposition-v1.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-imrep-mass-and-support-a1-smooth-b62f226305/accepted-candidate.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-imrep-mass-and-support-a1-smooth-b62f226305/isolated-comparator-result.json",
+        "/tmp/tfe-independent-audit-3_fykj33/Types.lean",
+        "/tmp/dmf-tfe-split/E2E.lean"
+      ],
+      "conclusion": "Verified project b4d606db1da5da8fa2c0292ad4924d97de8b3c4b and mathlib 25730c7c759d108ef87ab70af2342a196760f79d. Workspace contracts and inspected library sources match the snapshot. The project search found no matching declarations. Local sources support the norm, convolution, support, compact-neighborhood, and completeness arguments. All four child types and the parent type independently elaborate as propositions without child declarations. Their types exactly match the supplied proof chain, which recompiled successfully; all reported axioms are propext, Classical.choice, and Quot.sound. Accepted prerequisite bodies and types match their retained commits. New names are unreserved bare identifiers; accepted mollification reuse has an identical frozen type. Dependencies are acyclic and correctly directed. No Matrix/IsUnit constructions occur."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "mollify_unit_field",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Prose and Lean type match with every hypothesis stated. The explicit coefficient map, positive normalized bump, support margin, convolution regularity, and averaging estimates prove all conclusions. The proof handles arbitrary P and n without an unstated dimension assumption. Reuse is permitted: the retained comparator-accepted declaration has exactly this type and an accepted, acyclic prerequisite closure."
+    },
+    {
+      "key": "uniform_approx",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact proposition matches the prose. Compact support and continuity bound c∘G; s=max(C,0)+1 is positive. Normalization satisfies every mollification hypothesis, and rescaling preserves smoothness and support while giving error ε. Its sole theorem dependency is the declared mollify_unit_field child."
+    },
+    {
+      "key": "limit_functional",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The statement correctly permits arbitrary U, G, and real-valued m. The difference estimate uses only the stated bound and linearity. Taking |m(W∪W)| justifies the Cauchy argument without assuming positivity. Choice defines Φ only after convergence is established; the diagonal difference estimate proves independence and the exact universal convergence conclusion. No approximation-existence theorem or parent conclusion is assumed."
+    },
+    {
+      "key": "ambient_extension",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All hypotheses and four conclusions match the Lean proposition. Compact neighborhoods and uniform_approx supply sequences; limit_functional gives convergence. Sums, scalar multiples, and constant sequences establish linearity and agreement. Passing the bound (r+1/(k+1))·m(W) to the limit proves (d) without a missing sign hypothesis. This is an appropriate split: the parent instantiates m using its accepted mass bound and composes Φ with linear zero extension, yielding exactly both conclusions of the selected frozen theorem."
+    }
+  ],
+  "required_changes": []
+}

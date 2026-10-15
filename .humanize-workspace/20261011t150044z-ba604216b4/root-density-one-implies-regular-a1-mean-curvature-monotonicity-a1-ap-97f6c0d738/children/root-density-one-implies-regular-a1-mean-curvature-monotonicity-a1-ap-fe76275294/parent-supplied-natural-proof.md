@@ -1,0 +1,91 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.density_one_implies_regular-a1.mean_curvature_monotonicity-a1.approx_tangent_in_tangent_space-a1`
+- Child DAG node: `root.density_one_implies_regular-a1.mean_curvature_monotonicity-a1.approx_tangent_in_tangent_space-a1.plane_integral_pos-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: parent proof step 4 (Simon Ch. 3, Definition 1.4; SimonGMT Chapter03/Rectifiable.lean).
+Notation. Hⁿ := μHE[n] on ℝ^P. μ := Hⁿ⌞Q, i.e. μ(B) = Hⁿ(B ∩ Q) for Borel B (Lean: (μHE[n]).restrict Q), so ∫_Q g dHⁿ = ∫ g dμ. ι : Q → ℝ^P is the inclusion, and H_Qⁿ is μHE[n] on the inner product space Q.
+1. Support of μ. Since dim Q = n, the support of μ (the set of points every neighbourhood of which has positive μ-measure) is exactly Q (SimonGMT Chapter03 support_euclideanHausdorffMeasure_restrict_submodule). Only Q ⊆ spt μ is used below; here is why it holds.
+ (a) Let z ∈ Q and let O be an open set containing z.
+ (b) ι is a linear isometry, so Hⁿ(O ∩ Q) = Hⁿ(ι(ι⁻¹(O))) = H_Qⁿ(ι⁻¹(O)) (Isometry.euclideanHausdorffMeasure_image).
+ (c) Because dim Q = n, H_Qⁿ = μHE[finrank Q] is an additive Haar measure on Q (Mathlib instance isAddHaarMeasure_euclideanHausdorffMeasure). Haar measures are positive on nonempty open sets.
+ (d) ι⁻¹(O) is open in Q and contains z, so μ(O) = H_Qⁿ(ι⁻¹(O)) > 0.
+ This includes n = 0: then Q = {0} and H_Q⁰ is the counting measure on a one-point space, which is again a Haar measure.
+2. μ is finite on compact sets. ι is an isometry with range Q, so μ is the push-forward ι_# H_Qⁿ (Isometry.map_euclideanHausdorffMeasure). For compact K ⊆ ℝ^P we get μ(K) = H_Qⁿ(ι⁻¹(K)). The set ι⁻¹(K) is compact because Q is closed in ℝ^P, and a Haar measure is finite on compact sets, so μ(K) < ∞. (Equivalently, SimonGMT regular_euclideanHausdorffMeasure_restrict_submodule states that μ is a regular measure, in particular finite on compact sets.)
+3. Integrability. g is continuous with compact support, so it is bounded and vanishes outside a compact set, which has finite μ-measure by step 2. Hence g is μ-integrable (Continuous.integrable_of_hasCompactSupport).
+4. Positivity criterion. For a μ-integrable function g ≥ 0, ∫ g dμ > 0 if and only if μ({y : g(y) ≠ 0}) > 0 (integral_pos_iff_support_of_nonneg).
+5. Let O := {y : g(y) ≠ 0}. It is open, because g is continuous and ℝ ∖ {0} is open. It contains w, because g(w) > 0. By step 1, w ∈ Q ⊆ spt μ, so this open neighbourhood of w has μ(O) > 0 (Measure.mem_support_iff_forall).
+6. By steps 3–5, ∫_Q g dHⁿ = ∫ g dμ > 0.
+
+## Key steps
+
+1. Since dim Q = n, Hⁿ⌞Q is the isometric image of the Haar measure μHE[n] on Q; so its support is Q (support_euclideanHausdorffMeasure_restrict_submodule) and it is finite on compact sets.
+2. The continuous, compactly supported g is therefore Hⁿ⌞Q-integrable.
+3. For integrable g ≥ 0, ∫ g dμ > 0 if and only if μ({g ≠ 0}) > 0.
+4. {g ≠ 0} is an open neighbourhood of w ∈ Q = spt(Hⁿ⌞Q), so it has positive measure.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat nodes/root-density-one-implies-regular-a1-mean-curvature-monotonicity-a1-ap-97f6c0d738/{parent-child-handoff.json,parent-supplied-plan.md,parent-supplied-natural-proof.md}`
+- `python3 -I over dag.json (lean_name, lean_statement, status of all 214 nodes; sibling chart_tangent_space frozen type; related nodes approx_tangent_in_submanifold, hausdorff_scaling, blowup_measure_scaling, tangent_invariance, tangent_null_invariance, approx_tangent_local, blowup_integral_continuous, plane_quadratic_moment)`
+- `cat nodes/root-density-one-implies-regular-a1-mean-curvature-monotonicity-a1-ch-f0862c44ef/parent-supplied-natural-proof.md (sibling chart_tangent_space proof)`
+- `diff GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean; cmp GMT/Ch07/Contract.lean local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean (both identical)`
+- `sed -n 1,280p .lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean (blowUpMap, HasApproximateTangentSpaceAt, support_euclideanHausdorffMeasure_restrict_submodule, regular_euclideanHausdorffMeasure_restrict_submodule)`
+- `cat local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean (euclideanHausdorffMeasure_smul₀, Isometry.euclideanHausdorffMeasure_image, Isometry.map_euclideanHausdorffMeasure, isAddHaarMeasure_euclideanHausdorffMeasure, homothety lemmas)`
+- `sed -n 60,175p book/chapter-03.txt (Simon 1.4, 1.5, proof of 1.6)`
+- `rg -l 'dsmc_att_|setIntegral_submodule_pos|blowUpMap_image_null|blowUp_points_of_approxTangent|mem_range_of_secant_blowUp' on dag.json, DAG.md, issue-workers.json, problem.json, problem.md, nodes/, GMT, SimonGMT and the Mathlib snapshot (no match)`
+- `lake env lean /tmp/atts-decomp/Stmts.lean (the four child types elaborate in namespace GMT.Ch07 with the contract opens)`
+- `lake env lean /tmp/atts-decomp/Assembly.lean (parent from child and sibling stubs)`
+- `lake env lean /tmp/atts-decomp/ChildAB.lean, ChildB.lean, ChildCD.lean, Final2.lean (full child proofs, parent assembly, #print axioms)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/README.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-mean-curvature-monotonicity-a1-ap-97f6c0d738/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-mean-curvature-monotonicity-a1-ap-97f6c0d738/parent-supplied-plan.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-mean-curvature-monotonicity-a1-ap-97f6c0d738/parent-supplied-natural-proof.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-mean-curvature-monotonicity-a1-ch-f0862c44ef/parent-supplied-natural-proof.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-03.txt`
+- `/tmp/atts-decomp/Stmts.lean`
+- `/tmp/atts-decomp/Assembly.lean`
+- `/tmp/atts-decomp/ChildAB.lean`
+- `/tmp/atts-decomp/ChildB.lean`
+- `/tmp/atts-decomp/ChildCD.lean`
+- `/tmp/atts-decomp/Final2.lean`
+- `/tmp/atts-decomp/sibling_stmt.txt`
+- `/tmp/atts-decomp/proposal.md`
+- `/tmp/atts-review/Check.lean`
+- `/tmp/atts-review/NoSorry.lean`
+
+Snapshot: project b4d606db, mathlib 25730c7c. The snapshot Contract.lean is byte-identical to the workspace Contract.lean and Submission.lean.
+
+Reusable facts found:
+- SimonGMT Chapter03/Rectifiable.lean. blowUpMap x r y = r⁻¹ • (y − x). HasApproximateTangentSpaceAt n M x Q = finrank Q = n together with convergence of ∫ over blowUpMap x r '' M of every C_c test along 𝓝[>] 0. support_euclideanHausdorffMeasure_restrict_submodule (the support of μHE[n]⌞Q is Q) and regular_euclideanHausdorffMeasure_restrict_submodule are used in child A.
+- Mathlib Geometry/Euclidean/Volume/Measure.lean. Isometry.euclideanHausdorffMeasure_image and Measure.euclideanHausdorffMeasure_smul₀ are used in child B; isAddHaarMeasure_euclideanHausdorffMeasure and Isometry.map_euclideanHausdorffMeasure are used in child A.
+- Mathlib measure/integral API used in children A and C: integral_pos_iff_support_of_nonneg, Continuous.integrable_of_hasCompactSupport, Measure.mem_support_iff_forall, Measure.restrict_apply (no measurability needed on the restricting set), integral_eq_zero_of_ae, nonempty_of_measure_ne_zero, mem_nhdsGT_iff_exists_Ioo_subset.
+- Submodule.closed_of_finiteDimensional is used in child D.
+- The sibling chart_tangent_space (dsmc_chart_tangentSpace_eq_range; DAG status decomposing, declared dependency) gives tangentSpace N (ψ v) = Set.range (fderiv ℝ ψ v) and the secant estimate, verbatim in the form of child D's hypothesis.
+
+Related nodes in other branches, not reused (different types):
+- approxTangent_le_submanifold_tangentSpace (the r = 1 variant, decomposing); no child solves it.
+- dtc_hausdorff_dilation and regcomp_atl_blowUp_measure_scaling (both accepted).
+
+Name check: no match for any proposed identifier or the dsmc_att_ prefix anywhere.
+
+Lean checks:
+- All four child types elaborate after import GMT.Ch07.Submission.
+- All four children are fully proved, using only propext, Classical.choice and Quot.sound.
+- The frozen parent type is proved from the children plus the sibling's frozen-type stub; that stub is the only sorryAx.
+- An independent reviewer reproduced these checks and accepted the split.

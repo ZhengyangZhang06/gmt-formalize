@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.flat_decomposition-a1.deformation-a1.mass_rep-a1",
+  "parent_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.flat_decomposition-a1.deformation-a1",
+  "depth": 6,
+  "title": "Riesz representation of currents of locally finite mass, without the absolute-continuity clause (Simon 6.2.7–2.8)",
+  "statement": "Let P, n ∈ ℕ, U ⊆ ℝ^P (Euclid P) open and T ∈ 𝒟_n(U) a current (SimonGMT GeometricCurrentOn U n) with M_W(T) < ∞ for every open W with closure(W) compact and contained in U (CompactlyContained W U). Then there are a Borel measure μ on ℝ^P and a map ξ from ℝ^P to n-vectors (MultiVector P n, continuous linear functionals on n-covectors) such that: μ(ℝ^P ∖ U) = 0; μ(K) < ∞ for every compact K ⊆ U; M_W(T) = μ(W) for every open W ⊆ ℝ^P; ξ is μ-a.e. strongly measurable; |ξ(x)(α)| ≤ |α| for every x and every n-covector α, where |α| is the Euclidean coefficient norm (covectorEuclideanNorm); and T(ω) = ∫ ξ(x)(ω(x)) dμ(x) for every ω ∈ 𝒟ⁿ(U) (TestFormOn U n). (This is Simon 6.2.7–2.8 without the absolute-continuity clause; the frozen Lean type is identical to that of cmr_exists_massRepresentation_core.)",
+  "lean_statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n), IsOpen U → (∀ W : Set (Euclid P), IsOpen W → CompactlyContained W U → T.massOn W < ∞) → ∃ (μ : Measure (Euclid P)) (ξ : Euclid P → MultiVector P n), μ Uᶜ = 0 ∧ (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μ K < ∞) ∧ (∀ W : Set (Euclid P), IsOpen W → T.massOn W = μ W) ∧ AEStronglyMeasurable ξ μ ∧ (∀ (x : Euclid P) (α : Covector (Euclid P) n), |ξ x α| ≤ covectorEuclideanNorm α) ∧ (∀ ω : TestFormOn U n, T ω = ∫ x, ξ x ((ω : DifferentialForm (Euclid P) n) x) ∂μ)",
+  "lean_name": "dtc_bc_lc_fd_dfm_mass_representation_core",
+  "depends_on": [
+    "root.compactness_of_minimizing_currents-a1.mass_representation-a1.vector_riesz-a1",
+    "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.im_series-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.compactness_of_minimizing_currents-a1.mass_representation-a1.vector_riesz-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-mass-representation-a1-vec-c380714b63-a1",
+      "result_commit": "5d41e1d400e533123ec2f7b9aa6051b05a0be971",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.im_series-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-im-series-a1-a1",
+      "result_commit": "9b823b56965f653716675d2e458c314229939386",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-compari-bfbd1d2bf8-a1"
+}
