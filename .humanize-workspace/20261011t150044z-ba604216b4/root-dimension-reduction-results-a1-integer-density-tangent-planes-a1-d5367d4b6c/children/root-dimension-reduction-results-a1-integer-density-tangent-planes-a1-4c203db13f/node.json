@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.two_dim_cone_density-a1.no_infinite_planar_pieces-a1.disjoint_packing-a1",
+  "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.two_dim_cone_density-a1.no_infinite_planar_pieces-a1",
+  "depth": 5,
+  "title": "A measure finite on compact sets admits no infinite disjoint family of uniformly heavy sets inside a ball",
+  "statement": "Let P ∈ ℕ and let μ be a Borel measure on ℝ^P with μ(K) ≠ ∞ for every compact K ⊆ ℝ^P. Let r ∈ ℝ and c ∈ [0, ∞] with c ≠ 0, and let (D_i)_{i∈ℕ} be Borel subsets of ℝ^P such that D_i ∩ D_j = ∅ whenever i ≠ j, D_i ⊆ B_r(0) and c ≤ μ(D_i) for every i. Then these assumptions are contradictory, i.e. the conclusion is False.",
+  "lean_statement": "∀ (P : ℕ) (μ : Measure (Euclid P)) (D : ℕ → Set (Euclid P)) (r : ℝ) (c : ℝ≥0∞), (∀ K : Set (Euclid P), IsCompact K → μ K ≠ ∞) → c ≠ 0 → (∀ i, MeasurableSet (D i)) → (∀ i j, i ≠ j → Disjoint (D i) (D j)) → (∀ i, D i ⊆ ball 0 r) → (∀ i, c ≤ μ (D i)) → False",
+  "lean_name": "idtp_tdc_nipp_disjoint_packing",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-4c203db13f-a1"
+}
