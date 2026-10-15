@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_sector_endpoint_density-a1.box_mass_limits-a1.rescaled_portmanteau-a1.dilation_map_rescaling-a1",
+  "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_sector_endpoint_density-a1.box_mass_limits-a1.rescaled_portmanteau-a1",
+  "depth": 6,
+  "title": "Rescaled dilation push-forward λ^{-2}(η_{a,λ})_#μ: finite on compacts, set formula and change of variables",
+  "statement": "Let P ∈ ℕ, μ a Borel measure on ℝ^P that is finite on compact sets, a ∈ ℝ^P and λ > 0. Let η := dilation a λ, η(y) = −(λ^{-1}a) + λ^{-1}y, and ν_λ := η_#(ofReal(λ^{-2})·μ), the push-forward (Measure.map η) of the scalar multiple ENNReal.ofReal(λ^{-2})·μ. Then (i) ν_λ(K) < ∞ for every compact K ⊆ ℝ^P; (ii) ν_λ(S) = ofReal(λ^{-2})·μ(η^{-1}(S)) for every measurable S ⊆ ℝ^P; and (iii) ∫ g dν_λ = λ^{-2}·∫ g(η(x)) dμ(x) (Bochner integrals) for every continuous g : ℝ^P → ℝ.",
+  "lean_statement": "∀ (P : ℕ) (μ : Measure (Euclid P)) (a : Euclid P) (lam : ℝ), IsFiniteMeasureOnCompacts μ → 0 < lam → (∀ K : Set (Euclid P), IsCompact K → Measure.map (dilation a lam) (ENNReal.ofReal (lam⁻¹ ^ 2) • μ) K < ∞) ∧ (∀ S : Set (Euclid P), MeasurableSet S → Measure.map (dilation a lam) (ENNReal.ofReal (lam⁻¹ ^ 2) • μ) S = ENNReal.ofReal (lam⁻¹ ^ 2) * μ (dilation a lam ⁻¹' S)) ∧ ∀ g : Euclid P → ℝ, Continuous g → ∫ x, g x ∂(Measure.map (dilation a lam) (ENNReal.ofReal (lam⁻¹ ^ 2) • μ)) = lam⁻¹ ^ 2 * ∫ x, g (dilation a lam x) ∂μ",
+  "lean_name": "idtp_cse_bml_rpm_dilation_map",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-b5f5ac4017-a1"
+}
