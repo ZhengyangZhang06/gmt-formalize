@@ -1443,55 +1443,6 @@ theorem Submission.idtp_tdc_dlc_ld_cone_scale_piece : ∀ (P : ℕ) (C : Geometr
   -- the density `k` at `s⁻¹y` transfers to `s(s⁻¹y) = y`
   · simpa only [smul_inv_smul₀ hs.ne'] using
       (hD (s⁻¹ • y) k).mpr (hB _ ((hS y).mpr hy) ((hball y).mpr hyx))
-/-- **Uniqueness of planes**: fact (b) in the proof of `idtp_tdc_density_locally_constant`, the
-local constancy of the density of a two-dimensional minimizing cone away from `0`.  There it
-identifies the plane of a planar piece of `spt C` near a point.  Let `Q₁, Q₂` be linear subspaces
-of `ℝᴾ`, `x ∈ Q₁` and `t > 0`.  If `Q₁ ∩ B_t(x) = Q₂ ∩ B_t(x)`, then `Q₁ = Q₂`.  First,
-`x ∈ Q₁ ∩ B_t(x) = Q₂ ∩ B_t(x)`, so `x ∈ Q₂`.  Next, let `x ∈ Q`, `x ∈ Q'` and `Q ∩ B_t(x) ⊆ Q'`.
-For `v ∈ Q` and `s = t / (2(‖v‖ + 1)) > 0`, the point `x + s v` lies in `Q ∩ B_t(x) ⊆ Q'`, so
-`s v ∈ Q'` and `v ∈ Q'`.  This gives `Q₁ ≤ Q₂` and `Q₂ ≤ Q₁`. -/
-theorem Submission.idtp_tdc_dlc_subspace_eq_of_inter_ball_eq : ∀ (P : ℕ) (Q₁ Q₂ : Submodule ℝ (Euclid P)) (x : Euclid P) (t : ℝ), x ∈ Q₁ → 0 < t → (Q₁ : Set (Euclid P)) ∩ ball x t = (Q₂ : Set (Euclid P)) ∩ ball x t → Q₁ = Q₂ := by
-  intro P Q₁ Q₂ x t hx ht h
-  -- Step 1: `x ∈ Q₂`, as `x ∈ Q₁ ∩ B_t(x) = Q₂ ∩ B_t(x)`.
-  have hx₂ : x ∈ Q₂ := (h.subset ⟨hx, Metric.mem_ball_self ht⟩).1
-  -- Step 2: if `x ∈ Q`, `x ∈ Q'` and `Q ∩ B_t(x) ⊆ Q'`, then `Q ≤ Q'`.  For `v ∈ Q` and
-  -- `s = t / (2(‖v‖ + 1)) > 0`, `x + s • v ∈ Q` and `dist (x + s • v) x = s‖v‖ < t`, so
-  -- `x + s • v ∈ Q'`; then `s • v = (x + s • v) - x ∈ Q'` and `v ∈ Q'` as `s ≠ 0`.
-  have key : ∀ Q Q' : Submodule ℝ (Euclid P), x ∈ Q → x ∈ Q' →
-      (Q : Set (Euclid P)) ∩ ball x t ⊆ Q' → Q ≤ Q' := by
-    intro Q Q' hxQ hxQ' hsub v hv
-    have hs : 0 < t / (2 * (‖v‖ + 1)) := div_pos ht (by positivity)
-    have hball : x + (t / (2 * (‖v‖ + 1))) • v ∈ ball x t := by
-      rw [Metric.mem_ball, dist_eq_norm, add_sub_cancel_left, norm_smul, Real.norm_of_nonneg hs.le,
-        div_mul_eq_mul_div, div_lt_iff₀ (by positivity)]
-      nlinarith [norm_nonneg v]
-    have h₁ : x + (t / (2 * (‖v‖ + 1))) • v ∈ Q' := hsub ⟨Q.add_mem hxQ (Q.smul_mem _ hv), hball⟩
-    exact (Q'.smul_mem_iff hs.ne').1 ((Q'.add_mem_iff_right hxQ').1 h₁)
-  -- Step 3: `Q₁ ∩ B_t(x) ⊆ Q₂` and `Q₂ ∩ B_t(x) ⊆ Q₁`; conclude by antisymmetry.
-  exact le_antisymm (key Q₁ Q₂ hx hx₂ (h.subset.trans inter_subset_left))
-    (key Q₂ Q₁ hx₂ hx (h.symm.subset.trans inter_subset_left))
-/-- Radial projection to the unit sphere at most doubles the distance to a unit vector: if
-`y ≠ 0` and `|w| = 1`, then `|y/|y| − w| ≤ 2|y − w|` (fact (e) in the proof that the density of a
-2-dimensional minimizing cone is locally constant).  `|y/|y| − y| = |1/|y| − 1| |y| = |1 − |y||`,
-and `|1 − |y|| = ||w| − |y|| ≤ |y − w|` by the reverse triangle inequality; conclude by the
-triangle inequality through `y`. -/
-theorem Submission.idtp_tdc_dlc_normalize_dist_le : ∀ (P : ℕ) (y w : Euclid P), y ≠ 0 → ‖w‖ = 1 → ‖‖y‖⁻¹ • y - w‖ ≤ 2 * ‖y - w‖ := by
-  intro P y w hy hw
-  have hy0 : 0 < ‖y‖ := norm_pos_iff.mpr hy
-  -- `‖y‖⁻¹ • y - y = (‖y‖⁻¹ - 1) • y` has norm `|‖y‖⁻¹ - 1| ‖y‖ = |1 - ‖y‖|`
-  have h1 : ‖‖y‖⁻¹ • y - y‖ = |1 - ‖y‖| := by
-    have e : (‖y‖⁻¹ - 1) * ‖y‖ = 1 - ‖y‖ := by
-      rw [sub_mul, inv_mul_cancel₀ hy0.ne', one_mul]
-    rw [← e, abs_mul, abs_of_pos hy0, ← Real.norm_eq_abs, ← norm_smul, sub_smul, one_smul]
-  -- reverse triangle inequality, as `‖w‖ = 1`
-  have h2 : |1 - ‖y‖| ≤ ‖y - w‖ := by
-    rw [← hw, norm_sub_rev y w]
-    exact abs_norm_sub_norm_le w y
-  calc ‖‖y‖⁻¹ • y - w‖ ≤ ‖‖y‖⁻¹ • y - y‖ + ‖y - w‖ := norm_sub_le_norm_sub_add_norm_sub _ _ _
-    _ ≤ 2 * ‖y - w‖ := by rw [h1]; linarith
-
-/-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
-theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 /-- **Simon Ch. 6, 1.2 (p. 132)**: `Λⁿ(ℝᴾ)` is finite-dimensional.  An `n`-covector `α` is
 determined by its values `α(e_{I(1)}, …, e_{I(n)})` on tuples of standard basis vectors (alternating
 maps agreeing on distinct basis vectors are equal), so `α ↦ (α(e ∘ I))_{I : Fin n → Fin P}` is an
@@ -4840,37 +4791,6 @@ theorem Submission.rsd_cmr_eq_zero_of_vanish_off_compact : ∀ (P m : ℕ) (U B 
   have h := hoff _ hdisj
   rw [map_sub F.toCurrent ω (testFormOnInclusion hBU m ψ), hin ψ, sub_zero] at h
   exact h
-/-- **Support of a current vanishing away from a compact set** (Simon 6.2.11).  If `K ⊆ U` is
-compact and `F ∈ 𝒟ₙ(U)` kills every `ω ∈ 𝒟ⁿ(U)` with `spt ω ∩ K = ∅`, then `spt F ⊆ K` and
-`spt F` is compact.  For `y ∈ U \ K` choose `B_s(y) ⊆ U \ K`: the ball `W = B_{s/2}(y)` has compact
-closure `⊆ B̄_{s/2}(y) ⊆ U \ K` and every form supported in `W` misses `K`, so `y ∈ Z(F)`.  Hence
-`spt F = K \ Z(F)`, compact because the zero region `Z(F)` is open. -/
-theorem Submission.rsd_cmr_support_subset_of_vanish : ∀ (P n : ℕ) (U K : Set (Euclid P)) (F : GeometricCurrentOn U n), IsOpen U → IsCompact K → K ⊆ U → (∀ ω : TestFormOn U n, Disjoint (tsupport (ω : DifferentialForm (Euclid P) n)) K → F ω = 0) → F.support ⊆ K ∧ IsCompact F.support := by
-  intro P n U K F hU hK hKU hvan
-  -- Steps 1–2: no point of `U \ K` lies in `spt F = U \ Z(F)`, so `spt F ⊆ K`
-  have hsub : F.support ⊆ K := by
-    intro y hy
-    by_contra hyK
-    obtain ⟨s, hs, hball⟩ := Metric.isOpen_iff.mp (hU.sdiff hK.isClosed) y ⟨hy.1, hyK⟩
-    apply hy.2
-    -- `W = B_{s/2}(y)` is one of the open sets whose union is `Z(F)`
-    refine ⟨ball y (s / 2), ⟨isOpen_ball, ?_, ?_, ?_⟩, mem_ball_self (by positivity)⟩
-    · -- `closure W` is compact
-      exact (isCompact_closedBall y (s / 2)).of_isClosed_subset isClosed_closure
-        closure_ball_subset_closedBall
-    · -- `closure W ⊆ B̄_{s/2}(y) ⊆ B_s(y) ⊆ U \ K ⊆ U`
-      exact closure_ball_subset_closedBall.trans
-        ((closedBall_subset_ball (by linarith)).trans (hball.trans sdiff_subset))
-    · -- a form supported in `W ⊆ U \ K` misses `K`, so `F` kills it
-      intro ω hω
-      exact hvan ω (Set.disjoint_of_subset_left
-        (hω.trans ((ball_subset_ball (by linarith)).trans hball)) disjoint_sdiff_left)
-  -- Step 3: `spt F = K \ Z(F)` is compact, `Z(F)` being open
-  refine ⟨hsub, ?_⟩
-  have heq : F.support = K \ F.zeroRegion :=
-    Set.ext fun x => ⟨fun hx => ⟨hsub hx, hx.2⟩, fun hx => ⟨hKU hx.1, hx.2⟩⟩
-  rw [heq]
-  exact hK.diff F.isOpen_zeroRegion
 /-- **Simon 7.4.1** (`reg T`, chapter-07.txt lines 590–594) under `T = c T₀` in `V`: the
 regularity transfer of the reduction to multiplicity one behind 7.4.2 (lines 605–610), as in the
 proof of Ch. 5, 7.3 (chapter-05.txt lines 1388–1395).  If `V ⊆ U`, `c ∈ ℤ \ {0}`,
@@ -5362,28 +5282,6 @@ theorem Submission.idtp_cse_etp_plane_imrep : ∀ (P n : ℕ) (τ : Fin n → Eu
     show ((μHE[n] : Measure (Euclid P)).restrict (Q : Set (Euclid P))).withDensity
       (fun _ => ((c.natAbs : ℕ) : ℝ≥0∞)) = _
     exact withDensity_const _
-/-- **Blow-up domains eventually contain bounded sets** (Simon 7.3.3(2), proof: the domain
-claims for `η_{x,σᵢ#}T`).  If `U` is open, `x ∈ U`, `λᵢ > 0` and `λᵢ → 0`, then every bounded `K`
-lies in `η_{x,λᵢ}(U)` for all large `i`: with `B_δ(x) ⊆ U` and `K ⊆ B̄_r(0)`, eventually
-`λᵢ(|r| + 1) < δ`, and then each `w ∈ K` is `η_{x,λᵢ}(x + λᵢw)` with `x + λᵢw ∈ B_δ(x)`. -/
-theorem Submission.idtp_tpf_blowUp_domain_eventually : ∀ (P : ℕ) (U : Set (Euclid P)) (x : Euclid P) (lams : ℕ → ℝ), IsOpen U → x ∈ U → (∀ i, 0 < lams i) → Tendsto lams atTop (𝓝 0) → ∀ K : Set (Euclid P), Bornology.IsBounded K → ∀ᶠ i in atTop, K ⊆ dilation x (lams i) '' U := by
-  intro P U x lams hU hx hpos hlim K hK
-  -- `B_δ(x) ⊆ U` and `K ⊆ B̄_r(0)`
-  obtain ⟨δ, hδ, hball⟩ := Metric.isOpen_iff.mp hU x hx
-  obtain ⟨r, hr⟩ := hK.subset_closedBall 0
-  -- `λᵢ(|r| + 1) → 0 < δ`, so `λᵢ(|r| + 1) < δ` for all large `i`
-  have hlim' : Tendsto (fun i => lams i * (|r| + 1)) atTop (𝓝 0) := by
-    simpa using hlim.mul_const (|r| + 1)
-  filter_upwards [hlim'.eventually (gt_mem_nhds hδ)] with i hi w hw
-  -- `y = x + λᵢw` lies in `B_δ(x) ⊆ U`, and `η_{x,λᵢ}(y) = w`
-  refine ⟨x + lams i • w, hball ?_, ?_⟩
-  · have hw : ‖w‖ ≤ |r| + 1 := by
-      linarith [mem_closedBall_zero_iff.mp (hr hw), le_abs_self r]
-    rw [mem_ball, dist_eq_norm, add_sub_cancel_left, norm_smul, Real.norm_of_nonneg (hpos i).le]
-    exact (mul_le_mul_of_nonneg_left hw (hpos i).le).trans_lt hi
-  · simp only [dilation, dilationCLM, smul_apply, ContinuousLinearMap.id_apply, smul_add,
-      smul_smul, inv_mul_cancel₀ (hpos i).ne', one_smul, neg_add_cancel_left]
-
 /-- **`μ_C`-a.e. point lies in `spt C`** (Simon 6.2.11 with 6.3.2(3), the half
 `spt μ_C ⊆ spt C` of `spt C = spt μ_C`).  Let `C = τ(M, θ, ξ)` in `ℝᴾ`.  If `C` vanishes on the
 open set `W`, then for a basis `α₁, …, α_N` of `Λⁿ(ℝᴾ)`, `μ_C`-a.e. `x ∈ W` has `ξ(x)(αₖ) = 0` for
@@ -115533,89 +115431,6 @@ theorem Submission.idtp_cttp_blowup_limit_translation_invariant : ∀ (P n : ℕ
     simpa using hinv (-a) g (map_continuous g) g.hasCompactSupport
   rw [← Measure.map_apply hτ hA, hmeq]
 
-/-- **Vanishing boundary gives the ambient weak-derivative identity** (the zero weak derivatives
-step of the planar constancy argument, after Simon 6.2.34).  Let `∂S = 0` in `V` and
-`S(ω) = ∫_{V ∩ Q} g(x) ω(x)(τ₁, …, τₙ) dHⁿ(x)` for an orthonormal family `τ` with `Q = span τ`.
-Then `∫_{V ∩ Q} g · D_{τⱼ} f dHⁿ = 0` for every smooth compactly supported `f` with
-`spt f ⊆ V`: test `∂S = 0` against `φ = f · α`, where `α(w) = β(⟨τ, w⟩)` pulls back the
-coordinate covector `β = eⱼ ⌟ δ`, so that `dφ(x)(τ) = Df(x)(τⱼ)`. -/
-theorem Submission.idtp_pc_boundary_weak_derivative : ∀ (P n : ℕ) (V : Set (Euclid P)) (S : GeometricCurrentOn V n) (τ : Fin n → Euclid P) (g : Euclid P → ℝ), 1 ≤ n → Orthonormal ℝ τ → BoundaryVanishes S → (∀ ω : TestFormOn V n, S ω = ∫ x in V ∩ (Submodule.span ℝ (Set.range τ) : Set (Euclid P)), g x * (ω : DifferentialForm (Euclid P) n) x τ ∂μHE[n]) → ∀ f : Euclid P → ℝ, ContDiff ℝ (⊤ : ℕ∞) f → HasCompactSupport f → tsupport f ⊆ V → ∀ j : Fin n, ∫ x in V ∩ (Submodule.span ℝ (Set.range τ) : Set (Euclid P)), g x * fderiv ℝ f x (τ j) ∂μHE[n] = 0 := by
-  intro P n V S τ g hn hτ hbd hrep f hf hfc hfV j
-  -- Degree: `n = m + 1`, so `BoundaryVanishes S` is `∂S = 0`.
-  obtain ⟨m, rfl⟩ : ∃ m, n = m + 1 := ⟨n - 1, by omega⟩
-  have hbd' : S.boundary = 0 := hbd
-  -- The coordinate covector `β` on `ℝ^{m+1}` and its pullback `α` by `y ↦ (⟨τₖ, y⟩)ₖ`.
-  obtain ⟨β, hβ⟩ := Submission.dgcr_bwd_coordinate_covector m j
-  let Ls₀ : Euclid P →ₗ[ℝ] Euclid (m + 1) :=
-    { toFun := fun y => (WithLp.equiv 2 (Fin (m + 1) → ℝ)).symm (fun k => inner ℝ (τ k) y)
-      map_add' := fun y z => by ext k; simp [inner_add_right]
-      map_smul' := fun c y => by ext k; simp [inner_smul_right] }
-  let Ls : Euclid P →L[ℝ] Euclid (m + 1) := LinearMap.toContinuousLinearMap Ls₀
-  have hLsτ : ∀ i, Ls (τ i) = EuclideanSpace.single i (1 : ℝ) := by
-    intro i
-    ext k
-    simp [Ls, Ls₀, orthonormal_iff_ite.mp hτ, eq_comm]
-  let α : Covector (Euclid P) m := β.compContinuousLinearMap Ls
-  have hα : ∀ i : Fin (m + 1), α (i.removeNth τ) = if i = j then (-1 : ℝ) ^ (j : ℕ) else 0 := by
-    intro i
-    have : (fun l => Ls (i.removeNth τ l)) =
-        i.removeNth (fun l : Fin (m + 1) => EuclideanSpace.single l (1 : ℝ)) := by
-      funext l
-      simp [Fin.removeNth_apply, hLsτ]
-    show β (fun l => Ls (i.removeNth τ l)) = _
-    rw [this, hβ i]
-  -- The test form `φ = f · α ∈ 𝒟^m(V)`.
-  let φ : DifferentialForm (Euclid P) m := fun y => f y • α
-  have hφtest : IsTestForm φ ∧ tsupport φ ⊆ V := by
-    refine ⟨⟨?_, ?_⟩, ?_⟩
-    · exact hf.smul contDiff_const
-    · exact hfc.smul_right
-    · exact (tsupport_smul_subset_left _ _).trans hfV
-  let φt : TestFormOn V m := ⟨φ, hφtest⟩
-  -- `dφ(x)(τ) = Σᵢ (−1)ⁱ Df(x)(τᵢ) α(τ without τᵢ) = Df(x)(τⱼ)`.
-  have hd : ∀ x, exteriorDerivative φ x τ = fderiv ℝ f x (τ j) := by
-    intro x
-    have hfd : DifferentiableAt ℝ f x := (hf.differentiable (by simp)).differentiableAt
-    rw [exteriorDerivative_apply (hfd.smul_const α) τ]
-    have h1 : ∀ i : Fin (m + 1),
-        (fun y => (f y • α) (i.removeNth τ)) = fun y => f y * α (i.removeNth τ) := by
-      intro i; funext y; simp [smul_eq_mul]
-    simp only [h1]
-    simp only [fderiv_mul_const hfd, hα]
-    rw [Finset.sum_eq_single j]
-    · simp only [ite_true]
-      rw [zsmul_eq_mul]
-      push_cast
-      simp only [Pi.smul_apply, smul_eq_mul]
-      rw [← mul_assoc, ← pow_add, ← two_mul, pow_mul]
-      simp
-    · intro i _ hij
-      simp [hij]
-    · simp
-  -- `0 = ∂S(φ) = S(dφ) = ∫_{V ∩ Q} g · dφ(τ) dHⁿ = ∫_{V ∩ Q} g · D_{τⱼ} f dHⁿ`.
-  have h0 : S.boundary φt = 0 := by rw [hbd']; rfl
-  rw [GeometricCurrentOn.boundary_apply] at h0
-  have h2 := hrep (exteriorDerivativeTestOn V m φt)
-  rw [h0] at h2
-  rw [h2]
-  refine integral_congr_ae (Eventually.of_forall fun x => ?_)
-  simp only
-  rw [← hd x]
-  rfl
-theorem Submission.dgcr_bwd_coordinate_form : ∀ (m : ℕ) (a : Euclid (m + 1) → ℝ) (j : Fin (m + 1)), ContDiff ℝ (⊤ : ℕ∞) a → ∃ ψ : DifferentialForm (Euclid (m + 1)) m, IsSmoothForm ψ ∧ tsupport ψ ⊆ tsupport a ∧ ∀ x : Euclid (m + 1), exteriorDerivative ψ x (fun i => EuclideanSpace.single i (1 : ℝ)) = fderiv ℝ a x (EuclideanSpace.single j (1 : ℝ)) := by
-  intro m a j ha
-  obtain ⟨β, hβ⟩ := Submission.dgcr_bwd_coordinate_covector m j
-  refine ⟨fun y => a y • β, ha.smul contDiff_const, tsupport_smul_subset_left _ _, fun x => ?_⟩
-  have hax : DifferentiableAt ℝ a x := (ha.differentiable (by simp)).differentiableAt
-  rw [Submission.dgcr_bwd_extDeriv_smul_const (m + 1) m a β x _ hax, Finset.sum_eq_single j]
-  · rw [hβ j, ite_eq_left rfl, ← mul_assoc, mul_comm ((-1 : ℝ) ^ (j : ℕ)), mul_assoc, ← pow_add,
-      ← two_mul, pow_mul]
-    simp
-  · intro i _ hij
-    rw [hβ i, ite_eq_right hij]
-    simp
-  · intro hj
-    exact absurd (Finset.mem_univ j) hj
 /-- **Weak derivatives of a top-dimensional density vanish** (steps 3–5 of the Constancy Theorem,
 Simon Ch. 6, 2.34).  Let `X(ω) = ∫ G ⟨ω, e₁ ∧ ⋯ ∧ e_{m+1}⟩ dL^{m+1}` on `V ⊆ ℝ^{m+1}` with `∂X = 0`
 on test forms supported in `B ⊆ V`.  Then `∫_B G ∂ⱼa = 0` for every `a ∈ C_c^∞` with `spt a ⊆ B`:
