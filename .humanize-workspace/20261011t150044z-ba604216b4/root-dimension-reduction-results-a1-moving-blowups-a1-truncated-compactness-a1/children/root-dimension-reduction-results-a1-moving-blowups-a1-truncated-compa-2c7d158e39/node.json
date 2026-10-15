@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.moving_blowups-a1.truncated_compactness-a1.limit_transfer-a1",
+  "parent_id": "root.dimension_reduction_results-a1.moving_blowups-a1.truncated_compactness-a1",
+  "depth": 4,
+  "title": "Agreement on expanding balls transfers weak convergence and boundary vanishing to the limit",
+  "statement": "Let P, m ∈ ℕ, U_j ⊆ ℝ^P arbitrary sets and S_j ∈ 𝒟_{m+1}(U_j) (j ∈ ℕ), Ŝ_j, C ∈ 𝒟_{m+1}(ℝ^P) and ρ_j ∈ ℝ with ρ_j → ∞. Assume Ŝ_j ⇀ C (WeaklyConvergesOn), Ŝ_j(ω) = currentEval(S_j, ω) for every j and every ω ∈ 𝒟^{m+1}(ℝ^P) with tsupport ω ⊆ ball(0, ρ_j), and ∂Ŝ_j(β) = 0 for every j and every β ∈ 𝒟^m(ℝ^P) with tsupport β ⊆ ball(0, ρ_j). Then ∂C = 0 and S_j ⇀ C in ℝ^P in the sense of ConvergesWeakly (currentEval(S_j, ω) → C(ω) for every ω ∈ 𝒟^{m+1}(ℝ^P)).",
+  "lean_statement": "∀ (P m : ℕ) (Us : ℕ → Set (Euclid P)) (Ss : (j : ℕ) → GeometricCurrentOn (Us j) (m + 1)) (Ŝ : ℕ → GeometricCurrentOn (univ : Set (Euclid P)) (m + 1)) (C : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1)) (ρ : ℕ → ℝ), Tendsto ρ atTop atTop → WeaklyConvergesOn Ŝ C → (∀ (j : ℕ) (ω : TestFormOn (univ : Set (Euclid P)) (m + 1)), tsupport (ω : DifferentialForm (Euclid P) (m + 1)) ⊆ ball 0 (ρ j) → Ŝ j ω = currentEval (Ss j) (ω : DifferentialForm (Euclid P) (m + 1))) → (∀ (j : ℕ) (β : TestFormOn (univ : Set (Euclid P)) m), tsupport (β : DifferentialForm (Euclid P) m) ⊆ ball 0 (ρ j) → (Ŝ j).boundary β = 0) → C.boundary = 0 ∧ ConvergesWeakly Ss C",
+  "lean_name": "dimred_mbl_tc_limit_of_agreement",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-moving-blowups-a1-truncated-compa-2c7d158e39-a1"
+}

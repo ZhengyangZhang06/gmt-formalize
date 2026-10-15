@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "46b06f3732fca498e368473d8546503128c82165b2f6cc0d9464ebe989fc9acf",
+  "git_delta": {
+    "base_commit": "0dc8300f296297badeec42a3b2708a501daa7eba",
+    "candidate_commit": "bbcc6549921ed23c850380edd1708fea97e827de",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dimred_singular_set_density_below_two",
+    "diff_sha256": "c0df1e4975fb25d0d8231f7ac16b6e5494601218516549eda5c92b3cb7fe056e",
+    "source_sha256": "117546a3f402ee00eb29b8354f22e42ea25ea4600c647c1d7950b92fa6c823f8",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dimred_singular_set_density_below_two",
+      "statement": "SingularSetSmallWhereDensityBelowTwo",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

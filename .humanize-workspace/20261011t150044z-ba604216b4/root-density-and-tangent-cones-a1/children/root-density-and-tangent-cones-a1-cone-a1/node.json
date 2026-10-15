@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_and_tangent_cones-a1.cone-a1",
+  "parent_id": "root.density_and_tangent_cones-a1",
+  "depth": 2,
+  "title": "Constant density ratio implies cone (Simon 7.3.1 proof lines 342–360 and Ch. 6, 2.33)",
+  "statement": "Let P ∈ ℕ, n ≥ 1 and C ∈ 𝒟_n(ℝ^P) integer multiplicity with ∂C = 0, such that for every integer multiplicity representation R = (M, θ, ξ) of C the varifold v(M, θ) is stationary in ℝ^P (R.IsStationaryAlong univ), and suppose there is θ₀ ∈ ℝ with M_{B_ρ(0)}(C) = ω_n·ρⁿ·θ₀ (as unitBallVolume n · ofReal(ρⁿ) · ofReal θ₀) for every ρ > 0. Then C is a cone: η_{0,λ#}C = C for every λ > 0 (IsConeCurrent C, i.e. currentEval(blowUp C 0 λ, ω) = C(ω) for all ω ∈ 𝒟ⁿ(ℝ^P)).",
+  "lean_statement": "∀ (P n : ℕ) (C : GeometricCurrentOn (univ : Set (Euclid P)) n) (θ : ℝ), 0 < n → IsIntegerMultiplicity C → BoundaryVanishes C → (∀ R : IMRep (univ : Set (Euclid P)) n, R.Represents C → R.IsStationaryAlong univ) → (∀ ρ : ℝ, 0 < ρ → C.massOn (ball 0 ρ) = unitBallVolume n * ENNReal.ofReal (ρ ^ n) * ENNReal.ofReal θ) → IsConeCurrent C",
+  "lean_name": "dtc_cone_of_constant_density",
+  "depends_on": [
+    "root.density_and_tangent_cones-a1.mass_eq_measure-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.density_and_tangent_cones-a1.mass_eq_measure-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-cone-a1-a1"
+}

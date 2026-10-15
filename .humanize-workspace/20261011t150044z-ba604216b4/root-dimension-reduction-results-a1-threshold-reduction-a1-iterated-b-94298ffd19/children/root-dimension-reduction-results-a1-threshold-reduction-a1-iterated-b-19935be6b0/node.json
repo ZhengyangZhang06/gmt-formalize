@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.threshold_reduction-a1.iterated_blowup_limit-a1.countable_tests-a1",
+  "parent_id": "root.dimension_reduction_results-a1.threshold_reduction-a1.iterated_blowup_limit-a1",
+  "depth": 4,
+  "title": "Countable-test criterion: convergence on a fixed countable family plus local mass bounds gives weak convergence in ℝ^P (Lemma CT)",
+  "statement": "Let P, n ∈ ℕ. There is a sequence (ω_m)_{m∈ℕ} in 𝒟ⁿ(ℝ^P) (TestFormOn univ n) with the following property. Let V_k ⊆ ℝ^P (k ∈ ℕ) be arbitrary sets, A_k ∈ 𝒟_n(V_k) (GeometricCurrentOn (V_k) n) and A ∈ 𝒟_n(ℝ^P). Suppose that for every R ∈ ℕ there are k₀ ∈ ℕ and Γ ∈ [0, ∞) (Γ ≠ ∞) with M_{B_{R+1}(0)}(A) ≤ Γ and, for every k ≥ k₀, B_{R+1}(0) ⊆ V_k and M_{B_{R+1}(0)}(A_k) ≤ Γ. Suppose also that currentEval(A_k, ω_m) → A(ω_m) as k → ∞ for every m. Then A_k ⇀ A in ℝ^P (ConvergesWeakly As A), i.e. currentEval(A_k, ω) → A(ω) for every ω ∈ 𝒟ⁿ(ℝ^P). Here B_r(0) is the open ball, M_W = massOn (the supremum of ofReal(T(φ)) over test forms φ of the current's domain with tsupport φ ⊆ W and covectorEuclideanNorm(φ(x)) ≤ 1 for all x), and currentEval(T, ω) = T(ω) if ω is a test form whose tsupport lies in the domain of T, and 0 otherwise.",
+  "lean_statement": "∀ (P n : ℕ), ∃ ωs : ℕ → TestFormOn (univ : Set (Euclid P)) n, ∀ (Vs : ℕ → Set (Euclid P)) (As : (k : ℕ) → GeometricCurrentOn (Vs k) n) (A : GeometricCurrentOn (univ : Set (Euclid P)) n), (∀ R : ℕ, ∃ (k₀ : ℕ) (Γ : ℝ≥0∞), Γ ≠ ∞ ∧ A.massOn (ball 0 ((R : ℝ) + 1)) ≤ Γ ∧ ∀ k, k₀ ≤ k → ball (0 : Euclid P) ((R : ℝ) + 1) ⊆ Vs k ∧ (As k).massOn (ball 0 ((R : ℝ) + 1)) ≤ Γ) → (∀ m, Tendsto (fun k => currentEval (As k) ((ωs m : TestFormOn (univ : Set (Euclid P)) n) : DifferentialForm (Euclid P) n)) atTop (𝓝 (A (ωs m)))) → ConvergesWeakly As A",
+  "lean_name": "dimred_tr_ibl_countable_tests",
+  "depends_on": [
+    "root.density_one_implies_regular-a1.limsup_mass_bound-a1.slicing-a1.testform_dense-a1",
+    "root.regular_set_dense-a1.mass_eq_weight-a1.test_form_approx-a1.norm_props-a1",
+    "root.compactness_of_minimizing_currents-a1.mass_representation-a1.eval_mass_bound-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.slicing-a1.testform_dense-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-limsup-mass-bound-a1-slicing-a1-t-9b84f5afc6-a1",
+      "result_commit": "b7ecbda9150d7985c7094c40f6aebfb81c4ec24b",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.regular_set_dense-a1.mass_eq_weight-a1.test_form_approx-a1.norm_props-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-regular-set-dense-a1-mass-eq-weight-a1-test-form-approx-a1-norm-props-a1-a1",
+      "result_commit": "f492ba4a003c8f1324077e050d48667ae23c7100",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.compactness_of_minimizing_currents-a1.mass_representation-a1.eval_mass_bound-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-mass-representation-a1-eva-463e096c91-a1",
+      "result_commit": "7a706164baaf42fc7f55751247396a8836928310",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-threshold-reduction-a1-iterated-b-19935be6b0-a1"
+}

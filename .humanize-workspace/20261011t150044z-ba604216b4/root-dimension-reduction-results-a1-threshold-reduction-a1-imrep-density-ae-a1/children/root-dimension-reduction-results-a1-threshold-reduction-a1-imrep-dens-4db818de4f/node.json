@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.threshold_reduction-a1.imrep_density_ae-a1.density_on_carrier-a1",
+  "parent_id": "root.dimension_reduction_results-a1.threshold_reduction-a1.imrep_density_ae-a1",
+  "depth": 4,
+  "title": "Density of an integer multiplicity weight equals its multiplicity Hⁿ-a.e. on the carrier inside an open set (Simon Ch. 3, Remarks 1.5(3) and 1.8, Theorem 1.9)",
+  "statement": "Let P, n ∈ ℕ, let V ⊆ ℝ^P be any set and let R = (M, θ, ξ) be an integer multiplicity triple in V (IMRep V n: M ⊆ V Borel and countably n-rectifiable, θ : ℝ^P → ℕ Borel with θ ≥ 1 on M, ξ orienting the approximate tangent space of M at Hⁿ-a.e. point of M, Hⁿ = μHE[n]), with weight μ_R = θHⁿ⌞M (R.measure). Let W ⊆ ℝ^P be open and assume μ_R(K ∩ W) < ∞ for every compact K ⊆ ℝ^P. Then for Hⁿ-a.e. x ∈ ℝ^P with x ∈ M ∩ W, μ_R(B_ρ(x) ∩ W)/(ω_nρⁿ) → θ(x) in [0, ∞] as ρ ↓ 0. Here B_ρ(x) is the open ball, ω_n = unitBallVolume n, and the denominator is written unitBallVolume n · ofReal(ρⁿ) (division in [0, ∞]).",
+  "lean_statement": "∀ (P n : ℕ) (V W : Set (Euclid P)) (R : IMRep V n), IsOpen W → (∀ K : Set (Euclid P), IsCompact K → R.measure (K ∩ W) ≠ ∞) → ∀ᵐ x ∂(μHE[n] : Measure (Euclid P)), x ∈ R.carrier ∩ W → Tendsto (fun ρ : ℝ => R.measure (ball x ρ ∩ W) / (unitBallVolume n * ENNReal.ofReal (ρ ^ n))) (𝓝[>] 0) (𝓝 (R.mult x : ℝ≥0∞))",
+  "lean_name": "dimred_tr_ida_density_on_carrier",
+  "depends_on": [
+    "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.density_eq_multiplicity_ae-a1.upper_density_zero-a1",
+    "root.regular_set_dense-a1.density_eq_multiplicity-a1.unweighted_density_one-a1",
+    "root.regular_set_dense-a1.density_eq_multiplicity-a1.closed_to_open_ball_density-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.density_eq_multiplicity_ae-a1.upper_density_zero-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-5625b30197-a1",
+      "result_commit": "ee6fe01ff88a4fae79345889f39a366b44e8e0b9",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.regular_set_dense-a1.density_eq_multiplicity-a1.unweighted_density_one-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-regular-set-dense-a1-density-eq-multiplicity-a1-unweighted-density-one-a1-a1",
+      "result_commit": "dbef2c15948a21d9574315bea458a9edb4f708e3",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.regular_set_dense-a1.density_eq_multiplicity-a1.closed_to_open_ball_density-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-regular-set-dense-a1-density-eq-multiplicity-a1-closed-to-open-b-2625a8c412-a1",
+      "result_commit": "c3ca64f29e6259bb0947d084036f55b096f91e3f",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-threshold-reduction-a1-imrep-dens-4db818de4f-a1"
+}

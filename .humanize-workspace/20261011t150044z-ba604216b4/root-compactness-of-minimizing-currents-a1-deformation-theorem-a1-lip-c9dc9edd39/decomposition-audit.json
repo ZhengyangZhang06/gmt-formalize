@@ -1,0 +1,66 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cylinder|productWithInterval|homotopy|cmcdt_lpo_cyl",
+        "cmcdt_lpo_cyl",
+        "cmcdt_lpo_cyl_(restriction_bounds|slice_operator|current|support|boundary_mass)",
+        "abbrev Covector|def DifferentialForm|def TestFormOn|TestFormOn|GeometricCurrentOn|def mass|massAdmissibleOn|zeroRegion|def support|def vanishes|CompactlyContained|covectorEuclideanNorm|boundary_apply|theorem ext",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/cyl-independent-audit-qh3fsiv_/Audit.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/lake-manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/Alternating/Curry.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Module/Alternating/Topology.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/IntervalIntegral/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-lip-c9dc9edd39/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-lip-c9dc9edd39/decomposition-v1.json",
+        "/tmp/cyl-decomp-m3x9/Consolidated.lean",
+        "/tmp/cyl-independent-audit-qh3fsiv_/Audit.lean"
+      ],
+      "conclusion": "The split appropriately establishes the selected cmcdt_lpo_cylinder contract, specifically conjuncts (7)–(9). The snapshot contract matches the workspace, and dependency revisions match the pinned manifests. No cylinder construction was found in project/GMT, and no proposed-name prefix was found in the snapshot. All five names are bare identifiers and unreserved; the relevant dependency graph is acyclic. Empty child dependency lists are sound because prerequisites are explicit antecedents, discharged during parent assembly. Each exact one-line proposition elaborated before any child declaration existed. Independently recompiled all five supplied proofs and the exact parent assembly with the frozen slice/toolkit contracts as parameters; all use only propext, Classical.choice and Quot.sound. Euclidean-space constructions, current subtraction and boundary-degree instances match the intended operations; no matrix-unit construction occurs."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "restriction",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and Lean type include exactly L1, L2 and both operator conclusions. The proof constructs J, verifies its norm bound including N = 0, constructs the continuous linear contraction/restriction maps, and checks their tuple formulas and coefficient-norm bounds. It is complete and non-circular."
+    },
+    {
+      "key": "slice_operator",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "SA, SE and R1 match the explicit antecedents. Continuity supplies the integrability needed for additivity; extensional uniqueness makes the chosen slices linear. Support control comes from SA, and applying SE to the continuous contracted integrand proves the stated bound for every real c. No unstated regularity or construction obligation remains."
+    },
+    {
+      "key": "current",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact type matches the conditional construction and finite-mass subtraction claim. MSB bounds X composed with S, BC constructs the current, and finite mass justifies ofReal_toReal. The proof establishes finite mass of X − Y before applying the cylinder evaluation formula, then uses current extensionality. The infinite-mass default causes no gap."
+    },
+    {
+      "key": "support",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type correctly requires only VO, compact support of X, support control of S and the evaluation identity. The compact-image argument, relatively compact ball in its complement, and VO establish the support inclusion directly from zeroRegion. Closedness then proves compactness. The argument also handles empty support and needs no linearity or mass assumption."
+    },
+    {
+      "key": "boundary_mass",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All endpoint, homotopy, restriction and slice hypotheses appear accurately in the type. The proof bounds endpoint evaluations, treats degree zero separately, and in positive degree applies MSB to the finite-mass boundary of X. The resulting uniform bound on admissible evaluations bounds the defining ENNReal supremum. Signs, degree indices and boundaryMassOn conversions are correct."
+    }
+  ],
+  "required_changes": []
+}

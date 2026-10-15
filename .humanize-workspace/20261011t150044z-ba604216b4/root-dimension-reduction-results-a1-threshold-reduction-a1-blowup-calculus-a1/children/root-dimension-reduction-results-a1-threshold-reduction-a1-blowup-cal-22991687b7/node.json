@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.threshold_reduction-a1.blowup_calculus-a1.currenteval_pullback-a1",
+  "parent_id": "root.dimension_reduction_results-a1.threshold_reduction-a1.blowup_calculus-a1",
+  "depth": 4,
+  "title": "Pull-back form of currentEval for one blow-up: currentEval(η_{x,λ#}T, ω) = currentEval(T, η^#ω)",
+  "statement": "Let P, n ∈ ℕ, U ⊆ ℝ^P an arbitrary subset, T ∈ 𝒟_n(U) (GeometricCurrentOn U n), x ∈ ℝ^P and λ > 0. Write η := η_{x,λ} = dilation x λ, η(p) = −λ⁻¹x + λ⁻¹p = λ⁻¹(p − x), and η_{x,λ#}T := blowUp T x λ ∈ 𝒟_n(η(U)). For an n-form ω on ℝ^P let η^#ω := affinePullbackForm (dilationCLM P λ) (−(λ⁻¹•x)) ω, i.e. (η^#ω)(p)(v₁, …, vₙ) = ω(η(p))(λ⁻¹v₁, …, λ⁻¹vₙ). For a current A with domain V and an n-form β let currentEval(A, β) := A(β) if β is a test form (C^∞ with compact support) with tsupport β ⊆ V, and 0 otherwise. Then currentEval(η_{x,λ#}T, ω) = currentEval(T, η^#ω) for every n-form ω on ℝ^P.",
+  "lean_statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (x : Euclid P) (lam : ℝ) (hlam : 0 < lam) (ω : DifferentialForm (Euclid P) n), currentEval (blowUp T x lam hlam.ne') ω = currentEval T (affinePullbackForm (dilationCLM P lam) (-(lam⁻¹ • x)) ω)",
+  "lean_name": "dimred_tr_bc_currentEval_blowUp",
+  "depends_on": [
+    "root.density_and_tangent_cones-a1.blowup_scaling-a1.testform_correspondence-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.density_and_tangent_cones-a1.blowup_scaling-a1.testform_correspondence-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-scaling-a1-testform-correspondence-a1-a1",
+      "result_commit": "5e184fbc2dc0f26dbd9ce6b79feabd198b8ba518",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-threshold-reduction-a1-blowup-cal-22991687b7-a1"
+}

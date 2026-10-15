@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.minimizing_implies_stationary-a1.diffeo_pushforward-a1.pushforward_current-a1",
+  "parent_id": "root.minimizing_implies_stationary-a1.diffeo_pushforward-a1",
+  "depth": 3,
+  "title": "Simon 6.2.23–2.24: the push-forward integral formula defines a current",
+  "statement": "Let U ⊆ ℝ^P, R = (M, θ, ξ) an integer multiplicity triple in U (IMRep U n), K ⊆ U compact and φ : ℝ^P → ℝ^P a C¹ map with φ(x) = x for x ∉ K. Then there is a current S ∈ 𝒟_n(U) (GeometricCurrentOn U n) with S(ω) = ∫_M θ(x) ξ(x)(ω(φ(x))∘Dφ(x)) dH^n(x) for every ω ∈ 𝒟^n(U), where β∘L := β.compContinuousLinearMap L.",
+  "lean_statement": "∀ (P n : ℕ) (U K : Set (Euclid P)) (R : IMRep U n) (φ : Euclid P → Euclid P), IsCompact K → K ⊆ U → ContDiff ℝ 1 φ → (∀ x, x ∉ K → φ x = x) → ∃ S : GeometricCurrentOn U n, ∀ ω : TestFormOn U n, S ω = ∫ x in R.carrier, (R.mult x : ℝ) * R.orient x (((ω : DifferentialForm (Euclid P) n) (φ x)).compContinuousLinearMap (fderiv ℝ φ x)) ∂μHE[n]",
+  "lean_name": "dpf_pushforward_formula_current_exists",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-pushforwa-db3aef81cd-a1"
+}

@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.tilt_excess_step-a1.plane_reduction-a1",
+  "parent_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.tilt_excess_step-a1",
+  "depth": 5,
+  "title": "Reduction to a plane with small tilt and small height",
+  "statement": "Let N ∈ ℕ, μ a measure on ℝ^N (Lean Euclid N), Q : ℝ^N → {subspaces of ℝ^N} such that x ↦ p_{Q(x)} := (Q x).starProjection is μ-a.e. strongly measurable, ξ ∈ ℝ^N, σ > 0, a ≥ 0, M > 0, h₁ ∈ ℝ, and T, T₁ subspaces of ℝ^N. For a subspace S' write J(S') := ∫_{B_σ(ξ)} Σ_i |p_{Q(x)}e_i − p_{S'}e_i|² dμ(x), the lower Lebesgue integral of ENNReal.ofReal of the Hilbert–Schmidt sum (e_i = EuclideanSpace.single i 1, B_σ(ξ) the closed ball). Assume μ(B_σ(ξ)) ≥ M, J(T₁) ≤ a, and |(x − ξ) − p_{T₁}(x − ξ)| ≤ h₁ for every x ∈ spt μ ∩ B_σ(ξ). Then there is a subspace S with S = T or S = T₁ such that J(S) ≤ a, J(S) ≤ J(T), and |(x − ξ) − p_S(x − ξ)| ≤ h₁ + (4a/M)^{1/2}σ for every x ∈ spt μ ∩ B_σ(ξ).",
+  "lean_statement": "∀ (N : ℕ) (μ : Measure (Euclid N)) (Q : Euclid N → Submodule ℝ (Euclid N)) (ξ : Euclid N) (σ a M h₁ : ℝ) (T T₁ : Submodule ℝ (Euclid N)), 0 < σ → 0 ≤ a → 0 < M → AEStronglyMeasurable (fun x => (Q x).starProjection) μ → ENNReal.ofReal M ≤ μ (closedBall ξ σ) → ∫⁻ x in closedBall ξ σ, ENNReal.ofReal (∑ i : Fin N, ‖(Q x).starProjection (EuclideanSpace.single i (1 : ℝ)) - T₁.starProjection (EuclideanSpace.single i (1 : ℝ))‖ ^ 2) ∂μ ≤ ENNReal.ofReal a → (∀ x ∈ μ.support ∩ closedBall ξ σ, ‖(x - ξ) - T₁.starProjection (x - ξ)‖ ≤ h₁) → ∃ S : Submodule ℝ (Euclid N), (S = T ∨ S = T₁) ∧ ∫⁻ x in closedBall ξ σ, ENNReal.ofReal (∑ i : Fin N, ‖(Q x).starProjection (EuclideanSpace.single i (1 : ℝ)) - S.starProjection (EuclideanSpace.single i (1 : ℝ))‖ ^ 2) ∂μ ≤ ENNReal.ofReal a ∧ ∫⁻ x in closedBall ξ σ, ENNReal.ofReal (∑ i : Fin N, ‖(Q x).starProjection (EuclideanSpace.single i (1 : ℝ)) - S.starProjection (EuclideanSpace.single i (1 : ℝ))‖ ^ 2) ∂μ ≤ ∫⁻ x in closedBall ξ σ, ENNReal.ofReal (∑ i : Fin N, ‖(Q x).starProjection (EuclideanSpace.single i (1 : ℝ)) - T.starProjection (EuclideanSpace.single i (1 : ℝ))‖ ^ 2) ∂μ ∧ ∀ x ∈ μ.support ∩ closedBall ξ σ, ‖(x - ξ) - S.starProjection (x - ξ)‖ ≤ h₁ + Real.sqrt (4 * a / M) * σ",
+  "lean_name": "dorag_tes_plane_reduction",
+  "depends_on": [
+    "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.tilt_excess_step-a1.proj_algebra-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.tilt_excess_step-a1.proj_algebra-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-e9f2ad0ff0-a1"
+}

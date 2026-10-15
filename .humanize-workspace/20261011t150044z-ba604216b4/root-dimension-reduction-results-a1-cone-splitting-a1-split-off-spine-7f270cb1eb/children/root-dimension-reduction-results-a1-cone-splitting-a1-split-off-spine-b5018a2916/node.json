@@ -1,0 +1,50 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.cone_splitting-a1.split_off_spine-a1.minimality_transfer-a1.cube_cycle-a1",
+  "parent_id": "root.dimension_reduction_results-a1.cone_splitting-a1.split_off_spine-a1.minimality_transfer-a1",
+  "depth": 5,
+  "title": "The integer multiplicity cycle Z = (−1)^k ∂([[Q_r]] × Y) = [[Q_r]] × X + E′, supported in Q_r + spt Y",
+  "statement": "Let P, k, m, n' ∈ ℕ with k ≥ 1, m ≥ 1 and h : n' = k + m; let g = (g_1, …, g_k) (g : Fin k → Euclid P) be orthonormal with span G, q := G^⊥.starProjection, r > 0, H^k := μHE[k] and Q_r := {t ∈ G : |⟨g_i, t⟩| ≤ r for all i}. Let X ∈ 𝒟_m(ℝ^P) and Y ∈ 𝒟_{m+1}(ℝ^P) be integer multiplicity currents with ∂Y = X (Y.boundary = X), spt Y compact and spt Y ⊆ G^⊥. Then there are Z, E' ∈ 𝒟_{n'}(ℝ^P) such that:\n- Z is integer multiplicity and ∂Z = 0 (BoundaryVanishes Z);\n- spt Z is compact and spt Z ⊆ {x : |⟨g_i, x⟩| ≤ r for all i} ∩ q⁻¹(spt Y);\n- M(E') ≤ ENNReal.ofReal(2k(2r)^{k−1})·M(Y);\n- for every map flat : Λ^{n'} → Λ^m with flat α v = α(Fin.append g v ∘ Fin.cast h) and every test n'-form ω: Z(ω) = ∫_{Q_r} currentEval X (y ↦ flat(ω(t + y))) dH^k(t) + E'(ω).\n(Z = (−1)^k ∂([[Q_r]] × Y) = [[Q_r]] × X + E', with E' the signed face current.)",
+  "lean_statement": "∀ (P k m n' : ℕ) (g : Fin k → Euclid P) (h : n' = k + m) (X : GeometricCurrentOn (univ : Set (Euclid P)) m) (Y : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1)) (r : ℝ), 0 < k → 0 < m → Orthonormal ℝ g → IsIntegerMultiplicity X → IsIntegerMultiplicity Y → Y.boundary = X → IsCompact Y.support → Y.support ⊆ ((Submodule.span ℝ (Set.range g))ᗮ : Set (Euclid P)) → 0 < r → ∃ Z E' : GeometricCurrentOn (univ : Set (Euclid P)) n', IsIntegerMultiplicity Z ∧ BoundaryVanishes Z ∧ IsCompact Z.support ∧ Z.support ⊆ {x | ∀ i, |inner ℝ (g i) x| ≤ r} ∩ (Submodule.span ℝ (Set.range g))ᗮ.starProjection ⁻¹' Y.support ∧ E'.mass ≤ ENNReal.ofReal (2 * (k : ℝ) * (2 * r) ^ (k - 1)) * Y.mass ∧ ∀ flat : Covector (Euclid P) n' → Covector (Euclid P) m, (∀ (α : Covector (Euclid P) n') (v : Fin m → Euclid P), flat α v = α (Fin.append g v ∘ Fin.cast h)) → ∀ ω : TestFormOn (univ : Set (Euclid P)) n', Z ω = (∫ t in {t | t ∈ Submodule.span ℝ (Set.range g) ∧ ∀ i, |inner ℝ (g i) t| ≤ r}, currentEval X (fun y => flat ((ω : DifferentialForm (Euclid P) n') (t + y))) ∂μHE[k]) + E' ω",
+  "lean_name": "dimred_cs_sos_mt_cube_cycle",
+  "depends_on": [
+    "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_off_null_set-a1.cone_splitting-a1.split_off_spine-a1.product_current-a1",
+    "root.dimension_reduction_results-a1.cone_splitting-a1.split_off_spine-a1.minimality_transfer-a1.interior_product-a1",
+    "root.dimension_reduction_results-a1.cone_splitting-a1.split_off_spine-a1.minimality_transfer-a1.cube_stokes-a1",
+    "root.dimension_reduction_results-a1.cone_splitting-a1.split_off_spine-a1.minimality_transfer-a1.face_currents-a1",
+    "root.compactness_of_minimizing_currents-a1.local_comparison-a1.mass_triangle-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_off_null_set-a1.cone_splitting-a1.split_off_spine-a1.product_current-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-da13543666-a1",
+      "result_commit": "4aa9ba8dc9ec5fe22643a88f4a53931e8190119e",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.dimension_reduction_results-a1.cone_splitting-a1.split_off_spine-a1.minimality_transfer-a1.interior_product-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.dimension_reduction_results-a1.cone_splitting-a1.split_off_spine-a1.minimality_transfer-a1.cube_stokes-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.dimension_reduction_results-a1.cone_splitting-a1.split_off_spine-a1.minimality_transfer-a1.face_currents-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.compactness_of_minimizing_currents-a1.local_comparison-a1.mass_triangle-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-local-comparison-a1-mass-triangle-a1-a1",
+      "result_commit": "c7dea4b81c94f56650b6060d3bcb1e801f43d7e9",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-cone-splitting-a1-split-off-spine-b5018a2916-a1"
+}

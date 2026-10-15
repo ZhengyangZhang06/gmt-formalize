@@ -1,0 +1,92 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat local-references/123e8435b4a2469b/manifest.json (project b4d606db, mathlib 25730c7c)",
+        "python3 -I: read nodes/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-image-rep-deb5dda114/{parent-child-handoff.json,decomposition-v1.json,decomposition-audit-v1.json,decomposition-review-receipt-v1.json,decomposition-scope-v1.json}",
+        "python3 -I: dag.json scan of lean_name/lean_statement with regex (rectifiable|bilipschitz|hausdorffMeasure_image|image_le|restrict.*map|quasi|lipschitz_image|image_of_lipschitz), plus exact-membership check for dpfir_ii_map_restrict_image_le_smul and dpfir_ii_countablyRectifiable_image_of_lipschitz (free; 0 substring hits)",
+        "python3 -I: issue-workers.json entries for image_imrep-a1 (attempt-1 worker never completed)",
+        "git show <branch>:GMT/Ch07/Submission.lean | grep 'dpfir_ii|theorem Submission.' on the deb5dda114, 89b1ce4202, 0e98a44316, ddc9727a9c and 1f29e7d629 image-rep branches",
+        "grep -n 'def CountablyRectifiable' and lemma list in simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "grep -rn \"CountablyRectifiable n (.* '' |CountablyRectifiable.image|countablyRectifiable_image|rectifiable_image\" simongmt/Poincare local-references/123e8435b4a2469b/project/GMT",
+        "grep -rln '.map ψ ≤|map_restrict_image|restrict_image.*le_smul' simongmt/Poincare local-references/123e8435b4a2469b/project/GMT (no match)",
+        "grep -rn 'theorem euclideanHausdorffMeasure_image_le_of_lipschitzOn' simongmt/Poincare/SimonGMT",
+        "rg -n 'μHE\\[' mathlib/Mathlib",
+        "rg -n 'theorem le_iff|theorem absolutelyContinuous_of_le_smul|theorem comp_quasiMeasurePreserving|theorem lintegral_map \\(|theorem lintegral_mono'|theorem lintegral_smul_measure|theorem to_rightInverse|theorem image_eq_preimage_of_inverse|theorem restrict_apply \\(|theorem map_apply \\(' mathlib/Mathlib",
+        "grep -n measurable_from_nat mathlib/Mathlib/MeasureTheory/MeasurableSpace/*.lean",
+        "python3 -I: verifier/gmt-compare.py contract_scope(GMT/Ch07/Contract.lean, GMT.Ch07.main_theorem)",
+        "python3 -I: verifier/lean_contract.py validate_lean_statement on both child types (OK, unchanged)",
+        "grep -n on book/chapter-02.txt, chapter-03.txt, chapter-06.txt for cited lines (816, 826-827, 270-295, 13-17, 52)",
+        "lake env lean /tmp/dpfir-a2-scratch/Types.lean",
+        "lake env lean /tmp/dpfir-a2-scratch/EndToEnd.lean (#print axioms on both children and the parent)",
+        "lake env lean /tmp/dpfir-a2-scratch/Comparator.lean (#print axioms on the comparator targets)",
+        "lake env lean /tmp/dpfir-a2-scratch/Inst.lean (constants used by the child-1 type)"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-image-rep-deb5dda114/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-image-rep-deb5dda114/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-image-rep-deb5dda114/decomposition-audit-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-image-rep-deb5dda114/decomposition-scope-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/issue-workers.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/SubmanifoldCover.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/Lipschitz.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/CompleteLattice.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Map.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/AbsolutelyContinuous.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/QuasiMeasurePreserving.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/StronglyMeasurable/AEStronglyMeasurable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Map.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/Antilipschitz.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Data/Set/Image.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/MeasurableSpace/Constructions.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-02.txt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-03.txt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt",
+        "/tmp/dpfir-a2-scratch/Types.lean",
+        "/tmp/dpfir-a2-scratch/EndToEnd.lean",
+        "/tmp/dpfir-a2-scratch/Comparator.lean",
+        "/tmp/dpfir-a2-scratch/Inst.lean"
+      ],
+      "conclusion": "The pinned snapshot (project b4d606db, mathlib 25730c7c) proves neither child nor the parent. project/GMT has no dpfir_ii_ declarations, no Lipschitz-image rectifiability lemma and no map/restrict comparison. SimonGMT Chapter03 has only CountablyRectifiable.mono, countablyRectifiable_of_measure_zero, countablyRectifiable_range, countablyRectifiable_iUnion and the C¹-on-open-domain countablyRectifiable_image_contDiffOn_open; none of these is the Lipschitz-image statement.\n\nEvery library fact the child and parent proofs use exists at the pinned revisions:\n- euclideanHausdorffMeasure_image_le_of_lipschitzOn (Chapter02/Lipschitz.lean:216, arbitrary sets);\n- Measure.le_iff, map_apply, restrict_apply and smul_apply;\n- Measure.absolutelyContinuous_of_le_smul;\n- AEStronglyMeasurable.comp_quasiMeasurePreserving and QuasiMeasurePreserving.ae;\n- lintegral_map, lintegral_mono' and lintegral_smul_measure;\n- AntilipschitzWith.to_rightInverse, Set.image_eq_preimage_of_inverse and measurable_from_nat.\nCountablyRectifiable (an H^n-null M₀ plus ℕ-indexed Lipschitz maps ℝ^n → E covering M) matches child 2's proof exactly.\n\nThe DAG (684 nodes) reserves neither proposed name. No node concludes CountablyRectifiable n (φ '' M) or a map/restrict comparison. The related accepted node dpf_itt_bilipschitz_image_locfin has a different type and is not reused.\n\nIn Lean, both child types elaborate in the comparator's replayed scope and pass validate_lean_statement. The ℝ≥0∞ action on measures is Measure.instSMul. Complete proofs of both children, and of the exact frozen parent type from them, compile using only propext, Classical.choice and Quot.sound."
+    }
+  ],
+  "parent_id": "root.minimizing_implies_stationary-a1.diffeo_pushforward-a1.image_representation-a1.image_imrep-a1",
+  "child_id": "root.minimizing_implies_stationary-a1.diffeo_pushforward-a1.image_representation-a1.image_imrep-a1.rectifiable_image-a1",
+  "subproblem": {
+    "key": "rectifiable_image",
+    "title": "Lipschitz images of countably n-rectifiable sets are countably n-rectifiable",
+    "statement": "Let P, n ∈ ℕ, Λ ≥ 0, E := ℝ^P (Euclid P) and H^n := μHE[n]. Let φ : E → E be Λ-Lipschitz, and let M ⊆ E be any set, not assumed measurable. Suppose M is countably n-rectifiable in the sense of Simon Ch. 3, Definition 1.1 (CountablyRectifiable n M): there are M₀ ⊆ E with H^n(M₀) = 0 and maps F_j : ℝ^n → E (j ∈ ℕ), each Lipschitz with some constant, such that M ⊆ M₀ ∪ ⋃_j F_j(ℝ^n). Then φ(M) is countably n-rectifiable.",
+    "lean_statement": "∀ (P n : ℕ) (M : Set (Euclid P)) (φ : Euclid P → Euclid P) (Λ : NNReal), LipschitzWith Λ φ → CountablyRectifiable n M → CountablyRectifiable n (φ '' M)",
+    "lean_name": "dpfir_ii_countablyRectifiable_image_of_lipschitz",
+    "depends_on": [],
+    "natural_proof": "Source: step 5(c) of the parent-supplied proof of dpfir_bilipschitz_image_imrep_exists. Simon uses this fact without proof in Ch. 6, 3.6-3.7: \"f(M) is countably n-rectifiable\" (book/chapter-06.txt lines 826-827). The definition is Simon Ch. 3, Definition 1.1 (book/chapter-03.txt lines 13-17), formalized as Poincare.SimonGMT.Chapter03.CountablyRectifiable. The null-set step is Simon Ch. 2, Theorem 1.8(i) (book/chapter-02.txt lines 270-295), which is used the same way in the proof of Ch. 3, Lemma 1.2: \"H^n(E_j) = 0 because F_j is Lipschitz and H^n(Z_j) = 0\" (book/chapter-03.txt line 52).\nNotation: E := ℝ^P (Euclid P) and H^n := μHE[n]. \"M is countably n-rectifiable\" means CountablyRectifiable n M: there are M₀ ⊆ E with H^n(M₀) = 0 and maps F_j : ℝ^n → E (j ∈ ℕ) such that M ⊆ M₀ ∪ ⋃_{j∈ℕ} F_j(ℝ^n), each F_j being K_j-Lipschitz for some K_j ≥ 0.\nHypotheses: Λ ≥ 0, φ : E → E is Λ-Lipschitz, and M ⊆ E is countably n-rectifiable. M need not be measurable.\n1. Unpacking. By hypothesis choose:\n- M₀ ⊆ E with H^n(M₀) = 0;\n- for each j ∈ ℕ, a map F_j : ℝ^n → E and a constant K_j ≥ 0 with F_j K_j-Lipschitz;\nsuch that M ⊆ M₀ ∪ ⋃_j F_j(ℝ^n).\n2. The new exceptional set φ(M₀) is H^n-null. φ is Λ-Lipschitz on E, hence on M₀ (LipschitzWith.lipschitzOnWith). The pinned bound Poincare.SimonGMT.Chapter02.euclideanHausdorffMeasure_image_le_of_lipschitzOn n holds for arbitrary, possibly non-measurable, sets. It gives\nH^n(φ(M₀)) ≤ Λ^n·H^n(M₀) = Λ^n·0 = 0.\nSince H^n(φ(M₀)) ≥ 0, H^n(φ(M₀)) = 0.\n3. The new parametrizations. For j ∈ ℕ put G_j := φ∘F_j : ℝ^n → E. For u, v ∈ ℝ^n,\n|G_j(u) − G_j(v)| = |φ(F_j(u)) − φ(F_j(v))| ≤ Λ·|F_j(u) − F_j(v)| ≤ Λ·K_j·|u − v|.\nSo G_j is (Λ·K_j)-Lipschitz (LipschitzWith.comp), and each G_j is Lipschitz with some constant.\n4. Covering. Let y ∈ φ(M), and choose x ∈ M with y = φ(x). By step 1, either x ∈ M₀, or x ∈ F_j(ℝ^n) for some j ∈ ℕ.\n- If x ∈ M₀, then y = φ(x) ∈ φ(M₀).\n- Otherwise choose v ∈ ℝ^n with x = F_j(v). Then y = φ(F_j(v)) = G_j(v) ∈ G_j(ℝ^n).\nHence φ(M) ⊆ φ(M₀) ∪ ⋃_{j∈ℕ} G_j(ℝ^n).\n5. Conclusion. Definition 1.1 (CountablyRectifiable n) for φ(M) requires exactly three pieces of data, all now in hand:\n- the H^n-null set φ(M₀) from step 2;\n- the ℕ-indexed maps G_j : ℝ^n → E, each Lipschitz, from step 3;\n- the covering from step 4.\nHence φ(M) = φ '' M is countably n-rectifiable. No measurability of M and no case distinction on Λ or n are needed. ∎",
+    "proof_key_steps": [
+      "Unpack M ⊆ M₀ ∪ ⋃_j F_j(ℝ^n), where H^n(M₀) = 0 and each F_j is K_j-Lipschitz.",
+      "H^n(φ(M₀)) ≤ Λ^n·H^n(M₀) = 0 by euclideanHausdorffMeasure_image_le_of_lipschitzOn, which holds for arbitrary sets.",
+      "φ∘F_j is (Λ·K_j)-Lipschitz (LipschitzWith.comp).",
+      "φ(M) ⊆ φ(M₀) ∪ ⋃_j (φ∘F_j)(ℝ^n), which is Definition 1.1 for φ(M)."
+    ]
+  },
+  "audit": {
+    "key": "rectifiable_image",
+    "acceptable": true,
+    "natural_proof_acceptable": true,
+    "reason": "The prose exactly matches the frozen proposition and pinned CountablyRectifiable definition. The supplied proof explicitly constructs the exceptional image set and composed parametrizations, proves the exceptional set null by the arbitrary-set Hausdorff bound, obtains Lipschitz constants Λ·K_j, and verifies the covering pointwise. No measurability, injectivity or dimension restriction is missing. It uses neither the parent nor the other child as a premise, requires no further proof planning, and directly supplies the selected parent's rectifiable field."
+  },
+  "resolved_dependencies": [],
+  "plan_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-image-rep-2dd4d31d26/parent-supplied-plan.md",
+  "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-image-rep-2dd4d31d26/parent-supplied-natural-proof.md",
+  "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-image-rep-2dd4d31d26/parent-supplied-natural-proof.json"
+}

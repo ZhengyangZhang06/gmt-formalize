@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.isodiametric_bound-a1.steiner_reflect-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.isodiametric_bound-a1",
+  "depth": 5,
+  "title": "Coordinate Steiner symmetrization: reflection symmetries",
+  "statement": "Let d ∈ ℕ, j ∈ Fin d and let A ⊆ ℝ^d = EuclideanSpace ℝ (Fin d) be arbitrary. For y ∈ ℝ^d, i ∈ Fin d and t ∈ ℝ let y[i↦t] be y with its i-th coordinate replaced by t (Lean: WithLp.toLp 2 (Function.update y.ofLp i t)), R_i(y) := y[i↦−y_i] (reflection in the coordinate hyperplane x_i = 0), A^j_y := {t ∈ ℝ : y[j↦t] ∈ A}, λ(y) := (L¹(A^j_y)).toReal (L¹ = Lebesgue measure on ℝ), and S_j(A) := {y ∈ ℝ^d : A^j_y ≠ ∅ and |y_j| ≤ λ(y)/2}. Then (a) R_j(y) ∈ S_j(A) for every y ∈ S_j(A); and (b) for every i ∈ Fin d with i ≠ j: if R_i(x) ∈ A for all x ∈ A, then R_i(y) ∈ S_j(A) for all y ∈ S_j(A).",
+  "lean_statement": "∀ (d : ℕ) (j : Fin d) (A : Set (Euclid d)), (∀ x ∈ {y : Euclid d | {t : ℝ | WithLp.toLp 2 (Function.update y.ofLp j t) ∈ A}.Nonempty ∧ |y j| ≤ (volume {t : ℝ | WithLp.toLp 2 (Function.update y.ofLp j t) ∈ A}).toReal / 2}, WithLp.toLp 2 (Function.update x.ofLp j (-x j)) ∈ {y : Euclid d | {t : ℝ | WithLp.toLp 2 (Function.update y.ofLp j t) ∈ A}.Nonempty ∧ |y j| ≤ (volume {t : ℝ | WithLp.toLp 2 (Function.update y.ofLp j t) ∈ A}).toReal / 2}) ∧ ∀ i : Fin d, i ≠ j → (∀ x ∈ A, WithLp.toLp 2 (Function.update x.ofLp i (-x i)) ∈ A) → ∀ x ∈ {y : Euclid d | {t : ℝ | WithLp.toLp 2 (Function.update y.ofLp j t) ∈ A}.Nonempty ∧ |y j| ≤ (volume {t : ℝ | WithLp.toLp 2 (Function.update y.ofLp j t) ∈ A}).toReal / 2}, WithLp.toLp 2 (Function.update x.ofLp i (-x i)) ∈ {y : Euclid d | {t : ℝ | WithLp.toLp 2 (Function.update y.ofLp j t) ∈ A}.Nonempty ∧ |y j| ≤ (volume {t : ℝ | WithLp.toLp 2 (Function.update y.ofLp j t) ∈ A}).toReal / 2}",
+  "lean_name": "cbr_ci_iso_steiner_reflection",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-06ecc9be6f-a1"
+}

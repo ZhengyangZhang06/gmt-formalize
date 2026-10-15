@@ -1,0 +1,72 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cmp local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean GMT/Ch07/Contract.lean (identical); cmp GMT/Ch07/Submission.lean GMT/Ch07/Contract.lean (identical); git -C local-references/123e8435b4a2469b/mathlib rev-parse HEAD (25730c7c759d108ef87ab70af2342a196760f79d, matches manifest; project commit b4d606db1 = workspace HEAD)",
+        "rg -n 'cmcdtfrbvbsf' project mathlib/Mathlib -g '*.lean' (no match, exit 1)",
+        "python3 -I scan of runs/20261011T150044Z-ba604216b4/dag.json (2092 nodes), accepted lean_statements matching '\\.support|zeroRegion|VanishesOn' and 'tsupport' with '.support ⊆': rsd_cmr_support_subset_of_vanish (accepted, candidate_commit 02c6122c94d0280a6288d299659b2dab7b59e109), cmcsd_support_calculus (accepted), dtc_vanish_off_support (accepted)",
+        "python3 -I scan of dag.json for '0 ≤ y i ∧ y i ≤ 1|IsCompact \\{|cmcdtfrbvbsf|closed_faces|vanish_off_faces': no accepted compactness lemma for the closed-face union; cmcdtfrfic_support_faces is unaccepted (decomposing); no lean_name collision for cmcdtfrbvbsf_closed_faces_isCompact or cmcdtfrbvbsf_boundary_vanish_off_faces",
+        "rg -n 'theorem isCompact_of_isClosed_isBounded|theorem isBounded_iff_subset_closedBall' mathlib/Mathlib/Topology/MetricSpace/Bounded.lean (:320, :97)",
+        "rg -n 'IsCompact.diff|IsCompact.of_isClosed_subset|IsCompact.image|Finset.isCompact_biUnion' mathlib/Mathlib/Topology/Compactness/Compact.lean (:101, :105, :124, :485)",
+        "rg: IsCompact.isClosed Topology/Separation/Hausdorff.lean:600; isClosed_iInter Topology/Basic.lean:159; IsOpen.sdiff Topology/Basic.lean:172; isClosed_le Topology/Order/OrderClosed.lean:447; Metric.isOpen_iff Topology/MetricSpace/Pseudo/Defs.lean:833; closure_ball_subset_closedBall Topology/MetricSpace/Pseudo/Lemmas.lean:73; ProperSpace.isCompact_closedBall Topology/MetricSpace/ProperSpace.lean; EuclideanSpace.norm_eq Analysis/InnerProductSpace/PiL2.lean:145",
+        "rg: image_eq_one_of_notMem_mulTSupport Topology/Algebra/Support.lean:111 (to_additive image_eq_zero_of_notMem_tsupport); setIntegral_eq_zero_of_forall_eq_zero MeasureTheory/Integral/Bochner/Set.lean:357; prod_eq_one Algebra/BigOperators/Group/Finset/Basic.lean:108 (additive Finset.sum_eq_zero)",
+        "grep -n in lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06: Currents.lean:123 TestFormOn, :145 GeometricCurrentOn, :182 tsupport_exteriorDerivative_subset, :193 exteriorDerivativeTestOn, :325/:333 GeometricCurrentOn.boundary(_apply); CurrentLocalEquality.lean:101 VanishesOn, :108 zeroRegion, :115 support, :119 isOpen_zeroRegion",
+        "git show 02c6122c94d0280a6288d299659b2dab7b59e109:GMT/Ch07/Submission.lean (theorem Submission.rsd_cmr_support_subset_of_vanish at :459 inside namespace GMT.Ch07, proved via Metric.isOpen_iff, closure_ball_subset_closedBall, isCompact_closedBall); nodes/root-regular-set-dense-a1-constant-multiplicity-reduction-a1-support-a67ad69f81/parent-supplied-natural-proof.md (accepted natural proof)",
+        "runtime.py :1390 (depth gate node.depth >= max_depth), :1659-1670 (accepted checkpoints skip handoff installation), :1820-1860 (reuse by lean_name), :6532-6572 (_existing_lean_name_problem: identical stripped lean_statement required); swarm-project.json max_depth 6, max_children 12, max_nodes 5000",
+        "python3 -I /tmp/bsfdecomp/scripts/scope.py (gmt-compare.py contract_scope replay: open Filter Function Set MeasureTheory Metric / open scoped ENNReal Topology / namespace GMT.Ch07 / open Poincare.SimonGMT.Chapter06 / open Poincare.SimonGMT.Chapter03 (...) / noncomputable section / end)",
+        "python3 -I /tmp/bsfdecomp/scripts/mkspec.py and validate_and_gen.py (verifier/lean_contract.py validate_lean_statement: all three child types and the selected type valid)",
+        "lake env lean /tmp/bsfdecomp/lean/Challenge.lean (all types elaborate in the comparator scope; only sorry warnings)",
+        "lake env lean /tmp/bsfdecomp/lean/Solution.lean (both new children proved; selected type assembled from the three children; exact Submission.X comparator checks pass; #print axioms for both new children: propext, Classical.choice, Quot.sound)",
+        "sed -n 294,306p book/chapter-06.txt (Simon 6.2.11: spt T = U ∖ ⋃W)"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/Bounded.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Compactness/Compact.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Separation/Hausdorff.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Order/OrderClosed.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/Pseudo/Defs.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/Pseudo/Lemmas.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/ProperSpace.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Support.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Algebra/BigOperators/Group/Finset/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-fac-7d4441241e/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-fac-7d4441241e/parent-supplied-natural-proof.md",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-regular-set-dense-a1-constant-multiplicity-reduction-a1-support-a67ad69f81/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-regular-set-dense-a1-constant-multiplicity-reduction-a1-support-a67ad69f81/parent-supplied-natural-proof.md",
+        "/runtime/flows/gmt-claude-d253855dab51/_recursive_lean/runtime.py",
+        "/runtime/flows/gmt-claude-d253855dab51/_recursive_lean/store.py",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/swarm-project.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt",
+        "/tmp/bsfdecomp/lean/Types.lean",
+        "/tmp/bsfdecomp/lean/Proofs.lean",
+        "/tmp/bsfdecomp/lean/Challenge.lean",
+        "/tmp/bsfdecomp/lean/Solution.lean",
+        "/tmp/bsfdecomp/spec/spec.json"
+      ],
+      "conclusion": "The snapshot (project b4d606db, Mathlib 25730c7c) matches the manifest, and its Ch07 contract equals the workspace Contract.lean and Submission.lean. No cmcdtfrbvbsf_ declaration exists in the snapshot or the DAG, so both new names are free. The DAG holds the accepted declaration rsd_cmr_support_subset_of_vanish (candidate commit 02c6122c), whose frozen type is exactly the support-localization part (steps 2 and 4) of the selected proof. It is reused with the identical statement, which the controller's reuse rule permits; accepted checkpoints skip handoff installation. No accepted node proves compactness of the closed-face union or the vanishing of ∂Q₀ off the faces; cmcdtfrfic_support_faces is unaccepted. These two therefore become new children. Every lemma cited by the child proofs exists at the listed Mathlib/SimonGMT locations; image_eq_zero_of_notMem_tsupport and Finset.sum_eq_zero are additive forms. In the comparator scope after import GMT.Ch07.Submission, all child types and the selected type elaborate. The selected type follows from the three children by a one-term proof, and both new children have complete trial proofs using only propext, Classical.choice and Quot.sound."
+    }
+  ],
+  "proof": "Source: step 3 of the selected proof of cmcdtfrbv_boundary_support_subset_faces. There the test form γ satisfies tsupport γ ⊆ W for a ball W disjoint from Z. The argument only uses that tsupport γ is disjoint from Z, which is the hypothesis here.\n\nNotation. For p = (ι_p, b_p) ∈ s put E_p := (e_{ι_p(0)}, …, e_{ι_p(m)}). Fix a test m-form γ ∈ TestFormOn univ m with tsupport γ ∩ Z = ∅.\n\n1. Boundary as an exterior derivative. By definition of the boundary (GeometricCurrentOn.boundary_apply), ∂Q₀(γ) = Q₀(dγ). Here dγ := exteriorDerivativeTestOn univ m γ is the test (m+1)-form on univ whose underlying differential form is exteriorDerivative γ.\n2. Support of dγ. Exterior differentiation does not enlarge the topological support (tsupport_exteriorDerivative_subset), so tsupport(dγ) ⊆ tsupport γ. Hence tsupport(dγ) ∩ Z = ∅.\n3. Representation. The hypothesis on Q₀, applied to the test (m+1)-form ω := dγ, gives Q₀(dγ) = Σ_{p∈s} ∫_{Q₁} u_p(y)·(dγ)(Φ_p y)(E_p) dy.\n4. The integrands vanish on Q₁. Fix p ∈ s and y ∈ Q₁. For each i, 0 < y_i < 1 implies 0 ≤ y_i ≤ 1, so Φ_p(y) ∈ Z (witnesses q := p and the same y). By step 2, Φ_p(y) ∉ tsupport(dγ). A function is zero at every point outside its topological support (image_eq_zero_of_notMem_tsupport), so the covector (dγ)(Φ_p y) is 0. Hence (dγ)(Φ_p y)(E_p) = 0 and u_p(y)·(dγ)(Φ_p y)(E_p) = u_p(y)·0 = 0.\n5. Conclusion. By step 4, for every p ∈ s the integrand is 0 at every point of Q₁, so its set integral over Q₁ is 0 (setIntegral_eq_zero_of_forall_eq_zero, which needs no integrability or measurability hypothesis). A finite sum of zeros is 0 (Finset.sum_eq_zero). By steps 1 and 3, ∂Q₀(γ) = Q₀(dγ) = 0. ∎",
+  "key_steps": [
+    "∂Q₀(γ) = Q₀(dγ), where dγ = exteriorDerivativeTestOn univ m γ.",
+    "tsupport dγ ⊆ tsupport γ, so tsupport dγ misses Z.",
+    "Expand Q₀(dγ) with the representation hypothesis.",
+    "For p ∈ s and y ∈ Q₁, Φ_p(y) ∈ Z, so Φ_p(y) ∉ tsupport dγ. Hence dγ(Φ_p y) = 0 and the integrand vanishes.",
+    "Every set integral is 0, so the finite sum and ∂Q₀(γ) are 0."
+  ],
+  "unresolved": [],
+  "validation_notes": []
+}

@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_off_null_set-a1.cone_splitting-a1.subspace_projection-a1.projection_invariance-a1",
+  "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_off_null_set-a1.cone_splitting-a1.subspace_projection-a1",
+  "depth": 6,
+  "title": "Projection invariance: an integer multiplicity triple carried by a subspace V is fixed by the orthogonal projection onto V (supplied step 1, q_#T = T)",
+  "statement": "Let P, m ∈ ℕ, let V ⊆ ℝ^P be a linear subspace with orthogonal projection q := V.starProjection, and let R = (M, θ, ξ) be an integer multiplicity triple in ℝ^P (IMRep univ m) whose weight measure μ_R = R.measure = θ·H^m⌞M gives no mass to ℝ^P ∖ V. Then for every m-form ω : ℝ^P → Λ^m(ℝ^P) (no smoothness, support or integrability assumption) R.action(q^#ω) = R.action(ω), where q^#ω = affinePullbackForm q 0 ω, (q^#ω)(x) = ω(0 + q x)∘Λ^m q, and R.action(η) = ∫_M θ(x)·ξ(x)(η(x)) dH^m(x). (This is q_#τ(M, θ, ξ) = τ(M, θ, ξ), supplied step 1.)",
+  "lean_statement": "∀ (P m : ℕ) (R : IMRep (univ : Set (Euclid P)) m) (V : Submodule ℝ (Euclid P)), R.measure ((V : Set (Euclid P))ᶜ) = 0 → ∀ ω : DifferentialForm (Euclid P) m, R.action (affinePullbackForm V.starProjection 0 ω) = R.action ω",
+  "lean_name": "idtp_fons_cs_sp_action_starProjection_eq",
+  "depends_on": [
+    "root.minimizing_implies_stationary-a1.approx_tangent_in_submanifold-a1.approx_tangent_le_flat-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.minimizing_implies_stationary-a1.approx_tangent_in_submanifold-a1.approx_tangent_le_flat-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-minimizing-implies-stationary-a1-approx-tangent-in-submanifold-a-33314200d5-a1",
+      "result_commit": "038573e401c107149b7c1ae80dd1bc7621b035f5",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-134d639d4a-a1"
+}

@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.harmonic_approximation-a1.poincare_ball-a1.variance_bound-a1",
+  "parent_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.harmonic_approximation-a1.poincare_ball-a1",
+  "depth": 6,
+  "title": "Variance bounded by the mean squared difference",
+  "statement": "Let n ∈ ℕ, s ⊆ ℝⁿ (ℝⁿ = Euclid n) with Lⁿ(s) < ∞, and f : ℝⁿ → ℝ square-integrable on s (MemLp f 2 (Lⁿ restricted to s)). Let ω := Lⁿ(s) as a real number and f̄ := (∫_s f)/ω. Then ∫_s (f − f̄)² ≤ ω^{−1}·∫_s∫_s (f(x) − f(y))² dy dx. When ω = 0 both sides are 0, with Lean's conventions 0^{−1} = 0 and a/0 = 0.",
+  "lean_statement": "∀ (n : ℕ) (s : Set (Euclid n)) (f : Euclid n → ℝ), volume s ≠ ∞ → MemLp f 2 (volume.restrict s) → ∫ x in s, (f x - (∫ y in s, f y) / (volume s).toReal) ^ 2 ≤ ((volume s).toReal)⁻¹ * ∫ x in s, ∫ y in s, (f x - f y) ^ 2",
+  "lean_name": "dorag_ha_pb_variance_bound",
+  "depends_on": [
+    "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.harmonic_approximation-a1.poincare_ball-a1.sq_integral_le-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.harmonic_approximation-a1.poincare_ball-a1.sq_integral_le-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-0195ace77b-a1"
+}
