@@ -74192,61 +74192,6 @@ theorem Submission.idtp_pc_boundary_weak_derivative : ∀ (P n : ℕ) (V : Set (
   simp only
   rw [← hd x]
   rfl
-/-- **Tangent cones of a 2-dimensional minimizing cone at `p ≠ 0` are planes through `p`**
-(proof of 7.3.3(1), case `n − d = 2`, chapter-07.txt lines 497–510, where the structure of
-2-dimensional minimizing cones is cited to [Whi82]).  If `C ∈ 𝒟₂(ℝᴾ)` is a minimizing cone with
-`∂C = 0`, `p ∈ spt C \ {0}` and `λⱼ ↓ 0`, then along a subsequence `η_{p,λⱼ#}C ⇀ C' = c[[Q]]`,
-`μ_{η_{p,λⱼ#}C} → μ_{C'}`, for a plane `Q = span{τ₁, τ₂} ∋ p` and `c ∈ ℤ` with
-`|c| = Θ²(μ_C, p) ≥ 1`.  The tangent cone `C'` is a minimizing cone cycle with
-`Θ²(μ_{C'}, 0) = Θ²(μ_C, p) ≥ 1` (7.3.1(2)); since `C` is a cone, `μ_{C'}` and the density of
-`C'` are invariant along `ℝp` (proof of A.4, chapter-A.txt lines 125–131); the splitting
-Lemma 3.5 (chapter-07.txt lines 410–418) and formula (10) (lines 556–568) put `spt C'` in a plane
-`Q ∋ p`; and the Constancy Theorem (Ch. 6, 2.34) gives `C' = c[[Q]]`, so
-`Θ²(μ_{C'}, 0) = |c|`. -/
-theorem Submission.idtp_cone_tangent_cone_planar : ∀ (P : ℕ) (C : GeometricCurrentOn (univ : Set (Euclid P)) 2), IsMinimizingIn C univ → BoundaryVanishes C → IsConeCurrent C → ∀ p ∈ C.support, p ≠ 0 → ∀ (lams : ℕ → ℝ) (hlams : ∀ j, 0 < lams j), Tendsto lams atTop (𝓝 0) → ∃ (φ : ℕ → ℕ) (C' : GeometricCurrentOn (univ : Set (Euclid P)) 2) (τ : Fin 2 → Euclid P) (c : ℤ), StrictMono φ ∧ ConvergesWeakly (fun j => blowUp C p (lams (φ j)) (hlams (φ j)).ne') C' ∧ MassMeasuresConverge (fun j => blowUp C p (lams (φ j)) (hlams (φ j)).ne') C' ∧ Orthonormal ℝ τ ∧ p ∈ Submodule.span ℝ (Set.range τ) ∧ 1 ≤ c.natAbs ∧ HasMassDensity C p (c.natAbs : ℝ) ∧ ∀ ω : TestFormOn (univ : Set (Euclid P)) 2, C' ω = (c : ℝ) * ∫ x in (Submodule.span ℝ (Set.range τ) : Set (Euclid P)), (ω : DifferentialForm (Euclid P) 2) x τ ∂μHE[2] := by
-  intro P C hC hCb hCcone p hp hp0 lams hlams hlams0
-  -- Steps 1–3: a tangent cone `C'` of `C` at `p` along a subsequence `λ_{φ(j)}`; it is a
-  -- minimizing cone with `∂C' = 0` and `Θ²(μ_{C'}, 0) = Θ²(μ_C, p) = θ ≥ 1`.
-  obtain ⟨φ, C', θ, hφ, hconv, hmass, hC', hC'cone, hC'b, hθ, hCθ, hC'θ⟩ :=
-    Submission.idtp_cttp_cycle_tangent_cone P 2 C (by norm_num) hC hCb p hp lams hlams hlams0
-  obtain ⟨R', hR'⟩ := hC'.1
-  -- Steps 4–5: `μ_{C'}` is invariant under the translations by `v ∈ ℝp`.
-  have hinv := Submission.idtp_cttp_blowup_limit_translation_invariant P 2 C C' p
-    (fun j => lams (φ j)) (fun j => hlams (φ j)) hC.1 hCcone (hlams0.comp hφ.tendsto_atTop)
-    hmass R' hR'
-  -- Step 6: hence `Θ²(μ_{C'}, y + λw) = Θ²(μ_{C'}, w)` for `y ∈ ℝp` and `λ > 0`.
-  have hdens := Submission.idtp_cttp_cone_density_translation_invariant P 2 C' R'
-    (Submodule.span ℝ {p}) hR' hC'cone hinv
-  -- Steps 7–9: `spt C' ⊆ Q := span{τ₁, τ₂}` for an orthonormal pair `τ` with `p ∈ Q`.
-  obtain ⟨τ, hτ, hpτ, hsupp⟩ :=
-    Submission.idtp_cttp_planar_support P C' p θ hp0 hC' hC'b hdens hθ hC'θ
-  -- Step 10: the Constancy Theorem gives `C' = c[[Q]]` and `M_W(C') = |c| H²(W ∩ Q)`.
-  obtain ⟨c, hc, hcmass⟩ := Submission.idtp_planar_cycle_eq_const_mul P 2 univ C' τ
-    (by norm_num) isOpen_univ hτ hC'.1 hC'b hsupp (by
-      rw [univ_inter]
-      exact (Submodule.span ℝ (Set.range τ)).convex.isConnected
-        ⟨0, (Submodule.span ℝ (Set.range τ)).zero_mem⟩)
-  -- `M_{B_ρ(0)}(C') = |c| H²(B_ρ(0) ∩ Q) = |c| ω₂ρ²` for `ρ > 0`, so `Θ²(μ_{C'}, 0) = |c|`.
-  have hC'c : HasMassDensity C' 0 (c.natAbs : ℝ) := by
-    refine ⟨Nat.cast_nonneg _, ?_⟩
-    rw [ENNReal.ofReal_natCast]
-    refine tendsto_const_nhds.congr' (EventuallyEq.symm ?_)
-    filter_upwards [self_mem_nhdsWithin] with ρ hρ
-    have hρ' : 0 < ρ := hρ
-    have hω₂ : unitBallVolume 2 ≠ 0 := (measure_ball_pos volume (0 : Euclid 2) one_pos).ne'
-    have hω₂' : unitBallVolume 2 ≠ ∞ := measure_ball_lt_top.ne
-    rw [hcmass (ball 0 ρ) isOpen_ball (subset_univ _),
-      Submission.idtp_cttp_span_ball_measure P 2 τ hτ 0 (Submodule.zero_mem _) ρ hρ',
-      ENNReal.mul_div_cancel_right
-        (mul_ne_zero hω₂ (ENNReal.ofReal_pos.2 (by positivity)).ne')
-        (ENNReal.mul_ne_top hω₂' ENNReal.ofReal_ne_top)]
-  -- Densities are unique, so `|c| = θ ≥ 1` and `Θ²(μ_C, p) = |c|`.
-  have hθc : θ = c.natAbs :=
-    (ENNReal.ofReal_eq_ofReal_iff hC'θ.1 hC'c.1).1 (tendsto_nhds_unique hC'θ.2 hC'c.2)
-  refine ⟨φ, C', τ, c, hφ, hconv, hmass, hτ, hpτ, ?_, hθc ▸ hCθ, fun ω => ?_⟩
-  · exact_mod_cast (hθc ▸ hθ : (1 : ℝ) ≤ c.natAbs)
-  · rw [hc ω, univ_inter]
-
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
@@ -91087,5 +91032,59 @@ theorem Submission.idtp_planar_cycle_eq_const_mul : ∀ (P n : ℕ) (V : Set (Eu
     filter_upwards [ae_restrict_of_ae_restrict_of_subset (inter_subset_inter_left _ hWV) hc]
       with x hx
     rw [hx, Real.enorm_eq_ofReal_abs, ← Int.cast_abs, ← Nat.cast_natAbs, ENNReal.ofReal_natCast]
+/-- **Tangent cones of a 2-dimensional minimizing cone at `p ≠ 0` are planes through `p`**
+(proof of 7.3.3(1), case `n − d = 2`, chapter-07.txt lines 497–510, where the structure of
+2-dimensional minimizing cones is cited to [Whi82]).  If `C ∈ 𝒟₂(ℝᴾ)` is a minimizing cone with
+`∂C = 0`, `p ∈ spt C \ {0}` and `λⱼ ↓ 0`, then along a subsequence `η_{p,λⱼ#}C ⇀ C' = c[[Q]]`,
+`μ_{η_{p,λⱼ#}C} → μ_{C'}`, for a plane `Q = span{τ₁, τ₂} ∋ p` and `c ∈ ℤ` with
+`|c| = Θ²(μ_C, p) ≥ 1`.  The tangent cone `C'` is a minimizing cone cycle with
+`Θ²(μ_{C'}, 0) = Θ²(μ_C, p) ≥ 1` (7.3.1(2)); since `C` is a cone, `μ_{C'}` and the density of
+`C'` are invariant along `ℝp` (proof of A.4, chapter-A.txt lines 125–131); the splitting
+Lemma 3.5 (chapter-07.txt lines 410–418) and formula (10) (lines 556–568) put `spt C'` in a plane
+`Q ∋ p`; and the Constancy Theorem (Ch. 6, 2.34) gives `C' = c[[Q]]`, so
+`Θ²(μ_{C'}, 0) = |c|`. -/
+theorem Submission.idtp_cone_tangent_cone_planar : ∀ (P : ℕ) (C : GeometricCurrentOn (univ : Set (Euclid P)) 2), IsMinimizingIn C univ → BoundaryVanishes C → IsConeCurrent C → ∀ p ∈ C.support, p ≠ 0 → ∀ (lams : ℕ → ℝ) (hlams : ∀ j, 0 < lams j), Tendsto lams atTop (𝓝 0) → ∃ (φ : ℕ → ℕ) (C' : GeometricCurrentOn (univ : Set (Euclid P)) 2) (τ : Fin 2 → Euclid P) (c : ℤ), StrictMono φ ∧ ConvergesWeakly (fun j => blowUp C p (lams (φ j)) (hlams (φ j)).ne') C' ∧ MassMeasuresConverge (fun j => blowUp C p (lams (φ j)) (hlams (φ j)).ne') C' ∧ Orthonormal ℝ τ ∧ p ∈ Submodule.span ℝ (Set.range τ) ∧ 1 ≤ c.natAbs ∧ HasMassDensity C p (c.natAbs : ℝ) ∧ ∀ ω : TestFormOn (univ : Set (Euclid P)) 2, C' ω = (c : ℝ) * ∫ x in (Submodule.span ℝ (Set.range τ) : Set (Euclid P)), (ω : DifferentialForm (Euclid P) 2) x τ ∂μHE[2] := by
+  intro P C hC hCb hCcone p hp hp0 lams hlams hlams0
+  -- Steps 1–3: a tangent cone `C'` of `C` at `p` along a subsequence `λ_{φ(j)}`; it is a
+  -- minimizing cone with `∂C' = 0` and `Θ²(μ_{C'}, 0) = Θ²(μ_C, p) = θ ≥ 1`.
+  obtain ⟨φ, C', θ, hφ, hconv, hmass, hC', hC'cone, hC'b, hθ, hCθ, hC'θ⟩ :=
+    Submission.idtp_cttp_cycle_tangent_cone P 2 C (by norm_num) hC hCb p hp lams hlams hlams0
+  obtain ⟨R', hR'⟩ := hC'.1
+  -- Steps 4–5: `μ_{C'}` is invariant under the translations by `v ∈ ℝp`.
+  have hinv := Submission.idtp_cttp_blowup_limit_translation_invariant P 2 C C' p
+    (fun j => lams (φ j)) (fun j => hlams (φ j)) hC.1 hCcone (hlams0.comp hφ.tendsto_atTop)
+    hmass R' hR'
+  -- Step 6: hence `Θ²(μ_{C'}, y + λw) = Θ²(μ_{C'}, w)` for `y ∈ ℝp` and `λ > 0`.
+  have hdens := Submission.idtp_cttp_cone_density_translation_invariant P 2 C' R'
+    (Submodule.span ℝ {p}) hR' hC'cone hinv
+  -- Steps 7–9: `spt C' ⊆ Q := span{τ₁, τ₂}` for an orthonormal pair `τ` with `p ∈ Q`.
+  obtain ⟨τ, hτ, hpτ, hsupp⟩ :=
+    Submission.idtp_cttp_planar_support P C' p θ hp0 hC' hC'b hdens hθ hC'θ
+  -- Step 10: the Constancy Theorem gives `C' = c[[Q]]` and `M_W(C') = |c| H²(W ∩ Q)`.
+  obtain ⟨c, hc, hcmass⟩ := Submission.idtp_planar_cycle_eq_const_mul P 2 univ C' τ
+    (by norm_num) isOpen_univ hτ hC'.1 hC'b hsupp (by
+      rw [univ_inter]
+      exact (Submodule.span ℝ (Set.range τ)).convex.isConnected
+        ⟨0, (Submodule.span ℝ (Set.range τ)).zero_mem⟩)
+  -- `M_{B_ρ(0)}(C') = |c| H²(B_ρ(0) ∩ Q) = |c| ω₂ρ²` for `ρ > 0`, so `Θ²(μ_{C'}, 0) = |c|`.
+  have hC'c : HasMassDensity C' 0 (c.natAbs : ℝ) := by
+    refine ⟨Nat.cast_nonneg _, ?_⟩
+    rw [ENNReal.ofReal_natCast]
+    refine tendsto_const_nhds.congr' (EventuallyEq.symm ?_)
+    filter_upwards [self_mem_nhdsWithin] with ρ hρ
+    have hρ' : 0 < ρ := hρ
+    have hω₂ : unitBallVolume 2 ≠ 0 := (measure_ball_pos volume (0 : Euclid 2) one_pos).ne'
+    have hω₂' : unitBallVolume 2 ≠ ∞ := measure_ball_lt_top.ne
+    rw [hcmass (ball 0 ρ) isOpen_ball (subset_univ _),
+      Submission.idtp_cttp_span_ball_measure P 2 τ hτ 0 (Submodule.zero_mem _) ρ hρ',
+      ENNReal.mul_div_cancel_right
+        (mul_ne_zero hω₂ (ENNReal.ofReal_pos.2 (by positivity)).ne')
+        (ENNReal.mul_ne_top hω₂' ENNReal.ofReal_ne_top)]
+  -- Densities are unique, so `|c| = θ ≥ 1` and `Θ²(μ_C, p) = |c|`.
+  have hθc : θ = c.natAbs :=
+    (ENNReal.ofReal_eq_ofReal_iff hC'θ.1 hC'c.1).1 (tendsto_nhds_unique hC'θ.2 hC'c.2)
+  refine ⟨φ, C', τ, c, hφ, hconv, hmass, hτ, hpτ, ?_, hθc ▸ hCθ, fun ω => ?_⟩
+  · exact_mod_cast (hθc ▸ hθ : (1 : ℝ) ≤ c.natAbs)
+  · rw [hc ω, univ_inter]
 
 end GMT.Ch07
