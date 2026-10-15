@@ -43792,6 +43792,41 @@ theorem Submission.cbr_closure_succ : (∀ (P n : ℕ) (U : Set (Euclid P)) (T :
     _ = (E A).restrictDomain (subset_univ (ball x₀ r)) ω := rfl
     _ = R.action (ω : DifferentialForm (Euclid P) (d + 1)) := hR ω
 
+/-- **Simon Ch. 6, 8.2 with 8.3(1),(2), and 6.3** (closure theorem and boundary rectifiability).
+(CL) If integer multiplicity `T_j ∈ 𝒟_d(U)` have `sup_j (M_W(T_j) + M_W(∂T_j)) < ∞` for every
+`W ⊂⊂ U` (`M_W(∂T_j)` read as `0` when `d = 0`) and `T_j ⇀ T`, then `T` is integer multiplicity.
+(BR) If `R ∈ 𝒟_{d+1}(U)` is integer multiplicity and `M_W(∂R) < ∞` for every `W ⊂⊂ U`, then `∂R`
+is integer multiplicity.
+
+Joint induction on the degree `d`: `CL(0)` is `cbr_closure_degree_zero`, `CL(d) ⇒ BR(d)` is
+`cbr_boundary_isIntegerMultiplicity` (deformation theorem) and `CL(d) ∧ BR(d) ⇒ CL(d + 1)` is
+`cbr_closure_succ` (localization by slicing).  The three steps receive the mass representation,
+`M_W(T) = μ_R(W)`, the IM calculus, slicing, the deformation theorem and vanishing off the
+support. -/
+theorem Submission.cmc_closure_and_boundary_rectifiability : (∀ (P d : ℕ) (U : Set (Euclid P)) (Ts : ℕ → GeometricCurrentOn U d) (T : GeometricCurrentOn U d), IsOpen U → (∀ j, IsIntegerMultiplicity (Ts j)) → (∀ W : Set (Euclid P), IsOpen W → CompactlyContained W U → ⨆ j, ((Ts j).massOn W + boundaryMassOn (Ts j) W) < ∞) → WeaklyConvergesOn Ts T → IsIntegerMultiplicity T) ∧ (∀ (P d : ℕ) (U : Set (Euclid P)) (R : GeometricCurrentOn U (d + 1)), IsOpen U → IsIntegerMultiplicity R → (∀ W : Set (Euclid P), IsOpen W → CompactlyContained W U → R.boundary.massOn W < ∞) → IsIntegerMultiplicity R.boundary) := by
+  -- `BR(d)` from `CL(d)`
+  have hBR := Submission.cbr_boundary_isIntegerMultiplicity
+    Submission.cmc_exists_massRepresentation Submission.cmc_massOn_eq_imRep_measure
+    Submission.cmc_imRep_locality_restrict_sub Submission.cmc_slice_mass_bounds
+    Submission.cmc_deformation_theorem Submission.dtc_vanish_off_support
+  -- `CL(d)` for every `d`: `CL(0)`, and `CL(d) ∧ BR(d) ⇒ CL(d + 1)`
+  have hCL : ∀ d : ℕ, ∀ (P : ℕ) (U : Set (Euclid P)) (Ts : ℕ → GeometricCurrentOn U d)
+      (T : GeometricCurrentOn U d), IsOpen U → (∀ j, IsIntegerMultiplicity (Ts j)) →
+      (∀ W : Set (Euclid P), IsOpen W → CompactlyContained W U →
+        ⨆ j, ((Ts j).massOn W + boundaryMassOn (Ts j) W) < ∞) →
+      WeaklyConvergesOn Ts T → IsIntegerMultiplicity T := by
+    intro d
+    induction d with
+    | zero =>
+      exact Submission.cbr_closure_degree_zero Submission.cmc_exists_massRepresentation
+        Submission.cmc_massOn_eq_imRep_measure Submission.cmc_imRep_locality_restrict_sub
+    | succ d ih =>
+      exact Submission.cbr_closure_succ Submission.cmc_exists_massRepresentation
+        Submission.cmc_massOn_eq_imRep_measure Submission.cmc_imRep_locality_restrict_sub
+        Submission.cmc_slice_mass_bounds Submission.cmc_deformation_theorem
+        Submission.dtc_vanish_off_support d ih (hBR d ih)
+  exact ⟨fun P d => hCL d P, fun P d => hBR d (hCL d) P⟩
+
 set_option maxHeartbeats 2000000 in
 /-- **Simon 7.2.1 (Lemma, p. 183): existence of a minimizing filling.**  Let `P = m + 2 + ℓ` and
 let `S ∈ 𝒟_{m+1}(ℝᴾ)` be integer multiplicity with `spt S` compact and `∂S = 0`.  Then some integer
@@ -44608,40 +44643,5 @@ theorem Submission.existence_of_minimizing_filling : ExistenceOfMinimizingFillin
           exact_mod_cast hφ.id_le i
       _ = m₀ := hv.liminf_eq
   exact ⟨T, hTim, hTc, hTb, fun R hRim hRc hRb => hTm.trans (hm₀le R ⟨hRim, hRc, hRb⟩)⟩
-
-/-- **Simon Ch. 6, 8.2 with 8.3(1),(2), and 6.3** (closure theorem and boundary rectifiability).
-(CL) If integer multiplicity `T_j ∈ 𝒟_d(U)` have `sup_j (M_W(T_j) + M_W(∂T_j)) < ∞` for every
-`W ⊂⊂ U` (`M_W(∂T_j)` read as `0` when `d = 0`) and `T_j ⇀ T`, then `T` is integer multiplicity.
-(BR) If `R ∈ 𝒟_{d+1}(U)` is integer multiplicity and `M_W(∂R) < ∞` for every `W ⊂⊂ U`, then `∂R`
-is integer multiplicity.
-
-Joint induction on the degree `d`: `CL(0)` is `cbr_closure_degree_zero`, `CL(d) ⇒ BR(d)` is
-`cbr_boundary_isIntegerMultiplicity` (deformation theorem) and `CL(d) ∧ BR(d) ⇒ CL(d + 1)` is
-`cbr_closure_succ` (localization by slicing).  The three steps receive the mass representation,
-`M_W(T) = μ_R(W)`, the IM calculus, slicing, the deformation theorem and vanishing off the
-support. -/
-theorem Submission.cmc_closure_and_boundary_rectifiability : (∀ (P d : ℕ) (U : Set (Euclid P)) (Ts : ℕ → GeometricCurrentOn U d) (T : GeometricCurrentOn U d), IsOpen U → (∀ j, IsIntegerMultiplicity (Ts j)) → (∀ W : Set (Euclid P), IsOpen W → CompactlyContained W U → ⨆ j, ((Ts j).massOn W + boundaryMassOn (Ts j) W) < ∞) → WeaklyConvergesOn Ts T → IsIntegerMultiplicity T) ∧ (∀ (P d : ℕ) (U : Set (Euclid P)) (R : GeometricCurrentOn U (d + 1)), IsOpen U → IsIntegerMultiplicity R → (∀ W : Set (Euclid P), IsOpen W → CompactlyContained W U → R.boundary.massOn W < ∞) → IsIntegerMultiplicity R.boundary) := by
-  -- `BR(d)` from `CL(d)`
-  have hBR := Submission.cbr_boundary_isIntegerMultiplicity
-    Submission.cmc_exists_massRepresentation Submission.cmc_massOn_eq_imRep_measure
-    Submission.cmc_imRep_locality_restrict_sub Submission.cmc_slice_mass_bounds
-    Submission.cmc_deformation_theorem Submission.dtc_vanish_off_support
-  -- `CL(d)` for every `d`: `CL(0)`, and `CL(d) ∧ BR(d) ⇒ CL(d + 1)`
-  have hCL : ∀ d : ℕ, ∀ (P : ℕ) (U : Set (Euclid P)) (Ts : ℕ → GeometricCurrentOn U d)
-      (T : GeometricCurrentOn U d), IsOpen U → (∀ j, IsIntegerMultiplicity (Ts j)) →
-      (∀ W : Set (Euclid P), IsOpen W → CompactlyContained W U →
-        ⨆ j, ((Ts j).massOn W + boundaryMassOn (Ts j) W) < ∞) →
-      WeaklyConvergesOn Ts T → IsIntegerMultiplicity T := by
-    intro d
-    induction d with
-    | zero =>
-      exact Submission.cbr_closure_degree_zero Submission.cmc_exists_massRepresentation
-        Submission.cmc_massOn_eq_imRep_measure Submission.cmc_imRep_locality_restrict_sub
-    | succ d ih =>
-      exact Submission.cbr_closure_succ Submission.cmc_exists_massRepresentation
-        Submission.cmc_massOn_eq_imRep_measure Submission.cmc_imRep_locality_restrict_sub
-        Submission.cmc_slice_mass_bounds Submission.cmc_deformation_theorem
-        Submission.dtc_vanish_off_support d ih (hBR d ih)
-  exact ⟨fun P d => hCL d P, fun P d => hBR d (hCL d) P⟩
 
 end GMT.Ch07
