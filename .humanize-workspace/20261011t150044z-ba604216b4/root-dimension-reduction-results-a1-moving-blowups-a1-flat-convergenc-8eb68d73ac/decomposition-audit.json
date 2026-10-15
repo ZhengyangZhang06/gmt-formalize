@@ -1,0 +1,51 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "rg -n -i 'helly|no_concentration|quotient_finite|dimred_mbl_fc_gs|cmc_fc_gs' .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project --glob '*.lean'",
+        "rg -n 'theorem (IsCompact.tendsto_subseq|isCompact_univ_pi|Monotone.countable_not_continuousAt|measurable_measure_prodMk_left|prod_apply_symm|prod_apply |lintegral_liminf_le|ae_lt_top|Measurable.liminf)|liminf_le_liminf_comp|frequently_lt_of_liminf_lt' .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib --glob '*.lean'",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/good-slice-independent-audit-d4ynt8xn/TypesAndInstances.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/dimred-gs-dec/Assembly.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/dimred-gs-dec/FullSolution.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Sequences.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Compactness/Compact.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Order/Monotone.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Prod.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Add.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Markov.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Order/LiminfLimsup.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-flat-convergenc-8eb68d73ac/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-flat-convergenc-8eb68d73ac/decomposition-v1.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-flat-convergence-a1-good-s-c33ce83c1f/accepted-candidate.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-flat-convergence-a1-good-s-c33ce83c1f/isolated-comparator-result.json",
+        "/tmp/good-slice-independent-audit-d4ynt8xn/TypesAndInstances.lean",
+        "/tmp/dimred-gs-dec/Assembly.lean",
+        "/tmp/dimred-gs-dec/FullSolution.lean"
+      ],
+      "conclusion": "Project and package revisions match the pins; the snapshot contract and workspace contract/submission are byte-identical. The project search found no relevant declarations. Inspected Mathlib results support compact subsequence extraction, countable discontinuities, measurable sections, Tonelli, Fatou and the correctly directed liminf comparison. Independently generated tests elaborate both raw child propositions before either implementation, with autoImplicit disabled, and verify the intended reciprocal, ENNReal multiplication/lattice, right-neighborhood filter, Lebesgue measure and countable-product topology. Independent reruns of the conditional parent assembly and supplied complete implementation succeed with only propext, Classical.choice and Quot.sound. The split is appropriate: apply B to A's subsequence, choose a level outside both exceptional sets, extract bounded slice quantities, and retain A's eventual mass bound. This proves the exact selected parent contract."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "helly_no_concentration",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line proposition exactly matches the prose, including finite Λ, arbitrary endpoints, every positive extended-real ε and eventual uniformity in j. Independently checked restriction, compact selection on the countable rational index set, monotonicity of the limiting coordinates and supremum, countability of discontinuities, the positive η construction, interval inclusion, finite-measure subtraction and eventual convergence. Empty intervals and ε = ∞ are covered. The proof is complete and non-circular. The bare name reuses comparator-accepted candidate 38d550ecf9f29a3bf5ff9054e69a18f826a3fc3b with a byte-identical frozen type and no dependencies; its proof was also verified against the accepted source."
+    },
+    {
+      "key": "ae_quotient_finite",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The independent one-line proposition exactly expresses the stated a.e. implication and both ENNReal liminfs. The bare name is unreserved in the DAG. Restriction establishes finiteness before measurable-section and Tonelli arguments; both sections and quotient normalization are correct. Two measurable Fatou applications give a finite integral and a.e. finite majorant. Positive reciprocal radii approach the specified filter, eventual interval containment permits transfer to the original measures, and both liminf inequalities have the required direction. No measurability of S itself is assumed. The proof covers arbitrary endpoints, is detailed enough for formalization, and uses neither sibling nor parent theorem. Both empty dependency lists are acyclic."
+    }
+  ],
+  "required_changes": []
+}
