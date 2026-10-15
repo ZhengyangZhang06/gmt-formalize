@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_sector_endpoint_density-a1.fibre_count-a1.jacobian_upper-a1",
+  "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_sector_endpoint_density-a1.fibre_count-a1",
+  "depth": 5,
+  "title": "Upper bound for the integral of the fibre Jacobian over Z(s, s')",
+  "statement": "Let P ∈ ℕ, R = (M, θ, ξ) ∈ IMRep(ℝ^P, 2) with μ := R.measure, Q a 2-dimensional linear subspace of ℝ^P, a, e ∈ Q with |a| = |e| = 1 and ⟨a, e⟩ = 0, S ⊆ ℝ^P such that μ-almost every x lies in S, and s, s' ∈ ℝ with 0 < s' ≤ 1/4. Put π := Q.starProjection, f(x) := arctan(⟨x, e⟩/⟨x, a⟩), Ax := ⟨x, a⟩e − ⟨x, e⟩a, T_x := approxTangentPlane 2 M x, p_{T_x} := (T_x).starProjection (orthogonal projection onto T_x), J(x) := |p_{T_x}(Ax)|/|πx|² and Z(s, s') := {x : ⟨x, a⟩ > 0, ||x| − 1| < s', |f(x)| < s', |x − πx| < s|x|}. Assume that every x ∈ S ∩ Z(s, s') satisfies |x − πx| < (s'/4)|x|. Then ∫⁻_{Z(s, s')} ofReal(J(x)) dμ(x) ≤ ofReal(1/(1 − 2s'))·μ(Z(s, s')).",
+  "lean_statement": "∀ (P : ℕ) (R : IMRep (univ : Set (Euclid P)) 2) (Q : Submodule ℝ (Euclid P)) (a e : Euclid P) (S : Set (Euclid P)) (s s' : ℝ), Module.finrank ℝ Q = 2 → a ∈ Q → e ∈ Q → ‖a‖ = 1 → ‖e‖ = 1 → inner ℝ a e = 0 → (∀ᵐ x ∂R.measure, x ∈ S) → 0 < s' → s' ≤ 1 / 4 → (∀ x ∈ S, 0 < inner ℝ x a → |‖x‖ - 1| < s' → |Real.arctan (inner ℝ x e / inner ℝ x a)| < s' → ‖x - Q.starProjection x‖ < s * ‖x‖ → ‖x - Q.starProjection x‖ < s' / 4 * ‖x‖) → ∫⁻ x in {x : Euclid P | 0 < inner ℝ x a ∧ |‖x‖ - 1| < s' ∧ |Real.arctan (inner ℝ x e / inner ℝ x a)| < s' ∧ ‖x - Q.starProjection x‖ < s * ‖x‖}, ENNReal.ofReal (‖(approxTangentPlane 2 R.carrier x).starProjection (inner ℝ x a • e - inner ℝ x e • a)‖ / ‖Q.starProjection x‖ ^ 2) ∂R.measure ≤ ENNReal.ofReal (1 / (1 - 2 * s')) * R.measure {x : Euclid P | 0 < inner ℝ x a ∧ |‖x‖ - 1| < s' ∧ |Real.arctan (inner ℝ x e / inner ℝ x a)| < s' ∧ ‖x - Q.starProjection x‖ < s * ‖x‖}",
+  "lean_name": "idtp_cse_fc_jacobian_upper",
+  "depends_on": [
+    "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_sector_endpoint_density-a1.fibre_count-a1.planar_geometry-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_sector_endpoint_density-a1.fibre_count-a1.planar_geometry-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-941fb9a532-a1"
+}
