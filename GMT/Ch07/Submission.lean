@@ -91223,4 +91223,40 @@ theorem Submission.idtp_cone_tangent_cone_planar : ∀ (P : ℕ) (C : GeometricC
   · exact_mod_cast (hθc ▸ hθ : (1 : ℝ) ≤ c.natAbs)
   · rw [hc ω, univ_inter]
 
+/-- **Density function of a 2-dimensional minimizing cone** (proof of Simon 7.3.3(1), p. 191, for
+2-dimensional minimizing cones).  Let `C ∈ 𝒟₂(ℝᴾ)` be a minimizing cone with `∂C = 0` and some
+`p ∈ spt C \ {0}`.  The tangent cone of `C` at `p` is a plane spanned by an orthonormal pair, so
+`P ≥ 2`, and monotonicity (`U = N = ℝᴾ`, identity chart) gives `Θ(y) = Θ²(μ_C, y)` at every `y`,
+upper semicontinuous.  At `q ∈ spt C \ {0}` the planar tangent cone gives `Θ²(μ_C, q) = |c| ≥ 1`,
+and the dilation invariance of the cone gives `Θ(sx) = Θ(x)` for `s > 0`; densities are unique. -/
+theorem Submission.idtp_tdc_dlc_cone_density_function : ∀ (P : ℕ) (C : GeometricCurrentOn (univ : Set (Euclid P)) 2), IsMinimizingIn C univ → BoundaryVanishes C → IsConeCurrent C → (∃ p ∈ C.support, p ≠ 0) → ∃ Θ : Euclid P → ℝ, (∀ y : Euclid P, HasMassDensity C y (Θ y)) ∧ UpperSemicontinuous Θ ∧ (∀ q ∈ C.support, q ≠ 0 → ∃ m : ℕ, 1 ≤ m ∧ Θ q = (m : ℝ)) ∧ ∀ (s : ℝ) (x : Euclid P), 0 < s → Θ (s • x) = Θ x := by
+  intro P C hmin hbd hcone ⟨p, hp, hp0⟩
+  -- `λⱼ = 1/(j + 1)`: `λⱼ > 0` and `λⱼ → 0`
+  have hlams : ∀ j : ℕ, 0 < 1 / ((j : ℝ) + 1) := fun j => by positivity
+  have hlams0 : Tendsto (fun j : ℕ => 1 / ((j : ℝ) + 1)) atTop (𝓝 0) :=
+    tendsto_one_div_add_atTop_nhds_zero_nat
+  -- Step 1: the tangent cone at `p` is planar, with an orthonormal pair `τ`; so `2 ≤ P`
+  obtain ⟨_, _, τ, _, _, _, _, hτ, -⟩ :=
+    Submission.idtp_cone_tangent_cone_planar P C hmin hbd hcone p hp hp0 _ hlams hlams0
+  have hP : 2 ≤ P := by
+    simpa [finrank_euclideanSpace_fin] using hτ.linearIndependent.fintype_card_le_finrank
+  -- Step 2: monotonicity with `U = N = ℝᴾ` (identity chart): `Θ²(μ_C, y)` exists at every `y`
+  -- and is upper semicontinuous
+  have hN : IsEmbeddedSubmanifold 2 P (univ : Set (Euclid P)) := fun y _ =>
+    ⟨univ, univ, id, isOpen_univ, isOpen_univ, mem_univ y, contDiffOn_id, injOn_id _,
+      by simp, fun K _ hK => by simpa using hK, fun z _ => by
+        rw [fderiv_id, ContinuousLinearMap.coe_id']; exact injective_id⟩
+  obtain ⟨-, -, ⟨Θ, hΘ, hΘusc⟩, -⟩ := Submission.dimred_minimizing_monotonicity P 2 P univ univ C
+    (by norm_num) hP le_rfl isOpen_univ hN (by simp) (by rwa [inter_self]) (by simp) hbd
+  have hΘ' : ∀ y, HasMassDensity C y (Θ y) := fun y => hΘ y (mem_univ y)
+  refine ⟨Θ, hΘ', upperSemicontinuousOn_univ_iff.1 hΘusc, fun q hq hq0 => ?_, fun s x hs => ?_⟩
+  · -- Step 3: at `q ∈ spt C \ {0}` the density is `|c| ≥ 1`; densities are unique
+    obtain ⟨_, _, _, c, _, _, _, _, _, hc, hCq, -⟩ :=
+      Submission.idtp_cone_tangent_cone_planar P C hmin hbd hcone q hq hq0 _ hlams hlams0
+    exact ⟨c.natAbs, hc,
+      Submission.dimred_cs_mi_hasMassDensity_unique P 2 univ C q _ _ (hΘ' q) hCq⟩
+  · -- Step 4: `Θ²(μ_C, x)` is also the density at `s x` (dilation invariance of the cone)
+    exact Submission.dimred_cs_mi_hasMassDensity_unique P 2 univ C (s • x) _ _ (hΘ' (s • x))
+      (((Submission.idtp_tdc_cone_dilation P 2 C hmin.1 hcone s hs).2.2 x (Θ x)).2 (hΘ' x))
+
 end GMT.Ch07
