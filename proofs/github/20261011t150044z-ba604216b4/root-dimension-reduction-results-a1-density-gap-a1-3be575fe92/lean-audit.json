@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "b42a9ac3d751f50a0e6e4525ff802ed3c6d6adf57641d3897b748e99cf1ff5a8",
+  "git_delta": {
+    "base_commit": "1698b6b90f3e66fa02152718dc9b2b5262285806",
+    "candidate_commit": "a078df4131e3df5faf8f6ec9e430120fd7ffd8ba",
+    "target": "GMT/Ch07/Submission.lean",
+    "changed_files": [
+      "GMT/Ch07/Submission.lean"
+    ],
+    "diff_sha256": "184ba7245c2241248af087588823b2dfde4e7d7c8e73ec409990b6bac8a7f5ca",
+    "source_sha256": "4d590e7a5beaf2a9fe7d73eb16c02c49f482e3002509014024b5c4c7c8114d45",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dimred_cone_density_gap",
+      "statement": "∀ (P j : ℕ), 1 ≤ j → ∃ δ : ℝ, 0 < δ ∧ ∀ (C : GeometricCurrentOn (univ : Set (Euclid P)) j) (θ : ℝ), IsMinimizingIn C univ → BoundaryVanishes C → IsConeCurrent C → HasMassDensity C 0 θ → θ < 1 + δ → θ ≤ 1",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
