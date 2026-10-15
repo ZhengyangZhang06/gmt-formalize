@@ -1,0 +1,62 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "arctan_le_self|abs_arctan_le_abs|hasDerivAt_arctan|abs_arctan_sub_self|arctan_sub_self|arctan.*\\^ 3",
+        "exists_hasDerivAt_eq_slope",
+        "starProjection_eq_self_iff|norm_sq_eq_add_norm_sq_starProjection|starProjection_orthogonal_val|norm_starProjection_apply_le|def starProjection",
+        "norm_add_sq_real|abs_real_inner_le_norm|real_inner_self_eq_norm_sq|theorem real_inner_le_norm",
+        "abbrev EuclideanSpace|def EuclideanSpace|instance.*innerProductSpace|instance.*finiteDimensional|instInnerProductSpace|instance.*normedAddCommGroup",
+        "idtp_cse_bml_rbi|abs_arctan_sub_self|arctan_quotient_estimate|projection_residual_le",
+        "rg -l --glob 'decomposition*.json' --glob 'parent-child-handoff.json' 'idtp_cse_bml_rbi' .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/rbi-independent-audit-qm1vglvj/Contracts.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/rbi-independent-audit-qm1vglvj/CheckedFull.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/SpecialFunctions/Trigonometric/Bounds.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/SpecialFunctions/Trigonometric/ArctanDeriv.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/Deriv/MeanValue.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Projection/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-240bfba243/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-240bfba243/decomposition-v1.json",
+        "/tmp/rbi-independent-audit-qm1vglvj/Contracts.lean",
+        "/tmp/rbi-independent-audit-qm1vglvj/CheckedFull.lean"
+      ],
+      "conclusion": "Verified the project and Mathlib pins and the frozen Euclid/dilation definitions. Located the required derivative, mean-value, norm-expansion and projection lemmas; the targeted trigonometric search found no cubic remainder bound. All four names are distinct bare identifiers, with no reservation in another DAG branch or matching declaration in the snapshot project. Each exact one-line proposition elaborates independently before any child implementation. Explicit instance checks confirm the Euclidean L2 norm, real inner product and ordinary orthogonal projection, with completeness inferred for Q. Recompiling the supplied trial proofs under Submission succeeds; all four children and the exact selected parent depend only on propext, Classical.choice and Quot.sound. The split appropriately isolates the estimates needed by idtp_cse_bml_rescaled_box_inclusions. Its only child dependency is arctan_quotient on abs_arctan_sub_self, so dependencies are acyclic and correctly directed. The supplied assembly proves both selected inclusions: strictness comes from the parent's hypotheses despite the children's non-strict bounds."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "abs_arctan_sub_self",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The Lean proposition exactly matches the universal real statement. The proof handles zero separately, applies the mean value theorem on correctly ordered endpoints for either sign, and derives |g′(ξ)||z| ≤ ξ²|z| ≤ |z|³. It is complete, non-circular and directly supports the quotient estimate."
+    },
+    {
+      "key": "arctan_quotient",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All hypotheses and the real quotient match exactly. The proof establishes 1+p > 17/20, bounds the quotient error by 11s′², and uses its declared cubic-bound dependency to bound the arctangent remainder by 4s′². Their sum is at most 30s′². Every sign and denominator condition is justified."
+    },
+    {
+      "key": "norm_expansion",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proposition matches every stated hypothesis and uses the intended Euclidean operations. Cauchy–Schwarz and the squared-norm expansion give |y| ≤ 7s′. The exact identity t−1−y/2 = −(t−1)²/2 and the remaining quadratic term yield 29s′² ≤ 30s′². The supplied argument is complete and independent."
+    },
+    {
+      "key": "projection_residual",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proposition exactly matches the subspace and nonnegative-scalar statement; finite-dimensional Euclidean space supplies the projection instance without an omitted hypothesis. Fixing a and linearity reduce the residual to s′(w−πw). Pythagoras gives contraction, and multiplication by s′ ≥ 0 proves the conclusion, including s′ = 0."
+    }
+  ],
+  "required_changes": []
+}

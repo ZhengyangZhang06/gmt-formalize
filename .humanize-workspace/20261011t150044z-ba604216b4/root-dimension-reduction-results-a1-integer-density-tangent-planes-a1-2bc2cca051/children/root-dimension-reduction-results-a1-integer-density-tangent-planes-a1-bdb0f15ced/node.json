@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_sector_endpoint_density-a1.fibre_count-a1.fibre_pointwise-a1",
+  "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_sector_endpoint_density-a1.fibre_count-a1",
+  "depth": 5,
+  "title": "Pointwise fibre count: N(p) ≥ m, and on the sector side k ≤ m and k < m forces N(p) ≥ m + 1",
+  "statement": "Let P ∈ ℕ, R = (M, θ, ξ) ∈ IMRep(ℝ^P, 2) (M = R.carrier, θ = R.mult), Q a 2-dimensional linear subspace of ℝ^P, a, e ∈ Q with |a| = |e| = 1 and ⟨a, e⟩ = 0, s ∈ ℝ with 0 < s ≤ 1/4, m, k ∈ ℕ, and p = (p₁, p₂) ∈ ℝ × ℝ with |p₁ − 1| < s and |p₂| < s. Put π := Q.starProjection, f(x) := arctan(⟨x, e⟩/⟨x, a⟩), Ax := ⟨x, a⟩e − ⟨x, e⟩a, T_x := approxTangentPlane 2 M x, p_{T_x} := (T_x).starProjection (orthogonal projection onto T_x), w(x) := |p_{T_x}(Ax)|, Z_s := {x : ⟨x, a⟩ > 0, ||x| − 1| < s, |f(x)| < s, |x − πx| < s|x|}, F̃(x) := (|x|, f(x)), X(p) := M ∩ Z_s ∩ F̃⁻¹{p}, H(p) := Σ'_{x ∈ X(p)} θ(x)·ofReal(w(x)) and N(p) := Σ'_{x ∈ X(p)} θ(x) (tsums in [0, ∞] over the subtype). Assume H(p) = ofReal(m·p₁). Then m ≤ N(p); and if x_Q(p) := p₁(cos p₂·a + sin p₂·e) lies in M with θ(x_Q(p)) = k and T_{x_Q(p)} = Q, then k ≤ m, and k < m implies m + 1 ≤ N(p).",
+  "lean_statement": "∀ (P : ℕ) (R : IMRep (univ : Set (Euclid P)) 2) (Q : Submodule ℝ (Euclid P)) (a e : Euclid P) (s : ℝ) (m k : ℕ) (p : ℝ × ℝ), Module.finrank ℝ Q = 2 → a ∈ Q → e ∈ Q → ‖a‖ = 1 → ‖e‖ = 1 → inner ℝ a e = 0 → 0 < s → s ≤ 1 / 4 → |p.1 - 1| < s → |p.2| < s → ∑' x : ↥(R.carrier ∩ {x : Euclid P | 0 < inner ℝ x a ∧ |‖x‖ - 1| < s ∧ |Real.arctan (inner ℝ x e / inner ℝ x a)| < s ∧ ‖x - Q.starProjection x‖ < s * ‖x‖} ∩ (fun x : Euclid P => (‖x‖, Real.arctan (inner ℝ x e / inner ℝ x a))) ⁻¹' {p}), (R.mult x : ℝ≥0∞) * ENNReal.ofReal ‖(approxTangentPlane 2 R.carrier (x : Euclid P)).starProjection (inner ℝ (x : Euclid P) a • e - inner ℝ (x : Euclid P) e • a)‖ = ENNReal.ofReal ((m : ℝ) * p.1) → (m : ℝ≥0∞) ≤ ∑' x : ↥(R.carrier ∩ {x : Euclid P | 0 < inner ℝ x a ∧ |‖x‖ - 1| < s ∧ |Real.arctan (inner ℝ x e / inner ℝ x a)| < s ∧ ‖x - Q.starProjection x‖ < s * ‖x‖} ∩ (fun x : Euclid P => (‖x‖, Real.arctan (inner ℝ x e / inner ℝ x a))) ⁻¹' {p}), (R.mult x : ℝ≥0∞) ∧ ((p.1 • (Real.cos p.2 • a + Real.sin p.2 • e)) ∈ R.carrier → R.mult (p.1 • (Real.cos p.2 • a + Real.sin p.2 • e)) = k → approxTangentPlane 2 R.carrier (p.1 • (Real.cos p.2 • a + Real.sin p.2 • e)) = Q → k ≤ m ∧ (k < m → (m : ℝ≥0∞) + 1 ≤ ∑' x : ↥(R.carrier ∩ {x : Euclid P | 0 < inner ℝ x a ∧ |‖x‖ - 1| < s ∧ |Real.arctan (inner ℝ x e / inner ℝ x a)| < s ∧ ‖x - Q.starProjection x‖ < s * ‖x‖} ∩ (fun x : Euclid P => (‖x‖, Real.arctan (inner ℝ x e / inner ℝ x a))) ⁻¹' {p}), (R.mult x : ℝ≥0∞)))",
+  "lean_name": "idtp_cse_fc_fibre_pointwise",
+  "depends_on": [
+    "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_sector_endpoint_density-a1.fibre_count-a1.planar_geometry-a1",
+    "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_sector_endpoint_density-a1.fibre_count-a1.count_arith-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_sector_endpoint_density-a1.fibre_count-a1.planar_geometry-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_sector_endpoint_density-a1.fibre_count-a1.count_arith-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-bdb0f15ced-a1"
+}

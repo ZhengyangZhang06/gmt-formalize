@@ -1,0 +1,52 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "def dilation|def dilationCLM|abbrev Euclid|cbr_vague_portmanteau|idtp_cse_bml_rpm_dilation_map",
+        "theorem integral_map|theorem integral_smul_measure|theorem ofReal_integral_eq_lintegral_ofReal",
+        "isCompact_preimage|theorem map_apply|theorem smul_apply|exists_cthickening_subset_open|theorem tendsto_measure_cthickening|theorem tendsto_measure_iUnion_atTop",
+        "python3 /tmp/rpm-independent-audit-96y1p9mj/CheckContracts.py",
+        "LEAN_NUM_THREADS=2 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/rpm-independent-audit-96y1p9mj/Types.lean",
+        "LEAN_NUM_THREADS=2 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/rpm-independent-audit-96y1p9mj/Accepted.lean",
+        "LEAN_NUM_THREADS=2 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/rpm-independent-audit-96y1p9mj/Assembly.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Submission.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Map.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Module.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/ConstMulAction.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Homeomorph/Lemmas.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/Thickening.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Constructions/BorelSpace/Metric.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Continuity.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-808e14f9e9/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-808e14f9e9/decomposition-v1.json",
+        "/tmp/rpm-independent-audit-96y1p9mj/CheckContracts.py",
+        "/tmp/rpm-independent-audit-96y1p9mj/Types.lean",
+        "/tmp/rpm-independent-audit-96y1p9mj/Accepted.lean",
+        "/tmp/rpm-independent-audit-96y1p9mj/Assembly.lean"
+      ],
+      "conclusion": "Verified project pin b4d606db and mathlib pin 25730c7c. Both child types and the exact selected parent type independently elaborate without child implementations. The accepted cbr_vague_portmanteau candidate ef833280 has the byte-identical frozen type, preserves the snapshot definitions and imports, and has no dependency path back to this parent. Neither proposed declaration occurs in the frozen project; the new dilation name has no DAG reservation. The split appropriately exposes the accepted portmanteau prerequisite absent from proof base f7d98547 and isolates the dilation calculation. Independently compiled the accepted lemma, the supplied dilation argument, an assembly using only the two child hypotheses, and an end-to-end proof of the exact selected parent. All checks passed; printed axioms are only propext, Classical.choice and Quot.sound."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "vague_portmanteau",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose includes every hypothesis and matches the standalone one-line proposition. The proof correctly establishes cutoff integrability from finite support measure, obtains the compact bound through shrinking finite-measure thickenings, and obtains the open bound through an explicit increasing compact exhaustion, including infinite mass. Empty-set cases are covered. It is complete and non-circular. The bare name validly reuses the identical accepted declaration; its existing dependency graph is acyclic."
+    },
+    {
+      "key": "dilation_map_rescaling",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and standalone one-line type agree on all three conclusions. Positive scale gives the stated homeomorphism and compact preimages; map_apply and the canonical measure scalar action give the set formula and compact finiteness. The pinned integral_map and integral_smul_measure justify the identity for every continuous g without an additional integrability hypothesis. The proof is complete, independent of both parent and sibling, and its bare name is unreserved. These conclusions provide exactly the hypotheses and rewrites needed to apply the first child with U = univ and establish the selected parent."
+    }
+  ],
+  "required_changes": []
+}

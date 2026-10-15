@@ -1,0 +1,66 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cbr_ci_cp_pr_|detRowAlternating|subordinateOrthonormalBasis|factorial_mul_eq_sum_det",
+        "theorem det_succ_column |theorem det_apply\\x27 |def detRowAlternating|theorem map_perm|theorem map_sum|theorem map_smul_univ|theorem sum_repr\\x27|subordinateOrthonormalBasis|theorem orthogonalFamily_self|theorem isInternal_iff|theorem card_perm|starProjection_eq_self_iff",
+        "isInternal_iff|card_perm|Covector|removeNth",
+        "python3 -I /tmp/cpr-independent-audit/generate.py",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/cpr-independent-audit/Contracts.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/cpr-independent-audit/Assembly.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/cpr-independent-audit/Integrated.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Matrix/Determinant/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Alternating/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Module/Alternating/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Orthogonal.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Projection/FiniteDimensional.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Projection/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Data/Fintype/Perm.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Data/Fin/Tuple/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-3ff19dec2b/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-3ff19dec2b/decomposition-v1.json",
+        "/tmp/cpr-independent-audit/generate.py",
+        "/tmp/cpr-independent-audit/Contracts.lean",
+        "/tmp/cpr-independent-audit/Assembly.lean",
+        "/tmp/cpr-independent-audit/Integrated.lean"
+      ],
+      "conclusion": "The split is appropriate and proves this selected parent. The contract digest independently matches. Snapshot and live contract/library files agree at the pinned revisions. The snapshot supplies the required orthogonal-basis, determinant, permutation and projection lemmas. No proposed names occur in the searched project sources or the final 1569-node DAG; all four are bare identifiers. No accepted declaration is reused. The sole sibling dependency, column_expansion depending on det_covector, is correctly directed and acyclic. All four exact one-line propositions elaborate independently in the comparator scope. Explicit elaboration confirms Matrix.det over Matrix.of with Real.commRing. The supplied child scripts, hypothesis-only parent assembly, and integrated exact parent proof independently compile; their axiom reports contain only propext, Classical.choice and Quot.sound."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "adapted_basis",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and Lean type match, including arbitrary P and V. Orthogonality and finite-dimensional double-complement equality justify the direct sum; concatenating and reindexing its orthonormal bases proves the stated dichotomy, including P = 0. The proof is complete, independent and sufficient for the parent assembly."
+    },
+    {
+      "key": "det_covector",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact type specifies the stated row/column convention for arbitrary P, n and g. Composing the row determinant with the linear coordinate map proves alternation and multilinearity; continuity follows from the continuous entries and determinant polynomial. The empty determinant case is covered. No parent or sibling result is assumed."
+    },
+    {
+      "key": "column_expansion",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Every hypothesis appears in both prose and type. The declared det_covector dependency constructs the minor covector; scaling by (-1)^k, identifying removeNth with succAbove, and applying column Laplace expansion gives exactly the required signs and summands. The proof includes d = 0 and contains no circular reliance."
+    },
+    {
+      "key": "det_expansion",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and type agree on all maps I and the factorial normalization. Multilinear basis expansion, signed permutation averaging, and the column-indexed Leibniz formula establish the identity directly, without assuming the parent expansion. The argument covers n = 0, P = 0 and n > P. Applying this identity to covectors and then ζ supports the parent's termwise projection comparison and cancellation."
+    }
+  ],
+  "required_changes": []
+}

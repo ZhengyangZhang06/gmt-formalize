@@ -1,0 +1,87 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "map_linearDependent|eq_smul_basis_det",
+        "def starProjection|lemma starProjection_apply|lemma starProjection_apply_mem|theorem starProjection_apply_mem",
+        "irreducible_def stdOrthonormalBasis|theorem Orthonormal.exists_orthonormalBasis_extension_of_card_eq|protected theorem sum_inner_mul_inner",
+        "theorem map_update_smul|compContinuousLinearMap_apply",
+        "cbr_ci_cp_comp_starProjection_eq_zero_of_finrank_lt|cbr_ci_cp_exists_orthonormal_frame_of_finrank_eq|cbr_ci_cp_exists_orthonormal_frame_eval_neg",
+        "abbrev Covector|def covectorEuclideanNorm|covectorEuclideanNorm_nonneg|covectorBasisMultiIndex",
+        "git show 73310ec921452a01670f397b34d1cf3cd7135598:GMT/Ch07/Submission.lean",
+        "git show b7846b639953f647296619e6e73dec8a8a22ba73:GMT/Ch07/Submission.lean",
+        "git show baaca6e45ef59dcdc4a449dbbfe914c226ee5d7b:GMT/Ch07/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/normalization-independent-audit-xgcnl_rb/Types.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/normalization-independent-audit-xgcnl_rb/Children.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/normalization-independent-audit-xgcnl_rb/Assembly.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/normalization-independent-audit-xgcnl_rb/Integrated.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Alternating/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Determinant.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Projection/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Orthonormal.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Module/Alternating/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-a44cc12920/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-a44cc12920/decomposition-v1.json",
+        "/tmp/normalization-independent-audit-xgcnl_rb/Types.lean",
+        "/tmp/normalization-independent-audit-xgcnl_rb/Children.lean",
+        "/tmp/normalization-independent-audit-xgcnl_rb/Assembly.lean",
+        "/tmp/normalization-independent-audit-xgcnl_rb/Integrated.lean",
+        "/tmp/normalization-independent-audit-xgcnl_rb/covector_frame_det-candidate.lean",
+        "/tmp/normalization-independent-audit-xgcnl_rb/covector_eval_le-candidate.lean",
+        "/tmp/normalization-independent-audit-xgcnl_rb/covector_norming-candidate.lean"
+      ],
+      "conclusion": "The split is appropriate for the selected normalization theorem. The handoff and independently recomputed digest match the requested contract. The snapshot contract matches Submission.lean; inspected Mathlib sources match the pinned installation. All six names are bare identifiers. The three new names have no DAG reservation or snapshot match; the three reused declarations are accepted with byte-identical frozen types. The proposed graph, including retained prerequisites, is acyclic. All six standalone proposition types elaborate without their implementations. The three supplied new proofs pass the source-delta gate and compile unchanged. Both the hypothesis-only assembly and the combined build prove the exact selected parent type. Every checked declaration uses only propext, Classical.choice, and Quot.sound. The matrix construction uses Matrix.of; no pointwise-function IsUnit construction occurs."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "rank_deficient_vanish",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and one-line type agree. Independence of the projected family would give n ≤ finrank V via its lift to V, contradicting the hypothesis; alternation then gives pointwise vanishing. Finite dimensionality supplies the projection instance, and n = 0 is vacuous. The supplied proof compiles without circular reliance."
+    },
+    {
+      "key": "subspace_frame",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The rank hypothesis permits exactly the stated reindexing of stdOrthonormalBasis. Inclusion preserves orthonormality, and mapping the basis span proves equality with V. The argument includes n = 0, matches the frozen proposition, and compiles as supplied."
+    },
+    {
+      "key": "frame_flip",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The positive degree d+1 supplies index 0. The explicit signs preserve inner products and prove both span inclusions; linearity in slot 0 negates every covector value. This proves every conjunct of the exact existential statement. The supplied proof compiles and uses no parent theorem."
+    },
+    {
+      "key": "covector_frame_det",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All orthonormality and span-membership hypotheses appear in both statements. Restriction to the span, top-degree uniqueness, and the inner-product coordinate calculation give the stated determinant formula with the correct indices. Matrix.of is explicit. The reused type is identical to its accepted declaration, whose proof and axioms were independently checked."
+    },
+    {
+      "key": "covector_eval_le",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof establishes the Hilbert–Schmidt identity through permutation counting and a finite Parseval expansion, rather than assuming the desired bound. Extending the frame and comparing its n! nonnegative contributions proves the exact coefficient-norm inequality, including n = 0. Accepted reuse has an identical type and acyclic retained prerequisites."
+    },
+    {
+      "key": "covector_norming",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The determinant construction gives a continuous alternating covector evaluating to 1. The proof exhausts basis tuples into permutation and zero cases; its supplied Hilbert–Schmidt identity then forces norm 1. The argument includes n = 0 and is non-circular. The identical accepted declaration compiles with only standard axioms."
+    }
+  ],
+  "required_changes": []
+}

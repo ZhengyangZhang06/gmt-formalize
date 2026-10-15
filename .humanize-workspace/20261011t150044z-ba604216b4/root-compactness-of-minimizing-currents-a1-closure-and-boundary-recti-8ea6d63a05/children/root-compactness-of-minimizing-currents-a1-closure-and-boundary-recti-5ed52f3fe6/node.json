@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.lower_density-a1.cone-a1.affine_primitive-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.lower_density-a1.cone-a1",
+  "depth": 5,
+  "title": "A constant (n+1)-covector is the exterior derivative of its affine contraction (n+1)⁻¹·ι_{y−x₀}α",
+  "statement": "Let P, n ∈ ℕ, let α be an (n+1)-covector on ℝ^P (α : Covector (Euclid P) (n+1), a continuous alternating (n+1)-linear form) and let x₀ ∈ ℝ^P. Let ψ be the n-form ψ(y) := ((n : ℝ) + 1)⁻¹ · α.curryLeft(y − x₀), i.e. ψ(y)(v₁, …, v_n) = (n + 1)⁻¹ · α(y − x₀, v₁, …, v_n). Then for every x ∈ ℝ^P the exterior derivative of ψ at x equals α: extDeriv ψ x = α. Here extDeriv ψ x = alternatizeUncurryFin(fderiv ℝ ψ x) is Mathlib's exterior derivative, which is SimonGMT's exteriorDerivative.",
+  "lean_statement": "∀ (P n : ℕ) (α : Covector (Euclid P) (n + 1)) (x₀ x : Euclid P), extDeriv (fun y : Euclid P => ((n : ℝ) + 1)⁻¹ • α.curryLeft (y - x₀)) x = α",
+  "lean_name": "cbrld_cone_extDeriv_affine_contraction",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-5ed52f3fe6-a1"
+}

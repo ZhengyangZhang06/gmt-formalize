@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_sector_endpoint_density-a1.edge_tangent_plane-a1.localization-a1",
+  "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_sector_endpoint_density-a1.edge_tangent_plane-a1",
+  "depth": 5,
+  "title": "Localization: the cusp bound with ε = 1/20 confines support points in the box to the plane and near a",
+  "statement": "Let P ∈ ℕ, Q a 2-dimensional linear subspace of ℝ^P (Module.finrank ℝ Q = 2), a, e ∈ Q with |a| = |e| = 1 and ⟨a, e⟩ = 0, Z ⊆ ℝ^P, s₁ > 0, π := Q.starProjection, and assume |x − πx| ≤ (1/20)·|x − a| for every x ∈ Z with |x − a| < s₁. Then there is s₀ with 0 < s₀ ≤ 1/4 such that for every s' with 0 < s' ≤ s₀ and every x ∈ Z with ⟨x, a⟩ > 0, ||x| − 1| < s', |arctan(⟨x, e⟩/⟨x, a⟩)| < s' and |x − πx| ≤ 2s₀|x| one has |x − πx| < (s'/4)|x| and |x − a| < 3s'.",
+  "lean_statement": "∀ (P : ℕ) (Q : Submodule ℝ (Euclid P)) (a e : Euclid P) (Z : Set (Euclid P)) (s₁ : ℝ), Module.finrank ℝ Q = 2 → a ∈ Q → e ∈ Q → ‖a‖ = 1 → ‖e‖ = 1 → inner ℝ a e = 0 → 0 < s₁ → (∀ x ∈ Z, dist x a < s₁ → ‖x - Q.starProjection x‖ ≤ 1 / 20 * dist x a) → ∃ s₀ : ℝ, 0 < s₀ ∧ s₀ ≤ 1 / 4 ∧ (∀ s' : ℝ, 0 < s' → s' ≤ s₀ → ∀ x ∈ Z, 0 < inner ℝ x a → |‖x‖ - 1| < s' → |Real.arctan (inner ℝ x e / inner ℝ x a)| < s' → ‖x - Q.starProjection x‖ ≤ 2 * s₀ * ‖x‖ → ‖x - Q.starProjection x‖ < s' / 4 * ‖x‖ ∧ dist x a < 3 * s')",
+  "lean_name": "idtp_cse_etp_localization",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-47b0e3a61b-a1"
+}
