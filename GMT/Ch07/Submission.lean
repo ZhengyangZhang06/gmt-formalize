@@ -95715,9 +95715,6 @@ theorem Submission.idtp_cse_ah_ae_linear_of_ae_scaling : ∀ (s : ℝ) (h : ℝ 
   have hv0 : v ≠ 0 := by linarith [hv.1]
   rw [hv1 ⟨by linarith [hv.1], by linarith [hv.2]⟩, ← hv2 hv, hgdef, div_mul_cancel₀ _ hv0]
 
-/-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
-theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
-
 /-- Test functions for the `α`-independence step of the cone-sector endpoint density argument
 (Simon 7.3.3): the primitive of a mean-zero continuous test function is a `C¹` test function.
 Let `ψ(x) = ∫_c^x g`, so `ψ' = g` by the fundamental theorem of calculus and `ψ` is `C¹`.  If
