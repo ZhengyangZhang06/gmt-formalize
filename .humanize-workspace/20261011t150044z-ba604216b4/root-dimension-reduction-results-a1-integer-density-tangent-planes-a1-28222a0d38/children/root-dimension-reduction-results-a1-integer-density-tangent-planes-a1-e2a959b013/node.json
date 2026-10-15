@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.two_dim_cone_density-a1.density_locally_constant-a1.light_disc-a1.orthonormal_partner-a1",
+  "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.two_dim_cone_density-a1.density_locally_constant-a1.light_disc-a1",
+  "depth": 6,
+  "title": "An orthonormal partner of a unit vector in a 2-plane, with the coordinate expansion",
+  "statement": "Let P ∈ ℕ, let Q be a linear subspace of ℝ^P with dim Q = 2, and let z ∈ Q with ‖z‖ = 1. Then there is e ∈ Q with ‖e‖ = 1 and ⟨z, e⟩ = 0 such that every w ∈ Q satisfies w = ⟨w, z⟩ z + ⟨w, e⟩ e.",
+  "lean_statement": "∀ (P : ℕ) (Q : Submodule ℝ (Euclid P)) (z : Euclid P), Module.finrank ℝ Q = 2 → z ∈ Q → ‖z‖ = 1 → ∃ e : Euclid P, e ∈ Q ∧ ‖e‖ = 1 ∧ inner ℝ z e = 0 ∧ ∀ w ∈ Q, w = inner ℝ w z • z + inner ℝ w e • e",
+  "lean_name": "idtp_tdc_dlc_ld_orthonormal_partner",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-e2a959b013-a1"
+}
