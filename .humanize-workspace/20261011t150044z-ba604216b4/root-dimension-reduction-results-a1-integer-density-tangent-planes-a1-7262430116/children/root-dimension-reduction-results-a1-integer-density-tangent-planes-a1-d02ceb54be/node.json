@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_constant_density_planar-a1.stationary_cone_sheet_planar-a1.cone_chart-a1.plane_orthonormal-a1",
+  "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_constant_density_planar-a1.stationary_cone_sheet_planar-a1.cone_chart-a1",
+  "depth": 6,
+  "title": "Orthonormal partner of a unit vector in a 2-plane",
+  "statement": "For every P ∈ ℕ, every linear subspace Q ⊆ ℝ^P (Q : Submodule ℝ (Euclid P)) with dim Q = 2 and every u ∈ Q with ‖u‖ = 1, there is e ∈ Q with ‖e‖ = 1 and ⟨u, e⟩ = 0 such that every v ∈ Q satisfies v = ⟨v, u⟩u + ⟨v, e⟩e.",
+  "lean_statement": "∀ (P : ℕ) (Q : Submodule ℝ (Euclid P)) (u : Euclid P), Module.finrank ℝ Q = 2 → u ∈ Q → ‖u‖ = 1 → ∃ e : Euclid P, e ∈ Q ∧ ‖e‖ = 1 ∧ inner ℝ u e = 0 ∧ ∀ v ∈ Q, v = inner ℝ v u • u + inner ℝ v e • e",
+  "lean_name": "idtp_ccd_scsp_cc_plane_orthonormal",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-d02ceb54be-a1"
+}

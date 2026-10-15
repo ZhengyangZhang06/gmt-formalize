@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_sector_endpoint_density-a1.box_mass_limits-a1.tilt_decay-a1.excess_bound-a1",
+  "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_sector_endpoint_density-a1.box_mass_limits-a1.tilt_decay-a1",
+  "depth": 6,
+  "title": "Single-scale calibration bound for the tilt excess on B_{3t}(a)",
+  "statement": "Let P ∈ ℕ and μ a measure on ℝ^P with μ(K) < ∞ for every compact K. Let d : ℝ^P → ℝ be μ-a.e.-strongly measurable with |d| ≤ 1 μ-a.e. Let ϑ : ℝ^P → ℝ be continuous with compact support, ϑ ≥ 0, and ϑ(x) = 1 whenever ‖x‖ < 3. Let a ∈ ℝ^P and t > 0. Then (∫⁻_{B_{3t}(a)} ofReal(1 − |d(x)|) dμ(x)) / ofReal(t²) ≤ ofReal(t^{−2}∫ ϑ(dilation a t x) dμ(x) − |t^{−2}∫ ϑ(dilation a t x)·d(x) dμ(x)|).",
+  "lean_statement": "∀ (P : ℕ) (μ : Measure (Euclid P)) (d ϑ : Euclid P → ℝ) (a : Euclid P) (t : ℝ), 0 < t → (∀ K : Set (Euclid P), IsCompact K → μ K < ∞) → AEStronglyMeasurable d μ → (∀ᵐ x ∂μ, |d x| ≤ 1) → Continuous ϑ → HasCompactSupport ϑ → (∀ x, 0 ≤ ϑ x) → (∀ x : Euclid P, ‖x‖ < 3 → ϑ x = 1) → (∫⁻ x in ball a (3 * t), ENNReal.ofReal (1 - |d x|) ∂μ) / ENNReal.ofReal (t ^ 2) ≤ ENNReal.ofReal (t⁻¹ ^ 2 * ∫ x, ϑ (dilation a t x) ∂μ - |t⁻¹ ^ 2 * ∫ x, ϑ (dilation a t x) * d x ∂μ|)",
+  "lean_name": "idtp_cse_bml_td_excess_bound",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-9fb004f78a-a1"
+}

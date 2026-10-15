@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.density_eq_multiplicity_ae-a1.upper_density_zero-a1",
+  "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.density_eq_multiplicity_ae-a1",
+  "depth": 4,
+  "title": "Upper density theorem: a measure finite on compact sets has zero n-density on a Borel set at H^n-almost every point outside it",
+  "statement": "Let P, n ∈ ℕ, let μ be a measure on the Borel sets of ℝ^P with μ(K) < ∞ for every compact K ⊆ ℝ^P, and let A ⊆ ℝ^P be a Borel set. Then for μHE[n]-almost every x ∈ ℝ^P with x ∉ A, μ(A ∩ B_ρ(x))/(ω_nρ^n) → 0 as ρ ↓ 0. Here B_ρ(x) is the open ball, ω_n = unitBallVolume n is the Lebesgue measure of the unit ball of ℝ^n, ρ^n is entered via ENNReal.ofReal, and the quotient is computed in [0, ∞]. (In the parent's notation: D(μ⌞A, x) = 0 for H^n-a.e. x ∈ ℝ^P ∖ A; no restriction on n.)",
+  "lean_statement": "∀ (P n : ℕ) (μ : Measure (Euclid P)) (A : Set (Euclid P)), MeasurableSet A → (∀ K : Set (Euclid P), IsCompact K → μ K ≠ ∞) → ∀ᵐ x ∂(μHE[n] : Measure (Euclid P)), x ∉ A → Tendsto (fun ρ : ℝ => μ (A ∩ ball x ρ) / (unitBallVolume n * ENNReal.ofReal (ρ ^ n))) (𝓝[>] 0) (𝓝 0)",
+  "lean_name": "idtp_dema_upper_density_zero",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-5625b30197-a1"
+}

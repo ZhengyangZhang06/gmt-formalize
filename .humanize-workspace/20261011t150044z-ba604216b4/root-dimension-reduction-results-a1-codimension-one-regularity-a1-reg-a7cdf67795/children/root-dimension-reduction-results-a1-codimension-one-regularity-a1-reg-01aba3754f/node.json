@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.de_giorgi-a1.bv_compactness-a1.l1_duality-a1",
+  "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.de_giorgi-a1.bv_compactness-a1",
+  "depth": 6,
+  "title": "L¹ norm on a ball is bounded by testing against C¹ functions (bounded integrands)",
+  "statement": "Let n ∈ ℕ, R, A, M ∈ ℝ, and let f : ℝⁿ → ℝ be Borel with |f(z)| ≤ M for all z. Suppose ∫ f φ dL ≤ A for every C¹ function φ : ℝⁿ → ℝ with compact support, tsupport φ ⊆ B_R(0) and |φ(z)| ≤ 1 for all z. Then ∫_{B_R(0)} |f| dL ≤ A.",
+  "lean_statement": "∀ (n : ℕ) (f : Euclid n → ℝ) (R A M : ℝ), Measurable f → (∀ z, |f z| ≤ M) → (∀ φ : Euclid n → ℝ, ContDiff ℝ 1 φ → HasCompactSupport φ → tsupport φ ⊆ ball (0 : Euclid n) R → (∀ z, |φ z| ≤ 1) → ∫ z, f z * φ z ≤ A) → ∫ z in ball (0 : Euclid n) R, |f z| ≤ A",
+  "lean_name": "codim1_rdo_dg_bvc_l1_le_of_tests",
+  "depends_on": [
+    "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.de_giorgi-a1.bv_compactness-a1.smooth_indicator_approx-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.de_giorgi-a1.bv_compactness-a1.smooth_indicator_approx-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-01aba3754f-a1"
+}

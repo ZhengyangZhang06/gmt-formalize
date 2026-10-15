@@ -1,0 +1,77 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-c77e317e89/{parent-child-handoff.json,parent-supplied-natural-proof.md,parent-supplied-plan.md}",
+        "git rev-parse HEAD; git -C .lake/packages/mathlib rev-parse HEAD; git -C .lake/packages/simongmt rev-parse HEAD; cmp local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean GMT/Ch07/Contract.lean; git show 1d91497:GMT/Ch07/Submission.lean | diff - GMT/Ch07/Contract.lean",
+        "python3 scans of dag.json: lean_name/status/lean_statement of density_and_tangent_cones, dimred_minimizing_monotonicity, dimred_invariant_cone_splitting, dimred_one_dim_minimizing_cone, dimred_im_mass_measure, idtp_planar_cycle_eq_const_mul, dtc_blowUp_{algebra,imrep,massOn_image,testForm_corr}, moving_blowups, dtc_blowUp_compactness; accepted statements containing IsConeCurrent|MassMeasuresConverge|ConvergesWeakly|HasMassDensity; grep 'unitBallVolume', 'support = ∅', 'P < n' over all node statements",
+        "python3 read of nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1/decomposition-v3.json and decomposition-scope-v3.json (sibling children and the parent's dependency closure)",
+        "grep -n 'def \\|structure \\|abbrev ' simongmt/Poincare/SimonGMT/Chapter06/{Mass,CurrentLocalEquality,Currents,Forms}.lean (support, zeroRegion, VanishesOn, massOn, massAdmissibleOn, boundary, boundary_apply, exteriorDerivativeTestOn, GeometricCurrentOn.ext)",
+        "grep -rn 'μHE\\[|euclideanHausdorffMeasure_image|euclideanHausdorffMeasure_eq_volume|ext_of_integral_eq_on_compactlySupported|Regular.of_sigmaCompactSpace_of_isLocallyFiniteMeasure|addHaar_ball_of_pos|map_linearDependent|isometryOfOrthonormal|ext_of_forall_integral_eq' local-references/123e8435b4a2469b/mathlib/Mathlib",
+        "sed -n 300,312p; 405,420p; 495,512p; 552,570p book/chapter-07.txt; grep -n 'A.4\\|invarian' book/chapter-07.txt book/chapter-A.txt; sed -n 52,135p book/chapter-A.txt",
+        "grep -c idtp_cttp_ dag.json; grep -rl idtp_cttp_ nodes decomposition-reopenings; grep -rl idtp_cttp_ .swarm-worktrees/*/gmt-ch07/GMT (all: no match)",
+        "lake env lean /tmp/cttp_dec/check/{Stmts,Assembly,T1Proto,T3Proto,T4Proto,T5Proto}.lean; lake env lean /tmp/cttp_dec/verify/EndToEnd.lean with #print axioms"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-c77e317e89/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-c77e317e89/parent-supplied-natural-proof.md",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-c77e317e89/parent-supplied-plan.md",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1/decomposition-v3.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1/decomposition-scope-v3.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/RieszMarkovKakutani/Real.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Regular.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/EqHaar.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Alternating/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Orthonormal.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-07.txt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-A.txt",
+        "/tmp/cttp_dec/check/Stmts.lean",
+        "/tmp/cttp_dec/check/Assembly.lean",
+        "/tmp/cttp_dec/check/T1Proto.lean",
+        "/tmp/cttp_dec/check/T3Proto.lean",
+        "/tmp/cttp_dec/check/T4Proto.lean",
+        "/tmp/cttp_dec/check/T5Proto.lean",
+        "/tmp/cttp_dec/verify/EndToEnd.lean"
+      ],
+      "conclusion": "Pins match the manifest: workspace HEAD b4d606d, Mathlib 25730c7c, SimonGMT 2b36630. The snapshot Contract.lean is byte-identical to the workspace Contract.lean and Submission.lean, and the proof base 1d91497 equals the contract.\n\nRelevant findings:\n- Accepted with exact types: dtc_blowUp_algebra, dtc_blowUp_imrep, dimred_im_mass_measure, dimred_cs_mi_hasMassDensity_unique, cone_current_imrep_measure_smul_image (cone scaling) and adr_rescaled_translate_tendstoUniformly.\n- Speculative-ready or rlcr siblings in the dependency closure: density_and_tangent_cones, dimred_minimizing_monotonicity, dimred_invariant_cone_splitting and dimred_one_dim_minimizing_cone.\n- codim1_subspace_ball_euclideanHausdorff states the plane-disc measure, but it is not accepted and belongs to another branch, so it is not reused. The disc measure becomes child plane_ball_measure under a unique name.\n- Mathlib supplies: Isometry.euclideanHausdorffMeasure_image, EuclideanSpace.euclideanHausdorffMeasure_eq_volume, Measure.addHaar_ball_of_pos, MeasureTheory.Measure.ext_of_integral_eq_on_compactlySupported (Riesz uniqueness for regular measures), the instance Regular.of_sigmaCompactSpace_of_isLocallyFiniteMeasure, AlternatingMap.map_linearDependent and LinearMap.isometryOfOrthonormal.\n- Book: Theorem 3.1 is chapter-07.txt lines 302–309, Lemma 3.5 is 410–418, formula (10) is 556–568, and the ℝx-translation-invariance step of tangent objects of cones is in the proof of A.4, chapter-A.txt lines 125–131.\n- No idtp_cttp_* name exists anywhere.\n\nLean: all five child statements elaborate. The sorry-stub assembly proves the exact frozen parent type with axioms propext, Classical.choice, Quot.sound and sorryAx from stubs only. Lean proofs of all five children (child 2 from the reviewer) elaborate with only the cited DAG results stubbed at their DAG types."
+    }
+  ],
+  "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_tangent_cone_planar-a1",
+  "child_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_tangent_cone_planar-a1.cone_density_invariance-a1",
+  "subproblem": {
+    "key": "cone_density_invariance",
+    "title": "A cone with L-translation-invariant mass measure has density invariant under w ↦ y + λw (y ∈ L)",
+    "statement": "For all P, n ∈ ℕ, every S ∈ 𝒟_n(ℝ^P) (GeometricCurrentOn univ n, ℝ^P := Euclid P), every integer multiplicity representation R of S (R : IMRep univ n, R.Represents S) and every linear subspace L ⊆ ℝ^P: if S is a cone (IsConeCurrent S) and R.measure((· + v)^{-1}(A)) = R.measure(A) for every v ∈ L and every Borel A, then for all y ∈ L, λ > 0, w ∈ ℝ^P and θ ∈ ℝ, HasMassDensity S w θ implies HasMassDensity S (y + λw) θ.",
+    "lean_statement": "∀ (P n : ℕ) (S : GeometricCurrentOn (univ : Set (Euclid P)) n) (R : IMRep (univ : Set (Euclid P)) n) (L : Submodule ℝ (Euclid P)), R.Represents S → IsConeCurrent S → (∀ v ∈ L, ∀ A : Set (Euclid P), MeasurableSet A → R.measure ((fun x => x + v) ⁻¹' A) = R.measure A) → ∀ y ∈ L, ∀ lam : ℝ, 0 < lam → ∀ (w : Euclid P) (θ : ℝ), HasMassDensity S w θ → HasMassDensity S (y + lam • w) θ",
+    "lean_name": "idtp_cttp_cone_density_translation_invariant",
+    "depends_on": [],
+    "natural_proof": "Source: step 6 of the parent proof of `idtp_cone_tangent_cone_planar`, for an arbitrary degree n and subspace L. Notation: ℝ^P := Euclid P, B_ρ(x) the open ball, ω_n := unitBallVolume n, and r_x(ρ) := M_{B_ρ(x)}(S)/(ω_n·ofReal(ρ^n)) ∈ [0, ∞] the density ratio, so HasMassDensity S x θ means 0 ≤ θ and r_x(ρ) → ofReal θ as ρ → 0+.\n1. (Mass is the measure.) By the accepted `Submission.dimred_im_mass_measure` (a) with U := univ (open), S.massOn W = R.measure W for every open W ⊆ ℝ^P.\n2. (Cone scaling.) By the accepted `Submission.cone_current_imrep_measure_smul_image` (P, n, S, R), R.measure((λ•·) '' A) = ofReal(λ^n)·R.measure(A) for λ > 0 and Borel A.\n3. Fix y ∈ L, λ > 0, w ∈ ℝ^P and θ with HasMassDensity S w θ, and let ρ > 0. (a) B_ρ(y + λw) = (fun x => x + (−y))^{-1}(B_ρ(λw)), because ‖x − (y + λw)‖ = ‖(x + (−y)) − λw‖; since −y ∈ L and balls are Borel, the hypothesis gives R.measure(B_ρ(y + λw)) = R.measure(B_ρ(λw)). (b) B_ρ(λw) = (λ•·) '' B_{ρ/λ}(w): if ‖z − w‖ < ρ/λ then ‖λz − λw‖ = λ‖z − w‖ < ρ, and conversely z' ∈ B_ρ(λw) equals λ(λ^{-1}z') with ‖λ^{-1}z' − w‖ = λ^{-1}‖z' − λw‖ < ρ/λ. By step 2, R.measure(B_ρ(λw)) = ofReal(λ^n)·R.measure(B_{ρ/λ}(w)). (c) With step 1: M_{B_ρ(y+λw)}(S) = ofReal(λ^n)·M_{B_{ρ/λ}(w)}(S).\n4. (Ratios.) For ρ > 0, ρ^n = λ^n(ρ/λ)^n with both factors ≥ 0, so ofReal(ρ^n) = ofReal(λ^n)·ofReal((ρ/λ)^n), and c := ofReal(λ^n) satisfies 0 < c < ∞. By step 3(c), r_{y+λw}(ρ) = (c·M_{B_{ρ/λ}(w)}(S))/(c·(ω_n·ofReal((ρ/λ)^n))) = r_w(ρ/λ), cancelling c in [0, ∞] (ENNReal.mul_div_mul_left; no finiteness of the mass or of ω_n is needed).\n5. (Limit.) The map ρ ↦ ρ/λ is continuous, sends 0 to 0 and (0, ∞) into (0, ∞), so it tends to 0 within (0, ∞) as ρ → 0 within (0, ∞). Since r_w(σ) → ofReal θ as σ → 0+, the composite ρ ↦ r_w(ρ/λ) tends to ofReal θ as ρ → 0+, and r_{y+λw} coincides with it on (0, ∞) (step 4), a set belonging to 𝓝[>]0. Hence r_{y+λw}(ρ) → ofReal θ, and with 0 ≤ θ (from HasMassDensity S w θ) this is HasMassDensity S (y + λw) θ. ∎",
+    "proof_key_steps": [
+      "M_W(S) = R.measure(W) for open W (dimred_im_mass_measure (a)) and R.measure(λA) = λ^n R.measure(A) (cone_current_imrep_measure_smul_image).",
+      "B_ρ(y + λw) is the translate of B_ρ(λw) by −y ∈ L and B_ρ(λw) = λ·B_{ρ/λ}(w), so M_{B_ρ(y+λw)}(S) = λ^n M_{B_{ρ/λ}(w)}(S).",
+      "Hence the density ratio of S at y + λw and radius ρ equals that at w and radius ρ/λ.",
+      "ρ/λ → 0+ as ρ → 0+, so the ratio at y + λw tends to θ: HasMassDensity S (y + λw) θ."
+    ]
+  },
+  "audit": {
+    "key": "cone_density_invariance",
+    "acceptable": true,
+    "natural_proof_acceptable": true,
+    "reason": "The statement and type match. The proof correctly uses translation by −y through a preimage, positive dilation of balls, and the mass-measure identity. Cancellation uses a positive finite ENNReal scalar, without assuming finite total mass. Composition with ρ ↦ ρ/λ preserves the right-sided limit, and density nonnegativity is retained."
+  },
+  "resolved_dependencies": [],
+  "plan_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-14c4c93fbb/parent-supplied-plan.md",
+  "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-14c4c93fbb/parent-supplied-natural-proof.md",
+  "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-14c4c93fbb/parent-supplied-natural-proof.json"
+}

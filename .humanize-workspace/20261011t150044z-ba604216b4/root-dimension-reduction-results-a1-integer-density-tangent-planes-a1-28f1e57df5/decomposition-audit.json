@@ -1,0 +1,54 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "euclideanHausdorffMeasure_eq_volume|euclideanHausdorffMeasure_image|map_euclideanHausdorffMeasure",
+        "volume_preserving_ofLp|volume_pi_Ioo|volume_Icc_pi|theorem measure_preimage|class Regular",
+        "regular_euclideanHausdorffMeasure_restrict_submodule",
+        "idtp_cse_bml_sqm_coord_square_volume|idtp_pc_plane_hausdorff_eq_map",
+        "git show ae1d8342b0e070140eb7cdd80292f9370a4dd8e5:GMT/Ch07/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/square-measure-audit-iopwo70u/Types.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/square-measure-audit-iopwo70u/ParentAx.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/square-measure-audit-iopwo70u/Full.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Submission.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Haar/InnerProductSpace.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Dynamics/Ergodic/MeasurePreserving.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Regular.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-28f1e57df5/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-28f1e57df5/decomposition-v1.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-ca4a690a2b/accepted-candidate.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-ca4a690a2b/isolated-comparator-result.json",
+        "/tmp/square-measure-audit-iopwo70u/Types.lean",
+        "/tmp/square-measure-audit-iopwo70u/Child1.lean",
+        "/tmp/square-measure-audit-iopwo70u/Child2.lean",
+        "/tmp/square-measure-audit-iopwo70u/ParentAx.lean",
+        "/tmp/square-measure-audit-iopwo70u/Full.lean"
+      ],
+      "conclusion": "Verified compatibility with project b4d606db, Mathlib 25730c7c and SimonGMT 2b36630. The pinned sources supply the stated Hausdorff-transfer, volume-preservation, box-volume and compact-finiteness facts. Neither proposed name occurs in the searched snapshot sources. DAG and decomposition scans show only the permitted accepted reuse and no conflicting reservation for the new name. The split is appropriate: both children directly support the selected square-measure theorem, with independent, acyclic dependencies. Standalone types, both child proofs, and the exact parent assembly compile. ParentAx depends on precisely the two proposed child assumptions besides standard axioms; Full depends only on propext, Classical.choice and Quot.sound. Instance inspection confirms inner-product-space volume on Euclid 2, product Lebesgue measure on Fin 2 → ℝ, and coordinate evaluation through WithLp.ofLp."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "plane_hausdorff_map",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose includes every hypothesis and matches the standalone one-line proposition, including n = 0. The proof establishes linear isometry and range equality, then applies Hausdorff-measure invariance and normalization without circular reliance. Comparator acceptance of candidate ae1d8342 and exact frozen-type identity were independently verified, so reuse of this bare identifier is valid. Its empty dependency list is correct. The accepted proof independently recompiles with only standard axioms."
+    },
+    {
+      "key": "coord_square_volume",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and standalone one-line proposition agree exactly. The supplied proof verifies both measurable-box preimage identities, transfers volume through WithLp.ofLp, and evaluates the product using r ≥ 0, including r = 0. The inferred measures and coordinate coercions were independently checked. The proof is complete and independent of either the parent or the other child. The bare identifier is unreserved, and independent compilation uses only standard axioms."
+    }
+  ],
+  "required_changes": []
+}

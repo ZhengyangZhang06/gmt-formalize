@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_sector_endpoint_density-a1.tangent_scaling-a1",
+  "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_sector_endpoint_density-a1",
+  "depth": 4,
+  "title": "Approximate tangent planes of a cone are invariant under dilations",
+  "statement": "Let P, n ∈ ℕ, let C ∈ 𝒟_n(ℝ^P) be a cone (IsConeCurrent C) and let R = (M, θ, ξ) ∈ IMRep(ℝ^P, n) represent C. Then for every r > 0, approxTangentPlane n M (r·x) = approxTangentPlane n M x for R.measure-almost every x ∈ ℝ^P.",
+  "lean_statement": "∀ (P n : ℕ) (C : GeometricCurrentOn (univ : Set (Euclid P)) n) (R : IMRep (univ : Set (Euclid P)) n), IsConeCurrent C → R.Represents C → ∀ r : ℝ, 0 < r → ∀ᵐ x ∂R.measure, approxTangentPlane n R.carrier (r • x) = approxTangentPlane n R.carrier x",
+  "lean_name": "idtp_cse_cone_approxTangent_smul",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-5f6464840d-a1"
+}

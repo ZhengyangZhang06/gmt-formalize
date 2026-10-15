@@ -1,0 +1,63 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "def (IsIntegerMultiplicity|IsMinimizingIn|HasMassDensity|IsConeCurrent)|abbrev Euclid|namespace GMT|open scoped|theorem main_theorem",
+        "one_sub_sq_div_two_le_cos|theorem mul_le_sin |theorem cos_arccos|theorem sin_arccos|theorem arccos_nonneg|theorem arccos_le_pi|theorem pi_le_four|theorem cos_two_mul_eq_one_sub|theorem sqrt_sq_eq_abs|theorem sin_nonneg_of_nonneg_of_le_pi",
+        "finrank_mono",
+        "idtp_tdc_dlc_ld_|orthonormal_partner|arc_point_bounds|unit_vector_angle|cone_scale_piece|piece_mass_bound"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/SpecialFunctions/Trigonometric/Bounds.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/SpecialFunctions/Trigonometric/Inverse.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/FiniteDimensional/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-28222a0d38/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-28222a0d38/decomposition-v1.json",
+        "/tmp/ld-independent-audit/RawTypes.lean",
+        "/tmp/ld-independent-audit/Children.lean",
+        "/tmp/ld-independent-audit/Assembly.lean",
+        "/tmp/ld-independent-audit/AcceptedCone.lean"
+      ],
+      "conclusion": "Workspace project and mathlib revisions match the manifest; contract sources match the snapshot. The cited trigonometric and finite-dimensional results have the required hypotheses. No proposed name occurs in the searched pinned project, active DAG, or another pending decomposition. All five names are bare identifiers, and all five statements independently elaborate as closed, one-line propositions without child declarations. Types in the supplied verification files match the proposed contracts and frozen prerequisites byte-for-byte. Independent Lean runs verified the child proofs relative to their stated prerequisites and the assembly of the exact selected light-disc type. Their axiom lists contain only propext, Classical.choice and Quot.sound. The reused cone-dilation declaration has the identical comparator-accepted type and the same permitted axiom list. The split is appropriate: every child supplies a used proof step; there are no inter-child dependencies, and the cited prerequisites introduce no circular reliance on the selected theorem. No matrix-instance ambiguity occurs."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "orthonormal_partner",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and Lean proposition match exactly. The dimension argument supplies a vector outside the line through z; orthogonalization and normalization produce e. Equal finite dimensions establish the spanning claim, and the orthogonal residual proves the coordinate expansion. Every step is justified without using the child or parent conclusion."
+    },
+    {
+      "key": "arc_point_bounds",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact hypotheses yield both squared-norm identities. The global cosine lower bound gives the distance-square estimate, and φ ≥ 0 justifies passing to the unsquared inequality, including φ = 0. This supplies precisely the endpoint estimate needed by the parent."
+    },
+    {
+      "key": "unit_vector_angle",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The supplied expansion gives α² + β² = 1. The arccos construction and sign choice handle all coordinate cases. The chord identity and Jordan inequality prove θ < L; positivity of L follows from the stated distance hypothesis, so no hypothesis is missing. No dependence on either preceding child is required."
+    },
+    {
+      "key": "cone_scale_piece",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proposition matches the prose, including arbitrary real ε. Positive dilation transports balls, support membership, subspace membership and density exactly as claimed. The proof uses the unchanged accepted cone-dilation contract at s and s⁻¹, an inherited prerequisite independent of this branch. It remains valid when ε ≤ 0."
+    },
+    {
+      "key": "piece_mass_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All hypotheses are explicit and correctly used. Support membership of x follows from x ∈ Q and ε > 0. The independent planar prerequisite applies at x; shrinking to the minimum radius preserves support equality and density. Equality of W ∩ Q and W ∩ Q₂ suffices for the mass formula, and ENNReal multiplication monotonicity gives the bound from k ≥ 1 without a finiteness assumption."
+    }
+  ],
+  "required_changes": []
+}

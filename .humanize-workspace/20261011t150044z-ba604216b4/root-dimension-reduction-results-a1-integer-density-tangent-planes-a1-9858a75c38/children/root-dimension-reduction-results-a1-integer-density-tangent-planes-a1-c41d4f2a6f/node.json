@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_constant_density_planar-a1.stationary_cone_sheet_planar-a1.du_bois_reymond-a1.dbr_integrable-a1",
+  "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_constant_density_planar-a1.stationary_cone_sheet_planar-a1.du_bois_reymond-a1",
+  "depth": 6,
+  "title": "Integrability of a compactly supported continuous function times a function continuous on (a, b)",
+  "statement": "Let a, b be reals and κ, χ : ℝ → ℝ. Suppose κ is continuous on the open interval (a, b), χ is continuous on ℝ, χ has compact support, and tsupport χ ⊆ (a, b). Then the function x ↦ χ(x)·κ(x) is Lebesgue integrable on ℝ.",
+  "lean_statement": "∀ (a b : ℝ) (κ χ : ℝ → ℝ), ContinuousOn κ (Ioo a b) → Continuous χ → HasCompactSupport χ → tsupport χ ⊆ Ioo a b → Integrable (fun x => χ x * κ x)",
+  "lean_name": "idtp_ccd_scsp_dbr_integrable",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-c41d4f2a6f-a1"
+}

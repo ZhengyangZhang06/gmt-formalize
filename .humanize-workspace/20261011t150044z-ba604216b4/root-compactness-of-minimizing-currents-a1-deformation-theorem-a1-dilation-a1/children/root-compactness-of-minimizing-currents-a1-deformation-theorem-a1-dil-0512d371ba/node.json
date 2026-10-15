@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.dilation-a1.pullback_testform-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.dilation-a1",
+  "depth": 4,
+  "title": "Dilation pull-back of a test form: δ_λ^#ω is a test form and (δ_λ^#ω)(x) = λ^k ω(λx)",
+  "statement": "Let P, k ∈ ℕ and λ ∈ ℝ with λ ≠ 0, and let ω ∈ TestFormOn univ k, i.e. a C^∞ compactly supported k-form on ℝ^P = Euclid P. Write L := λ·id = lam • ContinuousLinearMap.id ℝ (Euclid P) and δ_λ^#ω := affinePullbackForm L 0 ω, the pull-back of ω along δ_λ(x) = λx: (δ_λ^#ω)(x) = (ω(0 + Lx)).compContinuousLinearMap L, the k-covector (v_1, …, v_k) ↦ ω(λx)(λv_1, …, λv_k). Then some test form η ∈ TestFormOn univ k has underlying differential form δ_λ^#ω, and η(x) = λ^k · ω(λx) as k-covectors for every x ∈ ℝ^P.",
+  "lean_statement": "∀ (P k : ℕ) (lam : ℝ), lam ≠ 0 → ∀ ω : TestFormOn (univ : Set (Euclid P)) k, ∃ η : TestFormOn (univ : Set (Euclid P)) k, (η : DifferentialForm (Euclid P) k) = affinePullbackForm (lam • ContinuousLinearMap.id ℝ (Euclid P)) 0 (ω : DifferentialForm (Euclid P) k) ∧ ∀ x : Euclid P, (η : DifferentialForm (Euclid P) k) x = lam ^ k • (ω : DifferentialForm (Euclid P) k) (lam • x)",
+  "lean_name": "cmcdt_dil_pullback_testForm",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-dil-0512d371ba-a1"
+}

@@ -1,0 +1,58 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "massOn_eq|measure_eq_of|ext_of_generate|VanishesOn|support ⊆|cmc_ml_|dtc_vanish_off_support",
+        "ext_of_generate_finite|theorem Monotone.measure_iUnion|theorem isPiSystem_isOpen|isFiniteMeasure_restrict|theorem restrict_apply|theorem withDensity_apply|measure_add_sdiff|continuous_infEDist|infEDist_zero_of_mem|infEDist_pos_iff_notMem_closure|exists_isSubordinate",
+        "ext_of_isOpen|restrict_eq_of_isOpen|ext_of_forall_isOpen|ext_of_generateFrom_of_cover|measure_eq_of_eq_on_open_subsets|massOn_eq_of_disjoint_sub_support",
+        "git show 44ef61f79e2168134f8a5a6d6520baba56052d67:GMT/Ch07/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/cmc-localization-independent-audit/Types.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/cmc-localization-independent-audit/AcceptedSupport.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/cmc-localization-independent-audit/ProofChecks.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Typeclasses/Finite.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Continuity.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/HausdorffDistance.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Manifold/PartitionOfUnity.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-minimality-localizes-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-vanish-off-support-a1/isolated-comparator-result.json",
+        "/tmp/cmc-localization-independent-audit/Types.lean",
+        "/tmp/cmc-localization-independent-audit/AcceptedSupport.lean",
+        "/tmp/cmc-localization-independent-audit/ProofChecks.lean"
+      ],
+      "conclusion": "The split is appropriate for the exact selected contract cmc_massOn_le_of_le_near_support. Snapshot and workspace contracts are byte-identical; inspected Mathlib sources match the pinned installation. Searches found the general measure-uniqueness tools but no matching localized lemma. All three frozen child propositions elaborate before their implementations; subtraction uses the contract instance, and the inferred measurable space is Borel. DAG inspection confirms fresh new names, identical-type comparator-accepted reuse of dtc_vanish_off_support, and acyclic dependencies. Fresh Lean checks passed for the accepted support implementation, mass equality conditional on support vanishing, localized measure uniqueness, and the exact parent conditional on its children and existing frozen prerequisite cmc_massOn_eq_imRep_measure. These checked proofs use only propext, Classical.choice and Quot.sound. Parent assembly obtains equality on W' \\ W and applies measure additivity, preserving every frozen hypothesis and the conclusion."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "vanish_off_support",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and standalone one-line type agree for arbitrary U. Compactness gives a finite cover by vanishing regions; the subordinate smooth partition produces valid test forms, and linearity proves vanishing. No openness hypothesis on U is missing. The bare name validly reuses the comparator-accepted declaration with identical frozen type, compatible definitions and independently rechecked axioms."
+    },
+    {
+      "key": "mass_agree_off_support",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact type matches all stated hypotheses. Disjointness passes to each admissible form and the difference-current support; the declared support prerequisite then gives S(ω) = T(ω). Equality of the common admissible images proves equality of their suprema. The proof is complete, non-circular and needs no additional openness or integer-multiplicity hypotheses. Its bare name is unreserved."
+    },
+    {
+      "key": "measure_agree_on_borel",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The standalone type exactly expresses the Borel-measure statement. The explicit exhaustion is open, increasing and relatively compact in O, including the empty and full-space cases. Local finiteness of μ and equality on open subsets give finite restrictions for both measures; finite-measure uniqueness and continuity from below prove the conclusion. The proof supplies every substantive step, has no parent dependence, and uses an unreserved bare name."
+    }
+  ],
+  "required_changes": []
+}
