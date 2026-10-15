@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.codim_zero-a1.minimizing-a1",
+  "parent_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.codim_zero-a1",
+  "depth": 4,
+  "title": "Every integer multiplicity n-current in ℝⁿ is minimizing",
+  "statement": "Let n ≥ 1, C ∈ 𝒟_n(ℝⁿ) (GeometricCurrentOn univ n) integer multiplicity, and A ⊆ ℝⁿ an arbitrary set. Then C is minimizing in A (Simon 7.1.1, IsMinimizingIn C A). In fact every integer multiplicity S ∈ 𝒟_n(ℝⁿ) with ∂S = ∂C and spt(S − C) compact equals C.",
+  "lean_statement": "∀ (n : ℕ) (C : GeometricCurrentOn (univ : Set (Euclid n)) n) (A : Set (Euclid n)), 0 < n → IsIntegerMultiplicity C → IsMinimizingIn C A",
+  "lean_name": "dtc_bc_cz_isMinimizingIn",
+  "depends_on": [
+    "root.density_and_tangent_cones-a1.blowup_compactness-a1.codim_zero-a1.top_constancy-a1",
+    "root.density_and_tangent_cones-a1.im_sub-a1",
+    "root.density_and_tangent_cones-a1.vanish_off_support-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.codim_zero-a1.top_constancy-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.density_and_tangent_cones-a1.im_sub-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-im-sub-a1-a1",
+      "result_commit": "77fcc7d4ea0775d769a22372d84889a582415f8b",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.density_and_tangent_cones-a1.vanish_off_support-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-vanish-off-support-a1-a1",
+      "result_commit": "44ef61f79e2168134f8a5a6d6520baba56052d67",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-compactness-a1-codim-zero-a1-26ab64b330-a1"
+}
