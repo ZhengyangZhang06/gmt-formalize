@@ -1,0 +1,66 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "hausdorffMeasure_smul₀|map_homothety_hausdorffMeasure|IsAddLeftInvariant|isometry",
+        "MeasurableEmbedding.integral_map|integral_smul_nnreal_measure",
+        "integral_mul_left_eq_self",
+        "integrable_smul_left_of_hasCompactSupport|integrableOn_isCompact|LocallyIntegrable",
+        "banach_steinhaus|variable",
+        "uniformContinuous_of_continuous",
+        "continuous_coe|completeSpace|norm_le|norm_coe_le_norm|mkOfBound",
+        "rg -n 'adr_hausdorff_integral_comp_affine|adr_uniform_bound_of_weak_bounded|adr_weak_tendsto_of_tendstoUniformly|adr_rescaled_translate_tendstoUniformly' GMT ../.swarm-worktrees/*/gmt-ch07/GMT",
+        "'/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake' env '/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean' /tmp/wtca-independent-audit/Types.lean",
+        "'/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake' env '/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean' /tmp/wtca-decomp/AllFinal.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Group/Integral.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/LocallyIntegrable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Operator/BanachSteinhaus.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/UniformSpace/HeineCantor.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/ContinuousMap/Bounded/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/ContinuousMap/Bounded/Normed.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-abstract-dimension-reduction-a1-weak-tendsto-comp-affine-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/.swarm-worktrees",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+        "/tmp/wtca-decomp/AllFinal.lean",
+        "/tmp/wtca-independent-audit/Types.lean"
+      ],
+      "conclusion": "Verified the pinned revisions and byte compatibility of the inspected Mathlib sources. The cited integral lemmas allow arbitrary integrands, and local integrability supplies compact-set integrability without local finiteness of the measure. Independently compiled all four exact propositions before declaring any child, with successful Borel, Euclidean module, completeness and measure-invariance instance probes. Recompiled the complete supplied scratch proofs and the exact selected parent; each uses only propext, Classical.choice and Quot.sound. The comparator permits the documented additional BanachSteinhaus import. All four names are bare identifiers; searches found no reservations in the current 111-node DAG or declarations in the worktree sources. The split is appropriate: its only internal dependency is weak_tendsto_moving_tests on weak_uniform_bound, and the four conclusions establish the selected parent through the supplied inverse-test-function substitution and scalar limit. No child relies on itself or an ancestor theorem."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "integral_comp_affine",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The standalone Lean proposition exactly matches the prose, including arbitrary h and c > 0. The proof establishes the measurable embedding, inverse scaling factor, unrestricted integral transport and translation invariance. Positivity justifies the scalar simplification and preservation of nonintegrability. No additional hypotheses or circular reliance are needed."
+    },
+    {
+      "key": "weak_uniform_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and exact Lean type agree for an arbitrary Borel measure. The proof establishes completeness of the closed fixed-support subspace, integrability and boundedness of each operator, pointwise boundedness, and the Banach–Steinhaus conclusion. Its explicit choices M = max(M′, 0) and C ≥ |h(0)| justify the final inequality. The documented instance construction compiles."
+    },
+    {
+      "key": "weak_tendsto_moving_tests",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type exactly preserves eventual common support and arbitrary g. The sole declared dependency supplies the uniform bound. Eventual compact support justifies integral subtraction; the explicit epsilon estimate works without assuming M is nonnegative. Adding the fixed-test limit proves the precise conclusion. The proof is complete and non-circular."
+    },
+    {
+      "key": "rescaled_translate_converge",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type matches all three conclusions and correctly requires no global positivity. Convergence to 1 gives eventual 1/2 < c_k < 2. The positive radius construction proves both support claims, and uniform continuity together with inverse convergence proves uniform convergence on the ball; both functions vanish outside it. Early zero scaling factors cause no gap."
+    }
+  ],
+  "required_changes": []
+}

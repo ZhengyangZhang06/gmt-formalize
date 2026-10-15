@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.threshold_reduction-a1.blowup_class-a1.class_tangent-a1.uniform_mass_bound-a1",
+  "parent_id": "root.dimension_reduction_results-a1.threshold_reduction-a1.blowup_class-a1.class_tangent-a1",
+  "depth": 5,
+  "title": "Monotonicity on B̄_{2r}(z) and finite mass of B_{2r}(z) give M_{B_ρ(x′)}(T) ≤ Γρⁿ uniformly near B̄_r(z) (preliminary P8, the mass hypothesis of (IBL))",
+  "statement": "Let P, n ∈ ℕ, U ⊆ ℝ^P (= Euclid P), T ∈ 𝒟_n(U) (GeometricCurrentOn U n), z ∈ ℝ^P and r, Λ ∈ ℝ with r > 0 and Λ ≥ 0. Assume: (a) for all y ∈ ℝ^P and R ∈ ℝ with B̄_R(y) ⊆ B̄_{2r}(z), the function ρ ↦ ofReal(e^{Λρ}/ρⁿ)·M_{B_ρ(y)}(T) (values in [0, ∞]) is monotone on the open interval (0, R); (b) M_{B_{2r}(z)}(T) ≠ ∞. Then there are δ > 0 and Γ ∈ ℝ such that M_{B_ρ(x′)}(T) ≤ ofReal(Γ·ρⁿ) for every b ∈ B̄_r(z), every x′ ∈ B_δ(b) and every ρ with 0 < ρ < δ. Here M_W(T) = T.massOn W ∈ [0, ∞] is Simon's local mass, ofReal = ENNReal.ofReal, B_ρ(y) is the open and B̄_R(y) the closed ball.",
+  "lean_statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (z : Euclid P) (r Λ : ℝ), 0 < r → 0 ≤ Λ → (∀ (y : Euclid P) (R : ℝ), closedBall y R ⊆ closedBall z (2 * r) → MonotoneOn (fun ρ : ℝ => ENNReal.ofReal (Real.exp (Λ * ρ) / ρ ^ n) * T.massOn (ball y ρ)) (Ioo 0 R)) → T.massOn (ball z (2 * r)) ≠ ∞ → ∃ δ Γ : ℝ, 0 < δ ∧ ∀ b ∈ closedBall z r, ∀ x' ∈ ball b δ, ∀ ρ : ℝ, 0 < ρ → ρ < δ → T.massOn (ball x' ρ) ≤ ENNReal.ofReal (Γ * ρ ^ n)",
+  "lean_name": "dimred_tr_bc_ct_uniform_mass_bound",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-threshold-reduction-a1-blowup-cla-ee33e9b7d8-a1"
+}

@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.threshold_reduction-a1.blowup_calculus-a1.pullback_composition-a1",
+  "parent_id": "root.dimension_reduction_results-a1.threshold_reduction-a1.blowup_calculus-a1",
+  "depth": 4,
+  "title": "Composition law of dilation pull-backs: η_{x,λ}^#(η_{y,μ}^#ω) = η_{x+λy,λμ}^#ω",
+  "statement": "Let P, n ∈ ℕ, x, y ∈ ℝ^P and λ, μ ∈ ℝ with λ ≠ 0. For a ∈ ℝ, b ∈ ℝ^P and an n-form ω on ℝ^P write η_{b,a}^#ω := affinePullbackForm (dilationCLM P a) (−(a⁻¹•b)) ω, where dilationCLM P a = a⁻¹·id. Thus (η_{b,a}^#ω)(p)(v₁, …, vₙ) = ω(−a⁻¹b + a⁻¹p)(a⁻¹v₁, …, a⁻¹vₙ). Then for every n-form ω on ℝ^P, η_{x,λ}^#(η_{y,μ}^#ω) = η_{x+λy,λμ}^#ω as n-forms. That is, affinePullbackForm (dilationCLM P λ) (−(λ⁻¹•x)) (affinePullbackForm (dilationCLM P μ) (−(μ⁻¹•y)) ω) = affinePullbackForm (dilationCLM P (λμ)) (−((λμ)⁻¹•(x + λy))) ω.",
+  "lean_statement": "∀ (P n : ℕ) (x y : Euclid P) (lam mu : ℝ), lam ≠ 0 → ∀ ω : DifferentialForm (Euclid P) n, affinePullbackForm (dilationCLM P lam) (-(lam⁻¹ • x)) (affinePullbackForm (dilationCLM P mu) (-(mu⁻¹ • y)) ω) = affinePullbackForm (dilationCLM P (lam * mu)) (-((lam * mu)⁻¹ • (x + lam • y))) ω",
+  "lean_name": "dimred_tr_bc_dilation_pullback_comp",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-threshold-reduction-a1-blowup-cal-88c4a58023-a1"
+}

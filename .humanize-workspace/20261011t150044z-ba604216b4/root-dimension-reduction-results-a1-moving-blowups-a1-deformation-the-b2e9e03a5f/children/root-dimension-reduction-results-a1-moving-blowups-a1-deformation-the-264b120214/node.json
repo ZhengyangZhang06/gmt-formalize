@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.moving_blowups-a1.deformation_theorem-a1.face_replacement-a1.chain_boundary-a1.cube_stokes-a1",
+  "parent_id": "root.dimension_reduction_results-a1.moving_blowups-a1.deformation_theorem-a1.face_replacement-a1.chain_boundary-a1",
+  "depth": 6,
+  "title": "Cubical Stokes for one lattice cube from a divergence representation of dγ",
+  "statement": "Let P, m ∈ ℕ, ι : Fin (m+1) → Fin P (arbitrary), b : Fin P → ℤ, and let γ be any differential m-form on Euclid P. Write e_k := EuclideanSpace.single k 1 ∈ Euclid P and toLp(b) := WithLp.toLp 2 (fun k => (b k : ℝ)) ∈ Euclid P. Put Φ(y) := toLp(b) + Σ_j y_j e_{ι(j)} for y ∈ Euclid (m+1), E := (e_{ι(0)}, …, e_{ι(m)}) and, for i ∈ Fin (m+1), E'_i := (e_{ι(succAbove i l)})_{l ∈ Fin m}. Let G : Euclid (m+1) → Euclid (m+1) be C¹ with G(y)_i = (−1)^i γ(Φ y)(E'_i) for all y and i, and assume dγ(Φ y)(E) = trace DG(y) for all y, where d = exteriorDerivative and trace = LinearMap.trace ℝ (Euclid (m+1)). Define the front and back faces Φ¹_i(y') := toLp(b + 𝟙_{ι(i)}) + Σ_l y'_l e_{ι(succAbove i l)} and Φ⁰_i(y') := toLp(b) + Σ_l y'_l e_{ι(succAbove i l)} for y' ∈ Euclid m, where 𝟙_{ι(i)} = Pi.single (ι i) 1 ∈ ℤ^P. With Q^d the open unit cube of Euclid d: ∫_{Q^{m+1}} dγ(Φ y)(E) dy = Σ_{i ∈ Fin (m+1)} (−1)^i (∫_{Q^m} γ(Φ¹_i y')(E'_i) dy' − ∫_{Q^m} γ(Φ⁰_i y')(E'_i) dy').",
+  "lean_statement": "∀ (P m : ℕ) (ι : Fin (m + 1) → Fin P) (b : Fin P → ℤ) (γ : DifferentialForm (Euclid P) m) (G : Euclid (m + 1) → Euclid (m + 1)), ContDiff ℝ 1 G → (∀ (y : Euclid (m + 1)) (i : Fin (m + 1)), G y i = (-1 : ℝ) ^ (i : ℕ) * γ (WithLp.toLp 2 (fun k => (b k : ℝ)) + ∑ j, y j • EuclideanSpace.single (ι j) (1 : ℝ)) (fun l => EuclideanSpace.single (ι (Fin.succAbove i l)) (1 : ℝ))) → (∀ y : Euclid (m + 1), exteriorDerivative γ (WithLp.toLp 2 (fun k => (b k : ℝ)) + ∑ j, y j • EuclideanSpace.single (ι j) (1 : ℝ)) (fun j => EuclideanSpace.single (ι j) (1 : ℝ)) = LinearMap.trace ℝ (Euclid (m + 1)) (fderiv ℝ G y)) → ∫ y in {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1}, exteriorDerivative γ (WithLp.toLp 2 (fun k => (b k : ℝ)) + ∑ j, y j • EuclideanSpace.single (ι j) (1 : ℝ)) (fun j => EuclideanSpace.single (ι j) (1 : ℝ)) = ∑ i : Fin (m + 1), (-1 : ℝ) ^ (i : ℕ) * ((∫ y in {y : Euclid m | ∀ j, 0 < y j ∧ y j < 1}, γ (WithLp.toLp 2 (fun k => ((b + Pi.single (ι i) 1 : Fin P → ℤ) k : ℝ)) + ∑ j, y j • EuclideanSpace.single ((ι ∘ Fin.succAbove i) j) (1 : ℝ)) (fun j => EuclideanSpace.single ((ι ∘ Fin.succAbove i) j) (1 : ℝ))) - ∫ y in {y : Euclid m | ∀ j, 0 < y j ∧ y j < 1}, γ (WithLp.toLp 2 (fun k => (b k : ℝ)) + ∑ j, y j • EuclideanSpace.single ((ι ∘ Fin.succAbove i) j) (1 : ℝ)) (fun j => EuclideanSpace.single ((ι ∘ Fin.succAbove i) j) (1 : ℝ)))",
+  "lean_name": "dimred_mbl_dtfrcb_cube_stokes",
+  "depends_on": [
+    "root.dimension_reduction_results-a1.moving_blowups-a1.deformation_theorem-a1.face_replacement-a1.chain_boundary-a1.cube_partial_ftc-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.dimension_reduction_results-a1.moving_blowups-a1.deformation_theorem-a1.face_replacement-a1.chain_boundary-a1.cube_partial_ftc-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-moving-blowups-a1-deformation-the-264b120214-a1"
+}

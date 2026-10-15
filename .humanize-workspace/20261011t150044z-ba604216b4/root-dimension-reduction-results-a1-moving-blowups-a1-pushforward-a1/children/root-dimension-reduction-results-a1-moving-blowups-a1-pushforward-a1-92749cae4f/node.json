@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.moving_blowups-a1.pushforward-a1.extension-a1",
+  "parent_id": "root.dimension_reduction_results-a1.moving_blowups-a1.pushforward-a1",
+  "depth": 4,
+  "title": "Representation-independent extension: the pulled-back integral is the limit of Y(ω_j) for a sequence of test forms chosen before Y and R",
+  "statement": "Let P, n ∈ ℕ, O ⊆ ℝ^P open, f : ℝ^P → ℝ^P of class C¹ on O (ContDiffOn ℝ 1 f O), K ⊆ O compact, and ω ∈ 𝒟ⁿ(ℝ^P) (TestFormOn univ n). Then there is a sequence (ω_j)_{j∈ℕ} in 𝒟ⁿ(ℝ^P) such that for every Y ∈ 𝒟_n(ℝ^P) (GeometricCurrentOn univ n) and every integer multiplicity triple R = (M, θ, ξ) in ℝ^P (IMRep univ n) representing Y with spt Y ⊆ K: Y(ω_j) → ∫_M θ(x)·ξ(x)(ω(f(x))∘Df(x)) dHⁿ(x) as j → ∞, where Hⁿ = μHE[n], Df(x) = fderiv ℝ f x and ω(f(x))∘Df(x) := (ω (f x)).compContinuousLinearMap (fderiv ℝ f x).",
+  "lean_statement": "∀ (P n : ℕ) (O K : Set (Euclid P)) (f : Euclid P → Euclid P) (ω : TestFormOn (univ : Set (Euclid P)) n), IsOpen O → ContDiffOn ℝ 1 f O → IsCompact K → K ⊆ O → ∃ ωs : ℕ → TestFormOn (univ : Set (Euclid P)) n, ∀ (Y : GeometricCurrentOn (univ : Set (Euclid P)) n) (R : IMRep (univ : Set (Euclid P)) n), R.Represents Y → Y.support ⊆ K → Tendsto (fun j => Y (ωs j)) atTop (𝓝 (∫ x in R.carrier, (R.mult x : ℝ) * R.orient x (((ω : DifferentialForm (Euclid P) n) (f x)).compContinuousLinearMap (fderiv ℝ f x)) ∂μHE[n]))",
+  "lean_name": "dimred_mbl_pf_pullback_integral_extension",
+  "depends_on": [
+    "root.dimension_reduction_results-a1.moving_blowups-a1.pushforward-a1.carrier_facts-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.dimension_reduction_results-a1.moving_blowups-a1.pushforward-a1.carrier_facts-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-moving-blowups-a1-pushforward-a1-92749cae4f-a1"
+}

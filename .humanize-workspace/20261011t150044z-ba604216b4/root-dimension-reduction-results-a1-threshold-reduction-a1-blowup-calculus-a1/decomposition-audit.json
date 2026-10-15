@@ -1,0 +1,71 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "def currentEval|def blowUp|def dilation |def dilationCLM|dtc_blowUp_massOn_image|dtc_blowUp_testForm_corr|dimred_tr_bc_",
+        "affinePullbackForm|affinePushforward_apply|restrictDomain_apply|testFormOnInclusion_coe|def massOn|def massAdmissibleOn|def TestFormOn|def IsTestForm",
+        "theorem map_smul_univ|theorem compContinuousLinearMap_apply",
+        "mulTSupport_comp_subset_preimage|HasCompactMulSupport.comp_homeomorph",
+        "mul_sSup",
+        "theorem ofReal_mul ",
+        "dtc_blowUp_testForm_corr|dtc_blowUp_massOn_image|dimred_tr_bc_",
+        "git show 5e184fbc2dc0f26dbd9ce6b79feabd198b8ba518:GMT/Ch07/Submission.lean",
+        "git show 17c63f22cc8bff3693345ac9074b98fadbf16246:GMT/Ch07/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/bc-independent-audit-g0zl5dfo/FrozenTypes.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/bc-independent-audit-g0zl5dfo/Replay.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Module/Alternating/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Support.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Basic/ENNReal/Inv.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Basic/ENNReal/Real.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/AffineCurrentPushforward.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-threshold-reduction-a1-blowup-calculus-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-threshold-reduction-a1-blowup-calculus-a1/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-scaling-a1-testform-correspondence-a1/accepted-candidate.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-scaling-a1-testform-correspondence-a1/isolated-comparator-result.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-scaling-a1-mass-scaling-a1/accepted-candidate.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-scaling-a1-mass-scaling-a1/isolated-comparator-result.json",
+        "/tmp/bc-independent-audit-g0zl5dfo/FrozenTypes.lean",
+        "/tmp/bc-independent-audit-g0zl5dfo/Replay.lean"
+      ],
+      "conclusion": "The split is appropriate for the selected blow-up calculus theorem. The recomputed parent digest matches. Project, mathlib and SimonGMT pins match; the inspected definitions support the proofs without openness or finite-mass assumptions. The two reused declarations have identical frozen types, compatible candidate sources and passing comparator records. Neither new name is reserved in the 2375-node DAG; the searched snapshot project and SimonGMT Chapter06 contain none of the child names. All names are bare identifiers. Dependencies are correctly directed and acyclic, including the reused nodes. Independently compiled all five frozen propositions before implementing any child, then replayed the supplied proofs and exact parent assembly successfully. All four children and the parent depend only on propext, Classical.choice and Quot.sound. The scalar and continuous-linear-map constructions have the intended instances; no matrix-unit construction occurs. For the parent, mass_scaling applied to the preimage set gives (i) by surjectivity; currenteval_pullback gives (ii); three applications of that identity and pullback_composition give (iii)."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "testform_correspondence",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and exact one-line proposition agree, including arbitrary U and n and λ > 0. The proof constructs both form transfers using inverse affine homeomorphisms, verifies smoothness, compact support and domain support, then derives the evaluation formula by multilinearity and current linearity, including n = 0. It is complete and non-circular. Reuse preserves the comparator-accepted frozen type exactly."
+    },
+    {
+      "key": "mass_scaling",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The statement and Lean type express the same image-set mass identity for arbitrary W. Both supremum inequalities are justified through the declared testform_correspondence dependency: transferred forms retain the norm bound and correct support, and positive scaling permits ENNReal.ofReal_mul and mul_sSup. Infinite mass causes no gap. The reused frozen type is identical, and surjectivity converts its conclusion into parent part (i)."
+    },
+    {
+      "key": "currenteval_pullback",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "This is exactly parent part (ii), with every hypothesis included. The admissible case follows from the sibling correspondence and linearity. In the inadmissible case, hypothetical admissibility of the pullback, multiplication by λⁿ, reverse correspondence and surjectivity recover admissibility of the original form, giving the required contradiction. Thus both currentEval guards are handled for arbitrary ambient forms. The proof is complete and uses only its declared sibling."
+    },
+    {
+      "key": "pullback_composition",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and standalone Lean proposition agree, requiring only λ ≠ 0 and allowing arbitrary μ. Unfolding pullbacks yields the stated contravariant order. The linear parts agree by inverse-product algebra, and the translations agree using λ⁻¹λ = 1; no cancellation of μ is needed, so μ = 0 is covered. Extensionality proves equality of forms. This independent, non-circular obligation supplies precisely the composition step needed for parent part (iii)."
+    }
+  ],
+  "required_changes": []
+}

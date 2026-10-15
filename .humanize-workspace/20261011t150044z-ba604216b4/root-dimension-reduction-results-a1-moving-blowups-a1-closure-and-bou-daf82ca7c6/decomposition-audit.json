@@ -1,0 +1,93 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "git rev-parse HEAD",
+        "git -C .lake/packages/mathlib rev-parse HEAD",
+        "git -C .lake/packages/simongmt rev-parse HEAD",
+        "rg -n 'dmcbr_bim|cbr_bim|boundary_isIntegerMultiplicity|BoundaryRectifiability|DeformationTheorem' .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT -g '*.lean'",
+        "rg -n 'enorm_integral_le_lintegral_enorm|integral_withDensity_eq_integral_smul|lintegral_indicator_one_le|setIntegral_eq_integral_of_forall_compl_eq_zero|setLIntegral_congr_fun' .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral -g '*.lean'",
+        "sed -n '1962,2002p' /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt",
+        "python3 /tmp/boundary-im-independent-audit/prepare.py",
+        "python3 /tmp/boundary-im-independent-audit/run_checks.py"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch06/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/ContinuousLinearMap.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-closure-and-bou-daf82ca7c6/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-closure-and-bou-daf82ca7c6/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt",
+        "/tmp/boundary-im-independent-audit/prepare.py",
+        "/tmp/boundary-im-independent-audit/Assembly.lean",
+        "/tmp/boundary-im-independent-audit/Reused.lean",
+        "/tmp/boundary-im-independent-audit/Proof_slice_localization.lean",
+        "/tmp/boundary-im-independent-audit/Proof_extension_masses.lean",
+        "/tmp/boundary-im-independent-audit/Proof_deformation_closure.lean",
+        "/tmp/boundary-im-independent-audit/results.json"
+      ],
+      "conclusion": "The selected handoff and contract digest match. Project, Mathlib and SimonGMT revisions match the pins. No dmcbr_bim or cbr_bim declaration occurs in the snapshot; Chapter 6 matches are contract definitions with an unproved main theorem. The split is appropriate: three substantive obligations and five accepted helpers establish the selected CL(d) implies BR(d) statement. All children are used, dependencies are acyclic and correctly directed, and no dependency returns to the selected parent. The five reused types match their accepted declarations exactly; the three new names remain unreserved. All names are bare identifiers. All eight statements are standalone one-line propositions, with no self-reference, implementation-dependent alias, or matrix-unit construction. Independently generated comparator challenges, the three supplied isolated proofs, recompilation of the five accepted proofs, and the hypothesis-only parent assembly passed all 13 Lean checks. Proof axiom closures contain only propext, Classical.choice and Quot.sound. The assembly uses the exact declared im_local dependency and proves the exact selected parent type conditionally on the child obligations."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "norm_props",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Prose and frozen type agree. The coefficient-vector construction proves all four claims, including the explicit operator-norm bound and Lipschitz continuity. This exact accepted reuse supplies the test-form bounds needed by deformation_closure."
+    },
+    {
+      "key": "eval_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof correctly establishes r ≥ 0, rescales both signs by r + ε, uses finite mass to pass to toReal, and lets ε decrease to zero. It covers arbitrary U and W and the case r = 0. Prose and accepted frozen type match."
+    },
+    {
+      "key": "vanish_off_compact",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The cutoff equals one on an open neighbourhood of C, so the remainder's topological support misses C. Multiplication preserves admissibility and yields the bound for every G. The empty-C case is covered; no additional hypothesis on U is needed."
+    },
+    {
+      "key": "imrep_restrict",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Absolute continuity transports orientation measurability. Measurable restriction commutes with density, and the pinned Bochner density identity proves the action formula even for arbitrary, non-integrable forms. All hypotheses and conclusions match the exact accepted type."
+    },
+    {
+      "key": "extend_by_zero",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The supplied proof establishes null-modification invariance of tangent planes, transfers the representation, and constructs a sequentially continuous current. It proves restriction equality, support containment, compactness, boundary vanishing including degree zero, and integer multiplicity. The declaration and its accepted helpers have compatible frozen types and no circular dependency."
+    },
+    {
+      "key": "slice_localization",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The REP, IMC(b), IMC(d), and SL hypotheses match the parent hypotheses exactly. The finite integrated bound supplies a positive good radius without an unsupported measurability assumption. Compact-sphere localization, restricted representations, and the mass estimates prove every conclusion, including boundary agreement. Only the declared siblings are used."
+    },
+    {
+      "key": "extension_masses",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "VO and support containment show Y vanishes off C; exterior differentiation preserves this vanishing for its boundary. Compact localization and transport of admissible test forms prove both stated mass inequalities. The proof uses only its declared sibling and does not assume boundary rectifiability."
+    },
+    {
+      "key": "deformation_closure",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "DT's residual mass bounds and the two declared helpers prove weak convergence of the approximants and their boundaries. Boundary masses vanish, including in degree zero, and the boundary masses themselves are uniformly bounded. Applying precisely CL(d) proves the conclusion without circular reliance on BR(d) or the parent theorem."
+    }
+  ],
+  "required_changes": []
+}

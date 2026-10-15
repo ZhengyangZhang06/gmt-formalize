@@ -1,0 +1,57 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "dimred_mbl_dtfrcb|cube_stokes|cubical.?Stokes|face_regroup",
+        "theorem volume_preserving_piFinSuccAbove|piFinSuccAbove_symm_apply",
+        "prod_univ_succAbove|prod_ite_eq",
+        "dimred_mbl_dtfrcb_cube_partial_ftc",
+        "dimred_mbl_dtfrcb_cube_stokes",
+        "dimred_mbl_dtfrcb_face_regroup",
+        "python3 -I -u /tmp/chain-boundary-independent-audit-do3hbmld/run_checks.py"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Constructions/Pi.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Haar/InnerProductSpace.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/IntervalIntegral/FundThmCalculus.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Prod.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Trace.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Order/Fin/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-deformation-the-b2e9e03a5f/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-deformation-the-b2e9e03a5f/decomposition-v2.json",
+        "/tmp/chain-boundary-independent-audit-do3hbmld/Challenges.lean",
+        "/tmp/chain-boundary-independent-audit-do3hbmld/ChildrenAssembly.lean",
+        "/tmp/chain-boundary-independent-audit-do3hbmld/run_checks.py"
+      ],
+      "conclusion": "Project and Mathlib revisions match the manifest; Submission.lean matches the frozen contract. The pinned sources support the measure transports, Fubini, FTC, trace computation and boundary convention. The declaration search found no matches in the snapshot project, Mathlib, SimonGMT or GMT; all three proposed names also have zero reservations in the 2235-node DAG. Each name is a bare identifier. All child types independently elaborate as propositions before any child implementation. The supplied proof implementations and exact-type comparator targets compile with 50000 heartbeats; each child uses only propext, Classical.choice and Quot.sound. The exact selected parent assembly compiles with its existing face_divergence prerequisite as its sole additional axiom. The split is appropriate: its three substantive obligations establish the selected boundary theorem, with witnesses independent of γ. Dependencies are acyclic and correctly directed. No matrix-unit construction occurs; Euclidean volume, integer shifts and linear-map trace have the intended types."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "cube_partial_ftc",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line proposition exactly matches the C¹ hypothesis, integrability conclusion and difference of face integrals. The proof establishes compact-set integrability, both measure-preserving transports, the restricted-measure Fubini hypotheses, the insertion curve derivative, FTC and endpoint-integral subtraction. It also covers k = 0. It is complete, non-circular and requires no sibling."
+    },
+    {
+      "key": "cube_stokes",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose includes all three hypotheses on G and exactly matches the independently elaborated type. Those hypotheses suffice without smoothness of γ or monotonicity of ι. The coordinate chain rule and orthonormal trace formula reduce the integral to cube_partial_ftc; the insertion identities and constant factors produce the correct signed front-minus-back faces. The only child dependency is cube_partial_ftc. The parent supplies the G hypotheses from its existing face_divergence prerequisite."
+    },
+    {
+      "key": "face_regroup",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proposition exactly expresses integer regrouping uniformly for every real-valued I. The proof explicitly constructs the finite face set and integer coefficients, proves StrictMono by composition with succAbove, and verifies the identity through indicator sums, sum exchange and integer casts. Repeated faces and cancellations are handled correctly; the witnesses do not depend on I. Empty s and m = 0 are covered. No circular or undeclared dependency occurs."
+    }
+  ],
+  "required_changes": []
+}
