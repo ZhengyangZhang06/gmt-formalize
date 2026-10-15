@@ -1,0 +1,75 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "git rev-parse HEAD",
+        "git -C .lake/packages/mathlib rev-parse HEAD",
+        "git -C .lake/packages/simongmt rev-parse HEAD",
+        "euclideanHausdorffMeasure_image|euclideanHausdorffMeasure_eq_volume|addHaar_ball_of_pos|integral_mono_of_nonneg|ofReal_integral_eq_lintegral_ofReal|integral_undef|lintegral_indicator_one_le|mul_meas_ge_le_lintegral₀",
+        "finrank_orthogonal_span_singleton|infDist_lt_iff|continuous_infDist_pt|infDist_nonneg|infDist_zero_of_mem|mem_orthogonal_singleton_iff_inner_left|abs_real_inner_le_norm|of_forall_sdiff_eq_zero|integrableOn_of_bounded|integral_indicator_const|tendsto_nhds_zero|lt_iff_exists_real_btwn|div_le_of_le_mul",
+        "codim1_rdo_dg_ftd_|codim1_rdo_dg_flat_tangent_density_cone",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean -DautoImplicit=false /tmp/ftd3-independent-audit/StandaloneTypes.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean -DautoImplicit=false /tmp/ftd3-check/Full.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean -DautoImplicit=false /tmp/ftd3-check/Inst.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/EqHaar.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Markov.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/HausdorffDistance.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Instances/ENNReal/Lemmas.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Projection/FiniteDimensional.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-96896b0cee/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-96896b0cee/decomposition-scope-v1.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-96896b0cee/decomposition-v3.json",
+        "/tmp/ftd3-independent-audit/StandaloneTypes.lean",
+        "/tmp/ftd3-check/Full.lean",
+        "/tmp/ftd3-check/Inst.lean"
+      ],
+      "conclusion": "Independently verified the selected contract and digest against the handoff and scope record. Project and Mathlib revisions match the manifest; the contract and relevant library files match the snapshot byte-for-byte. The cited sources establish Hausdorff normalization, Haar scaling, both integral comparisons, distance cutoffs, and ENNReal limit criteria. All five frozen types independently elaborate as Prop without child declarations; their text matches the supplied full proofs. Recompiling all five proofs and the exact parent assembly succeeds, with only propext, Classical.choice and Quot.sound as axioms. Instance checks confirm the Euclidean metric, Borel measurable space, scalar action, inner product and unitBallVolume normalization; no matrix constructions occur. No proposed child name occurs in the final 1207-node DAG or searched Lean sources. All names are bare identifiers, and no cross-branch declaration is reused. The split is appropriate: its three auxiliary obligations support the two concluding children, dependencies are acyclic and correctly directed, and those conclusions imply exactly the selected parent."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "plane_ball_measure",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and standalone Lean proposition agree on N, m, finrank Q = m and s > 0. The orthonormal-coordinate isometry identifies the ball image with Q ∩ B_s; isometry invariance, Euclidean normalization and Haar scaling give precisely the stated ENNReal equality, including m = 0. The proof avoids the subtype-volume instance issue and uses neither the parent nor another child."
+    },
+    {
+      "key": "test_upper_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All hypotheses and the eventual conclusion match the Lean type. The support-radius restriction makes the rescaled continuous bounded function integrable using the given finite ball. Markov bounds the arbitrary set through a measurable superlevel set, so A needs no measurability assumption. The limit inequality and positivity of r^m then give the exact ofReal bound. Every step is supplied and non-circular."
+    },
+    {
+      "key": "test_lower_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose exactly matches the type, including arbitrary A and absence of finiteness or compact-support assumptions. The proof correctly separates integrable functions from Lean's zero-valued non-integrable Bochner integral. Pointwise indicator domination and lintegral_indicator_one_le apply to nonmeasurable sets. Combining these with the eventual strict lower bound proves the stated inequality without hidden assumptions."
+    },
+    {
+      "key": "ball_density",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type and prose retain every parent hypothesis and conclude exactly its two ball limits. The proof establishes plane dimension, positive finite normalization, cutoff properties and the required integral bounds. Its three declared dependencies supply precisely the comparisons used. Positive finite denominators justify cancellation, and the ENNReal order-neighborhood argument proves both limits. The retained m ≥ 1 assumption is harmlessly stronger than needed here."
+    },
+    {
+      "key": "cone_density",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type and prose match the parent's universally quantified cone conclusion and hypotheses. Nonemptiness of K justifies the distance witness; boundedness gives compact support. Orthogonality and the unit-normal assumption prove the plane-support radius θ(1 + α⁻¹). The two declared dependencies yield the measure bound, and m ≥ 1 makes its coefficient tend to zero. The final argument handles finite and infinite ENNReal thresholds and proves the exact ratio limit without circular reliance."
+    }
+  ],
+  "required_changes": []
+}

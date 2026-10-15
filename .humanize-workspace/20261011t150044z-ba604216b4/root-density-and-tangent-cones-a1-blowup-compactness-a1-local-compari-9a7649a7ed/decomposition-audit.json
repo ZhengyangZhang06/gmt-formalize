@@ -1,0 +1,68 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "structure IMRep|def IMRep\\.(action|Represents|measure)|massOn_le_add|measure_le_of|le_on_open|dtc_bc_lc_measure_le_of_le_on_open",
+        "class (OuterRegular|WeaklyRegular)|exists_isOpen_lt_of_lt|of_pseudoMetrizableSpace_of_isFiniteMeasure",
+        "theorem integral_withDensity_eq_integral_smul|theorem withDensity_absolutelyContinuous|theorem withDensity_absolutelyContinuous\\x27|theorem withDensity_apply|theorem withDensity_apply\\x27",
+        "lcmp_massOn_le_add_of_eval_eq",
+        "dtc_mass_eq_measure",
+        "cbr_imRep_measure_basic",
+        "dtc_bc_lc_measure_le_of_le_on_open",
+        "git show c7dea4b81c94f56650b6060d3bcb1e801f43d7e9:GMT/Ch07/Submission.lean",
+        "git show bff81d31ecb43002d1bfc77f510d3463c6be155f:GMT/Ch07/Submission.lean",
+        "git show d37eb4dfabd4fb449ac71a0682db55be0cc13023:GMT/Ch07/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/msub_independent_audit_62b12695_bt31cggv/Contracts.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/msub_independent_audit_62b12695_bt31cggv/Assembly.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Regular.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/WithDensity.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/ContinuousLinearMap.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/HausdorffDistance.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-compari-9a7649a7ed/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-compari-9a7649a7ed/decomposition-v1.json",
+        "/tmp/msub_independent_audit_62b12695_bt31cggv/Contracts.lean",
+        "/tmp/msub_independent_audit_62b12695_bt31cggv/Assembly.lean",
+        "/tmp/msub_independent_audit_62b12695_bt31cggv/OpenToBorel.lean",
+        "/tmp/msub_independent_audit_62b12695_bt31cggv/mass_triangle_check.lean",
+        "/tmp/msub_independent_audit_62b12695_bt31cggv/mass_eq_measure_check.lean",
+        "/tmp/msub_independent_audit_62b12695_bt31cggv/imrep_weight_basic_check.lean"
+      ],
+      "conclusion": "Verified the project and Mathlib pins and compatibility of the frozen definitions. The snapshot supplies the required regularity, restriction, density-change and distance facts; no matches for measure_le_of, le_on_open or massOn_le_add occur in snapshot project/GMT. All four submitted types independently elaborate in comparator scope and are standalone one-line propositions. Names are bare identifiers: the three reused names each identify one accepted declaration with an identical frozen type, and the new name is unreserved. The proposed dependency closure is acyclic. Recompiled all three accepted proofs and the supplied new-child appendix; each declaration uses only propext, Classical.choice and Quot.sound. An independently constructed, hypothesis-only assembly proves the exact selected parent type with the same permitted axioms. The split appropriately separates the measure-theoretic extension from the reused current and weight facts."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "mass_triangle",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and frozen type agree, including the evaluation identity restricted to forms supported in G. Negation preserves admissibility; linearity bounds ofReal |Y(ω)| by local mass. The coefficient bound, ENNReal.ofReal subadditivity and supremum argument prove the exact conclusion without circularity. Accepted reuse has an identical type."
+    },
+    {
+      "key": "mass_eq_measure",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All openness, inclusion and representation hypotheses match the type. Independently checked orientation duality, integrability on test-form supports, the upper estimate, and the Lusin–Tietze–mollification construction with its quantitative lower estimate. Compact exhaustion completes the equality, including infinite mass. Regularity is used only for finite restrictions. The proof is sufficiently detailed and non-circular; accepted reuse has an identical type."
+    },
+    {
+      "key": "imrep_weight_basic",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All seven conclusions match the prose. Measurable density and its positivity on the carrier justify the measure formula, both absolute-continuity directions, concentration, compact finiteness and transferred measurability. The pinned integral_withDensity_eq_integral_smul theorem applies to arbitrary forms without an integrability hypothesis, validating the final conjunct. Parts (d) and (e) supply the parent’s required facts. Accepted reuse has an identical type."
+    },
+    {
+      "key": "open_to_borel",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The standalone type exactly states the three hypotheses and measure-order conclusion. The extended-distance exhaustion works also for empty or full U and k = 0. Compact finiteness makes each restriction of ν finite, with the required outer-regularity instance. Open-set comparison then bounds every restricted set; concentration and continuity from below finish the proof. No finiteness of μ or boundary regularity is assumed implicitly. The supplied appendix compiles without additional axioms."
+    }
+  ],
+  "required_changes": []
+}

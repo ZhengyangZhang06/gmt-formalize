@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.truncated_compactness-a1.truncation-a1",
+  "parent_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.truncated_compactness-a1",
+  "depth": 4,
+  "title": "Truncation of an integer multiplicity current at a good radius: an IM current in ℝ^P agreeing with S on B_ρ(0), without boundary there, with M_O(Ŝ) ≤ M_O(S), finite mass and finite boundary mass",
+  "statement": "Let P, m ∈ ℕ, n := m + 1, U ⊆ ℝ^P open, S ∈ 𝒟_n(U) integer multiplicity, and R ∈ ℝ with R > 0 and closedBall(0, R) ⊆ U such that ∂S(ω) = 0 for every ω ∈ 𝒟^m(U) with tsupport ω ⊆ B_R(0). Then there are ρ ∈ ℝ with R/4 < ρ < R/2 and an integer multiplicity Ŝ ∈ 𝒟_n(ℝ^P) (GeometricCurrentOn univ n) such that: (a) Ŝ(ω) = currentEval(S, ω) for every ω ∈ 𝒟ⁿ(ℝ^P) with tsupport ω ⊆ B_ρ(0); (b) ∂Ŝ(β) = 0 for every β ∈ 𝒟^m(ℝ^P) with tsupport β ⊆ B_ρ(0); (c) M_O(Ŝ) ≤ M_O(S) for every open O ⊆ ℝ^P (massOn); (d) M(Ŝ) < ∞; (e) M(∂Ŝ) < ∞ (mass = massOn univ, in [0, ∞]).",
+  "lean_statement": "∀ (P m : ℕ) (U : Set (Euclid P)) (S : GeometricCurrentOn U (m + 1)) (R : ℝ), IsOpen U → 0 < R → closedBall (0 : Euclid P) R ⊆ U → IsIntegerMultiplicity S → (∀ ω : TestFormOn U m, tsupport (ω : DifferentialForm (Euclid P) m) ⊆ ball 0 R → S.boundary ω = 0) → ∃ (ρ : ℝ) (Ŝ : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1)), R / 4 < ρ ∧ ρ < R / 2 ∧ IsIntegerMultiplicity Ŝ ∧ (∀ ω : TestFormOn (univ : Set (Euclid P)) (m + 1), tsupport (ω : DifferentialForm (Euclid P) (m + 1)) ⊆ ball 0 ρ → Ŝ ω = currentEval S (ω : DifferentialForm (Euclid P) (m + 1))) ∧ (∀ β : TestFormOn (univ : Set (Euclid P)) m, tsupport (β : DifferentialForm (Euclid P) m) ⊆ ball 0 ρ → Ŝ.boundary β = 0) ∧ (∀ O : Set (Euclid P), IsOpen O → Ŝ.massOn O ≤ S.massOn O) ∧ Ŝ.mass < ∞ ∧ Ŝ.boundary.mass < ∞",
+  "lean_name": "dtc_bc_tc_truncation",
+  "depends_on": [
+    "root.density_and_tangent_cones-a1.blowup_compactness-a1.truncated_compactness-a1.radial_slice-a1",
+    "root.regular_set_dense-a1.constant_multiplicity_reduction-a1.imrep_restrict-a1",
+    "root.density_and_tangent_cones-a1.localize-a1.imrep_current-a1",
+    "root.compactness_of_minimizing_currents-a1.mass_equals_rep_measure-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.truncated_compactness-a1.radial_slice-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.regular_set_dense-a1.constant_multiplicity_reduction-a1.imrep_restrict-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-regular-set-dense-a1-constant-multiplicity-reduction-a1-imrep-restrict-a1-a1",
+      "result_commit": "1cf6fab9212ad4b69ec2e1df0066dc3881f189e2",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.density_and_tangent_cones-a1.localize-a1.imrep_current-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-localize-a1-imrep-current-a1-a1",
+      "result_commit": "642d7450f79f28435ddba02f9c815e2208bcee00",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.compactness_of_minimizing_currents-a1.mass_equals_rep_measure-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-mass-equals-rep-measure-a1-a1",
+      "result_commit": "27de75e6856bea4ad251fe33afb1925333bb7655",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-compactness-a1-truncated-com-f1cf4cd76e-a1"
+}

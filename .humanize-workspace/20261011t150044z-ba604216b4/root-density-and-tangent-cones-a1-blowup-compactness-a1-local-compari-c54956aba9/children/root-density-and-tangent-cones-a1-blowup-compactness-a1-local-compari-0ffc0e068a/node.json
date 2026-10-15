@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.slicing-a1.chart_pieces-a1.chart_refinement-a1",
+  "parent_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.slicing-a1.chart_pieces-a1",
+  "depth": 6,
+  "title": "C¹ approximation of a Lipschitz function along one C¹ chart on compact Borel pieces (Simon Ch. 3, proof of 2.4; Ch. 2, Theorem 1.5)",
+  "statement": "Let P, N ∈ ℕ, let M ⊆ ℝ^P be Borel, f : ℝ^P → ℝ L-Lipschitz (L ≥ 0), ψ : ℝ^N → ℝ^P a C¹ map and V ⊆ ℝ^N open (ℝ^k = Euclid k). Then there are Borel sets Y_k ⊆ ℝ^N and C¹ functions F_k : ℝ^N → ℝ (k ∈ ℕ) such that for every k: closure(Y_k) is compact and contained in V, ψ(Y_k) ⊆ M, and f(ψ(y)) = F_k(y) for all y ∈ Y_k; moreover H^N((M ∩ ψ(V)) ∖ ⋃_k ψ(Y_k)) = 0, where H^N = μHE[N].",
+  "lean_statement": "∀ (P N : ℕ) (M : Set (Euclid P)) (f : Euclid P → ℝ) (L : NNReal) (ψ : Euclid N → Euclid P) (V : Set (Euclid N)), MeasurableSet M → LipschitzWith L f → IsOpen V → ContDiff ℝ 1 ψ → ∃ (Y : ℕ → Set (Euclid N)) (F : ℕ → Euclid N → ℝ), (∀ k, ContDiff ℝ 1 (F k) ∧ MeasurableSet (Y k) ∧ IsCompact (closure (Y k)) ∧ closure (Y k) ⊆ V ∧ ψ '' Y k ⊆ M ∧ ∀ y ∈ Y k, f (ψ y) = F k y) ∧ μHE[N] ((M ∩ ψ '' V) \\ ⋃ k, ψ '' Y k) = 0",
+  "lean_name": "dtc_bc_lc_sl_cp_chart_refinement",
+  "depends_on": [
+    "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.rectifiable_density_one-a1.c1_approximation-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.rectifiable_density_one-a1.c1_approximation-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-07b3f8e4c7-a1",
+      "result_commit": "38ed0bc3fc04526acffdc4d100ebe9ea7bc9663f",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-compari-0ffc0e068a-a1"
+}

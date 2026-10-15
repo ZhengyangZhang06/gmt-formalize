@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.half_space_cone_lies_in_boundary-a1.cone_measure_homogeneous-a1.rescaled_imrep-a1",
+  "parent_id": "root.half_space_cone_lies_in_boundary-a1.cone_measure_homogeneous-a1",
+  "depth": 3,
+  "title": "Dilating an integer multiplicity triple gives an integer multiplicity triple (parent step 3)",
+  "statement": "Let P, n ∈ ℕ and let R = (M, θ, ξ) be an integer multiplicity triple in ℝ^P (IMRep univ n: M Borel and countably n-rectifiable, θ : ℝ^P → ℕ measurable with θ > 0 on M and ∫⁻_{M∩K} θ dH^n < ∞ for every compact K, ξ a.e.-strongly measurable for H^n⌞M and, for H^n⌞M-a.e. x, a unit orientation (IsUnitOrientationOf) of some approximate tangent space Q of M at x). Let c > 0. Then there is an IMRep univ n triple R' with R'.carrier = {x : cx ∈ M}, R'.mult x = θ(cx) and R'.orient x = ξ(cx) for every x ∈ ℝ^P.",
+  "lean_statement": "∀ (P n : ℕ) (R : IMRep (univ : Set (Euclid P)) n) (c : ℝ), 0 < c → ∃ R' : IMRep (univ : Set (Euclid P)) n, R'.carrier = (fun x => c • x) ⁻¹' R.carrier ∧ (∀ x, R'.mult x = R.mult (c • x)) ∧ ∀ x, R'.orient x = R.orient (c • x)",
+  "lean_name": "imrep_univ_smul_rescale_exists",
+  "depends_on": [
+    "root.half_space_cone_lies_in_boundary-a1.cone_measure_homogeneous-a1.dilation_change_of_variables-a1",
+    "root.half_space_cone_lies_in_boundary-a1.cone_measure_homogeneous-a1.tangent_space_dilation-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.half_space_cone_lies_in_boundary-a1.cone_measure_homogeneous-a1.dilation_change_of_variables-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.half_space_cone_lies_in_boundary-a1.cone_measure_homogeneous-a1.tangent_space_dilation-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-half-space-cone-lies-in-boundary-a1-cone-measure-homogeneous-a1-558afe01a7-a1"
+}
