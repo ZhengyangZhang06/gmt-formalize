@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.regular_set_dense-a1.mass_eq_weight-a1.weight_le_mass-a1.integrable_comp-a1",
+  "parent_id": "root.regular_set_dense-a1.mass_eq_weight-a1.weight_le_mass-a1",
+  "depth": 4,
+  "title": "A continuous linear image of an a.e. unit-bounded measurable n-vector field is integrable",
+  "statement": "Let P, n ∈ ℕ and let ν be a finite measure on ℝ^P (Euclid P). Let ξ : ℝ^P → MultiVector P n be ν-a.e. strongly measurable with ‖ξ(x)‖ ≤ 1 for ν-a.e. x, where MultiVector P n = (Covector (Euclid P) n →L[ℝ] ℝ) carries its operator norm. Let J : MultiVector P n →L[ℝ] Covector (Euclid P) n be a continuous linear map. Then x ↦ J(ξ(x)) is ν-integrable (Bochner integrability, with the operator norm on Covector (Euclid P) n).",
+  "lean_statement": "∀ (P n : ℕ) (ν : Measure (Euclid P)) (ξ : Euclid P → MultiVector P n) (J : MultiVector P n →L[ℝ] Covector (Euclid P) n), IsFiniteMeasure ν → AEStronglyMeasurable ξ ν → (∀ᵐ x ∂ν, ‖ξ x‖ ≤ 1) → Integrable (fun x => J (ξ x)) ν",
+  "lean_name": "rsd_mw_wlm_integrable_clm_comp",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-regular-set-dense-a1-mass-eq-weight-a1-weight-le-mass-a1-integrable-comp-a1-a1"
+}

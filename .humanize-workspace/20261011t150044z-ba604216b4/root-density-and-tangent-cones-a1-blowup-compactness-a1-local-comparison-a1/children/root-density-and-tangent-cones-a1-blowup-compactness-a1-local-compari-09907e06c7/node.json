@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.slicing-a1",
+  "parent_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1",
+  "depth": 4,
+  "title": "Slicing an integer multiplicity current with integer multiplicity boundary by a Lipschitz function (Simon 6.4.1–4.5, 4.8)",
+  "statement": "Let P, m ∈ ℕ with m + 1 < P. Let T ∈ 𝒟_{m+2}(ℝ^P) be represented by an integer multiplicity triple R_T = (M, θ, ξ) (IMRep univ (m + 2), R_T.Represents T), and let ∂T ∈ 𝒟_{m+1}(ℝ^P) be represented by an integer multiplicity triple R_∂ = (M', θ', ξ') (IMRep univ (m + 1)). Let f : ℝ^P → ℝ be Lipschitz with constant L ∈ [0, ∞) (LipschitzWith L f). Then there are currents P_t ∈ 𝒟_{m+1}(ℝ^P) (t ∈ ℝ) such that: (1) for every open W ⊆ ℝ^P the function t ↦ M_W(P_t) ∈ [0, ∞] is a.e.-measurable for Lebesgue measure and ∫_ℝ M_W(P_t) dt ≤ L·M_W(T); (2) for L¹-a.e. t ∈ ℝ: P_t is integer multiplicity; P_t(ω) = 0 for every ω ∈ 𝒟^{m+1}(ℝ^P) whose topological support is disjoint from f⁻¹(t); and P_t(ω) = ∫_{M∩{f<t}} θ⟨dω, ξ⟩ dH^{m+2} − ∫_{M'∩{f<t}} θ'⟨ω, ξ'⟩ dH^{m+1} for every ω ∈ 𝒟^{m+1}(ℝ^P) (Hᵏ = μHE[k]). The last identity says P_t = ∂(T⌞{f < t}) − (∂T)⌞{f < t}, Simon's formula 4.5(2) for the slice ⟨T, f, t⟩.",
+  "lean_statement": "∀ (P m : ℕ) (T : GeometricCurrentOn (univ : Set (Euclid P)) (m + 2)) (RT : IMRep (univ : Set (Euclid P)) (m + 2)) (RB : IMRep (univ : Set (Euclid P)) (m + 1)) (f : Euclid P → ℝ) (L : NNReal), m + 1 < P → RT.Represents T → RB.Represents T.boundary → LipschitzWith L f → ∃ Ps : ℝ → GeometricCurrentOn (univ : Set (Euclid P)) (m + 1), (∀ W : Set (Euclid P), IsOpen W → AEMeasurable (fun t => (Ps t).massOn W) ∧ ∫⁻ t, (Ps t).massOn W ≤ (L : ℝ≥0∞) * T.massOn W) ∧ ∀ᵐ t, IsIntegerMultiplicity (Ps t) ∧ (∀ ω : TestFormOn (univ : Set (Euclid P)) (m + 1), Disjoint (tsupport (ω : DifferentialForm (Euclid P) (m + 1))) (f ⁻¹' {t}) → Ps t ω = 0) ∧ ∀ ω : TestFormOn (univ : Set (Euclid P)) (m + 1), Ps t ω = (∫ x in RT.carrier ∩ {x | f x < t}, (RT.mult x : ℝ) * RT.orient x (exteriorDerivative (ω : DifferentialForm (Euclid P) (m + 1)) x) ∂μHE[m + 2]) - ∫ x in RB.carrier ∩ {x | f x < t}, (RB.mult x : ℝ) * RB.orient x ((ω : DifferentialForm (Euclid P) (m + 1)) x) ∂μHE[m + 1]",
+  "lean_name": "dtc_bc_lc_slice",
+  "depends_on": [
+    "root.compactness_of_minimizing_currents-a1.im_calculus-a1",
+    "root.density_and_tangent_cones-a1.mass_eq_measure-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.compactness_of_minimizing_currents-a1.im_calculus-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-im-calculus-a1-a1",
+      "result_commit": "2af75d6921b01a9c889a45103692ca0af95ea394",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.density_and_tangent_cones-a1.mass_eq_measure-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-mass-eq-measure-a1-a1",
+      "result_commit": "bff81d31ecb43002d1bfc77f510d3463c6be155f",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-compari-09907e06c7-a1"
+}
