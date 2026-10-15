@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.plane_integer-a1.plane_stokes-a1.boundary_zero-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.plane_integer-a1.plane_stokes-a1",
+  "depth": 6,
+  "title": "The half-plane boundary formula at every level forces the whole-plane integral of dφ to vanish",
+  "statement": "Let P, d ∈ ℕ, let v = (v_0, …, v_d) be an orthonormal family in ℝ^P, and let φ ∈ TestFormOn univ d (smooth with compact support). Put V₀ := span(v_0, …, v_d) and L_t := {y : y − t v_0 ∈ span(Fin.tail v)}; write Hᵐ = μHE[m] and dφ = exteriorDerivative φ.\n\nAssume (HS): for every t ∈ ℝ,\n∫_{V₀ ∩ {y : ⟨y, v_0⟩ < t}} dφ(y)(v) dH^{d+1}(y) = ∫_{L_t} φ(y)(Fin.tail v) dH^d(y).\n\nThen ∫_{V₀} dφ(y)(v_0, …, v_d) dH^{d+1}(y) = 0.",
+  "lean_statement": "∀ (P d : ℕ) (v : Fin (d + 1) → Euclid P), Orthonormal ℝ v → ∀ φ : TestFormOn (univ : Set (Euclid P)) d, (∀ t : ℝ, ∫ y in (Submodule.span ℝ (Set.range v) : Set (Euclid P)) ∩ {y : Euclid P | inner ℝ y (v 0) < t}, exteriorDerivative (φ : DifferentialForm (Euclid P) d) y v ∂μHE[(d + 1)] = ∫ y in {y : Euclid P | y - t • v 0 ∈ Submodule.span ℝ (Set.range (Fin.tail v))}, (φ : DifferentialForm (Euclid P) d) y (Fin.tail v) ∂μHE[d]) → ∫ y in (Submodule.span ℝ (Set.range v) : Set (Euclid P)), exteriorDerivative (φ : DifferentialForm (Euclid P) d) y v ∂μHE[(d + 1)] = 0",
+  "lean_name": "cbr_cipi_plane_boundary_zero",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-92759fcd01-a1"
+}

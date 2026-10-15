@@ -1,0 +1,74 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "def (MinimizingImpliesStationary|DensityAndTangentCones|HasMassDensity|IMRep.measure)|structure IMRep|IsUnit|Matrix",
+        "map_linearDependent",
+        "MinimizingImpliesStationary|DensityAndTangentCones|axiom|sorry",
+        "idtp_cttp_ctc_minimizing_stationary",
+        "idtp_cttp_ctc_density_tangent_cones",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/ctc_independent_audit/Reuse.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/ctc_independent_audit/Context.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/README.md",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Alternating/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-fde813c052/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-07.txt",
+        "/tmp/ctc_independent_audit/Reuse.lean",
+        "/tmp/ctc_independent_audit/Context.lean"
+      ],
+      "conclusion": "The pinned revisions match, and the snapshot contract, workspace contract, Submission and selected proof base are byte-identical. All five reused names belong to accepted nodes with identical frozen types. Neither fresh name occurs in another node's JSON. The proposed graph, including retained dependencies of reused nodes, is acyclic across 29 reachable nodes. Every name is a valid bare identifier; every statement is a standalone one-line proposition. The two named proposition definitions already exist in the frozen contract. No matrix-unit inline construction occurs.\n\nIndependent recompilation of the five accepted candidate insertions and exact-type checks succeeded; each reused declaration depends only on propext, Classical.choice and Quot.sound. The exact selected parent assembly also compiled successfully using those real proofs and the two proposed interfaces. Its only additional axiom is Submission.idtp_cttp_ctc_density_tangent_cones; stationarity is used within that child's supplied proof.\n\nThe split is appropriate: tangent_cones supplies convergence, minimality, conicality and densities; the three density children establish the lower bound; blowup_limit_cycle supplies the boundary conclusion. The supplied proofs were checked independently, including the compactness comparison against [Simon's Chapter 7](https://web.stanford.edu/class/math285/ts-gmt)."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "support_of_vanishing",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose includes every Lean hypothesis. Relatively compact balls outside K establish support containment; support = K ∖ zeroRegion then establishes compactness. Applying this to the zero current supplies the parent's empty-support arguments. Accepted reuse has the identical type."
+    },
+    {
+      "key": "blowup_limit_cycle",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The statement matches the exact varying-domain convergence contract, including degree zero. The proof establishes eventual containment of test supports, boundary commutation and vanishing evaluations, then uses uniqueness of weak limits on exterior derivatives. The cited domain prerequisite is retained in the accepted history."
+    },
+    {
+      "key": "im_mass_measure",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All three conclusions match the frozen type. Unit-orientation duality gives the upper mass bound; Lusin approximation, extension, mollification and inner regularity give the lower bound. The zero-neighborhood argument establishes the support criterion, and measure uniqueness establishes representation independence. The proof is non-circular."
+    },
+    {
+      "key": "ae_density_lower_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof correctly transfers full-measure properties through absolute continuity, obtains local finiteness and unweighted unit density, and compares the two normalized measures. The supplied closed-ball and open-ball prerequisite proofs justify the limits. The final ENNReal inequality yields θ ≥ 1 without assuming θ is nonnegative beforehand."
+    },
+    {
+      "key": "support_density_lower_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Every hypothesis appears in the prose and is used correctly. Density uniqueness uses the nonnegativity included in HasMassDensity. Upper semicontinuity would turn a density below one into an open ball containing no almost-everywhere good points, contradicting the assumed positive measure of support neighborhoods."
+    },
+    {
+      "key": "stationarity",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "MinimizingImpliesStationary is an independently usable frozen proposition matching the prose. The proof handles degree zero, constructs admissible tangent-flow competitors, justifies their boundary condition, and differentiates mass to obtain stationarity. The normal variation formula supplies measurable mean curvature and compactwise bounds. It does not invoke the selected parent."
+    },
+    {
+      "key": "tangent_cones",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "DensityAndTangentCones matches the prose, including convergence for all representations. The proof supplies localization, density existence and upper semicontinuity, blow-up compactness with an explicit projection comparison, density preservation, and the homotopy argument for conicality. The stationarity dependency is correctly directed. These conclusions establish the required portion of the selected parent, and the registration note is accompanied by an actual proof."
+    }
+  ],
+  "required_changes": []
+}

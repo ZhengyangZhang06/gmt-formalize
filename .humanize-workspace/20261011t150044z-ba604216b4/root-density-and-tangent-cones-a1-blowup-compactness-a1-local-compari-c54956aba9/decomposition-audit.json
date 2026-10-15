@@ -1,0 +1,100 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "def CountablyRectifiable|def HasApproximateTangentSpaceAt|abbrev Euclid|dtc_bc_lc_sl_cp_|codim1_rdo_rectifiable_c1_cover|doraggt_ae_approxTangent_transfer",
+        "theorem MeasurableSet.image_of_continuousOn_injOn|theorem LipschitzOnWith.extend_real|theorem EuclideanSpace.euclideanHausdorffMeasure_eq_volume|lemma LocallyLipschitzOn.exists_lipschitzOnWith_of_compact|theorem exists_measurable_superset_of_null|ContDiff.locallyLipschitz|exists_compact_covering",
+        "dtc_bc_lc_sl_cp_(chart_refinement|chart_tangent|disjointify)",
+        "python3 /tmp/chart_pieces_independent_audit/check_contracts.py",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/chart_pieces_independent_audit/AllChallenges.lean > /tmp/chart_pieces_independent_audit/challenges.log 2>&1",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/chart_pieces_independent_audit/CombinedChecked.lean > /tmp/chart_pieces_independent_audit/combined.log 2>&1"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Constructions/Polish/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/Lipschitz.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/MetricSpace/Lipschitz.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Compactness/SigmaCompact.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/RCLike.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/MeasureSpaceDef.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter03/SubmanifoldCover.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/Lipschitz.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-compari-c54956aba9/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-compari-c54956aba9/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification/verdicts/126b1b891801721611d2fc3162fd96b66c4c83ee13a19dba0cd9fd8da67159a8.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification/verdicts/566902f952be1d54088d609cb544edc92b369aca18cec1e96a2cd9cc7e42f207.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification/verdicts/38cd2e09ebd0e20b762e0e10cad1dea277d5bad28ede07ad3af765013a4db9c4.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification/verdicts/9a2d210be5a5e93d816243576970de2819f73cdebabc7c158eab71e4b9969438.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification/verdicts/bd46147eb93643fb723e258841cc68f3d8942e8b3c017fa82608e459ab679d14.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-02.txt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-03.txt",
+        "/tmp/cps_split/lean/ChildN1.lean",
+        "/tmp/cps_split/lean/ChildN2N3.lean",
+        "/tmp/cps_split/lean/Assembly.lean",
+        "/tmp/chart_pieces_independent_audit/check_contracts.py",
+        "/tmp/chart_pieces_independent_audit/AllChallenges.lean",
+        "/tmp/chart_pieces_independent_audit/challenges.log",
+        "/tmp/chart_pieces_independent_audit/CombinedChecked.lean",
+        "/tmp/chart_pieces_independent_audit/combined.log"
+      ],
+      "conclusion": "The split is appropriate for the selected chart-pieces theorem. Project, mathlib and SimonGMT pins match the comparator evidence. The snapshot project contains none of the proposed child declarations; SubmanifoldCover supplies only the opposite rectifiability direction. Inspected library statements justify compact exhaustion, Lipschitz extension and null-image estimates, Borel images, and Borel null supersets. All five reused declarations have identical proposed, DAG, candidate and comparator types; candidate hashes match passing comparator records. The three new names are unreserved, and every name is a bare identifier. The augmented dependency graph, including retained parent dependencies and existing reuse dependencies, is acyclic. All eight exact one-line propositions elaborate in independently generated contract-mode challenges without their implementations. Fresh compilation verifies the three supplied new proofs from exactly their declared dependencies and the assembly of the exact frozen parent. The combined parent and all eight children use only propext, Classical.choice and Quot.sound. The unrelated frozen main_theorem placeholder is absent from their axiom closures. Euclidean measure instances and derivative-to-linear-map coercions are correct; no Matrix/IsUnit construction occurs. Every child contributes to the selected statement, including pointwise tangency, compact closure, disjointness and null uncovered remainder."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "c1_cover",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Prose and type agree, including arbitrary dimensions, potentially empty balls, and no measurability assumption on M. Exact accepted reuse at 422aff28 is independently verified. Coordinatewise approximation, null critical images and lower-Lipschitz ball localization provide precisely the finite-measure Borel charts required by the parent, without circular reliance."
+    },
+    {
+      "key": "fderiv_lower_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The positive difference-quotient argument proves the exact derivative inequality; positivity of m is unnecessary. Openness and membership justify the approaching points. Exact accepted declaration and proof at dd15d7b5 are verified. The parent correctly uses m > 0 separately to deduce derivative injectivity."
+    },
+    {
+      "key": "c1_approximation",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Prose matches the value-and-derivative exceptional set and the full positive ENNReal epsilon range. Exact accepted reuse at 38ed0bc3 is verified, including its axiom closure. The cited Rademacher–Lusin–Egoroff–Whitney argument is backed by the existing checked implementation, so this is a supplied proof rather than deferred proof construction."
+    },
+    {
+      "key": "c1_piece_tangent",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Exact accepted reuse at 9ff76906 matches all hypotheses and the tangent-space predicate. The lower bound establishes injectivity and confines rescaled test-function support to a fixed ball; continuity supplies domination, and the linear area formula identifies the limit. The proof covers the stated open-ball contract and supplies chart_tangent."
+    },
+    {
+      "key": "tangent_transfer",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Exact accepted reuse at 422e346e is verified. Borel measurability and local finiteness correctly support density-zero estimates for both set differences. Their common exceptional set is independent of Q; vanishing differences of blow-up integrals give the asserted equivalence for every subspace."
+    },
+    {
+      "key": "chart_refinement",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof establishes every conjunct using only c1_approximation and available library facts. Compact exhaustion, McShane extension and shrinking approximation errors produce the stated Borel pieces; their closures remain compact inside V. The uncovered image lies in countably many Lipschitz images of null sets. Neither injectivity nor local finiteness of M is needed. Exact dependency-based proof recompiles."
+    },
+    {
+      "key": "chart_tangent",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All hypotheses appear in the matching prose and type. Finite chart-image measure supplies local finiteness for tangent_transfer with W = univ. A Borel hull of its null failure set permits pointwise transfer of c1_piece_tangent at every retained parameter point. Both declared dependencies are sufficient and correctly directed; the exact proof recompiles."
+    },
+    {
+      "key": "disjointify",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Lusin–Souslin applies to the Borel parameter sets in Polish Euclidean space with the stated continuity and injectivity. The Borel first-hit image sets are pairwise disjoint and preserve the union; pulling them back gives Borel subsets with exactly those images. The proof is complete, requires no sibling dependency, and recompiles for the exact type."
+    }
+  ],
+  "required_changes": []
+}

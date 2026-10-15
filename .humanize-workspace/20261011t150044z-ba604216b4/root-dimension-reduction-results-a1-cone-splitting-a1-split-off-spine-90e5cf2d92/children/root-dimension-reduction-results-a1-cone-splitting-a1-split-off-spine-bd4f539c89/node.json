@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.cone_splitting-a1.split_off_spine-a1.minimality_transfer-a1.cube_stokes-a1.slice_identity-a1",
+  "parent_id": "root.dimension_reduction_results-a1.cone_splitting-a1.split_off_spine-a1.minimality_transfer-a1.cube_stokes-a1",
+  "depth": 6,
+  "title": "Slice identity: Y(flatD(dω(t + ·))) = Σ_a (−1)^a Y(D_{g_a}(flatF a ∘ ω)(t + ·)) + (−1)^{j+1} X(flat(ω(t + ·)))",
+  "statement": "Let P, j, m, n' ∈ ℕ, let g = (g_0, …, g_j) (g : Fin (j + 1) → Euclid P) be any family of vectors, h : n' = (j + 1) + m, h₁ : n' + 1 = (j + 1) + (m + 1), h₂ : n' = j + (m + 1). Let flatD : Λ^{n'+1} → Λ^{m+1}, flat : Λ^{n'} → Λ^m and flatF a : Λ^{n'} → Λ^{m+1} (a ∈ Fin (j + 1)) be continuous linear maps with flatD α v = α(Fin.append g v ∘ Fin.cast h₁), flat α v = α(Fin.append g v ∘ Fin.cast h) and flatF a α v = α(Fin.append (g ∘ a.succAbove) v ∘ Fin.cast h₂). Let Y ∈ 𝒟_{m+1}(ℝ^P) and X ∈ 𝒟_m(ℝ^P) (GeometricCurrentOn univ) with Y.boundary = X, let ω be a test n'-form (ω : TestFormOn univ n', with underlying form ω̂) and t ∈ ℝ^P. Then\ncurrentEval Y (y ↦ flatD(dω̂(t + y))) = Σ_{a ∈ Fin (j+1)} (−1)^a · currentEval Y (y ↦ D[z ↦ flatF a(ω̂(z))](t + y)[g_a]) + (−1)^{j+1} · currentEval X (y ↦ flat(ω̂(t + y))),\nwhere D = fderiv ℝ and d = exteriorDerivative.",
+  "lean_statement": "∀ (P j m n' : ℕ) (g : Fin (j + 1) → Euclid P) (h : n' = (j + 1) + m) (h₁ : n' + 1 = (j + 1) + (m + 1)) (h₂ : n' = j + (m + 1)) (X : GeometricCurrentOn (univ : Set (Euclid P)) m) (Y : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1)) (flatD : Covector (Euclid P) (n' + 1) →L[ℝ] Covector (Euclid P) (m + 1)) (flat : Covector (Euclid P) n' →L[ℝ] Covector (Euclid P) m) (flatF : Fin (j + 1) → Covector (Euclid P) n' →L[ℝ] Covector (Euclid P) (m + 1)) (ω : TestFormOn (univ : Set (Euclid P)) n') (t : Euclid P), Y.boundary = X → (∀ (α : Covector (Euclid P) (n' + 1)) (v : Fin (m + 1) → Euclid P), flatD α v = α (Fin.append g v ∘ Fin.cast h₁)) → (∀ (α : Covector (Euclid P) n') (v : Fin m → Euclid P), flat α v = α (Fin.append g v ∘ Fin.cast h)) → (∀ (a : Fin (j + 1)) (α : Covector (Euclid P) n') (v : Fin (m + 1) → Euclid P), flatF a α v = α (Fin.append (g ∘ a.succAbove) v ∘ Fin.cast h₂)) → currentEval Y (fun y => flatD (exteriorDerivative (ω : DifferentialForm (Euclid P) n') (t + y))) = ∑ a : Fin (j + 1), (-1 : ℝ) ^ (a : ℕ) * currentEval Y (fun y => fderiv ℝ (fun z => flatF a ((ω : DifferentialForm (Euclid P) n') z)) (t + y) (g a)) + (-1 : ℝ) ^ (j + 1) * currentEval X (fun y => flat ((ω : DifferentialForm (Euclid P) n') (t + y)))",
+  "lean_name": "dimred_cs_sos_mt_cs_slice_identity",
+  "depends_on": [
+    "root.dimension_reduction_results-a1.cone_splitting-a1.split_off_spine-a1.minimality_transfer-a1.cube_stokes-a1.fderiv_test_form-a1",
+    "root.dimension_reduction_results-a1.cone_splitting-a1.split_off_spine-a1.minimality_transfer-a1.cube_stokes-a1.flat_extderiv_split-a1",
+    "root.dimension_reduction_results-a1.cone_splitting-a1.split_off_spine-a1.minimality_transfer-a1.cube_stokes-a1.translate_boundary-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.dimension_reduction_results-a1.cone_splitting-a1.split_off_spine-a1.minimality_transfer-a1.cube_stokes-a1.fderiv_test_form-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.dimension_reduction_results-a1.cone_splitting-a1.split_off_spine-a1.minimality_transfer-a1.cube_stokes-a1.flat_extderiv_split-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.dimension_reduction_results-a1.cone_splitting-a1.split_off_spine-a1.minimality_transfer-a1.cube_stokes-a1.translate_boundary-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-cone-splitting-a1-split-off-spine-bd4f539c89-a1"
+}

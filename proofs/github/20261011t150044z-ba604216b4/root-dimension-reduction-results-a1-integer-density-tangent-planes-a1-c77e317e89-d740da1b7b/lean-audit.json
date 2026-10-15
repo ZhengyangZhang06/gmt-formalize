@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "14bbe51199d9bcce2f14d52681982d29df99f7e5e179433a8bc21a71ab5f28fe",
+  "git_delta": {
+    "base_commit": "fe88eeae3d208e083675ae6fa85c3ec52b808a39",
+    "candidate_commit": "4a7b75d186446780e354ba51d3bb532c949b3e8a",
+    "target": "GMT/Ch07/Submission.lean",
+    "changed_files": [
+      "GMT/Ch07/Submission.lean"
+    ],
+    "diff_sha256": "40f5d86f5c3a05dc014a29493a2bd46dbd74527ffe95cb04f7058ccba858af8b",
+    "source_sha256": "866b0b7b1c2f09f2df82432366114e62acfde92136d882dc76b088e15d037aa1",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.idtp_cone_tangent_cone_planar",
+      "statement": "∀ (P : ℕ) (C : GeometricCurrentOn (univ : Set (Euclid P)) 2), IsMinimizingIn C univ → BoundaryVanishes C → IsConeCurrent C → ∀ p ∈ C.support, p ≠ 0 → ∀ (lams : ℕ → ℝ) (hlams : ∀ j, 0 < lams j), Tendsto lams atTop (𝓝 0) → ∃ (φ : ℕ → ℕ) (C' : GeometricCurrentOn (univ : Set (Euclid P)) 2) (τ : Fin 2 → Euclid P) (c : ℤ), StrictMono φ ∧ ConvergesWeakly (fun j => blowUp C p (lams (φ j)) (hlams (φ j)).ne') C' ∧ MassMeasuresConverge (fun j => blowUp C p (lams (φ j)) (hlams (φ j)).ne') C' ∧ Orthonormal ℝ τ ∧ p ∈ Submodule.span ℝ (Set.range τ) ∧ 1 ≤ c.natAbs ∧ HasMassDensity C p (c.natAbs : ℝ) ∧ ∀ ω : TestFormOn (univ : Set (Euclid P)) 2, C' ω = (c : ℝ) * ∫ x in (Submodule.span ℝ (Set.range τ) : Set (Euclid P)), (ω : DifferentialForm (Euclid P) 2) x τ ∂μHE[2]",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
