@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.skeleton_deformation-a1.mass_le_measure-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.skeleton_deformation-a1",
+  "depth": 4,
+  "title": "Mass of an integral current: M_V(ω ↦ ∫_E ξ(ω) dμ) ≤ μ(E ∩ V) when |ξ| ≤ 1 a.e.",
+  "statement": "Mass bound for a current given by integration against a measure. Let P, d ∈ ℕ, let U ⊆ ℝ^P be any set, X ∈ 𝒟_d(U), μ a measure on ℝ^P, ξ : ℝ^P → Λ_d a function with values in d-vectors (MultiVector P d = continuous linear functionals on d-covectors), and E, V ⊆ ℝ^P arbitrary sets. Assume that for μ-a.e. x, |ξ(x)(α)| ≤ |α| for every d-covector α, and that X(ω) = ∫_E ξ(x)(ω(x)) dμ(x) for every ω ∈ 𝒟^d(U) (Bochner integral with respect to μ⌞E). Then M_V(X) ≤ μ(E ∩ V) in [0, ∞].",
+  "lean_statement": "∀ (P d : ℕ) (U : Set (Euclid P)) (X : GeometricCurrentOn U d) (μ : Measure (Euclid P)) (ξ : Euclid P → MultiVector P d) (E V : Set (Euclid P)), (∀ᵐ x ∂μ, ∀ α : Covector (Euclid P) d, |ξ x α| ≤ covectorEuclideanNorm α) → (∀ ω : TestFormOn U d, X ω = ∫ x in E, ξ x ((ω : DifferentialForm (Euclid P) d) x) ∂μ) → X.massOn V ≤ μ (E ∩ V)",
+  "lean_name": "cmcsd_massOn_le_measure_inter",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-ske-bd89f15112-a1"
+}

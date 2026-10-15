@@ -1,0 +1,72 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "def currentEval|def dilation|def blowUp|def ConvergesWeakly|structure IMRep|def IMRep|namespace IMRep|def Represents|def measure|def action",
+        "theorem one_of_mem_closedBall|theorem hasCompactSupport|theorem nonneg|theorem le_one|protected theorem contDiff",
+        "smul_right|comp_homeomorph",
+        "integral_withDensity_eq_integral_smul",
+        "ofReal_div_of_pos",
+        "idtp_cse_bml_td_cutoff_test_form|idtp_cse_bml_td_blowUp_smul_form_eval|idtp_cse_bml_td_excess_bound",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/tilt-decomp-audit-0o_g7ufa/Types.lean > /tmp/tilt-decomp-audit-0o_g7ufa/types.log 2>&1",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/tilt-decomp-audit-0o_g7ufa/CheckedProofs.lean > /tmp/tilt-decomp-audit-0o_g7ufa/proofs.log 2>&1"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/BumpFunction/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Support.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/LocallyIntegrable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/ContinuousLinearMap.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Basic/ENNReal/Inv.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-b424f4de74/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-b424f4de74/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-scaling-a1-testform-correspondence-a1/isolated-comparator-result.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-6249c06eba/isolated-comparator-result.json",
+        "/tmp/tilt-decomp-audit-0o_g7ufa/Types.lean",
+        "/tmp/tilt-decomp-audit-0o_g7ufa/CheckedProofs.lean",
+        "/tmp/tilt-decomp-audit-0o_g7ufa/proofs.log"
+      ],
+      "conclusion": "Verified compatibility with the pinned project and mathlib revisions. All five exact one-line propositions elaborate without child implementations. Independently reran the supplied Lean proofs and exact selected-parent assembly: every declaration uses only propext, Classical.choice and Quot.sound. The split appropriately isolates three substantive obligations and reuses two comparator-accepted declarations at byte-identical frozen types. No new-name matches occur in the snapshot project, DAG reservations, or other branches among 1,401 decomposition files. All names are bare identifiers; dependencies are correctly directed and acyclic. Covector scalar multiplication, orientation evaluation, and measure instances have the intended meanings. Together with the existing subsequence criterion, the children establish precisely the selected normalized tilt-excess limit."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "cutoff_form",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and exact type agree for every P, n, positive r and covector β. The bump construction supplies all scalar properties, and smooth scalar multiplication with compact support constructs the required test form. The proof is complete and independent."
+    },
+    {
+      "key": "blowup_eval",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Surjectivity justifies the currentEval branch; the declared test-form correspondence and IMRep identity give the scaled integral. Pointwise linearity establishes the integrand equality without requiring extra regularity or integrability of g. Both dependencies are explicit and non-circular."
+    },
+    {
+      "key": "excess_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact hypotheses suffice: compact finiteness makes the transported cutoff integrable, and the almost-everywhere bound controls both products. The pointwise ball comparison, Bochner/lintegral conversion, calibration inequality and positive-denominator rescaling prove the stated bound. No upper bound on the cutoff is needed."
+    },
+    {
+      "key": "testform_corr",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Valid reuse of the comparator-accepted declaration at its identical frozen type. The affine inverse and support arguments prove both correspondences for arbitrary U; multilinearity supplies the scaling factor for every n, including zero. Parts (a) and (c) directly support blowup_eval."
+    },
+    {
+      "key": "imrep_measure",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Valid reuse at the identical comparator-accepted type. Measurable positive density establishes both absolute-continuity directions, the restriction formula and local finiteness; measurability transfers in the correct direction. The pinned withDensity integral theorem applies to arbitrary forms, so conclusion (g) needs no omitted integrability hypothesis."
+    }
+  ],
+  "required_changes": []
+}

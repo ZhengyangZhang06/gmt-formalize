@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.cone_splitting-a1.spine_tangency-a1.centre_tangency-a1",
+  "parent_id": "root.dimension_reduction_results-a1.cone_splitting-a1.spine_tangency-a1",
+  "depth": 4,
+  "title": "Constant closed-ball density ratio at z forces x − z ∈ T_x a.e. for a stationary varifold",
+  "statement": "Let P, n ∈ ℕ, R = (M, θ, ξ) ∈ IMRep(ℝ^P, n) with μ = R.measure = θ·H^n⌞M, and z ∈ ℝ^P. Assume v(M, θ) is stationary in ℝ^P: R.firstVariation X = 0 for every C¹ vector field X : ℝ^P → ℝ^P with compact support. Assume also μ(B̄_ρ(z)) = ρ^n μ(B̄_1(z)) for every ρ > 0 (closed balls, ρ^n read as ENNReal.ofReal(ρ^n)). Then for μ-a.e. x, p_x(x − z) = x − z, where p_x is the orthogonal projection onto T_x = approxTangentPlane n M x; i.e. x − z ∈ T_x for μ-a.e. x.",
+  "lean_statement": "∀ (P n : ℕ) (R : IMRep (univ : Set (Euclid P)) n) (z : Euclid P), (∀ X : Euclid P → Euclid P, ContDiff ℝ 1 X → HasCompactSupport X → R.firstVariation X = 0) → (∀ ρ : ℝ, 0 < ρ → R.measure (closedBall z ρ) = ENNReal.ofReal (ρ ^ n) * R.measure (closedBall z 1)) → ∀ᵐ x ∂R.measure, (approxTangentPlane n R.carrier x).starProjection (x - z) = x - z",
+  "lean_name": "dimred_cs_st_tangent_sub_of_ball_ratio",
+  "depends_on": [
+    "root.half_space_cone_lies_in_boundary-a1.tangent_projection_aemeasurable-a1",
+    "root.density_and_tangent_cones-a1.cone-a1.monotonicity_identity-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.half_space_cone_lies_in_boundary-a1.tangent_projection_aemeasurable-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-half-space-cone-lies-in-boundary-a1-tangent-projection-aemeasurable-a1-a1",
+      "result_commit": "74a7d9117386066688fb3586d8463c5a8900db71",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.density_and_tangent_cones-a1.cone-a1.monotonicity_identity-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-cone-a1-monotonicity-identity-a1-a1",
+      "result_commit": "4d61ba7a2f0f196353bbfd45451335c9f03a2b1f",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-cone-splitting-a1-spine-tangency-b5fabf0f91-a1"
+}

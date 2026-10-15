@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_constant_density_planar-a1.sheet_first_variation-a1.mult_const-a1",
+  "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_constant_density_planar-a1.sheet_first_variation-a1",
+  "depth": 5,
+  "title": "Constant density on the support forces constant multiplicity",
+  "statement": "For all P, n, k ∈ ℕ, every open U ⊆ ℝ^P, every T ∈ 𝒟_n(U), every integer multiplicity triple R = (S, θ, ξ) ∈ IMRep U n representing T, every p ∈ ℝ^P and every ρ ∈ ℝ: if Θⁿ(μ_T, y) = k (HasMassDensity T y k) for every y ∈ spt T ∩ B_ρ(p), then (a) for μ_R-a.e. x, where μ_R := R.measure = θ·Hⁿ⌞S, x ∈ B_ρ(p) implies θ(x) = k; and (b) θ(x) = k for Hⁿ⌞(S ∩ B_ρ(p))-a.e. x. Here Hⁿ := μHE[n].",
+  "lean_statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (R : IMRep U n) (p : Euclid P) (ρ : ℝ) (k : ℕ), IsOpen U → R.Represents T → (∀ y ∈ T.support, y ∈ ball p ρ → HasMassDensity T y k) → (∀ᵐ x ∂R.measure, x ∈ ball p ρ → R.mult x = k) ∧ ∀ᵐ x ∂(μHE[n].restrict (R.carrier ∩ ball p ρ)), R.mult x = k",
+  "lean_name": "idtp_ccd_sfv_mult_ae_eq_density",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-c686a44b39-a1"
+}

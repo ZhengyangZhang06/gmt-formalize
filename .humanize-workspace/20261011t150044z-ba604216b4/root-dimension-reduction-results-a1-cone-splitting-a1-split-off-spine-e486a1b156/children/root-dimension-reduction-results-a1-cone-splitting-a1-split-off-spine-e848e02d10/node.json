@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.cone_splitting-a1.split_off_spine-a1.cone_filling_subspace-a1.radial_homotopy-a1.extderiv_param_integral-a1",
+  "parent_id": "root.dimension_reduction_results-a1.cone_splitting-a1.split_off_spine-a1.cone_filling_subspace-a1.radial_homotopy-a1",
+  "depth": 6,
+  "title": "Exterior derivative commutes with parametric integrals over [0, 1]",
+  "statement": "Let N, k ∈ ℕ and let h : ℝ × ℝ^N → Λ^k(ℝ^N) be C^∞, i.e. h : ℝ × Euclid N → Covector (Euclid N) k with ContDiff ℝ ⊤ h. Here Λ^k(ℝ^N) is the space of continuous alternating k-forms, which is finite-dimensional and hence a complete normed space. Then for every x ∈ ℝ^N,\n d(y ↦ ∫_0^1 h(t, y) dt)(x) = ∫_0^1 d(y ↦ h(t, y))(x) dt,\nwhere d is the exterior derivative (SimonGMT exteriorDerivative = Mathlib extDeriv). Both integrals are interval integrals over [0, 1], in Λ^k(ℝ^N) on the left and in Λ^{k+1}(ℝ^N) on the right.",
+  "lean_statement": "∀ (N k : ℕ) (h : ℝ × Euclid N → Covector (Euclid N) k), ContDiff ℝ (⊤ : ℕ∞) h → ∀ x : Euclid N, exteriorDerivative (fun y : Euclid N => ∫ t in (0 : ℝ)..1, h (t, y)) x = ∫ t in (0 : ℝ)..1, exteriorDerivative (fun y : Euclid N => h (t, y)) x",
+  "lean_name": "dimred_cs_sos_cfs_rh_extDeriv_param_integral",
+  "depends_on": [
+    "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.lipschitz_pushforward-a1.operators-a1.slice-a1.param_integral-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.lipschitz_pushforward-a1.operators-a1.slice-a1.param_integral-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-lip-9310c84433-a1",
+      "result_commit": "445fb9017470896594b24d5d23bf892b8796493b",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-cone-splitting-a1-split-off-spine-e848e02d10-a1"
+}

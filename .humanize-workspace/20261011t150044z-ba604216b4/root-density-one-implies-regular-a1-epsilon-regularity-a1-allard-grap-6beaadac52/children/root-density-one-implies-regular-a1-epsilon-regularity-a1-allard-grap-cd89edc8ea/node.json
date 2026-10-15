@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.harmonic_approximation-a1.poincare_ball-a1.sq_integral_le-a1",
+  "parent_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.harmonic_approximation-a1.poincare_ball-a1",
+  "depth": 6,
+  "title": "Cauchy–Schwarz for the integral over a finite measure space",
+  "statement": "Let α be a type with a σ-algebra, μ a measure on α with μ(α) < ∞, and h : α → ℝ square-integrable (MemLp h 2 μ). Then (∫ h dμ)² ≤ μ(α)·∫ h² dμ, where μ(α) is read as a real number (ENNReal.toReal).",
+  "lean_statement": "∀ {α : Type} [MeasurableSpace α] (μ : Measure α) (h : α → ℝ), μ univ ≠ ∞ → MemLp h 2 μ → (∫ x, h x ∂μ) ^ 2 ≤ (μ univ).toReal * ∫ x, h x ^ 2 ∂μ",
+  "lean_name": "dorag_ha_pb_sq_integral_le",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-cd89edc8ea-a1"
+}

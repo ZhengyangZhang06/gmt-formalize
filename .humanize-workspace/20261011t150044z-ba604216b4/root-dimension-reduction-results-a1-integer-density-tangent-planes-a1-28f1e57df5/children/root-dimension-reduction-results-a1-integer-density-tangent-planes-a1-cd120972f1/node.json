@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_sector_endpoint_density-a1.box_mass_limits-a1.square_measure-a1.coord_square_volume-a1",
+  "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_sector_endpoint_density-a1.box_mass_limits-a1.square_measure-a1",
+  "depth": 6,
+  "title": "Lebesgue measure of the open square (−r, r)² and the closed square [−r, r]² in ℝ²",
+  "statement": "Let r ∈ ℝ with r ≥ 0, and let ℝ² = Euclid 2 = EuclideanSpace ℝ (Fin 2) carry its volume (Lebesgue) measure, with coordinates v₀ = v 0 and v₁ = v 1. Then volume{v ∈ ℝ² : |v₀| < r and |v₁| < r} = 4r² and volume{v ∈ ℝ² : |v₀| ≤ r and |v₁| ≤ r} = 4r² (both as ENNReal.ofReal (4r²)).",
+  "lean_statement": "∀ r : ℝ, 0 ≤ r → volume {v : Euclid 2 | |v 0| < r ∧ |v 1| < r} = ENNReal.ofReal (4 * r ^ 2) ∧ volume {v : Euclid 2 | |v 0| ≤ r ∧ |v 1| ≤ r} = ENNReal.ofReal (4 * r ^ 2)",
+  "lean_name": "idtp_cse_bml_sqm_coord_square_volume",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-cd120972f1-a1"
+}

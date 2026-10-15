@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.two_dim_cone_density-a1.density_locally_constant-a1.light_disc-a1",
+  "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.two_dim_cone_density-a1.density_locally_constant-a1",
+  "depth": 5,
+  "title": "A point of locally constant density whose nearby equal-density sphere points are stable carries a planar disc of uniform radius",
+  "statement": "Let P ∈ ℕ and let C ∈ 𝒟₂(ℝ^P) be minimizing in ℝ^P, with ∂C = 0 and a cone. Let z ∈ spt C with |z| = 1, let k ∈ ℕ with k ≥ 1, and let δ > 0 be such that HasMassDensity C y k for every y ∈ spt C ∩ B_δ(z). Let L > 0, and assume (H): every a ∈ spt C with |a| = 1, a ∈ B_L(z) and HasMassDensity C a k admits δ' > 0 and k' ∈ ℕ with HasMassDensity C y k' for every y ∈ spt C ∩ B_δ'(a). Then there is a linear subspace Q of ℝ^P with dim Q = 2 and z ∈ Q with the following property. Put ρ := min(1/2, L/4). Every x ∈ Q ∩ B_ρ(z) admits ε > 0 such that spt C ∩ B_ε(x) = Q ∩ B_ε(x), HasMassDensity C y k for every y ∈ spt C ∩ B_ε(x), and H²(W ∩ Q) ≤ M_W(C) for every open W ⊆ B_ε(x). Here H² = μHE[2] and M_W = massOn.",
+  "lean_statement": "∀ (P : ℕ) (C : GeometricCurrentOn (univ : Set (Euclid P)) 2) (z : Euclid P) (k : ℕ) (δ L : ℝ), IsMinimizingIn C univ → BoundaryVanishes C → IsConeCurrent C → z ∈ C.support → ‖z‖ = 1 → 1 ≤ k → 0 < δ → 0 < L → (∀ y ∈ C.support, y ∈ ball z δ → HasMassDensity C y k) → (∀ a ∈ C.support, ‖a‖ = 1 → a ∈ ball z L → HasMassDensity C a k → ∃ (δ' : ℝ) (k' : ℕ), 0 < δ' ∧ ∀ y ∈ C.support, y ∈ ball a δ' → HasMassDensity C y k') → ∃ Q : Submodule ℝ (Euclid P), Module.finrank ℝ Q = 2 ∧ z ∈ Q ∧ ∀ x ∈ (Q : Set (Euclid P)) ∩ ball z (min (1 / 2) (L / 4)), ∃ ε : ℝ, 0 < ε ∧ C.support ∩ ball x ε = (Q : Set (Euclid P)) ∩ ball x ε ∧ (∀ y ∈ C.support, y ∈ ball x ε → HasMassDensity C y k) ∧ ∀ W : Set (Euclid P), IsOpen W → W ⊆ ball x ε → μHE[2] (W ∩ (Q : Set (Euclid P))) ≤ C.massOn W",
+  "lean_name": "idtp_tdc_dlc_light_disc",
+  "depends_on": [
+    "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.two_dim_cone_density-a1.density_locally_constant-a1.subspace_eq_of_inter_ball_eq-a1",
+    "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.two_dim_cone_density-a1.density_locally_constant-a1.normalize_dist_le-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.two_dim_cone_density-a1.density_locally_constant-a1.subspace_eq_of_inter_ball_eq-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.two_dim_cone_density-a1.density_locally_constant-a1.normalize_dist_le-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-28222a0d38-a1"
+}

@@ -1,0 +1,50 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.truncated_compactness-a1.radial_slice-a1.radius_bound-a1",
+  "parent_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.truncated_compactness-a1.radial_slice-a1",
+  "depth": 5,
+  "title": "Bound at a fixed radius: |∫_{M∩B_t} θ⟨dβ, ξ⟩ dHⁿ| ≤ s·liminf_{h→0+} h⁻¹μ{t − h < |x| < t} for every t < R",
+  "statement": "Let P, m ∈ ℕ, n := m + 1, U ⊆ ℝ^P, S ∈ 𝒟_n(U) (GeometricCurrentOn U n) and Rp = (M, θ, ξ) an integer multiplicity representation of S in U (IMRep U n with Rp.Represents S, Hⁿ = μHE[n]). Let R, t ∈ ℝ with closedBall(0, R) ⊆ U and t < R, and assume ∂S(ω) = 0 for every ω ∈ 𝒟^m(U) with tsupport ω ⊆ B_R(0) (open ball). Then for every β ∈ 𝒟^m(ℝ^P) (TestFormOn univ m) and every s ∈ ℝ with |β(x)| ≤ s for all x (|·| = covectorEuclideanNorm), in [0, ∞]:\n  ENNReal.ofReal |∫_{M ∩ B_t(0)} θ(x)·⟨dβ(x), ξ(x)⟩ dHⁿ(x)| ≤ ENNReal.ofReal(s) · liminf_{h→0+} ENNReal.ofReal(h⁻¹)·μ({x : t − h < ‖x‖ < t}),\nwhere μ = Rp.measure = (Hⁿ⌞M).withDensity θ, d = exteriorDerivative, ⟨dβ(x), ξ(x)⟩ = Rp.orient x (dβ x), and the liminf is taken along the filter 𝓝[>] 0.",
+  "lean_statement": "∀ (P m : ℕ) (U : Set (Euclid P)) (S : GeometricCurrentOn U (m + 1)) (Rp : IMRep U (m + 1)) (R t : ℝ), closedBall (0 : Euclid P) R ⊆ U → Rp.Represents S → (∀ ω : TestFormOn U m, tsupport (ω : DifferentialForm (Euclid P) m) ⊆ ball 0 R → S.boundary ω = 0) → t < R → ∀ (β : TestFormOn (univ : Set (Euclid P)) m) (s : ℝ), (∀ x, covectorEuclideanNorm ((β : DifferentialForm (Euclid P) m) x) ≤ s) → ENNReal.ofReal |∫ x in Rp.carrier ∩ ball 0 t, (Rp.mult x : ℝ) * Rp.orient x (exteriorDerivative (β : DifferentialForm (Euclid P) m) x) ∂μHE[m + 1]| ≤ ENNReal.ofReal s * liminf (fun h : ℝ => ENNReal.ofReal h⁻¹ * Rp.measure {x : Euclid P | t - h < ‖x‖ ∧ ‖x‖ < t}) (𝓝[>] 0)",
+  "lean_name": "dtc_bc_tc_rs_radius_bound",
+  "depends_on": [
+    "root.density_and_tangent_cones-a1.blowup_compactness-a1.truncated_compactness-a1.radial_slice-a1.cutoff_defect-a1",
+    "root.compactness_of_minimizing_currents-a1.slicing-a1.level_cutoff-a1",
+    "root.compactness_of_minimizing_currents-a1.slicing-a1.mass_pointwise-a1.cutoff_integral_tendsto-a1",
+    "root.compactness_of_minimizing_currents-a1.slicing-a1.mass_pointwise-a1.liminf_bound-a1",
+    "root.minimizing_implies_stationary-a1.diffeo_pushforward-a1.pushforward_current-a1.pairing_bound-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.truncated_compactness-a1.radial_slice-a1.cutoff_defect-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.compactness_of_minimizing_currents-a1.slicing-a1.level_cutoff-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-slicing-a1-level-cutoff-a1-a1",
+      "result_commit": "81485ceb96999b3c8eabac3c5b058488a2bdc059",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.compactness_of_minimizing_currents-a1.slicing-a1.mass_pointwise-a1.cutoff_integral_tendsto-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-slicing-a1-mass-pointwise-78bf1bcbb0-a1",
+      "result_commit": "b6218183362914502612c8fef9e231776b727aa0",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.compactness_of_minimizing_currents-a1.slicing-a1.mass_pointwise-a1.liminf_bound-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-slicing-a1-mass-pointwise-b96566c9ba-a1",
+      "result_commit": "7873e528eea453547c6ecd80c47112fd1dc6be1a",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.minimizing_implies_stationary-a1.diffeo_pushforward-a1.pushforward_current-a1.pairing_bound-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-pushforwa-49ef3e5978-a1",
+      "result_commit": "5c8c6597411e77948b224fda014774beaa21ebaf",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-compactness-a1-truncated-com-3c81144afc-a1"
+}
