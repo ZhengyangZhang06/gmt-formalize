@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.moving_blowups-a1.closure_and_boundary_rectifiability-a1.slice_limit-a1.slice_bound-a1.mass_neg-a1",
+  "parent_id": "root.dimension_reduction_results-a1.moving_blowups-a1.closure_and_boundary_rectifiability-a1.slice_limit-a1.slice_bound-a1",
+  "depth": 6,
+  "title": "Local mass is invariant under negation of a current",
+  "statement": "Let P, n ∈ ℕ, U ⊆ ℝ^P an arbitrary set, T₁, T₂ ∈ 𝒟_n(U) (SimonGMT GeometricCurrentOn U n) and W ⊆ ℝ^P an arbitrary set. If T₁(ω) = −T₂(ω) for every test form ω ∈ 𝒟^n(U) (TestFormOn U n), then M_W(T₁) = M_W(T₂). Here M_W(T) = T.massOn W ∈ [0, ∞] is the supremum of ENNReal.ofReal(T(ω)) over the admissible forms ω ∈ 𝒟^n(U), i.e. those with tsupport ω ⊆ W and |ω(x)| ≤ 1 for all x ∈ ℝ^P (massAdmissibleOn U n W, |·| the Euclidean covector norm covectorEuclideanNorm).",
+  "lean_statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (T₁ T₂ : GeometricCurrentOn U n) (W : Set (Euclid P)), (∀ ω : TestFormOn U n, T₁ ω = -T₂ ω) → T₁.massOn W = T₂.massOn W",
+  "lean_name": "dmcbr_sl_sb_massOn_eq_of_apply_eq_neg",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-moving-blowups-a1-closure-and-bou-d8a61cf59f-a1"
+}

@@ -1,0 +1,90 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.dimension_reduction_results-a1.cone_splitting-a1.split_off_spine-a1.minimality_transfer-a1.frame_measure-a1`
+- Child DAG node: `root.dimension_reduction_results-a1.cone_splitting-a1.split_off_spine-a1.minimality_transfer-a1.frame_measure-a1.box_measure-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: steps 4–6 of the selected node's supplied proof. The push-forward identity they use (part (i), steps 1–3 there) is taken from the sibling affine_plane_measure at a = 0.
+Notation: ι : (Fin k → ℝ) → ℝ^P, ι(u) := Σ_i u_i·g_i, where Fin k → ℝ carries its product Lebesgue measure volume and its sup norm ‖u‖ = max_i |u_i|. Fix r > 0, and write S≤ := {t ∈ G : |⟨g_i, t⟩| ≤ r for all i} and S< := {t ∈ G : |⟨g_i, t⟩| < r for all i}.
+1. (Push-forward.) Apply the sibling affine_plane_measure (Submission.cbr_cipi_affine_plane_measure) with m = k, w = g and a = 0, and take its first conjunct: (volume).map (z ↦ 0 + Σ_i z_i g_i) = H^k⌞{y : y − 0 ∈ G}. Since 0 + x = x and y − 0 = y, the map is ι and the set is G. Hence (volume).map ι = H^k⌞G.
+2. (Regularity.) ι is continuous, being a finite sum of the continuous maps u ↦ u_i·g_i, and hence measurable. G is a finite-dimensional subspace of ℝ^P, hence closed (Submodule.closed_of_finiteDimensional). For each i, t ↦ |⟨g_i, t⟩| is continuous.
+3. (The boxes are Borel subsets of G.) S≤ ⊆ G and S< ⊆ G by definition. S≤ = G ∩ ⋂_i {t : |⟨g_i, t⟩| ≤ r} is an intersection of closed sets, hence closed and Borel. S< = G ∩ ⋂_i {t : |⟨g_i, t⟩| < r} is the intersection of the closed set G with finitely many open sets, hence Borel.
+4. (Reduction to Lebesgue measure.) Let S be S≤ or S<. Then H^k(S) = H^k(S ∩ G) = (H^k⌞G)(S), by Measure.restrict_apply (S measurable) and S ∩ G = S (S ⊆ G). By step 1 this equals ((volume).map ι)(S), and by Measure.map_apply (ι and S measurable) it equals volume(ι⁻¹(S)).
+5. (Coordinates of ι.) Let u : Fin k → ℝ. Then ι(u) ∈ G, because each g_l ∈ G and G is closed under sums and scalar multiples. For each i, ⟨g_i, ι(u)⟩ = Σ_l u_l ⟨g_i, g_l⟩ = u_i, because ⟨g_i, g_i⟩ = ‖g_i‖² = 1 and ⟨g_i, g_l⟩ = 0 for l ≠ i (orthonormality; Orthonormal.inner_right_fintype).
+6. (Preimages are sup-norm balls.) By step 5, ι⁻¹(S≤) = {u : |u_i| ≤ r for all i} and ι⁻¹(S<) = {u : |u_i| < r for all i}. Since r ≥ 0, ‖u‖ ≤ r ⟺ |u_i| ≤ r for all i (pi_norm_le_iff_of_nonneg, Real.norm_eq_abs), so ι⁻¹(S≤) = closedBall(0, r). Since r > 0, ‖u‖ < r ⟺ |u_i| < r for all i (pi_norm_lt_iff), so ι⁻¹(S<) = ball(0, r).
+7. (Volumes.) Real.volume_pi_closedBall (r ≥ 0) and Real.volume_pi_ball (r > 0) give volume(closedBall(0, r)) = volume(ball(0, r)) = ENNReal.ofReal((2r)^{card(Fin k)}) = ENNReal.ofReal((2r)^k) (Fintype.card_fin). With steps 4 and 6, H^k(S≤) = H^k(S<) = ENNReal.ofReal((2r)^k). ∎
+(For k = 0 the argument applies unchanged. Fin 0 → ℝ is a single point, ι ≡ 0, G = {0}, both boxes equal {0}, and both balls are the whole one-point space, of volume 1 = (2r)^0.)
+
+## Key steps
+
+1. affine_plane_measure at a = 0 gives (volume).map ι = H^k⌞G, where ι(u) = Σ u_i g_i.
+2. Both boxes are Borel subsets of the closed subspace G, so H^k(S) = (H^k⌞G)(S) = volume(ι⁻¹ S).
+3. ι(u) ∈ G and ⟨g_i, ι(u)⟩ = u_i by orthonormality, so the preimages are the sup-norm closedBall(0, r) and ball(0, r).
+4. Real.volume_pi_closedBall and Real.volume_pi_ball give ENNReal.ofReal((2r)^k).
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat local-references/123e8435b4a2469b/manifest.json (project b4d606db1 = workspace HEAD, mathlib 25730c7c); grep -n 'abbrev Euclid|μHE\[' snapshot project/GMT/Ch07/Contract.lean`
+- `python3 over dag.json: nodes whose lean_statement contains Orthonormal together with μHE or volume, ids containing 'frame', and nodes with the selected frozen type (only this node); lean_statement/status/candidate_commit of cbr_cipi_affine_plane_measure, idtp_pc_plane_hausdorff_eq_map, idtp_cttp_span_ball_measure, cbr_ci_pw_plane_map_volume; statements containing 'ENNReal.ofReal ((2 * r) ^'; whether dimred_cs_sos_mt_fm_box_measure is taken; count of accepted parents having children from another branch`
+- `git show 21dd628cfe1c8277775119a1cc5660485ede7dfc:GMT/Ch07/Submission.lean (declaration and proof of Submission.cbr_cipi_affine_plane_measure; other declarations carried by that history); git show 77e7ccfcf:GMT/Ch07/Submission.lean (this node's proof base: contract only)`
+- `read nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-6a8bb251d9/{parent-supplied-natural-proof.md, lean-audit-v1.json, comparator-v1.log, isolated-comparator-result.json} and nodes/root-dimension-reduction-results-a1-cone-splitting-a1-split-off-spine-7f270cb1eb/decomposition-v1.json`
+- `grep -n over runtime.py (_decompose, _existing_lean_name_problem, _dependency_problem, _solve_children existing_by_name, _overlay_accepted_children, _accepted_checkpoint, _reference_use_problem), decomposition_scope.py, models.py (Subproblem, Decomposition), lean_contract.py`
+- `read snapshot mathlib Geometry/Euclidean/Volume/Measure.lean: EuclideanSpace.euclideanHausdorffMeasure_eq_volume, Isometry.map_euclideanHausdorffMeasure, Isometry.euclideanHausdorffMeasure_preimage`
+- `rg -n over snapshot mathlib: PiLp.volume_preserving_toLp, Real.volume_pi_closedBall, Real.volume_pi_ball, pi_norm_le_iff_of_nonneg, pi_norm_lt_iff, Orthonormal.inner_right_fintype, Orthonormal.inner_sum, inner_sum, Submodule.closed_of_finiteDimensional, Measure.restrict_apply, restrict_eq_self, Measure.map_apply, Isometry.isClosedEmbedding, IsOpen.measure_pos, Submodule.mem_span_range_iff_exists_fun, Finsupp.range_linearCombination, LinearMap.isometryOfOrthonormal`
+- `rg -n 'euclideanHausdorffMeasure.*(Orthonormal|parallelepiped|pi_closedBall|box)' and rg -n 'Orthonormal.*euclideanHausdorffMeasure|euclideanHausdorffMeasure.*span' over snapshot mathlib (no match)`
+- `lake env lean /tmp/fm-decomp/check/{Types,Box,Full,FromJson}.lean (Lean v4.35.0-rc3, from the workspace)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Haar/InnerProductSpace.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Constructions/Pi.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Group/Constructions.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Orthonormal.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Module/FiniteDimension.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Map.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/Isometry.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/OpenPos.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Finsupp/LinearCombination.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-cone-splitting-a1-split-off-spine-41eb433be8/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-cone-splitting-a1-split-off-spine-41eb433be8/parent-supplied-natural-proof.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-cone-splitting-a1-split-off-spine-7f270cb1eb/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-6a8bb251d9/parent-supplied-natural-proof.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-6a8bb251d9/lean-audit-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-6a8bb251d9/comparator-v1.log`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-6a8bb251d9/isolated-comparator-result.json`
+- `/runtime/flows/gmt-claude-cf346c63e6ef/_recursive_lean/runtime.py`
+- `/runtime/flows/gmt-claude-cf346c63e6ef/_recursive_lean/decomposition_scope.py`
+- `/runtime/flows/gmt-claude-cf346c63e6ef/_recursive_lean/models.py`
+- `/runtime/flows/gmt-claude-cf346c63e6ef/_recursive_lean/lean_contract.py`
+- `/tmp/fm-decomp/check/Types.lean`
+- `/tmp/fm-decomp/check/Box.lean`
+- `/tmp/fm-decomp/check/Full.lean`
+- `/tmp/fm-decomp/check/FromJson.lean`
+
+Pins match: the manifest records project b4d606db1 (workspace HEAD) and mathlib 25730c7c, and Euclid P = EuclideanSpace ℝ (Fin P) with μHE = Mathlib euclideanHausdorffMeasure.
+
+Reuse. Part (i) is already proved. dag.json has exactly one owner of cbr_cipi_affine_plane_measure: node root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.plane_integer-a1.plane_measure-a1, status accepted, candidate 21dd628c. Its lean_statement is byte-identical to child affine_plane_measure. Its comparator log ends 'Your solution is okay!', and its lean-audit-v1 records comparator_passed: true. At 21dd628c the proof uses only Mathlib (isometry J' = a + Σ u_i w_i, Isometry.map_euclideanHausdorffMeasure, EuclideanSpace.euclideanHausdorffMeasure_eq_volume, PiLp.volume_preserving_toLp), i.e. steps 1–3 of the supplied proof with a translation. This node's proof base 77e7ccfc holds only the contract, so the declaration reaches a leaf only as a reused child, via the accepted-child overlay. 263 accepted parents in dag.json have children from another branch, including this node's parent. Related accepted nodes are not needed: idtp_pc_plane_hausdorff_eq_map is the Euclid n variant and would need an extra toLp step, and idtp_cttp_span_ball_measure concerns Euclidean balls. No node states the box measures. dimred_cs_sos_mt_fm_box_measure is unused.
+
+Mathlib facts for box_measure are all in the snapshot:
+- Real.volume_pi_closedBall / Real.volume_pi_ball (Lebesgue/Basic.lean:272–282, ofReal((2r)^card ι));
+- pi_norm_le_iff_of_nonneg / pi_norm_lt_iff (Normed/Group/Constructions.lean:319, 338);
+- Orthonormal.inner_right_fintype (Orthonormal.lean:129) and Submodule.closed_of_finiteDimensional (FiniteDimension.lean:531);
+- Measure.restrict_apply (Restrict.lean:75) and Measure.map_apply (Map.lean:170).
+Snapshot mathlib has no lemma that directly gives μHE of a frame box or of a span (no match), so the box computation is genuinely new.
+
+Lean checks:
+- Types.lean and FromJson.lean: both child types, taken verbatim from this JSON, elaborate after import GMT.Ch07.Submission in namespace GMT.Ch07 with the contract opens. The selected frozen type compiles from the two stubs via refine ⟨?_, box P k g hg⟩; simpa using (affine P k g 0 hg).1.
+- Box.lean: the box child is fully proved from the reused stub along its natural proof.
+- Full.lean: with the accepted proof text from 21dd628c there is no sorry, and #print axioms gives [propext, Classical.choice, Quot.sound] for all three declarations.

@@ -1,0 +1,86 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "map_euclideanHausdorffMeasure|euclideanHausdorffMeasure_eq_volume|euclideanHausdorffMeasure_zero|structure IMRep|def IMRep.measure|def IsIntegerMultiplicity",
+        "volume_preserving_toLp|volume_preserving_piFinSuccAbove|integral_prod_symm|integral_Iic_of_hasDerivAt_of_tendsto|integral_of_hasDerivAt_of_tendsto|ae_eq_of_forall_setLIntegral_eq_of_sigmaFinite|ext_of_generateFrom_of_iUnion",
+        "cbr_cipi_affine_plane_measure|cbr_cipi_halfspace_partial_integral|cbr_cipi_plane_halfspace_stokes|cbr_cipi_imrep_weight_const_nat|cbr_cipi_slice_integer_multiplicity",
+        "git show b7846b639953f647296619e6e73dec8a8a22ba73:GMT/Ch07/Submission.lean",
+        "git show baaca6e45ef59dcdc4a449dbbfe914c226ee5d7b:GMT/Ch07/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/plane-integer-audit/Statements.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/plane-integer-audit/Assembly.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/plane-integer-audit/halfspace_ftc.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/plane-integer-audit/RemainingNewProofs.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/plane-integer-audit/AcceptedCovectors.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Haar/InnerProductSpace.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Constructions/Pi.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/IntegralEqImproper.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/AEEqOfLIntegral.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-93e0ab338f/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-93e0ab338f/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-regular-components-are-minimizing-a1-imrep-mass-formula-a1-covec-930e70c904/accepted-candidate.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-regular-components-are-minimizing-a1-imrep-mass-formula-a1-covec-e3a7dbabf1/accepted-candidate.json",
+        "/tmp/plane-integer-audit/Statements.lean",
+        "/tmp/plane-integer-audit/Assembly.lean",
+        "/tmp/plane-integer-audit/halfspace_ftc.lean",
+        "/tmp/plane-integer-audit/RemainingNewProofs.lean",
+        "/tmp/plane-integer-audit/AcceptedCovectors.lean"
+      ],
+      "conclusion": "The split appropriately separates the supplied proof's analytic, measure-theoretic and covector obligations. The snapshot contract matches the workspace; the Mathlib revision matches the manifest. All seven literal types independently elaborate and pass lexical validation. The five new proofs, checked under exactly their declared dependencies, and the retained covector implementations compile using only propext, Classical.choice and Quot.sound. A separate hypothesis-only assembly proves the exact selected parent type using the children and its inherited const_mass dependency. Product-volume and Euclidean-space constructions are correctly distinguished. Dependencies are acyclic, all names are bare identifiers, the five new names have no snapshot or DAG collision, and both reused declarations have comparator acceptance and byte-identical frozen types."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "plane_measure",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Prose and type agree on all four conclusions. The isometry, range identification and measure-preserving toLp conversion establish the measure identity; properness and nonempty open preimages establish finiteness and positivity. The proof covers m = 0 without additional assumptions."
+    },
+    {
+      "key": "halfspace_ftc",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof derives all integrability requirements from C¹ regularity and compact support before applying Fubini and FTC. Coordinate insertion correctly handles transverse derivatives and the positive boundary term; d = 0 is covered. The one-line proposition exactly matches the prose."
+    },
+    {
+      "key": "plane_stokes",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The two declared dependencies suffice. Proper coordinate pullback preserves compact support, the exterior-derivative expansion has the correct signs, and halfspace_ftc gives the stated boundary orientation. Taking a level beyond the support proves the whole-plane identity without circularity."
+    },
+    {
+      "key": "weight_nat",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The hypotheses and IMRep fields suffice exactly as stated. Finite open-ball covers justify measure uniqueness; positivity of c removes the carrier complement; restriction to a positive finite-measure set justifies almost-everywhere density equality and extraction of a natural value. No openness assumption on U is needed."
+    },
+    {
+      "key": "slice_im",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "SL is copied verbatim, and the ISP quantifiers match the parent. The proof verifies both admissible representations and the Lipschitz bound, obtains actual slices from SL, applies ISP, and computes their action using plane_stokes. Only the listed child dependencies are needed."
+    },
+    {
+      "key": "covector_eval_le",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The basis-invariant square-sum calculation, permutation counting and positive-factorial cancellation prove the exact bound, including n = 0. The reused declaration has the identical accepted frozen type; its retained prerequisites are acyclic and independent of this parent."
+    },
+    {
+      "key": "covector_norming",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The determinant construction gives evaluation 1, and the explicitly justified square-sum identity gives coefficient norm 1, including the empty frame. Reuse is valid at the identical comparator-accepted type, with the original square-sum prerequisites retained and no circular dependency."
+    }
+  ],
+  "required_changes": []
+}

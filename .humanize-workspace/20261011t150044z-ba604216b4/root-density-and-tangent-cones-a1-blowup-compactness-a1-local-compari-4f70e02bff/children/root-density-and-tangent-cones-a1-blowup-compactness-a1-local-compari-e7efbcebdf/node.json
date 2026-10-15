@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.slicing-a1.chart_coarea-a1.flattening_atlas-a1",
+  "parent_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.slicing-a1.chart_coarea-a1",
+  "depth": 6,
+  "title": "Countable atlas of flattening charts on {y ∈ V : DF(y) ≠ 0} (inverse function theorem; parent step 2)",
+  "statement": "Let n ∈ ℕ, let F : ℝ^{n+1} → ℝ be C¹ and let V ⊆ ℝ^{n+1} be open. Then there are open sets Ω_k ⊆ ℝ^{n+1} and maps Θ_k : ℝ^{n+1} → ℝ^{n+1} (k ∈ ℕ) such that, for every k, all of the following hold:\n- Θ_k is C¹ on Ω_k and injective on Ω_k;\n- DΘ_k(z) is injective for every z ∈ Ω_k;\n- Θ_k(Ω_k) is open and contained in V;\n- F(Θ_k(z)) = z_0 for every z ∈ Ω_k.\nMoreover every y ∈ V with DF(y) ≠ 0 lies in ⋃_k Θ_k(Ω_k).",
+  "lean_statement": "∀ (n : ℕ) (F : Euclid (n + 1) → ℝ) (V : Set (Euclid (n + 1))), IsOpen V → ContDiff ℝ 1 F → ∃ (Ω : ℕ → Set (Euclid (n + 1))) (Θ : ℕ → Euclid (n + 1) → Euclid (n + 1)), (∀ k, IsOpen (Ω k) ∧ ContDiffOn ℝ 1 (Θ k) (Ω k) ∧ InjOn (Θ k) (Ω k) ∧ (∀ z ∈ Ω k, Injective (fderiv ℝ (Θ k) z)) ∧ IsOpen (Θ k '' Ω k) ∧ Θ k '' Ω k ⊆ V ∧ ∀ z ∈ Ω k, F (Θ k z) = z 0) ∧ {y | y ∈ V ∧ fderiv ℝ F y ≠ 0} ⊆ ⋃ k, Θ k '' Ω k",
+  "lean_name": "dtc_bc_lc_sl_cc_flattening_atlas",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-compari-e7efbcebdf-a1"
+}

@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.slicing-a1.chart_coarea-a1.critical_null-a1",
+  "parent_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.slicing-a1.chart_coarea-a1",
+  "depth": 6,
+  "title": "Sard-type theorem for critical points from Eilenberg's inequality (Simon 6.4; parent step 1)",
+  "statement": "Let n ∈ ℕ and C ∈ [0,∞), and write Hᵏ = μHE[k]. Assume Eilenberg's inequality holds on ℝ^{n+1} with constant C: for every set A ⊆ ℝ^{n+1}, every L ≥ 0 and every f : ℝ^{n+1} → ℝ that is L-Lipschitz on A, there is a Borel φ : ℝ → [0,∞] with Hⁿ(A ∩ f⁻¹(t)) ≤ φ(t) for all t and ∫_ℝ φ dL¹ ≤ C·L·H^{n+1}(A). Then for every C¹ function F : ℝ^{n+1} → ℝ and every set Z ⊆ ℝ^{n+1} with DF(y) = 0 for all y ∈ Z, Hⁿ(Z ∩ F⁻¹(t)) = 0 for L¹-a.e. t ∈ ℝ.",
+  "lean_statement": "∀ (n : ℕ) (C : NNReal), (∀ (A : Set (Euclid (n + 1))) (f : Euclid (n + 1) → ℝ) (L : NNReal), LipschitzOnWith L f A → ∃ φ : ℝ → ℝ≥0∞, Measurable φ ∧ (∀ t, μHE[n] (A ∩ f ⁻¹' {t}) ≤ φ t) ∧ ∫⁻ t, φ t ≤ (C : ℝ≥0∞) * (L : ℝ≥0∞) * μHE[n + 1] A) → ∀ (F : Euclid (n + 1) → ℝ) (Z : Set (Euclid (n + 1))), ContDiff ℝ 1 F → (∀ y ∈ Z, fderiv ℝ F y = 0) → ∀ᵐ t, μHE[n] (Z ∩ F ⁻¹' {t}) = 0",
+  "lean_name": "dtc_bc_lc_sl_cc_critical_null",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-compari-b93a670155-a1"
+}
