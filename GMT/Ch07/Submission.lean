@@ -61147,6 +61147,85 @@ theorem Submission.idtp_cone_constant_density_planar : ∀ (P : ℕ) (C : Geomet
     (by norm_num) isOpen_univ hmin.1 hbd hQ hpQ hδ' (subset_univ _)
     (hsuppQ ▸ inter_subset_left) (hdens p hp (mem_ball_self hδ))
 
+/-- The plane at the endpoint of a support arc of a 2-dimensional minimizing cone (used in the
+proof of Simon 7.3.3(1), pp. 191–192, for 2-dimensional minimizing cones).  Let
+`γ(φ) = cos φ z + sin φ e` run along the unit circle of the 2-plane `Q`, with `γ(φ) ∈ spt C` for
+`0 < φ < φ₀`, `a := γ(φ₀) ∈ spt C` and density `k` on `spt C ∩ B_δ(a)`.  As `|a| = 1`, the planar
+lemma `idtp_cone_constant_density_planar` gives `δ' > 0` and a 2-plane `Q' ∋ a` with
+`spt C ∩ B_{δ'}(a) = Q' ∩ B_{δ'}(a)`.  For `0 < η < min(φ₀, δ', π)` and `e_a = sin φ₀ z − cos φ₀ e`,
+the arc point `w = γ(φ₀ − η) = cos η a + sin η e_a` (`idtp_tdc_acont_great_circle`) lies in
+`spt C ∩ B_{δ'}(a) ⊆ Q'`, so `e_a = (sin η)⁻¹ (w − cos η a) ∈ Q'`.  The orthonormal pair
+`(a, e_a)` spans a 2-plane contained in both `Q` and `Q'`, so `Q' = Q`, and `ε = min(δ, δ')`
+works. -/
+theorem Submission.idtp_tdc_acont_endpoint_plane : ∀ (P : ℕ) (C : GeometricCurrentOn (univ : Set (Euclid P)) 2) (Q : Submodule ℝ (Euclid P)) (z e : Euclid P) (k : ℕ) (φ₀ δ : ℝ), IsMinimizingIn C univ → BoundaryVanishes C → IsConeCurrent C → Module.finrank ℝ Q = 2 → z ∈ Q → e ∈ Q → ‖z‖ = 1 → ‖e‖ = 1 → inner ℝ z e = 0 → 0 < φ₀ → (∀ φ : ℝ, 0 < φ → φ < φ₀ → Real.cos φ • z + Real.sin φ • e ∈ C.support) → Real.cos φ₀ • z + Real.sin φ₀ • e ∈ C.support → 0 < δ → (∀ y ∈ C.support, y ∈ ball (Real.cos φ₀ • z + Real.sin φ₀ • e) δ → HasMassDensity C y k) → ∃ ε : ℝ, 0 < ε ∧ C.support ∩ ball (Real.cos φ₀ • z + Real.sin φ₀ • e) ε = (Q : Set (Euclid P)) ∩ ball (Real.cos φ₀ • z + Real.sin φ₀ • e) ε ∧ ∀ y ∈ C.support, y ∈ ball (Real.cos φ₀ • z + Real.sin φ₀ • e) ε → HasMassDensity C y k := by
+  intro P C Q z e k φ₀ δ hmin hbd hcone hQ hzQ heQ hz he hze hφ₀ harc ha hδ hdens
+  -- (0) `γ` is a `1`-Lipschitz unit circle; `e_a` is a unit vector orthogonal to `a = γ(φ₀)`, and
+  -- `cos η a + sin η e_a = γ(φ₀ − η)`; `a, e_a ∈ Q` as `z, e ∈ Q`
+  obtain ⟨hnorm, hlip, hframe⟩ := Submission.idtp_tdc_acont_great_circle P z e hz he hze
+  obtain ⟨hea, hae, hrot⟩ := hframe φ₀
+  set a : Euclid P := Real.cos φ₀ • z + Real.sin φ₀ • e
+  set ea : Euclid P := Real.sin φ₀ • z - Real.cos φ₀ • e
+  have ha1 : ‖a‖ = 1 := hnorm φ₀
+  have haQ : a ∈ Q := Q.add_mem (Q.smul_mem _ hzQ) (Q.smul_mem _ heQ)
+  have heaQ : ea ∈ Q := Q.sub_mem (Q.smul_mem _ hzQ) (Q.smul_mem _ heQ)
+  -- (1) a local plane at `a ≠ 0`: `spt C ∩ B_{δ'}(a) = Q' ∩ B_{δ'}(a)` with `a ∈ Q'`
+  have ha0 : a ≠ 0 := by
+    rw [← norm_ne_zero_iff, ha1]
+    exact one_ne_zero
+  obtain ⟨δ', Q', hδ', hQ', haQ', hplane, -⟩ :=
+    Submission.idtp_cone_constant_density_planar P C a k δ hmin hbd hcone ha ha0 hδ hdens
+  -- (2) for `η = min(φ₀, δ', 1) / 2`, the arc point `w = γ(φ₀ − η)` lies in
+  -- `spt C ∩ B_{δ'}(a) ⊆ Q'`, as `|w − a| ≤ η`
+  obtain ⟨η, hη, hηφ₀, hηδ', hηπ⟩ : ∃ η : ℝ, 0 < η ∧ η < φ₀ ∧ η < δ' ∧ η < Real.pi := by
+    have hm : 0 < min (min φ₀ δ') 1 := lt_min (lt_min hφ₀ hδ') one_pos
+    refine ⟨min (min φ₀ δ') 1 / 2, half_pos hm, ?_, ?_, ?_⟩ <;>
+      linarith [min_le_left (min φ₀ δ') 1, min_le_right (min φ₀ δ') 1, min_le_left φ₀ δ',
+        min_le_right φ₀ δ', Real.two_le_pi]
+  have hwQ' : Real.cos (φ₀ - η) • z + Real.sin (φ₀ - η) • e ∈ Q' := by
+    have hw : Real.cos (φ₀ - η) • z + Real.sin (φ₀ - η) • e ∈ C.support ∩ ball a δ' := by
+      refine ⟨harc (φ₀ - η) (sub_pos.2 hηφ₀) (sub_lt_self φ₀ hη), ?_⟩
+      rw [mem_ball, dist_eq_norm]
+      calc _ ≤ |φ₀ - η - φ₀| := hlip (φ₀ - η) φ₀
+        _ = η := by rw [sub_sub_cancel_left, abs_neg, abs_of_pos hη]
+        _ < δ' := hηδ'
+    rw [hplane] at hw
+    exact hw.1
+  -- (3) `w = cos η a + sin η e_a` with `sin η > 0`, so `e_a = (sin η)⁻¹ (w − cos η a) ∈ Q'`
+  have heaQ' : ea ∈ Q' := by
+    have hsin : Real.sin η ≠ 0 := (Real.sin_pos_of_pos_of_lt_pi hη hηπ).ne'
+    have hcomb : ea = (Real.sin η)⁻¹ •
+        ((Real.cos (φ₀ - η) • z + Real.sin (φ₀ - η) • e) - Real.cos η • a) := by
+      rw [← hrot η, add_sub_cancel_left, inv_smul_smul₀ hsin]
+    rw [hcomb]
+    exact Q'.smul_mem _ (Q'.sub_mem hwQ' (Q'.smul_mem _ haQ'))
+  -- (4) the orthonormal pair `(a, e_a)` spans a 2-plane, which equals every 2-plane containing
+  -- `a` and `e_a`; hence `Q' = Q`
+  have hea' : inner ℝ ea a = 0 := by
+    rw [real_inner_comm]
+    exact hae
+  have hon : Orthonormal ℝ ![a, ea] := by
+    rw [orthonormal_iff_ite]
+    intro i j
+    fin_cases i <;> fin_cases j <;> simp [ha1, hea, hae, hea']
+  have hspan : ∀ Q'' : Submodule ℝ (Euclid P), Module.finrank ℝ Q'' = 2 → a ∈ Q'' → ea ∈ Q'' →
+      Submodule.span ℝ (range ![a, ea]) = Q'' := by
+    intro Q'' hQ'' haQ'' heaQ''
+    refine Submodule.eq_of_le_of_finrank_eq (Submodule.span_le.2 (range_subset_iff.2 fun i => ?_))
+      ?_
+    · fin_cases i
+      · exact haQ''
+      · exact heaQ''
+    · rw [finrank_span_eq_card hon.linearIndependent, Fintype.card_fin, hQ'']
+  have hQQ' : Q' = Q := (hspan Q' hQ' haQ' heaQ').symm.trans (hspan Q hQ haQ heaQ)
+  -- (5) `ε = min(δ, δ')`: `B_ε(a) ⊆ B_{δ'}(a)` and `B_ε(a) ⊆ B_δ(a)`
+  have hsub : ball a (min δ δ') ⊆ ball a δ' := ball_subset_ball (min_le_right δ δ')
+  refine ⟨min δ δ', lt_min hδ hδ', ?_,
+    fun y hy hyε => hdens y hy (ball_subset_ball (min_le_left δ δ') hyε)⟩
+  calc C.support ∩ ball a (min δ δ') = C.support ∩ ball a δ' ∩ ball a (min δ δ') := by
+        rw [inter_assoc, inter_eq_right.2 hsub]
+    _ = (Q : Set (Euclid P)) ∩ ball a δ' ∩ ball a (min δ δ') := by rw [hplane, hQQ']
+    _ = (Q : Set (Euclid P)) ∩ ball a (min δ δ') := by rw [inter_assoc, inter_eq_right.2 hsub]
+
 /-- **Reduction of the constancy of an integer density on a plane to `ℝⁿ`** (steps 3 and 6–8 of
 the planar constancy step in the integer density of tangent planes, Simon 7.3).  Let
 `ι(s) = ∑ᵢ sᵢτᵢ` for an orthonormal family `τ`, `Q = span τ`, `Ω = ι⁻¹(V)` and `h = g ∘ ι`.
