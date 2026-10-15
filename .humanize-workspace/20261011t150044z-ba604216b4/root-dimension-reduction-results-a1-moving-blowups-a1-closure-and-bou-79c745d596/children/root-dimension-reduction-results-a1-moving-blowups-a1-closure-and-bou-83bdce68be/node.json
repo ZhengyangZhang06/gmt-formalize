@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.moving_blowups-a1.closure_and_boundary_rectifiability-a1.closure_succ-a1.smul_continuity-a1",
+  "parent_id": "root.dimension_reduction_results-a1.moving_blowups-a1.closure_and_boundary_rectifiability-a1.closure_succ-a1",
+  "depth": 5,
+  "title": "Multiplication by a compactly supported smooth function is sequentially continuous from 𝒟^k(ℝ^P) to 𝒟^k(U)",
+  "statement": "Let P, k ∈ ℕ, U ⊆ ℝ^P, and ζ : ℝ^P → ℝ C^∞ (ContDiff ℝ (⊤ : ℕ∞)) with compact support and tsupport ζ ⊆ U. Let (ω_j) be a sequence in 𝒟^k(ℝ^P) (TestFormOn univ k) with ω_j → 0 in Simon's test-form topology (TestFormOnConverges ωs 0: some compact K′ ⊆ ℝ^P contains tsupport ω_j for every j and tsupport 0, and for every l, D^l ω_j → D^l 0 uniformly on K′), and let (η_j) be a sequence in 𝒟^k(U) (TestFormOn U k) with η_j(x) = ζ(x)•ω_j(x) for all j and x. Then η_j → 0 in 𝒟^k(U), i.e. TestFormOnConverges ηs 0: some compact K ⊆ U contains tsupport η_j for every j and tsupport 0, and for every l, D^l η_j → D^l 0 uniformly on K.",
+  "lean_statement": "∀ (P k : ℕ) (U : Set (Euclid P)) (ζ : Euclid P → ℝ) (ωs : ℕ → TestFormOn (univ : Set (Euclid P)) k) (ηs : ℕ → TestFormOn U k), ContDiff ℝ (⊤ : ℕ∞) ζ → HasCompactSupport ζ → tsupport ζ ⊆ U → TestFormOnConverges ωs 0 → (∀ j x, (ηs j : DifferentialForm (Euclid P) k) x = ζ x • (ωs j : DifferentialForm (Euclid P) k) x) → TestFormOnConverges ηs 0",
+  "lean_name": "dmcbrcs_testFormOnConverges_smul",
+  "depends_on": [
+    "root.dimension_reduction_results-a1.moving_blowups-a1.closure_and_boundary_rectifiability-a1.closure_succ-a1.smul_leibniz-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.dimension_reduction_results-a1.moving_blowups-a1.closure_and_boundary_rectifiability-a1.closure_succ-a1.smul_leibniz-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-moving-blowups-a1-closure-and-bou-83bdce68be-a1"
+}
