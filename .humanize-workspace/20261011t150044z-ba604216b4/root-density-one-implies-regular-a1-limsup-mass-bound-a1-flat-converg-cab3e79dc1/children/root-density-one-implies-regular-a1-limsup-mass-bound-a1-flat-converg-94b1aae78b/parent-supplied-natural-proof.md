@@ -1,0 +1,119 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.density_one_implies_regular-a1.limsup_mass_bound-a1.flat_convergence-a1.deformation-a1`
+- Child DAG node: `root.density_one_implies_regular-a1.limsup_mass_bound-a1.flat_convergence-a1.deformation-a1.retraction-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: Simon Ch. 6, Lemma 5.4 and its printed proof (chapter-06.txt, from "5.4 Lemma" to the end of the proof of (3)), with the erratum recorded in step 1 of the parent proof: the printed proof of the derivative bound (3) by induction on ℓ uses a false "similarity" identity (see step 8 below), so the printed construction of ψ is kept and the bound is proved directly. This is step 1, (1a)–(1g), of the parent proof, restated for the exact statement.
+
+Notation. n := m + 1 < P and ℓ := P − n ≥ 1. C := [0, 1]^P, q := (1/2, …, 1/2). For a ∈ ℝ^P with |a_i − 1/2| < 1/4 for every i (the hypothesis of the statement; this is all the printed proof uses about a ∈ B_{1/4}(q)) we have a_i ∈ (1/4, 3/4), hence dist(a_i, ℤ) > 1/4. L*(a) := {w : w_i − a_i ∈ ℤ for at least n + 1 = m + 2 indices i} (the set written in the statement; it is Simon's L_{ℓ−1}(a) = a + L_{ℓ−1}), D(w) := dist(w, L*(a)) = infDist w L*(a). L_n := {x : x_i ∈ ℤ for at least ℓ = P − n indices i} (the statement's condition ∃ s, P ≤ m + 1 + |s|, x_i ∈ ℤ for i ∈ s). |·| is the Euclidean norm.
+
+1. Skeleta (1a). A point lies in the j-skeleton L_j iff at least P − j of its coordinates are integers (a j-face z + F fixes P − j integer coordinates; conversely fix those coordinates and choose unit intervals containing the others), so L_n is the n-skeleton. L*(a) is the finite union over (n+1)-element index sets J of the closed sets {w : w_i − a_i ∈ ℤ for i ∈ J}; hence it is closed, nonempty (a ∈ L*(a)) and invariant under translations by ℤ^P. For x ∈ C we have |x_i − a_i| < 1, so x_i − a_i ∈ ℤ iff x_i = a_i; thus Λ(a) := C ∩ L*(a) = {x ∈ C : x_i = a_i for at least n + 1 indices}. Also dist(L*(a), L_n) ≥ 1/4: if w ∈ L_n and w' ∈ L*(a), at least ℓ coordinates of w are integers and at least n + 1 coordinates of w' are in a_i + ℤ; as ℓ + n + 1 > P some index i has both, so |w − w'| ≥ |w_i − w'_i| ≥ dist(a_i, ℤ) > 1/4. In particular L_n ∩ L*(a) = ∅.
+
+2. Coordinate ratios (1b). For x ∈ C and each i let δ_i(x) := |x_i − a_i|, h_i(x) := 1 − a_i if x_i ≥ a_i and h_i(x) := a_i if x_i < a_i (the distance from a_i to the end of [0, 1] on the side of x_i), and r_i(x) := δ_i(x)/h_i(x).
+ - h_i(x) ∈ (1/4, 3/4), so δ_i ≤ r_i ≤ 4δ_i.
+ - r_i(x) ∈ [0, 1]; r_i(x) = 1 iff x_i ∈ {0, 1}; r_i(x) = 0 iff x_i = a_i.
+ - r_i depends only on x_i and is piecewise linear with slopes 1/(1 − a_i) and −1/a_i, both of modulus < 4; on the same side of a_i, |r_i(x) − r_i(z)| = |x_i − z_i|/h_i ≤ 4|x_i − z_i|, and on opposite sides r_i(x) + r_i(z) ≤ 4(δ_i(x) + δ_i(z)) = 4|x_i − z_i|. So |r_i(x) − r_i(z)| ≤ 4|x − z|.
+ For 1 ≤ k ≤ P let r_(k)(x) be the k-th largest of r_1(x), …, r_P(x) (with multiplicity) and r_(0) := 1. Since r_(k) = max over k-element index sets I of min_{i∈I} r_i, |r_(k)(x) − r_(k)(z)| ≤ max_i |r_i(x) − r_i(z)| ≤ 4|x − z|. Put κ(x) := r_(ℓ)(x) (unrelated to any other κ). Then κ(x) = 0 iff at most ℓ − 1 of the r_i(x) are positive iff x_i = a_i for at least P − ℓ + 1 = n + 1 indices iff x ∈ Λ(a). So κ > 0 on C ∖ Λ(a).
+
+3. The printed construction and its closed form (1c). For a j-face F of C (n + 1 ≤ j ≤ P) with free index set I_F (|I_F| = j), F = {x ∈ C : x_i = e_i for i ∉ I_F} with e_i ∈ {0, 1}. The projection of a onto F is a_F ((a_F)_i = a_i for i ∈ I_F, = e_i otherwise), a relative interior point of F. The printed radial retraction ψ_F : F ∖ {a_F} → ∂F sends x to the point a_F + τ(x − a_F) of ∂F with τ ≥ 1, i.e. τ = 1/max_{i∈I_F} r_i(x): ψ_F(x)_i = a_i + (x_i − a_i)/max_{i'∈I_F} r_{i'}(x) for i ∈ I_F and ψ_F(x)_i = x_i otherwise; max_{I_F} r > 0 iff x ≠ a_F, and ψ_F = id on ∂F. ψ^(j) := ψ_F on F ∖ {a_F} for every j-face F is consistent (distinct j-faces meet only in relative boundaries, where every ψ_F is the identity), and the printed ψ_0 := ψ^(n+1) ∘ ⋯ ∘ ψ^(P) on C ∖ Λ(a).
+ Define Φ(x)_i := a_i + (x_i − a_i)/max(r_i(x), κ(x)) for x ∈ C ∖ Λ(a) (well defined since κ(x) > 0).
+ Claim A (ψ_0 = Φ on C ∖ Λ(a)). Commentary, not to be formalized: Claim A only identifies Φ with the printed composite map; the formal statement is proved from the closed form Φ alone in steps 4–7. Fix x ∈ C ∖ Λ(a), so r_(k)(x) ≥ κ(x) > 0 for 0 ≤ k ≤ ℓ. For 0 ≤ k ≤ ℓ let y^(k)_i := a_i + (x_i − a_i)/max(r_i(x), r_(k)(x)); then y^(0) = x (as r_i ≤ 1) and y^(ℓ) = Φ(x). It suffices to show, for 0 ≤ k < ℓ, that y := y^(k) is in the domain of ψ^(P−k) and ψ^(P−k)(y) = y^(k+1). Let A := {i : r_i(x) ≥ r_(k)(x)}, so |A| ≥ k. Each y_i − a_i is a positive multiple of x_i − a_i, so h_i(y) = h_i(x) and r_i(y) = r_i(x)/max(r_i(x), r_(k)(x)), which is 1 for i ∈ A and r_i(x)/r_(k)(x) < 1 for i ∉ A. Hence y ∈ C and y_i ∈ {0, 1} exactly for i ∈ A.
+ - If |A| > k: then r_(k+1)(x) = r_(k)(x), so y^(k+1) = y. Every (P − k)-face G containing y has a free coordinate in A (y lies in a (P − k)-face obtained by fixing k coordinates in A), so y ∈ ∂G ∖ {a_G} and ψ_G(y) = y; hence ψ^(P−k)(y) = y = y^(k+1).
+ - If |A| = k: A indexes the k largest r_i(x) and r_(k+1)(x) = max_{i∉A} r_i(x) > 0 (k + 1 ≤ ℓ). y lies in the relative interior of exactly one (P − k)-face G, with I_G = {1, …, P} ∖ A, and max_{I_G} r(y) = r_(k+1)(x)/r_(k)(x) > 0, so y ≠ a_G. For i ∉ A, ψ_G(y)_i = a_i + (y_i − a_i)r_(k)(x)/r_(k+1)(x) = a_i + (x_i − a_i)/r_(k+1)(x); for i ∈ A, ψ_G(y)_i = y_i = a_i + (x_i − a_i)/r_i(x). Since r_i(x) ≤ r_(k+1)(x) for i ∉ A and r_i(x) ≥ r_(k)(x) ≥ r_(k+1)(x) for i ∈ A, this is y^(k+1).
+
+4. Properties of Φ (1d).
+ (i) Φ(C ∖ Λ(a)) ⊆ C ∩ L_n, with Φ(x)_i ∈ {0, 1} for at least ℓ indices: |Φ(x)_i − a_i| = δ_i(x)/max(r_i(x), κ(x)) ≤ δ_i(x)/r_i(x) = h_i(x) when r_i(x) > 0 (and Φ(x)_i = a_i when r_i(x) = 0), with equality when r_i(x) ≥ κ(x); Φ(x)_i − a_i has the sign of x_i − a_i, so Φ(x)_i lies between a_i and the end of [0, 1] on the side of x_i, and equals that end (0 or 1) for the at least ℓ indices with r_i(x) ≥ κ(x) = r_(ℓ)(x).
+ (ii) Φ = id on C ∩ L_n (⊆ C ∖ Λ(a) by step 1): such x has at least ℓ coordinates in {0, 1}, so κ(x) = 1 and Φ(x)_i = x_i.
+ (iii) If z ∈ ℤ^P and x, x + z ∈ C ∖ Λ(a), then Φ(x + z) = Φ(x) + z: where z_i ≠ 0 we have x_i, x_i + z_i ∈ {0, 1}, so r_i(x + z) = r_i(x) = 1 for those i and r_i(x + z) = r_i(x) for the others; hence κ(x + z) = κ(x), and in the coordinates with z_i ≠ 0, max(r_i, κ) = 1 so Φ(·)_i is the identity there. (This is the printed property ψ_0(z + x) = z + ψ_0(x).)
+
+5. The map ψ. For w ∉ L*(a) choose z ∈ ℤ^P with w − z ∈ C (e.g. z_i := ⌊w_i⌋); then w − z ∉ L*(a) by periodicity, so w − z ∈ C ∖ Λ(a); put ψ(w) := z + Φ(w − z). By (iii) this does not depend on the choice of z. For w ∈ L*(a) put ψ(w) := w (any value would do). If D(x) > 0 then x ∉ L*(a) (closed), and with z as above: ψ(x) = z + Φ(x − z) has at least ℓ coordinates in z_i + {0, 1} ⊆ ℤ by (i), i.e. there is s with |s| ≥ ℓ, P ≤ m + 1 + |s| and ψ(x)_i ∈ ℤ for i ∈ s; and x, ψ(x) ∈ z + C, so dist(ψ(x), x) ≤ diam C = √P. This proves the first conclusion. Also D is ℤ^P-periodic and 1-Lipschitz (Mathlib Metric.lipschitz_infDist_pt).
+
+6. The Lipschitz estimate in a cube (1e).
+ Claim B. For x, z ∈ C ∖ Λ(a): |Φ(x) − Φ(z)| ≤ 4√P|x − z|/κ(x). Fix i; put u(w) := w_i − a_i and μ(w) := max(r_i(w), κ(w)) > 0. By step 2, μ is 4-Lipschitz and |u(x) − u(z)| ≤ |x − z|. If r_i(z) > 0 then |u(z)|/μ(z) ≤ |u(z)|/r_i(z) = h_i(z) < 3/4; if r_i(z) = 0 then u(z) = 0. Hence |Φ(x)_i − Φ(z)_i| = |u(x)/μ(x) − u(z)/μ(z)| ≤ |u(x) − u(z)|/μ(x) + (|u(z)|/μ(z))·|μ(z) − μ(x)|/μ(x) ≤ (1 + (3/4)·4)|x − z|/μ(x) ≤ 4|x − z|/κ(x). Summing squares over the P coordinates gives Claim B.
+ Claim C. For x ∈ C: D(x) ≤ √(n + 1)·κ(x). Let J be a set of n + 1 indices carrying the n + 1 smallest values δ_i(x), and x* the point with x*_i := a_i for i ∈ J and x*_i := x_i otherwise. Then x* ∈ C has n + 1 coordinates equal to a_i, so x* ∈ Λ(a) ⊆ L*(a). J omits exactly ℓ − 1 indices, so every i ∈ J has δ_i(x) ≤ δ_(ℓ)(x), the ℓ-th largest δ_i(x); as δ_i ≤ r_i for all i, δ_(ℓ)(x) ≤ r_(ℓ)(x) = κ(x). So D(x) ≤ |x − x*| = (Σ_{i∈J} δ_i(x)²)^{1/2} ≤ √(n + 1)·κ(x).
+ Put c₁ := 4√(P(n + 1)). By B and C, for x, z ∈ C ∖ L*(a) (so D(x) > 0):
+ (3') |Φ(x) − Φ(z)| ≤ c₁|x − z|/D(x).
+ c₁ depends only on P and m, not on a.
+
+7. Lipschitz bounds for ψ on ℝ^P (1f).
+ (i) If D ≥ τ > 0 at every point of a segment [w, w'], then |ψ(w) − ψ(w')| ≤ (c₁/τ)|w − w'|. The bounded segment meets finitely many cubes z + C, each in a closed sub-segment (convexity). Order all endpoints of these sub-segments along [w, w']: w = w_0, w_1, …, w_K = w'. Each piece [w_k, w_{k+1}] lies in one cube z + C: the cube containing the midpoint of the piece meets the segment in a closed sub-segment whose endpoints are among the w_j, none strictly between w_k and w_{k+1}, so it contains the piece. Since w_k − z, w_{k+1} − z ∈ C ∖ L*(a) and D(w_k − z) = D(w_k) ≥ τ, (3') and step 5 give |ψ(w_k) − ψ(w_{k+1})| = |Φ(w_k − z) − Φ(w_{k+1} − z)| ≤ (c₁/τ)|w_k − w_{k+1}|. Summing over the collinear, ordered pieces gives the claim.
+ (ii) Let c := max(2c₁, 1/4 + 2√P) > 0 and r ∈ (0, 1/4]; let D(x), D(y) ≥ r.
+ - If |x − y| < r: every point of [x, y] is within |x − y|/2 < r/2 of x or of y, so D > r/2 there (D is 1-Lipschitz); (i) with τ := r/2 gives |ψ(x) − ψ(y)| ≤ (2c₁/r)|x − y| ≤ (c/r)|x − y|.
+ - If |x − y| ≥ r: |ψ(x) − ψ(y)| ≤ |x − y| + |ψ(x) − x| + |ψ(y) − y| ≤ |x − y| + 2√P ≤ (1 + 2√P/r)|x − y| ≤ ((1/4 + 2√P)/r)|x − y| ≤ (c/r)|x − y|, using 1 ≤ 1/(4r).
+ This is the second conclusion, with c depending only on P and m. ∎
+
+8. Erratum (commentary, not to be formalized: why the printed proof of (3) is replaced). The printed induction passes from x ∈ int C to y := ψ_C(x) in a (P − 1)-face F and asserts dist(y, L)/dist(x, p_F⁻¹(L)) = |y − a|/|x − a| "by similarity", L = L_{ℓ−2}(a_F) the complete periodic lattice of the hyperplane of F. The homothety with centre a_F and ratio |y − a|/|x − a| fixes a_F but not the other lattice points a_F + z, so the identity is false: for P = 3, n = 1, a = (3/10, 1/2, 1/2), x = (129/200, 1/2, 1/4) one gets y = (99/100, 1/2, 0), ratio 2, but dist(y, L) = 31/100 and dist(x, p_F⁻¹(L)) = 69/200. Steps 3–7 avoid the induction; the only comparison between the local arrangement Λ(a) and the full lattice L*(a) they need is Claim C, via the explicit point x* ∈ Λ(a) ⊆ L*(a).
+
+## Key steps
+
+1. For x ∈ C ∖ Λ(a) the ratios r_i(x) = |x_i − a_i|/h_i(x) are 4-Lipschitz, and κ = r_(ℓ) (ℓ-th largest) is positive exactly off Λ(a) = C ∩ L*(a).
+2. Claim A: the printed composite of radial retractions equals Φ(x)_i = a_i + (x_i − a_i)/max(r_i(x), κ(x)); Φ maps into C ∩ L_n, fixes C ∩ L_n and commutes with integer translations, so ψ(w) := z + Φ(w − z) is well defined, lands in L_n and moves points by at most √P.
+3. Claim B: |Φ(x) − Φ(z)| ≤ 4√P|x − z|/κ(x); Claim C: dist(x, L*(a)) ≤ √(n+1)κ(x) via an explicit point of Λ(a); hence (3') |Φ(x) − Φ(z)| ≤ c₁|x − z|/dist(x, L*(a)).
+4. Cutting segments into cube pieces gives the (c₁/τ)-Lipschitz bound on segments with D ≥ τ, and the two-case argument gives (c/r)-Lipschitz on {D ≥ r} with c = max(2c₁, 1/4 + 2√P).
+5. Erratum: the printed similarity identity in the induction for (3) is false (explicit counterexample); the direct proof replaces it.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat local-references/123e8435b4a2469b/manifest.json (mode local-project, project b4d606db, mathlib 25730c7c)`
+- `cmp local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean GMT/Ch07/Contract.lean; cmp GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean (both identical)`
+- `rg -l -i "latticeFace|DeformationTheorem|deformation theorem|skeleton|retraction" local-references/123e8435b4a2469b/project -g "*.lean" (only GMT/Ch06/Contract.lean and GMT/Ch06/Submission.lean)`
+- `rg -n "latticeFace|def DeformationTheorem|IsLatticeChain|pushforward|homotopy|Poincar" local-references/123e8435b4a2469b/project/GMT/Ch06/Contract.lean`
+- `rg -n "theorem hausdorffMeasure_smul₀|theorem integral_map_equiv|theorem restrict_map|exists_disjoint_subfamily_covering_enlargement|theorem extend_real|theorem cthickening_cthickening_subset|theorem cthickening_eq_biUnion_closedBall|theorem lipschitz_infDist_pt|theorem ae_differentiableAt" local-references/123e8435b4a2469b/mathlib/Mathlib`
+- `rg -c for extend_pi, integral_lineDeriv_mul_eq, exists_partition_approximatesLinearOn_of_hasFDerivWithinAt, image_of_continuousOn_injOn, ae_convolution_tendsto_right_of_locallyIntegrable, euclideanHausdorffMeasure_image, hausdorffMeasure_image_le, measure_compl_support, measurable_fderiv in Mathlib (all present)`
+- `grep -n "theorem integral_lineDeriv_mul_eq" Mathlib/Analysis/Calculus/Rademacher.lean; sed -n 1,140p Mathlib/Geometry/Euclidean/Volume/Measure.lean (μHE[d], isometry invariance)`
+- `grep -n "^def |^theorem" SimonGMT Chapter06/{Product,GeometricPointProduct,AffineCurrentPushforward,Currents,Mass,CurrentLocalEquality,Forms}.lean (only affine push-forward and point products; no Lipschitz push-forward, no [[(0,1)]] × T, no homotopy formula)`
+- `grep -rn "theorem [a-zA-Z_.]*area" .lake/packages/simongmt/Poincare/SimonGMT (Chapter02 area formulas: injective_area_formula_lipschitz, area_image_criticalSet_eq_zero, ...)`
+- `grep -n "def HasApproximateTangentSpaceAt|def CountablyRectifiable|def blowUpMap" SimonGMT/Chapter03/Rectifiable.lean`
+- `rg -c exteriorDerivativeOn_pullbackFormWithin, exteriorDerivative_affinePullbackForm, WeaklyConvergesOn.boundary, countablyRectifiable_of_measure_zero in SimonGMT (present)`
+- `python3 -I scans of dag.json (1366 nodes, 2026-10-13T14:15Z): statuses and frozen types of dor_imrep_massOn_eq_measure_and_support, cmc_imRep_locality_restrict_sub (accepted), dor_lmb_fc_im_series (decomposing), dor_lmb_slicing_lipschitz (speculative-ready), accepted dpf_*/ptd_*/pit_*/dtc_* helpers; byte-identical types of cmcdt_skeleton_retraction, cmcdt_good_center, dimred_mbl_dt_*; freshness of the dor_lmb_fcd_* names`
+- `python3 -I parse of nodes/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1/decomposition-v2.json and nodes/root-density-one-implies-regular-a1-limsup-mass-bound-a1-flat-convergence-a1/decomposition-v2.json`
+- `sed -n 340,960p and 1400,1965p book/chapter-06.txt; sed -n 470,700p book/chapter-02.txt`
+- `sed -n 6660,6760p and 3210,3260p /runtime/flows/gmt-claude-9a0895c8c5e1/_recursive_lean/runtime.py (_existing_lean_name_problem, accepted-child overlay scoping)`
+- `lake env lean /tmp/dfm-decomp/lean/Challenge_*.lean (12 exact comparator challenges), AllProps.lean, Assembly.lean and UnitAssembly.lean with #print axioms`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch06/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Covering/Vitali.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/Thickening.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/HausdorffDistance.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/Rademacher.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/Jacobian.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/BumpFunction/Convolution.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Support.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Product.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/GeometricPointProduct.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/AffineCurrentPushforward.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/AreaLipschitz.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-limsup-mass-bound-a1-flat-converg-cab3e79dc1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-limsup-mass-bound-a1-flat-convergence-a1/decomposition-v2.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1/decomposition-v2.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-02.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/runtime/flows/gmt-claude-9a0895c8c5e1/_recursive_lean/runtime.py`
+- `/tmp/dfm-decomp/lean/Assembly.lean`
+- `/tmp/dfm-decomp/lean/UnitAssembly.lean`
+- `/tmp/dfm-decomp/lean/AllProps.lean`
+
+Snapshot: project b4d606db, mathlib 25730c7c; the snapshot Ch07 Contract.lean is byte-identical to the workspace Contract.lean and Submission.lean. Neither the snapshot nor SimonGMT contains a proved Deformation Theorem, Lemma 5.4, a Lipschitz push-forward of currents, the product [[(0,1)]] × T, or the homotopy formula: SimonGMT Chapter06 provides only affine push-forwards and point products (plus currents, boundary, massOn, support, weak convergence with lower semicontinuity); Chapter02 provides area formulas for Lipschitz maps; Chapter03 the literal approximate-tangent-space definition. The snapshot's GMT/Ch06/Contract.lean has only sorry-frozen latticeFace/IsLatticeChain/DeformationTheorem definitions (the same unit and ρ-cells as the child face formulas), not imported by GMT.Ch07.Submission. Every Mathlib lemma cited in the child proofs exists in the pinned snapshot (Vitali covering, cthickening lemmas, lipschitz_infDist_pt, integral_map_equiv, MeasurableEquiv.restrict_map, hausdorffMeasure_smul₀, integral_lineDeriv_mul_eq, Rademacher, measurable_fderiv, convolution a.e. convergence, Isometry.euclideanHausdorffMeasure_image, measure_compl_support). Reuse: dor_imrep_massOn_eq_measure_and_support and cmc_imRep_locality_restrict_sub are accepted with byte-identical frozen types (standard axioms per acceptance); dor_lmb_fc_im_series (decomposing) and dor_lmb_slicing_lipschitz (speculative-ready) are passed as exact-type antecedents. Lean: all 12 child types compile as exact comparator challenges; parent_assembly and unit_assembly compile with axioms [propext, Classical.choice, Quot.sound].

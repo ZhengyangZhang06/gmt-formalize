@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.graph_cycle_regular-a1.integer_density-a1.cylinder_open-a1",
+  "parent_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.graph_cycle_regular-a1.integer_density-a1",
+  "depth": 5,
+  "title": "The orthogonal cylinder {z + ιv + ι'w : |v| < s, |w| < h} is open",
+  "statement": "Let n, k ∈ ℕ and let ι : ℝⁿ → ℝ^{n+k} and ι' : ℝ^k → ℝ^{n+k} be linear isometries (ℝ^m = Euclid m) with ⟨ιv, ι'w⟩ = 0 for all v ∈ ℝⁿ and w ∈ ℝ^k, and assume that every x ∈ ℝ^{n+k} can be written x = ιv + ι'w with v ∈ ℝⁿ, w ∈ ℝ^k. Then for every z ∈ ℝ^{n+k} and all real s, h the cylinder C := {x : ∃ v ∈ B_s(0) ⊆ ℝⁿ, ∃ w ∈ B_h(0) ⊆ ℝ^k, x = z + ιv + ι'w} (open balls) is an open subset of ℝ^{n+k}.",
+  "lean_statement": "∀ (n k : ℕ) (ι : Euclid n →ₗᵢ[ℝ] Euclid (n + k)) (ι' : Euclid k →ₗᵢ[ℝ] Euclid (n + k)) (z : Euclid (n + k)) (s h : ℝ), (∀ v w, inner ℝ (ι v) (ι' w) = 0) → (∀ x : Euclid (n + k), ∃ v : Euclid n, ∃ w : Euclid k, x = ι v + ι' w) → IsOpen {x | ∃ v ∈ ball (0 : Euclid n) s, ∃ w ∈ ball (0 : Euclid k) h, x = z + ι v + ι' w}",
+  "lean_name": "dgid_orthogonal_cylinder_isOpen",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-graph-cycle-0a205c7fd0-a1"
+}
