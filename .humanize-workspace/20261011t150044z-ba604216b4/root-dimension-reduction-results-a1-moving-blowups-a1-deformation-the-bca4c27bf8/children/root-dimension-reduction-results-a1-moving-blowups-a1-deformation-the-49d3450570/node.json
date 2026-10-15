@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.moving_blowups-a1.deformation_theorem-a1.face_replacement-a1.face_geometry-a1",
+  "parent_id": "root.dimension_reduction_results-a1.moving_blowups-a1.deformation_theorem-a1.face_replacement-a1",
+  "depth": 5,
+  "title": "Geometry of unit lattice faces: unit-cube volume, isometric face maps, diameter bound, separation of distinct faces",
+  "statement": "For all P, k ∈ ℕ: (0) the open unit cube Q₁^k = {y ∈ Euclid k : 0 < y_i < 1 for all i} has Lebesgue measure 1. For all index pairs p = (ι, b), q = (ι', b') with ι, ι' : Fin k → Fin P strictly increasing and b, b' : Fin P → ℤ, write Φ_p(y) := b + Σ_j y_j e_{ι(j)} (a map Euclid k → Euclid P; e_i the standard unit vectors). Then: (a) dist(Φ_p y, Φ_p y') = dist(y, y') for all y, y'; (b) dist(Φ_p y, Φ_p y') ≤ √P whenever y, y' lie in the closed cube C^k = [0,1]^k; (c) if p ≠ q, y ∈ Q₁^k and y' ∈ C^k, then dist(Φ_p y, Φ_q y') ≥ 1, or dist(Φ_p y, Φ_q y') ≥ min(y_j, 1 − y_j) for some j.",
+  "lean_statement": "∀ (P k : ℕ), volume {y : Euclid k | ∀ i, 0 < y i ∧ y i < 1} = 1 ∧ ∀ p q : (Fin k → Fin P) × (Fin P → ℤ), StrictMono p.1 → StrictMono q.1 → (∀ y y' : Euclid k, dist (WithLp.toLp 2 (fun i => (p.2 i : ℝ)) + ∑ j, y j • EuclideanSpace.single (p.1 j) (1 : ℝ)) (WithLp.toLp 2 (fun i => (p.2 i : ℝ)) + ∑ j, y' j • EuclideanSpace.single (p.1 j) (1 : ℝ)) = dist y y') ∧ (∀ y y' : Euclid k, (∀ i, 0 ≤ y i ∧ y i ≤ 1) → (∀ i, 0 ≤ y' i ∧ y' i ≤ 1) → dist (WithLp.toLp 2 (fun i => (p.2 i : ℝ)) + ∑ j, y j • EuclideanSpace.single (p.1 j) (1 : ℝ)) (WithLp.toLp 2 (fun i => (p.2 i : ℝ)) + ∑ j, y' j • EuclideanSpace.single (p.1 j) (1 : ℝ)) ≤ Real.sqrt P) ∧ (p ≠ q → ∀ y y' : Euclid k, (∀ j, 0 < y j ∧ y j < 1) → (∀ i, 0 ≤ y' i ∧ y' i ≤ 1) → 1 ≤ dist (WithLp.toLp 2 (fun i => (p.2 i : ℝ)) + ∑ j, y j • EuclideanSpace.single (p.1 j) (1 : ℝ)) (WithLp.toLp 2 (fun i => (q.2 i : ℝ)) + ∑ j, y' j • EuclideanSpace.single (q.1 j) (1 : ℝ)) ∨ ∃ j, min (y j) (1 - y j) ≤ dist (WithLp.toLp 2 (fun i => (p.2 i : ℝ)) + ∑ j, y j • EuclideanSpace.single (p.1 j) (1 : ℝ)) (WithLp.toLp 2 (fun i => (q.2 i : ℝ)) + ∑ j, y' j • EuclideanSpace.single (q.1 j) (1 : ℝ)))",
+  "lean_name": "dimred_mbl_dtfr_face_geometry",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-moving-blowups-a1-deformation-the-49d3450570-a1"
+}

@@ -1,0 +1,104 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.dimension_reduction_results-a1.moving_blowups-a1.deformation_theorem-a1.face_replacement-a1.skeleton_decomposition-a1`
+- Child DAG node: `root.dimension_reduction_results-a1.moving_blowups-a1.deformation_theorem-a1.face_replacement-a1.skeleton_decomposition-a1.coordinate_plane_orientation_sign-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: step 9 of the parent proof ((IMC)(b) and plane_orientation give ξ = ±e_p a.e. on a face) together with the Borel sign function σ_p of step 10, read off from a strongly measurable version ξ̃ of ξ. It is stated here for any open U and any Borel set E lying in a coordinate plane. The parent applies it with U = ℝ^P and E = F̆_p.
+
+Notation: M := R.carrier, θ := R.mult, ξ := R.orient, Hⁿ := μHE[n], e_i := EuclideanSpace.single i (1 : ℝ), E_ι := (j ↦ e_{ι(j)}).
+
+1. (Restriction to E.) U is open and E is Borel, so (IMC-b) applied to P, n, U, R, E gives A and R' : IMRep U n with R'.carrier = M ∩ E and R'.orient = ξ; the other components are not used. Rewrite the field R'.orients with these two equalities. It says: for Hⁿ⌞(M ∩ E)-a.e. x there is a subspace Q with HasApproximateTangentSpaceAt n (M ∩ E) x Q and IsUnitOrientationOf (ξ x) Q.
+2. (Sign a.e.) M ∩ E is Borel (R.measurableSet_carrier, E Borel), so Hⁿ⌞(M ∩ E)-a.e. x lies in M ∩ E (ae_restrict_mem). Take x with this property and the property of step 1, together with its Q.
+   - For every a ∈ M ∩ E and every i with ι(j) ≠ i for all j: a_i = c_i (as a ∈ E) and x_i = c_i (as x ∈ E), so a_i = x_i.
+   - Hence (PO) applies to (P, n, ι, A := M ∩ E, x, Q, ξ(x)), using StrictMono ι. It yields: either ξ(x)(α) = α(E_ι) for every n-covector α, or ξ(x)(α) = −α(E_ι) for every α.
+   This holds for Hⁿ⌞(M ∩ E)-a.e. x (filter_upwards over the two a.e. facts).
+3. (A Borel version of ξ.) ξ is a.e. strongly measurable for Hⁿ⌞M (R.aestronglyMeasurable_orient). Let ξ̃ := AEStronglyMeasurable.mk ξ for that field. It is strongly measurable (stronglyMeasurable_mk) and ξ = ξ̃ Hⁿ⌞M-a.e. (ae_eq_mk). Hence ξ = ξ̃ also holds Hⁿ⌞(M ∩ E)-a.e., because M ∩ E ⊆ M (ae_restrict_of_ae_restrict_of_subset Set.inter_subset_left).
+4. (The coordinate n-vector.) Let e ∈ MultiVector P n be evaluation at E_ι: e := ContinuousAlternatingMap.apply ℝ (Euclid P) ℝ E_ι. Then e(α) = α(E_ι) for every α, by rfl.
+5. (The sign function.) Define σ(x) := 1 if ξ̃(x) = e; σ(x) := −1 if ξ̃(x) ≠ e and ξ̃(x) = −e; σ(x) := 0 otherwise.
+   - |σ(x)| ≤ 1 for every x, by case analysis.
+   - The sets {x : ξ̃(x) = e} and {x : ξ̃(x) = −e} are Borel, by StronglyMeasurable.measurableSet_eq_fun applied to ξ̃ and a constant (stronglyMeasurable_const). So σ is measurable (Measurable.ite twice, measurable_const).
+   Formalization note: measurableSet_eq_fun needs TopologicalSpace.MetrizableSpace (MultiVector P n). Instance search finds T0Space but not PseudoMetrizableSpace for the operator topology. Supply it locally with a plain `have` (not `letI`), so that no second topology instance is introduced:
+   have : TopologicalSpace.PseudoMetrizableSpace (MultiVector P n) := ⟨⟨(inferInstance : PseudoMetricSpace (MultiVector P n)).toUniformSpace, rfl, @EMetric.instIsCountablyGeneratedUniformity _ (inferInstance : PseudoMetricSpace (MultiVector P n)).toPseudoEMetricSpace⟩⟩
+6. (Conclusion.) For Hⁿ⌞(M ∩ E)-a.e. x, both step 2 and ξ(x) = ξ̃(x) hold. Fix such an x and any α.
+   (a) If ξ(x)(β) = β(E_ι) for all β, then ξ(x) = e (ContinuousLinearMap.ext and step 4). So ξ̃(x) = e and σ(x) = 1, and ξ(x)(α) = α(E_ι) = σ(x)·α(E_ι).
+   (b) If ξ(x)(β) = −β(E_ι) for all β, then ξ(x) = −e (ContinuousLinearMap.ext; use the root lemma neg_apply, since ContinuousLinearMap.neg_apply is deprecated). So ξ̃(x) = −e.
+      - If moreover ξ̃(x) = e, then σ(x) = 1 and ξ(x)(α) = ξ̃(x)(α) = e(α) = α(E_ι) = σ(x)·α(E_ι).
+      - Otherwise ξ̃(x) ≠ e and ξ̃(x) = −e, so σ(x) = −1 and ξ(x)(α) = −α(E_ι) = σ(x)·α(E_ι).
+   Hence σ is measurable with |σ| ≤ 1, and ξ(x)(α) = σ(x)·α(E_ι) for every α, for Hⁿ⌞(M ∩ E)-a.e. x. ∎
+
+Lean notes from a compiled scratch proof (≈57 lines as one declaration):
+- Introduce ξ̃ and e as opaque witnesses, e.g. obtain ⟨ξt, hξt, h3'⟩ : ∃ ξt, StronglyMeasurable ξt ∧ R.orient =ᵐ[μHE[n].restrict R.carrier] ξt.
+- After filter_upwards the goal is already beta-reduced. Use `dsimp only` only in the |σ x| ≤ 1 branch, before `split_ifs <;> simp`.
+- if_pos/if_neg are deprecated; ite_eq_left/ite_eq_right work.
+
+## Key steps
+
+1. (IMC-b) restricts R to M ∩ E with the same orientation; R'.orients gives approximate tangent planes Q of M ∩ E oriented by ξ(x), a.e. on M ∩ E.
+2. Points of M ∩ E agree with x off range ι, so (PO) gives ξ(x) = ±(α ↦ α(E_ι)) a.e. on M ∩ E.
+3. With ξ̃ a strongly measurable version of ξ and e = evaluation at E_ι, σ := 1 on {ξ̃ = e}, −1 on {ξ̃ ≠ e, ξ̃ = −e}, 0 elsewhere is Borel with |σ| ≤ 1 (local PseudoMetrizableSpace instance).
+4. Case analysis on ξ(x) = ±e gives ξ(x)(α) = σ(x)·α(E_ι) a.e.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat RUN/local-references/123e8435b4a2469b/manifest.json (project_commit b4d606db1da5da8fa2c0292ad4924d97de8b3c4b, mathlib_commit 25730c7c759d108ef87ab70af2342a196760f79d); git -C SNAPSHOT/mathlib rev-parse HEAD (25730c7c759d108ef87ab70af2342a196760f79d); cmp GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean (identical); cmp GMT/Ch07/Contract.lean SNAPSHOT/project/GMT/Ch07/Contract.lean (identical)`
+- `rg -l 'dimred_mbl_dtfrsd' SNAPSHOT/project SNAPSHOT/mathlib/Mathlib GMT lake-packages-25730c7c/simongmt -g '*.lean' (exit 1, no match); python3 -I scan of RUN/dag.json lean_name fields (2189 nodes at the last scan, no duplicates; the only 'dtfrsd' names are the twin's four cmcdtfrsd_* nodes, statuses decomposing/speculative-lean, not accepted)`
+- `python3 -I scan of RUN/dag.json: the twin node cmcdtfr_skeleton_decomposition has a byte-identical frozen type; dimred_mbl_dtfr_{face_geometry,skeleton_null,plane_orientation} are byte-identical to the twin's cmcdtfr_* siblings; imrep_carrier_sdiff_support_null (accepted, candidate d15b5cf, base c36d11c) and regcomp_rim_action_integrable (accepted, candidate f1339f9, base e5f36a3) have their frozen statements copied verbatim`
+- `git show d15b5cf:GMT/Ch07/Submission.lean | grep -n 'imrep_carrier_sdiff_support_null|sorry'; git show f1339f9:GMT/Ch07/Submission.lean | grep -n 'regcomp_rim_action_integrable|sorry' (declarations present with identical types; only the root main_theorem is sorry)`
+- `python3 -I read of the twin's decomposition-v1.json, decomposition-audit-v1.json (nodes/...-80c95515f2) and of its children's decomposition files face_density (...-ae58d7f4f9) and coordinate_plane_orientation_sign (...-0fb43c645d): 4+2 split accepted; both children judged atomic (should_split False) with passing audits`
+- `sed -n 1,135p GMT/Ch07/Contract.lean (IMRep, IMRep.action, IMRep.Represents, IMRep.measure, IsIntegerMultiplicity); sed/grep of SimonGMT Chapter06/Mass.lean (massAdmissibleOn, massOn, mass := massOn U), CurrentLocalEquality.lean (VanishesOn, zeroRegion, support), Currents.lean (TestFormOn, GeometricCurrentOn)`
+- `grep of /runtime/flows/gmt-claude-b888e19cffb1/_recursive_lean/runtime.py and the active flow /runtime/flows/gmt-claude-6c9908f72f7f/_recursive_lean/runtime.py (_decompose: node.depth >= max_depth; _existing_lean_name_problem, identical in both; child activation via existing_by_name; _install_parent_supplied_child_handoff returns early for accepted children; _overlay_accepted_children); sed of the active flow's leaf_verification.py (check_source_delta: a leaf appends exactly one theorem, with no other declaration, instance, set_option, #print or sorry); swarm-project.json (max_depth 6, max_children 12, max_nodes 5000); sed of verifier/gmt-compare.py (contract_scope, child_modules)`
+- `timeout rg -n in SNAPSHOT/mathlib: Mathlib/Geometry/Euclidean/Volume/Measure.lean (Isometry.map_euclideanHausdorffMeasure l.141, EuclideanSpace.euclideanHausdorffMeasure_eq_volume l.187), Mathlib/Data/Finset/Sort.lean (orderEmbOfFin_mem l.211, range_orderEmbOfFin l.216), Mathlib/MeasureTheory/Integral/Bochner/Set.lean (setIntegral_congr_set l.77, integral_biUnion_finset l.120, setIntegral_eq_of_subset_of_forall_sdiff_eq_zero l.466), Mathlib/MeasureTheory/Function/StronglyMeasurable/Basic.lean (measurableSet_eq_fun l.1028), Mathlib/Algebra/Order/Floor/Ring.lean (floor_add_fract, fract_lt_one)`
+- `lake env lean /tmp/dmsd-split-x7k2/lean/Names.lean (#check of every cited name: all resolve; EuclideanSpace.single_apply deprecated in favour of PiLp.single_apply; the correct name is MeasureTheory.withDensity_apply)`
+- `lake env lean /tmp/dmsd-split-x7k2/lean/Types.lean (6 child types, 3 sibling types and the selected type in comparator challenge form; only sorry warnings)`
+- `lake env lean /tmp/dmsd-split-x7k2/child-spof/Probe.lean, child-fmcf/Probe.lean, child-cpos/Probe.lean, child-fd/Probe.lean (all four new child types proved; #print axioms: propext, Classical.choice, Quot.sound)`
+- `lake env lean /tmp/dmsd-review-q81/single/Single.lean (independent reviewer's single-declaration leaves Submission.dimred_mbl_dtfrsd_*; #print axioms: propext, Classical.choice, Quot.sound)`
+- `lake env lean /tmp/dmsd-split-x7k2/asm/Assembly.lean (dmsd_assembly: 6 child types + 3 sibling frozen types imply the selected frozen type) and /tmp/dmsd-split-x7k2/asm/Full.lean (dmsd_full with the four proved children plugged in); #print axioms: propext, Classical.choice, Quot.sound`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Data/Finset/Sort.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/StronglyMeasurable/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Algebra/Order/Floor/Ring.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/swarm-project.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-deformation-the-be2a99515f/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-fac-80c95515f2/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-fac-80c95515f2/decomposition-audit-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-fac-80c95515f2/parent-supplied-natural-proof.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-fac-ae58d7f4f9/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-fac-0fb43c645d/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-support-null-a1/parent-supplied-natural-proof.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-regular-components-are-minimizing-a1-restriction-integer-multipl-1450eb50b9/parent-supplied-natural-proof.md`
+- `/runtime/flows/gmt-claude-b888e19cffb1/_recursive_lean/runtime.py`
+- `/runtime/flows/gmt-claude-6c9908f72f7f/_recursive_lean/runtime.py`
+- `/runtime/flows/gmt-claude-6c9908f72f7f/_recursive_lean/leaf_verification.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/tmp/dmsd-split-x7k2/lean/Types.lean`
+- `/tmp/dmsd-split-x7k2/lean/Names.lean`
+- `/tmp/dmsd-split-x7k2/child-spof/Probe.lean`
+- `/tmp/dmsd-split-x7k2/child-fmcf/Probe.lean`
+- `/tmp/dmsd-split-x7k2/child-cpos/Probe.lean`
+- `/tmp/dmsd-split-x7k2/child-fd/Probe.lean`
+- `/tmp/dmsd-split-x7k2/asm/Assembly.lean`
+- `/tmp/dmsd-split-x7k2/asm/Full.lean`
+- `/tmp/dmsd-review-q81/single/Single.lean`
+
+The pins match: project b4d606d, Mathlib 25730c7c, SimonGMT 2b36630. Submission.lean is byte-identical to the frozen contract.
+Neither the snapshot project, Mathlib nor SimonGMT contains lattice-face decompositions of currents, so the four new obligations are new. Every Mathlib name the child proofs cite resolves under the frozen imports. Two cited names are deprecated (EuclideanSpace.single_apply and setIntegral_eq_of_subset_of_forall_diff_eq_zero); the proofs name their replacements.
+The twin node cmcdtfr_skeleton_decomposition has the identical frozen type and an audited 4+2 split, but its cmcdtfrsd_* children are reserved by an active branch and not accepted. So the four new children get fresh dimred_mbl_dtfrsd_* names, which collide with nothing.
+imrep_carrier_sdiff_support_null and regcomp_rim_action_integrable are accepted with byte-identical frozen types, so they are reused.
+All child types elaborate in the comparator scope. Each new child compiles in scratch with standard axioms, also as a single leaf declaration. A Lean assembly proves the exact selected type from the six child types and the three sibling frozen types, with standard axioms only.
