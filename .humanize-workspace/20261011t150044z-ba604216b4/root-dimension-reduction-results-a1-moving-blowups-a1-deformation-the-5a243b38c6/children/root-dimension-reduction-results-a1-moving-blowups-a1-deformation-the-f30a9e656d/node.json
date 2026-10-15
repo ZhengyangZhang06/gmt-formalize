@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.moving_blowups-a1.deformation_theorem-a1.cube_bv_median-a1.integer_median-a1.median_minimizes-a1",
+  "parent_id": "root.dimension_reduction_results-a1.moving_blowups-a1.deformation_theorem-a1.cube_bv_median-a1.integer_median-a1",
+  "depth": 6,
+  "title": "A median minimizes the L¹ deviation c ↦ ∫|u − c| on a probability space",
+  "statement": "Let X be a measurable space (X : Type), μ a probability measure on X, u : X → ℝ μ-integrable, and β ∈ ℝ a median of u: μ{x : β ≤ u(x)} ≥ 1/2 and μ{x : u(x) ≤ β} ≥ 1/2, where μ(A) := μ.real A = (μ A).toReal and 1/2 is the real one half. Then ∫_X |u − β| dμ ≤ ∫_X |u − c| dμ for every c ∈ ℝ.",
+  "lean_statement": "∀ (X : Type) [MeasurableSpace X] (μ : Measure X) (u : X → ℝ) (β : ℝ), IsProbabilityMeasure μ → Integrable u μ → 1 / 2 ≤ μ.real {x | β ≤ u x} → 1 / 2 ≤ μ.real {x | u x ≤ β} → ∀ c : ℝ, ∫ x, |u x - β| ∂μ ≤ ∫ x, |u x - c| ∂μ",
+  "lean_name": "dimred_mbl_dt_cbm_im_median_minimizes",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-moving-blowups-a1-deformation-the-f30a9e656d-a1"
+}
