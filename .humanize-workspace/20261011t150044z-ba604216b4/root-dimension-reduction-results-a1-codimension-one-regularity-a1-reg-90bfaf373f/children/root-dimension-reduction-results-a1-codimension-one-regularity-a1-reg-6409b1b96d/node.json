@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.de_giorgi-a1.gauss_green_measure-a1",
+  "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.de_giorgi-a1",
+  "depth": 5,
+  "title": "Gauss–Green measure: Riesz representation of the perimeter functional (Simon Ch. 2, 2.1–2.2; Ch. 3, 4.1)",
+  "statement": "Let m ∈ ℕ, let D ⊆ ℝ^{m+1} be open and F ⊆ ℝ^{m+1} Borel. Assume that for every compact K ⊆ D there is C_K ∈ ℝ with ∫_F div φ dL^{m+1} ≤ C_K for all C^∞ compactly supported φ : ℝ^{m+1} → ℝ^{m+1} with tsupport φ ⊆ K and |φ| ≤ 1 (div φ = trace Dφ). Then there are a Borel measure μ on ℝ^{m+1} and a Borel map ν : ℝ^{m+1} → ℝ^{m+1} such that μ(ℝ^{m+1} \\ D) = 0, μ(K) < ∞ for every compact K ⊆ D, |ν(y)| = 1 for every y, and ∫_F div φ dL^{m+1} = −∫⟨φ, ν⟩ dμ for every C¹ compactly supported φ : ℝ^{m+1} → ℝ^{m+1} with tsupport φ ⊆ D.",
+  "lean_statement": "∀ (m : ℕ) (D F : Set (Euclid (m + 1))), IsOpen D → MeasurableSet F → (∀ K : Set (Euclid (m + 1)), IsCompact K → K ⊆ D → ∃ C : ℝ, ∀ φ : Euclid (m + 1) → Euclid (m + 1), ContDiff ℝ (⊤ : ℕ∞) φ → HasCompactSupport φ → tsupport φ ⊆ K → (∀ y, ‖φ y‖ ≤ 1) → ∫ y in F, LinearMap.trace ℝ (Euclid (m + 1)) (fderiv ℝ φ y : Euclid (m + 1) →ₗ[ℝ] Euclid (m + 1)) ≤ C) → ∃ (μ : Measure (Euclid (m + 1))) (ν : Euclid (m + 1) → Euclid (m + 1)), μ Dᶜ = 0 ∧ (∀ K : Set (Euclid (m + 1)), IsCompact K → K ⊆ D → μ K ≠ ∞) ∧ Measurable ν ∧ (∀ y, ‖ν y‖ = 1) ∧ ∀ φ : Euclid (m + 1) → Euclid (m + 1), ContDiff ℝ 1 φ → HasCompactSupport φ → tsupport φ ⊆ D → ∫ y in F, LinearMap.trace ℝ (Euclid (m + 1)) (fderiv ℝ φ y : Euclid (m + 1) →ₗ[ℝ] Euclid (m + 1)) = -∫ y, inner ℝ (φ y) (ν y) ∂μ",
+  "lean_name": "codim1_rdo_dg_gauss_green_measure",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-6409b1b96d-a1"
+}

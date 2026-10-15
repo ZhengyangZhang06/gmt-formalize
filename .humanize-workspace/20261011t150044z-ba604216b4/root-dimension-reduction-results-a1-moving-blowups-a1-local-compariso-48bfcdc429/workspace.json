@@ -1,0 +1,415 @@
+{
+  "schema_version": 1,
+  "run_id": "20261011T150044Z-ba604216b4",
+  "parent_id": "root.dimension_reduction_results-a1.moving_blowups-a1.local_comparison-a1.retraction_comparison-a1",
+  "dispatch_branch": "proof-workspace/gmt-ch07/20261011t150044z-ba604216b4/dispatch/root-dimension-reduction-results-a1-moving-blowups-a1-local-compariso-48bfcdc429",
+  "source_commit": "b4d606db1da5da8fa2c0292ad4924d97de8b3c4b",
+  "comparator_command": "python3 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py --lean-target {lean_target} --verifier-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier --verify-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification --packages /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c --frozen-commit b4d606db1da5da8fa2c0292ad4924d97de8b3c4b {node_id}",
+  "comparator_success": "Your solution is okay!",
+  "lean_target": "GMT/Ch07/Submission.lean",
+  "children": [
+    {
+      "node_id": "root.dimension_reduction_results-a1.moving_blowups-a1.local_comparison-a1.retraction_comparison-a1.mass_domain_compare-a1",
+      "key": "mass_domain_compare",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-moving-blowups-a1-local-compariso-7497990374-a1",
+      "bundle_path": ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-moving-blowups-a1-local-compariso-48bfcdc429/children/root-dimension-reduction-results-a1-moving-blowups-a1-local-compariso-7497990374",
+      "handoff": {
+        "reference_use": [
+          {
+            "source": "local-project",
+            "queries": [
+              "cat RUN/local-references/123e8435b4a2469b/manifest.json; git rev-parse HEAD; cmp GMT/Ch07/Submission.lean GMT/Ch07/Contract.lean",
+              "python3 over RUN/dag.json: lean_statement/status/candidate_commit of the seven resolved dependencies of the selected node; accepted nodes (status accepted + candidate_commit) whose lean_statement matches '\\.support ⊆', 'restrictDomain', 'IsMinimizingIn T A', 'IsIntegerMultiplicity', 'R\\.measure K (<|≠) ∞'; lean_name collisions for dimred_mbl_lc_rc_restrict_to_univ / _push_add / _cycle_competitor / _measure_le_add_of_closed / _massOn_restrict_univ (none); byte comparison of the six reused lean_statements with their accepted DAG nodes (identical)",
+              "grep -n 'def GeometricCurrentOn.massOn|def massAdmissibleOn|def GeometricCurrentOn.support|def GeometricCurrentOn.zeroRegion|def GeometricCurrentOn.restrictDomain|def testFormOnInclusion|def exteriorDerivativeTestOn|def covectorEuclideanNorm|abbrev Covector|def IsTestForm' in .lake/packages/simongmt/Poincare/SimonGMT/Chapter06",
+              "grep -rn 'support_restrict_subset|measure_compl_support|Monotone.measure_iUnion|integrableOn_of_bounded|integrableOn_iff_integrable_of_support_subset|isBoundedBilinearMap_apply|bounded_above_of_compact_support|integral_add_compl|measure_inter_add_sdiff|compl_eq_univ_sdiff|ENNReal.add_le_add_iff_right' in .lake/packages/mathlib/Mathlib",
+              "grep -n '_existing_lean_name_problem|_accepted_checkpoint|def _solve_children|def ensure' /runtime/flows/gmt-claude-b888e19cffb1/_recursive_lean/runtime.py store.py; sed -n 540,640p verifier/gmt-compare.py (contract_scope, child_modules)",
+              "sed -n 150,275p book/chapter-07.txt is cited through the parent proof (Simon 7.2.4 (8)–(9), Remark 7.2.5(2)); lake env lean /tmp/rc_dec/Final.lean (11 child types, 5 child proofs from declared deps, assembly_check, end_to_end_check, #print axioms)"
+            ],
+            "files": [
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-local-compariso-48bfcdc429/parent-child-handoff.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-local-compariso-48bfcdc429/parent-supplied-plan.md",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-local-comparison-a1/decomposition-v1.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/mathlib/Mathlib/MeasureTheory/Measure/Support.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/mathlib/Mathlib/MeasureTheory/Measure/Continuity.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/mathlib/Mathlib/MeasureTheory/Measure/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+              "/runtime/flows/gmt-claude-b888e19cffb1/_recursive_lean/runtime.py",
+              "/runtime/flows/gmt-claude-b888e19cffb1/_recursive_lean/store.py",
+              "/tmp/rc_dec/Final.lean"
+            ],
+            "conclusion": "Pins match the manifest: project b4d606db1, Mathlib 25730c7c, and SimonGMT 2b366308 per lakefile.toml. Submission.lean is byte-identical to the frozen contract. Six comparator-accepted declarations supply the proof's foundational facts and are reused with byte-identical types (checked against dag.json; all are accepted with candidate commits): dor_imrep_massOn_eq_measure_and_support (MR), cmc_imRep_locality_restrict_sub (IMC), dtc_restrictDomain_isIntegerMultiplicity (RO), lcmp_imRep_measure_restrict (IR), lcmp_massOn_le_add_of_eval_eq (MT) and lcmp_measure_le_add_of_open_nhds (COB). Some related accepted lemmas were found and deliberately not used. cmc_fc_extend_to_univ and dtc_extend_by_zero extend a current to ℝ^P, but they give neither the weight μ_T⌞E nor T = Q + T₁. rsd_cmr_support_subset_of_vanish, cbrld_ns_support_sub_subset, cbr_imRep_measure_basic, rsd_imrep_compact_measure_ne_top and cbr_cc_current_algebra are covered inside the new children's short proofs. No pinned library file or accepted node contains the five new statements, and their names are unused. Mathlib supplies Measure.support_restrict_subset, Measure.measure_compl_support, Monotone.measure_iUnion, Measure.integrableOn_of_bounded and integral_add_compl. The Lean checks in Final.lean all passed: the 11 child types elaborate in comparator scope; each new child is proved from exactly its declared dependencies; assembly_check gives the exact parent type from the new children together with MR and MT; end_to_end_check gives it from the six reused types alone. The only axioms are propext, Classical.choice and Quot.sound."
+          }
+        ],
+        "parent_id": "root.dimension_reduction_results-a1.moving_blowups-a1.local_comparison-a1.retraction_comparison-a1",
+        "child_id": "root.dimension_reduction_results-a1.moving_blowups-a1.local_comparison-a1.retraction_comparison-a1.mass_domain_compare-a1",
+        "subproblem": {
+          "key": "mass_domain_compare",
+          "title": "Local masses of a current in ℝ^P versus its restriction to U and versus a current in U agreeing with it near G (the parent's (p4) and step 8(c))",
+          "statement": "Let P, n ∈ ℕ, let U, G ⊆ ℝ^P be arbitrary sets, X ∈ 𝒟_n(ℝ^P) (GeometricCurrentOn univ n) and Z ∈ 𝒟_n(U) (GeometricCurrentOn U n). For a current D in a domain V, M_G(D) = D.massOn G is the supremum in [0, ∞] of ofReal(D(ω)) over all ω ∈ 𝒟ⁿ(V) with tsupport ω ⊆ G and Euclidean coefficient norm |ω(x)| ≤ 1 for every x (SimonGMT massAdmissibleOn). Then: (a) M_G(X|_U) ≤ M_G(X), where X|_U := X.restrictDomain(U ⊆ ℝ^P), X|_U(ω) = X(ω) for ω ∈ 𝒟ⁿ(U); (b) if G ⊆ U and X(ω) = Z(ω) for every ω ∈ 𝒟ⁿ(U) with tsupport ω ⊆ G (on the left, ω is regarded as a test form on ℝ^P via testFormOnInclusion (subset_univ U)), then M_G(X) ≤ M_G(Z).",
+          "lean_statement": "∀ (P n : ℕ) (U G : Set (Euclid P)) (X : GeometricCurrentOn (univ : Set (Euclid P)) n) (Z : GeometricCurrentOn U n), (X.restrictDomain (subset_univ U)).massOn G ≤ X.massOn G ∧ (G ⊆ U → (∀ ω : TestFormOn U n, tsupport (ω : DifferentialForm (Euclid P) n) ⊆ G → X (testFormOnInclusion (subset_univ U) n ω) = Z ω) → X.massOn G ≤ Z.massOn G)",
+          "lean_name": "dimred_mbl_lc_rc_massOn_restrict_univ",
+          "depends_on": [],
+          "natural_proof": "Source: (p4) of the parent proof (M_G(X|_U) ≤ M_G(X): a form admissible for M_G(X|_U) is admissible for M_G(X), with the same value) and step 8(c) (a form admissible for M_{B_G}(QY) is admissible for M_{B_G}(Z), and QY agrees with Z on it), stated for arbitrary X, Z, U and G.\nCall ω ∈ 𝒟ⁿ(V) admissible for M_G in the domain V if tsupport ω ⊆ G and |ω(x)| ≤ 1 for every x. For ω ∈ 𝒟ⁿ(U), ι(ω) ∈ 𝒟ⁿ(ℝ^P) denotes the same form regarded on ℝ^P (testFormOnInclusion); its topological support and its pointwise values are those of ω.\n1. (Proof of (a).) Let ω ∈ 𝒟ⁿ(U) be admissible for M_G in U. Then ι(ω) is admissible for M_G in ℝ^P (same support and same pointwise norms), and X|_U(ω) = X(ι(ω)) by the definition of restrictDomain. So ofReal(X|_U(ω)) = ofReal(X(ι(ω))) ≤ M_G(X). Taking the supremum over all such ω gives M_G(X|_U) ≤ M_G(X).\n2. (Proof of (b).) Assume G ⊆ U and the agreement hypothesis, and let ω ∈ 𝒟ⁿ(ℝ^P) be admissible for M_G in ℝ^P. The underlying form of ω is smooth with compact support, and tsupport ω ⊆ G ⊆ U, so it defines an element ω′ ∈ 𝒟ⁿ(U) with ι(ω′) = ω (same underlying form). ω′ is admissible for M_G in U (tsupport ω′ = tsupport ω ⊆ G, same pointwise norms), and by hypothesis X(ω) = X(ι(ω′)) = Z(ω′). Hence ofReal(X(ω)) = ofReal(Z(ω′)) ≤ M_G(Z). Taking the supremum over all such ω gives M_G(X) ≤ M_G(Z). ∎",
+          "proof_key_steps": [
+            "(a): an admissible ω ∈ 𝒟ⁿ(U) gives the admissible ι(ω) ∈ 𝒟ⁿ(ℝ^P) with X|_U(ω) = X(ι(ω)); take the supremum.",
+            "(b): an admissible ω ∈ 𝒟ⁿ(ℝ^P) with tsupport ω ⊆ G ⊆ U equals ι(ω′) for an admissible ω′ ∈ 𝒟ⁿ(U), and X(ω) = Z(ω′); take the supremum."
+          ]
+        },
+        "audit": {
+          "key": "mass_domain_compare",
+          "acceptable": true,
+          "natural_proof_acceptable": true,
+          "reason": "Both inequalities follow by transporting admissible test forms with unchanged evaluations and norms. The reverse transport uses precisely G ⊆ U. The proof works for arbitrary U and G and requires no undeclared dependency."
+        },
+        "resolved_dependencies": [],
+        "plan_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-local-compariso-7497990374/parent-supplied-plan.md",
+        "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-local-compariso-7497990374/parent-supplied-natural-proof.md",
+        "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-local-compariso-7497990374/parent-supplied-natural-proof.json"
+      }
+    },
+    {
+      "node_id": "root.dimension_reduction_results-a1.moving_blowups-a1.local_comparison-a1.retraction_comparison-a1.cycle_competitor-a1",
+      "key": "cycle_competitor",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-moving-blowups-a1-local-compariso-4725781174-a1",
+      "bundle_path": ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-moving-blowups-a1-local-compariso-48bfcdc429/children/root-dimension-reduction-results-a1-moving-blowups-a1-local-compariso-4725781174",
+      "handoff": {
+        "reference_use": [
+          {
+            "source": "local-project",
+            "queries": [
+              "cat RUN/local-references/123e8435b4a2469b/manifest.json; git rev-parse HEAD; cmp GMT/Ch07/Submission.lean GMT/Ch07/Contract.lean",
+              "python3 over RUN/dag.json: lean_statement/status/candidate_commit of the seven resolved dependencies of the selected node; accepted nodes (status accepted + candidate_commit) whose lean_statement matches '\\.support ⊆', 'restrictDomain', 'IsMinimizingIn T A', 'IsIntegerMultiplicity', 'R\\.measure K (<|≠) ∞'; lean_name collisions for dimred_mbl_lc_rc_restrict_to_univ / _push_add / _cycle_competitor / _measure_le_add_of_closed / _massOn_restrict_univ (none); byte comparison of the six reused lean_statements with their accepted DAG nodes (identical)",
+              "grep -n 'def GeometricCurrentOn.massOn|def massAdmissibleOn|def GeometricCurrentOn.support|def GeometricCurrentOn.zeroRegion|def GeometricCurrentOn.restrictDomain|def testFormOnInclusion|def exteriorDerivativeTestOn|def covectorEuclideanNorm|abbrev Covector|def IsTestForm' in .lake/packages/simongmt/Poincare/SimonGMT/Chapter06",
+              "grep -rn 'support_restrict_subset|measure_compl_support|Monotone.measure_iUnion|integrableOn_of_bounded|integrableOn_iff_integrable_of_support_subset|isBoundedBilinearMap_apply|bounded_above_of_compact_support|integral_add_compl|measure_inter_add_sdiff|compl_eq_univ_sdiff|ENNReal.add_le_add_iff_right' in .lake/packages/mathlib/Mathlib",
+              "grep -n '_existing_lean_name_problem|_accepted_checkpoint|def _solve_children|def ensure' /runtime/flows/gmt-claude-b888e19cffb1/_recursive_lean/runtime.py store.py; sed -n 540,640p verifier/gmt-compare.py (contract_scope, child_modules)",
+              "sed -n 150,275p book/chapter-07.txt is cited through the parent proof (Simon 7.2.4 (8)–(9), Remark 7.2.5(2)); lake env lean /tmp/rc_dec/Final.lean (11 child types, 5 child proofs from declared deps, assembly_check, end_to_end_check, #print axioms)"
+            ],
+            "files": [
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-local-compariso-48bfcdc429/parent-child-handoff.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-local-compariso-48bfcdc429/parent-supplied-plan.md",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-local-comparison-a1/decomposition-v1.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/mathlib/Mathlib/MeasureTheory/Measure/Support.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/mathlib/Mathlib/MeasureTheory/Measure/Continuity.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/mathlib/Mathlib/MeasureTheory/Measure/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+              "/runtime/flows/gmt-claude-b888e19cffb1/_recursive_lean/runtime.py",
+              "/runtime/flows/gmt-claude-b888e19cffb1/_recursive_lean/store.py",
+              "/tmp/rc_dec/Final.lean"
+            ],
+            "conclusion": "Pins match the manifest: project b4d606db1, Mathlib 25730c7c, and SimonGMT 2b366308 per lakefile.toml. Submission.lean is byte-identical to the frozen contract. Six comparator-accepted declarations supply the proof's foundational facts and are reused with byte-identical types (checked against dag.json; all are accepted with candidate commits): dor_imrep_massOn_eq_measure_and_support (MR), cmc_imRep_locality_restrict_sub (IMC), dtc_restrictDomain_isIntegerMultiplicity (RO), lcmp_imRep_measure_restrict (IR), lcmp_massOn_le_add_of_eval_eq (MT) and lcmp_measure_le_add_of_open_nhds (COB). Some related accepted lemmas were found and deliberately not used. cmc_fc_extend_to_univ and dtc_extend_by_zero extend a current to ℝ^P, but they give neither the weight μ_T⌞E nor T = Q + T₁. rsd_cmr_support_subset_of_vanish, cbrld_ns_support_sub_subset, cbr_imRep_measure_basic, rsd_imrep_compact_measure_ne_top and cbr_cc_current_algebra are covered inside the new children's short proofs. No pinned library file or accepted node contains the five new statements, and their names are unused. Mathlib supplies Measure.support_restrict_subset, Measure.measure_compl_support, Monotone.measure_iUnion, Measure.integrableOn_of_bounded and integral_add_compl. The Lean checks in Final.lean all passed: the 11 child types elaborate in comparator scope; each new child is proved from exactly its declared dependencies; assembly_check gives the exact parent type from the new children together with MR and MT; end_to_end_check gives it from the six reused types alone. The only axioms are propext, Classical.choice and Quot.sound."
+          }
+        ],
+        "parent_id": "root.dimension_reduction_results-a1.moving_blowups-a1.local_comparison-a1.retraction_comparison-a1",
+        "child_id": "root.dimension_reduction_results-a1.moving_blowups-a1.local_comparison-a1.retraction_comparison-a1.cycle_competitor-a1",
+        "subproblem": {
+          "key": "cycle_competitor",
+          "title": "Minimality against adding an integer multiplicity cycle supported in A ∩ W (step 5 of the parent)",
+          "statement": "Let P, m ∈ ℕ, n := m + 1, U ⊆ ℝ^P open, A ⊆ ℝ^P, and T ∈ 𝒟_n(U) minimizing in A (contract IsMinimizingIn T A: T is integer multiplicity and M_{W′}(T) ≤ M_{W′}(S) for every open W′ ⊂⊂ U and every integer multiplicity S ∈ 𝒟_n(U) with ∂S = ∂T and spt(S − T) a compact subset of A ∩ W′). Let W ⊆ ℝ^P be open with W ⊂⊂ U (contract CompactlyContained W U: closure(W) is compact and contained in U). Let X ∈ 𝒟_n(ℝ^P) (GeometricCurrentOn univ n) be integer multiplicity with ∂X = 0, spt X compact and spt X ⊆ A ∩ W, and let Z₁ ∈ 𝒟_n(U) satisfy Z₁(ω) = T(ω) + X(ω) for every ω ∈ 𝒟ⁿ(U), where X is evaluated at ω regarded as a test form on ℝ^P (testFormOnInclusion (subset_univ U)). Then M_W(T) ≤ M_W(Z₁) (SimonGMT massOn).",
+          "lean_statement": "∀ (P m : ℕ) (U A W : Set (Euclid P)) (T Z₁ : GeometricCurrentOn U (m + 1)) (X : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1)), IsOpen U → IsMinimizingIn T A → IsOpen W → CompactlyContained W U → IsIntegerMultiplicity X → X.boundary = 0 → IsCompact X.support → X.support ⊆ A ∩ W → (∀ ω : TestFormOn U (m + 1), Z₁ ω = T ω + X (testFormOnInclusion (subset_univ U) (m + 1) ω)) → T.massOn W ≤ Z₁.massOn W",
+          "lean_name": "dimred_mbl_lc_rc_cycle_competitor",
+          "depends_on": [
+            "im_calculus",
+            "restrict_open_im"
+          ],
+          "natural_proof": "Source: step 5 of the parent proof (the competitor Z₁ = T + (push Y)|_U: (i) same boundary, (ii)–(iii) compact support of Z₁ − T in A ∩ B_{G₃}, (iv) B_{G₃} ⊂⊂ U, and minimality), with the cycle push Y replaced by an arbitrary X and B_{G₃} by W. Simon 7.1.1 and 7.2.4 with Remark 7.2.5(2). Siblings: (IMC) im_calculus, part (c); (RO) restrict_open_im.\nNotation. For D ∈ 𝒟_k(ℝ^P), D|_U := D.restrictDomain(U ⊆ ℝ^P) ∈ 𝒟_k(U), so D|_U(ω) = D(ω) for ω ∈ 𝒟^k(U), regarded in 𝒟^k(ℝ^P) with the same underlying form. For a current D in a domain V, spt D = V ∖ Z_D, where Z_D is the union of the open sets W′ with compact closure contained in V on which D vanishes; Z_D is open. Currents are determined by their values (GeometricCurrentOn.ext).\n1. (Z₁ is integer multiplicity.) T is integer multiplicity (first part of IsMinimizingIn T A). X|_U is integer multiplicity by (RO), U being open. By (IMC)(c) in U, N := X|_U − X|_U, then N − X|_U, then T − (N − X|_U) are integer multiplicity. For ω ∈ 𝒟ⁿ(U): (T − (N − X|_U))(ω) = T(ω) − (0 − X(ω)) = T(ω) + X(ω) = Z₁(ω). Hence Z₁ = T − (N − X|_U) is integer multiplicity.\n2. (∂Z₁ = ∂T.) Let η ∈ 𝒟^m(U). The form dη ∈ 𝒟ⁿ(U), regarded in 𝒟ⁿ(ℝ^P), is the exterior derivative of η regarded in 𝒟^m(ℝ^P): both have underlying form dη (exteriorDerivativeTestOn does not depend on the domain). Hence ∂Z₁(η) = Z₁(dη) = T(dη) + X(dη) = ∂T(η) + ∂X(η) = ∂T(η), because ∂X = 0. So ∂Z₁ = ∂T, which is SameBoundary Z₁ T in degree n = m + 1.\n3. (spt(Z₁ − T) ⊆ spt X.) For ω ∈ 𝒟ⁿ(U), (Z₁ − T)(ω) = Z₁(ω) − T(ω) = X(ω). Let x ∈ spt(Z₁ − T); then x ∈ U. Suppose x ∉ spt X. Then x ∈ Z_X: there is an open V ∋ x on which X vanishes. As U is open, choose r > 0 with B_r(x) ⊆ U and put V′ := V ∩ B_{r/2}(x). V′ is open and contains x; closure(V′) ⊆ closedBall(x, r/2) ⊆ B_r(x) ⊆ U, and closure(V′) is compact (a closed subset of the compact closedBall(x, r/2)). For ω ∈ 𝒟ⁿ(U) with tsupport ω ⊆ V′ ⊆ V: (Z₁ − T)(ω) = X(ω) = 0. So Z₁ − T vanishes on V′ and x ∈ Z_{Z₁−T}, contradicting x ∈ spt(Z₁ − T). Hence spt(Z₁ − T) ⊆ spt X ⊆ A ∩ W.\n4. (Compactness.) spt X ⊆ W ⊆ closure(W) ⊆ U. Therefore spt(Z₁ − T) = U ∖ Z_{Z₁−T} equals spt X ∩ (ℝ^P ∖ Z_{Z₁−T}): '⊆' by step 3, and '⊇' because every point of spt X lies in U. This is the intersection of the compact set spt X with a closed set, hence compact.\n5. (Minimality.) W is open with W ⊂⊂ U, Z₁ is integer multiplicity (step 1), SameBoundary Z₁ T (step 2), and spt(Z₁ − T) is compact (step 4) and contained in A ∩ W (step 3). The second part of IsMinimizingIn T A, applied to W and S := Z₁, gives M_W(T) ≤ M_W(Z₁). ∎",
+          "proof_key_steps": [
+            "Z₁ = T − ((X|_U − X|_U) − X|_U) is integer multiplicity by (RO) and (IMC)(c).",
+            "∂Z₁(η) = T(dη) + X(dη) = ∂T(η) because ∂X = 0; so SameBoundary Z₁ T.",
+            "(Z₁ − T)(ω) = X(ω); a point of U outside spt X has a small open neighbourhood with compact closure in U on which Z₁ − T vanishes, so spt(Z₁ − T) ⊆ spt X ⊆ A ∩ W.",
+            "spt(Z₁ − T) = spt X ∖ Z_{Z₁−T} is compact; minimality with W and S = Z₁ gives M_W(T) ≤ M_W(Z₁)."
+          ]
+        },
+        "audit": {
+          "key": "cycle_competitor",
+          "acceptable": true,
+          "natural_proof_acceptable": true,
+          "reason": "The proof verifies integer multiplicity, boundary equality, support containment and compactness before invoking the exact minimizing contract. Derivative inclusion commutes definitionally, and CompactlyContained W U ensures the compact ambient support lies in U."
+        },
+        "resolved_dependencies": [
+          "root.compactness_of_minimizing_currents-a1.im_calculus-a1",
+          "root.density_and_tangent_cones-a1.localize-a1.restrict_im-a1"
+        ],
+        "plan_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-local-compariso-4725781174/parent-supplied-plan.md",
+        "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-local-compariso-4725781174/parent-supplied-natural-proof.md",
+        "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-local-compariso-4725781174/parent-supplied-natural-proof.json"
+      }
+    },
+    {
+      "node_id": "root.dimension_reduction_results-a1.moving_blowups-a1.local_comparison-a1.retraction_comparison-a1.measure_subadditive-a1",
+      "key": "measure_subadditive",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-moving-blowups-a1-local-compariso-7237c8df09-a1",
+      "bundle_path": ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-moving-blowups-a1-local-compariso-48bfcdc429/children/root-dimension-reduction-results-a1-moving-blowups-a1-local-compariso-7237c8df09",
+      "handoff": {
+        "reference_use": [
+          {
+            "source": "local-project",
+            "queries": [
+              "cat RUN/local-references/123e8435b4a2469b/manifest.json; git rev-parse HEAD; cmp GMT/Ch07/Submission.lean GMT/Ch07/Contract.lean",
+              "python3 over RUN/dag.json: lean_statement/status/candidate_commit of the seven resolved dependencies of the selected node; accepted nodes (status accepted + candidate_commit) whose lean_statement matches '\\.support ⊆', 'restrictDomain', 'IsMinimizingIn T A', 'IsIntegerMultiplicity', 'R\\.measure K (<|≠) ∞'; lean_name collisions for dimred_mbl_lc_rc_restrict_to_univ / _push_add / _cycle_competitor / _measure_le_add_of_closed / _massOn_restrict_univ (none); byte comparison of the six reused lean_statements with their accepted DAG nodes (identical)",
+              "grep -n 'def GeometricCurrentOn.massOn|def massAdmissibleOn|def GeometricCurrentOn.support|def GeometricCurrentOn.zeroRegion|def GeometricCurrentOn.restrictDomain|def testFormOnInclusion|def exteriorDerivativeTestOn|def covectorEuclideanNorm|abbrev Covector|def IsTestForm' in .lake/packages/simongmt/Poincare/SimonGMT/Chapter06",
+              "grep -rn 'support_restrict_subset|measure_compl_support|Monotone.measure_iUnion|integrableOn_of_bounded|integrableOn_iff_integrable_of_support_subset|isBoundedBilinearMap_apply|bounded_above_of_compact_support|integral_add_compl|measure_inter_add_sdiff|compl_eq_univ_sdiff|ENNReal.add_le_add_iff_right' in .lake/packages/mathlib/Mathlib",
+              "grep -n '_existing_lean_name_problem|_accepted_checkpoint|def _solve_children|def ensure' /runtime/flows/gmt-claude-b888e19cffb1/_recursive_lean/runtime.py store.py; sed -n 540,640p verifier/gmt-compare.py (contract_scope, child_modules)",
+              "sed -n 150,275p book/chapter-07.txt is cited through the parent proof (Simon 7.2.4 (8)–(9), Remark 7.2.5(2)); lake env lean /tmp/rc_dec/Final.lean (11 child types, 5 child proofs from declared deps, assembly_check, end_to_end_check, #print axioms)"
+            ],
+            "files": [
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-local-compariso-48bfcdc429/parent-child-handoff.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-local-compariso-48bfcdc429/parent-supplied-plan.md",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-local-comparison-a1/decomposition-v1.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/mathlib/Mathlib/MeasureTheory/Measure/Support.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/mathlib/Mathlib/MeasureTheory/Measure/Continuity.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/mathlib/Mathlib/MeasureTheory/Measure/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+              "/runtime/flows/gmt-claude-b888e19cffb1/_recursive_lean/runtime.py",
+              "/runtime/flows/gmt-claude-b888e19cffb1/_recursive_lean/store.py",
+              "/tmp/rc_dec/Final.lean"
+            ],
+            "conclusion": "Pins match the manifest: project b4d606db1, Mathlib 25730c7c, and SimonGMT 2b366308 per lakefile.toml. Submission.lean is byte-identical to the frozen contract. Six comparator-accepted declarations supply the proof's foundational facts and are reused with byte-identical types (checked against dag.json; all are accepted with candidate commits): dor_imrep_massOn_eq_measure_and_support (MR), cmc_imRep_locality_restrict_sub (IMC), dtc_restrictDomain_isIntegerMultiplicity (RO), lcmp_imRep_measure_restrict (IR), lcmp_massOn_le_add_of_eval_eq (MT) and lcmp_measure_le_add_of_open_nhds (COB). Some related accepted lemmas were found and deliberately not used. cmc_fc_extend_to_univ and dtc_extend_by_zero extend a current to ℝ^P, but they give neither the weight μ_T⌞E nor T = Q + T₁. rsd_cmr_support_subset_of_vanish, cbrld_ns_support_sub_subset, cbr_imRep_measure_basic, rsd_imrep_compact_measure_ne_top and cbr_cc_current_algebra are covered inside the new children's short proofs. No pinned library file or accepted node contains the five new statements, and their names are unused. Mathlib supplies Measure.support_restrict_subset, Measure.measure_compl_support, Monotone.measure_iUnion, Measure.integrableOn_of_bounded and integral_add_compl. The Lean checks in Final.lean all passed: the 11 child types elaborate in comparator scope; each new child is proved from exactly its declared dependencies; assembly_check gives the exact parent type from the new children together with MR and MT; end_to_end_check gives it from the six reused types alone. The only axioms are propext, Classical.choice and Quot.sound."
+          }
+        ],
+        "parent_id": "root.dimension_reduction_results-a1.moving_blowups-a1.local_comparison-a1.retraction_comparison-a1",
+        "child_id": "root.dimension_reduction_results-a1.moving_blowups-a1.local_comparison-a1.retraction_comparison-a1.measure_subadditive-a1",
+        "subproblem": {
+          "key": "measure_subadditive",
+          "title": "Subadditivity of the mass measures of integer multiplicity currents on closed sets (step 8(b) of the parent)",
+          "statement": "Let P, n ∈ ℕ, V ⊆ ℝ^P open, X, X₁, X₂ ∈ 𝒟_n(V) (GeometricCurrentOn V n), and R, R₁, R₂ IMReps in V (contract IMRep V n) with R representing X, R₁ representing X₁ and R₂ representing X₂. Suppose X(ω) = X₁(ω) + X₂(ω) for every ω ∈ 𝒟ⁿ(V). Then for every closed set F ⊆ ℝ^P with F ⊆ V, μ_R(F) ≤ μ_{R₁}(F) + μ_{R₂}(F) in [0, ∞], where μ_{R′} := R′.measure = θ′Hⁿ⌞M′ is the weight of an IMRep R′ = (M′, θ′, ξ′) (Hⁿ = μHE[n]).",
+          "lean_statement": "∀ (P n : ℕ) (V F : Set (Euclid P)) (X X₁ X₂ : GeometricCurrentOn V n) (R R₁ R₂ : IMRep V n), IsOpen V → R.Represents X → R₁.Represents X₁ → R₂.Represents X₂ → (∀ ω : TestFormOn V n, X ω = X₁ ω + X₂ ω) → IsClosed F → F ⊆ V → R.measure F ≤ R₁.measure F + R₂.measure F",
+          "lean_name": "dimred_mbl_lc_rc_measure_le_add_of_closed",
+          "depends_on": [
+            "mass_and_support",
+            "mass_triangle",
+            "compact_outer_bound"
+          ],
+          "natural_proof": "Source: step 8(b) of the parent proof (μ_{QY}(S_G) ≤ μ_{R₃}(S_G) + μ_{R_Y}(S_G), obtained from the open-set inequality via (MR), (MT) and (COB)), stated for arbitrary integer multiplicity currents and extended from compact sets to closed sets by exhaustion; the parent applies it to the closed set ℝ^P ∖ B_G, which contains the sphere S_G. Siblings: (MR) mass_and_support; (MT) mass_triangle; (COB) compact_outer_bound.\nWrite μ := μ_R, μ_i := μ_{R_i} (i = 1, 2) and ν := μ₁ + μ₂.\n1. (Open sets.) Let G ⊆ ℝ^P be open. By (MR)(i) (V is open), μ(G) = M_G(X), μ₁(G) = M_G(X₁) and μ₂(G) = M_G(X₂). By (MT) with c := 1 (|c| ≤ 1, and X(ω) = X₁(ω) + 1·X₂(ω) for every ω ∈ 𝒟ⁿ(V), in particular for those with tsupport ω ⊆ G), M_G(X) ≤ M_G(X₁) + M_G(X₂). Hence μ(G) ≤ μ₁(G) + μ₂(G) = ν(G).\n2. (ν is finite on compact subsets of V.) Let K ⊆ V be compact. K is closed, hence Borel, so for an IMRep R′ = (M′, θ′, ξ′) in V, μ_{R′}(K) = ∫_K θ′ d(Hⁿ⌞M′) = ∫_{M′∩K} θ′ dHⁿ (withDensity_apply, Measure.restrict_restrict), which is finite by the local integrability field of R′ (K compact, K ⊆ V). So ν(K) = μ₁(K) + μ₂(K) < ∞.\n3. (Compact sets.) Let K ⊆ V be compact. By step 1, μ(G) ≤ ν(G) + 0 for every open G ⊇ K, in particular for every such G with G ⊂⊂ V. By (COB) with U := V, E := K, the measures μ and ν (finite on compact subsets of V by step 2) and c := 0: μ(K) ≤ ν(K).\n4. (Closed sets.) Let F ⊆ V be closed, and put F_j := F ∩ closedBall(0, j) for j ∈ ℕ. Each F_j is closed and bounded, hence compact, and F_j ⊆ F ⊆ V; the F_j increase with j, and ⋃_j F_j = F (every x lies in closedBall(0, j) for any integer j ≥ |x|). By continuity of measures from below along an increasing sequence of sets (Mathlib Monotone.measure_iUnion), step 3 and monotonicity of ν: μ(F) = sup_j μ(F_j) ≤ sup_j ν(F_j) ≤ ν(F) = μ₁(F) + μ₂(F). ∎",
+          "proof_key_steps": [
+            "For open G: μ_R(G) = M_G(X) ≤ M_G(X₁) + M_G(X₂) = μ_{R₁}(G) + μ_{R₂}(G), by (MR)(i) and (MT) with c = 1.",
+            "μ_{R₁} + μ_{R₂} is finite on compact subsets of V (local integrability of the multiplicities).",
+            "(COB) with c = 0 passes the inequality to compact K ⊆ V.",
+            "A closed F ⊆ V is the increasing union of the compact sets F ∩ closedBall(0, j); continuity from below gives μ_R(F) ≤ μ_{R₁}(F) + μ_{R₂}(F)."
+          ]
+        },
+        "audit": {
+          "key": "measure_subadditive",
+          "acceptable": true,
+          "natural_proof_acceptable": true,
+          "reason": "The open-set inequality follows from mass_and_support and mass_triangle. Local finiteness permits compact_outer_bound on compact subsets of V; increasing compact exhaustion proves the exact closed-set conclusion without additional regularity assumptions."
+        },
+        "resolved_dependencies": [
+          "root.density_one_implies_regular-a1.imrep_mass_and_support-a1",
+          "root.compactness_of_minimizing_currents-a1.local_comparison-a1.mass_triangle-a1",
+          "root.compactness_of_minimizing_currents-a1.local_comparison-a1.compact_outer_bound-a1"
+        ],
+        "plan_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-local-compariso-7237c8df09/parent-supplied-plan.md",
+        "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-local-compariso-7237c8df09/parent-supplied-natural-proof.md",
+        "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-local-compariso-7237c8df09/parent-supplied-natural-proof.json"
+      }
+    },
+    {
+      "node_id": "root.dimension_reduction_results-a1.moving_blowups-a1.local_comparison-a1.retraction_comparison-a1.push_add-a1",
+      "key": "push_add",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-moving-blowups-a1-local-compariso-94d5dab86b-a1",
+      "bundle_path": ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-moving-blowups-a1-local-compariso-48bfcdc429/children/root-dimension-reduction-results-a1-moving-blowups-a1-local-compariso-94d5dab86b",
+      "handoff": {
+        "reference_use": [
+          {
+            "source": "local-project",
+            "queries": [
+              "cat RUN/local-references/123e8435b4a2469b/manifest.json; git rev-parse HEAD; cmp GMT/Ch07/Submission.lean GMT/Ch07/Contract.lean",
+              "python3 over RUN/dag.json: lean_statement/status/candidate_commit of the seven resolved dependencies of the selected node; accepted nodes (status accepted + candidate_commit) whose lean_statement matches '\\.support ⊆', 'restrictDomain', 'IsMinimizingIn T A', 'IsIntegerMultiplicity', 'R\\.measure K (<|≠) ∞'; lean_name collisions for dimred_mbl_lc_rc_restrict_to_univ / _push_add / _cycle_competitor / _measure_le_add_of_closed / _massOn_restrict_univ (none); byte comparison of the six reused lean_statements with their accepted DAG nodes (identical)",
+              "grep -n 'def GeometricCurrentOn.massOn|def massAdmissibleOn|def GeometricCurrentOn.support|def GeometricCurrentOn.zeroRegion|def GeometricCurrentOn.restrictDomain|def testFormOnInclusion|def exteriorDerivativeTestOn|def covectorEuclideanNorm|abbrev Covector|def IsTestForm' in .lake/packages/simongmt/Poincare/SimonGMT/Chapter06",
+              "grep -rn 'support_restrict_subset|measure_compl_support|Monotone.measure_iUnion|integrableOn_of_bounded|integrableOn_iff_integrable_of_support_subset|isBoundedBilinearMap_apply|bounded_above_of_compact_support|integral_add_compl|measure_inter_add_sdiff|compl_eq_univ_sdiff|ENNReal.add_le_add_iff_right' in .lake/packages/mathlib/Mathlib",
+              "grep -n '_existing_lean_name_problem|_accepted_checkpoint|def _solve_children|def ensure' /runtime/flows/gmt-claude-b888e19cffb1/_recursive_lean/runtime.py store.py; sed -n 540,640p verifier/gmt-compare.py (contract_scope, child_modules)",
+              "sed -n 150,275p book/chapter-07.txt is cited through the parent proof (Simon 7.2.4 (8)–(9), Remark 7.2.5(2)); lake env lean /tmp/rc_dec/Final.lean (11 child types, 5 child proofs from declared deps, assembly_check, end_to_end_check, #print axioms)"
+            ],
+            "files": [
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-local-compariso-48bfcdc429/parent-child-handoff.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-local-compariso-48bfcdc429/parent-supplied-plan.md",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-local-comparison-a1/decomposition-v1.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/mathlib/Mathlib/MeasureTheory/Measure/Support.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/mathlib/Mathlib/MeasureTheory/Measure/Continuity.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/mathlib/Mathlib/MeasureTheory/Measure/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+              "/runtime/flows/gmt-claude-b888e19cffb1/_recursive_lean/runtime.py",
+              "/runtime/flows/gmt-claude-b888e19cffb1/_recursive_lean/store.py",
+              "/tmp/rc_dec/Final.lean"
+            ],
+            "conclusion": "Pins match the manifest: project b4d606db1, Mathlib 25730c7c, and SimonGMT 2b366308 per lakefile.toml. Submission.lean is byte-identical to the frozen contract. Six comparator-accepted declarations supply the proof's foundational facts and are reused with byte-identical types (checked against dag.json; all are accepted with candidate commits): dor_imrep_massOn_eq_measure_and_support (MR), cmc_imRep_locality_restrict_sub (IMC), dtc_restrictDomain_isIntegerMultiplicity (RO), lcmp_imRep_measure_restrict (IR), lcmp_massOn_le_add_of_eval_eq (MT) and lcmp_measure_le_add_of_open_nhds (COB). Some related accepted lemmas were found and deliberately not used. cmc_fc_extend_to_univ and dtc_extend_by_zero extend a current to ℝ^P, but they give neither the weight μ_T⌞E nor T = Q + T₁. rsd_cmr_support_subset_of_vanish, cbrld_ns_support_sub_subset, cbr_imRep_measure_basic, rsd_imrep_compact_measure_ne_top and cbr_cc_current_algebra are covered inside the new children's short proofs. No pinned library file or accepted node contains the five new statements, and their names are unused. Mathlib supplies Measure.support_restrict_subset, Measure.measure_compl_support, Monotone.measure_iUnion, Measure.integrableOn_of_bounded and integral_add_compl. The Lean checks in Final.lean all passed: the 11 child types elaborate in comparator scope; each new child is proved from exactly its declared dependencies; assembly_check gives the exact parent type from the new children together with MR and MT; end_to_end_check gives it from the six reused types alone. The only axioms are propext, Classical.choice and Quot.sound."
+          }
+        ],
+        "parent_id": "root.dimension_reduction_results-a1.moving_blowups-a1.local_comparison-a1.retraction_comparison-a1",
+        "child_id": "root.dimension_reduction_results-a1.moving_blowups-a1.local_comparison-a1.retraction_comparison-a1.push_add-a1",
+        "subproblem": {
+          "key": "push_add",
+          "title": "Additivity of a push-forward map that is linear on integer multiplicity currents with compact supports in O (step 4 of the parent)",
+          "statement": "Let P, n ∈ ℕ, O ⊆ ℝ^P any set, and push : 𝒟_n(ℝ^P) → 𝒟_n(ℝ^P) any map (𝒟_n(ℝ^P) = GeometricCurrentOn univ n) such that push(X₁ − X₂) = push X₁ − push X₂ for all integer multiplicity X₁, X₂ ∈ 𝒟_n(ℝ^P) (contract IsIntegerMultiplicity) whose supports spt X₁, spt X₂ (GeometricCurrentOn.support, Simon 6.2.11) are compact and contained in O; here − is the contract's difference of currents, (X₁ − X₂)(ω) = X₁(ω) − X₂(ω). Let X, Y ∈ 𝒟_n(ℝ^P) be integer multiplicity with spt X and spt Y compact and contained in O. Then there is an integer multiplicity S ∈ 𝒟_n(ℝ^P) such that S(ω) = X(ω) + Y(ω) for every ω ∈ 𝒟ⁿ(ℝ^P), spt S ⊆ spt X ∪ spt Y, spt S is compact, and push S(ω) = push X(ω) + push Y(ω) for every ω ∈ 𝒟ⁿ(ℝ^P).",
+          "lean_statement": "∀ (P n : ℕ) (O : Set (Euclid P)) (push : GeometricCurrentOn (univ : Set (Euclid P)) n → GeometricCurrentOn (univ : Set (Euclid P)) n) (X Y : GeometricCurrentOn (univ : Set (Euclid P)) n), (∀ X₁ X₂ : GeometricCurrentOn (univ : Set (Euclid P)) n, IsIntegerMultiplicity X₁ → IsIntegerMultiplicity X₂ → IsCompact X₁.support → X₁.support ⊆ O → IsCompact X₂.support → X₂.support ⊆ O → push (X₁ - X₂) = push X₁ - push X₂) → IsIntegerMultiplicity X → IsIntegerMultiplicity Y → IsCompact X.support → X.support ⊆ O → IsCompact Y.support → Y.support ⊆ O → ∃ S : GeometricCurrentOn (univ : Set (Euclid P)) n, IsIntegerMultiplicity S ∧ (∀ ω : TestFormOn (univ : Set (Euclid P)) n, S ω = X ω + Y ω) ∧ S.support ⊆ X.support ∪ Y.support ∧ IsCompact S.support ∧ ∀ ω : TestFormOn (univ : Set (Euclid P)) n, push S ω = push X ω + push Y ω",
+          "lean_name": "dimred_mbl_lc_rc_push_add",
+          "depends_on": [
+            "im_calculus"
+          ],
+          "natural_proof": "Source: step 4 of the parent proof (the current QY = Q + Y, its support, and push(Q + Y) = push Q + push Y obtained from (PF)(B)), for arbitrary X, Y in place of Q, Y. Two simplifications of the parent's argument: the support bound spt S ⊆ spt X ∪ spt Y is proved directly from the definition of the zero region (instead of (p2)), and push S is computed from S − Y = X, so push 0 = 0 is not needed. Sibling: (IMC) im_calculus, part (c).\nRecall that spt D = ℝ^P ∖ Z_D for D ∈ 𝒟_n(ℝ^P), where Z_D is the union of all open W ⊆ ℝ^P with closure(W) compact on which D vanishes (D(η) = 0 for every η ∈ 𝒟ⁿ(ℝ^P) with tsupport η ⊆ W); Z_D is open, so spt D is closed. Currents are determined by their values on test forms (GeometricCurrentOn.ext).\n1. (S and its values.) By (IMC)(c) in the open set ℝ^P, the difference of two integer multiplicity currents in ℝ^P is integer multiplicity. Applying it three times, N := X − X, N − Y and S := X − (N − Y) are integer multiplicity. For every ω, N(ω) = X(ω) − X(ω) = 0, hence S(ω) = X(ω) − (0 − Y(ω)) = X(ω) + Y(ω).\n2. (spt S ⊆ spt X ∪ spt Y.) Let x ∉ spt X ∪ spt Y. Then x ∈ Z_X ∩ Z_Y: there are open sets W₁, W₂ containing x, with compact closures, such that X vanishes on W₁ and Y vanishes on W₂. W := W₁ ∩ W₂ is open and contains x, and closure(W) ⊆ closure(W₁) is a closed subset of a compact set, hence compact. If tsupport η ⊆ W, then S(η) = X(η) + Y(η) = 0 + 0 = 0. So S vanishes on W, x ∈ Z_S, and x ∉ spt S.\n3. (Compactness.) spt S is closed and, by step 2, contained in the compact set spt X ∪ spt Y; hence spt S is compact. Moreover spt S ⊆ spt X ∪ spt Y ⊆ O.\n4. (Additivity.) For every ω, (S − Y)(ω) = X(ω) + Y(ω) − Y(ω) = X(ω); hence S − Y = X. S and Y are integer multiplicity with compact supports contained in O (steps 1 and 3 and the hypotheses), so the hypothesis on push gives push X = push(S − Y) = push S − push Y. Evaluating at ω: push X(ω) = push S(ω) − push Y(ω), i.e. push S(ω) = push X(ω) + push Y(ω). ∎",
+          "proof_key_steps": [
+            "S := X − ((X − X) − Y) is integer multiplicity by three applications of (IMC)(c), and S(ω) = X(ω) + Y(ω).",
+            "A point of Z_X ∩ Z_Y has the open neighbourhood W₁ ∩ W₂, with compact closure, on which S vanishes; so spt S ⊆ spt X ∪ spt Y, and spt S, being closed, is compact and contained in O.",
+            "S − Y = X, so the hypothesis on push gives push X = push S − push Y, i.e. push S = push X + push Y."
+          ]
+        },
+        "audit": {
+          "key": "push_add",
+          "acceptable": true,
+          "natural_proof_acceptable": true,
+          "reason": "The difference construction supplies integer multiplicity and the sum evaluation. Intersecting zero-region neighbourhoods proves the support bound and compactness. Applying difference preservation to S and Y after verifying admissibility proves push additivity; O need not be open."
+        },
+        "resolved_dependencies": [
+          "root.compactness_of_minimizing_currents-a1.im_calculus-a1"
+        ],
+        "plan_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-local-compariso-94d5dab86b/parent-supplied-plan.md",
+        "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-local-compariso-94d5dab86b/parent-supplied-natural-proof.md",
+        "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-local-compariso-94d5dab86b/parent-supplied-natural-proof.json"
+      }
+    },
+    {
+      "node_id": "root.dimension_reduction_results-a1.moving_blowups-a1.local_comparison-a1.retraction_comparison-a1.restrict_to_univ-a1",
+      "key": "restrict_to_univ",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-moving-blowups-a1-local-compariso-5a45ed3919-a1",
+      "bundle_path": ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-moving-blowups-a1-local-compariso-48bfcdc429/children/root-dimension-reduction-results-a1-moving-blowups-a1-local-compariso-5a45ed3919",
+      "handoff": {
+        "reference_use": [
+          {
+            "source": "local-project",
+            "queries": [
+              "cat RUN/local-references/123e8435b4a2469b/manifest.json; git rev-parse HEAD; cmp GMT/Ch07/Submission.lean GMT/Ch07/Contract.lean",
+              "python3 over RUN/dag.json: lean_statement/status/candidate_commit of the seven resolved dependencies of the selected node; accepted nodes (status accepted + candidate_commit) whose lean_statement matches '\\.support ⊆', 'restrictDomain', 'IsMinimizingIn T A', 'IsIntegerMultiplicity', 'R\\.measure K (<|≠) ∞'; lean_name collisions for dimred_mbl_lc_rc_restrict_to_univ / _push_add / _cycle_competitor / _measure_le_add_of_closed / _massOn_restrict_univ (none); byte comparison of the six reused lean_statements with their accepted DAG nodes (identical)",
+              "grep -n 'def GeometricCurrentOn.massOn|def massAdmissibleOn|def GeometricCurrentOn.support|def GeometricCurrentOn.zeroRegion|def GeometricCurrentOn.restrictDomain|def testFormOnInclusion|def exteriorDerivativeTestOn|def covectorEuclideanNorm|abbrev Covector|def IsTestForm' in .lake/packages/simongmt/Poincare/SimonGMT/Chapter06",
+              "grep -rn 'support_restrict_subset|measure_compl_support|Monotone.measure_iUnion|integrableOn_of_bounded|integrableOn_iff_integrable_of_support_subset|isBoundedBilinearMap_apply|bounded_above_of_compact_support|integral_add_compl|measure_inter_add_sdiff|compl_eq_univ_sdiff|ENNReal.add_le_add_iff_right' in .lake/packages/mathlib/Mathlib",
+              "grep -n '_existing_lean_name_problem|_accepted_checkpoint|def _solve_children|def ensure' /runtime/flows/gmt-claude-b888e19cffb1/_recursive_lean/runtime.py store.py; sed -n 540,640p verifier/gmt-compare.py (contract_scope, child_modules)",
+              "sed -n 150,275p book/chapter-07.txt is cited through the parent proof (Simon 7.2.4 (8)–(9), Remark 7.2.5(2)); lake env lean /tmp/rc_dec/Final.lean (11 child types, 5 child proofs from declared deps, assembly_check, end_to_end_check, #print axioms)"
+            ],
+            "files": [
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-local-compariso-48bfcdc429/parent-child-handoff.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-local-compariso-48bfcdc429/parent-supplied-plan.md",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-local-comparison-a1/decomposition-v1.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/mathlib/Mathlib/MeasureTheory/Measure/Support.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/mathlib/Mathlib/MeasureTheory/Measure/Continuity.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/mathlib/Mathlib/MeasureTheory/Measure/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+              "/runtime/flows/gmt-claude-b888e19cffb1/_recursive_lean/runtime.py",
+              "/runtime/flows/gmt-claude-b888e19cffb1/_recursive_lean/store.py",
+              "/tmp/rc_dec/Final.lean"
+            ],
+            "conclusion": "Pins match the manifest: project b4d606db1, Mathlib 25730c7c, and SimonGMT 2b366308 per lakefile.toml. Submission.lean is byte-identical to the frozen contract. Six comparator-accepted declarations supply the proof's foundational facts and are reused with byte-identical types (checked against dag.json; all are accepted with candidate commits): dor_imrep_massOn_eq_measure_and_support (MR), cmc_imRep_locality_restrict_sub (IMC), dtc_restrictDomain_isIntegerMultiplicity (RO), lcmp_imRep_measure_restrict (IR), lcmp_massOn_le_add_of_eval_eq (MT) and lcmp_measure_le_add_of_open_nhds (COB). Some related accepted lemmas were found and deliberately not used. cmc_fc_extend_to_univ and dtc_extend_by_zero extend a current to ℝ^P, but they give neither the weight μ_T⌞E nor T = Q + T₁. rsd_cmr_support_subset_of_vanish, cbrld_ns_support_sub_subset, cbr_imRep_measure_basic, rsd_imrep_compact_measure_ne_top and cbr_cc_current_algebra are covered inside the new children's short proofs. No pinned library file or accepted node contains the five new statements, and their names are unused. Mathlib supplies Measure.support_restrict_subset, Measure.measure_compl_support, Monotone.measure_iUnion, Measure.integrableOn_of_bounded and integral_add_compl. The Lean checks in Final.lean all passed: the 11 child types elaborate in comparator scope; each new child is proved from exactly its declared dependencies; assembly_check gives the exact parent type from the new children together with MR and MT; end_to_end_check gives it from the six reused types alone. The only axioms are propext, Classical.choice and Quot.sound."
+          }
+        ],
+        "parent_id": "root.dimension_reduction_results-a1.moving_blowups-a1.local_comparison-a1.retraction_comparison-a1",
+        "child_id": "root.dimension_reduction_results-a1.moving_blowups-a1.local_comparison-a1.retraction_comparison-a1.restrict_to_univ-a1",
+        "subproblem": {
+          "key": "restrict_to_univ",
+          "title": "Restriction of an integer multiplicity current to a relatively compact Borel set, as a current in ℝ^P, with the complementary piece (steps 2 and 6 of the parent)",
+          "statement": "Let P, n ∈ ℕ, U ⊆ ℝ^P open, T ∈ 𝒟_n(U) (SimonGMT GeometricCurrentOn U n) and R = (M, θ, ξ) an integer multiplicity representation in U (contract IMRep U n) with R.Represents T, i.e. T(ω) = ∫_M θ(x)⟨ω(x), ξ(x)⟩ dHⁿ(x) for every ω ∈ 𝒟ⁿ(U) (Hⁿ = μHE[n]); write μ := μ_R = θHⁿ⌞M (R.measure). Let E ⊆ ℝ^P be Borel and K ⊆ ℝ^P compact with E ⊆ K ⊆ U. Then there exist a current Q ∈ 𝒟_n(ℝ^P) (GeometricCurrentOn univ n) with an IMRep R_Q in ℝ^P (IMRep univ n) representing Q, and a current T₁ ∈ 𝒟_n(U) with an IMRep R₁ in U representing T₁, such that: (1) μ_{R_Q} = μ⌞E; (2) μ_{R₁} = μ⌞(ℝ^P ∖ E); (3) T(ω) = Q(ω) + T₁(ω) for every ω ∈ 𝒟ⁿ(U), where Q is evaluated at ω regarded as a test form on ℝ^P (testFormOnInclusion (subset_univ U) n ω, the same form); (4) Q(ω) = T(ω) for every ω ∈ 𝒟ⁿ(U) with tsupport ω ⊆ E (same convention); (5) spt Q ⊆ closure(E) ∩ spt T; (6) spt Q is compact. Here spt is the support of Simon 6.2.11 (SimonGMT GeometricCurrentOn.support: the domain minus the union of all open sets W with closure(W) compact and contained in the domain on which the current vanishes).",
+          "lean_statement": "∀ (P n : ℕ) (U E K : Set (Euclid P)) (T : GeometricCurrentOn U n) (R : IMRep U n), IsOpen U → R.Represents T → MeasurableSet E → IsCompact K → E ⊆ K → K ⊆ U → ∃ (Q : GeometricCurrentOn (univ : Set (Euclid P)) n) (RQ : IMRep (univ : Set (Euclid P)) n) (T₁ : GeometricCurrentOn U n) (R₁ : IMRep U n), RQ.Represents Q ∧ RQ.measure = R.measure.restrict E ∧ R₁.Represents T₁ ∧ R₁.measure = R.measure.restrict Eᶜ ∧ (∀ ω : TestFormOn U n, T ω = Q (testFormOnInclusion (subset_univ U) n ω) + T₁ ω) ∧ (∀ ω : TestFormOn U n, tsupport (ω : DifferentialForm (Euclid P) n) ⊆ E → Q (testFormOnInclusion (subset_univ U) n ω) = T ω) ∧ Q.support ⊆ closure E ∩ T.support ∧ IsCompact Q.support",
+          "lean_name": "dimred_mbl_lc_rc_restrict_to_univ",
+          "depends_on": [
+            "mass_and_support",
+            "im_calculus",
+            "imrep_restriction"
+          ],
+          "natural_proof": "Source: steps 2 and 6 of the parent proof (the current Q = T⌞B_G transported to ℝ^P, its properties (Q1) and (Q3), and the splitting T = Q + T₁ with T₁ = T⌞(ℝ^P ∖ B_G)), stated for a Borel set E contained in a compact K ⊆ U in place of B_G ⊆ B̄_G. Simon Ch. 6, 3.1–3.2 and 2.11. Siblings: (MR) mass_and_support; (IMC) im_calculus, parts (b) and (d); (IR) imrep_restriction.\nNotation. Hⁿ := μHE[n]. For an IMRep R′ (in any domain) with carrier M′, multiplicity θ′ and orientation ξ′, μ_{R′} := R′.measure = (Hⁿ⌞M′).withDensity θ′ and R′.action(ω) := ∫_{M′} θ′(x) ξ′(x)(ω(x)) dHⁿ(x); both depend only on (M′, θ′, ξ′), not on the domain. For an n-form ω : ℝ^P → Λⁿ write f_ω(x) := ξ(x)(ω(x)) = ⟨ω(x), ξ(x)⟩. A test form ω ∈ 𝒟ⁿ(U) is regarded as the same form in 𝒟ⁿ(ℝ^P) (testFormOnInclusion; the underlying form is unchanged).\n1. (Restricted triples in U.) By (IMC)(b) applied in U to R and the Borel set E, there are A₁ ∈ 𝒟_n(U) and an IMRep R′ in U with carrier M ∩ E, multiplicity θ and orientation ξ (R′ represents A₁; A₁ is not used further). By (IMC)(b) applied to R and the Borel set ℝ^P ∖ E, there are T₁ ∈ 𝒟_n(U) and an IMRep R₁ in U with carrier M ∩ (ℝ^P ∖ E), multiplicity θ and orientation ξ, with R₁ representing T₁. By (IR)(c) for R′ (Borel set E) and for R₁ (Borel set ℝ^P ∖ E): μ_{R′} = μ⌞E and μ_{R₁} = μ⌞(ℝ^P ∖ E) — the latter is (2) — and, for every n-form ω, R′.action(ω) = ∫_E f_ω dμ and R₁.action(ω) = ∫_{ℝ^P∖E} f_ω dμ. By (IR)(c) for R itself and the Borel set ℝ^P (R has carrier M = M ∩ ℝ^P, multiplicity θ and orientation ξ), R.action(ω) = ∫_{ℝ^P} f_ω dμ = ∫ f_ω dμ.\n2. (Transport to ℝ^P.) The triple R₂ := (M ∩ E, θ, ξ) is an IMRep in ℝ^P. Every field of IMRep other than 'carrier ⊆ domain' and local integrability concerns only the carrier, the multiplicity and the orientation, so it is inherited from R′: M ∩ E is Borel and countably n-rectifiable, θ is measurable and positive on M ∩ E, ξ is Hⁿ⌞(M ∩ E)-a.e. strongly measurable, and for Hⁿ-a.e. x ∈ M ∩ E, ξ(x) orients an approximate tangent space of M ∩ E at x. The carrier lies in ℝ^P. Local integrability: if K′ ⊆ ℝ^P is compact, then (M ∩ E) ∩ K′ ⊆ M ∩ K because E ⊆ K, so ∫_{(M∩E)∩K′} θ dHⁿ ≤ ∫_{M∩K} θ dHⁿ < ∞ by monotonicity of the lower integral in the set (lintegral_mono_set) and the local integrability of R on the compact set K ⊆ U. Now apply (IMC)(b) in the open set ℝ^P to R₂ and the Borel set ℝ^P: there are Q ∈ 𝒟_n(ℝ^P) and an IMRep R_Q in ℝ^P with carrier (M ∩ E) ∩ ℝ^P = M ∩ E, multiplicity θ and orientation ξ, with R_Q representing Q. Since R_Q and R′ have the same carrier, multiplicity and orientation, μ_{R_Q} = μ_{R′} = μ⌞E — this is (1) — and R_Q.action = R′.action. Hence, for every ω ∈ 𝒟ⁿ(U) regarded in 𝒟ⁿ(ℝ^P), Q(ω) = R_Q.action(ω) = R′.action(ω) = ∫_E f_ω dμ.\n3. (Integrability.) Let ω ∈ 𝒟ⁿ(U). The form ω is smooth, hence continuous; C := tsupport ω is compact and C ⊆ U. (a) ξ is μ-a.e. strongly measurable by (IR)(b), ω is continuous, and the evaluation pairing (L, α) ↦ L(α) on Λₙ × Λⁿ is continuous (a bounded bilinear map, isBoundedBilinearMap_apply); hence f_ω is μ-a.e. strongly measurable (AEStronglyMeasurable.prodMk, Continuous.comp_aestronglyMeasurable). (b) By (IMC)(d), for Hⁿ⌞M-a.e. x, |ξ(x)(α)| ≤ |α| for every n-covector α (|·| the Euclidean coefficient norm covectorEuclideanNorm); since μ ≪ Hⁿ⌞M by (IR)(a), this holds for μ-a.e. x. The map α ↦ |α| is continuous (the square root of a finite sum of squares of the evaluations α(e_I), each continuous in α, continuous_eval_const) and |0| = 0, so x ↦ |ω(x)| is continuous with compact support (HasCompactSupport.comp_left) and hence bounded by a constant c (Continuous.bounded_above_of_compact_support). Thus |f_ω| ≤ c μ-a.e. (c) C is closed, hence Borel, and μ(C) = ∫_{M∩C} θ dHⁿ < ∞ (withDensity_apply, Measure.restrict_restrict, and local integrability of R; C compact, C ⊆ U). By (a)–(c), f_ω is μ-integrable on C (an a.e. strongly measurable, a.e. bounded function on a set of finite measure, Measure.integrableOn_of_bounded). Finally f_ω vanishes outside C (there ω(x) = 0 and ξ(x) is linear), so f_ω is μ-integrable on ℝ^P (integrableOn_iff_integrable_of_support_subset).\n4. (Proof of (3).) Let ω ∈ 𝒟ⁿ(U). Since R represents T, by step 1, by additivity of the Bochner integral over the Borel partition ℝ^P = E ∪ (ℝ^P ∖ E) for the integrable f_ω (step 3; integral_add_compl), by step 2, and since R₁ represents T₁: T(ω) = R.action(ω) = ∫ f_ω dμ = ∫_E f_ω dμ + ∫_{ℝ^P∖E} f_ω dμ = Q(ω) + R₁.action(ω) = Q(ω) + T₁(ω).\n5. (Proof of (4).) If moreover tsupport ω ⊆ E, then every x ∈ ℝ^P ∖ E lies outside tsupport ω, so ω(x) = 0 and f_ω(x) = ξ(x)(0) = 0. Hence T₁(ω) = R₁.action(ω) = ∫_{ℝ^P∖E} f_ω dμ = 0 (setIntegral_eq_zero_of_forall_eq_zero), and Q(ω) = T(ω) by (3).\n6. (Proof of (5).) By (MR)(ii) applied to Q in the open set ℝ^P with the representation R_Q, spt Q = ℝ^P ∩ spt μ_{R_Q} = spt(μ⌞E). For every measure μ and every set E, spt(μ⌞E) ⊆ closure(E) ∩ spt μ (Mathlib Measure.support_restrict_subset): a point outside closure(E) has the open neighbourhood ℝ^P ∖ closure(E), which is μ⌞E-null, and μ⌞E ≤ μ. Since K is compact, hence closed, and E ⊆ K, closure(E) ⊆ K ⊆ U. By (MR)(ii) applied to T in U with R, spt T = U ∩ spt μ. Hence every x ∈ spt Q satisfies x ∈ closure(E), x ∈ U and x ∈ spt μ, i.e. x ∈ closure(E) ∩ spt T.\n7. (Proof of (6).) spt Q = ℝ^P ∩ spt μ_{R_Q} is closed (the support of a measure is closed, Measure.isClosed_support), and by step 6 it is contained in closure(E) ⊆ K, a compact set. A closed subset of a compact set is compact. ∎",
+          "proof_key_steps": [
+            "(IMC)(b) in U gives IMReps R′ = (M ∩ E, θ, ξ) and R₁ = (M ∖ E, θ, ξ), R₁ representing T₁; (IR)(c) gives μ_{R′} = μ⌞E, μ_{R₁} = μ⌞(ℝ^P ∖ E), the actions ∫_E ξ(ω) dμ and ∫_{ℝ^P∖E} ξ(ω) dμ, and R.action(ω) = ∫ ξ(ω) dμ.",
+            "(M ∩ E, θ, ξ) is an IMRep in ℝ^P (local integrability from E ⊆ K with K compact in U); (IMC)(b) in ℝ^P yields Q represented by R_Q with μ_{R_Q} = μ⌞E and Q(ω) = ∫_E ξ(ω) dμ.",
+            "For ω ∈ 𝒟ⁿ(U), ξ(ω) is μ-integrable: a.e. strongly measurable, a.e. bounded by sup|ω| via (IMC)(d) and μ ≪ Hⁿ⌞M, and supported in tsupport ω, which has finite μ-measure.",
+            "T(ω) = ∫_E ξ(ω) dμ + ∫_{ℝ^P∖E} ξ(ω) dμ = Q(ω) + T₁(ω); if tsupport ω ⊆ E the second integral vanishes, so Q(ω) = T(ω).",
+            "(MR)(ii): spt Q = spt(μ⌞E) ⊆ closure(E) ∩ spt μ and spt T = U ∩ spt μ with closure(E) ⊆ K ⊆ U; spt Q is closed inside the compact K, hence compact."
+          ]
+        },
+        "audit": {
+          "key": "restrict_to_univ",
+          "acceptable": true,
+          "natural_proof_acceptable": true,
+          "reason": "All witnesses and conclusions match the prose. The fixed compact K supplies ambient local integrability; the proved integrability justifies splitting the action. The support-restriction lemma and closure(E) ⊆ K ⊆ U establish the support and compactness conclusions using precisely the declared dependencies."
+        },
+        "resolved_dependencies": [
+          "root.density_one_implies_regular-a1.imrep_mass_and_support-a1",
+          "root.compactness_of_minimizing_currents-a1.im_calculus-a1",
+          "root.compactness_of_minimizing_currents-a1.local_comparison-a1.imrep_restriction-a1"
+        ],
+        "plan_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-local-compariso-5a45ed3919/parent-supplied-plan.md",
+        "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-local-compariso-5a45ed3919/parent-supplied-natural-proof.md",
+        "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-local-compariso-5a45ed3919/parent-supplied-natural-proof.json"
+      }
+    }
+  ],
+  "files": {
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-moving-blowups-a1-local-compariso-48bfcdc429/task.md": "9e4ea41ef257319c83fb02009150ae5578d921c66b3d8377928fa0839feacb93",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-moving-blowups-a1-local-compariso-48bfcdc429/problem.md": "5b78b2fcb87970586dd76fea8db5f33ecf950ba8df40e0bbfb2eb94f2eb67d06",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-moving-blowups-a1-local-compariso-48bfcdc429/problem.json": "a64eb8eb7211544e754b40959feeb1378f1cc31f7893bafbe4c7add776da17a2",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-moving-blowups-a1-local-compariso-48bfcdc429/reference-manifest.json": "166b882f6e1c222a7523ace3505311d8aa41f939a8ae9b59a30353c38d3be033",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-moving-blowups-a1-local-compariso-48bfcdc429/decomposition.json": "c7771ae0804903ea94c3825344b81aab97aaadbb52be31cf322b2bb2bc50bd38",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-moving-blowups-a1-local-compariso-48bfcdc429/decomposition-audit.json": "71013eef6ebd48ee56796039b29857e13af51d1e6f2f55e3f6bdf49b9974bb0a",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-moving-blowups-a1-local-compariso-48bfcdc429/controller-contract.json": "98ca6c78b2de77f692540fa24e80694ddcd2346111afbb4918901a159346efca",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-moving-blowups-a1-local-compariso-48bfcdc429/children/root-dimension-reduction-results-a1-moving-blowups-a1-local-compariso-7497990374/parent-child-handoff.json": "6640b084c0ef16785a2969b8da1fd6685ea5a6e316de7c6102bf71ab60234a94",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-moving-blowups-a1-local-compariso-48bfcdc429/children/root-dimension-reduction-results-a1-moving-blowups-a1-local-compariso-7497990374/parent-supplied-plan.md": "2fa8f5a70d9301a70728bd4d2c0354fad3e9ff1a536fc3494888b3a0e09ef75d",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-moving-blowups-a1-local-compariso-48bfcdc429/children/root-dimension-reduction-results-a1-moving-blowups-a1-local-compariso-7497990374/parent-supplied-natural-proof.md": "309459b42e96597b819118c1caf8f709442ca6d7b0304d27d7e2d3009d76a631",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-moving-blowups-a1-local-compariso-48bfcdc429/children/root-dimension-reduction-results-a1-moving-blowups-a1-local-compariso-7497990374/parent-supplied-natural-proof.json": "60bf70690a1f6b399159c0419a1cc0b84b2d7c70b02711d4c06e3c69a88b7389",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-moving-blowups-a1-local-compariso-48bfcdc429/children/root-dimension-reduction-results-a1-moving-blowups-a1-local-compariso-7497990374/node.json": "39eb69491abd7c0809c82e0c0e88d72f7eecc544b49d6c16b9d8fc7fac41fa31",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-moving-blowups-a1-local-compariso-48bfcdc429/children/root-dimension-reduction-results-a1-moving-blowups-a1-local-compariso-4725781174/parent-child-handoff.json": "3b9fbe0ec4eadebf5ef2e4dcd2f1a89935c4f47aeb87b3313189739ed8eda494",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-moving-blowups-a1-local-compariso-48bfcdc429/children/root-dimension-reduction-results-a1-moving-blowups-a1-local-compariso-4725781174/parent-supplied-plan.md": "902f98b268ee1eee4b611d5f447063f06e77c020574f97354e45360b8d323df5",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-moving-blowups-a1-local-compariso-48bfcdc429/children/root-dimension-reduction-results-a1-moving-blowups-a1-local-compariso-4725781174/parent-supplied-natural-proof.md": "c72932fb3823b3f36f296fe22ad5872f13317fee74c9c37ade570542242f587d",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-moving-blowups-a1-local-compariso-48bfcdc429/children/root-dimension-reduction-results-a1-moving-blowups-a1-local-compariso-4725781174/parent-supplied-natural-proof.json": "af0ef89fa2ee336fccf28a3ebf0c6423483dc14113ffe090122969ee8086fce0",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-moving-blowups-a1-local-compariso-48bfcdc429/children/root-dimension-reduction-results-a1-moving-blowups-a1-local-compariso-4725781174/node.json": "fe24575ec3ce39f73b6440b9562bae6e282c90f60d7bfc1d84466a264c394162",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-moving-blowups-a1-local-compariso-48bfcdc429/children/root-dimension-reduction-results-a1-moving-blowups-a1-local-compariso-7237c8df09/parent-child-handoff.json": "96986c19a8803807b6d6987b399c989fc428d70ad7078515bad5184ac0b66e18",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-moving-blowups-a1-local-compariso-48bfcdc429/children/root-dimension-reduction-results-a1-moving-blowups-a1-local-compariso-7237c8df09/parent-supplied-plan.md": "505cdcead9b209df60101736fadfd7c8dfa8a37e0ae10d46297d1420bbdaa40d",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-moving-blowups-a1-local-compariso-48bfcdc429/children/root-dimension-reduction-results-a1-moving-blowups-a1-local-compariso-7237c8df09/parent-supplied-natural-proof.md": "00646a316d754d3a2d05fd7fea62b75b85e6974646c1a0abf590319d3344c05c",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-moving-blowups-a1-local-compariso-48bfcdc429/children/root-dimension-reduction-results-a1-moving-blowups-a1-local-compariso-7237c8df09/parent-supplied-natural-proof.json": "f4cb6922e88b2e5f1c71e66586c0270b93f16df567bd087db55a8eb6ad7a786d",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-moving-blowups-a1-local-compariso-48bfcdc429/children/root-dimension-reduction-results-a1-moving-blowups-a1-local-compariso-7237c8df09/node.json": "cebce5206821916ee229d48461af26fab1f8596dc24fb2d9997357bc65dfb977",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-moving-blowups-a1-local-compariso-48bfcdc429/children/root-dimension-reduction-results-a1-moving-blowups-a1-local-compariso-94d5dab86b/parent-child-handoff.json": "35c1a4a80a3b6aaa0d9064a848ad0bff9434d3db5f64ea5f9a1355d9dd414c09",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-moving-blowups-a1-local-compariso-48bfcdc429/children/root-dimension-reduction-results-a1-moving-blowups-a1-local-compariso-94d5dab86b/parent-supplied-plan.md": "a1017c595a5daecd89e86d55494b61dd875faac55d17675460f05eec1c6937e0",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-moving-blowups-a1-local-compariso-48bfcdc429/children/root-dimension-reduction-results-a1-moving-blowups-a1-local-compariso-94d5dab86b/parent-supplied-natural-proof.md": "cc6bc81c94d3c10f4a6c456fe94aff4c177d3e4f9126b22fa4bcec3d2d3f63fc",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-moving-blowups-a1-local-compariso-48bfcdc429/children/root-dimension-reduction-results-a1-moving-blowups-a1-local-compariso-94d5dab86b/parent-supplied-natural-proof.json": "b6253843e166ee5a5efbee85151eb8d4db72bfd876e449f11bd585fe2153b589",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-moving-blowups-a1-local-compariso-48bfcdc429/children/root-dimension-reduction-results-a1-moving-blowups-a1-local-compariso-94d5dab86b/node.json": "f93b30f133c6d17808213bd1517339bb3cfa923c04e9d5c1324e8424c09d7636",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-moving-blowups-a1-local-compariso-48bfcdc429/children/root-dimension-reduction-results-a1-moving-blowups-a1-local-compariso-5a45ed3919/parent-child-handoff.json": "673c30232d919dee979a8374839efc74a044cb53a5c42a22f04bf0d7dc9f0448",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-moving-blowups-a1-local-compariso-48bfcdc429/children/root-dimension-reduction-results-a1-moving-blowups-a1-local-compariso-5a45ed3919/parent-supplied-plan.md": "20dd593ffc08bd642ec20e82e854a9777f697f9e8be71b843a980d0914e04dfe",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-moving-blowups-a1-local-compariso-48bfcdc429/children/root-dimension-reduction-results-a1-moving-blowups-a1-local-compariso-5a45ed3919/parent-supplied-natural-proof.md": "c8f178a7f15dce1c274aeb47b4334ca69dbe356771a798445e3e9e1c0adc4627",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-moving-blowups-a1-local-compariso-48bfcdc429/children/root-dimension-reduction-results-a1-moving-blowups-a1-local-compariso-5a45ed3919/parent-supplied-natural-proof.json": "62ed07b652f2a279dc8e86332f959faa2d0b635bee9e3663620b360343bf9d3c",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-moving-blowups-a1-local-compariso-48bfcdc429/children/root-dimension-reduction-results-a1-moving-blowups-a1-local-compariso-5a45ed3919/node.json": "4c145d303ba22ebcf1fbe306ff803dad752ffd57028506eb84b08ede559adeb8"
+  }
+}
