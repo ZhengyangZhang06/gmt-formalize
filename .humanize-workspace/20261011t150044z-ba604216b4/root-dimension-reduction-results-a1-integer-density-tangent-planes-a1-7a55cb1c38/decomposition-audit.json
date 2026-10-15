@@ -1,0 +1,69 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "def approxTangentPlane|def IMRep.measure|locallyIntegrable_mult|structure IMRep|def IsUnitOrientationOf|orients|measurable_orient",
+        "idtp_cse_fd_fs_|imrep_approxTangent_starProjection_aesm|idtp_cse_fc_planar_fibre_geometry",
+        "ae_lt_top.|integrable_toReal_of_lintegral_ne_top|integral_eq_lintegral_of_nonneg_ae|Integrable.bdd_mul|Integrable.of_bound|theorem lintegral_indicator|aestronglyMeasurable_comp₂|protected lemma mono_ac",
+        "class HasOrthogonalProjection|theorem norm_starProjection_apply_le|theorem inner_starProjection_left_eq_right|theorem starProjection_eq_self_iff|theorem mem_iff_norm_starProjection",
+        "ofReal_mul|ofReal_le_one|theorem ofReal_toReal ",
+        "git show 36b2d372040645171f355c68541910ce3ab4bab8:GMT/Ch07/Submission.lean",
+        "git show ee1e2fe57f7c9131c8ba453da7f789f729501a72:GMT/Ch07/Submission.lean",
+        "git show d9c9559b:GMT/Ch07/Submission.lean",
+        "sh /tmp/fs-split-check/bin/runlean.sh /tmp/fibre-signed-independent-audit/Audit.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Projection/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/StronglyMeasurable/AEStronglyMeasurable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/StronglyMeasurable/Lemmas.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/L1Space/Integrable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Markov.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/WithDensity.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Basic/ENNReal/Real.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-7a55cb1c38/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-7a55cb1c38/decomposition-v1.json",
+        "/tmp/fs-split-check/real2/Full2.lean",
+        "/tmp/fibre-signed-independent-audit/Audit.lean"
+      ],
+      "conclusion": "The split is appropriate: two new analytic obligations and two exact accepted reuses establish the selected parent. The pinned contract and mathlib declarations support the proofs. No proposed names occur in the pristine snapshot; DAG and proposal scans found no conflicting reservations for the new names. Both reused types are byte-identical to their accepted contracts. All names are bare identifiers, and the prerequisite graph is acyclic. A fresh Lean run successfully elaborated all four child propositions and the frozen parent proposition before their implementations, checked raw-type comparator examples, and verified the parent assembly. All five theorems depend only on propext, Classical.choice and Quot.sound; the existing root sorry is outside their dependency cones. Projection instances are valid finite-dimensional orthogonal-projection instances. The assembly covers zero denominators and arbitrary real s and s' ≤ s."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "tangent_aesm",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Exact accepted-type reuse. The proof handles n = 0, identifies the tangent plane almost everywhere, proves that orientation determines its plane, and obtains measurable projections through the compact quotient and Borel extension. It establishes the stated restricted-measure strong measurability without circular reliance."
+    },
+    {
+      "key": "planar_geometry",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Exact accepted-type reuse with all hypotheses present. The orthonormal basis, projection formula, norm identities and angle reconstruction prove every conclusion (a)–(c). Part (a) supplies the parent's ratio bound, including the zero-denominator case."
+    },
+    {
+      "key": "ratio_aesm",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line proposition matches the prose. Its sole dependency is tangent_aesm: absolute continuity transfers measurability to R.measure, continuous bilinear evaluation gives the numerator, and measurable real division gives the ratio. No additional frame assumptions or circular steps are needed."
+    },
+    {
+      "key": "signed_transfer",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proposition includes every required hypothesis. Finite mass proves almost-everywhere finiteness and integrability; bounded nonnegative products justify conversion to Bochner integrals; positive and negative parts give the signed identity; measurable indicators give the set identity. The proof correctly uses almost-everywhere bounds and is complete independently of the parent."
+    }
+  ],
+  "required_changes": []
+}

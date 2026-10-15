@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.de_giorgi-a1",
+  "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1",
+  "depth": 4,
+  "title": "De Giorgi structure theorem in Gauss–Green form (Simon Ch. 3, 4.1–4.3)",
+  "statement": "Let m ≥ 1, D ⊆ ℝ^{m+1} open and F ⊆ ℝ^{m+1} Borel. Assume F has locally finite perimeter in D: for every compact K ⊆ D there is C_K ∈ ℝ with ∫_F div φ dL^{m+1} ≤ C_K for all smooth, compactly supported φ : ℝ^{m+1} → ℝ^{m+1} with tsupport φ ⊆ K and |φ| ≤ 1. Then there are a Borel set B ⊆ D and a Borel map ν : ℝ^{m+1} → ℝ^{m+1} such that:\n- B is countably m-rectifiable, and H^m(B ∩ K) < ∞ for every compact K ⊆ D;\n- |ν| = 1 on B;\n- for H^m-a.e. y ∈ B, the approximate tangent space of B at y (Simon 3.1.4) is ν(y)^⊥;\n- ∫_F div φ dL^{m+1} = −∫_B ⟨φ, ν⟩ dH^m for every C¹ compactly supported φ with tsupport φ ⊆ D.\nHere div φ = trace Dφ and H^m = μHE[m].",
+  "lean_statement": "∀ (m : ℕ) (D F : Set (Euclid (m + 1))), 1 ≤ m → IsOpen D → MeasurableSet F → (∀ K : Set (Euclid (m + 1)), IsCompact K → K ⊆ D → ∃ C : ℝ, ∀ φ : Euclid (m + 1) → Euclid (m + 1), ContDiff ℝ (⊤ : ℕ∞) φ → HasCompactSupport φ → tsupport φ ⊆ K → (∀ y, ‖φ y‖ ≤ 1) → ∫ y in F, LinearMap.trace ℝ (Euclid (m + 1)) (fderiv ℝ φ y : Euclid (m + 1) →ₗ[ℝ] Euclid (m + 1)) ≤ C) → ∃ (B : Set (Euclid (m + 1))) (ν : Euclid (m + 1) → Euclid (m + 1)), MeasurableSet B ∧ B ⊆ D ∧ CountablyRectifiable m B ∧ (∀ K : Set (Euclid (m + 1)), IsCompact K → K ⊆ D → μHE[m] (B ∩ K) ≠ ∞) ∧ Measurable ν ∧ (∀ y ∈ B, ‖ν y‖ = 1) ∧ (∀ᵐ y ∂(μHE[m].restrict B), HasApproximateTangentSpaceAt m B y (Submodule.span ℝ {ν y})ᗮ) ∧ ∀ φ : Euclid (m + 1) → Euclid (m + 1), ContDiff ℝ 1 φ → HasCompactSupport φ → tsupport φ ⊆ D → ∫ y in F, LinearMap.trace ℝ (Euclid (m + 1)) (fderiv ℝ φ y : Euclid (m + 1) →ₗ[ℝ] Euclid (m + 1)) = -∫ y in B, inner ℝ (φ y) (ν y) ∂μHE[m]",
+  "lean_name": "codim1_rdo_de_giorgi_gauss_green",
+  "depends_on": [
+    "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.rectifiable_density_one-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.rectifiable_density_one-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-90bfaf373f-a1"
+}

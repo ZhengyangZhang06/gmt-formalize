@@ -1,0 +1,90 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "def IsConeCurrent|def approxTangentPlane|def IMRep.measure|locallyIntegrable_mult|structure IMRep|def IsUnitOrientationOf",
+        "support_mem_ae|integral_map_equiv|integral_smul_measure|setIntegral_eq_of_subset_of_forall_sdiff_eq_zero|ae_eq_zero_of_integral_contDiff_smul_eq_zero",
+        "idtp_cse_fd_|imrep_represents_support_eq_inter_measure_support|cone_current_imrep_measure_smul_image|imrep_approxTangent_starProjection_aesm",
+        "integral_eq_lintegral_of_nonneg_ae|ofReal_integral_eq_lintegral_ofReal|protected lemma mono_ac|aestronglyMeasurable_comp₂|withDensity_absolutelyContinuous|norm_starProjection_apply_le|inner_starProjection_left_eq_right",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/fdx-check/final/ParentAx.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/flux-density-independent-audit-7z3ys3c5/ChallengeTypes.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Support.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Distribution/AEEqOfIntegralContDiff.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-27685c46df/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-27685c46df/decomposition-v1.json",
+        "/tmp/fdx-check/final/A.lean",
+        "/tmp/fdx-check/final/B3.lean",
+        "/tmp/fdx-check/final/C.lean",
+        "/tmp/fdx-check/final/D.lean",
+        "/tmp/fdx-check/final/E.lean",
+        "/tmp/fdx-check/final/ParentAx.lean",
+        "/tmp/flux-density-independent-audit-7z3ys3c5/ChallengeTypes.lean",
+        "/tmp/flux-density-independent-audit-7z3ys3c5/support_eq.lean",
+        "/tmp/flux-density-independent-audit-7z3ys3c5/cone_measure.lean",
+        "/tmp/flux-density-independent-audit-7z3ys3c5/tangent_aesm.lean"
+      ],
+      "conclusion": "The split is appropriate for the selected flux-density theorem. The pinned definitions and package revisions match the compilation environment. The pristine project snapshot contains none of the searched Submission declarations. All eight frozen types independently elaborate as propositions; their hypotheses and conclusions match the prose, and all names are bare identifiers. The five new names have no other DAG or decomposition reservation. The three reused types are byte-identical to accepted contracts; their candidate sources preserve the frozen definitions, pass exact-type applications, and depend only on propext, Classical.choice and Quot.sound. The dependency graph, including preserved reusable-node histories, is acyclic. Each supplied natural proof was independently checked. All five new-child scratch proofs compiled using only their declared prerequisites as additional assumptions. The parent assembly also compiled against its exact frozen type using the proposed children and six declared sibling interfaces. No child requires its own implementation or the parent theorem to formulate its type. No matrix-unit instance ambiguity occurs."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "support_eq",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Exact accepted-type reuse. Both support inclusions follow from the representation: null weight implies vanishing action, while the fundamental lemma and nonzero unit orientations give the converse. Openness, compact localization and integrability requirements are supplied."
+    },
+    {
+      "key": "cone_measure",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Exact accepted-type reuse. The rescaled triple, dilation pullback and Hausdorff-measure scaling establish the claimed homogeneity with the correct exponent and direction. Representation uniqueness is an existing accepted dependency preserved in this node's history; there is no circular reliance."
+    },
+    {
+      "key": "tangent_aesm",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Exact accepted-type reuse. Approximate-tangent uniqueness identifies the projection almost everywhere. The compact orientation parametrization yields a Borel orientation-to-projection map, and composition with the measurable orientation proves the exact conclusion, including the zero-dimensional case."
+    },
+    {
+      "key": "gap_ae",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and type agree. Support equality and support_mem_ae justify the almost-everywhere restriction. Applying Loc(s) at s'=s gives the stated dichotomy without additional frame or minimizing hypotheses."
+    },
+    {
+      "key": "fibre_signed",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All four conclusions follow. The projection bound and compact containment give finite mass for arbitrary real s; tangent measurability transfers by absolute continuity. Positive/negative parts justify the signed identity, and indicator substitution proves the box identity for every s'≤s."
+    },
+    {
+      "key": "cone_integral",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The inverse-image calculation gives map(x↦rx)μ=ofReal(r^(-n))μ. The pinned integral_map_equiv and integral_smul_measure apply to arbitrary functions, so the absence of measurability and integrability hypotheses is justified."
+    },
+    {
+      "key": "alpha_beta",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "TS, SI and RC are explicit hypotheses matching the prose. Compact support bounds the test factors. The radial-window inequalities, sector invariance and almost-everywhere scaling of G establish β with factor r²; SI and RC establish α. Only cone_integral is additionally required."
+    },
+    {
+      "key": "identify_constant",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Almost-everywhere finiteness permits reconstruction from toReal. Positivity on a positive-measure box forces c≥0; Tonelli gives I(s')=ofReal(4c)·ofReal(s'^2). Cancellation and uniqueness of the right-hand limit yield c=m and the exact smaller-box conclusion."
+    }
+  ],
+  "required_changes": []
+}

@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.rectifiable_density_one-a1.c1_approximation-a1.whitney_remainder-a1",
+  "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.rectifiable_density_one-a1.c1_approximation-a1",
+  "depth": 6,
+  "title": "Uniform Whitney remainder estimate for a Lipschitz function on a large closed subset (steps 3, 4 and 7 of Simon's proof of Ch. 2, 1.5)",
+  "statement": "Let n ∈ ℕ and L ≥ 0, and let f : ℝ^n → ℝ (ℝ^n = Euclid n) be L-Lipschitz. Let C ⊆ ℝ^n be closed. Assume f is differentiable at every point of C, and that x ↦ Df(x) := fderiv ℝ f x is continuous on C. Then for every ε ∈ (0, ∞] there is a closed set A ⊆ C with L^n(C ∖ A) < ε (L^n = volume) with the following property. For every compact Q ⊆ A and every real ε' > 0 there is δ > 0 such that |f(y) − f(x) − Df(x)(y − x)| ≤ ε'|y − x| for all x ∈ Q and y ∈ A with |x − y| < δ. This is Simon's hypothesis 1.6(∗) for h = f and D = Df on A.",
+  "lean_statement": "∀ (n : ℕ) (f : Euclid n → ℝ) (L : NNReal) (C : Set (Euclid n)), LipschitzWith L f → IsClosed C → (∀ x ∈ C, DifferentiableAt ℝ f x) → ContinuousOn (fderiv ℝ f) C → ∀ ε : ℝ≥0∞, 0 < ε → ∃ A : Set (Euclid n), A ⊆ C ∧ IsClosed A ∧ volume (C \\ A) < ε ∧ ∀ Q : Set (Euclid n), IsCompact Q → Q ⊆ A → ∀ ε' : ℝ, 0 < ε' → ∃ δ : ℝ, 0 < δ ∧ ∀ x ∈ Q, ∀ y ∈ A, dist x y < δ → ‖f y - f x - fderiv ℝ f x (y - x)‖ ≤ ε' * ‖y - x‖",
+  "lean_name": "codim1_rdo_c1a_whitney_remainder",
+  "depends_on": [
+    "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.rectifiable_density_one-a1.c1_approximation-a1.egorov_closed-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.rectifiable_density_one-a1.c1_approximation-a1.egorov_closed-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-f98fc3c9cc-a1"
+}

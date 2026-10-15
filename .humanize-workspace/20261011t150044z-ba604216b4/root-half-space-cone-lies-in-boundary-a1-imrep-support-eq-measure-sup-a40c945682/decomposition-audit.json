@@ -1,0 +1,52 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "Covector|IsTestForm",
+        "theorem IsOpen.ae_eq_zero_of_integral_contDiff_smul_eq_zero|variable|No local",
+        "integral_withDensity_eq_integral_smul|locallyIntegrableOn_iff|IntegrableOn.of_bound|theorem.*withDensity_apply|withDensity_absolutelyContinuous|ae_le|ext_alternating|of_injective|toAlternatingMap_injective|theorem.*le_opNorm",
+        "imsupp_covector_finiteDimensional|imsupp_orient_apply_ae_eq_zero_of_vanishesOn",
+        "git show 2e5d20d49a4a41f79e81db1a65e850fb919b38ba:GMT/Ch07/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/imsupp-independent-audit-12y_p9__/Audit.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Distribution/AEEqOfIntegralContDiff.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/ContinuousLinearMap.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/LocallyIntegrable.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/WithDensity.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Alternating/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/FiniteDimensional/Defs.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Module/Alternating/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/Alternating/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-half-space-cone-lies-in-boundary-a1-imrep-support-eq-measure-sup-a40c945682/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-half-space-cone-lies-in-boundary-a1-imrep-support-eq-measure-sup-2d6f974584/accepted-candidate.json",
+        "/tmp/imsupp-independent-audit-12y_p9__/Audit.lean"
+      ],
+      "conclusion": "Verified project revision b4d606db1da5da8fa2c0292ad4924d97de8b3c4b and mathlib revision 25730c7c759d108ef87ab70af2342a196760f79d; the relevant compiled-package sources match the snapshot. Both frozen child propositions elaborate before either child is declared. The independent audit file preserves the frozen definitions, omits the ancestor theorem, and contains no sorry. Both supplied child implementations and the exact selected parent assembly compile; their axiom dependencies are only propext, Classical.choice and Quot.sound. The reused orientation sibling has the identical comparator-accepted type. Neither proposed name is reserved by another DAG node; searches found occurrences only in this selected node's proposal artifacts. The split is appropriate: the independent algebraic and analytic obligations, together with the existing orientation dependency, prove precisely the selected parent. The dependency closure is acyclic."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "covector_space_finite_dimensional",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line proposition exactly matches the prose for all natural P and n, with no missing dimension restriction. Evaluation on basis tuples defines a linear map into a finite-dimensional function space; ext_alternating and injectivity of the forgetful map prove injectivity. This also handles zero-dimensional and empty-index cases. The supplied proof is complete and independent of the parent and other child. The bare name is available, and the contract requires no prior child implementation."
+    },
+    {
+      "key": "orient_component_vanishes_ae",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and one-line type agree on every hypothesis and on the order ∀ α, almost everywhere x. Absolute continuity correctly transfers the orientation bound and measurability; compact-set finiteness gives scalar local integrability. The smooth test form has the required support, and the measurable NNReal density rewrite needs no additional integrability hypothesis. The cited fundamental lemma applies without local finiteness of the measure. The inline norm, evaluation and scalar-action constructions compile with the intended instances. The proof requires neither the finite-dimensional child nor the orientation sibling, so empty dependencies are correct. The parent then uses a finite basis to combine these conclusions without an uncountable-intersection gap. The bare name is available."
+    }
+  ],
+  "required_changes": []
+}

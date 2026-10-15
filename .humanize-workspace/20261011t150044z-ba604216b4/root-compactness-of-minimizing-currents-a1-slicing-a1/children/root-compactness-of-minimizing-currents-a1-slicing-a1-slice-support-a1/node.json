@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.slicing-a1.slice_support-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.slicing-a1",
+  "depth": 3,
+  "title": "Support of the slice: ∂(T⌞{f<t}) agrees with (∂T)⌞{f<t} on test forms supported off {f = t} (Simon Ch. 6, 4.8)",
+  "statement": "Let P, k ∈ ℕ, let U ⊆ ℝ^P be any set, T ∈ 𝒟_{k+1}(U), μ, μ' measures on ℝ^P and ξ : ℝ^P → Λ_{k+1}(ℝ^P), ξ' : ℝ^P → Λ_k(ℝ^P) arbitrary maps such that T(ω) = ∫ ξ(x)(ω(x)) dμ(x) for every ω ∈ 𝒟^{k+1}(U) and ∂T(θ) = ∫ ξ'(x)(θ(x)) dμ'(x) for every θ ∈ 𝒟^k(U) (Bochner integrals). Let f : ℝ^P → ℝ be continuous, t ∈ ℝ, and let A ∈ 𝒟_{k+1}(U), B ∈ 𝒟_k(U) satisfy A(ω) = ∫_{{f<t}} ξ(x)(ω(x)) dμ(x) for every ω ∈ 𝒟^{k+1}(U) and B(θ) = ∫_{{f<t}} ξ'(x)(θ(x)) dμ'(x) for every θ ∈ 𝒟^k(U). Then ∂A(η) = B(η) for every η ∈ 𝒟^k(U) whose topological support tsupport η is disjoint from {x : f(x) = t}.",
+  "lean_statement": "∀ (P k : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U (k + 1)) (μ μ' : Measure (Euclid P)) (ξ : Euclid P → MultiVector P (k + 1)) (ξ' : Euclid P → MultiVector P k) (f : Euclid P → ℝ) (t : ℝ) (A : GeometricCurrentOn U (k + 1)) (B : GeometricCurrentOn U k), Continuous f → (∀ ω : TestFormOn U (k + 1), T ω = ∫ x, ξ x ((ω : DifferentialForm (Euclid P) (k + 1)) x) ∂μ) → (∀ θ : TestFormOn U k, T.boundary θ = ∫ x, ξ' x ((θ : DifferentialForm (Euclid P) k) x) ∂μ') → (∀ ω : TestFormOn U (k + 1), A ω = ∫ x in {x | f x < t}, ξ x ((ω : DifferentialForm (Euclid P) (k + 1)) x) ∂μ) → (∀ θ : TestFormOn U k, B θ = ∫ x in {x | f x < t}, ξ' x ((θ : DifferentialForm (Euclid P) k) x) ∂μ') → ∀ η : TestFormOn U k, Disjoint (tsupport (η : DifferentialForm (Euclid P) k)) {x | f x = t} → A.boundary η = B η",
+  "lean_name": "cmcs_slice_support",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-slicing-a1-slice-support-a1-a1"
+}

@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.cone_splitting-a1.split_off_spine-a1.minimality_transfer-a1.cube_stokes-a1.coord_box_ftc-a1",
+  "parent_id": "root.dimension_reduction_results-a1.cone_splitting-a1.split_off_spine-a1.minimality_transfer-a1.cube_stokes-a1",
+  "depth": 6,
+  "title": "Fundamental theorem of calculus in one coordinate on a cube of ℝ^{j+1}",
+  "statement": "Let j ∈ ℕ, a ∈ Fin (j + 1), r > 0, and φ, ψ : ℝ^{j+1} → ℝ (functions on Fin (j + 1) → ℝ) with φ continuous and such that, for every u ∈ ℝ^j (u : Fin j → ℝ) and τ ∈ ℝ, σ ↦ ψ(a.insertNth σ u) has derivative φ(a.insertNth τ u) at τ. With Lebesgue measure on Fin (j + 1) → ℝ and on Fin j → ℝ:\n∫_{{u : |u_i| ≤ r ∀ i}} φ(u) du = ∫_{{u' : |u'_c| ≤ r ∀ c}} (ψ(a.insertNth r u') − ψ(a.insertNth (−r) u')) du'.",
+  "lean_statement": "∀ (j : ℕ) (a : Fin (j + 1)) (r : ℝ) (φ ψ : (Fin (j + 1) → ℝ) → ℝ), 0 < r → Continuous φ → (∀ (u : Fin j → ℝ) (τ : ℝ), HasDerivAt (fun σ : ℝ => ψ (Fin.insertNth a σ u)) (φ (Fin.insertNth a τ u)) τ) → ∫ u in {u : Fin (j + 1) → ℝ | ∀ i, |u i| ≤ r}, φ u = ∫ u in {u : Fin j → ℝ | ∀ c, |u c| ≤ r}, (ψ (Fin.insertNth a r u) - ψ (Fin.insertNth a (-r) u))",
+  "lean_name": "dimred_cs_sos_mt_cs_coord_box_ftc",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-cone-splitting-a1-split-off-spine-f1e97b0495-a1"
+}
