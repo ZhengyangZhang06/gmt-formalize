@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.cone_splitting-a1.translation_invariance-a1.const_cartan-a1",
+  "parent_id": "root.dimension_reduction_results-a1.cone_splitting-a1.translation_invariance-a1",
+  "depth": 4,
+  "title": "Cartan's formula for a constant vector field: d(ι_v β) + ι_v dβ = Dβ[v]",
+  "statement": "Let P, m ∈ ℕ, let β be an (m+1)-form on ℝ^P (DifferentialForm (Euclid P) (m + 1), a map from ℝ^P to continuous alternating (m+1)-linear forms), let v, y ∈ ℝ^P, and suppose β is Fréchet differentiable at y. Let ι_vβ be the m-form z ↦ β(z).curryLeft v, where (β(z).curryLeft v)(w_1, …, w_m) = β(z)(v, w_1, …, w_m). Then, with d the exterior derivative (exteriorDerivative = Mathlib extDeriv) and Dβ(y) = fderiv ℝ β y, d(ι_vβ)(y) + (dβ(y)).curryLeft v = Dβ(y)[v].",
+  "lean_statement": "∀ (P m : ℕ) (β : DifferentialForm (Euclid P) (m + 1)) (v y : Euclid P), DifferentiableAt ℝ β y → exteriorDerivative (fun z => ContinuousAlternatingMap.curryLeft (β z) v) y + ContinuousAlternatingMap.curryLeft (exteriorDerivative β y) v = fderiv ℝ β y v",
+  "lean_name": "dimred_cs_ti_const_cartan",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-cone-splitting-a1-translation-inv-67db1ac441-a1"
+}
