@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.mass_equals_rep_measure-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1",
+  "depth": 2,
+  "title": "Mass on open sets of an integer multiplicity current equals its representation measure (Simon Ch. 6, 3.2(3))",
+  "statement": "Let P, n ∈ ℕ and U ⊆ ℝ^P open. Let R = (M, θ, ξ) be an integer multiplicity representation in U (contract IMRep U n): M ⊆ U Borel and countably n-rectifiable; θ : ℝ^P → ℕ Borel with θ ≥ 1 on M and ∫_{M∩K} θ dHⁿ < ∞ for every compact K ⊆ U; ξ : ℝ^P → Λ_n(ℝ^P) (continuous linear functionals on n-covectors) a.e. strongly measurable for Hⁿ⌞M, such that for Hⁿ-a.e. x ∈ M there is an orthonormal family τ_1, …, τ_n spanning an approximate tangent space of M at x with ⟨α, ξ(x)⟩ = α(τ_1, …, τ_n) for all α, or ⟨α, ξ(x)⟩ = −α(τ_1, …, τ_n) for all α. Here Hⁿ = μHE[n]. Let T ∈ 𝒟_n(U) be represented by R: T(ω) = ∫_M θ⟨ω, ξ⟩ dHⁿ for every ω ∈ 𝒟ⁿ(U). Put μ_R(A) := ∫_{M∩A} θ dHⁿ (the contract's R.measure). Then for every open W ⊆ ℝ^P, M_W(T) = μ_R(W), where M_W(T) := sup{max(T(ω), 0) : ω ∈ 𝒟ⁿ(U), tsupport ω ⊆ W, |ω(x)| ≤ 1 for all x} ∈ [0, ∞] (SimonGMT massOn) and |α| := (Σ_{1≤i_1<⋯<i_n≤P} α(e_{i_1}, …, e_{i_n})²)^{1/2} is the Euclidean coefficient norm of n-covectors (Simon 6.1.15, 6.2.5).",
+  "lean_statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (R : IMRep U n), IsOpen U → R.Represents T → ∀ W : Set (Euclid P), IsOpen W → T.massOn W = R.measure W",
+  "lean_name": "cmc_massOn_eq_imRep_measure",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-mass-equals-rep-measure-a1-a1"
+}
