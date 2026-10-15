@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "33a3609fc66a3b81b7257d7e290e0911292fbd51c54512ae6e61769787c8c081",
+  "git_delta": {
+    "base_commit": "ca864168a0d3236327f3e9b343522631ac5f39ef",
+    "candidate_commit": "b73f8ec7c942d8c6a870bb27a3e941f3b428032e",
+    "target": "GMT/Ch07/Submission.lean",
+    "changed_files": [
+      "GMT/Ch07/Submission.lean"
+    ],
+    "diff_sha256": "7696a90ad87cbd3aa91dd4e2fe697319a60d20db72590b60238f00b4b8be9c8b",
+    "source_sha256": "91daeff0e9d3877ffc349e32e82fa1a1b982081c4568c863c32e5da85324529d",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.idtp_two_dim_cone_integer_density",
+      "statement": "∀ (P : ℕ) (C : GeometricCurrentOn (univ : Set (Euclid P)) 2), IsMinimizingIn C univ → BoundaryVanishes C → IsConeCurrent C → ∃ m : ℕ, HasMassDensity C 0 m",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
