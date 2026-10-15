@@ -496,6 +496,29 @@ theorem Submission.imsupp_orient_apply_ae_eq_zero_of_vanishesOn : ∀ (P n : ℕ
     ((ContinuousLinearMap.apply ℝ ℝ α).continuous.comp_aestronglyMeasurable
       R.aestronglyMeasurable_orient).mono_ac hac
   -- `μ_T(K) = ∫_{M ∩ K} θ dHⁿ < ∞` for compact `K ⊆ U`
+  have hfin : ∀ K : Set (Euclid P), IsCompact K → K ⊆ U → R.measure K < ∞ := by
+    intro K hK hKU
+    rw [IMRep.measure, withDensity_apply _ hK.measurableSet,
+      Measure.restrict_restrict hK.measurableSet, inter_comm]
+    exact (R.locallyIntegrable_mult K hK hKU).lt_top
+  -- `f` is bounded and `μ_T` is finite on compact subsets of `W`
+  have hli : LocallyIntegrableOn (fun x => R.orient x α) W R.measure := by
+    refine (locallyIntegrableOn_iff hW.isLocallyClosed).2 fun K hKW hK => ?_
+    exact IntegrableOn.of_bound (hfin K hK (hKW.trans hWU)) hmeas.restrict ‖α‖
+      (ae_restrict_of_ae hbound)
+  -- `∫ g f dμ_T = τ(M, θ, ξ)(g α) = T(g α) = 0`, as `g α` is a test form supported in `W`
+  refine hW.ae_eq_zero_of_integral_contDiff_smul_eq_zero hli fun g hg hgc hgW => ?_
+  let ω : TestFormOn U n := ⟨fun y => g y • α, ⟨hg.smul contDiff_const, hgc.smul_right⟩,
+    (tsupport_smul_subset_left _ _).trans (hgW.trans hWU)⟩
+  have h0 : T ω = 0 := hT ω ((tsupport_smul_subset_left _ _).trans hgW)
+  rw [hRT ω] at h0
+  have hθ : (fun x => (R.mult x : ℝ≥0∞)) = fun x => ((R.mult x : NNReal) : ℝ≥0∞) := by
+    funext x; simp
+  have hmθ : Measurable fun x => (R.mult x : NNReal) :=
+    (measurable_from_nat (f := fun k : ℕ => (k : NNReal))).comp R.measurable_mult
+  rw [IMRep.measure, hθ, integral_withDensity_eq_integral_smul hmθ, ← h0, IMRep.action]
+  refine integral_congr_ae (Eventually.of_forall fun x => ?_)
+  simp only [ω, NNReal.smul_def, NNReal.coe_natCast, smul_eq_mul, map_smul]
 /-- **Simon Ch. 6, 1.2 and 1.5–1.7**: a unit orientation `ξ = ±τ₁ ∧ ⋯ ∧ τₙ` (`τ` orthonormal)
 has `|ξ(α)| ≤ |α|` for the Euclidean coefficient norm, and `L(ζ) = Σ_I ζ(dx^I) dx^I` (`I` strictly
 increasing) has `|L(ξ)| ≤ 1` and `ξ(L(ξ)) = 1`.  Every covector expands as `α = Σ_I α(e_I) dx^I`,
@@ -1217,24 +1240,6 @@ theorem Submission.dor_ims_measure_le_massOn : ∀ (P n : ℕ) (U : Set (Euclid 
     rw [IMRep.measure, withDensity_apply _ hK.measurableSet,
       Measure.restrict_restrict hK.measurableSet, inter_comm]
     exact (R.locallyIntegrable_mult K hK hKU).lt_top
-  -- `f` is bounded and `μ_T` is finite on compact subsets of `W`
-  have hli : LocallyIntegrableOn (fun x => R.orient x α) W R.measure := by
-    refine (locallyIntegrableOn_iff hW.isLocallyClosed).2 fun K hKW hK => ?_
-    exact IntegrableOn.of_bound (hfin K hK (hKW.trans hWU)) hmeas.restrict ‖α‖
-      (ae_restrict_of_ae hbound)
-  -- `∫ g f dμ_T = τ(M, θ, ξ)(g α) = T(g α) = 0`, as `g α` is a test form supported in `W`
-  refine hW.ae_eq_zero_of_integral_contDiff_smul_eq_zero hli fun g hg hgc hgW => ?_
-  let ω : TestFormOn U n := ⟨fun y => g y • α, ⟨hg.smul contDiff_const, hgc.smul_right⟩,
-    (tsupport_smul_subset_left _ _).trans (hgW.trans hWU)⟩
-  have h0 : T ω = 0 := hT ω ((tsupport_smul_subset_left _ _).trans hgW)
-  rw [hRT ω] at h0
-  have hθ : (fun x => (R.mult x : ℝ≥0∞)) = fun x => ((R.mult x : NNReal) : ℝ≥0∞) := by
-    funext x; simp
-  have hmθ : Measurable fun x => (R.mult x : NNReal) :=
-    (measurable_from_nat (f := fun k : ℕ => (k : NNReal))).comp R.measurable_mult
-  rw [IMRep.measure, hθ, integral_withDensity_eq_integral_smul hmθ, ← h0, IMRep.action]
-  refine integral_congr_ae (Eventually.of_forall fun x => ?_)
-  simp only [ω, NNReal.smul_def, NNReal.coe_natCast, smul_eq_mul, map_smul]
   have hUc : R.measure Uᶜ = 0 := by
     refine hac ?_
     rw [Measure.restrict_apply hU.measurableSet.compl]
@@ -2128,119 +2133,6 @@ theorem Submission.imrep_smul_rescale_action_measure : ∀ (P n : ℕ) (R R' : I
     -- Step 4: the lower-integral change of variables on `cA ∩ M`.
     exact (Submission.euclid_hausdorff_dilation_change_of_variables P n c hc
       ((fun x : Euclid P => c • x) '' A ∩ R.carrier)).2.1 fun y => (R.mult y : ℝ≥0∞)
-/-- A unit orientation has norm at most `1` (step 1(c) of the proof of Simon Ch. 6, 3.2(3)).
-If `ξ α = ±α(τ₁, …, τₙ)` for an orthonormal family `τ`, then `|ξ α| = |α(τ)| ≤ ‖α‖ ∏ᵢ ‖τᵢ‖ = ‖α‖`
-for every `n`-covector `α`, so the operator norm of `ξ` is at most `1`. -/
-theorem Submission.unit_orientation_norm_le_one : ∀ (P n : ℕ) (Q : Submodule ℝ (Euclid P)) (ξ : MultiVector P n), IsUnitOrientationOf ξ Q → ‖ξ‖ ≤ 1 := by
-  rintro P n Q ξ ⟨τ, hτ, -, hξ⟩
-  refine ContinuousLinearMap.opNorm_le_bound _ zero_le_one fun α => ?_
-  -- `|α(τ)| ≤ ‖α‖ ∏ᵢ ‖τᵢ‖ = ‖α‖`, as `‖τᵢ‖ = 1`
-  have hbound : ‖α τ‖ ≤ ‖α‖ := by
-    simpa [hτ.1] using α.le_opNorm τ
-  rcases hξ with h | h
-  · rw [h, one_mul]
-    exact hbound
-  · rw [h, norm_neg, one_mul]
-    exact hbound
-/-- **Simon Ch. 6, 3.2(3)** (independence of `θHⁿ⌞M` from the representation, steps 1(b), 1(d)):
-two unit orientations `ξ₁ = ±τ₁ ∧ ⋯ ∧ τₙ`, `ξ₂ = ±τ'₁ ∧ ⋯ ∧ τ'ₙ` of the same subspace `Q` take
-absolute value `1` on a common `n`-covector.  Take the frame determinant
-`δ(w) = det(⟨τᵢ, wⱼ⟩) = det_τ (π_Q w)`, continuous since `|δ(w)| ≤ ∏ ‖wⱼ‖` (Hadamard); then
-`δ(τ) = 1` and `δ(τ') = det(⟨τᵢ, τ'ⱼ⟩) = ±1`, the change of orthonormal basis being orthogonal. -/
-theorem Submission.unit_orientations_common_unit_covector : ∀ (P n : ℕ) (Q : Submodule ℝ (Euclid P)) (ξ₁ ξ₂ : MultiVector P n), IsUnitOrientationOf ξ₁ Q → IsUnitOrientationOf ξ₂ Q → ∃ α : Covector (Euclid P) n, |ξ₁ α| = 1 ∧ |ξ₂ α| = 1 := by
-  rintro P n Q ξ₁ ξ₂ ⟨τ, hτ, hspan, hξ₁⟩ ⟨τ', hτ', hspan', hξ₂⟩
-  -- an orthonormal frame spanning `Q` is an orthonormal basis of `Q`
-  have frame : ∀ σ : Fin n → Euclid P, Orthonormal ℝ σ → Submodule.span ℝ (range σ) = Q →
-      ∃ c : OrthonormalBasis (Fin n) ℝ Q, ∀ i, (c i : Euclid P) = σ i := by
-    intro σ hσ hσspan
-    have hmem : ∀ i, σ i ∈ Q := fun i => hσspan ▸ Submodule.subset_span (mem_range_self i)
-    let w : Fin n → Q := fun i => ⟨σ i, hmem i⟩
-    have hw : Orthonormal ℝ w := by
-      rw [← Q.subtypeₗᵢ.orthonormal_comp_iff (v := w)]
-      exact hσ
-    have hwspan : ⊤ ≤ Submodule.span ℝ (range w) := by
-      rintro ⟨y, hy⟩ -
-      rw [← hσspan, Submodule.mem_span_range_iff_exists_fun] at hy
-      obtain ⟨c, hc⟩ := hy
-      rw [Submodule.mem_span_range_iff_exists_fun]
-      exact ⟨c, Subtype.ext (by simpa [w] using hc)⟩
-    exact ⟨OrthonormalBasis.mk hw hwspan, fun i => by simp [w]⟩
-  obtain ⟨b, hb⟩ := frame τ hτ hspan
-  obtain ⟨b', hb'⟩ := frame τ' hτ' hspan'
-  have : Fact (Module.finrank ℝ Q = n) := ⟨by simpa using Module.finrank_eq_card_basis b.toBasis⟩
-  let o : Orientation ℝ Q (Fin n) := b.toBasis.orientation
-  let π : Euclid P →L[ℝ] Q := Q.orthogonalProjectionOnto
-  -- the frame determinant `δ(w) = det_b (π_Q w)`
-  let A : Euclid P [⋀^Fin n]→ₗ[ℝ] ℝ := b.toBasis.det.compLinearMap π.toLinearMap
-  have hA : ∀ w, ‖A w‖ ≤ 1 * ∏ i, ‖w i‖ := by
-    intro w
-    have h1 : |A w| = |o.volumeForm (fun i => π (w i))| :=
-      (o.volumeForm_robust' b (fun i => π (w i))).symm
-    rw [Real.norm_eq_abs, h1, one_mul]
-    refine (o.abs_volumeForm_apply_le _).trans ?_
-    gcongr with i
-    exact Q.norm_orthogonalProjectionOnto_apply_le (w i)
-  let δ : Covector (Euclid P) n := A.mkContinuous 1 hA
-  have hπ : ∀ (c : OrthonormalBasis (Fin n) ℝ Q) (i : Fin n), π (c i : Euclid P) = c i :=
-    fun c i => Q.orthogonalProjectionOnto_mem_subspace_eq_self (c i)
-  -- `|δ| = 1` on every orthonormal frame of `Q`
-  have hδ : ∀ (c : OrthonormalBasis (Fin n) ℝ Q) (σ : Fin n → Euclid P),
-      (∀ i, (c i : Euclid P) = σ i) → |δ σ| = 1 := by
-    intro c σ hc
-    have h2 : δ σ = b.toBasis.det (fun i => π (σ i)) := rfl
-    have h3 : (fun i => π (σ i)) = c := by
-      funext i
-      rw [← hc i, hπ]
-    rw [h2, h3, ← o.volumeForm_robust' b]
-    exact o.abs_volumeForm_apply_of_orthonormal c
-  refine ⟨δ, ?_, ?_⟩
-  · rcases hξ₁ with h | h
-    · rw [h]
-      exact hδ b τ hb
-    · rw [h, abs_neg]
-      exact hδ b τ hb
-  · rcases hξ₂ with h | h
-    · rw [h]
-      exact hδ b' τ' hb'
-    · rw [h, abs_neg]
-      exact hδ b' τ' hb'
-/-- **Simon Ch. 3, 1.4** (used in Ch. 6, 3.2(3)): approximate tangent spaces only see a set up to
-`Hⁿ`-null sets.  For `r ≠ 0` the blow-up `η_{x,r}(y) = r⁻¹(y - x)` is a translation followed by a
-dilation, so it maps `Hⁿ`-null sets to `Hⁿ`-null sets.  As `η(A) \ η(B) ⊆ η(A \ B)` and
-`η(B) \ η(A) ⊆ η(B \ A)`, the blow-ups of `A` and `B` agree up to `Hⁿ`-null sets, so their
-integrals coincide for every `r > 0` and have the same limits as `r ↓ 0`. -/
-theorem Submission.hasApproximateTangentSpaceAt_iff_of_null_sdiff : ∀ (P n : ℕ) (A B : Set (Euclid P)) (x : Euclid P) (Q : Submodule ℝ (Euclid P)), μHE[n] (A \ B) = 0 → μHE[n] (B \ A) = 0 → (HasApproximateTangentSpaceAt n A x Q ↔ HasApproximateTangentSpaceAt n B x Q) := by
-  intro P n A B x Q hAB hBA
-  -- `η_{x,r} = (r⁻¹ • ·) ∘ (· - x)` maps `Hⁿ`-null sets to `Hⁿ`-null sets when `r ≠ 0`
-  have himg_null : ∀ r : ℝ, r ≠ 0 → ∀ S : Set (Euclid P), μHE[n] S = 0 →
-      μHE[n] (Poincare.SimonGMT.Chapter03.blowUpMap x r '' S) = 0 := by
-    intro r hr S hS
-    have himg : Poincare.SimonGMT.Chapter03.blowUpMap x r '' S =
-        (fun z => r⁻¹ • z) '' ((fun y => y - x) '' S) := by
-      rw [Set.image_image]
-      rfl
-    have hiso : Isometry (fun y : Euclid P => y - x) := (IsometryEquiv.subRight x).isometry
-    rw [himg, Set.image_smul, Measure.euclideanHausdorffMeasure_smul₀ n (inv_ne_zero hr),
-      hiso.euclideanHausdorffMeasure_image, hS, smul_zero]
-  -- for `r ≠ 0` the blow-ups of `A` and `B` agree up to `Hⁿ`-null sets, hence so do the integrals
-  have hint : ∀ r : ℝ, r ≠ 0 → ∀ f : CompactlySupportedContinuousMap (Euclid P) ℝ,
-      ∫ y in Poincare.SimonGMT.Chapter03.blowUpMap x r '' A, f y ∂μHE[n] =
-        ∫ y in Poincare.SimonGMT.Chapter03.blowUpMap x r '' B, f y ∂μHE[n] := by
-    intro r hr f
-    apply setIntegral_congr_set
-    refine ae_eq_set.2 ⟨?_, ?_⟩
-    · exact measure_mono_null (Set.subset_image_sdiff _ _ _) (himg_null r hr _ hAB)
-    · exact measure_mono_null (Set.subset_image_sdiff _ _ _) (himg_null r hr _ hBA)
-  -- the integrals agree on `(0, ∞) ∈ 𝓝[>] 0`, so they have the same limits as `r ↓ 0`
-  constructor
-  · rintro ⟨hdim, hlim⟩
-    refine ⟨hdim, fun f => (hlim f).congr' ?_⟩
-    filter_upwards [self_mem_nhdsWithin] with r hr
-    exact hint r (ne_of_gt hr) f
-  · rintro ⟨hdim, hlim⟩
-    refine ⟨hdim, fun f => (hlim f).congr' ?_⟩
-    filter_upwards [self_mem_nhdsWithin] with r hr
-    exact (hint r (ne_of_gt hr) f).symm
 /-- **Simon Ch. 6, 1.2 (p. 132)**: `Λⁿ(ℝᴾ)` is finite-dimensional.  An `n`-covector `α` is
 determined by its values `α(e_{I(1)}, …, e_{I(n)})` on tuples of standard basis vectors
 (alternating maps agreeing on distinct basis vectors are equal), so
@@ -7689,70 +7581,6 @@ theorem Submission.pushforward_action_massOn_le_first_variation : ∀ (P n : ℕ
     _ = m + t * R.firstVariation X + m * ε' * |t| := by ring
     _ ≤ m + t * R.firstVariation X + ε * |t| := by linarith
 
-/-- **Simon Ch. 6, 3.2(3)** (chapter-06.txt lines 763–768): the weight `θHⁿ⌞M` of an integer
-multiplicity current does not depend on the representation `T = τ(M, θ, ξ)`.  By the fundamental
-lemma, `1_{M₁}θ₁ξ₁ = 1_{M₂}θ₂ξ₂` `Hⁿ`-a.e. on `M₁ ∪ M₂`.  A unit orientation is nonzero, so
-`Hⁿ(M₁ ∖ M₂) = Hⁿ(M₂ ∖ M₁) = 0`; then `M₁`, `M₂` have the same approximate tangent planes, and
-evaluating at a covector `α` with `|ξ₁(α)| = |ξ₂(α)| = 1` gives `θ₁ = θ₂` a.e. on `M₁ ∩ M₂`. -/
-theorem Submission.imrep_measure_eq_of_represents_same_current : ∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (R₁ R₂ : IMRep U n), IsOpen U → R₁.Represents T → R₂.Represents T → R₁.measure = R₂.measure := by
-  intro P n U T R₁ R₂ hU h₁ h₂
-  -- (★) `1_{M₁}θ₁ξ₁ = 1_{M₂}θ₂ξ₂`, `Hⁿ`-a.e. on `M₁ ∪ M₂`
-  have hstar := Submission.imrep_weighted_orient_indicator_ae_eq P n U T R₁ R₂ hU h₁ h₂
-  -- `Hⁿ(M ∖ M') = 0`: for a.e. `x ∈ M ∖ M'`, (★) reads `θ(x)ξ(x) = 0`, but `θ(x) ≥ 1` and
-  -- `|ξ(x)(α)| = 1` for some `α` (the common covector of `ξ(x)` with itself)
-  have hnull : ∀ R R' : IMRep U n,
-      (∀ᵐ x ∂(μHE[n].restrict (R.carrier ∪ R'.carrier)),
-        R.carrier.indicator (fun y => (R.mult y : ℝ) • R.orient y) x =
-          R'.carrier.indicator (fun y => (R'.mult y : ℝ) • R'.orient y) x) →
-      μHE[n] (R.carrier \ R'.carrier) = 0 := by
-    intro R R' h
-    have hmem : ∀ᵐ x ∂(μHE[n].restrict R.carrier), x ∈ R'.carrier := by
-      filter_upwards [ae_restrict_of_ae_restrict_of_subset subset_union_left h, R.orients,
-        ae_restrict_mem R.measurableSet_carrier] with x hx hxo hxM
-      by_contra hxM'
-      obtain ⟨Q, -, hQ⟩ := hxo
-      obtain ⟨α, hα, -⟩ :=
-        Submission.unit_orientations_common_unit_covector P n Q (R.orient x) (R.orient x) hQ hQ
-      rw [indicator_of_mem hxM, indicator_of_notMem hxM'] at hx
-      have hev := congrArg (fun L : MultiVector P n => |L α|) hx
-      simp only [smul_apply, zero_apply, smul_eq_mul, abs_mul, Nat.abs_cast, hα, mul_one,
-        abs_zero, Nat.cast_eq_zero] at hev
-      exact (R.mult_pos x hxM).ne' hev
-    rw [ae_restrict_iff' R.measurableSet_carrier, ae_iff] at hmem
-    have hsub : R.carrier \ R'.carrier ⊆ {x | ¬(x ∈ R.carrier → x ∈ R'.carrier)} :=
-      fun x hx h => hx.2 (h hx.1)
-    exact measure_mono_null hsub hmem
-  have h12 := hnull R₁ R₂ hstar
-  have h21 := hnull R₂ R₁ (by
-    rw [union_comm]
-    filter_upwards [hstar] with x hx using hx.symm)
-  -- hence `Hⁿ⌞M₁ = Hⁿ⌞M₂`
-  have hrestr : μHE[n].restrict R₁.carrier = μHE[n].restrict R₂.carrier :=
-    Measure.restrict_congr_set (ae_eq_set.2 ⟨h12, h21⟩)
-  -- `θ₁ = θ₂` a.e. on `M₁`: the approximate tangent planes `Q₁` of `M₁` and `Q₂` of `M₂` agree,
-  -- and (★) evaluated at a covector `α` with `|ξ₁(α)| = |ξ₂(α)| = 1` gives `θ₁ = θ₂`
-  have hmult : ∀ᵐ x ∂(μHE[n].restrict R₁.carrier), (R₁.mult x : ℝ≥0∞) = R₂.mult x := by
-    have hor₂ := R₂.orients
-    have hmem₂ := ae_restrict_mem (μ := μHE[n]) R₂.measurableSet_carrier
-    rw [← hrestr] at hor₂ hmem₂
-    filter_upwards [ae_restrict_of_ae_restrict_of_subset subset_union_left hstar, R₁.orients, hor₂,
-      ae_restrict_mem R₁.measurableSet_carrier, hmem₂] with x hx ho₁ ho₂ hx₁ hx₂
-    obtain ⟨Q₁, hT₁, hQ₁⟩ := ho₁
-    obtain ⟨Q₂, hT₂, hQ₂⟩ := ho₂
-    have hQ : Q₁ = Q₂ :=
-      ((Submission.hasApproximateTangentSpaceAt_iff_of_null_sdiff P n R₁.carrier R₂.carrier x Q₁
-        h12 h21).1 hT₁).unique hT₂
-    subst hQ
-    obtain ⟨α, hα₁, hα₂⟩ :=
-      Submission.unit_orientations_common_unit_covector P n Q₁ (R₁.orient x) (R₂.orient x) hQ₁ hQ₂
-    rw [indicator_of_mem hx₁, indicator_of_mem hx₂] at hx
-    have hev := congrArg (fun L : MultiVector P n => |L α|) hx
-    simp only [smul_apply, smul_eq_mul, abs_mul, Nat.abs_cast, hα₁, hα₂, mul_one] at hev
-    exact_mod_cast hev
-  -- `θ₁Hⁿ⌞M₁ = θ₂Hⁿ⌞M₁ = θ₂Hⁿ⌞M₂`
-  unfold IMRep.measure
-  rw [withDensity_congr_ae hmult, hrestr]
-
 /-- **The weight of a cone is homogeneous of degree `n`** (proof of Simon 7.4.5,
 chapter-07.txt lines 697–699, "by virtue of the fact that `C` is a cone").  If the cone `C` is
 represented by `R = (M, θ, ξ)` with weight `μ = θHⁿ⌞M` and `λ > 0`, then `μ(λA) = λⁿ μ(A)` for
@@ -7784,208 +7612,6 @@ theorem Submission.cone_current_imrep_measure_smul_image : ∀ (P n : ℕ) (C : 
     rw [← ENNReal.ofReal_mul (pow_nonneg hlam.le n), ← mul_pow, mul_inv_cancel₀ hlam.ne', one_pow,
       ENNReal.ofReal_one]
   rw [hA', ← mul_assoc, hpow, one_mul]
-/-- **The approximate tangent projection of an integer multiplicity triple is measurable**
-(Simon Ch. 3, 1.4 and 1.5(1); Ch. 6, 3.1).  For `R = (M, θ, ξ)`, `x ↦ p_{TₓM}` is
-`Hⁿ⌞M`-a.e. strongly measurable.  By uniqueness of approximate tangent planes, `TₓM` is a.e. the
-plane oriented by `ξ(x)`.  A unit simple `n`-vector `ζ = ±τ₁ ∧ ⋯ ∧ τₙ` determines its plane: if
-also `ζ = ±τ'₁ ∧ ⋯ ∧ τ'ₙ` and `y ⊥ span τ'`, the `n`-covector `α(u) = det(⟨cₖ, uⱼ⟩)`, where `c` is
-`τ` with `τᵢ` replaced by `y`, gives `±⟨y, τᵢ⟩ = ±α(τ) = ζ(α) = ±α(τ') = 0`, so `τᵢ ∈ span τ'`.
-Hence `p_{TₓM} = G(ξ(x))` a.e., where `G(ζ)` is the projection onto the plane of `ζ` (`0` if there
-is none).  `G` is Borel: `Φ(τ, s) = s τ₁ ∧ ⋯ ∧ τₙ` is continuous on the compact set `Ω` of
-orthonormal frames and signs, and `G(Φ(τ, s)) = Σₖ ⟨τₖ, ·⟩ τₖ` is continuous, so for closed `t`,
-`G⁻¹(t) = Φ(Ω ∩ (G ∘ Φ)⁻¹(t)) ∪ (Φ(Ω)ᶜ ∩ {0 ∈ t})` is Borel. -/
-theorem Submission.imrep_approxTangent_starProjection_aesm : ∀ (P n : ℕ) (U : Set (Euclid P)) (R : IMRep U n), AEStronglyMeasurable (fun x => (approxTangentPlane n R.carrier x).starProjection) (μHE[n].restrict R.carrier) := by
-  intro P n U R
-  classical
-  -- `ev τ = (α ↦ α(τ₁, …, τₙ))`, a continuous alternating map of `τ`
-  let ev : Euclid P [⋀^Fin n]→L[ℝ] MultiVector P n :=
-    (ContinuousLinearMap.id ℝ (Covector (Euclid P) n)).flipAlternating
-  have hev : ∀ (τ : Fin n → Euclid P) (α : Covector (Euclid P) n), ev τ α = α τ :=
-    fun τ α => rfl
-  -- `Φ(τ, s) = s τ₁ ∧ ⋯ ∧ τₙ` on the compact set `Ω` of orthonormal frames and signs `s = ±1`
-  let Φ : (Fin n → Euclid P) × ℝ → MultiVector P n := fun ω => ω.2 • ev ω.1
-  have hΦc : Continuous Φ := continuous_snd.smul (ev.coe_continuous.comp continuous_fst)
-  let Ω : Set ((Fin n → Euclid P) × ℝ) := {τ | Orthonormal ℝ τ} ×ˢ {1, -1}
-  have hΩ : IsCompact Ω := by
-    refine IsCompact.prod (isCompact_of_isClosed_isBounded ?_ ?_) (Set.toFinite _).isCompact
-    · have hset : {τ : Fin n → Euclid P | Orthonormal ℝ τ} =
-          ⋂ i, ⋂ j, {τ | inner ℝ (τ i) (τ j) = if i = j then (1 : ℝ) else 0} := by
-        ext τ
-        simp [orthonormal_iff_ite]
-      rw [hset]
-      exact isClosed_iInter fun i => isClosed_iInter fun j =>
-        isClosed_eq ((continuous_apply i).inner (continuous_apply j)) continuous_const
-    · refine (isBounded_iff_subset_closedBall 0).mpr ⟨1, fun τ hτ => ?_⟩
-      rw [mem_closedBall_zero_iff]
-      exact (pi_norm_le_iff_of_nonneg zero_le_one).mpr fun i => (hτ.1 i).le
-  -- `ζ` orients `Q` iff `ζ = Φ(τ, s)` for a point `(τ, s)` of `Ω` with `span τ = Q`
-  have horient : ∀ (ζ : MultiVector P n) (Q : Submodule ℝ (Euclid P)),
-      IsUnitOrientationOf ζ Q ↔ ∃ ω ∈ Ω, Φ ω = ζ ∧ Submodule.span ℝ (range ω.1) = Q := by
-    intro ζ Q
-    constructor
-    · rintro ⟨τ, hτ, hQ, h | h⟩
-      · refine ⟨(τ, 1), ⟨hτ, Or.inl rfl⟩, ?_, hQ⟩
-        ext α
-        simp [Φ, hev, h]
-      · refine ⟨(τ, -1), ⟨hτ, Or.inr rfl⟩, ?_, hQ⟩
-        ext α
-        simp [Φ, hev, h]
-    · rintro ⟨⟨τ, s⟩, ⟨hτ, hs⟩, rfl, hQ⟩
-      refine ⟨τ, hτ, hQ, ?_⟩
-      rcases hs with rfl | rfl
-      · left
-        intro α
-        simp [Φ, hev]
-      · right
-        intro α
-        simp [Φ, hev]
-  -- the `n`-covector `u ↦ det(⟨cₖ, uⱼ⟩)ₖⱼ`
-  have hdet : ∀ c : Fin n → Euclid P, ∃ α : Covector (Euclid P) n,
-      ∀ u : Fin n → Euclid P, α u = (Matrix.of fun k j => inner ℝ (c k) (u j)).det := by
-    intro c
-    let L : Euclid P →ₗ[ℝ] (Fin n → ℝ) := LinearMap.pi fun k => (innerSL ℝ (c k)).toLinearMap
-    let A : Euclid P [⋀^Fin n]→ₗ[ℝ] ℝ := Matrix.detRowAlternating.compLinearMap L
-    have hA : ∀ u : Fin n → Euclid P, A u = (Matrix.of fun k j => inner ℝ (c k) (u j)).det := by
-      intro u
-      rw [← Matrix.det_transpose]
-      rfl
-    have hAc : Continuous fun u : Fin n → Euclid P => A u := by
-      simp only [hA]
-      exact Continuous.matrix_det (continuous_matrix fun k j => by
-        simp only [Matrix.of_apply]
-        exact continuous_const.inner (continuous_apply j))
-    exact ⟨{ A with cont := hAc }, hA⟩
-  -- a unit simple `n`-vector determines its plane: if `ζ` orients `span τ` and `span τ'`, then
-  -- each `τᵢ` is orthogonal to `(span τ')ᗮ`
-  have hle : ∀ (ζ : MultiVector P n) (Q Q' : Submodule ℝ (Euclid P)),
-      IsUnitOrientationOf ζ Q → IsUnitOrientationOf ζ Q' → Q ≤ Q' := by
-    rintro ζ Q Q' ⟨τ, hτ, rfl, hζ⟩ ⟨τ', hτ', rfl, hζ'⟩
-    rw [Submodule.span_le]
-    rintro _ ⟨i, rfl⟩
-    rw [SetLike.mem_coe, ← Submodule.orthogonal_orthogonal (Submodule.span ℝ (range τ')),
-      Submodule.mem_orthogonal]
-    intro y hy
-    obtain ⟨α, hα⟩ := hdet (Function.update τ i y)
-    -- `α(τ)` is the determinant of the identity matrix with row `i` replaced by `(⟨y, τⱼ⟩)ⱼ`
-    have h1 : α τ = inner ℝ y (τ i) := by
-      rw [hα]
-      have hM : (Matrix.of fun k j => inner ℝ (Function.update τ i y k) (τ j)) =
-          (1 : Matrix (Fin n) (Fin n) ℝ).updateRow i (fun j => inner ℝ y (τ j)) := by
-        ext k j
-        by_cases hk : k = i
-        · subst hk
-          simp
-        · simp [hk, Matrix.one_apply, orthonormal_iff_ite.mp hτ k j]
-      rw [hM, ← Matrix.det_transpose, ← Matrix.updateCol_transpose, Matrix.transpose_one,
-        ← Matrix.cramer_apply, Matrix.cramer_one]
-      rfl
-    -- row `i` of the matrix of `α(τ')` is `(⟨y, τ'ⱼ⟩)ⱼ = 0`
-    have h2 : α τ' = 0 := by
-      rw [hα]
-      refine Matrix.det_eq_zero_of_row_eq_zero i fun j => ?_
-      simp only [Matrix.of_apply, Function.update_self]
-      rw [real_inner_comm]
-      exact hy _ (Submodule.subset_span ⟨j, rfl⟩)
-    have h3 : ζ α = 0 := by
-      rcases hζ' with h | h <;> simp [h, h2]
-    rcases hζ with h | h
-    · rw [← h1, ← h, h3]
-    · have h4 := h α
-      rw [h3] at h4
-      rw [← h1]
-      linarith
-  have huniq : ∀ (ζ : MultiVector P n) (Q Q' : Submodule ℝ (Euclid P)),
-      IsUnitOrientationOf ζ Q → IsUnitOrientationOf ζ Q' → Q = Q' :=
-    fun ζ Q Q' h h' => le_antisymm (hle ζ Q Q' h h') (hle ζ Q' Q h' h)
-  -- the projection onto the span of an orthonormal frame `τ` is `Σₖ ⟨τₖ, ·⟩ τₖ`, continuous in `τ`
-  let F : (Fin n → Euclid P) × ℝ → (Euclid P →L[ℝ] Euclid P) :=
-    fun ω => ∑ k, (innerSL ℝ (ω.1 k)).smulRight (ω.1 k)
-  have hFapply : ∀ ω v, F ω v = ∑ k, inner ℝ (ω.1 k) v • ω.1 k := by
-    intro ω v
-    simp [F]
-  have hFc : Continuous F := by
-    refine continuous_clm_apply.mpr fun v => ?_
-    simp only [hFapply]
-    exact continuous_finsetSum _ fun k _ => by fun_prop
-  have hFproj : ∀ ω ∈ Ω, (Submodule.span ℝ (range ω.1)).starProjection = F ω := by
-    rintro ⟨τ, s⟩ ⟨hτ, -⟩
-    refine ContinuousLinearMap.ext fun v => ?_
-    refine Submodule.eq_starProjection_of_mem_of_inner_eq_zero ?_ ?_
-    · rw [hFapply]
-      exact Submodule.sum_mem _ fun k _ =>
-        Submodule.smul_mem _ _ (Submodule.subset_span ⟨k, rfl⟩)
-    · intro w hw
-      refine Submodule.span_induction ?_ ?_ ?_ ?_ hw
-      · rintro _ ⟨j, rfl⟩
-        rw [hFapply, inner_sub_left, sum_inner]
-        simp [inner_smul_left, orthonormal_iff_ite.mp hτ, real_inner_comm]
-      · simp
-      · intro x y _ _ hx hy
-        rw [inner_add_right, hx, hy, add_zero]
-      · intro a x _ hx
-        rw [inner_smul_right, hx, mul_zero]
-  -- `G ζ` is the projection onto the plane oriented by `ζ` (`0` if there is none)
-  let G : MultiVector P n → (Euclid P →L[ℝ] Euclid P) := fun ζ =>
-    if h : ∃ Q, IsUnitOrientationOf ζ Q then h.choose.starProjection else 0
-  have hGQ : ∀ (ζ : MultiVector P n) (Q : Submodule ℝ (Euclid P)),
-      IsUnitOrientationOf ζ Q → G ζ = Q.starProjection := by
-    intro ζ Q hQ
-    have hex : ∃ Q, IsUnitOrientationOf ζ Q := ⟨Q, hQ⟩
-    simp only [G, dite_eq_left hex]
-    rw [huniq _ _ _ hex.choose_spec hQ]
-  have hGΦ : ∀ ω ∈ Ω, G (Φ ω) = F ω := fun ω hω => by
-    rw [hGQ _ _ ((horient _ _).mpr ⟨ω, hω, rfl, rfl⟩), hFproj ω hω]
-  -- `G` is Borel: for closed `t`, `G⁻¹(t)` is a compact set `Φ(Ω ∩ F⁻¹(t))` together with the
-  -- complement of the compact set `Φ(Ω)` (if `0 ∈ t`)
-  have hG : Measurable G := by
-    refine measurable_of_isClosed fun t ht => ?_
-    have hset : G ⁻¹' t = Φ '' (Ω ∩ F ⁻¹' t) ∪
-        ((Φ '' Ω)ᶜ ∩ {_ζ | (0 : Euclid P →L[ℝ] Euclid P) ∈ t}) := by
-      ext ζ
-      simp only [Set.mem_preimage, Set.mem_union, Set.mem_image, Set.mem_inter_iff,
-        Set.mem_compl_iff]
-      by_cases h : ∃ Q, IsUnitOrientationOf ζ Q
-      · obtain ⟨Q, hQ⟩ := h
-        obtain ⟨ω, hω, hΦω, -⟩ := (horient ζ Q).mp hQ
-        have hGζ : G ζ = F ω := by
-          rw [← hΦω]
-          exact hGΦ ω hω
-        constructor
-        · intro hζt
-          exact Or.inl ⟨ω, ⟨hω, by rwa [← hGζ]⟩, hΦω⟩
-        · rintro (⟨ω', ⟨hω', hω't⟩, hΦω'⟩ | ⟨hn, -⟩)
-          · rw [← hΦω', hGΦ ω' hω']
-            exact hω't
-          · exact absurd ⟨ω, hω, hΦω⟩ hn
-      · have hGζ : G ζ = 0 := dite_eq_right h
-        have hn : ¬∃ ω, ω ∈ Ω ∧ Φ ω = ζ := fun ⟨ω, hω, hΦω⟩ =>
-          h ⟨_, (horient ζ _).mpr ⟨ω, hω, hΦω, rfl⟩⟩
-        rw [hGζ]
-        constructor
-        · intro h0
-          exact Or.inr ⟨hn, h0⟩
-        · rintro (⟨ω', ⟨hω', -⟩, hΦω'⟩ | ⟨-, h0⟩)
-          · exact absurd ⟨ω', hω', hΦω'⟩ hn
-          · exact h0
-    rw [hset]
-    exact ((hΩ.inter_right (ht.preimage hFc)).image hΦc).isClosed.measurableSet.union
-      ((hΩ.image hΦc).isClosed.measurableSet.compl.inter (MeasurableSet.const _))
-  -- a.e. `TₓM` is the plane oriented by `ξ(x)` (uniqueness of approximate tangent planes), so
-  -- `p_{TₓM} = G(ξ(x))`
-  have hae : (fun x => (approxTangentPlane n R.carrier x).starProjection)
-      =ᵐ[μHE[n].restrict R.carrier] G ∘ R.orient := by
-    filter_upwards [R.orients] with x ⟨Q, hQ, hor⟩
-    have hex : ∃ Q, HasApproximateTangentSpaceAt n R.carrier x Q := ⟨Q, hQ⟩
-    have h1 : approxTangentPlane n R.carrier x = Q := by
-      rw [approxTangentPlane, dite_eq_left hex]
-      exact hex.choose_spec.unique hQ
-    rw [Function.comp_apply, hGQ _ _ hor, h1]
-  -- `G ∘ ξ` is a.e. measurable, with values in the finite-dimensional space `End(ℝᴾ)`
-  have : TopologicalSpace.PseudoMetrizableSpace (MultiVector P n) :=
-    @PseudoEMetricSpace.pseudoMetrizableSpace _
-      (inferInstance : PseudoEMetricSpace (MultiVector P n))
-  exact ((hG.comp_aemeasurable R.aestronglyMeasurable_orient.aemeasurable).aestronglyMeasurable
-    ).congr hae.symm
 /-- **Planar fibre geometry** (fibre count for the cone-sector endpoint density in the proof of
 Simon 7.3.3).  Let `Q ⊆ ℝᴾ` be a plane with orthonormal basis `a, e`, `π = Q.starProjection`,
 `Ax = ⟨x, a⟩e − ⟨x, e⟩a` and `f(x) = arctan(⟨x, e⟩/⟨x, a⟩)`.  Then (a) `|p_T(Ax)| ≤ |πx| ≤ |x|`
