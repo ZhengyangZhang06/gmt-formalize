@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.pushforward-a1.extension-a1.pullback_cutoff-a1",
+  "parent_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.pushforward-a1.extension-a1",
+  "depth": 6,
+  "title": "Cut-off of the pulled-back form: a continuous compactly supported covector field equal to ω(f(x))∘Df(x) on K",
+  "statement": "Let P, Q, n ∈ ℕ, O ⊆ ℝ^P open, K ⊆ O compact, f : ℝ^P → ℝ^Q of class C¹ on O (ContDiffOn ℝ 1 f O), and ω : ℝ^Q → Λⁿ(ℝ^Q) a continuous n-form (DifferentialForm (Euclid Q) n). Then there is a continuous, compactly supported covector field h : ℝ^P → Λⁿ(ℝ^P) (Covector (Euclid P) n) with h(x) = ω(f(x))∘Df(x) := (ω (f x)).compContinuousLinearMap (fderiv ℝ f x) for every x ∈ K.",
+  "lean_statement": "∀ (P Q n : ℕ) (O K : Set (Euclid P)) (f : Euclid P → Euclid Q) (ω : DifferentialForm (Euclid Q) n), IsOpen O → ContDiffOn ℝ 1 f O → IsCompact K → K ⊆ O → Continuous ω → ∃ h : Euclid P → Covector (Euclid P) n, Continuous h ∧ HasCompactSupport h ∧ ∀ x ∈ K, h x = (ω (f x)).compContinuousLinearMap (fderiv ℝ f x)",
+  "lean_name": "dtc_bc_lc_pf_ext_pullback_cutoff",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-compari-9ac17ef6b5-a1"
+}

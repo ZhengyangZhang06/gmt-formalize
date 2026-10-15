@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_and_tangent_cones-a1.cone-a1.cone_lemma-a1.cone_criterion-a1",
+  "parent_id": "root.density_and_tangent_cones-a1.cone-a1.cone_lemma-a1",
+  "depth": 4,
+  "title": "Cone criterion: invariance of C under the dilation pull-backs ω ↦ λ⁻ⁿω(λ⁻¹·) gives IsConeCurrent C (unfolding η_{0,λ#})",
+  "statement": "Let P, n ∈ ℕ and let C ∈ 𝒟_n(ℝ^P) be a current on all of ℝ^P (GeometricCurrentOn univ n). Assume that for every λ > 0 and all test forms ω, ω' ∈ 𝒟ⁿ(ℝ^P) (TestFormOn univ n) with ω'(y) = λ^{−n}·ω(λ^{−1}y) for every y ∈ ℝ^P, one has C(ω') = C(ω). Then C is a cone (IsConeCurrent C): currentEval(η_{0,λ#}C, ω) = C(ω) for every λ > 0 and every ω ∈ 𝒟ⁿ(ℝ^P), where η_{0,λ#}C = blowUp C 0 λ is the push-forward of C by the dilation η_{0,λ}(y) = λ⁻¹y (Simon 6.2.23).",
+  "lean_statement": "∀ (P n : ℕ) (C : GeometricCurrentOn (univ : Set (Euclid P)) n), (∀ lam : ℝ, 0 < lam → ∀ ω ω' : TestFormOn (univ : Set (Euclid P)) n, (∀ y, (ω' : DifferentialForm (Euclid P) n) y = (lam⁻¹ ^ n) • (ω : DifferentialForm (Euclid P) n) (lam⁻¹ • y)) → C ω' = C ω) → IsConeCurrent C",
+  "lean_name": "dtc_cwv_isConeCurrent_of_pullback_invariant",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-cone-a1-cone-lemma-a1-cone-criterion-a1-a1"
+}

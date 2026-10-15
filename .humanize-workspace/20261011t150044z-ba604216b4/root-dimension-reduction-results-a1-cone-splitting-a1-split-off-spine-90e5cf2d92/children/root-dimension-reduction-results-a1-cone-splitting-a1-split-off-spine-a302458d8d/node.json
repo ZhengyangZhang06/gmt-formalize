@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.cone_splitting-a1.split_off_spine-a1.minimality_transfer-a1.cube_stokes-a1.frame_box_ftc-a1",
+  "parent_id": "root.dimension_reduction_results-a1.cone_splitting-a1.split_off_spine-a1.minimality_transfer-a1.cube_stokes-a1",
+  "depth": 6,
+  "title": "Fundamental theorem of calculus on a frame box: ∫_{Q_r} A = ∫_{Q'_a} b(· + r g_a) − ∫_{Q'_a} b(· − r g_a) when A = ∂_{g_a} b",
+  "statement": "Let P, j ∈ ℕ, let g = (g_0, …, g_j) (g : Fin (j + 1) → Euclid P) be orthonormal, a ∈ Fin (j + 1), r > 0, H^i := μHE[i], and let A, b : ℝ^P → ℝ be continuous such that for all s ∈ ℝ^P and τ ∈ ℝ the function σ ↦ b(s + σ·g_a) has derivative A(s + τ·g_a) at τ. Put Q_r := {t ∈ span g : |⟨g_i, t⟩| ≤ r for all i} and Q'_a := {s ∈ span(g ∘ a.succAbove) : |⟨g_{a.succAbove c}, s⟩| ≤ r for all c}. Then\n∫_{Q_r} A dH^{j+1} = ∫_{Q'_a} b(s + r·g_a) dH^j(s) − ∫_{Q'_a} b(s − r·g_a) dH^j(s).",
+  "lean_statement": "∀ (P j : ℕ) (g : Fin (j + 1) → Euclid P) (a : Fin (j + 1)) (r : ℝ) (A b : Euclid P → ℝ), Orthonormal ℝ g → 0 < r → Continuous A → Continuous b → (∀ (s : Euclid P) (τ : ℝ), HasDerivAt (fun σ : ℝ => b (s + σ • g a)) (A (s + τ • g a)) τ) → ∫ t in {t | t ∈ Submodule.span ℝ (Set.range g) ∧ ∀ i, |inner ℝ (g i) t| ≤ r}, A t ∂μHE[j + 1] = (∫ s in {s | s ∈ Submodule.span ℝ (Set.range (g ∘ a.succAbove)) ∧ ∀ c, |inner ℝ (g (a.succAbove c)) s| ≤ r}, b (s + r • g a) ∂μHE[j]) - ∫ s in {s | s ∈ Submodule.span ℝ (Set.range (g ∘ a.succAbove)) ∧ ∀ c, |inner ℝ (g (a.succAbove c)) s| ≤ r}, b (s - r • g a) ∂μHE[j]",
+  "lean_name": "dimred_cs_sos_mt_cs_frame_box_ftc",
+  "depends_on": [
+    "root.dimension_reduction_results-a1.cone_splitting-a1.split_off_spine-a1.minimality_transfer-a1.cube_stokes-a1.frame_box_integral-a1",
+    "root.dimension_reduction_results-a1.cone_splitting-a1.split_off_spine-a1.minimality_transfer-a1.cube_stokes-a1.coord_box_ftc-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.dimension_reduction_results-a1.cone_splitting-a1.split_off_spine-a1.minimality_transfer-a1.cube_stokes-a1.frame_box_integral-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.dimension_reduction_results-a1.cone_splitting-a1.split_off_spine-a1.minimality_transfer-a1.cube_stokes-a1.coord_box_ftc-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-cone-splitting-a1-split-off-spine-a302458d8d-a1"
+}

@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.cone_splitting-a1.split_off_spine-a1.minimality_transfer-a1.cube_cycle-a1.cube_geometry-a1",
+  "parent_id": "root.dimension_reduction_results-a1.cone_splitting-a1.split_off_spine-a1.minimality_transfer-a1.cube_cycle-a1",
+  "depth": 6,
+  "title": "Geometry of the cube Q_r and of Q_r + K for K ⊆ G^⊥",
+  "statement": "Let P, k ∈ ℕ, g = (g_1, …, g_k) (g : Fin k → Euclid P) orthonormal with span G, r ∈ ℝ, q := G^⊥.starProjection, Q_r := {t ∈ G : |⟨g_i, t⟩| ≤ r for all i}, and let K ⊆ G^⊥ be compact. Then (i) Q_r is compact; (ii) Q_r + K = {t + y : t ∈ Q_r, y ∈ K} (Set.image2 (fun t y => t + y) Q_r K) is compact; and (iii) Q_r + K ⊆ {x : |⟨g_i, x⟩| ≤ r for all i} ∩ q⁻¹(K).",
+  "lean_statement": "∀ (P k : ℕ) (g : Fin k → Euclid P) (r : ℝ) (K : Set (Euclid P)), Orthonormal ℝ g → IsCompact K → K ⊆ ((Submodule.span ℝ (Set.range g))ᗮ : Set (Euclid P)) → IsCompact {t | t ∈ Submodule.span ℝ (Set.range g) ∧ ∀ i, |inner ℝ (g i) t| ≤ r} ∧ IsCompact (Set.image2 (fun t y => t + y) {t | t ∈ Submodule.span ℝ (Set.range g) ∧ ∀ i, |inner ℝ (g i) t| ≤ r} K) ∧ Set.image2 (fun t y => t + y) {t | t ∈ Submodule.span ℝ (Set.range g) ∧ ∀ i, |inner ℝ (g i) t| ≤ r} K ⊆ {x | ∀ i, |inner ℝ (g i) x| ≤ r} ∩ (Submodule.span ℝ (Set.range g))ᗮ.starProjection ⁻¹' K",
+  "lean_name": "dimred_cs_sos_mt_cc_cube_sum_geometry",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-cone-splitting-a1-split-off-spine-bad1f4ba60-a1"
+}

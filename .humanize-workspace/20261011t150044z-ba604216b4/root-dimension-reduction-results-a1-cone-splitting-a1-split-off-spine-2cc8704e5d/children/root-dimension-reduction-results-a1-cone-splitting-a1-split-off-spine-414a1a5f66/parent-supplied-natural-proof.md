@@ -1,0 +1,118 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.dimension_reduction_results-a1.cone_splitting-a1.split_off_spine-a1.cone_filling_subspace-a1`
+- Child DAG node: `root.dimension_reduction_results-a1.cone_splitting-a1.split_off_spine-a1.cone_filling_subspace-a1.compact_im_param-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Wiring requirement (context, not part of the numbered proof). Four of the declarations used below are not siblings here, because 17 children would exceed the cap of 12: normalized_rep, piece_representation, dpf_rectifiable_bilipschitz_pieces and covectorEuclideanNorm_gram_bounds. They are not in this node's proof base either, so a leaf proof of this node cannot reach them. This node must therefore be decomposed (depth 5 < 6) into reuse children for at least these four comparator-accepted declarations, each with its exact frozen type copied from dag.json. The numbered proof below is then the assembly proof. Precedent for such sibling-dependency-plus-reuse splits at depth 5: the accepted depth-5 node root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.flat_decomposition-a1.series-a1 (dtc_bc_lc_fd_series).
+
+Reuse note (context, not part of the numbered proof). This proof combines comparator-accepted declarations, each used with its exact frozen type.
+- Sibling reuses: vanish_off_support = Submission.dtc_vanish_off_support (VO), mass_rep = Submission.cmc_massOn_eq_imRep_measure (MR), im_calculus = Submission.cmc_imRep_locality_restrict_sub (IMC).
+- Accepted declarations to wire as reuse children when this node is decomposed (byte-identical frozen types, as in dag.json):
+ - Submission.dimred_mbl_dt_lpip_normalized_rep (node root.dimension_reduction_results-a1.moving_blowups-a1.deformation_theorem-a1.lipschitz_pushforward-a1.im_pushforward-a1.normal_rep-a1, candidate commit 551eaabbd9b78bf9fa36dae66507f2eeb42e8347);
+ - Submission.dimred_mbl_dt_lpip_piece_representation (node root.dimension_reduction_results-a1.moving_blowups-a1.deformation_theorem-a1.lipschitz_pushforward-a1.im_pushforward-a1.piece_rep-a1, candidate commit 3d04d72b3175b75b91a8891debc01ab443e81b74);
+ - Submission.dpf_rectifiable_bilipschitz_pieces (node root.minimizing_implies_stationary-a1.diffeo_pushforward-a1.bilipschitz_pieces-a1);
+ - Submission.covectorEuclideanNorm_gram_bounds (node root.minimizing_implies_stationary-a1.covector_gram_bounds-a1).
+- The two lpip declarations carry `import Poincare.SimonGMT.Chapter02.AreaLipschitz`, which is inherited through the merge.
+
+Proof (step 7 of the parent proof).
+1. Normalized representation. Apply normalized_rep to the antecedents VO, MR, IMC and to P, n, U := univ (open) and the integer multiplicity X. This gives R : IMRep univ n with R.Represents X and R.carrier ⊆ spt X. (It also gives R.measure univ = M(X), which is not needed.)
+2. Finite mass. Let M := R.carrier and θ := R.mult. By definition R.measure = (μHE[n].restrict M).withDensity θ, so R.measure univ = ∫⁻_M θ dμHE[n] (withDensity_apply on univ, restrict_univ). Since M ⊆ spt X, M ∩ spt X = M. The field R.locallyIntegrable_mult, applied to the compact set K := spt X ⊆ univ, gives ∫⁻_{M ∩ spt X} θ dμHE[n] ≠ ∞. Hence R.measure univ ≠ ∞.
+3. Parametrization. Apply piece_representation to the antecedents B1 := dpf_rectifiable_bilipschitz_pieces, GB := covectorEuclideanNorm_gram_bounds and IMC, and to P, n, R and step 2. This gives G, A, w, c such that:
+ - every G_i is Lipschitz and every A_i is Borel;
+ - every w_i : ℝ^n → ℤ and every c_i is measurable;
+ - G_i is differentiable at every point of A_i, and G_i(A_i) ⊆ R.carrier;
+ - w_i is integrable on A_i;
+ - for u ∈ A_i, c_i(u) ≥ 0 and |α(DG_i(u)e)| ≤ c_i(u)·covectorEuclideanNorm α for all n-covectors α;
+ - Σ_i ∫⁻_{A_i} ofReal(|w_i|·c_i) ≤ R.measure univ;
+ - HasSum (i ↦ ∫_{A_i} w_i(u)·η(G_i u)(DG_i(u)e) du) (R.action η) for every continuous, compactly supported n-form η.
+4. Conclusions.
+ - R satisfies the first three conjuncts, by steps 1–2.
+ - G_i(A_i) ⊆ R.carrier ⊆ spt X.
+ - The sum Σ_i ∫⁻ … is ≤ R.measure univ < ∞, hence ≠ ∞.
+ - For a test form γ ∈ TestFormOn univ n: γ is C^∞ (γ.property.1.1), hence continuous, and has compact support (γ.property.1.2). So the HasSum of step 3 holds for η := γ, with limit R.action γ = X(γ) because R represents X.
+ - All other properties are copied from step 3. ∎
+
+Lean check. This proof (about 20 lines) was compiled during decomposition against the frozen types of the cited accepted declarations.
+
+## Key steps
+
+1. Accepted dimred_mbl_dt_lpip_normalized_rep (with VO, MR, IMC) gives R representing X with R.carrier ⊆ spt X.
+2. R.measure univ = ∫⁻_M θ = ∫⁻_{M ∩ spt X} θ < ∞ by locallyIntegrable_mult on the compact spt X.
+3. Accepted dimred_mbl_dt_lpip_piece_representation (with B1, GB, IMC) gives Lipschitz pieces (G_i, A_i, w_i, c_i) with G_i(A_i) ⊆ R.carrier ⊆ spt X, Σ∫|w_i|c_i ≤ μ_R(ℝ^P), and HasSum to R.action η for continuous compactly supported η.
+4. Test forms are continuous with compact support, and R.action γ = X(γ), so the HasSum holds with limit X(γ).
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat local-references/123e8435b4a2469b/manifest.json; git rev-parse HEAD; git -C .lake/packages/mathlib rev-parse HEAD; git -C .lake/packages/simongmt rev-parse HEAD (b4d606d, 25730c7c, 2b36630: pins match)`
+- `cmp local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean GMT/Ch07/Contract.lean; cmp GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean (both identical)`
+- `python3 over dag.json: siblings of split_off_spine-a1; regex search of statements and lean_statements for homotop|cone|parametriz|push-?forward|curryLeft|Matrix.det with covectorEuclideanNorm; statuses and candidate commits of the reuse candidates`
+- `python3 over dag.json: the subtrees …moving_blowups-a1.deformation_theorem-a1.lipschitz_pushforward-a1.im_pushforward-a1 (lpip_*) and …flat_convergence-a1.deformation-a1.im_pushforward-a1 (dor_lmb_fcd_imp_*); parallel node idtp_fons_cs_sos_cone_filling_in_subspace (same type, rlcr-lean, not accepted); dor_lmb_fcd_imp_parametric_rep (comparing, not accepted); dor_lmb_fc_im_series (decomposing, not accepted)`
+- `git show <candidate commit>:GMT/Ch07/Submission.lean | grep import, for 551eaab, 3d04d72, 918eb38, 9b823b5, 44ef61f, 27de75e, 2af75d6, a2ba78f, 2fd8f6f, 0ea228e, 77ba671 (the lpip commits add import Poincare.SimonGMT.Chapter02.AreaLipschitz)`
+- `grep SimonGMT Chapter06/{Currents,CurrentLocalEquality,Mass,Forms}.lean for TestFormOnConverges, GeometricCurrentOn, boundary_apply, zeroRegion, support, massOn, massAdmissibleOn, covectorEuclideanNorm, IsSmoothForm, exteriorDerivative`
+- `grep the Mathlib snapshot for ParametricIntegral and ParametricIntervalIntegral (no ContDiff lemma for parametric integrals, so the accepted cmcdt_lpo_slice_param_integral is reused), Alternating/Curry.lean (norm_curryLeft, curryLeftLI), BumpFunction/Basic.lean, Constructions/Pi.lean (volume_preserving_piFinSuccAbove), Haar/InnerProductSpace.lean (PiLp.volume_preserving_ofLp/toLp), ContDiff/RCLike.lean (ContDiff.lipschitzWith_of_hasCompactSupport)`
+- `lake env lean /tmp/cfs-decomp/Check1.lean, Check2.lean, Check3.lean, Check4.lean after import GMT.Ch07.Submission with the contract opens`
+- `python3 -I /tmp/cfs-scripts/homotopy_num.py (numeric check of the radial homotopy formula with Mathlib extDeriv/curryLeft conventions)`
+- `grep -c dimred_cs_sos_cfs dag.json (0)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-cone-splitting-a1-split-off-spine-2cc8704e5d/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-cone-splitting-a1-split-off-spine-2cc8704e5d/parent-supplied-natural-proof.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-cone-splitting-a1-split-off-spine-a1/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-lip-9310c84433/parent-supplied-natural-proof.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-cone-a1-euler-cartan-a1/parent-supplied-natural-proof.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-lip-14afd577b6/parent-supplied-natural-proof.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-vanish-off-support-a1/parent-supplied-natural-proof.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-mass-equals-rep-measure-a1/parent-supplied-natural-proof.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-im-calculus-a1/parent-supplied-natural-proof.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ParametricIntegral.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ParametricIntervalIntegral.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/Alternating/Curry.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/Alternating/Uncurry/Fin.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/BumpFunction/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Constructions/Pi.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Haar/InnerProductSpace.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/RCLike.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean`
+- `/tmp/cfs-decomp/Check1.lean`
+- `/tmp/cfs-decomp/Check2.lean`
+- `/tmp/cfs-decomp/Check3.lean`
+- `/tmp/cfs-decomp/Check4.lean`
+
+Pins and contract. The pins match: project b4d606d, mathlib 25730c7c, SimonGMT 2b36630. The snapshot Contract.lean is byte-identical to the workspace Contract.lean and Submission.lean, and the selected node's proof base 480b1bd contains only the contract.
+
+Library gaps. Mathlib has no lemma for smoothness of parametric integrals; this is covered by the accepted cmcdt_lpo_slice_param_integral. SimonGMT has no cone, homotopy or Lipschitz-pushforward constructions. Every other API cited by the child proofs exists and was probed with #check, including:
+- norm_curryLeft, curryLeftLI, alternatizeUncurryFinCLM, ContinuousAlternatingMap.apply;
+- ContDiffBump, ContDiff.lipschitzWith_of_hasCompactSupport, Filter.EventuallyEq.fderiv_eq;
+- intervalIntegral_comp_comm, integral_eq_sub_of_hasDerivAt, volume_preserving_piFinSuccAbove, PiLp.volume_preserving_ofLp/toLp;
+- measurable_fderiv, norm_fderiv_le_of_lipschitz, enorm_integral_le_lintegral_enorm, HasSum.unique.
+
+Reuse. Comparator-accepted DAG declarations with byte-identical frozen types are reused:
+- 6 as siblings: cmcdt_lpo_slice_param_integral, dtc_cone_euler_cartan, cmcdt_lp_covector_curryLeft_norm_le, dtc_vanish_off_support, cmc_massOn_eq_imRep_measure, cmc_imRep_locality_restrict_sub;
+- 6 cited for the depth-6 wiring of two children: dimred_mbl_dt_lpip_normalized_rep, dimred_mbl_dt_lpip_piece_representation, dpf_rectifiable_bilipschitz_pieces, covectorEuclideanNorm_gram_bounds, dimred_mbl_dt_lpip_lipschitz_piece_current, cmcdt_im_series.
+The three lpip commits add import Poincare.SimonGMT.Chapter02.AreaLipschitz, which is inherited through the merge. The other commits add no imports.
+
+Not reused (not accepted): the parallel same-type node idtp_fons_cs_sos_cone_filling_in_subspace (rlcr-lean), dor_lmb_fcd_imp_parametric_rep (comparing), dor_lmb_fc_im_series and emf_exists_cone_filling (decomposing).
+
+Lean checks:
+- Check1: all child types (and the 6 wiring types) elaborate as Submission stubs, and the frozen parent type is proved from the 5 new child types. Axioms: propext, sorryAx (stubs only), Classical.choice, Quot.sound.
+- Check2: compact_im_param and param_series_im are fully proved from the frozen types of the accepted lemmas they cite.
+- Check3: the homotopy formula aligns by rfl with cone_current's boundary step, Kω is smooth for test forms, and the ContDiffBump cutoff works.
+- Check4: covector evaluation commutes with interval integrals.
+- The radial homotopy formula was also checked numerically.
+
+Names: the 5 new dimred_cs_sos_cfs_* names occur nowhere in dag.json.
