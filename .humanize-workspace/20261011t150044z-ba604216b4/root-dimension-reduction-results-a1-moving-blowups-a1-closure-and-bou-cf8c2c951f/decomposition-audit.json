@@ -1,0 +1,103 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "git rev-parse HEAD",
+        "git -C .lake/packages/mathlib rev-parse HEAD",
+        "git -C .lake/packages/simongmt rev-parse HEAD",
+        "dmcbr_cc|cbr_cc_|segment current|integer slice|compact_im_filling|slice_property",
+        "euclideanHausdorffMeasure_zero|map_euclideanHausdorffMeasure|euclideanHausdorffMeasure_image|euclideanHausdorffMeasure_eq_volume",
+        "integral_withDensity_eq_integral_smul",
+        "setIntegral_eq_of_subset_of_ae_sdiff_eq_zero",
+        "hausdorffMeasure_zero_singleton",
+        "theorem setIntegral_finset",
+        "theorem ae_lt_top",
+        "extDeriv_constOfIsEmpty",
+        "git show 02c6122c94d0280a6288d299659b2dab7b59e109:GMT/Ch07/Submission.lean",
+        "git show 642d7450f79f28435ddba02f9c815e2208bcee00:GMT/Ch07/Submission.lean",
+        "git show 791f7d722ecc7a162afa46e5f9e1dd564f0ce80b:GMT/Ch07/Submission.lean",
+        "git show b4a337bf478562dea20f901a100bb415db25177b:GMT/Ch07/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/dmcbr_cc_independent_audit_vh28v6mb/Types.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/dmcbr_cc_independent_audit_vh28v6mb/Assembly.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/dmcbr_cc_independent_audit_vh28v6mb/Reused.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/dmcbr_cc_independent_audit_vh28v6mb/Fill.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/ContinuousLinearMap.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/SumMeasure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Markov.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/DifferentialForm/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-closure-and-bou-cf8c2c951f/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-closure-and-bou-cf8c2c951f/decomposition-v1.json",
+        "/tmp/dmcbr_cc_independent_audit_vh28v6mb/Types.lean",
+        "/tmp/dmcbr_cc_independent_audit_vh28v6mb/Assembly.lean",
+        "/tmp/dmcbr_cc_independent_audit_vh28v6mb/Reused.lean",
+        "/tmp/dmcbr_cc_independent_audit_vh28v6mb/Fill.lean"
+      ],
+      "conclusion": "Pins and inspected source files match. The snapshot's project/GMT search found no matching helper declarations. All eight frozen statements are standalone, one-line propositions, pass lexical validation, and independently elaborate without child implementations. Names are bare identifiers; four are verified comparator-accepted reuses with byte-identical types, and four are unreserved. The dependency and child-aggregation graph is acyclic. The split appropriately isolates the supplied proof's ISP and filling obligations. The checked assembly concludes the exact selected parent type from the child contracts and five frozen sibling contracts. The filling assembly and four reused proofs also recompile; all reported axiom sets are exactly propext, Classical.choice, and Quot.sound. No ambiguous Matrix/IsUnit construction occurs."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "support_vanish",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The ball construction excludes U \\ K from the support, and support = K \\ zeroRegion proves compactness. All hypotheses match the frozen type. Accepted reuse has an identical type and verified standard axioms."
+    },
+    {
+      "key": "imrep_current",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Orientation bounds and locally integrable multiplicity establish integrability and linearity; uniform zero-order convergence establishes the required sequential continuity for arbitrary U. This proves the exact contract. Accepted reuse and axiom compatibility are verified."
+    },
+    {
+      "key": "current_algebra",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The empty representation proves zero is IM. Symmetric admissibility gives the absolute evaluation bound, and integer-multiple and finite-set induction prove the stated mass bounds and IM combinations. All three conjuncts match the prose; accepted reuse is exact."
+    },
+    {
+      "key": "isp_sub",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "REP supplies auxiliary representations, SL supplies restriction currents, and RU establishes the restriction difference identities. Intersecting the two full-measure events and applying IMC(c) proves the universally quantified ISP conclusion. Hypotheses are explicit, and accepted reuse is exact."
+    },
+    {
+      "key": "isp_of_im",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Constant-sequence MM and countable exhaustion establish locally finite slice mass almost everywhere. The density identities and RU identify both restriction currents as IM; current_algebra and BR(d) make the restricted boundary IM, and IMC(c) finishes. Dropping separate local-mass assumptions is justified by the admissible representations. The declared dependency is sufficient."
+    },
+    {
+      "key": "segment_current",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Both coincident and distinct endpoints are covered. The isometric parametrization establishes the Hausdorff measure identity, rectifiability and approximate tangent line; imrep_current constructs the current. The fundamental theorem of calculus gives the boundary, MR gives finite mass, and support_vanish gives the required support inclusion. All used child obligations are declared."
+    },
+    {
+      "key": "zero_current_sum",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Positive singleton mass and MR/VO place the carrier inside the compact support. Local integrability makes that carrier finite. Singleton mass also upgrades the orientation condition to every carrier point, yielding integer coefficients and the exact finite-sum formula. No additional finite-mass hypothesis is needed."
+    },
+    {
+      "key": "filling",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof establishes compact boundary support, applies ISO in positive boundary degree, and handles degree zero by proving total multiplicity zero with a bump form and summing oriented segments. Boundary equality, finite mass and compact support are all justified, including empty and degenerate cases. The exact conditional Lean assembly verifies that the four declared dependencies suffice."
+    }
+  ],
+  "required_changes": []
+}
