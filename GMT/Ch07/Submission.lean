@@ -7760,6 +7760,83 @@ theorem Submission.idtp_cse_bml_tilt_excess_decay : ∀ (P : ℕ) (C : Geometric
   exact tendsto_of_tendsto_of_tendsto_of_le_of_le tendsto_const_nhds hD' (fun _ => zero_le)
     fun j => Submission.idtp_cse_bml_td_excess_bound P R.measure (fun x => R.orient x β) ϑ a
       (lams (φ j)) (hlams (φ j)) hfin hdm hd1 hϑc hϑcs (fun x => (hϑ01 x).1) hϑ1
+/-- Local-to-global comparison of measures on `ℝᴾ` (a step of the proof of Simon 7.3.3, for
+two-dimensional minimizing cones): if `μ` is finite on compact sets, `D` is Borel and every
+`w ∈ D` is the centre of a ball `B_ε(w)` on whose open subsets `ν ≤ μ`, then `ν(D) ≤ μ(D)`.
+On each such ball the finite measure `μ⌞B_ε(w)` is outer regular, so `ν ≤ μ` also holds on the
+Borel subsets of the ball; countably many of the balls cover `D` (Lindelöf), and the disjointed
+pieces of `D` add up by countable additivity. -/
+theorem Submission.idtp_tdc_nipp_local_comparison : ∀ (P : ℕ) (μ ν : Measure (Euclid P)) (D : Set (Euclid P)), (∀ K : Set (Euclid P), IsCompact K → μ K ≠ ∞) → MeasurableSet D → (∀ w ∈ D, ∃ ε : ℝ, 0 < ε ∧ ∀ W : Set (Euclid P), IsOpen W → W ⊆ ball w ε → ν W ≤ μ W) → ν D ≤ μ D := by
+  intro P μ ν D hμ hD hloc
+  -- (2) if `ν ≤ μ` on the open subsets of `B = B_ε(w)`, then `ν ≤ μ` on the Borel subsets of `B`:
+  -- `μ⌞B` is a finite measure by (1), hence outer regular
+  have hball : ∀ (w : Euclid P) (ε : ℝ),
+      (∀ W : Set (Euclid P), IsOpen W → W ⊆ ball w ε → ν W ≤ μ W) →
+      ∀ E : Set (Euclid P), MeasurableSet E → E ⊆ ball w ε → ν E ≤ μ E := by
+    intro w ε hW E hE hEB
+    -- (1) `μ(B_ε(w)) ≤ μ(closedBall w ε) < ∞`, closed balls being compact
+    have : IsFiniteMeasure (μ.restrict (ball w ε)) := ⟨by
+      rw [Measure.restrict_apply_univ]
+      exact (measure_mono ball_subset_closedBall).trans_lt
+        (hμ _ (isCompact_closedBall w ε)).lt_top⟩
+    refine le_of_forall_gt fun t ht => ?_
+    have hEt : μ.restrict (ball w ε) E < t := by
+      rwa [Measure.restrict_apply hE, inter_eq_left.mpr hEB]
+    obtain ⟨O, hEO, hO, hOt⟩ := Set.exists_isOpen_lt_of_lt E t hEt
+    rw [Measure.restrict_apply hO.measurableSet] at hOt
+    calc ν E ≤ ν (O ∩ ball w ε) := measure_mono (subset_inter hEO hEB)
+      _ ≤ μ (O ∩ ball w ε) := hW _ (hO.inter isOpen_ball) inter_subset_right
+      _ < t := hOt
+  -- (3) the case `D = ∅`
+  rcases D.eq_empty_or_nonempty with rfl | ⟨x, hx⟩
+  · simp
+  -- (4) countably many of the balls `B_{ε_w}(w)`, `w ∈ D`, cover `D`; enumerate them as `B_l`
+  choose! ε hεpos hε using hloc
+  obtain ⟨T, hTD, hTc, hTU⟩ := TopologicalSpace.isOpen_biUnion_countable D
+    (fun w => ball w (ε w)) fun w _ => isOpen_ball
+  have hDT : D ⊆ ⋃ w ∈ T, ball w (ε w) := by
+    rw [hTU]
+    exact fun y hy => mem_biUnion hy (mem_ball_self (hεpos y hy))
+  obtain ⟨w, hwT, -⟩ := mem_iUnion₂.mp (hDT hx)
+  obtain ⟨c, rfl⟩ := hTc.exists_eq_range ⟨w, hwT⟩
+  set B : ℕ → Set (Euclid P) := fun l => ball (c l) (ε (c l))
+  have hDB : D ⊆ ⋃ l, B l := by rwa [biUnion_range] at hDT
+  -- (5) the Borel pieces `E_l = D ∩ (B_l \ ⋃_{l' < l} B_{l'})`, pairwise disjoint with union `D`
+  have hEm : ∀ l, MeasurableSet (D ∩ disjointed B l) := fun l =>
+    hD.inter (MeasurableSet.disjointed (fun l => isOpen_ball.measurableSet) l)
+  have hEd : Pairwise (Disjoint on fun l => D ∩ disjointed B l) := fun i j hij =>
+    (disjoint_disjointed B hij).mono inter_subset_right inter_subset_right
+  have hEU : ⋃ l, D ∩ disjointed B l = D := by
+    rw [← inter_iUnion, iUnion_disjointed, inter_eq_left.mpr hDB]
+  -- (6) `ν(E_l) ≤ μ(E_l)` by (2), since `E_l ⊆ B_l`; sum over `l`
+  have hEle : ∀ l, ν (D ∩ disjointed B l) ≤ μ (D ∩ disjointed B l) := fun l =>
+    hball (c l) (ε (c l)) (hε (c l) (hTD (mem_range_self l))) _ (hEm l)
+      (inter_subset_right.trans (disjointed_subset B l))
+  calc ν D = ∑' l, ν (D ∩ disjointed B l) := by rw [← measure_iUnion hEd hEm, hEU]
+    _ ≤ ∑' l, μ (D ∩ disjointed B l) := ENNReal.tsum_le_tsum hEle
+    _ = μ D := by rw [← measure_iUnion hEd hEm, hEU]
+/-- `Hⁿ(Q ∩ B_ρ(y)) = ωₙρⁿ` for an `n`-dimensional linear subspace `Q` of `ℝᴾ`, `y ∈ Q` and
+`ρ > 0` (used in the proof of Simon 7.3.3(1), p. 191, for the density of the planes of a
+2-dimensional minimizing cone).  The inclusion `Q → ℝᴾ` is an isometry, so `Q ∩ B_ρ(y)` has the
+measure of the ball `B_ρ(y)` of `Q`; on `Q`, `μHE[n]` is the volume, Haar scaling gives
+`vol(B_ρ(y)) = ρⁿ vol(B_1(0))`, and orthonormal coordinates `Q ≃ₗᵢ ℝⁿ` preserve volume, so
+`vol(B_1(0)) = ωₙ`. -/
+theorem Submission.idtp_tdc_subspace_ball_measure : ∀ (P n : ℕ) (Q : Submodule ℝ (Euclid P)) (y : Euclid P) (ρ : ℝ), Module.finrank ℝ Q = n → y ∈ Q → 0 < ρ → μHE[n] ((Q : Set (Euclid P)) ∩ ball y ρ) = unitBallVolume n * ENNReal.ofReal (ρ ^ n) := by
+  intro P n Q y ρ hn hy hρ
+  subst hn
+  -- the inclusion `Q → ℝᴾ` is an isometry with range `Q`; `B_ρ(y)` pulls back to the ball of `Q`
+  have hball : μHE[Module.finrank ℝ Q] ((Q : Set (Euclid P)) ∩ ball y ρ) =
+      μHE[Module.finrank ℝ Q] (ball (⟨y, hy⟩ : Q) ρ) := by
+    rw [← isometry_subtype_coe.preimage_ball (⟨y, hy⟩ : Q) ρ,
+      isometry_subtype_coe.euclideanHausdorffMeasure_preimage, Subtype.range_coe, Set.inter_comm]
+  -- orthonormal coordinates `Q ≃ₗᵢ ℝⁿ` preserve volume and map `B_1(0)` onto `B_1(0)`
+  have hunit := (stdOrthonormalBasis ℝ Q).measurePreserving_repr.measure_preimage
+    (measurableSet_ball (x := (0 : Euclid (Module.finrank ℝ Q))) (ε := 1)).nullMeasurableSet
+  rw [LinearIsometryEquiv.preimage_ball, map_zero] at hunit
+  -- `μHE[n] = volume` on `Q`, then Haar scaling of balls
+  rw [hball, InnerProductSpace.euclideanHausdorffMeasure_eq_volume,
+    Measure.addHaar_ball_of_pos _ _ hρ, hunit, mul_comm]
+  rfl
 /-- **Simon Ch. 6, 1.2 and 1.5–1.7**: a unit orientation `ξ = ±τ₁ ∧ ⋯ ∧ τₙ` (`τ` orthonormal)
 has `|ξ(α)| ≤ |α|` for the Euclidean coefficient norm, and `L(ζ) = Σ_I ζ(dx^I) dx^I` (`I` strictly
 increasing) has `|L(ξ)| ≤ 1` and `ξ(L(ξ)) = 1`.  Every covector expands as `α = Σ_I α(e_I) dx^I`,
@@ -141308,6 +141385,159 @@ theorem Submission.idtp_cse_fibre_count_bound : ∀ (P : ℕ) (C : GeometricCurr
     _ = R.measure {x : Euclid P | 0 < inner ℝ x a ∧ |‖x‖ - 1| < s' ∧ |Real.arctan (inner ℝ x e / inner ℝ x a)| < s' ∧ ‖x - Q.starProjection x‖ < s * ‖x‖} := by
         rw [mul_right_comm, ← ENNReal.ofReal_mul (by positivity), one_div_mul_cancel h2s'.ne',
           ENNReal.ofReal_one, one_mul]
+/-- **Simon Ch. 6, 2.4–2.8 and 3.2(3)**: if `T = τ(M, θ, ξ)` in the open set `U` and
+`μ_R = θHⁿ⌞M`, then (a) `M_W(T) = μ_R(W)` for every open `W ⊆ U`, (b) a point `x ∈ U` lies in
+`spt T` iff every ball `B_ε(x)` has positive `μ_R`-measure, and (c) `μ_R` does not depend on the
+representation.  (a) combines the upper and lower bounds `M_W(T) ≤ μ_R(W) ≤ M_W(T)`; by (a),
+`spt T = U ∩ spt μ_R`, and the balls about `x` form a neighbourhood basis, which gives (b). -/
+theorem Submission.dimred_im_mass_measure : ∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (R : IMRep U n), IsOpen U → R.Represents T → (∀ W : Set (Euclid P), IsOpen W → W ⊆ U → T.massOn W = R.measure W) ∧ (∀ x ∈ U, (x ∈ T.support ↔ ∀ ε : ℝ, 0 < ε → R.measure (ball x ε) ≠ 0)) ∧ ∀ R' : IMRep U n, R'.Represents T → R'.measure = R.measure := by
+  intro P n U T R hU hR
+  -- (a) `M_W(T) = μ_R(W)` for every open `W`, not only for `W ⊆ U`
+  have hmass : ∀ W : Set (Euclid P), IsOpen W → T.massOn W = R.measure W := fun W hW =>
+    le_antisymm (Submission.dor_ims_massOn_le_measure P n U T R hR W)
+      (Submission.dor_ims_measure_le_massOn P n U T R hU hR W hW)
+  refine ⟨fun W hW _ => hmass W hW, fun x hxU => ?_, fun R' hR' =>
+    Submission.imrep_measure_eq_of_represents_same_current P n U T R' R hU hR' hR⟩
+  -- (b) `spt T = U ∩ spt μ_R`, and `x ∈ spt μ_R` iff `μ_R(B_ε(x)) > 0` for every `ε > 0`
+  rw [Submission.dor_ims_support_of_massOn_eq P n U T R.measure hU hmass, mem_inter_iff,
+    and_iff_right hxU, Metric.nhds_basis_ball.mem_measureSupport]
+  exact forall₂_congr fun ε _ => pos_iff_ne_zero
+
+/-- Finite-mass count in the proof of Simon 7.3.3(1) (pp. 191–192: `spt S₀` lies in finitely
+many 2-planes): a measure `μ` on `ℝᴾ` that is finite on compact sets admits no infinite pairwise
+disjoint family of measurable sets `Dᵢ ⊆ B_r(0)` with `μ(Dᵢ) ≥ c > 0`.  All `Dᵢ` lie in the
+compact ball `closedBall 0 r`, so `∞ = ∑ᵢ c ≤ ∑ᵢ μ(Dᵢ) = μ(⋃ᵢ Dᵢ) ≤ μ(closedBall 0 r) < ∞`. -/
+theorem Submission.idtp_tdc_nipp_disjoint_packing : ∀ (P : ℕ) (μ : Measure (Euclid P)) (D : ℕ → Set (Euclid P)) (r : ℝ) (c : ℝ≥0∞), (∀ K : Set (Euclid P), IsCompact K → μ K ≠ ∞) → c ≠ 0 → (∀ i, MeasurableSet (D i)) → (∀ i j, i ≠ j → Disjoint (D i) (D j)) → (∀ i, D i ⊆ ball 0 r) → (∀ i, c ≤ μ (D i)) → False := by
+  intro P μ D r c hμ hc hD hdisj hball hcD
+  -- `closedBall 0 r` is compact, yet `∞ = ∑ᵢ c ≤ ∑ᵢ μ(Dᵢ) = μ(⋃ᵢ Dᵢ) ≤ μ(closedBall 0 r)`
+  refine hμ _ (isCompact_closedBall 0 r) (top_le_iff.mp ?_)
+  calc ∞ = ∑' _ : ℕ, c := (ENNReal.tsum_const_eq_top_of_ne_zero hc).symm
+    _ ≤ ∑' i, μ (D i) := ENNReal.tsum_le_tsum hcD
+    _ = μ (⋃ i, D i) := (measure_iUnion (fun i j hij => hdisj i j hij) hD).symm
+    _ ≤ μ (closedBall 0 r) :=
+      measure_mono (iUnion_subset fun i => (hball i).trans ball_subset_closedBall)
+
+/-- Finite-mass count in the proof of Simon 7.3.3(1) (pp. 191–192), for discs in 2-planes: an
+integer multiplicity 2-current `C` in `ℝᴾ` admits no infinite pairwise disjoint family of discs
+`Dᵢ = Qᵢ ∩ B_ρ(zᵢ)` (`Qᵢ` a 2-plane, `zᵢ ∈ Qᵢ`, `|zᵢ| ≤ R`) such that every `w ∈ Dᵢ` has a ball
+`B_ε(w)` with `H²(W ∩ Qᵢ) ≤ M_W(C)` for its open subsets `W`.  For `C = τ(M, θ, ξ)` and
+`μ = θH²⌞M`, `M_W(C) = μ(W)` on open sets and `μ` is finite on compact sets, so local-to-global
+comparison of `H²⌞Qᵢ` with `μ` gives `μ(Dᵢ) ≥ H²(Dᵢ) = ω₂ρ² > 0`; all `Dᵢ` lie in `B_{R+ρ}(0)`,
+which contradicts the disjoint packing bound. -/
+theorem Submission.idtp_tdc_no_infinite_planar_pieces : ∀ (P : ℕ) (C : GeometricCurrentOn (univ : Set (Euclid P)) 2) (Q : ℕ → Submodule ℝ (Euclid P)) (z : ℕ → Euclid P) (ρ R : ℝ), IsIntegerMultiplicity C → 0 < ρ → (∀ i, Module.finrank ℝ (Q i) = 2) → (∀ i, z i ∈ Q i) → (∀ i, ‖z i‖ ≤ R) → (∀ i j, i ≠ j → Disjoint ((Q i : Set (Euclid P)) ∩ ball (z i) ρ) ((Q j : Set (Euclid P)) ∩ ball (z j) ρ)) → (∀ i, ∀ w ∈ (Q i : Set (Euclid P)) ∩ ball (z i) ρ, ∃ ε : ℝ, 0 < ε ∧ ∀ W : Set (Euclid P), IsOpen W → W ⊆ ball w ε → μHE[2] (W ∩ (Q i : Set (Euclid P))) ≤ C.massOn W) → False := by
+  intro P C Q z ρ R hC hρ hdim hz hR hdisj hloc
+  -- (1) `C = τ(M, θ, ξ)`; `μ = θH²⌞M` has `M_W(C) = μ(W)` for open `W` and is finite on compacts
+  obtain ⟨RC, hRC⟩ := hC
+  have hmass : ∀ W : Set (Euclid P), IsOpen W → C.massOn W = RC.measure W := fun W hW =>
+    (Submission.dimred_im_mass_measure P 2 univ C RC isOpen_univ hRC).1 W hW (subset_univ W)
+  have hfin : ∀ K : Set (Euclid P), IsCompact K → RC.measure K ≠ ∞ := by
+    intro K hK
+    rw [IMRep.measure, withDensity_apply _ hK.measurableSet,
+      Measure.restrict_restrict hK.measurableSet, inter_comm]
+    exact RC.locallyIntegrable_mult K hK (subset_univ K)
+  -- the discs `Dᵢ = Qᵢ ∩ B_ρ(zᵢ)` are Borel, `Qᵢ` being closed
+  have hQm : ∀ i, MeasurableSet (Q i : Set (Euclid P)) := fun i =>
+    (Submodule.closed_of_finiteDimensional (Q i)).measurableSet
+  have hDm : ∀ i, MeasurableSet ((Q i : Set (Euclid P)) ∩ ball (z i) ρ) := fun i =>
+    (hQm i).inter measurableSet_ball
+  -- (2) `H²(Dᵢ) ≤ μ(Dᵢ)`: local-to-global comparison of `H²⌞Qᵢ` with `μ`
+  have hle : ∀ i, μHE[2] ((Q i : Set (Euclid P)) ∩ ball (z i) ρ) ≤
+      RC.measure ((Q i : Set (Euclid P)) ∩ ball (z i) ρ) := by
+    intro i
+    have hloc' : ∀ w ∈ (Q i : Set (Euclid P)) ∩ ball (z i) ρ, ∃ ε : ℝ, 0 < ε ∧
+        ∀ W : Set (Euclid P), IsOpen W → W ⊆ ball w ε →
+          μHE[2].restrict (Q i : Set (Euclid P)) W ≤ RC.measure W := by
+      intro w hw
+      obtain ⟨ε, hε, hW⟩ := hloc i w hw
+      refine ⟨ε, hε, fun W hWo hWB => ?_⟩
+      rw [Measure.restrict_apply' (hQm i), ← hmass W hWo]
+      exact hW W hWo hWB
+    have h := Submission.idtp_tdc_nipp_local_comparison P RC.measure
+      (μHE[2].restrict (Q i : Set (Euclid P))) _ hfin (hDm i) hloc'
+    rwa [Measure.restrict_apply' (hQm i), inter_eq_left.mpr inter_subset_left] at h
+  -- (3) `H²(Dᵢ) = ω₂ρ² =: c > 0`
+  have hc0 : unitBallVolume 2 * ENNReal.ofReal (ρ ^ 2) ≠ 0 :=
+    mul_ne_zero (measure_ball_pos volume (0 : Euclid 2) one_pos).ne'
+      (ENNReal.ofReal_pos.mpr (pow_pos hρ 2)).ne'
+  have hcD : ∀ i, unitBallVolume 2 * ENNReal.ofReal (ρ ^ 2) ≤
+      RC.measure ((Q i : Set (Euclid P)) ∩ ball (z i) ρ) := fun i =>
+    (Submission.idtp_tdc_subspace_ball_measure P 2 (Q i) (z i) ρ (hdim i) (hz i)
+      hρ).symm.le.trans (hle i)
+  -- (4) all `Dᵢ` lie in `B_{R+ρ}(0)`, and infinitely many disjoint ones force `μ(B_{R+ρ}(0)) = ∞`
+  refine Submission.idtp_tdc_nipp_disjoint_packing P RC.measure
+    (fun i => (Q i : Set (Euclid P)) ∩ ball (z i) ρ) (R + ρ) _ hfin hc0 hDm hdisj
+    (fun i => inter_subset_right.trans (ball_subset_ball' ?_)) hcD
+  rw [dist_zero_right]
+  linarith [hR i]
+
+/-- Planar discs of a fixed radius accumulating at an unstable point contradict finite mass
+(proof of Simon 7.3.3(1), chapter-07.txt lines 497–510, where the book cites [Whi82] for the
+classification of 2-dimensional minimizing cones; steps 11–14 of the proof that the density of
+such a cone is locally constant off `0`).  Two discs `Dᵢ = Qᵢ ∩ B_ρ(zᵢ)` on distinct planes are
+disjoint: near a common point both planes coincide with `spt C`.  A plane `Q'` with `Qᵢ = Q'` for
+infinitely many `i` contains `b = lim zᵢ`, so `b` lies in one of its discs and `Θ²(μ_C, ·)` is
+constant near `b`.  Hence infinitely many distinct planes occur; their discs are pairwise disjoint,
+have bounded centres and carry the mass bound `H²(W ∩ Qᵢ) ≤ M_W(C)`, which
+`idtp_tdc_no_infinite_planar_pieces` excludes. -/
+theorem Submission.idtp_tdc_dlc_accumulating_discs : ∀ (P : ℕ) (C : GeometricCurrentOn (univ : Set (Euclid P)) 2) (Q : ℕ → Submodule ℝ (Euclid P)) (z : ℕ → Euclid P) (k : ℕ → ℕ) (b : Euclid P) (ρ : ℝ), IsIntegerMultiplicity C → 0 < ρ → (∀ i, Module.finrank ℝ (Q i) = 2) → (∀ i, z i ∈ Q i) → Tendsto z atTop (𝓝 b) → (∀ i, ∀ x ∈ (Q i : Set (Euclid P)) ∩ ball (z i) ρ, ∃ ε : ℝ, 0 < ε ∧ C.support ∩ ball x ε = (Q i : Set (Euclid P)) ∩ ball x ε ∧ (∀ y ∈ C.support, y ∈ ball x ε → HasMassDensity C y (k i)) ∧ ∀ W : Set (Euclid P), IsOpen W → W ⊆ ball x ε → μHE[2] (W ∩ (Q i : Set (Euclid P))) ≤ C.massOn W) → (¬ ∃ (ε : ℝ) (m : ℕ), 0 < ε ∧ ∀ y ∈ C.support, y ∈ ball b ε → HasMassDensity C y m) → False := by
+  intro P C Q z k b ρ hIM hρ hdim hzQ hz hgood hunst
+  -- `spt C ∩ B_ε(x) = Q' ∩ B_ε(x)` persists on the smaller balls `B_t(x)`, `t ≤ ε`
+  have hrestr : ∀ (Q' : Submodule ℝ (Euclid P)) (x : Euclid P) (ε t : ℝ), t ≤ ε →
+      C.support ∩ ball x ε = (Q' : Set (Euclid P)) ∩ ball x ε →
+      C.support ∩ ball x t = (Q' : Set (Euclid P)) ∩ ball x t := by
+    intro Q' x ε t htε h
+    have hball : ball x ε ∩ ball x t = ball x t := Set.inter_eq_right.mpr (ball_subset_ball htε)
+    rw [← hball, ← inter_assoc, h, inter_assoc]
+  -- (1) discs on distinct planes are disjoint: near a common point both planes equal `spt C`
+  have hdisj : ∀ i j, Q i ≠ Q j →
+      Disjoint ((Q i : Set (Euclid P)) ∩ ball (z i) ρ) ((Q j : Set (Euclid P)) ∩ ball (z j) ρ) := by
+    intro i j hij
+    refine Set.disjoint_left.mpr fun x hxi hxj => hij ?_
+    obtain ⟨ε₁, hε₁, hspt₁, -⟩ := hgood i x hxi
+    obtain ⟨ε₂, hε₂, hspt₂, -⟩ := hgood j x hxj
+    exact Submission.idtp_tdc_dlc_subspace_eq_of_inter_ball_eq P (Q i) (Q j) x (min ε₁ ε₂) hxi.1
+      (lt_min hε₁ hε₂) ((hrestr (Q i) x ε₁ _ (min_le_left ε₁ ε₂) hspt₁).symm.trans
+        (hrestr (Q j) x ε₂ _ (min_le_right ε₁ ε₂) hspt₂))
+  -- (2) each plane occurs for only finitely many `i`
+  have hfin : ∀ Q' : Submodule ℝ (Euclid P), (Q ⁻¹' {Q'}).Finite := by
+    intro Q'
+    by_contra hinf
+    have hclose : ∀ η > 0, ∃ i, Q i = Q' ∧ dist (z i) b < η := by
+      intro η hη
+      obtain ⟨N, hN⟩ := Metric.tendsto_atTop.mp hz η hη
+      obtain ⟨i, hi, hNi⟩ := Set.Infinite.exists_gt hinf N
+      exact ⟨i, hi, hN i hNi.le⟩
+    -- (2a) `b ∈ Q'`: the closed subspace `Q'` contains `zᵢ` for infinitely many `i`, and `zᵢ → b`
+    have hbQ : b ∈ (Q' : Set (Euclid P)) := by
+      refine (Submodule.closed_of_finiteDimensional Q').closure_subset
+        (Metric.mem_closure_iff.mpr fun η hη => ?_)
+      obtain ⟨i, hi, hd⟩ := hclose η hη
+      exact ⟨z i, hi ▸ hzQ i, by rwa [dist_comm]⟩
+    -- (2b) then `b` lies in a disc `Dᵢ` with `Qᵢ = Q'`, so `Θ²(μ_C, ·) = kᵢ` on `spt C` near `b`,
+    -- against the instability of `b`
+    obtain ⟨i, hi, hd⟩ := hclose ρ hρ
+    obtain ⟨ε, hε, -, hdens, -⟩ := hgood i b ⟨hi ▸ hbQ, mem_ball'.mpr hd⟩
+    exact hunst ⟨ε, k i, hε, hdens⟩
+  -- (3) hence infinitely many distinct planes occur: indices `iₗ` with pairwise distinct `Q iₗ`
+  have hrange : (range Q).Infinite := by
+    intro hfinr
+    have h := hfinr.preimage' fun Q' _ => hfin Q'
+    rw [preimage_range] at h
+    exact Set.infinite_univ h
+  obtain ⟨e⟩ : Nonempty (ℕ ↪ range Q) := ⟨hrange.natEmbedding _⟩
+  choose idx hidx using fun l => Set.mem_range.mp (e l).2
+  have hne : ∀ l l', l ≠ l' → Q (idx l) ≠ Q (idx l') := fun l l' hll' h =>
+    hll' (e.injective (Subtype.ext ((hidx l).symm.trans (h.trans (hidx l')))))
+  -- (4) the centres converge, so they are bounded
+  obtain ⟨R, hR⟩ := isBounded_iff_forall_norm_le.mp (Metric.isBounded_range_of_tendsto z hz)
+  -- (5) infinitely many pairwise disjoint discs of radius `ρ` with bounded centres, each carrying
+  -- the mass bound `H²(W ∩ Qᵢ) ≤ M_W(C)`, contradict the local finiteness of `μ_C`
+  exact Submission.idtp_tdc_no_infinite_planar_pieces P C (fun l => Q (idx l))
+    (fun l => z (idx l)) ρ R hIM hρ (fun l => hdim (idx l)) (fun l => hzQ (idx l))
+    (fun l => hR _ (mem_range_self (idx l))) (fun l l' hll' => hdisj _ _ (hne l l' hll'))
+    (fun l w hw => by
+      obtain ⟨ε, hε, -, -, hmass⟩ := hgood (idx l) w hw
+      exact ⟨ε, hε, hmass⟩)
 
 /-- **Density at the edge of a planar sector of a 2-dimensional minimizing cone** (proof of
 7.3.3(1), case `n − d = 2`, chapter-07.txt lines 497–510, where the structure of 2-dimensional
