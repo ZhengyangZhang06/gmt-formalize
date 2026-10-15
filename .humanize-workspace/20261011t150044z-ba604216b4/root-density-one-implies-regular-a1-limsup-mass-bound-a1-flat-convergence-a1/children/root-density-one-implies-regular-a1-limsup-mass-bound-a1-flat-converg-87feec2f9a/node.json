@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.flat_convergence-a1.cauchy_subseq-a1",
+  "parent_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.flat_convergence-a1",
+  "depth": 4,
+  "title": "Cauchy subsequence in flat distance from finite ε-nets (pigeonhole and diagonal argument)",
+  "statement": "Conventions: ℝ^P = Euclid P and Hᵈ = μHE[d]. For U ⊆ ℝ^P, 𝒟^d(U) = TestFormOn U d (smooth d-forms on ℝ^P with compact support contained in U) and 𝒟_d(U) = GeometricCurrentOn U d; ∂X = X.boundary (∂X(ω) = X(dω)); X − Y is the contract subtraction (pointwise on test forms). For G ⊆ ℝ^P, M_G(X) = X.massOn G is the supremum of max(X(ω), 0) over ω ∈ 𝒟^d(U) with tsupport ω ⊆ G and |ω(x)| ≤ 1 for all x, where |·| is the Euclidean coefficient norm of covectors (covectorEuclideanNorm); M(X) = X.mass = M_U(X). An IMRep R = (M, θ, ξ) in U is the contract structure IMRep U d; R represents X when X(ω) = ∫_M θ⟨ω, ξ⟩ dHᵈ for every ω ∈ 𝒟^d(U), where ⟨ω, ξ⟩(x) = ξ(x)(ω(x)); μ_R = θ·Hᵈ⌞M is R.measure; X is integer multiplicity (IM, IsIntegerMultiplicity X) if some IMRep represents it. X vanishes off a set K if X(ω) = 0 for every ω whose tsupport is disjoint from K. X_j ⇀ Y (WeaklyConvergesOn) means X_j(ω) → Y(ω) for every ω. V ⊂⊂ U (CompactlyContained V U) means that closure V is compact and contained in U. Let P, m ∈ ℕ, n := m + 1, U ⊆ ℝ^P open and X_j ∈ 𝒟_n(U) (j ∈ ℕ). Suppose that for every ε ∈ (0, ∞] there is a finite set 𝒬 ⊆ 𝒟_n(U) such that for every j there are Q ∈ 𝒬 and IM R ∈ 𝒟_{n+1}(U), S ∈ 𝒟_n(U) with X_j(ω) − Q(ω) = ∂R(ω) + S(ω) for all ω ∈ 𝒟ⁿ(U) and M(R) + M(S) < ε. Then there is a strictly increasing θ : ℕ → ℕ such that for every r ∈ ℕ there are IM R_r ∈ 𝒟_{n+1}(U), S_r ∈ 𝒟_n(U) with X_{θ(r+1)}(ω) − X_{θ(r)}(ω) = ∂R_r(ω) + S_r(ω) for all ω ∈ 𝒟ⁿ(U) and M(R_r) + M(S_r) ≤ 2^{−r} (that is, (2⁻¹)^r in [0, ∞]).",
+  "lean_statement": "∀ (P m : ℕ) (U : Set (Euclid P)) (X : ℕ → GeometricCurrentOn U (m + 1)), IsOpen U → (∀ ε : ℝ≥0∞, 0 < ε → ∃ 𝒬 : Set (GeometricCurrentOn U (m + 1)), 𝒬.Finite ∧ ∀ j, ∃ Q ∈ 𝒬, ∃ (R : GeometricCurrentOn U (m + 2)) (S : GeometricCurrentOn U (m + 1)), IsIntegerMultiplicity R ∧ IsIntegerMultiplicity S ∧ (∀ ω : TestFormOn U (m + 1), X j ω - Q ω = R.boundary ω + S ω) ∧ R.mass + S.mass < ε) → ∃ θ : ℕ → ℕ, StrictMono θ ∧ ∀ r, ∃ (R : GeometricCurrentOn U (m + 2)) (S : GeometricCurrentOn U (m + 1)), IsIntegerMultiplicity R ∧ IsIntegerMultiplicity S ∧ (∀ ω : TestFormOn U (m + 1), X (θ (r + 1)) ω - X (θ r) ω = R.boundary ω + S ω) ∧ R.mass + S.mass ≤ (2⁻¹ : ℝ≥0∞) ^ r",
+  "lean_name": "dor_lmb_fc_cauchy_subseq",
+  "depends_on": [
+    "root.compactness_of_minimizing_currents-a1.im_calculus-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.compactness_of_minimizing_currents-a1.im_calculus-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-im-calculus-a1-a1",
+      "result_commit": "2af75d6921b01a9c889a45103692ca0af95ea394",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-limsup-mass-bound-a1-flat-converg-87feec2f9a-a1"
+}

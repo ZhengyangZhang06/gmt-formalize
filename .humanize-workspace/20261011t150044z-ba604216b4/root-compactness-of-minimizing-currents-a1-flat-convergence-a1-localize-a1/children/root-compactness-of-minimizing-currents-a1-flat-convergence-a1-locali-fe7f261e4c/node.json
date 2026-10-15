@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.flat_convergence-a1.localize-a1.weak_conv-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.flat_convergence-a1.localize-a1",
+  "depth": 4,
+  "title": "Weak convergence of sublevel restrictions without mass concentration at the cut level",
+  "statement": "Let P, d ∈ ℕ, U ⊆ ℝ^P, g : ℝ^P → ℝ continuous, s ∈ ℝ and G := {x : g(x) < s}.\nLet μ_j (j ∈ ℕ) and μ be measures on the Borel sets of ℝ^P with μ_j(G) < ∞ and μ(G) < ∞.\nLet ξ_j, ξ : ℝ^P → Λ_d(ℝ^P) (MultiVector P d) be μ_j- resp. μ-a.e. strongly measurable, with |⟨α, ξ_j(x)⟩| ≤ |α| for μ_j-a.e. x and |⟨α, ξ(x)⟩| ≤ |α| for μ-a.e. x, for every d-covector α (|α| = covectorEuclideanNorm α, ⟨α, ζ⟩ = ζ(α)).\nLet T_j, T'_j, T, T' ∈ 𝒟_d(U) satisfy, for every ω ∈ 𝒟^d(U): T_j(ω) = ∫⟨ω(x), ξ_j(x)⟩ dμ_j(x), T(ω) = ∫⟨ω(x), ξ(x)⟩ dμ(x), T'_j(ω) = ∫_G⟨ω(x), ξ_j(x)⟩ dμ_j(x) and T'(ω) = ∫_G⟨ω(x), ξ(x)⟩ dμ(x).\nAssume T_j ⇀ T in U (WeaklyConvergesOn), and that for every ε ∈ (0, ∞] there is δ > 0 with μ_j({s - δ ≤ g ≤ s}) ≤ ε for all sufficiently large j.\nThen T'_j ⇀ T' in U.",
+  "lean_statement": "∀ (P d : ℕ) (U : Set (Euclid P)) (g : Euclid P → ℝ) (s : ℝ) (μs : ℕ → Measure (Euclid P)) (μ : Measure (Euclid P)) (ξs : ℕ → Euclid P → MultiVector P d) (ξ : Euclid P → MultiVector P d) (Ts Ts' : ℕ → GeometricCurrentOn U d) (T T' : GeometricCurrentOn U d), Continuous g → (∀ j, μs j {x | g x < s} < ∞) → μ {x | g x < s} < ∞ → (∀ j, AEStronglyMeasurable (ξs j) (μs j)) → AEStronglyMeasurable ξ μ → (∀ j, ∀ᵐ x ∂(μs j), ∀ α : Covector (Euclid P) d, |ξs j x α| ≤ covectorEuclideanNorm α) → (∀ᵐ x ∂μ, ∀ α : Covector (Euclid P) d, |ξ x α| ≤ covectorEuclideanNorm α) → (∀ (j : ℕ) (ω : TestFormOn U d), Ts j ω = ∫ x, ξs j x ((ω : DifferentialForm (Euclid P) d) x) ∂(μs j)) → (∀ ω : TestFormOn U d, T ω = ∫ x, ξ x ((ω : DifferentialForm (Euclid P) d) x) ∂μ) → (∀ (j : ℕ) (ω : TestFormOn U d), Ts' j ω = ∫ x in {x | g x < s}, ξs j x ((ω : DifferentialForm (Euclid P) d) x) ∂(μs j)) → (∀ ω : TestFormOn U d, T' ω = ∫ x in {x | g x < s}, ξ x ((ω : DifferentialForm (Euclid P) d) x) ∂μ) → WeaklyConvergesOn Ts T → (∀ ε : ℝ≥0∞, 0 < ε → ∃ δ : ℝ, 0 < δ ∧ ∀ᶠ j in atTop, μs j {x | s - δ ≤ g x ∧ g x ≤ s} ≤ ε) → WeaklyConvergesOn Ts' T'",
+  "lean_name": "cmc_fcl_weakConverges_sublevel",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-flat-convergence-a1-locali-fe7f261e4c-a1"
+}

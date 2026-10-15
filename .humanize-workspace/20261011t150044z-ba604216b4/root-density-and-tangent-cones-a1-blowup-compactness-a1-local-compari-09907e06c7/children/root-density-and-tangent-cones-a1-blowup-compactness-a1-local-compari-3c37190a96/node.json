@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.slicing-a1.c1_tangent-a1",
+  "parent_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.slicing-a1",
+  "depth": 5,
+  "title": "Approximate tangent plane of an embedded C¹ disk (Simon Ch. 3, proof of Theorem 1.6 \"⇒\")",
+  "statement": "Let P, d ∈ ℕ, U ⊆ ℝ^d open, c ∈ ℝ^d and r ∈ ℝ with closedBall(c, r) ⊆ U, and let g : ℝ^d → ℝ^P be C¹ on U (ContDiffOn ℝ 1 g U), injective on closedBall(c, r), with Dg(z) = fderiv ℝ g z injective for every z ∈ closedBall(c, r). Then for every z ∈ ball(c, r), the set S := g(closedBall(c, r)) has approximate tangent space Dg(z)(ℝ^d) at g(z) in the sense of Simon Ch. 3, 1.4 (HasApproximateTangentSpaceAt d S (g z) (range Dg(z))): dim Dg(z)(ℝ^d) = d and ∫_{η_{g(z),s}(S)} φ dH^d → ∫_{Dg(z)(ℝ^d)} φ dH^d as s ↓ 0 for every φ ∈ C_c(ℝ^P), where η_{x,s}(y) = s⁻¹(y − x) and H^d = μHE[d].",
+  "lean_statement": "∀ (P d : ℕ) (g : Euclid d → Euclid P) (U : Set (Euclid d)) (c : Euclid d) (r : ℝ), IsOpen U → closedBall c r ⊆ U → ContDiffOn ℝ 1 g U → InjOn g (closedBall c r) → (∀ z ∈ closedBall c r, Injective (fderiv ℝ g z)) → ∀ z ∈ ball c r, HasApproximateTangentSpaceAt d (g '' closedBall c r) (g z) (LinearMap.range (fderiv ℝ g z : Euclid d →ₗ[ℝ] Euclid P))",
+  "lean_name": "dtc_bc_lc_sl_c1_tangent",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-compari-3c37190a96-a1"
+}

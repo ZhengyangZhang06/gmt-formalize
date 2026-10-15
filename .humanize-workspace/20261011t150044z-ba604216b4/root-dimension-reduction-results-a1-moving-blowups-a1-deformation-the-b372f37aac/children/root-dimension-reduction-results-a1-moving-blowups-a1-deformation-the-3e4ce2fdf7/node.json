@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.moving_blowups-a1.deformation_theorem-a1.lipschitz_pushforward-a1.jacobian_continuity-a1.lipschitz_smooth_approx-a1",
+  "parent_id": "root.dimension_reduction_results-a1.moving_blowups-a1.deformation_theorem-a1.lipschitz_pushforward-a1.jacobian_continuity-a1",
+  "depth": 6,
+  "title": "Mollification of a Lipschitz function: C^∞, same Lipschitz constant, uniform convergence, a.e. convergence of derivatives",
+  "statement": "Let k ∈ ℕ, L ∈ ℝ≥0 and f : ℝᵏ → ℝ L-Lipschitz (ℝᵏ = Euclid k with Lebesgue measure). Then there are functions f_n : ℝᵏ → ℝ (n ∈ ℕ) such that every f_n is C^∞ (ContDiff ℝ (⊤ : ℕ∞)), every f_n is L-Lipschitz, f_n → f uniformly on ℝᵏ, and Df_n(x) → Df(x) in operator norm for Lebesgue-a.e. x ∈ ℝᵏ, where D = fderiv ℝ (Df(x) = 0 where f is not differentiable).",
+  "lean_statement": "∀ (k : ℕ) (L : NNReal) (f : Euclid k → ℝ), LipschitzWith L f → ∃ fs : ℕ → Euclid k → ℝ, (∀ n, ContDiff ℝ (⊤ : ℕ∞) (fs n)) ∧ (∀ n, LipschitzWith L (fs n)) ∧ TendstoUniformly fs f atTop ∧ ∀ᵐ x ∂(volume : Measure (Euclid k)), Tendsto (fun n => fderiv ℝ (fs n) x) atTop (𝓝 (fderiv ℝ f x))",
+  "lean_name": "dimred_mbl_dt_lp_jc_lipschitz_smooth_approx",
+  "depends_on": [
+    "root.dimension_reduction_results-a1.moving_blowups-a1.deformation_theorem-a1.lipschitz_pushforward-a1.jacobian_continuity-a1.mollify_fderiv-a1",
+    "root.compactness_of_minimizing_currents-a1.slicing-a1.lipschitz_smoothing-a1.mollify_lipschitz-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.dimension_reduction_results-a1.moving_blowups-a1.deformation_theorem-a1.lipschitz_pushforward-a1.jacobian_continuity-a1.mollify_fderiv-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.compactness_of_minimizing_currents-a1.slicing-a1.lipschitz_smoothing-a1.mollify_lipschitz-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-slicing-a1-lipschitz-smoot-0c46a16452-a1",
+      "result_commit": "52b9c39c17163ce7232935d7cc8c5d62382f63a6",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-moving-blowups-a1-deformation-the-3e4ce2fdf7-a1"
+}

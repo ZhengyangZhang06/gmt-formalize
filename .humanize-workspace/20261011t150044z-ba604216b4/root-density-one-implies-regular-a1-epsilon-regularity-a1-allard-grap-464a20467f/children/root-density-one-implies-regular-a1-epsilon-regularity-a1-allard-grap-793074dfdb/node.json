@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.lipschitz_approximation-a1.bad_set-a1",
+  "parent_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.lipschitz_approximation-a1",
+  "depth": 5,
+  "title": "Weak-type bound for the complement of the good set (Simon 5.2.6 (2), (6))",
+  "statement": "Let n, k ∈ ℕ, μ a measure on ℝ^{n+k}, e : ℝ^{n+k} → ℝ, ξ ∈ ℝ^{n+k}, σ₀ > 0 and a > 0. Assume μ(B_t(y)) ≤ 2ω_n tⁿ for all y ∈ B_{3σ₀/4}(ξ) and t ∈ (0, 5σ₀/4]. Let G' := {y ∈ spt μ : ∫_{B_{t/2}(y)} e⁺ dμ ≤ a·tⁿ for all t ∈ (0, σ₀/2]}, where e⁺ := ENNReal.ofReal ∘ e and integrals are lower Lebesgue integrals. Then μ(B_{3σ₀/4}(ξ) ∖ G') ≤ (2(5/2)ⁿ/a)·ω_n·∫_{B_{σ₀}(ξ)} e⁺ dμ. Here ω_n = unitBallVolume n, balls are closed, and μ of a possibly nonmeasurable set is its outer measure.",
+  "lean_statement": "∀ (n k : ℕ) (μ : Measure (Euclid (n + k))) (e : Euclid (n + k) → ℝ) (ξ : Euclid (n + k)) (σ₀ a : ℝ), 0 < σ₀ → 0 < a → (∀ y ∈ closedBall ξ (3 * σ₀ / 4), ∀ t : ℝ, 0 < t → t ≤ 5 * σ₀ / 4 → μ (closedBall y t) ≤ 2 * unitBallVolume n * ENNReal.ofReal (t ^ n)) → μ (closedBall ξ (3 * σ₀ / 4) \\ {y | y ∈ μ.support ∧ ∀ t : ℝ, 0 < t → t ≤ σ₀ / 2 → ∫⁻ x in closedBall y (t / 2), ENNReal.ofReal (e x) ∂μ ≤ ENNReal.ofReal (a * t ^ n)}) ≤ ENNReal.ofReal (2 * (5 / 2) ^ n / a) * unitBallVolume n * ∫⁻ x in closedBall ξ σ₀, ENNReal.ofReal (e x) ∂μ",
+  "lean_name": "dorag_lip_bad_set_measure_bound",
+  "depends_on": [
+    "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.lipschitz_approximation-a1.vitali_bound-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.lipschitz_approximation-a1.vitali_bound-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-793074dfdb-a1"
+}

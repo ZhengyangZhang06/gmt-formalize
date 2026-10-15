@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_sector_endpoint_density-a1.box_mass_limits-a1.box_inclusions-a1",
+  "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_sector_endpoint_density-a1.box_mass_limits-a1",
+  "depth": 5,
+  "title": "Rescaled boxes Z(s, s') are squeezed between two squares",
+  "statement": "Let P ∈ ℕ, Q a linear subspace of ℝ^P with orthogonal projection π := Q.starProjection, and a, e ∈ ℝ^P with a ∈ Q, |a| = |e| = 1 and ⟨a, e⟩ = 0. Let s, η, s' ∈ ℝ with 0 < η, 0 < s', 20s' < 1, 30s' < η and 6s' < s. Put η_{s'} := dilation a s' (η_{s'}(x) = s'^{-1}(x − a)), Z(s, s') := {x : ⟨x, a⟩ > 0, ||x| − 1| < s', |arctan(⟨x, e⟩/⟨x, a⟩)| < s', |x − πx| < s|x|}, U := {w : |w| < 3, |⟨w, a⟩| < 1 − η, |⟨w, e⟩| < 1 − η} and K := {w : |w| ≤ 3, |⟨w, a⟩| ≤ 1 + η, |⟨w, e⟩| ≤ 1 + η}. Then η_{s'}^{-1}(U) ⊆ Z(s, s') and Z(s, s') ∩ B_{3s'}(a) ⊆ η_{s'}^{-1}(K).",
+  "lean_statement": "∀ (P : ℕ) (Q : Submodule ℝ (Euclid P)) (a e : Euclid P) (s η s' : ℝ), a ∈ Q → ‖a‖ = 1 → ‖e‖ = 1 → inner ℝ a e = 0 → 0 < η → 0 < s' → 20 * s' < 1 → 30 * s' < η → 6 * s' < s → dilation a s' ⁻¹' {w : Euclid P | ‖w‖ < 3 ∧ |inner ℝ w a| < 1 - η ∧ |inner ℝ w e| < 1 - η} ⊆ {x : Euclid P | 0 < inner ℝ x a ∧ |‖x‖ - 1| < s' ∧ |Real.arctan (inner ℝ x e / inner ℝ x a)| < s' ∧ ‖x - Q.starProjection x‖ < s * ‖x‖} ∧ {x : Euclid P | 0 < inner ℝ x a ∧ |‖x‖ - 1| < s' ∧ |Real.arctan (inner ℝ x e / inner ℝ x a)| < s' ∧ ‖x - Q.starProjection x‖ < s * ‖x‖} ∩ ball a (3 * s') ⊆ dilation a s' ⁻¹' {w : Euclid P | ‖w‖ ≤ 3 ∧ |inner ℝ w a| ≤ 1 + η ∧ |inner ℝ w e| ≤ 1 + η}",
+  "lean_name": "idtp_cse_bml_rescaled_box_inclusions",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-240bfba243-a1"
+}

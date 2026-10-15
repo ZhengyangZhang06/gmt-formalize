@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.carrier_area_formula-a1.piece_area_formula-a1.fiber_side-a1",
+  "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.carrier_area_formula-a1.piece_area_formula-a1",
+  "depth": 5,
+  "title": "Fibre side: the Euclidean weighted area formula for Φ transported through the injective parametrization g (parent steps 3–4)",
+  "statement": "Let P, n ∈ ℕ; g : ℝ^n → ℝ^P continuous; A ⊆ ℝ^n Borel with g injective on A; F : ℝ^P → ℝ^n; Φ : ℝ^n → ℝ^n Lipschitz with F(g(a)) = Φ(a) for every a ∈ A; and h : ℝ^P → [0, ∞] Borel measurable. Then the fibre-sum function y ↦ Σ_{x ∈ g(A), F(x) = y} h(x) (the tsum over the subtype g(A) ∩ F^{−1}{y}) is a.e. measurable for Lebesgue measure L^n (volume) on ℝ^n, and ∫_{ℝ^n} Σ_{x ∈ g(A), F(x) = y} h(x) dL^n(y) = ∫_A |det DΦ(a)| · h(g(a)) dL^n(a), where DΦ(a) = fderiv ℝ Φ a regarded as a linear endomorphism of ℝ^n and the factor |det DΦ(a)| enters through ENNReal.ofReal.",
+  "lean_statement": "∀ (P n : ℕ) (g : Euclid n → Euclid P) (A : Set (Euclid n)) (F : Euclid P → Euclid n) (Φ : Euclid n → Euclid n) (LΦ : NNReal) (h : Euclid P → ℝ≥0∞), Continuous g → MeasurableSet A → InjOn g A → LipschitzWith LΦ Φ → (∀ a ∈ A, F (g a) = Φ a) → Measurable h → AEMeasurable (fun y : Euclid n => ∑' x : ↥(g '' A ∩ F ⁻¹' {y}), h x) volume ∧ ∫⁻ y, (∑' x : ↥(g '' A ∩ F ⁻¹' {y}), h x) ∂volume = ∫⁻ a in A, ENNReal.ofReal |LinearMap.det (fderiv ℝ Φ a : Euclid n →ₗ[ℝ] Euclid n)| * h (g a) ∂volume",
+  "lean_name": "idtp_caf_paf_fiber_side",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-7aaee2fdb9-a1"
+}

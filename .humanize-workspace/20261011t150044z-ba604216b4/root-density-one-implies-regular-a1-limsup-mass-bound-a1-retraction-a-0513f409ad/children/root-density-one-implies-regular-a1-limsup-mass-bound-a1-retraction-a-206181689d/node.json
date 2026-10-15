@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.retraction-a1.normal_coordinates-a1.map_calculus-a1",
+  "parent_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.retraction-a1.normal_coordinates-a1",
+  "depth": 5,
+  "title": "The normal-coordinate map (v, k) ↦ ψ(v) + k − Q(v)k is C¹ with derivative (w, k) ↦ Dψ(v₀)w + k at (v₀, 0)",
+  "statement": "Let P, d ∈ ℕ and let E ⊆ ℝ^P be a linear subspace, with the subspace norm; give ℝ^d × E the product (max) norm. Let V ⊆ ℝ^d be open and v₀ ∈ V. Let ψ : ℝ^d → ℝ^P be C¹ on V, and let Q : ℝ^d → L(ℝ^P, ℝ^P) be C¹ on V with Q(v₀)k = 0 for every k ∈ E. Define Φ : ℝ^d × E → ℝ^P by Φ(v, k) = ψ(v) + k − Q(v)k. Then Φ is C¹ on V × E. Moreover Φ has Fréchet derivative Dψ(v₀) ∘ pr₁ + ι ∘ pr₂ at (v₀, 0), that is (w, k) ↦ Dψ(v₀)w + k, where ι : E → ℝ^P is the inclusion.",
+  "lean_statement": "∀ (P d : ℕ) (E : Submodule ℝ (Euclid P)) (V : Set (Euclid d)) (ψ : Euclid d → Euclid P) (Q : Euclid d → (Euclid P →L[ℝ] Euclid P)) (v₀ : Euclid d), IsOpen V → v₀ ∈ V → ContDiffOn ℝ 1 ψ V → ContDiffOn ℝ 1 Q V → (∀ k ∈ E, Q v₀ k = 0) → ContDiffOn ℝ 1 (fun z : Euclid d × E => ψ z.1 + (z.2 : Euclid P) - Q z.1 (z.2 : Euclid P)) (V ×ˢ univ) ∧ HasFDerivAt (fun z : Euclid d × E => ψ z.1 + (z.2 : Euclid P) - Q z.1 (z.2 : Euclid P)) ((fderiv ℝ ψ v₀).comp (ContinuousLinearMap.fst ℝ (Euclid d) E) + E.subtypeL.comp (ContinuousLinearMap.snd ℝ (Euclid d) E)) (v₀, 0)",
+  "lean_name": "dor_lmb_ret_nc_map_calculus",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-limsup-mass-bound-a1-retraction-a-206181689d-a1"
+}

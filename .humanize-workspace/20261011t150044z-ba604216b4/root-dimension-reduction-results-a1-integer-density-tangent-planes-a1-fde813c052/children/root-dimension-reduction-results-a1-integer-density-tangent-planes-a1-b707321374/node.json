@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_tangent_cone_planar-a1.cycle_tangent_cone-a1.tangent_cones-a1",
+  "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_tangent_cone_planar-a1.cycle_tangent_cone-a1",
+  "depth": 5,
+  "title": "Simon 7.3.1: densities exist and are upper semicontinuous off spt ∂T; blow-up limits at support points are minimizing cones (registered obligation)",
+  "statement": "Let ℓ ≤ k, U ⊆ ℝ^{n+k} open, N an embedded C² (n+ℓ)-submanifold with (N̄∖N) ∩ U = ∅, and T ∈ 𝒟_n(U) minimizing in U ∩ N with spt T ⊆ U ∩ N. Then (1) there is Θ: ℝ^{n+k} → ℝ such that Θ^n(μ_T, x) = Θ(x) (limit of M_{B_ρ(x)}(T)/(ω_nρ^n) as ρ ↓ 0, with Θ(x) ≥ 0) for every x ∈ U ∖ spt ∂T, and Θ is upper semicontinuous on U ∖ spt ∂T; (2) for every x ∈ spt T ∖ spt ∂T and every sequence λ_j > 0, λ_j → 0, there are a subsequence λ_{j'} and an integer multiplicity C ∈ 𝒟_n(ℝ^{n+k}), minimizing in ℝ^{n+k}, with η_{x,λ_{j'}#}T ⇀ C in ℝ^{n+k}, μ_{η_{x,λ_{j'}#}T} → μ_C (for all representations), η_{0,λ#}C = C for all λ > 0, and Θ^n(μ_C, 0) = Θ^n(μ_T, x).",
+  "lean_statement": "DensityAndTangentCones",
+  "lean_name": "idtp_cttp_ctc_density_tangent_cones",
+  "depends_on": [
+    "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_tangent_cone_planar-a1.cycle_tangent_cone-a1.stationarity-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_tangent_cone_planar-a1.cycle_tangent_cone-a1.stationarity-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-b707321374-a1"
+}

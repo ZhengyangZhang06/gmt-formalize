@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.flat_convergence-a1.deformation-a1.cube_poincare-a1.smooth_duality-a1",
+  "parent_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.flat_convergence-a1.deformation-a1.cube_poincare-a1",
+  "depth": 6,
+  "title": "Total variation of a smooth function on a bounded open set by duality with test fields (parent step 5)",
+  "statement": "Let P ∈ ℕ, W ⊆ Euclid P open and bounded, w : Euclid P → ℝ of class C^∞ and V ∈ ℝ. Assume ∫ Dw(y)(g(y)) dy ≤ V for every C^∞ map g : Euclid P → Euclid P with compact support, tsupport g ⊆ W and |g(y)| ≤ 1 for all y. Then ∫_W ‖Dw(y)‖ dy ≤ V.",
+  "lean_statement": "∀ (P : ℕ) (w : Euclid P → ℝ) (W : Set (Euclid P)) (V : ℝ), IsOpen W → Bornology.IsBounded W → ContDiff ℝ (⊤ : ℕ∞) w → (∀ g : Euclid P → Euclid P, ContDiff ℝ (⊤ : ℕ∞) g → HasCompactSupport g → tsupport g ⊆ W → (∀ y, ‖g y‖ ≤ 1) → ∫ y, fderiv ℝ w y (g y) ≤ V) → ∫ y in W, ‖fderiv ℝ w y‖ ≤ V",
+  "lean_name": "dor_lmb_fcd_cp_smooth_duality",
+  "depends_on": [
+    "root.regular_set_dense-a1.mass_eq_weight-a1.test_form_approx-a1.smooth_cutoff-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.regular_set_dense-a1.mass_eq_weight-a1.test_form_approx-a1.smooth_cutoff-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-regular-set-dense-a1-mass-eq-weight-a1-test-form-approx-a1-smooth-cutoff-a1-a1",
+      "result_commit": "b04a0309aad1bc70ed6b149c974bbddf4620a560",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-limsup-mass-bound-a1-flat-converg-ad2d31bc1b-a1"
+}

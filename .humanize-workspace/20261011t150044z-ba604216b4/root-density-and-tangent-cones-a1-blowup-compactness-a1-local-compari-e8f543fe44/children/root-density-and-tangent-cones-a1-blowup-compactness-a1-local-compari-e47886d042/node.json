@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.flat_decomposition-a1.localize-a1.action_bound-a1",
+  "parent_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.flat_decomposition-a1.localize-a1",
+  "depth": 6,
+  "title": "Evaluation bound |T(ω)| ≤ ∫ |ω| dμ_T for an integer multiplicity current (parent step 9(d))",
+  "statement": "Let P, n ∈ ℕ, U ⊆ ℝ^P, R = (M, θ, ξ) an IMRep in U representing T ∈ 𝒟_n(U), and ω ∈ 𝒟ⁿ(U) (TestFormOn U n). Then ofReal|T(ω)| ≤ ∫⁻ ofReal(|ω(x)|) dμ_R(x), where μ_R := R.measure = θHⁿ⌞M (Hⁿ = μHE[n]) and |α| := covectorEuclideanNorm α is the Euclidean coefficient norm of a covector.",
+  "lean_statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (R : IMRep U n) (ω : TestFormOn U n), R.Represents T → ENNReal.ofReal |T ω| ≤ ∫⁻ x, ENNReal.ofReal (covectorEuclideanNorm ((ω : DifferentialForm (Euclid P) n) x)) ∂R.measure",
+  "lean_name": "dtc_bc_lc_fd_lz_action_bound",
+  "depends_on": [
+    "root.compactness_of_minimizing_currents-a1.im_calculus-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.compactness_of_minimizing_currents-a1.im_calculus-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-im-calculus-a1-a1",
+      "result_commit": "2af75d6921b01a9c889a45103692ca0af95ea394",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-compari-e47886d042-a1"
+}
