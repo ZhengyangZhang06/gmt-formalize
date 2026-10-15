@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "e43681a2bbd7a3875e5c613852e34956f0413a0bfa038ea16ce236cc5b05d852",
+  "git_delta": {
+    "base_commit": "f2b7221273d1e61fbf592d43e26231420692985d",
+    "candidate_commit": "7c07b4d6d0222089ffe71d4f0791db3c458307a4",
+    "target": "GMT/Ch07/Submission.lean",
+    "changed_files": [
+      "GMT/Ch07/Submission.lean"
+    ],
+    "diff_sha256": "ba3d558ff453e7dec5ec235b7fb89ca1cf3682124b50f314ba1f791678550353",
+    "source_sha256": "d990df8da325cef9e2492044d50c82dc65c2b3a655a91b0e804626aea0f51fb8",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.regular_set_dense",
+      "statement": "RegularSetDense",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
