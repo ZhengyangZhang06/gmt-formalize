@@ -76391,4 +76391,14 @@ theorem Submission.density_and_tangent_cones : DensityAndTangentCones := by
     Submission.dtc_cone_of_constant_density (n + k) n C (Θ x) hn hCmin.1 hCbd hCstat hCball,
     Θ x, hxΘ, hCdens⟩
 
+/-- **Simon 7.3.1 (Theorem, p. 187)** (chapter-07.txt lines 302–364; (1) on `U \ spt ∂T` and (2)
+at `x ∈ spt T \ spt ∂T`, README erratum 3): densities exist and are upper semicontinuous off
+`spt ∂T`, and blow-ups at `x ∈ spt T \ spt ∂T` subconverge, with their mass measures, to minimizing
+cones `C` with `Θⁿ(μ_C, 0) = Θⁿ(μ_T, x)`.  The type is that of `Submission.density_and_tangent_cones`
+(DAG node `root.density_and_tangent_cones-a1`), which carries out the frozen proof's seven steps
+with 7.1.2 in the role of the stationarity sibling; as the frozen proof's registration note
+provides, this inherited prerequisite is reused at its identical type. -/
+theorem Submission.idtp_cttp_ctc_density_tangent_cones : DensityAndTangentCones :=
+  Submission.density_and_tangent_cones
+
 end GMT.Ch07
