@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.cone_splitting-a1.split_off_spine-a1.minimality_transfer-a1.slice_integrable-a1.span_bounded_finite-a1",
+  "parent_id": "root.dimension_reduction_results-a1.cone_splitting-a1.split_off_spine-a1.minimality_transfer-a1.slice_integrable-a1",
+  "depth": 6,
+  "title": "Bounded subsets of a k-frame span have finite H^k-measure",
+  "statement": "Let P, k ∈ ℕ and let g = (g_1, …, g_k) (g : Fin k → Euclid P) be an orthonormal family in ℝ^P with span G := span{g_1, …, g_k}; H^k := μHE[k]. Then every bounded set E ⊆ G (Bornology.IsBounded E) has finite H^k-measure: μHE[k] E ≠ ∞.",
+  "lean_statement": "∀ (P k : ℕ) (g : Fin k → Euclid P), Orthonormal ℝ g → ∀ E : Set (Euclid P), E ⊆ (Submodule.span ℝ (Set.range g) : Set (Euclid P)) → Bornology.IsBounded E → μHE[k] E ≠ ∞",
+  "lean_name": "dimred_cs_sos_mt_si_span_bounded_measure_ne_top",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-cone-splitting-a1-split-off-spine-4ec8b869cc-a1"
+}

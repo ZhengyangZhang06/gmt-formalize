@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.cone_splitting-a1.split_off_spine-a1.cone_filling_subspace-a1.cone_current-a1.cutoff_homotopy-a1",
+  "parent_id": "root.dimension_reduction_results-a1.cone_splitting-a1.split_off_spine-a1.cone_filling_subspace-a1.cone_current-a1",
+  "depth": 6,
+  "title": "Localized radial homotopy formula with a compactly supported primitive: K₁(dγ) = γ − dψ on ball(0, ρ)",
+  "statement": "Let P, q ∈ ℕ and ρ ∈ ℝ, and write ι_xα := α.curryLeft x. For a (q+1)-form β on ℝ^P and a (q+2)-form α put\n (K₀β)(x) := ∫_0^1 t^q·ι_x(β(t x)) dt,  (K₁α)(x) := ∫_0^1 t^{q+1}·ι_x(α(t x)) dt.\nAssume (H): for every C^∞ (q+1)-form β (ContDiff ℝ (⊤ : ℕ∞) β: smoothness order ∞, not analytic), K₀β is C^∞ (ContDiff ℝ (⊤ : ℕ∞)), and d(K₀β)(x) + K₁(dβ)(x) = β(x) for every x ∈ ℝ^P (d = exteriorDerivative).\nThen for every test form γ ∈ 𝒟^{q+1}(ℝ^P) (TestFormOn univ (q+1)) there is a test form ψ ∈ 𝒟^q(ℝ^P) (TestFormOn univ q) with K₁(dγ)(x) = γ(x) − dψ(x) for every x with ‖x‖ < ρ.\n(H) is exactly the statement of dimred_cs_sos_cfs_radial_homotopy at (P, q). The selected node discharges it when it assembles its children.",
+  "lean_statement": "∀ (P q : ℕ) (ρ : ℝ), (∀ β : DifferentialForm (Euclid P) (q + 1), ContDiff ℝ (⊤ : ℕ∞) β → ContDiff ℝ (⊤ : ℕ∞) (fun x : Euclid P => ∫ t in (0 : ℝ)..1, t ^ q • (β (t • x)).curryLeft x) ∧ ∀ x : Euclid P, exteriorDerivative (fun y : Euclid P => ∫ t in (0 : ℝ)..1, t ^ q • (β (t • y)).curryLeft y) x + (∫ t in (0 : ℝ)..1, t ^ (q + 1) • (exteriorDerivative β (t • x)).curryLeft x) = β x) → ∀ γ : TestFormOn (univ : Set (Euclid P)) (q + 1), ∃ ψ : TestFormOn (univ : Set (Euclid P)) q, ∀ x : Euclid P, ‖x‖ < ρ → (∫ t in (0 : ℝ)..1, t ^ (q + 1) • (exteriorDerivative (γ : DifferentialForm (Euclid P) (q + 1)) (t • x)).curryLeft x) = (γ : DifferentialForm (Euclid P) (q + 1)) x - exteriorDerivative (ψ : DifferentialForm (Euclid P) q) x",
+  "lean_name": "dimred_cs_sos_cfs_cc_cutoff_homotopy",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-cone-splitting-a1-split-off-spine-ba1d6efb5b-a1"
+}

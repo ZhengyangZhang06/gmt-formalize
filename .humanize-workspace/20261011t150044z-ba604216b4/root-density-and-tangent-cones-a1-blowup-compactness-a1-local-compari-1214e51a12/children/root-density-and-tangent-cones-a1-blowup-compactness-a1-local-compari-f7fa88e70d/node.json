@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.slicing-a1.slice_family-a1.coarea_signed-a1",
+  "parent_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.slicing-a1.slice_family-a1",
+  "depth": 6,
+  "title": "Co-area formula for real-valued integrands (Simon Ch. 6, 4.1 applied to q⁺ and q⁻)",
+  "statement": "Let P, n ∈ ℕ, M ⊆ ℝ^P Borel, f : ℝ^P → ℝ Borel and G : ℝ^P → ℝ^P Borel. Write Hᵏ := μHE[k] and assume the co-area identity (CF): for every Borel g : ℝ^P → [0, ∞], t ↦ ∫_{M∩f⁻¹(t)} g dHⁿ is Lebesgue-a.e.-measurable and ∫_ℝ ∫_{M∩f⁻¹(t)} g dHⁿ dt = ∫_M |G| g dH^{n+1}. Let q : ℝ^P → ℝ be Borel with ∫_M |G||q| dH^{n+1} < ∞. Then (1) for L¹-a.e. t, q is Hⁿ-integrable on M ∩ f⁻¹(t); (2) t ↦ ∫_{M∩f⁻¹(t)} q dHⁿ (Bochner integral, which is 0 when q is not integrable on the slice) is Lebesgue integrable on ℝ; (3) ∫_ℝ ∫_{M∩f⁻¹(t)} q dHⁿ dt = ∫_M |G| q dH^{n+1}.",
+  "lean_statement": "∀ (P n : ℕ) (M : Set (Euclid P)) (f : Euclid P → ℝ) (G : Euclid P → Euclid P), MeasurableSet M → Measurable f → Measurable G → (∀ g : Euclid P → ℝ≥0∞, Measurable g → AEMeasurable (fun t => ∫⁻ x in M ∩ f ⁻¹' {t}, g x ∂μHE[n]) ∧ ∫⁻ t, ∫⁻ x in M ∩ f ⁻¹' {t}, g x ∂μHE[n] = ∫⁻ x in M, ENNReal.ofReal ‖G x‖ * g x ∂μHE[n + 1]) → ∀ q : Euclid P → ℝ, Measurable q → ∫⁻ x in M, ENNReal.ofReal ‖G x‖ * ENNReal.ofReal |q x| ∂μHE[n + 1] ≠ ∞ → (∀ᵐ t, IntegrableOn q (M ∩ f ⁻¹' {t}) μHE[n]) ∧ Integrable (fun t => ∫ x in M ∩ f ⁻¹' {t}, q x ∂μHE[n]) ∧ ∫ t, ∫ x in M ∩ f ⁻¹' {t}, q x ∂μHE[n] = ∫ x in M, ‖G x‖ * q x ∂μHE[n + 1]",
+  "lean_name": "dtc_bc_lc_sl_sf_coarea_signed",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-compari-f7fa88e70d-a1"
+}
