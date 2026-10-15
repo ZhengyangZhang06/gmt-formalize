@@ -141849,8 +141849,6 @@ theorem Submission.idod_spine_invariant_density_nat : ∀ (P n : ℕ) (S : Geome
     obtain ⟨m, hm⟩ := Submission.idtp_two_dim_cone_integer_density P C hminC hbdC hconeC
     exact ⟨m, huniq 2 C θ₀ m hC hm⟩
 
-/-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
-theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 /-- **The density of a 2-dimensional minimizing cone is locally constant away from its vertex**
 (proof of Simon 7.3.3(1), p. 191, for 2-dimensional minimizing cones; chapter-07.txt lines
 497–510 cite [Whi82] for their structure).  Let `C ∈ 𝒟₂(ℝᴾ)` be a minimizing cone with `∂C = 0`
