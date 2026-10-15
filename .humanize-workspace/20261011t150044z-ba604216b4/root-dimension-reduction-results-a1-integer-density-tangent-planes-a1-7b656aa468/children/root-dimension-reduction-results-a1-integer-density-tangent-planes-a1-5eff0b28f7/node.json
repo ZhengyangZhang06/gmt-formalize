@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_constant_density_planar-a1.regular_point_support-a1.support_subset_closure-a1",
+  "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_constant_density_planar-a1.regular_point_support-a1",
+  "depth": 5,
+  "title": "The support of a current equal to m[[M]] on an open set G lies, inside G, in the closure of M",
+  "statement": "Let P, n ∈ ℕ, let U, G, M ⊆ ℝ^P be sets, T ∈ 𝒟_n(U) (T : GeometricCurrentOn U n), m ∈ ℤ and ξ : ℝ^P → Λ_n(ℝ^P) (MultiVector P n). Assume G is open, G ⊆ U, and T(ω) = m·∫_M ξ(x)(ω(x)) dHⁿ(x) (Hⁿ := μHE[n]) for every ω ∈ 𝒟ⁿ(U) (TestFormOn U n) with tsupport ω ⊆ G. Then spt T ∩ G ⊆ closure(M), where spt T = T.support = U ∖ zeroRegion T (Simon 6.2.11).",
+  "lean_statement": "∀ (P n : ℕ) (U G M : Set (Euclid P)) (T : GeometricCurrentOn U n) (m : ℤ) (ξ : Euclid P → MultiVector P n), IsOpen G → G ⊆ U → (∀ ω : TestFormOn U n, tsupport (ω : DifferentialForm (Euclid P) n) ⊆ G → T ω = m * ∫ x in M, ξ x ((ω : DifferentialForm (Euclid P) n) x) ∂μHE[n]) → T.support ∩ G ⊆ closure M",
+  "lean_name": "idtp_ccd_rps_support_subset_closure",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-5eff0b28f7-a1"
+}

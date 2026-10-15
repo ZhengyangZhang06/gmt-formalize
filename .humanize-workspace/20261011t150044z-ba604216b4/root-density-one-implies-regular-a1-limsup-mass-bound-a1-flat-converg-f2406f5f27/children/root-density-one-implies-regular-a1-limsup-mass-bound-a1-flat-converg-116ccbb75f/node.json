@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.flat_convergence-a1.deformation-a1.skeleton_deformation-a1.markov_point-a1",
+  "parent_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.flat_convergence-a1.deformation-a1.skeleton_deformation-a1",
+  "depth": 6,
+  "title": "Markov selection of a good parameter in an interval",
+  "statement": "Let g : ℝ → [0, ∞] be almost-everywhere measurable for Lebesgue measure, p a predicate on ℝ that holds for Lebesgue-almost every t, a < b real numbers and I ∈ [0, ∞] with ∫_{(a,b)} g dL¹ ≤ I (lower Lebesgue integral over Ioo a b). Then there is t ∈ (a, b) with p(t) and (b − a)·g(t) ≤ 2·I, computed in [0, ∞] with b − a embedded by ENNReal.ofReal.",
+  "lean_statement": "∀ (g : ℝ → ℝ≥0∞) (p : ℝ → Prop) (a b : ℝ) (I : ℝ≥0∞), a < b → AEMeasurable g → (∀ᵐ t, p t) → ∫⁻ t in Ioo a b, g t ≤ I → ∃ t ∈ Ioo a b, p t ∧ ENNReal.ofReal (b - a) * g t ≤ 2 * I",
+  "lean_name": "dor_lmb_fcd_sd_markov_point",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-limsup-mass-bound-a1-flat-converg-116ccbb75f-a1"
+}

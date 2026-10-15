@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.half_space_cone_lies_in_boundary-a1.imrep_support_eq_measure_support-a1.weight_null_where_current_vanishes-a1.orient_component_vanishes_ae-a1",
+  "parent_id": "root.half_space_cone_lies_in_boundary-a1.imrep_support_eq_measure_support-a1.weight_null_where_current_vanishes-a1",
+  "depth": 4,
+  "title": "Where a represented current vanishes on an open set, each scalar component of its orientation vanishes weight-a.e. (fundamental lemma)",
+  "statement": "Let P, n ∈ ℕ, let U, W ⊆ ℝ^P, let T ∈ GeometricCurrentOn U n, and let R = (M, θ, ξ) ∈ IMRep U n with R.Represents T, i.e. T(ω) = R.action(ω) = ∫_M θ(x)·ξ(x)(ω(x)) dH^n(x) for every ω ∈ TestFormOn U n. Suppose W is open, W ⊆ U, and T vanishes on W (T(ω) = 0 for every ω ∈ TestFormOn U n with tsupport ω ⊆ W). Then for every n-covector α ∈ Λ^n(ℝ^P) = Covector (Euclid P) n, for R.measure-almost every x: if x ∈ W then ξ(x)(α) = 0. Here R.measure = (H^n⌞M).withDensity θ.",
+  "lean_statement": "∀ (P n : ℕ) (U W : Set (Euclid P)) (T : GeometricCurrentOn U n) (R : IMRep U n), R.Represents T → IsOpen W → W ⊆ U → T.VanishesOn W → ∀ α : Covector (Euclid P) n, ∀ᵐ x ∂R.measure, x ∈ W → R.orient x α = 0",
+  "lean_name": "imsupp_orient_apply_ae_eq_zero_of_vanishesOn",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-half-space-cone-lies-in-boundary-a1-imrep-support-eq-measure-sup-4e4150ee7f-a1"
+}

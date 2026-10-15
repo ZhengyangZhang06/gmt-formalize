@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.graph_cycle_regular-a1.integer_density-a1.support_null-a1",
+  "parent_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.graph_cycle_regular-a1.integer_density-a1",
+  "depth": 5,
+  "title": "The carrier of an integer multiplicity triple lies Hⁿ-a.e. in the support of its weight measure",
+  "statement": "Let P, n ∈ ℕ, U ⊆ ℝ^P (ℝ^P = Euclid P) and let R = (M, θ, ξ_R) be an integer multiplicity triple in U (R : IMRep U n), so M = R.carrier is a Borel set and θ = R.mult : ℝ^P → ℕ is measurable with θ(x) > 0 for every x ∈ M. Let Hⁿ := μHE[n] and let μ_R := R.measure = θ·(Hⁿ⌞M), i.e. the measure (Hⁿ.restrict M).withDensity (x ↦ θ(x)), with (closed) support spt μ_R = R.measure.support. Then Hⁿ(M ∖ spt μ_R) = 0.",
+  "lean_statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (R : IMRep U n), μHE[n] (R.carrier \\ R.measure.support) = 0",
+  "lean_name": "dgid_carrier_sdiff_measure_support_null",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-graph-cycle-f5920c5820-a1"
+}
