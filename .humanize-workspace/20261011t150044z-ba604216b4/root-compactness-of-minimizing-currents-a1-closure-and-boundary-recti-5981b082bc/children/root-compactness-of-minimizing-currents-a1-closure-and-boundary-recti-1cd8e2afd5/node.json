@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.blowup_limit-a1.constant_limit-a1.pairing_tendsto-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.blowup_limit-a1.constant_limit-a1",
+  "depth": 6,
+  "title": "Pairings with a compactly supported form converge",
+  "statement": "Let P, n ∈ ℕ. Write Λⁿ := Covector (Euclid P) n, Λ_n := MultiVector P n = Λⁿ →L[ℝ] ℝ with its operator norm, and ‖·‖ₑ for the [0,∞]-valued norm. Let ν_k (k ∈ ℕ) and ν be measures on ℝ^P, τ_k : ℝ^P → Λ_n, ζ₀ ∈ Λ_n and w : ℝ^P → Λⁿ. Assume: every ν_k is finite on compact sets; ∫ f dν_k → ∫ f dν for every continuous compactly supported f : ℝ^P → ℝ; each τ_k is ν_k-a.e. strongly measurable; for every R > 0, ∫⁻_{B̄_R(0)} ‖τ_k(x) − ζ₀‖ₑ dν_k(x) → 0 as k → ∞, where B̄_R(0) = closedBall 0 R; and w is continuous with compact support. Then ∫ τ_k(x)(w(x)) dν_k(x) → ∫ ζ₀(w(x)) dν(x) as k → ∞.",
+  "lean_statement": "∀ (P n : ℕ) (νs : ℕ → Measure (Euclid P)) (ν : Measure (Euclid P)) (τs : ℕ → Euclid P → MultiVector P n) (ζ₀ : MultiVector P n) (w : Euclid P → Covector (Euclid P) n), (∀ (k : ℕ) (K : Set (Euclid P)), IsCompact K → νs k K < ∞) → (∀ f : Euclid P → ℝ, Continuous f → HasCompactSupport f → Tendsto (fun k => ∫ x, f x ∂(νs k)) atTop (𝓝 (∫ x, f x ∂ν))) → (∀ k, AEStronglyMeasurable (τs k) (νs k)) → (∀ R : ℝ, 0 < R → Tendsto (fun k => ∫⁻ x in closedBall (0 : Euclid P) R, ‖τs k x - ζ₀‖ₑ ∂(νs k)) atTop (𝓝 0)) → Continuous w → HasCompactSupport w → Tendsto (fun k => ∫ x, τs k x (w x) ∂(νs k)) atTop (𝓝 (∫ x, ζ₀ (w x) ∂ν))",
+  "lean_name": "cbr_ci_bl_cvl_pairing_tendsto",
+  "depends_on": [
+    "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.blowup_limit-a1.constant_limit-a1.pairing_error-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.blowup_limit-a1.constant_limit-a1.pairing_error-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-1cd8e2afd5-a1"
+}

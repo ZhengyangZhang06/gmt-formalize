@@ -1,0 +1,85 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "exists_disjoint_closedBall_covering_ae|intervalIntegrable_deriv|intervalIntegral_deriv_mem_uIcc",
+        "def covectorEuclideanNorm|def massOn|def mass|def massAdmissibleOn|le_massOn|def support|def zeroRegion|def VanishesOn|boundary_boundary|def exteriorDerivative|abbrev Covector",
+        "alternatizeUncurryFin_curryLeft|alternatizeUncurryFin_smul|def extDeriv|extDeriv_eq|rpow_inv_natCast_pow|rpow_add.|euclideanHausdorffMeasure_zero|hausdorffMeasure_zero_singleton",
+        "cbrld_|exists_good_slice_radius|measure_eq_zero_of_small_fillings|vitali_setIntegral_le|cycle_eval_le_radius_mul_mass",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/cbrld-independent-audit-oplqgs4h/Types.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/cbrld-independent-audit-oplqgs4h/Assembly.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/cbrld-independent-audit-oplqgs4h/Probes.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/lake-manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-b16b774435/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-b16b774435/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Covering/Besicovitch.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Covering/BesicovitchVectorSpace.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/IntervalIntegral/DerivIntegrable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/Monotone.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/Alternating/Uncurry/Fin.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean",
+        "/tmp/cbrld-independent-audit-oplqgs4h/Types.lean",
+        "/tmp/cbrld-independent-audit-oplqgs4h/Assembly.lean",
+        "/tmp/cbrld-independent-audit-oplqgs4h/Probes.lean"
+      ],
+      "conclusion": "The split appropriately separates genuine obligations for the selected lower-density theorem. All seven exact one-line propositions independently elaborate without child implementations or aliases. Embedded VO, MR, SL, ISP and ISO contracts match their frozen sources. Dependencies are acyclic and correctly directed. All names are bare identifiers, with no collisions among the 817 inspected DAG nodes or other saved decompositions; the project/SimonGMT name search also found no matches. Independent Lean probes confirmed the covering instances, degree-zero Hausdorff singleton measure and contraction normalization. A fresh assembly proof derives the exact frozen parent type from local_filling, null_set and its declared isoperimetric dependency. Assembly and checked library lemmas use only propext, Classical.choice and Quot.sound. These compiler checks validate contracts and assembly, not completed implementations of the seven children."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "cone",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Prose and Lean type agree. The coefficient-norm Lipschitz estimate, cutoff localization and explicit primitive of a constant form prove the bound using VO, finite mass and boundary vanishing. The exterior-derivative normalization is correct, and c is independent of X, x₀ and ϱ."
+    },
+    {
+      "key": "covering",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact type includes all hypotheses. The pinned Besicovitch theorem permits arbitrary E. Finite measure supplies integrability and summability; disjoint additivity and θ ≤ 1 give the stated outer-measure inequality, including negative θ."
+    },
+    {
+      "key": "radius",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The monotone derivative integral bound yields a positive-measure set of radii surviving all null exclusions. Differentiating F = G^n and bounding annular measures by backward differences proves the exact ENNReal liminf estimate. The argument also covers n = 1 and F(ρ) = 0."
+    },
+    {
+      "key": "mass_gap",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "MR identifies mass with the representation measure. Every carrier point contributes its positive integer multiplicity because μHE[0]({x}) = 1. Mass below one therefore forces an empty carrier and the zero current. The proof establishes exactly the stated contract."
+    },
+    {
+      "key": "slice",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "SL and ISP are carried exactly. The zero representation of ∂C satisfies every required hypothesis. ISP supplies the null exceptional set; SL supplies the restriction current, sphere support and total-mass bound. The support argument follows directly from the defined zero region."
+    },
+    {
+      "key": "local_filling",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type matches the prose and uses precisely slice, radius and mass_gap. Constants are chosen uniformly before C and μ. The degree-one case follows from the mass gap; the higher-degree case applies the exact ISO hypothesis with verified compactness, cycle and finite-mass conditions. Both filling estimates include zero slice mass."
+    },
+    {
+      "key": "null_set",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof establishes the arbitrary-set contract using only cone and covering. Restriction estimates justify the comparison cycle; the form-dependent scale makes its error arbitrarily small. Taking the mass supremum after removing that error forces each bounded piece of E to be null. No measurability assumption or parent conclusion is hidden."
+    }
+  ],
+  "required_changes": []
+}

@@ -1,0 +1,121 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "HasWhitneyC1Compatibility|exists_contDiff_one_extension_of_whitney",
+        "coarea|co_area|slicing|eilenberg|c¹ approximation",
+        "def CountablyRectifiable|def HasApproximateTangentSpaceAt|theorem HasApproximateTangentSpaceAt.unique",
+        "euclideanHausdorffMeasure_def|addHaarScalarFactor_volume_hausdorffMeasure_ne_zero",
+        "alternatizeUncurryFin_apply",
+        "integral_lineDeriv_mul_eq",
+        "ae_hasDerivAt_integral",
+        "git show 2af75d6921b01a9c889a45103692ca0af95ea394:GMT/Ch07/Submission.lean",
+        "git show e32f0ad2100627aa39dcb37b3a0772c3f6e95871:GMT/Ch07/Submission.lean",
+        "git show 00c458d8b5f0043b634cbdd0b8d43d20d1d7deb6:GMT/Ch07/Submission.lean",
+        "axiom|sorry|checked|passed",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/dtc_slice_independent_audit/Assembly.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/lake-manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/Alternating/Uncurry/Fin.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/Rademacher.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/IntervalIntegral/LebesgueDifferentiationThm.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/ContinuousMap/SecondCountableSpace.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter01/Lusin.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/WhitneyJet.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/WhitneyExtension.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/WeightedArea.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/AreaCritical.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-compari-09907e06c7/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-compari-09907e06c7/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-02.txt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-03.txt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt",
+        "/tmp/dtc_slice_independent_audit/Assembly.lean"
+      ],
+      "conclusion": "Splitting is appropriate: the pinned library supplies Whitney extension, area formulas and linear coarea, but no matching nonlinear coarea or slicing theorem. Workspace definitions and package revisions match the snapshot. All 12 one-line propositions independently validate and elaborate in generated contract-mode challenge modules. Every name is bare; the nine new names are unreserved. The three reused types match their accepted declarations exactly, and retained comparator results enforce only the permitted axioms. Dependencies are correctly directed and acyclic, including the reused declarations' dependency closures. The conditional assembly was independently recompiled against the exact child and selected parent types; it uses only propext, Classical.choice and Quot.sound. Inline measures, orthogonal complements and alternation have the intended meanings; no prohibited matrix-unit construction occurs."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "c1_approx",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type matches all hypotheses and conclusions. Shellwise Lusin, measurable remainder suprema, Egorov and closed-set approximation establish the precise Whitney compatibility needed for simultaneous value and derivative agreement."
+    },
+    {
+      "key": "eilenberg",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The covering construction and Fatou argument produce the required pointwise Borel majorant, including arbitrary nonmeasurable A. The zero-Lipschitz, infinite-measure and n=0 cases and μHE normalization are handled correctly."
+    },
+    {
+      "key": "c1_tangent",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Compactness and injectivity give the lower Lipschitz bound. The rescaled area formula, uniform domination and linear area formula prove the exact blow-up definition and dimension assertion."
+    },
+    {
+      "key": "im_calculus",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Valid identical-type reuse of the accepted declaration at 2af75d6921b01a9c889a45103692ca0af95ea394. Comparator evidence and dependency closure were checked; locality and restriction supply the stated prerequisites without circularity."
+    },
+    {
+      "key": "defect_identity",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Valid identical-type reuse at e32f0ad2100627aa39dcb37b3a0772c3f6e95871. The inspected proof uses current linearity and representation identities, so it does not incorrectly assume Bochner-integral additivity without integrability."
+    },
+    {
+      "key": "lipschitz_smoothing",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Valid identical-type reuse at 00c458d8b5f0043b634cbdd0b8d43d20d1d7deb6, with retained comparator acceptance and compatible dependencies. Its conclusions provide exactly the uniformly controlled smooth approximants required."
+    },
+    {
+      "key": "chart_pieces",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Coordinatewise approximation, removal of critical images, localization and disjointification establish the chart properties. Tangent locality and removal of Borel null exceptional sets preserve coverage and compact closure while giving tangents at every retained point."
+    },
+    {
+      "key": "chart_coarea",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Eilenberg controls critical fibres; straightening, the two Jacobian identities, area transport and Tonelli prove the weighted formula. The continuous chart gradient supplies restricted measurability despite arbitrary G outside the chart. Tangent locality proves the exact slice conclusion."
+    },
+    {
+      "key": "coarea",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The Borel piecewise gradient, density-point bound and tangential expansion establish clause (1). Chart summation and Eilenberg handle clause (2), including the null remainder; local finiteness and tangent locality establish clause (3)."
+    },
+    {
+      "key": "lipschitz_leibniz",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof identifies H with the chart gradient through approximate-differential uniqueness. Integration by parts and L¹-density justify weak convergence against tangent fields; the smooth identity and dominated convergence then give the exact signed formula."
+    },
+    {
+      "key": "slice_family",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Borel orientation representatives and null-slice transfer produce valid IMRep witnesses. Coarea supplies measurability, mass bounds and integrable actions. The cutoff chain rule and Leibniz identity yield the averaged formula with the correct sign and factor."
+    },
+    {
+      "key": "slice_identity",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Dominated convergence and Lebesgue differentiation give the identity for each form. Separability for the joint form/exterior-derivative norm on fixed compact supports, followed by finite-mass bounds, provides one exceptional null set for all forms."
+    }
+  ],
+  "required_changes": []
+}
