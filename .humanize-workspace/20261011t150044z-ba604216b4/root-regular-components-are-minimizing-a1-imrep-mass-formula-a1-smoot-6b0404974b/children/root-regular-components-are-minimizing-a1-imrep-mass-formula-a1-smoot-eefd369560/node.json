@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.regular_components_are_minimizing-a1.imrep_mass_formula-a1.smooth_form_approx-a1.coeff_norm_toolkit-a1",
+  "parent_id": "root.regular_components_are_minimizing-a1.imrep_mass_formula-a1.smooth_form_approx-a1",
+  "depth": 4,
+  "title": "The Euclidean coefficient norm is a continuous seminorm dominated by the operator norm, with nonexpansive radial retraction",
+  "statement": "For all P, n ∈ ℕ there is a constant c > 0 such that, writing |α|_E := covectorEuclideanNorm α for α ∈ Covector (Euclid P) n and ‖α‖ for the operator norm: (i) α ↦ |α|_E is continuous; (ii) |α + β|_E ≤ |α|_E + |β|_E for all α, β; (iii) |t•α|_E = |t|·|α|_E for all t ∈ ℝ and α; (iv) |α|_E ≤ c·‖α‖ for all α; (v) for all v, b with |b|_E ≤ 1, |(max 1 |v|_E)⁻¹ • v − b|_E ≤ |v − b|_E.",
+  "lean_statement": "∀ (P n : ℕ), ∃ c : ℝ, 0 < c ∧ Continuous (fun α : Covector (Euclid P) n => covectorEuclideanNorm α) ∧ (∀ α β : Covector (Euclid P) n, covectorEuclideanNorm (α + β) ≤ covectorEuclideanNorm α + covectorEuclideanNorm β) ∧ (∀ (t : ℝ) (α : Covector (Euclid P) n), covectorEuclideanNorm (t • α) = |t| * covectorEuclideanNorm α) ∧ (∀ α : Covector (Euclid P) n, covectorEuclideanNorm α ≤ c * ‖α‖) ∧ ∀ v b : Covector (Euclid P) n, covectorEuclideanNorm b ≤ 1 → covectorEuclideanNorm ((max 1 (covectorEuclideanNorm v))⁻¹ • v - b) ≤ covectorEuclideanNorm (v - b)",
+  "lean_name": "regcomp_covectorEuclideanNorm_seminorm_retract",
+  "depends_on": [
+    "root.regular_components_are_minimizing-a1.imrep_mass_formula-a1.smooth_form_approx-a1.radial_retraction-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.regular_components_are_minimizing-a1.imrep_mass_formula-a1.smooth_form_approx-a1.radial_retraction-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-regular-components-are-minimizing-a1-imrep-mass-formula-a1-smoot-eefd369560-a1"
+}

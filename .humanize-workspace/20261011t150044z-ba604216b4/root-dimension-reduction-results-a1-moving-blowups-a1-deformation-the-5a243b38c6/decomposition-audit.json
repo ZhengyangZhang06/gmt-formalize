@@ -1,0 +1,66 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "volume_preserving_ofLp|theorem volume_pi_Ioo|tendsto_measure_iUnion_atTop|tendsto_measure_iInter_atTop|probReal_compl_eq_one_sub₀|mul_meas_ge_le_integral_of_nonneg|exists_least_of_bdd",
+        "median",
+        "integral_indicator₀|theorem setIntegral_const|theorem integral_const |Integrable.indicator₀|lemma measureReal_mono|theorem measureReal_mono",
+        "git show a104b3873f3c979b07a45e8d97d3d4d1d84c106a:GMT/Ch07/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/dmdt-cbm-im-gG3zEg/lean/Final.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/integer-median-independent-audit-tb9z_3i3/AuditTypes.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/integer-median-independent-audit-tb9z_3i3/AuditAssembly.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/integer-median-independent-audit-tb9z_3i3/AuditReusedCube.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Haar/InnerProductSpace.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Continuity.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Real.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Order/Int/LeastGreatest.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-deformation-the-5a243b38c6/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-deformation-the-5a243b38c6/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-fac-f53301754d/accepted-candidate.json",
+        "/tmp/dmdt-cbm-im-gG3zEg/lean/Final.lean",
+        "/tmp/integer-median-independent-audit-tb9z_3i3/AuditTypes.lean",
+        "/tmp/integer-median-independent-audit-tb9z_3i3/AuditAssembly.lean",
+        "/tmp/integer-median-independent-audit-tb9z_3i3/AuditReusedCube.lean"
+      ],
+      "conclusion": "Verified the pinned revisions and immutable selected handoff. The snapshot supplies the required volume, continuity, null-measurability, indicator-integral, integer-minimum, and Markov lemmas. The median search found only unrelated simplex results. All five frozen types passed both validators and independently elaborated in comparator scope without child implementations; numeric inspection confirmed real halves and canonical Euclidean volume. The four-child split is appropriate: normalization makes the restricted measure probabilistic, integer-median existence supplies both half-measure inequalities, and the remaining children give exactly the parent's two conclusions. A fresh assembly compiled against the exact child and parent types. Empty sibling dependencies are correct and acyclic. Recompiled child proofs, the actual accepted cube proof, and the fresh assembly use only propext, Classical.choice, and Quot.sound. All names are bare identifiers; the three new names are unreserved, and cube-volume reuse has an identical comparator-accepted frozen type."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "cube_volume",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and one-line type agree for every natural dimension, including zero. The proof correctly identifies the cube as the coordinate-map preimage of a measurable product box, applies measure preservation, and evaluates the product, including the empty product. Reuse of cmcdtfrfg_cube_volume is valid: the accepted candidate has the identical frozen type, and its actual proof recompiles with permitted axioms."
+    },
+    {
+      "key": "integer_median_exists",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type exactly includes the arbitrary measurable space, probability measure, a.e. measurability, and pointwise integer-valuedness. The proof establishes null-measurability, both distribution limits, nonemptiness and a lower bound for the integer threshold set, and its least element. Integer-valuedness then gives the precise predecessor-complement identity and the other half-measure inequality. No integrability, completeness, sibling theorem, or parent result is silently assumed."
+    },
+    {
+      "key": "median_minimizes",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and type match, including both median inequalities and integrability. The proof explicitly establishes integrability of deviations and null-measurable indicators, computes their integrals, and verifies the pointwise lower bound in both cases c ≥ β and c < β. Integral monotonicity and linearity then prove the exact conclusion for every real c. The argument is complete and independent of median existence."
+    },
+    {
+      "key": "median_abs_le",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and type have identical hypotheses and conclusion. Markov's inequality applies to the integrable nonnegative function |u| at level |β|. Each sign case correctly embeds the relevant median set into {|β| ≤ |u|}; finite-measure monotonicity gives measure at least one half. Multiplication by nonnegative |β| yields the bound, including β = 0 without division. The proof is complete and non-circular."
+    }
+  ],
+  "required_changes": []
+}

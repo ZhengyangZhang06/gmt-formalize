@@ -1,0 +1,77 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.dimension_reduction_results-a1.moving_blowups-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.pointwise-a1`
+- Child DAG node: `root.dimension_reduction_results-a1.moving_blowups-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.pointwise-a1.tangent_subseq-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Notation: Hⁿ = μHE[n]; for r ∈ ℝ, N_r := blowUpMap a r '' M, where blowUpMap a r y = r⁻¹(y − a).
+
+1. By definition (Poincare.SimonGMT.Chapter03.HasApproximateTangentSpaceAt), HasApproximateTangentSpaceAt n M a Q means: finrank Q = n, and for every f ∈ C_c(ℝ^P, ℝ), F(r) := ∫_{N_r} f dHⁿ tends to L := ∫_Q f dHⁿ along the filter 𝓝[>] 0. The first part is the hypothesis finrank Q = n. Fix f ∈ C_c(ℝ^P, ℝ); as a function ℝ^P → ℝ it is continuous and has compact support.
+
+2. The filter 𝓝[>] 0 on ℝ is countably generated. By the subsequence criterion (Filter.tendsto_of_subseq_tendsto) it suffices to show: for every sequence r : ℕ → ℝ with r_j → 0 along 𝓝[>] 0, there is ψ : ℕ → ℕ with F(r_{ψ(k)}) → L as k → ∞.
+
+3. Let such a sequence r be given.
+ - Since (0, ∞) ∈ 𝓝[>] 0, eventually r_j ∈ (0, ∞): there is j₀ with r_j > 0 for all j ≥ j₀ (Filter.eventually_atTop).
+ - Since 𝓝[>] 0 ≤ 𝓝 0, r_j → 0 in ℝ (tendsto_nhds_of_tendsto_nhdsWithin).
+
+4. Define λ_i := r_{i+j₀}. Then λ_i > 0 for every i, because i + j₀ ≥ j₀. Also λ_i → 0, because a shifted sequence has the same limit (tendsto_add_atTop_iff_nat). By the hypothesis there is a strictly increasing φ : ℕ → ℕ with ∫_{N_{λ_{φ(k)}}} g dHⁿ → ∫_Q g dHⁿ for every continuous compactly supported g : ℝ^P → ℝ. Apply this to g := f.
+
+5. Put ψ(k) := φ(k) + j₀. Then r_{ψ(k)} = λ_{φ(k)}, so F(r_{ψ(k)}) = ∫_{N_{λ_{φ(k)}}} f dHⁿ → L. This verifies the criterion of step 2, so F(r) → L along 𝓝[>] 0. Since f ∈ C_c(ℝ^P, ℝ) was arbitrary, together with finrank Q = n this is HasApproximateTangentSpaceAt n M a Q. ∎
+
+## Key steps
+
+1. Unfold HasApproximateTangentSpaceAt: finrank Q = n is given; for each f ∈ C_c show F(r) = ∫_{blowUpMap a r '' M} f dHⁿ → ∫_Q f dHⁿ along 𝓝[>] 0.
+2. Use the subsequence criterion Filter.tendsto_of_subseq_tendsto; 𝓝[>] 0 is countably generated.
+3. A sequence r_j → 0⁺ is positive from some j₀ on and tends to 0; apply the hypothesis to λ_i = r_{i+j₀} and take ψ(k) = φ(k) + j₀.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat SNAPSHOT/manifest.json -> mode local-project, project_commit b4d606db1da5da8fa2c0292ad4924d97de8b3c4b, mathlib_commit 25730c7c759d108ef87ab70af2342a196760f79d; git rev-parse of .lake/packages/mathlib (25730c7c) and .lake/packages/simongmt (2b3663083f3f); cmp SNAPSHOT/project/GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean -> identical`
+- `python3 -I scan of RUN/dag.json: the selected frozen type is byte-identical to that of root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.pointwise-a1 (cbr_ci_pointwise_tangent_integer, speculative-ready), and the four prerequisite types dmcbr_ci_blowup_limit / constant_cycle_planes / plane_weight_ge_one / plane_multiplicity_nat are byte-identical to the cbr_ci_* ones; the supplied natural proofs are identical (diff empty)`
+- `read RUN/nodes/...-57440db406/decomposition-v1.json + decomposition-audit-v1.json (mirror split plane_unique / tangent_subseq / limit_density / single_plane, acceptable=true), ...-ba0c2ebbf6/decomposition-v1.json + audit (plane_unique split into inner_det_covector and span_le_of_det_eq, acceptable=true), and ...-7da21ce121 / -1bbf36c885 / -6f7339d195/decomposition-v1.json (limit_density, single_plane, tangent_subseq judged atomic)`
+- `DAG status lookup: cbr_ci_pw_pu_inner_det_covector accepted (candidate 94a835746765), cbr_ci_pw_pu_span_le_of_inner_det_eq accepted (candidate 43170d96a710); cbr_ci_pw_span_eq_of_covector_eval_eq waiting-children, cbr_ci_pw_approxTangent_of_subseq / cbr_ci_pw_blowup_lower_density / cbr_ci_pw_single_plane_of_unit_weights decomposing (unaccepted, hence reserved); exact type search: the three fresh child types match only those unaccepted nodes`
+- `grep -n _existing_lean_name_problem / _accepted_checkpoint / _install_parent_supplied_child_handoff / _overlay_accepted_children / max_depth in RUNTIME/runtime.py; read RUNTIME/leaf_verification.py check_source_delta (a leaf appends one theorem; no other declaration, set_option or sorry) and RUNTIME/parent_verification.py`
+- `rg -c dmcbr_ci_pw SNAPSHOT/project (exit 1, no match); rg -c dmcbr_ci_pw .lake/packages/simongmt GMT (exit 1, no match); grep -l dmcbr_ci_pw RUN/nodes/*/decomposition-v*.json (no match); DAG lean_name lookup of the three fresh names (no node)`
+- `rg -l -F over SNAPSHOT/mathlib/Mathlib: tendsto_of_subseq_tendsto, liminf_const_mul_of_ne_top, absolutelyContinuous_smul, ofReal_div_of_pos, div_le_of_le_mul', integral_smul_measure, integral_const_mul, finrank_span_eq_card, tendsto_one_div_add_atTop_nhds_zero_nat, sum_le_sum_of_subset_of_nonneg, sum_eq_single, tendsto_add_atTop_iff_nat, tendsto_nhds_of_tendsto_nhdsWithin -> all found`
+- `sed -n 85,120p .lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean (blowUpMap, HasApproximateTangentSpaceAt: finrank P = n and convergence along 𝓝[>] 0 for every f : C_c(E, ℝ))`
+- `lake env lean /tmp/dmcbr_ci_pw/lean/Types.lean (the five child types after import GMT.Ch07.Submission in namespace GMT.Ch07 with the contract opens: sorry warnings only)`
+- `lake env lean /tmp/dmcbr_ci_pw/lean/Assembly.lean (exact frozen parent type from the five child types and the four frozen prerequisite types as hypotheses, no sorry; #print axioms: propext, Classical.choice, Quot.sound)`
+- `lake env lean /tmp/dmcbr_ci_pw/lean/Leaves.lean (the three fresh children proved, each as one theorem without helper declarations or set_option; axioms propext, Classical.choice, Quot.sound)`
+- `lake env lean /tmp/dmcbr_ci_pw/lean/Full.lean (accepted proofs of the two reused children extracted from commits 94a83574 / 43170d96, the three leaf proofs, sorry placeholders for the four prerequisites, and Submission.dmcbr_ci_pointwise_tangent_integer proved via Submission.* references; the children use only standard axioms, the parent only adds sorryAx from the prerequisite placeholders)`
+- `python3 -I: lean_contract.validate_lean_statement on all five child types -> valid and unchanged`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-closure-and-bou-633427cd9f/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-57440db406/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-57440db406/decomposition-audit-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-ba0c2ebbf6/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-ba0c2ebbf6/decomposition-audit-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-7da21ce121/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-1bbf36c885/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-6f7339d195/decomposition-v1.json`
+- `/runtime/flows/gmt-claude-b888e19cffb1/_recursive_lean/runtime.py`
+- `/runtime/flows/gmt-claude-b888e19cffb1/_recursive_lean/leaf_verification.py`
+- `/runtime/flows/gmt-claude-b888e19cffb1/_recursive_lean/parent_verification.py`
+- `/runtime/flows/gmt-claude-b888e19cffb1/_recursive_lean/lean_contract.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Order/Filter/AtTopBot/CountablyGenerated.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Order/Filter/ENNReal.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/AbsolutelyContinuous.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Basic/ENNReal/Inv.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Dimension/Constructions.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/NhdsWithin.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `/tmp/dmcbr_ci_pw/lean/Types.lean`
+- `/tmp/dmcbr_ci_pw/lean/Assembly.lean`
+- `/tmp/dmcbr_ci_pw/lean/Leaves.lean`
+- `/tmp/dmcbr_ci_pw/lean/Full.lean`
+
+The snapshot is compatible: pins match and the snapshot contract is byte-identical to Submission.lean. No dmcbr_ci_pw declaration exists in the snapshot, SimonGMT, the workspace, the DAG or any pending decomposition, so the three fresh names are unused. The selected node, its prerequisites and its supplied proof coincide with the other branch's cbr_ci_pointwise_tangent_integer, whose audited split is mirrored. Its two plane-uniqueness leaves are accepted with identical frozen types and are reused by name; the three other children are unaccepted there and get fresh names. Every cited library result exists at the pinned revisions. All five child types elaborate and validate. The three fresh children have single-theorem proofs, and the sorry-free conditional assembly proves the exact parent type, all using only propext, Classical.choice and Quot.sound.
