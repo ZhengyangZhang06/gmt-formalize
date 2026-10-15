@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.flat_decomposition-a1.localize-a1.boundary_mass-a1",
+  "parent_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.flat_decomposition-a1.localize-a1",
+  "depth": 6,
+  "title": "Boundary mass of the truncation T⌞B_{t₀}: M(∂(T⌞B_{t₀})) ≤ 2M_V(∂T) + 2·liminf_{h↓0} h⁻¹μ_T({t₀ − h < |x| < t₀}) (parent step 9)",
+  "statement": "Let P, m ∈ ℕ, U, V ⊆ ℝ^P and t₀ ∈ ℝ with closedBall(0, t₀) ⊆ V. Let R = (M, θ, ξ) be an IMRep in U representing T ∈ 𝒟_{m+1}(U). Let R′ be an IMRep in U with carrier M ∩ B_{t₀} (B_{t₀} := ball(0, t₀)), multiplicity θ and orientation ξ, representing T′ ∈ 𝒟_{m+1}(U). Then M(∂T′) ≤ 2·M_V(∂T) + 2·liminf_{h→0+} ofReal(h⁻¹)·μ_R({x : t₀ − h < |x| < t₀}). Here M = mass = M_U, M_V = massOn V, μ_R = R.measure, and the liminf is along 𝓝[>]0 in [0, ∞].",
+  "lean_statement": "∀ (P m : ℕ) (U V : Set (Euclid P)) (T T' : GeometricCurrentOn U (m + 1)) (R R' : IMRep U (m + 1)) (t₀ : ℝ), closedBall (0 : Euclid P) t₀ ⊆ V → R.Represents T → R'.Represents T' → R'.carrier = R.carrier ∩ ball (0 : Euclid P) t₀ → R'.mult = R.mult → R'.orient = R.orient → T'.boundary.mass ≤ 2 * T.boundary.massOn V + 2 * liminf (fun h : ℝ => ENNReal.ofReal h⁻¹ * R.measure {x : Euclid P | t₀ - h < ‖x‖ ∧ ‖x‖ < t₀}) (𝓝[>] 0)",
+  "lean_name": "dtc_bc_lc_fd_lz_boundary_mass",
+  "depends_on": [
+    "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.flat_decomposition-a1.localize-a1.cutoff_estimate-a1",
+    "root.compactness_of_minimizing_currents-a1.slicing-a1.level_cutoff-a1",
+    "root.compactness_of_minimizing_currents-a1.slicing-a1.mass_pointwise-a1.cutoff_integral_tendsto-a1",
+    "root.compactness_of_minimizing_currents-a1.im_calculus-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.flat_decomposition-a1.localize-a1.cutoff_estimate-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.compactness_of_minimizing_currents-a1.slicing-a1.level_cutoff-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-slicing-a1-level-cutoff-a1-a1",
+      "result_commit": "81485ceb96999b3c8eabac3c5b058488a2bdc059",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.compactness_of_minimizing_currents-a1.slicing-a1.mass_pointwise-a1.cutoff_integral_tendsto-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-slicing-a1-mass-pointwise-78bf1bcbb0-a1",
+      "result_commit": "b6218183362914502612c8fef9e231776b727aa0",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.compactness_of_minimizing_currents-a1.im_calculus-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-im-calculus-a1-a1",
+      "result_commit": "2af75d6921b01a9c889a45103692ca0af95ea394",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-compari-ba70687ac9-a1"
+}

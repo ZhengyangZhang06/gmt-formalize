@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.constant_planes-a1.projection_reduction-a1.det_expansion-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.constant_planes-a1.projection_reduction-a1",
+  "depth": 6,
+  "title": "n!·β(u) as the sum of β(e_I)·det(⟨e_{I(b)}, u_a⟩) over all index maps I",
+  "statement": "Let P, n ∈ ℕ, let e_0, …, e_{P−1} be an orthonormal basis of ℝ^P (indexed by Fin P), let β be an n-covector on ℝ^P and let u = (u_0, …, u_{n−1}) ∈ (ℝ^P)^n. Then n!·β(u) = Σ_{I : Fin n → Fin P} β(e_{I(0)}, …, e_{I(n−1)}) · det(⟨e_{I(b)}, u_a⟩)_{a,b ∈ Fin n}. The sum runs over all maps I : Fin n → Fin P, and the matrix has entry ⟨e_{I(b)}, u_a⟩ in row a and column b.",
+  "lean_statement": "∀ (P n : ℕ) (e : OrthonormalBasis (Fin P) ℝ (Euclid P)) (β : Covector (Euclid P) n) (u : Fin n → Euclid P), (n.factorial : ℝ) * β u = ∑ I : Fin n → Fin P, β (fun a => e (I a)) * Matrix.det (Matrix.of fun a b => inner ℝ (e (I b)) (u a))",
+  "lean_name": "cbr_ci_cp_pr_factorial_mul_eq_sum_det",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-da1c30e4f5-a1"
+}
