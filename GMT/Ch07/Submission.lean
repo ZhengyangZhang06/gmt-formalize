@@ -70084,28 +70084,6 @@ theorem Submission.cmcs_cutoff_defect_bound : ∀ (P k : ℕ) (U : Set (Euclid P
   -- `|⟨dg ∧ η, ξ⟩| ≤ |dg ∧ η| ≤ |Dg| |η|`
   rw [Real.enorm_eq_ofReal_abs]
   exact ENNReal.ofReal_le_ofReal ((hx _).trans (Submission.cmcs_wedge_norm_le P k _ _))
-/-- `Hⁿ(Q ∩ B_ρ(y)) = ωₙρⁿ` for an `n`-dimensional linear subspace `Q` of `ℝᴾ`, `y ∈ Q` and
-`ρ > 0` (used in the proof of Simon 7.3.3(1), p. 191, for the density of the planes of a
-2-dimensional minimizing cone).  The inclusion `Q → ℝᴾ` is an isometry, so `Q ∩ B_ρ(y)` has the
-measure of the ball `B_ρ(y)` of `Q`; on `Q`, `μHE[n]` is the volume, Haar scaling gives
-`vol(B_ρ(y)) = ρⁿ vol(B_1(0))`, and orthonormal coordinates `Q ≃ₗᵢ ℝⁿ` preserve volume, so
-`vol(B_1(0)) = ωₙ`. -/
-theorem Submission.idtp_tdc_subspace_ball_measure : ∀ (P n : ℕ) (Q : Submodule ℝ (Euclid P)) (y : Euclid P) (ρ : ℝ), Module.finrank ℝ Q = n → y ∈ Q → 0 < ρ → μHE[n] ((Q : Set (Euclid P)) ∩ ball y ρ) = unitBallVolume n * ENNReal.ofReal (ρ ^ n) := by
-  intro P n Q y ρ hn hy hρ
-  subst hn
-  -- the inclusion `Q → ℝᴾ` is an isometry with range `Q`; `B_ρ(y)` pulls back to the ball of `Q`
-  have hball : μHE[Module.finrank ℝ Q] ((Q : Set (Euclid P)) ∩ ball y ρ) =
-      μHE[Module.finrank ℝ Q] (ball (⟨y, hy⟩ : Q) ρ) := by
-    rw [← isometry_subtype_coe.preimage_ball (⟨y, hy⟩ : Q) ρ,
-      isometry_subtype_coe.euclideanHausdorffMeasure_preimage, Subtype.range_coe, Set.inter_comm]
-  -- orthonormal coordinates `Q ≃ₗᵢ ℝⁿ` preserve volume and map `B_1(0)` onto `B_1(0)`
-  have hunit := (stdOrthonormalBasis ℝ Q).measurePreserving_repr.measure_preimage
-    (measurableSet_ball (x := (0 : Euclid (Module.finrank ℝ Q))) (ε := 1)).nullMeasurableSet
-  rw [LinearIsometryEquiv.preimage_ball, map_zero] at hunit
-  -- `μHE[n] = volume` on `Q`, then Haar scaling of balls
-  rw [hball, InnerProductSpace.euclideanHausdorffMeasure_eq_volume,
-    Measure.addHaar_ball_of_pos _ _ hρ, hunit, mul_comm]
-  rfl
 /-- **Translation invariance on smooth tests** (steps 1–3 of the translation argument): if `ν` is
 finite on compact sets and `∫ Dφ(y)[v] dν(y) = 0` for every `φ ∈ C_c^∞(ℝᴾ)`, then
 `∫ φ(v + y) dν(y) = ∫ φ dν` for every `φ ∈ C_c^∞(ℝᴾ)`.  `F(s) = ∫ φ(y + sv) dν(y)` is
@@ -135619,24 +135597,6 @@ theorem Submission.idtp_cttp_planar_support : ∀ (P : ℕ) (S : GeometricCurren
       exact Submodule.add_mem _ ((Submodule.span_singleton_le_iff_mem _ _).2 hpτ ht)
         ((Submodule.span_singleton_le_iff_mem _ _).2 hτ1 hze)
   exact key _ S₀ (by omega) hmin₀ hbd₀ hcone₀ hspt₀ hsupp hdens
-
-/-- **Simon Ch. 6, 2.4–2.8 and 3.2(3)**: if `T = τ(M, θ, ξ)` in the open set `U` and
-`μ_R = θHⁿ⌞M`, then (a) `M_W(T) = μ_R(W)` for every open `W ⊆ U`, (b) a point `x ∈ U` lies in
-`spt T` iff every ball `B_ε(x)` has positive `μ_R`-measure, and (c) `μ_R` does not depend on the
-representation.  (a) combines the upper and lower bounds `M_W(T) ≤ μ_R(W) ≤ M_W(T)`; by (a),
-`spt T = U ∩ spt μ_R`, and the balls about `x` form a neighbourhood basis, which gives (b). -/
-theorem Submission.dimred_im_mass_measure : ∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (R : IMRep U n), IsOpen U → R.Represents T → (∀ W : Set (Euclid P), IsOpen W → W ⊆ U → T.massOn W = R.measure W) ∧ (∀ x ∈ U, (x ∈ T.support ↔ ∀ ε : ℝ, 0 < ε → R.measure (ball x ε) ≠ 0)) ∧ ∀ R' : IMRep U n, R'.Represents T → R'.measure = R.measure := by
-  intro P n U T R hU hR
-  -- (a) `M_W(T) = μ_R(W)` for every open `W`, not only for `W ⊆ U`
-  have hmass : ∀ W : Set (Euclid P), IsOpen W → T.massOn W = R.measure W := fun W hW =>
-    le_antisymm (Submission.dor_ims_massOn_le_measure P n U T R hR W)
-      (Submission.dor_ims_measure_le_massOn P n U T R hU hR W hW)
-  refine ⟨fun W hW _ => hmass W hW, fun x hxU => ?_, fun R' hR' =>
-    Submission.imrep_measure_eq_of_represents_same_current P n U T R' R hU hR' hR⟩
-  -- (b) `spt T = U ∩ spt μ_R`, and `x ∈ spt μ_R` iff `μ_R(B_ε(x)) > 0` for every `ε > 0`
-  rw [Submission.dor_ims_support_of_massOn_eq P n U T R.measure hU hmass, mem_inter_iff,
-    and_iff_right hxU, Metric.nhds_basis_ball.mem_measureSupport]
-  exact forall₂_congr fun ε _ => pos_iff_ne_zero
 
 /-- Finite-mass count in the proof of Simon 7.3.3(1) (pp. 191–192: `spt S₀` lies in finitely
 many 2-planes): a measure `μ` on `ℝᴾ` that is finite on compact sets admits no infinite pairwise
