@@ -77872,4 +77872,78 @@ theorem Submission.density_and_tangent_cones : DensityAndTangentCones := by
     Submission.dtc_cone_of_constant_density (n + k) n C (Θ x) hn hCmin.1 hCbd hCstat hCball,
     Θ x, hxΘ, hCdens⟩
 
+/-- **Simon 7.3.1 (Theorem, p. 187)**: densities and tangent cones of minimizing currents, the
+tangent cone input of 7.3.3 (proof: chapter-07.txt lines 302–364, with (1) on `U \ spt ∂T` and
+(2) at `x ∈ spt T \ spt ∂T`, README erratum 3).  Step 1: for `n = 0`, `T = 0`
+(`dtc_dim_zero_eq_zero`), so `Θ ≡ 0` and (2) is vacuous.  Step 2: for `n > 0`, the restriction
+`T'` of `T` to `U' = U \ spt ∂T` is a minimizing cycle in `U ∩ N` with the masses of `T` on
+subsets of `U'` (`dtc_localize`).  Step 3: by 7.1.2 (`idtp_fons_minimizing_stationary`) the
+varifold of `T'` has locally bounded mean curvature in `U'`, so the monotonicity formula gives the
+density `Θ` of `T'`, upper semicontinuous on `U'` (`dtc_density_usc`); `Θ` is also the density of
+`T`, since `M_{B_ρ(x)}(T') = M_{B_ρ(x)}(T)` once `B_ρ(x) ⊆ U'`.  Step 4: at `x ∈ spt T \ spt ∂T`, a
+subsequence of the blow-ups `η_{x,λⱼ#}T` converges to a minimizing cycle `C` in `ℝ^{n+k}` with
+`μ_{η_{x,λⱼ#}T} → μ_C` (Lemma BC, `idtp_fons_blowUp_compactness`).  Step 5: hence
+`M_{B_ρ(0)}(C) = ωₙρⁿΘ(x)` for every `ρ > 0` and `Θⁿ(μ_C, 0) = Θ(x)` (`dtc_blowUp_density`, book
+(1)–(4)).  Step 6: `C` is stationary in `ℝ^{n+k}` (7.1.2 with `N = U = ℝ^{n+k}`, the identity
+chart), so its constant density ratio makes it a cone (`dtc_cone_of_constant_density`). -/
+theorem Submission.idtp_fons_density_tangent_cones : DensityAndTangentCones := by
+  intro n k ℓ hℓ U N T hU hN hNU hmin hspt
+  rcases Nat.eq_zero_or_pos n with rfl | hn
+  · -- Step 1: `n = 0`, so `T = 0`, `Θ ≡ 0`, and (2) is vacuous
+    obtain ⟨-, hsupp, hmass⟩ := Submission.dtc_dim_zero_eq_zero (0 + k) U (U ∩ N) T hU hmin hspt
+    refine ⟨⟨fun _ => 0, fun x _ => ⟨le_rfl, ?_⟩, upperSemicontinuousOn_const⟩, fun x hx => ?_⟩
+    · simp only [hmass, ENNReal.zero_div, ENNReal.ofReal_zero]
+      exact tendsto_const_nhds
+    · rw [hsupp] at hx
+      exact absurd hx.1 (Set.notMem_empty x)
+  -- Step 2: `T' = T⌞U'`, `U' = U \ spt ∂T`, is a minimizing cycle with the masses of `T`
+  obtain ⟨hU', hmin', hbd', hspt', hmass'⟩ :=
+    Submission.dtc_localize (n + k) n U (U ∩ N) T hU hn hmin
+  have hNU' : (closure N \ N) ∩ (U \ boundarySupport T) = ∅ :=
+    subset_empty_iff.mp ((inter_subset_inter_right _ Set.sdiff_subset).trans hNU.subset)
+  have hminN : IsMinimizingIn (T.restrictDomain (Set.sdiff_subset : U \ boundarySupport T ⊆ U))
+      (N ∩ (U \ boundarySupport T)) := by
+    refine ⟨hmin'.1, fun W S hW hWc hS hSbd hSc hSA => hmin'.2 W S hW hWc hS hSbd hSc ?_⟩
+    exact hSA.trans (inter_subset_inter_left W fun y hy => ⟨hy.2.1, hy.1⟩)
+  -- Step 3: by 7.1.2 the varifold of `T'` has locally bounded mean curvature in `U'`, so the
+  -- density `Θ` of `T'` exists and is upper semicontinuous on `U'`
+  obtain ⟨R', hR'⟩ := hmin'.1
+  have hH := (Submission.idtp_fons_minimizing_stationary n k ℓ hℓ (U \ boundarySupport T) N
+    (T.restrictDomain (Set.sdiff_subset : U \ boundarySupport T ⊆ U)) hU' hN hNU'
+    (hspt'.trans fun y hy => (hspt hy).2) hminN hbd' R' hR').2
+  obtain ⟨Θ, hΘ', hΘusc⟩ :=
+    Submission.dtc_density_usc (n + k) n (U \ boundarySupport T) _ R' hU' hn hR' hH
+  -- `Θ` is the density of `T` on `U'`: `M_{B_ρ(x)}(T') = M_{B_ρ(x)}(T)` once `B_ρ(x) ⊆ U'`
+  have hΘ : ∀ x ∈ U \ boundarySupport T, HasMassDensity T x (Θ x) := by
+    intro x hx
+    obtain ⟨hΘ0, hlim⟩ := hΘ' x hx
+    refine ⟨hΘ0, hlim.congr' ?_⟩
+    obtain ⟨ε, hε, hball⟩ := Metric.isOpen_iff.mp hU' x hx
+    filter_upwards [Ioo_mem_nhdsGT hε] with ρ hρ
+    rw [hmass' _ ((ball_subset_ball hρ.2.le).trans hball)]
+  refine ⟨⟨Θ, hΘ, hΘusc⟩, fun x hx lams hlams hlim => ?_⟩
+  have hxU : x ∈ U := (hspt hx.1).1
+  have hxΘ : HasMassDensity T x (Θ x) := hΘ x ⟨hxU, hx.2⟩
+  -- Step 4: a subsequence of the blow-ups converges to a minimizing cycle `C`, with mass measures
+  obtain ⟨φ, C, hφ, hconv, hmeas, hCmin, hCbd⟩ := Submission.idtp_fons_blowUp_compactness n k ℓ
+    hℓ hn U N T x (Θ x) hU hN hNU hmin hspt hx hxΘ lams hlams hlim
+  -- Step 5: `M_{B_ρ(0)}(C) = ωₙρⁿΘ(x)` for every `ρ > 0`, and `Θⁿ(μ_C, 0) = Θ(x)`
+  obtain ⟨hCball, hCdens⟩ := Submission.dtc_blowUp_density (n + k) n U T C x (Θ x)
+    (fun j => lams (φ j)) (fun j => hlams (φ j)) hU hn hxU hmin.1 hCmin.1
+    (hlim.comp hφ.tendsto_atTop) hxΘ hmeas
+  -- Step 6: `C` is stationary in `ℝ^{n+k}` (7.1.2 with `N = U = ℝ^{n+k}`), hence a cone
+  have huniv : IsEmbeddedSubmanifold 2 (n + k) (univ : Set (Euclid (n + k))) := by
+    intro y _
+    refine ⟨univ, univ, id, isOpen_univ, isOpen_univ, mem_univ y, contDiff_id.contDiffOn,
+      injOn_id _, by simp, fun K _ hK => by simpa using hK, fun z _ => ?_⟩
+    rw [fderiv_id]
+    exact fun a b h => h
+  have hCstat : ∀ R : IMRep (univ : Set (Euclid (n + k))) n, R.Represents C →
+      R.IsStationaryAlong univ := fun R hR =>
+    (Submission.idtp_fons_minimizing_stationary n k k le_rfl univ univ C isOpen_univ huniv
+      (by simp) (subset_univ _) (by simpa using hCmin) hCbd R hR).1
+  exact ⟨φ, C, hφ, hconv, hmeas, hCmin,
+    Submission.dtc_cone_of_constant_density (n + k) n C (Θ x) hn hCmin.1 hCbd hCstat hCball,
+    Θ x, hxΘ, hCdens⟩
+
 end GMT.Ch07
