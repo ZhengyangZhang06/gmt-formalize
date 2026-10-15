@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.flat_convergence-a1.series_current-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.flat_convergence-a1",
+  "depth": 3,
+  "title": "A mass-summable series of currents defines a current (Simon Ch. 6, 7.2: the M-absolutely convergent series)",
+  "statement": "Let P, n ∈ ℕ, let U ⊆ ℝ^P be any set and let X_r ∈ 𝒟_n(U) (r ∈ ℕ) be currents in U with Σ_r M(X_r) < ∞ (sum in [0, ∞]). Then there is a current Y ∈ 𝒟_n(U) such that for every ω ∈ 𝒟ⁿ(U) the real series Σ_r X_r(ω) converges to Y(ω) (HasSum), and M(Y) ≤ Σ_r M(X_r). Conventions: 𝒟_d(U) is the space of d-currents in U (SimonGMT GeometricCurrentOn U d) and 𝒟^d(U) the test d-forms in U (TestFormOn U d: smooth forms on ℝ^P with compact support contained in U); |α| is the Euclidean coefficient norm of a covector (covectorEuclideanNorm); M_G(X) = X.massOn G is the supremum of max(X(ω), 0) over ω ∈ 𝒟^d(U) with tsupport ω ⊆ G and |ω(x)| ≤ 1 for all x (such ω are called admissible for M_G), and M(X) = X.mass = M_U(X) for X ∈ 𝒟_d(U); spt is the support of Simon 6.2.11 (GeometricCurrentOn.support); IM means integer multiplicity (contract IsIntegerMultiplicity), an IMRep R = (M, θ, ξ) is the contract structure IMRep with R.measure = θ·Hⁿ⌞M, R.action(ω) = ∫_M θ⟨ω, ξ⟩ dHⁿ (⟨ω, ξ⟩ := ξ(x)(ω(x))) and R represents X when X(ω) = R.action(ω) for all test forms ω; subtraction of currents is the contract instance Sub; X ⇀ Y is WeaklyConvergesOn.",
+  "lean_statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (X : ℕ → GeometricCurrentOn U n), ∑' r, (X r).mass ≠ ∞ → ∃ Y : GeometricCurrentOn U n, (∀ ω : TestFormOn U n, HasSum (fun r => X r ω) (Y ω)) ∧ Y.mass ≤ ∑' r, (X r).mass",
+  "lean_name": "cmc_fc_series_current",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-flat-convergence-a1-series-current-a1-a1"
+}

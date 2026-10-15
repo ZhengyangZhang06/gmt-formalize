@@ -1,0 +1,103 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "rg -n 'HasMassDensity|InClassO|IsBoundaryOfRegion|IsIntegerMultiplicity|GeometricCurrentOn|import|open ' .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "rg -n 'C1.?Approx|c1.?approx|exists_contDiff.*(meas|volume)|approximation|compactness|de[Gg]iorgi|De.?Giorgi|rectifiable.*area|area.*rectifiable' .lake/packages/simongmt/Poincare/SimonGMT/Chapter02 .lake/packages/simongmt/Poincare/SimonGMT/Chapter03",
+        "rg -n 'codim1_rdo_' .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT .lake/packages/simongmt/Poincare/SimonGMT",
+        "git -C . rev-parse HEAD",
+        "git -C .lake/packages/mathlib rev-parse HEAD",
+        "git -C .lake/packages/simongmt rev-parse HEAD",
+        "git show 9c8432cb0101c6d41f824c0d8191b92a92dbdd80:GMT/Ch07/Submission.lean",
+        "git show fe95347baaed6a2cf2ecde4455e2b32f361fde51:GMT/Ch07/Submission.lean",
+        "git show fae4fd1e831d10c18bba18fe6f9e5711d59b1ac2:GMT/Ch07/Submission.lean",
+        "lean -DautoImplicit=false /tmp/rdo-independent-audit/Types.lean",
+        "lean -DautoImplicit=false /tmp/rdo-independent-audit/Assembly.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/lake-manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/InverseFunctionTheorem/ContDiff.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-de9c9e6c74/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/FinitePerimeter.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/SubmanifoldCover.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/BV.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaFormula.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-03.txt",
+        "/tmp/rdo-independent-audit/Types.lean",
+        "/tmp/rdo-independent-audit/Assembly.lean",
+        "/tmp/rdo-independent-audit/Reuse_unit_orientation_dual.lean",
+        "/tmp/rdo-independent-audit/Reuse_orientation_sign.lean",
+        "/tmp/rdo-independent-audit/Reuse_mass_upper_bound.lean",
+        "/tmp/rdo-independent-audit/Cited_regcomp_atl_upper_density_zero.lean",
+        "/tmp/rdo-independent-audit/Cited_rsd_tendsto_closedBall_density_of_approxTangent.lean",
+        "/tmp/rdo-independent-audit/Cited_rsd_tendsto_ball_density_of_closedBall.lean"
+      ],
+      "conclusion": "The project, mathlib and SimonGMT revisions match the pins. All nine exact propositions elaborate independently without declaring the children; matrix, trace and volume constructions have the intended types. All names are bare identifiers. The six fresh names have no reservation matches; the three proposed reuses have identical accepted frozen types. Fresh compilation of those reuses and the three additional accepted density lemmas reports only propext, Classical.choice and Quot.sound. The supplied analytic arguments were checked against the definitions and [Simon's text, Chapter 3 §§1–4](https://web.stanford.edu/class/math285/ts-gmt.pdf). The library does not supply the full De Giorgi or rectifiable structure/area theorems; their cited mathematical arguments remain formalization work. The split is appropriate and acyclic. The assembly compiles to the exact selected parent contract using precisely four proposed children and the two existing parent prerequisites, without invoking the parent or an ancestor theorem."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "density_pos_support",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and type agree. Membership in the zero region makes the density ratio eventually zero; uniqueness of ENNReal limits contradicts positive density. Openness of U is unnecessary."
+    },
+    {
+      "key": "support_mass_pos",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The stronger open-neighbourhood statement is justified by shrinking inside U ∩ W. Compact support bounds the coefficient norm, and the two rescaling cases establish positive mass without assuming norm definiteness."
+    },
+    {
+      "key": "rectifiable_density_one",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The C¹ cover, finite-piece blow-up calculation and upper-density estimates establish approximate tangents on a common conull set. The checked accepted density lemmas then give exactly the stated open-ball ENNReal limit. No parent or De Giorgi conclusion is used."
+    },
+    {
+      "key": "unit_orientation_dual",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Exact accepted-type reuse with clean axiom verification. The coordinate expansion and Cauchy–Binet calculation prove all three conclusions, including degree zero."
+    },
+    {
+      "key": "orientation_sign",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Exact accepted-type reuse with clean axiom verification. The orthogonal change-of-basis determinant proves equality up to sign, with the zero-degree case covered."
+    },
+    {
+      "key": "mass_upper_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Exact accepted-type reuse with clean axiom verification. Nonnegative multiplicity, the orientation bound and support containment control each admissible evaluation. The proof correctly handles the totalized Bochner integral and arbitrary W."
+    },
+    {
+      "key": "graph_chart",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type matches every stated chart property. Properness supplies the chart homeomorphism; the inverse function theorem supplies the graph; dimension and connectedness establish orientation transport. Matrix.of gives the intended Gram matrix. Both declared dependencies are used non-circularly."
+    },
+    {
+      "key": "de_giorgi",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The functional extension, perimeter blow-up, measure comparison and adapted cone-cover argument establish the stated representation and normal tangent planes. Scalar measure convergence follows from vector convergence and the vanishing normal defect. Rectifiable density is used after rectifiability to identify multiplicity one, so the dependency is non-circular."
+    },
+    {
+      "key": "local_unit_rep",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The projected test forms establish locally finite perimeter before De Giorgi is invoked. The graph and rectifiable area formulas then yield the finite Borel multiplicity-one representation, including measurability and unit orientations. Its exact conclusion supplies the representation needed by the selected parent's assembly."
+    }
+  ],
+  "required_changes": []
+}

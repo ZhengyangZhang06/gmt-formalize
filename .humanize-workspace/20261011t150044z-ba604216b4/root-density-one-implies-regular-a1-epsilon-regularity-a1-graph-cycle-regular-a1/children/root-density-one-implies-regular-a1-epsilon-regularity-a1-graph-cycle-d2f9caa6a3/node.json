@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.graph_cycle_regular-a1.smooth_to_c1_tests-a1",
+  "parent_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.graph_cycle_regular-a1",
+  "depth": 4,
+  "title": "Zero weak derivatives against smooth tests extend to C¹ tests (mollification)",
+  "statement": "Let n ∈ ℕ, D ⊆ ℝⁿ open, G : ℝⁿ → ℝ locally integrable on D (LocallyIntegrableOn G D), and suppose ∫_D G(v)·∂ⱼa(v) dv = 0 for every a ∈ C^∞(ℝⁿ) with compact support and tsupport a ⊆ D and every j ∈ Fin n (∂ⱼa(v) := Da(v)eⱼ). Then ∫_{ℝⁿ} G(x)·∂ᵢφ(x) dx = 0 for every C¹ function φ : ℝⁿ → ℝ with compact support and tsupport φ ⊆ D and every i ∈ Fin n (eᵢ = EuclideanSpace.basisFun (Fin n) ℝ i).",
+  "lean_statement": "∀ (n : ℕ) (D : Set (Euclid n)) (G : Euclid n → ℝ), IsOpen D → LocallyIntegrableOn G D volume → (∀ a : Euclid n → ℝ, ContDiff ℝ (⊤ : ℕ∞) a → HasCompactSupport a → tsupport a ⊆ D → ∀ j : Fin n, ∫ v in D, G v * fderiv ℝ a v (EuclideanSpace.single j (1 : ℝ)) = 0) → ∀ φ : Euclid n → ℝ, ContDiff ℝ 1 φ → HasCompactSupport φ → tsupport φ ⊆ D → ∀ i : Fin n, ∫ x, G x * fderiv ℝ φ x ((EuclideanSpace.basisFun (Fin n) ℝ) i) = 0",
+  "lean_name": "dgcr_smooth_tests_to_C1_tests",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-graph-cycle-d2f9caa6a3-a1"
+}

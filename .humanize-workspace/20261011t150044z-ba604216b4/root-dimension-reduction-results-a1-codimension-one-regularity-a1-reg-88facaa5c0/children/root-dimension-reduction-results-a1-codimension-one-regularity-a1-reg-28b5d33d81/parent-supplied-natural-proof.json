@@ -1,0 +1,73 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-88facaa5c0/{parent-child-handoff.json,decomposition-v1.json,decomposition-audit-v1.json,decomposition-review-receipt-v1.json,parent-supplied-plan.md}",
+        "cat local-references/123e8435b4a2469b/manifest.json; sha256sum local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean; git show 5900180377298da556c85bb52c494b4e691baed4:GMT/Ch07/Submission.lean | sha256sum",
+        "rg -n '^theorem lintegral_pow_le_pow_lintegral_fderiv |irreducible_def lintegralPowLePowLIntegralFDerivConst' local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/FunctionalSpaces/SobolevInequality.lean",
+        "rg -n 'theorem ae_convolution_tendsto_right_of_locallyIntegrable|theorem normed_neg|theorem integral_normed|theorem nonneg_normed|theorem contDiff_normed|theorem hasCompactSupport_normed' local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/BumpFunction/{Convolution,Normed}.lean",
+        "rg -n 'hasFDerivAt_convolution_left|contDiff_convolution_left|HasCompactSupport.convolution|convolution_eq_swap|ConvolutionExistsAt.integrable_swap|trace_smulRight|theorem lintegral_liminf_le|theorem integral_integral_swap|theorem Measurable.inv|theorem integrable_indicator_iff' local-references/123e8435b4a2469b/mathlib/Mathlib",
+        "rg -l 'SobolevInequality|BumpFunction.Convolution' local-references/123e8435b4a2469b/project/GMT/Ch07 (no match)",
+        "lake env lean /tmp/sp-split-v2/Avail2.lean (#check of 46 candidate declarations after import GMT.Ch07.Submission)",
+        "python3 -I scope.py: verifier gmt-compare.py contract_scope(Contract.lean, 'GMT.Ch07.main_theorem')",
+        "grep/sed /runtime/flows/gmt-claude-1e66f8f4bfb6/_recursive_lean/{leaf_verification.py check_source_delta, parent_verification.py check_parent_git_delta, runtime.py _decompose/_machine_git_check/_existing_lean_name_problem, prompts.py DECOMPOSE/SPECULATIVE_PARENT_TASK/RLCR_LEAN_TASK, lean_contract.py}",
+        "python3 -I leafcheck.py and leafneg.py (runtime check_source_delta on each child inserted into the base Submission; negative control adding an import)",
+        "git log --all -S 'import Mathlib.Analysis' -- GMT/Ch07/Submission.lean; git show -s 8abce3204 bff81d31e 58a0bf378; lean-audit-v1.json review_method of dtc_mass_eq_measure and dtc_isIntegerMultiplicity_sub",
+        "python3 scans of dag.json (995 nodes) for codim1_rdo_dg_sp_* names and identical types; git log --all -S codim1_rdo_dg_sp_; grep -r codim1_rdo_dg_sp_ .lake/packages/simongmt",
+        "lake env lean -DautoImplicit=false /tmp/sp-split-v2/{Challenges,Full,FullNode,ChildrenOnly,ParentFull}.lean /tmp/sp-split-v2/final/{FinalChallenges,FinalNode}.lean",
+        "lake env lean /tmp/sp-split-v2/hashcheck/{Orig,SubX}.lean (hashes of every GMT.Ch07 constant with and without the two parent imports)",
+        "sed -n 686,714p book/chapter-03.txt; sed -n 540,600p book/chapter-02.txt"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/FunctionalSpaces/SobolevInequality.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/BumpFunction/Convolution.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/BumpFunction/Normed.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/Convolution.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Convolution.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Trace.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Add.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Prod.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Group/Arithmetic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-88facaa5c0/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-88facaa5c0/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-88facaa5c0/decomposition-audit-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-mass-eq-measure-a1/lean-audit-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-im-sub-a1/lean-audit-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+        "/runtime/flows/gmt-claude-1e66f8f4bfb6/_recursive_lean/leaf_verification.py",
+        "/runtime/flows/gmt-claude-1e66f8f4bfb6/_recursive_lean/parent_verification.py",
+        "/runtime/flows/gmt-claude-1e66f8f4bfb6/_recursive_lean/runtime.py",
+        "/runtime/flows/gmt-claude-1e66f8f4bfb6/_recursive_lean/prompts.py",
+        "/runtime/flows/gmt-claude-1e66f8f4bfb6/_recursive_lean/lean_contract.py",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-02.txt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-03.txt",
+        "/tmp/sp-split-v2/Avail2.lean",
+        "/tmp/sp-split-v2/ChildrenOnly.lean",
+        "/tmp/sp-split-v2/ParentFull.lean",
+        "/tmp/sp-split-v2/final/FinalChallenges.lean",
+        "/tmp/sp-split-v2/final/FinalNode.lean",
+        "/tmp/sp-split-v2/final/subproblems.json",
+        "/tmp/sp-split-v2/hashcheck/Orig.lean",
+        "/tmp/sp-split-v2/hashcheck/SubX.lean"
+      ],
+      "conclusion": "Pins. The snapshot manifest pins project b4d606db and Mathlib 25730c7c, the same as the workspace. The snapshot Contract.lean, the workspace Contract.lean and Submission.lean, and the Submission.lean at the children's proof base 590018037 are byte-identical (sha256 e4148e7f…). None of them imports SobolevInequality or BumpFunction.Convolution.\n\nLibrary reachability. The snapshot Mathlib contains lintegral_pow_le_pow_lintegral_fderiv (SobolevInequality.lean:371), lintegralPowLePowLIntegralFDerivConst (:358), ae_convolution_tendsto_right_of_locallyIntegrable (BumpFunction/Convolution.lean:103) and normed_neg/integral_normed/hasCompactSupport_normed (Normed.lean:49,68,79). All are absent from the GMT.Ch07.Submission import closure. In the closure: hasFDerivAt_convolution_left (ContDiff/Convolution.lean:91), contDiff_convolution_left (:427), HasCompactSupport.convolution (Convolution.lean:568), convolution_eq_swap (:693), trace_smulRight (Trace.lean:272), lintegral_liminf_le, integral_integral_swap, Measurable.inv and integrable_indicator_iff.\n\nRuntime rules. Leaves get only a single-theorem insertion (leaf_verification.check_source_delta); simulated, it rejects an added import. Non-leaves may add imports (parent_verification.check_parent_git_delta; accepted machine-nonleaf precedents bff81d31e and 77fcc7d4e). Depth-6 children are always leaves. Hence v1's import-dependent gns_real and bv_sobolev were unimplementable, and the new split keeps all five children import-free, with the Mathlib GNS and normed-bump calls in the parent's own proof.\n\nLean checks. Adding the two parent imports leaves the type/value hashes of all 103 GMT.Ch07 constants unchanged. All five child types elaborate in the comparator scope. Complete proofs of the five children compile with only `import GMT.Ch07.Submission`, pass check_source_delta and the NodeSolution `exact Submission.X`, and use only propext/Classical.choice/Quot.sound. The parent's exact frozen type is proved from them, with the two imports, using the same axioms.\n\nNames and sources. The five names are fresh; no identical accepted type exists, so nothing is reused. The book citations checked are chapter-03.txt 689–712 (Sobolev step of 4.3) and chapter-02.txt 543–596 (Lemma 2.5, formula (4) at line 568)."
+    }
+  ],
+  "proof": "Source. Parent proof step 0. Mathlib's GNS inequality (Mathlib/Analysis/FunctionalSpaces/SobolevInequality.lean, `lintegral_pow_le_pow_lintegral_fderiv`) replaces Simon's citation of [GT01] in the Sobolev step of Ch. 3, 4.3 (chapter-03.txt lines 689–712). Its conclusion has exactly the shape of hypothesis (H). The parent supplies (H) from that Mathlib theorem. This child performs the parent's 'routine bookkeeping between lintegral and the real integral' and the choice c := c₀ + 1 > 0. It uses no import beyond the contract's.\n\nFix P, p > 0, C ≥ 0 and (H). Write L := L^P.\n\n1. Constant. Put c := C^{1/p} + 1, where C^{1/p} is the real power of the real number C ≥ 0. Then c ≥ 1 > 0. It depends only on C and p. Now fix a C¹ function w : R^P → R with compact support, and set K := tsupport w, a compact set.\n\n2. The derivative term. w is C¹, so w and Dw are continuous. Dw vanishes outside K: w ≡ 0 on the open set R^P \\ K, so Dw = 0 there (HasCompactSupport.fderiv). Thus Dw is continuous with compact support, hence L-integrable. In particular A := ∫⁻ ‖Dw‖ₑ dL < ∞, and ∫ |Dw| dL = A.toReal (integral_norm_eq_lintegral_enorm; Dw is a.e. strongly measurable because it is continuous).\n\n3. The function term. Since p > 0, t ↦ t^p is continuous on [0, ∞). So x ↦ |w(x)|^p is continuous and nonnegative, hence a.e. strongly measurable. Therefore ∫ |w|^p dL = (∫⁻ ofReal(|w|^p) dL).toReal (integral_eq_lintegral_of_nonneg_ae). For every x, ofReal(|w(x)|^p) = ofReal(|w(x)|)^p = ‖w(x)‖ₑ^p, by ENNReal.ofReal_rpow_of_nonneg (|w(x)| ≥ 0, p ≥ 0) and ‖w(x)‖ₑ = ofReal ‖w(x)‖ = ofReal |w(x)|. Hence ∫ |w|^p dL = (∫⁻ ‖w‖ₑ^p dL).toReal.\n\n4. Passing to real numbers. The right side C · A^p of (H) for w is finite: C is a finite constant, and A^p < ∞ because A < ∞ and p ≥ 0. ENNReal.toReal is monotone when the larger value is finite (ENNReal.toReal_mono). So (H) gives (∫⁻ ‖w‖ₑ^p dL).toReal ≤ (C · A^p).toReal = C · (A.toReal)^p (ENNReal.toReal_mul, ENNReal.toReal_rpow, ENNReal.coe_toReal). By steps 2 and 3, ∫ |w|^p dL ≤ C (∫ |Dw| dL)^p.\n\n5. Taking the 1/p power. Put I := ∫ |Dw| dL ≥ 0. Both sides of step 4 are ≥ 0, and t ↦ t^{1/p} is monotone on [0, ∞) since 1/p > 0. Hence (∫ |w|^p dL)^{1/p} ≤ (C I^p)^{1/p} = C^{1/p} (I^p)^{1/p} = C^{1/p} I. Here Real.mul_rpow applies to C ≥ 0 and I^p ≥ 0, and Real.rpow_rpow_inv applies to I ≥ 0 and p ≠ 0. Since I ≥ 0, C^{1/p} I ≤ (C^{1/p} + 1) I = c I. This is (∫ |w|^p dL)^{1/p} ≤ c ∫ |Dw| dL. ∎",
+  "key_steps": [
+    "Choose c := C^{1/p} + 1 > 0.",
+    "For C¹ compactly supported w, Dw is continuous with compact support: ∫⁻‖Dw‖ₑ < ∞ and ∫|Dw| = (∫⁻‖Dw‖ₑ).toReal.",
+    "|w|^p is continuous and nonnegative, so ∫|w|^p = (∫⁻‖w‖ₑ^p).toReal.",
+    "Take toReal of (H), whose right side is finite: ∫|w|^p ≤ C(∫|Dw|)^p.",
+    "Take the 1/p power: (∫|w|^p)^{1/p} ≤ C^{1/p}∫|Dw| ≤ c∫|Dw|."
+  ],
+  "unresolved": [],
+  "validation_notes": []
+}
