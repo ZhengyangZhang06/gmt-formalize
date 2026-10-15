@@ -900,6 +900,62 @@ theorem Submission.dtc_point_current : ∀ (P n : ℕ) (U : Set (Euclid P)) (p :
       show ζ _ = 0
       rw [image_eq_zero_of_notMem_tsupport hp, map_zero]
 
+/-- **Simon 6.2.11** (a current vanishes off its support).  If `ω ∈ 𝒟ⁿ(U)` and
+`spt ω ∩ spt S = ∅`, then `S(ω) = 0`.  The compact set `K = spt ω ⊆ U` lies in the zero region of
+`S`, so finitely many open `W₁, …, Wₘ` on which `S` vanishes cover `K`.  A smooth partition of
+unity `ψ₁, …, ψₘ` on `K` subordinate to them splits `ω = Σᵢ ψᵢω` into test forms with
+`spt (ψᵢω) ⊆ Wᵢ`, each annihilated by `S`. -/
+theorem Submission.dtc_vanish_off_support : ∀ (P n : ℕ) (U : Set (Euclid P)) (S : GeometricCurrentOn U n) (ω : TestFormOn U n), Disjoint (tsupport (ω : DifferentialForm (Euclid P) n)) S.support → S ω = 0 := by
+  intro P n U S ω hdisj
+  classical
+  -- `K = spt ω` is a compact subset of `U`
+  set K := tsupport (ω : DifferentialForm (Euclid P) n)
+  have hKc : IsCompact K := ω.property.1.2
+  have hKU : K ⊆ U := ω.property.2
+  -- `K` lies in the zero region `⋃₀ 𝒲`, hence in finitely many members of `𝒲`
+  let 𝒲 : Set (Set (Euclid P)) :=
+    {W | IsOpen W ∧ IsCompact (closure W) ∧ closure W ⊆ U ∧ S.VanishesOn W}
+  have hKZ : K ⊆ ⋃ W : 𝒲, (W : Set (Euclid P)) := by
+    intro x hx
+    have hxZ : x ∈ S.zeroRegion := by
+      by_contra hxZ
+      exact Set.disjoint_left.mp hdisj hx ⟨hKU hx, hxZ⟩
+    rwa [GeometricCurrentOn.zeroRegion, Set.sUnion_eq_iUnion] at hxZ
+  obtain ⟨t, ht⟩ := hKc.elim_finite_subcover (fun W : 𝒲 => (W : Set (Euclid P)))
+    (fun W => W.2.1) hKZ
+  let Wt : t → Set (Euclid P) := fun i => ((i : 𝒲) : Set (Euclid P))
+  have hKt : K ⊆ ⋃ i, Wt i := by
+    intro x hx
+    obtain ⟨W, hW, hxW⟩ := Set.mem_iUnion₂.mp (ht hx)
+    exact Set.mem_iUnion.mpr ⟨⟨W, hW⟩, hxW⟩
+  -- a smooth partition of unity `ψᵢ` on `K` with `spt ψᵢ ⊆ Wᵢ`
+  obtain ⟨ψ, hψ⟩ := SmoothPartitionOfUnity.exists_isSubordinate
+    (modelWithCornersSelf ℝ (Euclid P)) hKc.isClosed Wt (fun i => (i : 𝒲).2.1) hKt
+  -- each `ψᵢω` is a test form in `U` supported in `Wᵢ`
+  have hmem : ∀ i, (fun x => ψ i x • (ω : DifferentialForm (Euclid P) n) x) ∈ TestFormOn U n ∧
+      tsupport (fun x => ψ i x • (ω : DifferentialForm (Euclid P) n) x) ⊆ Wt i := by
+    intro i
+    have hsK : tsupport (fun x => ψ i x • (ω : DifferentialForm (Euclid P) n) x) ⊆ K :=
+      tsupport_smul_subset_right _ _
+    refine ⟨⟨⟨?_, ?_⟩, hsK.trans hKU⟩, (tsupport_smul_subset_left _ _).trans (hψ i)⟩
+    · exact (contMDiff_iff_contDiff.mp (ψ i).contMDiff).smul ω.property.1.1
+    · exact IsCompact.of_isClosed_subset hKc (isClosed_tsupport _) hsK
+  let ωi : t → TestFormOn U n := fun i => ⟨_, (hmem i).1⟩
+  -- `ω = Σᵢ ψᵢω`, since `Σᵢ ψᵢ = 1` on `K` and `ω = 0` off `K`
+  have hsum : ω = ∑ i, ωi i := by
+    apply Subtype.ext
+    funext x
+    rw [Submodule.coe_sum, Finset.sum_apply]
+    change (ω : DifferentialForm (Euclid P) n) x =
+      ∑ i, ψ i x • (ω : DifferentialForm (Euclid P) n) x
+    by_cases hx : x ∈ K
+    · rw [← Finset.sum_smul, ← finsum_eq_sum_of_fintype, ψ.sum_eq_one hx, one_smul]
+    · have h0 : (ω : DifferentialForm (Euclid P) n) x = 0 := image_eq_zero_of_notMem_tsupport hx
+      simp [h0]
+  -- linearity: `S(ω) = Σᵢ S(ψᵢω) = 0`
+  change S.toCurrent ω = 0
+  rw [hsum, map_sum]
+  exact Finset.sum_eq_zero fun i _ => (i : 𝒲).2.2.2.2 (ωi i) (hmem i).2
 /-- Mass agrees away from `spt (S − T)`.  If `spt (S − T) ⊆ K` and `G ∩ K = ∅`, then
 `M_G(S) = M_G(T)`.  Both masses are suprema over the same admissible forms `ω ∈ 𝒟ⁿ(U)` with
 `spt ω ⊆ G` and `|ω| ≤ 1`; for each of them `spt ω` misses `spt (S − T) ⊆ K`, so
@@ -5475,62 +5531,6 @@ theorem Submission.cmc_fc_cs_massOn_sub_le : ∀ (P n : ℕ) (U G : Set (Euclid 
   calc ENNReal.ofReal ((A - B) ω) = ENNReal.ofReal (A ω + B (-ω)) := by rw [hsplit]
     _ ≤ ENNReal.ofReal (A ω) + ENNReal.ofReal (B (-ω)) := ENNReal.ofReal_add_le
     _ ≤ A.massOn G + B.massOn G := add_le_add (A.le_massOn hω) (B.le_massOn hneg)
-/-- **Simon 6.2.11** (a current vanishes off its support).  If `ω ∈ 𝒟ⁿ(U)` and
-`spt ω ∩ spt S = ∅`, then `S(ω) = 0`.  The compact set `K = spt ω ⊆ U` lies in the zero region of
-`S`, so finitely many open `W₁, …, Wₘ` on which `S` vanishes cover `K`.  A smooth partition of
-unity `ψ₁, …, ψₘ` on `K` subordinate to them splits `ω = Σᵢ ψᵢω` into test forms with
-`spt (ψᵢω) ⊆ Wᵢ`, each annihilated by `S`. -/
-theorem Submission.dtc_vanish_off_support : ∀ (P n : ℕ) (U : Set (Euclid P)) (S : GeometricCurrentOn U n) (ω : TestFormOn U n), Disjoint (tsupport (ω : DifferentialForm (Euclid P) n)) S.support → S ω = 0 := by
-  intro P n U S ω hdisj
-  classical
-  -- `K = spt ω` is a compact subset of `U`
-  set K := tsupport (ω : DifferentialForm (Euclid P) n)
-  have hKc : IsCompact K := ω.property.1.2
-  have hKU : K ⊆ U := ω.property.2
-  -- `K` lies in the zero region `⋃₀ 𝒲`, hence in finitely many members of `𝒲`
-  let 𝒲 : Set (Set (Euclid P)) :=
-    {W | IsOpen W ∧ IsCompact (closure W) ∧ closure W ⊆ U ∧ S.VanishesOn W}
-  have hKZ : K ⊆ ⋃ W : 𝒲, (W : Set (Euclid P)) := by
-    intro x hx
-    have hxZ : x ∈ S.zeroRegion := by
-      by_contra hxZ
-      exact Set.disjoint_left.mp hdisj hx ⟨hKU hx, hxZ⟩
-    rwa [GeometricCurrentOn.zeroRegion, Set.sUnion_eq_iUnion] at hxZ
-  obtain ⟨t, ht⟩ := hKc.elim_finite_subcover (fun W : 𝒲 => (W : Set (Euclid P)))
-    (fun W => W.2.1) hKZ
-  let Wt : t → Set (Euclid P) := fun i => ((i : 𝒲) : Set (Euclid P))
-  have hKt : K ⊆ ⋃ i, Wt i := by
-    intro x hx
-    obtain ⟨W, hW, hxW⟩ := Set.mem_iUnion₂.mp (ht hx)
-    exact Set.mem_iUnion.mpr ⟨⟨W, hW⟩, hxW⟩
-  -- a smooth partition of unity `ψᵢ` on `K` with `spt ψᵢ ⊆ Wᵢ`
-  obtain ⟨ψ, hψ⟩ := SmoothPartitionOfUnity.exists_isSubordinate
-    (modelWithCornersSelf ℝ (Euclid P)) hKc.isClosed Wt (fun i => (i : 𝒲).2.1) hKt
-  -- each `ψᵢω` is a test form in `U` supported in `Wᵢ`
-  have hmem : ∀ i, (fun x => ψ i x • (ω : DifferentialForm (Euclid P) n) x) ∈ TestFormOn U n ∧
-      tsupport (fun x => ψ i x • (ω : DifferentialForm (Euclid P) n) x) ⊆ Wt i := by
-    intro i
-    have hsK : tsupport (fun x => ψ i x • (ω : DifferentialForm (Euclid P) n) x) ⊆ K :=
-      tsupport_smul_subset_right _ _
-    refine ⟨⟨⟨?_, ?_⟩, hsK.trans hKU⟩, (tsupport_smul_subset_left _ _).trans (hψ i)⟩
-    · exact (contMDiff_iff_contDiff.mp (ψ i).contMDiff).smul ω.property.1.1
-    · exact IsCompact.of_isClosed_subset hKc (isClosed_tsupport _) hsK
-  let ωi : t → TestFormOn U n := fun i => ⟨_, (hmem i).1⟩
-  -- `ω = Σᵢ ψᵢω`, since `Σᵢ ψᵢ = 1` on `K` and `ω = 0` off `K`
-  have hsum : ω = ∑ i, ωi i := by
-    apply Subtype.ext
-    funext x
-    rw [Submodule.coe_sum, Finset.sum_apply]
-    change (ω : DifferentialForm (Euclid P) n) x =
-      ∑ i, ψ i x • (ω : DifferentialForm (Euclid P) n) x
-    by_cases hx : x ∈ K
-    · rw [← Finset.sum_smul, ← finsum_eq_sum_of_fintype, ψ.sum_eq_one hx, one_smul]
-    · have h0 : (ω : DifferentialForm (Euclid P) n) x = 0 := image_eq_zero_of_notMem_tsupport hx
-      simp [h0]
-  -- linearity: `S(ω) = Σᵢ S(ψᵢω) = 0`
-  change S.toCurrent ω = 0
-  rw [hsum, map_sum]
-  exact Finset.sum_eq_zero fun i _ => (i : 𝒲).2.2.2.2 (ωi i) (hmem i).2
 /-- **Simon 6.1.15, 6.3.4–3.5** (Euclidean coefficient norm versus Gram determinants):
 (1) `|α(v₁, …, vₙ)| ≤ |α|_E · det(⟨vᵢ, vⱼ⟩)^{1/2}` for every `n`-covector `α` on `ℝᴾ`;
 (2) every orthonormal `τ₁, …, τₙ` admits an `n`-covector `α` with `|α|_E ≤ 1` and `α(τ) = 1`.
@@ -36451,6 +36451,188 @@ theorem Submission.cmr_null_of_div_bound : ∀ (n : ℕ) (X : Type) [MeasurableS
     ha0 ha1 (hdir a ha hac fun y => abs_le.2 ⟨by linarith [ha0 y], ha1 y⟩) hr
   linarith
 
+/-- **Divergence form of `b · (div g) ∘ p_I` against `θ = dx^I`** (the projection step
+`p_I^#((div g) dy) = d(p_I^#γ)` of the mass representation used for Simon 7.2.4).  Let
+`p_I x = (x_{I k})_k`, `ι y = ∑ₖ y_k e_{I k}` and `G = ι ∘ g ∘ p_I`, so that
+`(DG(x) v)_{I k} = (Dg(p_I x)(p_I v))_k`.  Put `η = b • θ.curryLeft ∘ G` and
+`ζ = dη − (b · tr Dg ∘ p_I) • θ`.  The formula for `dη` (`cmr_df_extDeriv_smul_curryLeft`) and
+Jacobi's trace identity in coordinates (`cmr_df_cons_sum_trace`) give
+`ζ(x)(w) = ∑ᵢ (−1)ⁱ Db(x)(wᵢ) θ(G x, w without wᵢ)`.  Hence `‖η‖ ≤ sup|b| ‖θ‖ ‖ι‖` and
+`‖ζ‖ ≤ (m + 1) sup‖Db‖ ‖θ‖ ‖ι‖`, both forms vanish off `tsupport b`, and part (iii) of
+`rsd_mw_tfa_norm_props` turns these operator-norm bounds into a coefficient-norm bound `K`
+that does not depend on `g`. -/
+theorem Submission.cmr_coordinate_divergence_form : ∀ (P m : ℕ) (I : Fin (m + 1) → Fin P) (θ : Covector (Euclid P) (m + 1)) (b : Euclid P → ℝ), StrictMono I → (∀ v : Fin (m + 1) → Euclid P, θ v = Matrix.det (Matrix.of fun k j => v j (I k))) → ContDiff ℝ (⊤ : ℕ∞) b → HasCompactSupport b → ∃ K : ℝ, ∀ g : Euclid (m + 1) → Euclid (m + 1), ContDiff ℝ (⊤ : ℕ∞) g → (∀ y, ‖g y‖ ≤ 1) → ∃ (η : DifferentialForm (Euclid P) m) (ζ : DifferentialForm (Euclid P) (m + 1)), IsTestForm η ∧ IsTestForm ζ ∧ tsupport η ⊆ tsupport b ∧ tsupport ζ ⊆ tsupport b ∧ (∀ x, covectorEuclideanNorm (η x) ≤ K) ∧ (∀ x, covectorEuclideanNorm (ζ x) ≤ K) ∧ ∀ x, exteriorDerivative η x = (b x * LinearMap.trace ℝ (Euclid (m + 1)) (fderiv ℝ g (WithLp.toLp 2 (fun k => x (I k)))).toLinearMap) • θ + ζ x := by
+  intro P m I θ b hI hθ hb hbc
+  -- the coordinate projection `p = p_I` and the coordinate embedding `ι`, `(ι y)_{I k} = y_k`
+  let p : Euclid P →L[ℝ] Euclid (m + 1) := LinearMap.toContinuousLinearMap
+    { toFun := fun x => WithLp.toLp 2 (fun k => x (I k))
+      map_add' := fun _ _ => rfl
+      map_smul' := fun _ _ => rfl }
+  let ι : Euclid (m + 1) →L[ℝ] Euclid P := LinearMap.toContinuousLinearMap
+    { toFun := fun y => WithLp.toLp 2 (fun j => ∑ k, if I k = j then y k else 0)
+      map_add' := fun y z => by
+        ext j
+        simp only [PiLp.add_apply, ← Finset.sum_add_distrib]
+        exact Finset.sum_congr rfl fun k _ => by split_ifs <;> simp
+      map_smul' := fun c y => by
+        ext j
+        simp only [PiLp.smul_apply, smul_eq_mul, RingHom.id_apply, Finset.mul_sum]
+        exact Finset.sum_congr rfl fun k _ => by split_ifs <;> simp }
+  have hι : ∀ y k, ι y (I k) = y k := by
+    intro y k
+    change (∑ k', if I k' = I k then y k' else 0) = y k
+    simp [hI.injective.eq_iff]
+  -- the constant `K`: (F1) from `rsd_mw_tfa_norm_props` (iii), `β₀ = sup |b|`, `β₁ = sup ‖Db‖`
+  obtain ⟨Cm, hCm0, hCm⟩ := (Submission.rsd_mw_tfa_norm_props P m).2.2.1
+  obtain ⟨Cn, hCn0, hCn⟩ := (Submission.rsd_mw_tfa_norm_props P (m + 1)).2.2.1
+  obtain ⟨β₀, hβ₀⟩ := hb.continuous.bounded_above_of_compact_support hbc
+  obtain ⟨β₁, hβ₁⟩ :=
+    (hb.continuous_fderiv (by simp)).bounded_above_of_compact_support (hbc.fderiv ℝ)
+  have hβ₀0 : 0 ≤ β₀ := (norm_nonneg _).trans (hβ₀ 0)
+  have hβ₁0 : 0 ≤ β₁ := (norm_nonneg _).trans (hβ₁ 0)
+  refine ⟨Cm * (β₀ * (‖θ‖ * ‖ι‖)) + Cn * (((m : ℝ) + 1) * (β₁ * (‖θ‖ * ‖ι‖))), ?_⟩
+  intro g hg hg1
+  -- the vector field `G = ι ∘ g ∘ p`: smooth, `‖G‖ ≤ ‖ι‖`, `DG(x) = ι ∘ Dg(p x) ∘ p`
+  obtain ⟨G, hG⟩ : ∃ G : Euclid P → Euclid P, G = fun x => ι (g (p x)) := ⟨_, rfl⟩
+  have hGs : ContDiff ℝ (⊤ : ℕ∞) G := hG ▸ ι.contDiff.comp (hg.comp p.contDiff)
+  have hGb : ∀ x, ‖G x‖ ≤ ‖ι‖ := by
+    intro x
+    rw [hG]
+    calc ‖ι (g (p x))‖ ≤ ‖ι‖ * ‖g (p x)‖ := ι.le_opNorm _
+      _ ≤ ‖ι‖ * 1 := mul_le_mul_of_nonneg_left (hg1 _) (norm_nonneg _)
+      _ = ‖ι‖ := mul_one _
+  have hDG : ∀ x v, fderiv ℝ G x v = ι (fderiv ℝ g (p x) (p v)) := by
+    intro x v
+    have hgd : DifferentiableAt ℝ g (p x) := hg.differentiable (by simp) _
+    have h : HasFDerivAt G (ι.comp ((fderiv ℝ g (p x)).comp p)) x := by
+      rw [hG]
+      exact ι.hasFDerivAt.comp x (hgd.hasFDerivAt.comp x p.hasFDerivAt)
+    rw [h.fderiv]
+    rfl
+  -- `(DG(x) v)_{I k} = (Dg(p x)(p v))_k`, the hypothesis of `cmr_df_cons_sum_trace`
+  have hL : ∀ x (v : Euclid P) (k : Fin (m + 1)), fderiv ℝ G x v (I k) =
+      (fderiv ℝ g (WithLp.toLp 2 (fun k => x (I k)))).toLinearMap
+        (WithLp.toLp 2 (fun k' => v (I k'))) k := by
+    intro x v k
+    rw [hDG, hι]
+    rfl
+  -- the forms `η = b • θ.curryLeft ∘ G` and `ζ = dη − (b · tr Dg ∘ p) • θ`
+  obtain ⟨η, hη⟩ : ∃ η : DifferentialForm (Euclid P) m,
+      η = fun y => b y • ContinuousAlternatingMap.curryLeft θ (G y) := ⟨_, rfl⟩
+  obtain ⟨ζ, hζ⟩ : ∃ ζ : DifferentialForm (Euclid P) (m + 1),
+      ζ = fun x => exteriorDerivative η x - (b x * LinearMap.trace ℝ (Euclid (m + 1))
+        (fderiv ℝ g (WithLp.toLp 2 (fun k => x (I k)))).toLinearMap) • θ := ⟨_, rfl⟩
+  -- Step 1: `η` is a test form with `tsupport η ⊆ tsupport b`
+  have hηs : tsupport η ⊆ tsupport b := by
+    rw [hη]
+    exact tsupport_smul_subset_left b _
+  have hηT : IsTestForm η := by
+    refine ⟨?_, hbc.mono' ((subset_tsupport η).trans hηs)⟩
+    rw [hη]
+    exact hb.smul ((ContinuousAlternatingMap.curryLeft θ).contDiff.comp hGs)
+  -- Steps 2-4: `dη(x)(w) = Z_x(w) + b(x) S_x(w)` and `S_x(w) = tr Dg(p x) · θ(w)`,
+  -- so `ζ(x)(w) = Z_x(w) = ∑ᵢ (−1)ⁱ Db(x)(wᵢ) θ(G x, w without wᵢ)`
+  have hζZ : ∀ x (w : Fin (m + 1) → Euclid P), ζ x w = ∑ i : Fin (m + 1),
+      (-1 : ℝ) ^ (i : ℕ) * (fderiv ℝ b x (w i) * θ (Fin.cons (G x) (i.removeNth w))) := by
+    intro x w
+    have hbx : DifferentiableAt ℝ b x := hb.differentiable (by simp) x
+    have hGx : DifferentiableAt ℝ G x := hGs.differentiable (by simp) x
+    have h1 := Submission.cmr_df_extDeriv_smul_curryLeft P m θ b G x hbx hGx w
+    have h2 := Submission.cmr_df_cons_sum_trace P m I θ
+      (fderiv ℝ g (WithLp.toLp 2 (fun k => x (I k)))).toLinearMap (fderiv ℝ G x) hθ (hL x) w
+    have h3 : ∑ i : Fin (m + 1), (-1 : ℝ) ^ (i : ℕ) * (fderiv ℝ b x (w i) *
+        θ (Fin.cons (G x) (i.removeNth w)) + b x * θ (Fin.cons (fderiv ℝ G x (w i))
+          (i.removeNth w))) = ∑ i : Fin (m + 1), (-1 : ℝ) ^ (i : ℕ) * (fderiv ℝ b x (w i) *
+        θ (Fin.cons (G x) (i.removeNth w))) + b x * ∑ i : Fin (m + 1), (-1 : ℝ) ^ (i : ℕ) *
+          θ (Fin.cons (fderiv ℝ G x (w i)) (i.removeNth w)) := by
+      rw [Finset.mul_sum, ← Finset.sum_add_distrib]
+      exact Finset.sum_congr rfl fun i _ => by ring
+    rw [hζ]
+    simp only [ContinuousAlternatingMap.sub_apply, ContinuousAlternatingMap.smul_apply,
+      smul_eq_mul]
+    rw [hη, h1, h3, h2]
+    ring
+  -- Step 4: `ζ` is a test form with `tsupport ζ ⊆ tsupport b`
+  have hζsupp : support ζ ⊆ tsupport b := by
+    intro x hx
+    by_contra hxb
+    have hbx : b x = 0 := image_eq_zero_of_notMem_tsupport hxb
+    have hdη : exteriorDerivative η x = 0 := image_eq_zero_of_notMem_tsupport fun h =>
+      hxb (hηs (tsupport_exteriorDerivative_subset η h))
+    exact hx (by rw [hζ]; simp [hbx, hdη])
+  have hζs : tsupport ζ ⊆ tsupport b := closure_minimal hζsupp (isClosed_tsupport b)
+  have hζT : IsTestForm ζ := by
+    refine ⟨?_, hbc.mono' hζsupp⟩
+    let tr : (Euclid (m + 1) →L[ℝ] Euclid (m + 1)) →L[ℝ] ℝ := LinearMap.toContinuousLinearMap
+      (LinearMap.trace ℝ (Euclid (m + 1)) ∘ₗ ContinuousLinearMap.coeLM ℝ)
+    have htr : ContDiff ℝ (⊤ : ℕ∞) fun x : Euclid P => LinearMap.trace ℝ (Euclid (m + 1))
+        (fderiv ℝ g (WithLp.toLp 2 (fun k => x (I k)))).toLinearMap :=
+      tr.contDiff.comp ((hg.fderiv_right (m := (⊤ : ℕ∞)) (by simp)).comp p.contDiff)
+    rw [hζ]
+    exact (exteriorDerivative_isTestForm hηT).1.sub ((hb.mul htr).smul contDiff_const)
+  -- Step 5: operator-norm bounds, independent of `g`
+  have hη_op : ∀ x, ‖η x‖ ≤ β₀ * (‖θ‖ * ‖ι‖) := by
+    intro x
+    rw [hη, norm_smul]
+    refine mul_le_mul (hβ₀ x) ?_ (norm_nonneg _) hβ₀0
+    calc ‖ContinuousAlternatingMap.curryLeft θ (G x)‖
+        ≤ ‖ContinuousAlternatingMap.curryLeft θ‖ * ‖G x‖ := ContinuousLinearMap.le_opNorm _ _
+      _ ≤ ‖θ‖ * ‖ι‖ := by
+        rw [ContinuousAlternatingMap.norm_curryLeft]
+        exact mul_le_mul_of_nonneg_left (hGb x) (norm_nonneg _)
+  have hζ_op : ∀ x, ‖ζ x‖ ≤ ((m : ℝ) + 1) * (β₁ * (‖θ‖ * ‖ι‖)) := by
+    intro x
+    refine ContinuousAlternatingMap.opNorm_le_bound _ (by positivity) fun w => ?_
+    rw [hζZ x w]
+    have hterm : ∀ i : Fin (m + 1), ‖(-1 : ℝ) ^ (i : ℕ) * (fderiv ℝ b x (w i) *
+        θ (Fin.cons (G x) (i.removeNth w)))‖ ≤ β₁ * (‖θ‖ * ‖ι‖) * ∏ j, ‖w j‖ := by
+      intro i
+      have h1 : ‖fderiv ℝ b x (w i)‖ ≤ β₁ * ‖w i‖ :=
+        ((fderiv ℝ b x).le_opNorm _).trans (mul_le_mul_of_nonneg_right (hβ₁ x) (norm_nonneg _))
+      have h2 : ‖θ (Fin.cons (G x) (i.removeNth w))‖ ≤
+          ‖θ‖ * ‖ι‖ * ∏ j : Fin m, ‖w (i.succAbove j)‖ := by
+        calc ‖θ (Fin.cons (G x) (i.removeNth w))‖
+            ≤ ‖θ‖ * ∏ j : Fin (m + 1),
+                ‖(Fin.cons (G x) (i.removeNth w) : Fin (m + 1) → Euclid P) j‖ :=
+              θ.le_opNorm _
+          _ = ‖θ‖ * (‖G x‖ * ∏ j : Fin m, ‖w (i.succAbove j)‖) := by
+              rw [Fin.prod_univ_succ]
+              simp [Fin.removeNth_apply]
+          _ ≤ ‖θ‖ * (‖ι‖ * ∏ j : Fin m, ‖w (i.succAbove j)‖) := by
+              gcongr
+              exact hGb x
+          _ = ‖θ‖ * ‖ι‖ * ∏ j : Fin m, ‖w (i.succAbove j)‖ := by ring
+      calc ‖(-1 : ℝ) ^ (i : ℕ) * (fderiv ℝ b x (w i) * θ (Fin.cons (G x) (i.removeNth w)))‖
+          = ‖fderiv ℝ b x (w i)‖ * ‖θ (Fin.cons (G x) (i.removeNth w))‖ := by
+            simp [norm_mul]
+        _ ≤ (β₁ * ‖w i‖) * (‖θ‖ * ‖ι‖ * ∏ j : Fin m, ‖w (i.succAbove j)‖) :=
+            mul_le_mul h1 h2 (norm_nonneg _) (by positivity)
+        _ = β₁ * (‖θ‖ * ‖ι‖) * (‖w i‖ * ∏ j : Fin m, ‖w (i.succAbove j)‖) := by ring
+        _ = β₁ * (‖θ‖ * ‖ι‖) * ∏ j, ‖w j‖ := by
+            rw [Fin.prod_univ_succAbove (fun j => ‖w j‖) i]
+    calc ‖∑ i : Fin (m + 1), (-1 : ℝ) ^ (i : ℕ) * (fderiv ℝ b x (w i) *
+          θ (Fin.cons (G x) (i.removeNth w)))‖
+        ≤ ∑ i : Fin (m + 1), ‖(-1 : ℝ) ^ (i : ℕ) * (fderiv ℝ b x (w i) *
+          θ (Fin.cons (G x) (i.removeNth w)))‖ := norm_sum_le _ _
+      _ ≤ ∑ _i : Fin (m + 1), β₁ * (‖θ‖ * ‖ι‖) * ∏ j, ‖w j‖ :=
+          Finset.sum_le_sum fun i _ => hterm i
+      _ = ((m : ℝ) + 1) * (β₁ * (‖θ‖ * ‖ι‖)) * ∏ j, ‖w j‖ := by
+        rw [Finset.sum_const, Finset.card_univ, Fintype.card_fin, nsmul_eq_mul]
+        push_cast
+        ring
+  -- Steps 5-6: coefficient-norm bounds by (F1), and the identity, by definition of `ζ`
+  have hK1 : 0 ≤ Cm * (β₀ * (‖θ‖ * ‖ι‖)) := by positivity
+  have hK2 : 0 ≤ Cn * (((m : ℝ) + 1) * (β₁ * (‖θ‖ * ‖ι‖))) := by positivity
+  refine ⟨η, ζ, hηT, hζT, hηs, hζs, fun x => ?_, fun x => ?_, fun x => ?_⟩
+  · calc covectorEuclideanNorm (η x) ≤ Cm * ‖η x‖ := hCm _
+      _ ≤ Cm * (β₀ * (‖θ‖ * ‖ι‖)) := mul_le_mul_of_nonneg_left (hη_op x) hCm0
+      _ ≤ _ := le_add_of_nonneg_right hK2
+  · calc covectorEuclideanNorm (ζ x) ≤ Cn * ‖ζ x‖ := hCn _
+      _ ≤ Cn * (((m : ℝ) + 1) * (β₁ * (‖θ‖ * ‖ι‖))) := mul_le_mul_of_nonneg_left (hζ_op x) hCn0
+      _ ≤ _ := le_add_of_nonneg_left hK1
+  · rw [hζ]
+    exact (add_sub_cancel _ _).symm
+
 /-- **Simon 6.2.36** (`μ_T` charges no `Hⁿ`-null set when `M_W(∂T) < ∞` for `W ⊂⊂ U`): if
 `T(ω) = ∫ ⟨ω, ξ⟩ dμ` with `|⟨α, ξ⟩| ≤ |α|`, `M_W(T) = μ(W)` and `μ` lives on `U`, then
 `Hⁿ(E) = 0` implies `μ(E) = 0`.  For `n = 0`, `H⁰` is counting measure, so `E = ∅`.  For
@@ -36790,188 +36972,6 @@ theorem Submission.cmc_massOn_le_of_le_near_support : ∀ (P n : ℕ) (U : Set (
   rw [hμT W hW, hμS W hW] at hle
   rw [hμT W' hW', hμS W' hW', hsplit RT.measure, hsplit RS.measure, ← hdiff]
   exact add_le_add hle le_rfl
-/-- **Divergence form of `b · (div g) ∘ p_I` against `θ = dx^I`** (the projection step
-`p_I^#((div g) dy) = d(p_I^#γ)` of the mass representation used for Simon 7.2.4).  Let
-`p_I x = (x_{I k})_k`, `ι y = ∑ₖ y_k e_{I k}` and `G = ι ∘ g ∘ p_I`, so that
-`(DG(x) v)_{I k} = (Dg(p_I x)(p_I v))_k`.  Put `η = b • θ.curryLeft ∘ G` and
-`ζ = dη − (b · tr Dg ∘ p_I) • θ`.  The formula for `dη` (`cmr_df_extDeriv_smul_curryLeft`) and
-Jacobi's trace identity in coordinates (`cmr_df_cons_sum_trace`) give
-`ζ(x)(w) = ∑ᵢ (−1)ⁱ Db(x)(wᵢ) θ(G x, w without wᵢ)`.  Hence `‖η‖ ≤ sup|b| ‖θ‖ ‖ι‖` and
-`‖ζ‖ ≤ (m + 1) sup‖Db‖ ‖θ‖ ‖ι‖`, both forms vanish off `tsupport b`, and part (iii) of
-`rsd_mw_tfa_norm_props` turns these operator-norm bounds into a coefficient-norm bound `K`
-that does not depend on `g`. -/
-theorem Submission.cmr_coordinate_divergence_form : ∀ (P m : ℕ) (I : Fin (m + 1) → Fin P) (θ : Covector (Euclid P) (m + 1)) (b : Euclid P → ℝ), StrictMono I → (∀ v : Fin (m + 1) → Euclid P, θ v = Matrix.det (Matrix.of fun k j => v j (I k))) → ContDiff ℝ (⊤ : ℕ∞) b → HasCompactSupport b → ∃ K : ℝ, ∀ g : Euclid (m + 1) → Euclid (m + 1), ContDiff ℝ (⊤ : ℕ∞) g → (∀ y, ‖g y‖ ≤ 1) → ∃ (η : DifferentialForm (Euclid P) m) (ζ : DifferentialForm (Euclid P) (m + 1)), IsTestForm η ∧ IsTestForm ζ ∧ tsupport η ⊆ tsupport b ∧ tsupport ζ ⊆ tsupport b ∧ (∀ x, covectorEuclideanNorm (η x) ≤ K) ∧ (∀ x, covectorEuclideanNorm (ζ x) ≤ K) ∧ ∀ x, exteriorDerivative η x = (b x * LinearMap.trace ℝ (Euclid (m + 1)) (fderiv ℝ g (WithLp.toLp 2 (fun k => x (I k)))).toLinearMap) • θ + ζ x := by
-  intro P m I θ b hI hθ hb hbc
-  -- the coordinate projection `p = p_I` and the coordinate embedding `ι`, `(ι y)_{I k} = y_k`
-  let p : Euclid P →L[ℝ] Euclid (m + 1) := LinearMap.toContinuousLinearMap
-    { toFun := fun x => WithLp.toLp 2 (fun k => x (I k))
-      map_add' := fun _ _ => rfl
-      map_smul' := fun _ _ => rfl }
-  let ι : Euclid (m + 1) →L[ℝ] Euclid P := LinearMap.toContinuousLinearMap
-    { toFun := fun y => WithLp.toLp 2 (fun j => ∑ k, if I k = j then y k else 0)
-      map_add' := fun y z => by
-        ext j
-        simp only [PiLp.add_apply, ← Finset.sum_add_distrib]
-        exact Finset.sum_congr rfl fun k _ => by split_ifs <;> simp
-      map_smul' := fun c y => by
-        ext j
-        simp only [PiLp.smul_apply, smul_eq_mul, RingHom.id_apply, Finset.mul_sum]
-        exact Finset.sum_congr rfl fun k _ => by split_ifs <;> simp }
-  have hι : ∀ y k, ι y (I k) = y k := by
-    intro y k
-    change (∑ k', if I k' = I k then y k' else 0) = y k
-    simp [hI.injective.eq_iff]
-  -- the constant `K`: (F1) from `rsd_mw_tfa_norm_props` (iii), `β₀ = sup |b|`, `β₁ = sup ‖Db‖`
-  obtain ⟨Cm, hCm0, hCm⟩ := (Submission.rsd_mw_tfa_norm_props P m).2.2.1
-  obtain ⟨Cn, hCn0, hCn⟩ := (Submission.rsd_mw_tfa_norm_props P (m + 1)).2.2.1
-  obtain ⟨β₀, hβ₀⟩ := hb.continuous.bounded_above_of_compact_support hbc
-  obtain ⟨β₁, hβ₁⟩ :=
-    (hb.continuous_fderiv (by simp)).bounded_above_of_compact_support (hbc.fderiv ℝ)
-  have hβ₀0 : 0 ≤ β₀ := (norm_nonneg _).trans (hβ₀ 0)
-  have hβ₁0 : 0 ≤ β₁ := (norm_nonneg _).trans (hβ₁ 0)
-  refine ⟨Cm * (β₀ * (‖θ‖ * ‖ι‖)) + Cn * (((m : ℝ) + 1) * (β₁ * (‖θ‖ * ‖ι‖))), ?_⟩
-  intro g hg hg1
-  -- the vector field `G = ι ∘ g ∘ p`: smooth, `‖G‖ ≤ ‖ι‖`, `DG(x) = ι ∘ Dg(p x) ∘ p`
-  obtain ⟨G, hG⟩ : ∃ G : Euclid P → Euclid P, G = fun x => ι (g (p x)) := ⟨_, rfl⟩
-  have hGs : ContDiff ℝ (⊤ : ℕ∞) G := hG ▸ ι.contDiff.comp (hg.comp p.contDiff)
-  have hGb : ∀ x, ‖G x‖ ≤ ‖ι‖ := by
-    intro x
-    rw [hG]
-    calc ‖ι (g (p x))‖ ≤ ‖ι‖ * ‖g (p x)‖ := ι.le_opNorm _
-      _ ≤ ‖ι‖ * 1 := mul_le_mul_of_nonneg_left (hg1 _) (norm_nonneg _)
-      _ = ‖ι‖ := mul_one _
-  have hDG : ∀ x v, fderiv ℝ G x v = ι (fderiv ℝ g (p x) (p v)) := by
-    intro x v
-    have hgd : DifferentiableAt ℝ g (p x) := hg.differentiable (by simp) _
-    have h : HasFDerivAt G (ι.comp ((fderiv ℝ g (p x)).comp p)) x := by
-      rw [hG]
-      exact ι.hasFDerivAt.comp x (hgd.hasFDerivAt.comp x p.hasFDerivAt)
-    rw [h.fderiv]
-    rfl
-  -- `(DG(x) v)_{I k} = (Dg(p x)(p v))_k`, the hypothesis of `cmr_df_cons_sum_trace`
-  have hL : ∀ x (v : Euclid P) (k : Fin (m + 1)), fderiv ℝ G x v (I k) =
-      (fderiv ℝ g (WithLp.toLp 2 (fun k => x (I k)))).toLinearMap
-        (WithLp.toLp 2 (fun k' => v (I k'))) k := by
-    intro x v k
-    rw [hDG, hι]
-    rfl
-  -- the forms `η = b • θ.curryLeft ∘ G` and `ζ = dη − (b · tr Dg ∘ p) • θ`
-  obtain ⟨η, hη⟩ : ∃ η : DifferentialForm (Euclid P) m,
-      η = fun y => b y • ContinuousAlternatingMap.curryLeft θ (G y) := ⟨_, rfl⟩
-  obtain ⟨ζ, hζ⟩ : ∃ ζ : DifferentialForm (Euclid P) (m + 1),
-      ζ = fun x => exteriorDerivative η x - (b x * LinearMap.trace ℝ (Euclid (m + 1))
-        (fderiv ℝ g (WithLp.toLp 2 (fun k => x (I k)))).toLinearMap) • θ := ⟨_, rfl⟩
-  -- Step 1: `η` is a test form with `tsupport η ⊆ tsupport b`
-  have hηs : tsupport η ⊆ tsupport b := by
-    rw [hη]
-    exact tsupport_smul_subset_left b _
-  have hηT : IsTestForm η := by
-    refine ⟨?_, hbc.mono' ((subset_tsupport η).trans hηs)⟩
-    rw [hη]
-    exact hb.smul ((ContinuousAlternatingMap.curryLeft θ).contDiff.comp hGs)
-  -- Steps 2-4: `dη(x)(w) = Z_x(w) + b(x) S_x(w)` and `S_x(w) = tr Dg(p x) · θ(w)`,
-  -- so `ζ(x)(w) = Z_x(w) = ∑ᵢ (−1)ⁱ Db(x)(wᵢ) θ(G x, w without wᵢ)`
-  have hζZ : ∀ x (w : Fin (m + 1) → Euclid P), ζ x w = ∑ i : Fin (m + 1),
-      (-1 : ℝ) ^ (i : ℕ) * (fderiv ℝ b x (w i) * θ (Fin.cons (G x) (i.removeNth w))) := by
-    intro x w
-    have hbx : DifferentiableAt ℝ b x := hb.differentiable (by simp) x
-    have hGx : DifferentiableAt ℝ G x := hGs.differentiable (by simp) x
-    have h1 := Submission.cmr_df_extDeriv_smul_curryLeft P m θ b G x hbx hGx w
-    have h2 := Submission.cmr_df_cons_sum_trace P m I θ
-      (fderiv ℝ g (WithLp.toLp 2 (fun k => x (I k)))).toLinearMap (fderiv ℝ G x) hθ (hL x) w
-    have h3 : ∑ i : Fin (m + 1), (-1 : ℝ) ^ (i : ℕ) * (fderiv ℝ b x (w i) *
-        θ (Fin.cons (G x) (i.removeNth w)) + b x * θ (Fin.cons (fderiv ℝ G x (w i))
-          (i.removeNth w))) = ∑ i : Fin (m + 1), (-1 : ℝ) ^ (i : ℕ) * (fderiv ℝ b x (w i) *
-        θ (Fin.cons (G x) (i.removeNth w))) + b x * ∑ i : Fin (m + 1), (-1 : ℝ) ^ (i : ℕ) *
-          θ (Fin.cons (fderiv ℝ G x (w i)) (i.removeNth w)) := by
-      rw [Finset.mul_sum, ← Finset.sum_add_distrib]
-      exact Finset.sum_congr rfl fun i _ => by ring
-    rw [hζ]
-    simp only [ContinuousAlternatingMap.sub_apply, ContinuousAlternatingMap.smul_apply,
-      smul_eq_mul]
-    rw [hη, h1, h3, h2]
-    ring
-  -- Step 4: `ζ` is a test form with `tsupport ζ ⊆ tsupport b`
-  have hζsupp : support ζ ⊆ tsupport b := by
-    intro x hx
-    by_contra hxb
-    have hbx : b x = 0 := image_eq_zero_of_notMem_tsupport hxb
-    have hdη : exteriorDerivative η x = 0 := image_eq_zero_of_notMem_tsupport fun h =>
-      hxb (hηs (tsupport_exteriorDerivative_subset η h))
-    exact hx (by rw [hζ]; simp [hbx, hdη])
-  have hζs : tsupport ζ ⊆ tsupport b := closure_minimal hζsupp (isClosed_tsupport b)
-  have hζT : IsTestForm ζ := by
-    refine ⟨?_, hbc.mono' hζsupp⟩
-    let tr : (Euclid (m + 1) →L[ℝ] Euclid (m + 1)) →L[ℝ] ℝ := LinearMap.toContinuousLinearMap
-      (LinearMap.trace ℝ (Euclid (m + 1)) ∘ₗ ContinuousLinearMap.coeLM ℝ)
-    have htr : ContDiff ℝ (⊤ : ℕ∞) fun x : Euclid P => LinearMap.trace ℝ (Euclid (m + 1))
-        (fderiv ℝ g (WithLp.toLp 2 (fun k => x (I k)))).toLinearMap :=
-      tr.contDiff.comp ((hg.fderiv_right (m := (⊤ : ℕ∞)) (by simp)).comp p.contDiff)
-    rw [hζ]
-    exact (exteriorDerivative_isTestForm hηT).1.sub ((hb.mul htr).smul contDiff_const)
-  -- Step 5: operator-norm bounds, independent of `g`
-  have hη_op : ∀ x, ‖η x‖ ≤ β₀ * (‖θ‖ * ‖ι‖) := by
-    intro x
-    rw [hη, norm_smul]
-    refine mul_le_mul (hβ₀ x) ?_ (norm_nonneg _) hβ₀0
-    calc ‖ContinuousAlternatingMap.curryLeft θ (G x)‖
-        ≤ ‖ContinuousAlternatingMap.curryLeft θ‖ * ‖G x‖ := ContinuousLinearMap.le_opNorm _ _
-      _ ≤ ‖θ‖ * ‖ι‖ := by
-        rw [ContinuousAlternatingMap.norm_curryLeft]
-        exact mul_le_mul_of_nonneg_left (hGb x) (norm_nonneg _)
-  have hζ_op : ∀ x, ‖ζ x‖ ≤ ((m : ℝ) + 1) * (β₁ * (‖θ‖ * ‖ι‖)) := by
-    intro x
-    refine ContinuousAlternatingMap.opNorm_le_bound _ (by positivity) fun w => ?_
-    rw [hζZ x w]
-    have hterm : ∀ i : Fin (m + 1), ‖(-1 : ℝ) ^ (i : ℕ) * (fderiv ℝ b x (w i) *
-        θ (Fin.cons (G x) (i.removeNth w)))‖ ≤ β₁ * (‖θ‖ * ‖ι‖) * ∏ j, ‖w j‖ := by
-      intro i
-      have h1 : ‖fderiv ℝ b x (w i)‖ ≤ β₁ * ‖w i‖ :=
-        ((fderiv ℝ b x).le_opNorm _).trans (mul_le_mul_of_nonneg_right (hβ₁ x) (norm_nonneg _))
-      have h2 : ‖θ (Fin.cons (G x) (i.removeNth w))‖ ≤
-          ‖θ‖ * ‖ι‖ * ∏ j : Fin m, ‖w (i.succAbove j)‖ := by
-        calc ‖θ (Fin.cons (G x) (i.removeNth w))‖
-            ≤ ‖θ‖ * ∏ j : Fin (m + 1),
-                ‖(Fin.cons (G x) (i.removeNth w) : Fin (m + 1) → Euclid P) j‖ :=
-              θ.le_opNorm _
-          _ = ‖θ‖ * (‖G x‖ * ∏ j : Fin m, ‖w (i.succAbove j)‖) := by
-              rw [Fin.prod_univ_succ]
-              simp [Fin.removeNth_apply]
-          _ ≤ ‖θ‖ * (‖ι‖ * ∏ j : Fin m, ‖w (i.succAbove j)‖) := by
-              gcongr
-              exact hGb x
-          _ = ‖θ‖ * ‖ι‖ * ∏ j : Fin m, ‖w (i.succAbove j)‖ := by ring
-      calc ‖(-1 : ℝ) ^ (i : ℕ) * (fderiv ℝ b x (w i) * θ (Fin.cons (G x) (i.removeNth w)))‖
-          = ‖fderiv ℝ b x (w i)‖ * ‖θ (Fin.cons (G x) (i.removeNth w))‖ := by
-            simp [norm_mul]
-        _ ≤ (β₁ * ‖w i‖) * (‖θ‖ * ‖ι‖ * ∏ j : Fin m, ‖w (i.succAbove j)‖) :=
-            mul_le_mul h1 h2 (norm_nonneg _) (by positivity)
-        _ = β₁ * (‖θ‖ * ‖ι‖) * (‖w i‖ * ∏ j : Fin m, ‖w (i.succAbove j)‖) := by ring
-        _ = β₁ * (‖θ‖ * ‖ι‖) * ∏ j, ‖w j‖ := by
-            rw [Fin.prod_univ_succAbove (fun j => ‖w j‖) i]
-    calc ‖∑ i : Fin (m + 1), (-1 : ℝ) ^ (i : ℕ) * (fderiv ℝ b x (w i) *
-          θ (Fin.cons (G x) (i.removeNth w)))‖
-        ≤ ∑ i : Fin (m + 1), ‖(-1 : ℝ) ^ (i : ℕ) * (fderiv ℝ b x (w i) *
-          θ (Fin.cons (G x) (i.removeNth w)))‖ := norm_sum_le _ _
-      _ ≤ ∑ _i : Fin (m + 1), β₁ * (‖θ‖ * ‖ι‖) * ∏ j, ‖w j‖ :=
-          Finset.sum_le_sum fun i _ => hterm i
-      _ = ((m : ℝ) + 1) * (β₁ * (‖θ‖ * ‖ι‖)) * ∏ j, ‖w j‖ := by
-        rw [Finset.sum_const, Finset.card_univ, Fintype.card_fin, nsmul_eq_mul]
-        push_cast
-        ring
-  -- Steps 5-6: coefficient-norm bounds by (F1), and the identity, by definition of `ζ`
-  have hK1 : 0 ≤ Cm * (β₀ * (‖θ‖ * ‖ι‖)) := by positivity
-  have hK2 : 0 ≤ Cn * (((m : ℝ) + 1) * (β₁ * (‖θ‖ * ‖ι‖))) := by positivity
-  refine ⟨η, ζ, hηT, hζT, hηs, hζs, fun x => ?_, fun x => ?_, fun x => ?_⟩
-  · calc covectorEuclideanNorm (η x) ≤ Cm * ‖η x‖ := hCm _
-      _ ≤ Cm * (β₀ * (‖θ‖ * ‖ι‖)) := mul_le_mul_of_nonneg_left (hη_op x) hCm0
-      _ ≤ _ := le_add_of_nonneg_right hK2
-  · calc covectorEuclideanNorm (ζ x) ≤ Cn * ‖ζ x‖ := hCn _
-      _ ≤ Cn * (((m : ℝ) + 1) * (β₁ * (‖θ‖ * ‖ι‖))) := mul_le_mul_of_nonneg_left (hζ_op x) hCn0
-      _ ≤ _ := le_add_of_nonneg_left hK1
-  · rw [hζ]
-    exact (add_sub_cancel _ _).symm
-
 /-- **Comparison with a small filling** (Simon Ch. 6, proof of Theorem 8.2, (4)–(6), pp. 177–178,
 for a single test form).  Suppose `∂S = ∂A` in `ℝᴾ`, `M(A) ≤ m < ∞`, `M(S) ≤ κm`,
 `spt A, spt S ⊆ B̄_R(x)`, `|ω| ≤ 1`, and `ω` satisfies the cone inequality `|X(ω)| ≤ cϱM(X)` for
