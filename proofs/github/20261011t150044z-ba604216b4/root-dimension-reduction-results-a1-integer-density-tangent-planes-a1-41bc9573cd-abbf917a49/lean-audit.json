@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "528914c3c6f9c5d9b781c7b3e35fc9acb3f339aaad1bd9a9295eabaf2e5efae1",
+  "git_delta": {
+    "base_commit": "d99208648dbb3ccec73aab51ef65c3cd962acff4",
+    "candidate_commit": "0bca9ba276d7810be869583ff3f462e2cd961bec",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "idtp_cttp_planar_support",
+    "diff_sha256": "47b1ae05927f824d6570741bc49199f35c53b0af2a0f44293fc437dc805f4d01",
+    "source_sha256": "3c54719806de7f162e12c8250f11027fd95baa1c2188b7ca5d6f3fb3f47f82ef",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.idtp_cttp_planar_support",
+      "statement": "∀ (P : ℕ) (S : GeometricCurrentOn (univ : Set (Euclid P)) 2) (p : Euclid P) (θ : ℝ), p ≠ 0 → IsMinimizingIn S univ → BoundaryVanishes S → (∀ y ∈ Submodule.span ℝ {p}, ∀ lam : ℝ, 0 < lam → ∀ (w : Euclid P) (θ' : ℝ), HasMassDensity S w θ' → HasMassDensity S (y + lam • w) θ') → 1 ≤ θ → HasMassDensity S 0 θ → ∃ τ : Fin 2 → Euclid P, Orthonormal ℝ τ ∧ p ∈ Submodule.span ℝ (Set.range τ) ∧ S.support ⊆ (Submodule.span ℝ (Set.range τ) : Set (Euclid P))",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
