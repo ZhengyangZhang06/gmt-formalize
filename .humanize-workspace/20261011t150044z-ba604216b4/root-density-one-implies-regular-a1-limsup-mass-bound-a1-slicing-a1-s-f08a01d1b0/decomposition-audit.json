@@ -1,0 +1,65 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "dor_lmbsf_pst_",
+        "def CountablyRectifiable|def HasApproximateTangentSpaceAt|countablyRectifiable_image_contDiffOn_open|euclideanHausdorffMeasure_image_le_of_lipschitzOn|countablyRectifiable_iUnion",
+        "toOpenPartialHomeomorph|contDiffAt_symm|hasFDerivAt_symm",
+        "exists_lipschitzOnWith_of_compact|isOpen_iUnion_countable|mem_orthogonal_singleton_iff_inner_right|image_of_continuousOn_injOn|euclideanHausdorffMeasure_eq_volume",
+        "validator.validate_lean_statement(c['lean_statement'])",
+        "comp.child_modules(c,names,contract,'contract')",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/pst-independent-audit-c719e6zt/ChildProofs.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/pst-independent-audit-c719e6zt/AssemblyFromContracts.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-limsup-mass-bound-a1-slicing-a1-s-f08a01d1b0/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-limsup-mass-bound-a1-slicing-a1-s-f08a01d1b0/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/InverseFunctionTheorem/ContDiff.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/MetricSpace/Lipschitz.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Bases.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Constructions/Polish/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/SubmanifoldCover.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/Lipschitz.lean",
+        "/tmp/pst-independent-audit-c719e6zt/ChildProofs.lean",
+        "/tmp/pst-independent-audit-c719e6zt/AssemblyFromContracts.lean"
+      ],
+      "conclusion": "The four-way split is appropriate and establishes this selected parent using its existing image_tangent dependency. The frozen contract matches the handoff and DAG. Snapshot compatibility was checked against project b4d606d, mathlib 25730c7c and SimonGMT 2b36630. Searches found no dor_lmbsf_pst_ declarations in the reference trees; the DAG has no reservations for the proposed names. All four names are valid bare identifiers. The sole internal dependency is chart_cover → local_chart, and the external image_tangent dependency closure does not return to the selected node. All four exact one-line propositions independently elaborate in generated comparator challenges without their implementations. No statement contains a placeholder, implementation reference or matrix-unit construction. The supplied child proofs were independently recompiled with only propext, Classical.choice and Quot.sound. An assembly taking the exact child and sibling contracts as explicit hypotheses proves the unchanged selected conclusion with those same permitted axioms."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "slice_plane_algebra",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and Lean proposition agree. The proof correctly uses g ∈ range L to deduce g = 0 from ℓ = 0, proves the reverse implication by extensionality, and establishes the submodule identity by both inclusions. Injectivity is unnecessary. The supplied argument is complete and non-circular."
+    },
+    {
+      "key": "level_set_local_chart",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All hypotheses and conclusions match the Lean type. Rank–nullity and extension of the kernel isomorphism produce an invertible straightening derivative. Restricting the inverse-function chart to the open invertibility locus inside W justifies C¹ regularity and the derivative formula at every chart point. That formula proves injectivity and the exact kernel range. The ball and neighbourhood construction proves the required covering inclusion, including n = 0."
+    },
+    {
+      "key": "level_set_chart_cover",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof uses only its declared local_chart dependency. The open neighbourhoods admit a countable subfamily covering the regular level set; nonemptiness justifies enumeration by ℕ. The empty case is correctly handled by empty domains and negative radii. Every chart property and the stated covering quantifiers follow exactly, without a hidden positivity assumption."
+    },
+    {
+      "key": "patch_tangent_transfer",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The TL antecedent is identical to the parent's. Compactness and local Lipschitz regularity give finite patch measure; restricted injectivity gives Borel open-ball images. Both TL applications satisfy their hypotheses and are used in the correct directions. Restriction identities and a countable intersection yield the conclusion uniformly in Q for every patch through x. No covering assumption or uncountable intersection is needed. The prose proves the exact Lean proposition."
+    }
+  ],
+  "required_changes": []
+}
