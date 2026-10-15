@@ -451,6 +451,46 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- Great-circle parametrisation (step 0(b) and step 4 of `idtp_tdc_arc_continuation`).  For
+orthonormal `z, e ∈ ℝᴾ`, `γ(φ) = cos φ·z + sin φ·e` is a unit vector with
+`|γ(φ) − γ(ψ)|² = 2 − 2 cos(φ − ψ) ≤ (φ − ψ)²`, `ν(φ) = sin φ·z − cos φ·e` is a unit vector
+orthogonal to `γ(φ)`, and `cos ψ·γ(φ) + sin ψ·ν(φ) = γ(φ − ψ)` by the subtraction formulas. -/
+theorem Submission.idtp_tdc_acont_great_circle : ∀ (P : ℕ) (z e : Euclid P), ‖z‖ = 1 → ‖e‖ = 1 → inner ℝ z e = 0 → (∀ φ : ℝ, ‖Real.cos φ • z + Real.sin φ • e‖ = 1) ∧ (∀ φ ψ : ℝ, ‖(Real.cos φ • z + Real.sin φ • e) - (Real.cos ψ • z + Real.sin ψ • e)‖ ≤ |φ - ψ|) ∧ ∀ φ : ℝ, ‖Real.sin φ • z - Real.cos φ • e‖ = 1 ∧ inner ℝ (Real.cos φ • z + Real.sin φ • e) (Real.sin φ • z - Real.cos φ • e) = 0 ∧ ∀ ψ : ℝ, Real.cos ψ • (Real.cos φ • z + Real.sin φ • e) + Real.sin ψ • (Real.sin φ • z - Real.cos φ • e) = Real.cos (φ - ψ) • z + Real.sin (φ - ψ) • e := by
+  intro P z e hz he hze
+  -- Step 1: Gram data `⟨z, z⟩ = ⟨e, e⟩ = 1`, `⟨e, z⟩ = 0`
+  have hzz : inner ℝ z z = (1 : ℝ) := by rw [real_inner_self_eq_norm_sq, hz, one_pow]
+  have hee : inner ℝ e e = (1 : ℝ) := by rw [real_inner_self_eq_norm_sq, he, one_pow]
+  have hez : inner ℝ e z = (0 : ℝ) := by rw [real_inner_comm, hze]
+  -- Step 2: `|α·z + β·e|² = α² + β²`
+  have hcomb : ∀ a b : ℝ, ‖a • z + b • e‖ ^ 2 = a ^ 2 + b ^ 2 := by
+    intro a b
+    rw [← real_inner_self_eq_norm_sq]
+    simp only [inner_add_left, inner_add_right, real_inner_smul_left, real_inner_smul_right, hzz,
+      hee, hze, hez]
+    ring
+  -- Step 3: `|v|² = 1 → |v| = 1`
+  have hunit : ∀ v : Euclid P, ‖v‖ ^ 2 = 1 → ‖v‖ = 1 := fun v hv =>
+    (pow_eq_one_iff_of_nonneg (norm_nonneg v) two_ne_zero).1 hv
+  refine ⟨fun φ => hunit _ (by rw [hcomb, Real.cos_sq_add_sin_sq]), fun φ ψ => ?_,
+    fun φ => ⟨?_, ?_, fun ψ => ?_⟩⟩
+  -- Step 5: `|γ(φ) − γ(ψ)|² = 2 − 2 cos(φ − ψ) ≤ (φ − ψ)²`
+  · have hdiff : (Real.cos φ • z + Real.sin φ • e) - (Real.cos ψ • z + Real.sin ψ • e) =
+        (Real.cos φ - Real.cos ψ) • z + (Real.sin φ - Real.sin ψ) • e := by module
+    have hcos := Real.one_sub_sq_div_two_le_cos (x := φ - ψ)
+    rw [Real.cos_sub] at hcos
+    rw [hdiff, ← pow_le_pow_iff_left₀ (norm_nonneg _) (abs_nonneg _) two_ne_zero, hcomb, sq_abs]
+    nlinarith [Real.cos_sq_add_sin_sq φ, Real.cos_sq_add_sin_sq ψ]
+  -- Step 6: `|ν(φ)| = 1`
+  · rw [sub_eq_add_neg, ← neg_smul]
+    exact hunit _ (by rw [hcomb, neg_sq, Real.sin_sq_add_cos_sq])
+  -- Step 7: `⟨γ(φ), ν(φ)⟩ = 0`
+  · simp only [inner_add_left, inner_sub_right, real_inner_smul_left, real_inner_smul_right, hzz,
+      hee, hze, hez]
+    ring
+  -- Step 8: `cos ψ·γ(φ) + sin ψ·ν(φ) = γ(φ − ψ)`
+  · rw [Real.cos_sub, Real.sin_sub]
+    module
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
