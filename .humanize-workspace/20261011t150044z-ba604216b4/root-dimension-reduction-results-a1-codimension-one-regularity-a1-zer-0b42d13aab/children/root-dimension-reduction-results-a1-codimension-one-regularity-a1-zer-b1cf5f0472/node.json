@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.zero_scale_limit_plane-a1.offset_plane-a1",
+  "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.zero_scale_limit_plane-a1",
+  "depth": 4,
+  "title": "Affine (n+1)-planes with a constant unit orientation are in class 𝒪 of ℝ^P (Lemma A-plane)",
+  "statement": "Let P, n ∈ ℕ, let Q ⊆ ℝ^P be a linear subspace, let ξ ∈ Λ_{n+1}(ℝ^P) (MultiVector P (n+1)) be a unit orientation of Q (IsUnitOrientationOf ξ Q: there is an orthonormal family τ = (τ_0, …, τ_n) in ℝ^P with span{τ_0, …, τ_n} = Q such that ξ(α) = α(τ) for every (n+1)-covector α, or ξ(α) = −α(τ) for every α), and let a ∈ ℝ^P. Put A := {y ∈ ℝ^P : y + a ∈ Q} = Q − a. Then dim Q = n + 1 (Module.finrank ℝ Q = n + 1) and A, oriented by the constant map y ↦ ξ, belongs to class 𝒪 of ℝ^P (InClassO n ℝ^P A (y ↦ ξ)): (i) A is an embedded C² submanifold of dimension n + 1 (IsEmbeddedSubmanifold 2 (n+1) A); (ii) y ↦ ξ is an orientation of A (IsOrientation (n+1) A (y ↦ ξ): it is continuous on A and for every y ∈ A, ξ is a unit orientation of a subspace that equals tangentSpace A y as a set); (iii) (closure A ∖ A) ∩ ℝ^P = ∅; (iv) A ∩ ℝ^P ≠ ∅.",
+  "lean_statement": "∀ (P n : ℕ) (Q : Submodule ℝ (Euclid P)) (ξ : MultiVector P (n + 1)) (a : Euclid P), IsUnitOrientationOf ξ Q → Module.finrank ℝ Q = n + 1 ∧ InClassO n (univ : Set (Euclid P)) {y | y + a ∈ Q} (fun _ => ξ)",
+  "lean_name": "codim1_zsl_offset_plane_inClassO",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-zer-b1cf5f0472-a1"
+}

@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.area_comparison-a1.image_submanifold-a1",
+  "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.area_comparison-a1",
+  "depth": 5,
+  "title": "The image of an embedded C¹ submanifold under an antilipschitz C¹ bijection of ℝ^P with injective derivative is an embedded C¹ submanifold with tangent spaces DΦ(T_xN)",
+  "statement": "Let P, d ∈ ℕ, let N ⊆ ℝ^P be an embedded d-dimensional C¹ submanifold in the sense of Simon Ch. 2, 4.1 (IsEmbeddedSubmanifold 1 d N), and let Φ : ℝ^P → ℝ^P be a C¹ bijection such that DΦ(x) is injective for every x and Φ is Λ-antilipschitz for some Λ ≥ 0 (|a − b| ≤ Λ|Φ(a) − Φ(b)|). Then Φ(N) is an embedded d-dimensional C¹ submanifold, and for every x ∈ N the tangent space of Φ(N) at Φ(x) (contract tangentSpace: velocities γ′(0) of C¹ curves γ : (−1, 1) → Φ(N) with γ(0) = Φ(x)) is the image DΦ(x)(T_xN) of the tangent space of N at x.",
+  "lean_statement": "∀ (P d : ℕ) (N : Set (Euclid P)) (Φ : Euclid P → Euclid P) (Λ : NNReal), IsEmbeddedSubmanifold 1 d N → ContDiff ℝ 1 Φ → Bijective Φ → (∀ x, Injective (fderiv ℝ Φ x)) → AntilipschitzWith Λ Φ → IsEmbeddedSubmanifold 1 d (Φ '' N) ∧ ∀ x ∈ N, tangentSpace (Φ '' N) (Φ x) = (fderiv ℝ Φ x) '' tangentSpace N x",
+  "lean_name": "codim1_ac_diffeo_image_submanifold",
+  "depends_on": [
+    "root.minimizing_implies_stationary-a1.chart_tangent_space-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.minimizing_implies_stationary-a1.chart_tangent_space-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-minimizing-implies-stationary-a1-chart-tangent-space-a1-a1",
+      "result_commit": "d626082a69a01ae54fab73c0d6072850ddfab6ae",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-sim-05e8ca4a40-a1"
+}

@@ -1,0 +1,55 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "cbrldlf_exists_small_scale_of_lower_density|cbrldlf_exists_filling_constant",
+        "frequently_lt_of_liminf_lt|frequently_lt_of_lt_limsup",
+        "theorem (rpow_add.|rpow_mul|mul_rpow|rpow_inv_natCast_pow|pow_rpow_inv_natCast|rpow_le_rpow)|lemma (rpow_add.|rpow_mul|mul_rpow|rpow_inv_natCast_pow|pow_rpow_inv_natCast|rpow_le_rpow)",
+        "unitBallVolume|lower_density|filling_constant|small_scale",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/cbrldlf-decomp-k7q2/Children.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/cbrldlf-decomp-k7q2/Assembly.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/cbrldlf-independent-audit-fqwb_mwg/Contracts.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Order/LiminfLimsup.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Basic/ENNReal/Inv.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/OpenPos.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Typeclasses/Finite.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/SpecialFunctions/Pow/Real.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/Thickening.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/issue-workers.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-5b8e55fd95/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-5b8e55fd95/parent-supplied-natural-proof.md",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-5b8e55fd95/decomposition-v1.json",
+        "/tmp/cbrldlf-decomp-k7q2/Children.lean",
+        "/tmp/cbrldlf-decomp-k7q2/Assembly.lean",
+        "/tmp/cbrldlf-independent-audit-fqwb_mwg/Contracts.lean"
+      ],
+      "conclusion": "The split appropriately isolates two analytic obligations from the selected local-filling proof. Pinned sources supply the stated volume, liminf, ENNReal and real-power facts; inspected project files and relevant Mathlib files match the compiler sources. No proposed name occurs in the DAG, worker registry or searched project/SimonGMT declarations, and no DAG declaration has either identical child type. Dependencies are correctly directed and acyclic. Both types independently elaborate as propositions before either child is declared; volume instances and exponent casts also check. Independently inspected and recompiled child proofs and assembly use only propext, Classical.choice and Quot.sound. The assembly's child hypotheses, three sibling hypotheses and conclusion were checked against their exact frozen strings: it establishes cbrld_exists_small_filling_of_low_density, preserving SL, MR and ISO."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "small_scale",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose includes every hypothesis and matches the standalone one-line Lean proposition, including n = 0, arbitrary measures and arbitrary real η₀. Steps 1–8 establish positive finite unit-ball volume, extract s ∈ (0, δ) from the strict liminf inequality, justify denominator clearing, and derive the exact ofReal bound. No finiteness hypothesis on μ is silently used. The proof is complete and non-circular, and supplies the parent's small-scale choice. The bare declaration name is unused; no child dependencies are needed."
+    },
+    {
+      "key": "constants",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and standalone one-line Lean proposition agree on all hypotheses, natural powers and real exponents. The explicit positive K₀, t and a are chosen before s, F and M. Steps 2–7 prove the mass estimate, and Steps 8–10 prove the radius estimate. All monotonicity and root identities have their required sign and nonzero-exponent conditions, including zero values of s, F or M. The proof is complete, independent and non-circular; its two conclusions supply precisely the parent's isoperimetric estimates. The bare declaration name is unused."
+    }
+  ],
+  "required_changes": []
+}

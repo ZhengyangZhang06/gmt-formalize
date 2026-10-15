@@ -1,0 +1,81 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "map_nhds_eq_of_equiv|is_const_of_fderiv_eq_zero|theorem ContDiffAt.hasStrictFDerivAt|isPreconnected_iff_subset_of_disjoint|isPreconnected_of_forall|theorem IsPreconnected.union|theorem Convex.isPreconnected|finrank_sup_add_finrank_inf_eq|sup_orthogonal_of_hasOrthogonalProjection|finrank_span_singleton|finrank_add_finrank_orthogonal|isConnected_compl_singleton_of_one_lt_rank|isOpen_induced_iff",
+        "rg -n 'codim1_hcp_fcp_' GMT .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT",
+        "git show d626082a69a01ae54fab73c0d6072850ddfab6ae:GMT/Ch07/Submission.lean",
+        "git show 7d0e7d04f4a805e0dbb603168e6eb0fe26a9e491:GMT/Ch07/Submission.lean",
+        "python3 /tmp/fcp-independent-audit/run.py Types.lean Assembly.lean Instances.lean",
+        "python3 /tmp/fcp-independent-audit/run.py ReuseTangent.lean ReuseLocalization.lean",
+        "python3 /tmp/fcp-independent-audit/run.py TrialAll.lean",
+        "python3 /tmp/fcp-independent-audit/run.py ConnectedAvailability.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/InverseFunctionTheorem/FDeriv.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/MeanValue.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/RCLike.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Connected/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Connected/Clopen.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/FiniteDimensional/Lemmas.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/Connected.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-sim-d0551d00fd/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-sim-d0551d00fd/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-chart-tangent-space-a1/accepted-candidate.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-limsup-mass-bound-a1-retraction-a-534d529818/accepted-candidate.json",
+        "/tmp/fcp-independent-audit/Types.lean",
+        "/tmp/fcp-independent-audit/Assembly.lean",
+        "/tmp/fcp-independent-audit/Instances.lean",
+        "/tmp/fcp-independent-audit/ReuseTangent.lean",
+        "/tmp/fcp-independent-audit/ReuseLocalization.lean",
+        "/tmp/fcp-independent-audit/TrialAll.lean"
+      ],
+      "conclusion": "The split is appropriate: local analytic planarity and global topological propagation are genuine separate obligations establishing exactly the selected parent. Project b4d606db and Mathlib 25730c7c match the manifest; snapshot and workspace contracts are byte-identical. Required calculus, topology and dimension lemmas were inspected. The singleton-complement connectedness theorem exists but is outside the allowed import closure, confirming the elementary proof's usefulness. All six one-line types independently elaborate as Prop without child implementations. Finite-dimensionality, completeness, projection and induced-topology instances check correctly; no matrix-unit construction occurs. Both reused declarations are comparator-accepted, retain identical frozen types and definitions, and independently compile with only propext, Classical.choice and Quot.sound. The four new names have no DAG reservation or project/snapshot match. Names are bare identifiers, dependencies are correctly directed and acyclic, and reused dependency closures do not reach this parent. Fresh assembly proves the immutable parent type from local_plane and planar_globalize. Supplied trial proofs also compile, using only the two verified reuse contracts beyond standard axioms."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "chart_tangent_space",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Prose and Lean hypotheses match. Bounded smooth curves prove range inclusion; properness and injectivity establish inverse continuity; the injective derivative estimate and closed range prove the reverse inclusion. The supplied proof is complete and non-circular. Comparator-accepted reuse has the identical frozen type."
+    },
+    {
+      "key": "chart_localization",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Prose and type match, including all compactness conclusions. Removing the parameter ball from a compact preimage produces a compact image missing the base point; a smaller ambient ball gives localization. The final image identity proves compactness. Exact-type accepted reuse is verified."
+    },
+    {
+      "key": "immersion_open",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The standalone type exactly expresses relative openness. Projection and local equality show the derivative takes values in H. Injectivity and equal dimensions yield a continuous linear equivalence; strict differentiability supplies the inverse function theorem. The subspace-topology argument proves the stated ambient-open-set conclusion without additional hypotheses."
+    },
+    {
+      "key": "punctured_connected",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type matches connectedness, including nonemptiness. The dimension calculation supplies a nonzero orthogonal vector. The three intersecting convex half-spaces form a preconnected set meeting every C_y, giving the required fixed-point connectivity argument. Every constructed set avoids zero; no circular reliance occurs."
+    },
+    {
+      "key": "local_plane",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Prose and type match, and the omitted global parent hypotheses are unnecessary. Chain rule and mean value arguments make the normal and normal height constant on a chart ball. Localization admits a nearby dilation, forcing zero height. The dimension calculation and immersion_open then give both inclusions in the asserted local equality. All three declared dependencies are used correctly."
+    },
+    {
+      "key": "planar_globalize",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Prose and type match. Local-plane uniqueness is proved directly. The maximal agreement set and the closure hypothesis yield the stated separation argument on each connected punctured plane. Nonemptiness selects H₀; the dimension bound forces nonzero intersections and hence equality of every local plane. Only punctured_connected is needed as a dependency: local planarity is an explicit hypothesis supplied by the parent assembly."
+    }
+  ],
+  "required_changes": []
+}

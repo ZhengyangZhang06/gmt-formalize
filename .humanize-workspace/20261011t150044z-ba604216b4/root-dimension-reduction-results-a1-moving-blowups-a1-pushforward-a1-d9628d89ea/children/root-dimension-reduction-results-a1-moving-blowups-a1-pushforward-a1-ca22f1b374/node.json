@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.moving_blowups-a1.pushforward-a1.pf_integer-a1.param_series-a1",
+  "parent_id": "root.dimension_reduction_results-a1.moving_blowups-a1.pushforward-a1.pf_integer-a1",
+  "depth": 5,
+  "title": "A summable series of integer-weighted Lipschitz parametrized pieces defines an integer multiplicity current",
+  "statement": "Let P, n ∈ ℕ and U ⊆ ℝ^P open. For i ∈ ℕ let H_i : ℝⁿ → ℝ^P be Lipschitz, B_i ⊆ ℝⁿ Borel with H_i differentiable at every point of B_i and H_i(B_i) ⊆ U, w_i : ℝⁿ → ℕ measurable, and ζ_i : ℝⁿ → Λ_n(ℝ^P) (MultiVector P n) a.e. strongly measurable for Lebesgue measure on B_i, such that for a.e. a ∈ B_i there is s ∈ {1, −1} with ζ_i(a)(α) = s·α(DH_i(a)e) for every n-covector α (Ae := (Ae₁, …, Aeₙ)). Write J_i(a) := (det(DH_i(a)*∘DH_i(a)))^{1/2} and assume Σ_i ∫⁻_{B_i} w_i(a)J_i(a) da < ∞. Then there is an integer multiplicity triple R in U (IMRep U n) such that for every test form ω ∈ 𝒟ⁿ(U) the real series Σ_i ∫_{B_i} w_i(a)·ζ_i(a)(ω(H_i(a))) da has sum R.action(ω) (HasSum).",
+  "lean_statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (H : ℕ → Euclid n → Euclid P) (B : ℕ → Set (Euclid n)) (w : ℕ → Euclid n → ℕ) (ζ : ℕ → Euclid n → MultiVector P n), IsOpen U → (∀ i, ∃ L : NNReal, LipschitzWith L (H i)) → (∀ i, MeasurableSet (B i)) → (∀ i, ∀ a ∈ B i, DifferentiableAt ℝ (H i) a) → (∀ i, H i '' B i ⊆ U) → (∀ i, Measurable (w i)) → (∀ i, AEStronglyMeasurable (ζ i) (volume.restrict (B i))) → (∀ i, ∀ᵐ a ∂(volume.restrict (B i)), ∃ s : ℝ, (s = 1 ∨ s = -1) ∧ ∀ α : Covector (Euclid P) n, ζ i a α = s * α (fun j => fderiv ℝ (H i) a (EuclideanSpace.single j (1 : ℝ)))) → ∑' i, ∫⁻ a in B i, (w i a : ℝ≥0∞) * ENNReal.ofReal (Real.sqrt (((fderiv ℝ (H i) a).adjoint ∘L fderiv ℝ (H i) a).det)) ∂volume ≠ ∞ → ∃ R : IMRep U n, ∀ ω : TestFormOn U n, HasSum (fun i => ∫ a in B i, (w i a : ℝ) * ζ i a ((ω : DifferentialForm (Euclid P) n) (H i a)) ∂volume) (R.action (ω : DifferentialForm (Euclid P) n))",
+  "lean_name": "dimred_mbl_pfi_param_series_imrep",
+  "depends_on": [
+    "root.dimension_reduction_results-a1.moving_blowups-a1.pushforward-a1.pf_integer-a1.bilip_partition-a1",
+    "root.dimension_reduction_results-a1.moving_blowups-a1.pushforward-a1.pf_integer-a1.piece_imrep-a1",
+    "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.im_series-a1.imrep_tsum-a1",
+    "root.dimension_reduction_results-a1.moving_blowups-a1.pushforward-a1.pf_integer-a1.jac_algebra-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.dimension_reduction_results-a1.moving_blowups-a1.pushforward-a1.pf_integer-a1.bilip_partition-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.dimension_reduction_results-a1.moving_blowups-a1.pushforward-a1.pf_integer-a1.piece_imrep-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.im_series-a1.imrep_tsum-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-im-38ac66b3de-a1",
+      "result_commit": "c9573f9d1e1ecf9ca2594f227f83826f0f5003c4",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.dimension_reduction_results-a1.moving_blowups-a1.pushforward-a1.pf_integer-a1.jac_algebra-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-moving-blowups-a1-pushforward-a1-ca22f1b374-a1"
+}

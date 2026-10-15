@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.hypercone_plane-a1.flat_cone_plane-a1.immersion_open-a1",
+  "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.hypercone_plane-a1.flat_cone_plane-a1",
+  "depth": 6,
+  "title": "A C¹ immersion of an open subset of ℝ^m into an m-dimensional subspace has relatively open image (parent step 4)",
+  "statement": "Let P, m ∈ ℕ, let H ⊆ ℝ^P be a linear subspace with dim H = m (Module.finrank ℝ H = m), let B ⊆ ℝ^m be open and let ψ : ℝ^m → ℝ^P be of class C¹ on B, with Dψ(v) = fderiv ℝ ψ v injective for every v ∈ B and ψ(B) ⊆ H. Then there is an open set O ⊆ ℝ^P with O ∩ H = ψ(B); that is, ψ(B) is relatively open in H.",
+  "lean_statement": "∀ (P m : ℕ) (H : Submodule ℝ (Euclid P)) (B : Set (Euclid m)) (ψ : Euclid m → Euclid P), Module.finrank ℝ H = m → IsOpen B → ContDiffOn ℝ 1 ψ B → (∀ v ∈ B, Injective (fderiv ℝ ψ v)) → ψ '' B ⊆ (H : Set (Euclid P)) → ∃ O : Set (Euclid P), IsOpen O ∧ O ∩ (H : Set (Euclid P)) = ψ '' B",
+  "lean_name": "codim1_hcp_fcp_immersion_image_open_in_subspace",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-sim-0a90f63d4e-a1"
+}

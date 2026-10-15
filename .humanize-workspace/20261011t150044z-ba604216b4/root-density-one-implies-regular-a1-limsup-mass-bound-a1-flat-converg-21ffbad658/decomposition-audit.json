@@ -1,0 +1,63 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "rg -n -i 'good.?center|dual skeleton|deformation|latticeFace' project/GMT -g '*.lean'",
+        "rg -n 'exists_disjoint_subfamily_covering_enlargement|theorem volume_pi_ball|theorem volume_pi_Ioo|theorem volume_preserving_piEquivPiSubtypeProd|theorem volume_measurePreserving_piCongrLeft|theorem infDist_lt_iff|theorem le_map_apply|theorem prod_prod|theorem measure_preimage_equiv|volume_preserving_symm_measurableEquiv_toLp' mathlib/Mathlib -g '*.lean'",
+        "sed -n '45,115p' mathlib/Mathlib/MeasureTheory/Covering/Vitali.lean",
+        "sed -n '205,255p' mathlib/Mathlib/MeasureTheory/Measure/Prod.lean",
+        "sed -n '144,166p' mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean",
+        "sed -n '56,75p' mathlib/Mathlib/Topology/MetricSpace/Pseudo/Pi.lean",
+        "dor_lmb_fcd_gc_tube_cover",
+        "dor_lmb_fcd_gc_bad_set_volume",
+        "dor_lmb_fcd_gc_cube_selection",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/gc-independent-audit-o7wxz83l/Full.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/gc-independent-audit-o7wxz83l/StubAssembly.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Covering/Vitali.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Prod.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Constructions/Pi.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Haar/InnerProductSpace.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/HausdorffDistance.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Map.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Dynamics/Ergodic/MeasurePreserving.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/Pseudo/Pi.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-limsup-mass-bound-a1-flat-converg-21ffbad658/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-limsup-mass-bound-a1-flat-converg-21ffbad658/decomposition-v2.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt",
+        "/tmp/gc-independent-audit-o7wxz83l/Full.lean",
+        "/tmp/gc-independent-audit-o7wxz83l/StubAssembly.lean"
+      ],
+      "conclusion": "Confirmed snapshot revisions b4d606db and 25730c7c, matching contract bytes and relevant active Mathlib sources. No good-centre theorem was found in the snapshot project; the required covering, volume and outer-measure lemmas are present. Euclid uses Euclidean distance, whereas function-space covering balls use the intended sup metric and product volume. All three bare names are unreserved in the checked 2066-node DAG. Their types match the accepted cmcdt counterparts, but the supplied proofs invoke none of those declarations. Independently compiled all four standalone comparator challenges, each child separately, and the complete assembly for the exact selected parent. The actual proofs use only propext, Classical.choice and Quot.sound. Assembly also compiles against child stubs. The split is appropriate and acyclic: all three independent obligations establish the selected two-measure statement, including r = 1/4."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "tube_cover",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and standalone one-line proposition agree. Nonemptiness follows from m + 2 ≤ P, validating infDist_lt_iff and forcing r > 0 without an extra hypothesis. Selecting and injectively enumerating m + 2 integer coordinates, then bounding their squared errors by the full Euclidean distance squared, proves the exact conclusion. Every step is supplied, with no parent or sibling reliance. The bare name is unreserved, and the proof compiles independently."
+    },
+    {
+      "key": "bad_set_volume",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and standalone one-line proposition match all hypotheses and the closed radius endpoint. The Vitali selection is countable and its 3r enlargements cover the bad centres. The open-cube and radius bounds force equal integer shifts at any overlap, establishing disjointness of the periodic Euclidean sets. The proof correctly handles zero mass, cancellation of finite nonzero mass, and outer-measure subadditivity, yielding 6^d/β ≤ 10^d/β, also for d = 0. No measurability of Bad or circular dependency is assumed. The bare name is unreserved, and the proof compiles independently."
+    },
+    {
+      "key": "cube_selection",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and standalone one-line proposition agree for arbitrary P, d and possibly nonmeasurable sets. Measure-preserving coordinate equivalences and the product formula for arbitrary rectangles justify the projection estimate; the complementary cube has volume at most one. Finite subadditivity then leaves a point in the positive-volume cube. Empty-coordinate cases are covered. The proof requires neither sibling nor parent results and is complete enough for direct formalization. The bare name is unreserved, and the proof compiles independently."
+    }
+  ],
+  "required_changes": []
+}

@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.area_comparison-a1.submanifold_area-a1.lintegral_image_of_local-a1",
+  "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.area_comparison-a1.submanifold_area-a1",
+  "depth": 6,
+  "title": "Local-to-global gluing of an injective change-of-variables formula over a countable open cover (parent steps 5, 6, 8)",
+  "statement": "Let P ∈ ℕ, let μ be a measure on the Borel sets of ℝ^P, let N ⊆ ℝ^P, let Φ : ℝ^P → ℝ^P be continuous and injective, and let w : ℝ^P → [0, ∞]. Assume every y ∈ N has an open neighbourhood W ⊆ ℝ^P with the following property: ∫⁻_{Φ(B)} g dμ = ∫⁻_B w(x)·g(Φ(x)) dμ(x) for every Borel set B ⊆ W ∩ N and every g : ℝ^P → [0, ∞]. Then ∫⁻_{Φ(B)} g dμ = ∫⁻_B w(x)·g(Φ(x)) dμ(x) for every Borel set B ⊆ N and every g : ℝ^P → [0, ∞]. The integrals are lower Lebesgue integrals; no measurability of g or w is assumed.",
+  "lean_statement": "∀ (P : ℕ) (μ : Measure (Euclid P)) (N : Set (Euclid P)) (Φ : Euclid P → Euclid P) (w : Euclid P → ℝ≥0∞), Continuous Φ → Injective Φ → (∀ y ∈ N, ∃ W : Set (Euclid P), IsOpen W ∧ y ∈ W ∧ ∀ B : Set (Euclid P), B ⊆ W ∩ N → MeasurableSet B → ∀ g : Euclid P → ℝ≥0∞, ∫⁻ z in Φ '' B, g z ∂μ = ∫⁻ x in B, w x * g (Φ x) ∂μ) → ∀ B : Set (Euclid P), B ⊆ N → MeasurableSet B → ∀ g : Euclid P → ℝ≥0∞, ∫⁻ z in Φ '' B, g z ∂μ = ∫⁻ x in B, w x * g (Φ x) ∂μ",
+  "lean_name": "codim1_ac_saf_lintegral_image_of_local",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-sim-6e54c1b387-a1"
+}

@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.abstract_dimension_reduction-a1.tangent_keeps_measure-a1.radii-a1",
+  "parent_id": "root.abstract_dimension_reduction-a1.tangent_keeps_measure-a1",
+  "depth": 3,
+  "title": "Step 2: strictly decreasing radii from a property holding at arbitrarily small scales",
+  "statement": "Let Q be any property of real numbers and let δ₀ > 0. Suppose that for every δ > 0 there is a real number ρ with 0 < ρ < δ and Q(ρ). Then there is a sequence (ρ_k)_{k∈ℕ} of real numbers such that ρ_k > 0 and ρ_k < δ₀ for every k, (ρ_k) is strictly decreasing, ρ_k → 0 as k → ∞, and Q(ρ_k) holds for every k.",
+  "lean_statement": "∀ (Q : ℝ → Prop) (δ₀ : ℝ), 0 < δ₀ → (∀ δ : ℝ, 0 < δ → ∃ ρ : ℝ, 0 < ρ ∧ ρ < δ ∧ Q ρ) → ∃ ρs : ℕ → ℝ, (∀ k, 0 < ρs k) ∧ (∀ k, ρs k < δ₀) ∧ StrictAnti ρs ∧ Tendsto ρs atTop (𝓝 0) ∧ ∀ k, Q (ρs k)",
+  "lean_name": "adr_exists_strictAnti_radii",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-abstract-dimension-reduction-a1-tangent-keeps-measure-a1-radii-a1-a1"
+}

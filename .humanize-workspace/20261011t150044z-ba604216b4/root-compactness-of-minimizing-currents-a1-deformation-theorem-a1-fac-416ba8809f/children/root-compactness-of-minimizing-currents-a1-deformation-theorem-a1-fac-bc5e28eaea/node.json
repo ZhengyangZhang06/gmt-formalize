@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.face_replacement-a1.chain_boundary-a1.cube_partial_ftc-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.face_replacement-a1.chain_boundary-a1",
+  "depth": 5,
+  "title": "Fundamental theorem of calculus in one coordinate on the open unit cube of Euclid (k+1)",
+  "statement": "Let k ∈ ℕ, i ∈ Fin (k+1), and let G : Euclid (k+1) → ℝ be C¹. Write Q^d := {y ∈ Euclid d : 0 < y_j < 1 for all j} (Lebesgue measure) and e_i := EuclideanSpace.single i 1. For c ∈ ℝ and y' ∈ Euclid k, let insertNth i c y' ∈ Euclid (k+1) be the point (toLp ∘ Fin.insertNth i c ∘ ofLp) with i-th coordinate c and remaining coordinates y' in order. Then y ↦ DG(y)e_i is integrable on Q^{k+1}, and ∫_{Q^{k+1}} DG(y)e_i dy = ∫_{Q^k} G(insertNth i 1 y') dy' − ∫_{Q^k} G(insertNth i 0 y') dy'.",
+  "lean_statement": "∀ (k : ℕ) (i : Fin (k + 1)) (G : Euclid (k + 1) → ℝ), ContDiff ℝ 1 G → IntegrableOn (fun y => fderiv ℝ G y (EuclideanSpace.single i (1 : ℝ))) {y : Euclid (k + 1) | ∀ j, 0 < y j ∧ y j < 1} ∧ ∫ y in {y : Euclid (k + 1) | ∀ j, 0 < y j ∧ y j < 1}, fderiv ℝ G y (EuclideanSpace.single i (1 : ℝ)) = (∫ y in {y : Euclid k | ∀ j, 0 < y j ∧ y j < 1}, G (WithLp.toLp 2 (Fin.insertNth i (1 : ℝ) (WithLp.ofLp y)))) - ∫ y in {y : Euclid k | ∀ j, 0 < y j ∧ y j < 1}, G (WithLp.toLp 2 (Fin.insertNth i (0 : ℝ) (WithLp.ofLp y)))",
+  "lean_name": "cmcdtfrcb_cube_partial_ftc",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-fac-bc5e28eaea-a1"
+}

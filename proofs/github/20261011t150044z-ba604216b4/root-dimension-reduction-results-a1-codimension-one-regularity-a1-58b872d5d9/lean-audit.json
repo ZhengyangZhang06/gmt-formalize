@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "0cac442dc857fd526719dd9850ba606d9bde2bb254286bf1af0e6ae1d1a2f2ac",
+  "git_delta": {
+    "base_commit": "bb880479da83a0162623519b29bcfb0fdd3d4164",
+    "candidate_commit": "e2af8d29f6838034ac9d4408e6cacb982901b49d",
+    "target": "GMT/Ch07/Submission.lean",
+    "changed_files": [
+      "GMT/Ch07/Submission.lean"
+    ],
+    "diff_sha256": "4535922eff372ff0d2be948ac957f32de1050b994474e05935113fa3365c6270",
+    "source_sha256": "f7919546bfa5a91a83f325bb954f23655d0300b8960ea21699f03f79ab6184b5",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dimred_codimension_one_regularity",
+      "statement": "CodimensionOneRegularity",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

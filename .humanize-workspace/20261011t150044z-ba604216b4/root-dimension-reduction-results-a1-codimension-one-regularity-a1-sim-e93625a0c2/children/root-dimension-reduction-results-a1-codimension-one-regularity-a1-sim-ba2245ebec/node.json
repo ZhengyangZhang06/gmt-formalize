@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.hypercone_plane-a1.first_variation-a1.perturbation_injective-a1",
+  "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.hypercone_plane-a1.first_variation-a1",
+  "depth": 6,
+  "title": "Small deformations x ↦ x + tZ(x) are injective immersions (parent step 2)",
+  "statement": "Let P ∈ ℕ and let Z : ℝ^P → ℝ^P be C¹ with compact support. There is c > 0 such that for every real t with |t| < c the map Φ_t(x) := x + tZ(x) is injective on ℝ^P and its derivative DΦ_t(x) (fderiv) is injective at every x ∈ ℝ^P.",
+  "lean_statement": "∀ (P : ℕ) (Z : Euclid P → Euclid P), ContDiff ℝ 1 Z → HasCompactSupport Z → ∃ c : ℝ, 0 < c ∧ ∀ t : ℝ, |t| < c → Injective (fun x => x + t • Z x) ∧ ∀ x, Injective (fderiv ℝ (fun x => x + t • Z x) x)",
+  "lean_name": "codim1_hcp_fv_perturbation_injective",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-sim-ba2245ebec-a1"
+}

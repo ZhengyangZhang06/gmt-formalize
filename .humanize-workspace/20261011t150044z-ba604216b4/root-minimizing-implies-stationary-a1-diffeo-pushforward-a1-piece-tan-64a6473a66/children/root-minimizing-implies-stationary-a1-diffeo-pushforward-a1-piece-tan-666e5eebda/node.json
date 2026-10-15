@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.minimizing_implies_stationary-a1.diffeo_pushforward-a1.piece_tangent_density-a1.piece_image_tangent-a1.rescaled_integral_limit-a1",
+  "parent_id": "root.minimizing_implies_stationary-a1.diffeo_pushforward-a1.piece_tangent_density-a1.piece_image_tangent-a1",
+  "depth": 5,
+  "title": "Convergence of the rescaled area integrals at a good point",
+  "statement": "Let P, n ∈ ℕ, F : ℝ^n → ℝ^P continuous, B ⊆ ℝ^n Borel, J : ℝ^n → ℝ Borel with 0 ≤ J ≤ K, m > 0, b ∈ ℝ^n, and L := DF(b). Assume (i) m|a − b| ≤ |F(a) − F(b)| for all a ∈ B; (ii) F is differentiable at b; (iii) m|c| ≤ |Lc| for all c ∈ ℝ^n; (iv) λ(B ∩ B̄_ρ(b))/λ(B̄_ρ(b)) → 1 as ρ → 0⁺; (v) ⨍_{B̄_ρ(b)} |J − J(b)| dλ → 0 as ρ → 0⁺. Let f : ℝ^P → ℝ be continuous with compact support. Then ∫_{ℝ^n} 1_B(b + rc)·J(b + rc)·f(r^{-1}(F(b + rc) − F(b))) dλ(c) → J(b)·∫_{ℝ^n} f(Lc) dλ(c) as r → 0⁺.",
+  "lean_statement": "∀ (P n : ℕ) (F : Euclid n → Euclid P) (B : Set (Euclid n)) (J : Euclid n → ℝ) (K m : ℝ) (b : Euclid n) (f : Euclid P → ℝ), Continuous F → MeasurableSet B → Measurable J → (∀ a, 0 ≤ J a ∧ J a ≤ K) → 0 < m → (∀ a ∈ B, m * ‖a - b‖ ≤ ‖F a - F b‖) → DifferentiableAt ℝ F b → (∀ c, m * ‖c‖ ≤ ‖fderiv ℝ F b c‖) → Tendsto (fun ρ : ℝ => volume (B ∩ closedBall b ρ) / volume (closedBall b ρ)) (𝓝[>] 0) (𝓝 1) → Tendsto (fun ρ : ℝ => ⨍ a in closedBall b ρ, ‖J a - J b‖ ∂volume) (𝓝[>] 0) (𝓝 0) → Continuous f → HasCompactSupport f → Tendsto (fun r : ℝ => ∫ c, B.indicator J (b + r • c) * f (r⁻¹ • (F (b + r • c) - F b)) ∂volume) (𝓝[>] 0) (𝓝 (J b * ∫ c, f (fderiv ℝ F b c) ∂volume))",
+  "lean_name": "pit_rescaled_integral_tendsto",
+  "depends_on": [
+    "root.minimizing_implies_stationary-a1.diffeo_pushforward-a1.piece_tangent_density-a1.piece_image_tangent-a1.rescaled_ball_average-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.minimizing_implies_stationary-a1.diffeo_pushforward-a1.piece_tangent_density-a1.piece_image_tangent-a1.rescaled_ball_average-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-piece-tan-666e5eebda-a1"
+}

@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.blowup_limit-a1.rescaled_bounds-a1.compact_sup_bound-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.blowup_limit-a1.rescaled_bounds-a1",
+  "depth": 6,
+  "title": "Uniform bounds on compact sets for finite measures with eventually bounded ball masses",
+  "statement": "Let P ∈ ℕ and let ν_i (i ∈ ℕ) be measures on ℝ^P (= Euclid P) with ν_i(ℝ^P) < ∞ for every i. Assume that for every R > 0 there is B ∈ [0,∞] with B < ∞ such that ν_i(B̄_R(0)) ≤ B for all sufficiently large i (eventually along atTop). Then sup_i ν_i(K) < ∞ for every compact K ⊆ ℝ^P.",
+  "lean_statement": "∀ (P : ℕ) (ν : ℕ → Measure (Euclid P)), (∀ i, ν i univ < ∞) → (∀ R : ℝ, 0 < R → ∃ B : ℝ≥0∞, B < ∞ ∧ ∀ᶠ i in atTop, ν i (closedBall 0 R) ≤ B) → ∀ K : Set (Euclid P), IsCompact K → ⨆ i, ν i K < ∞",
+  "lean_name": "cbr_ci_bl_rb_compact_sup_bound",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-9b71f2e31f-a1"
+}

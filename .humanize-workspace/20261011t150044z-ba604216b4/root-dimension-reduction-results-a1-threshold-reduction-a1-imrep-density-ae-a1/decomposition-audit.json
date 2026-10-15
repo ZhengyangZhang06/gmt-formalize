@@ -1,0 +1,71 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "exists_disjoint_subfamily_covering_enlargement|hausdorffMeasure_le_liminf_tsum|exists_isClosed_sdiff_lt|of_pseudoMetrizableSpace_of_isFiniteMeasure|euclideanHausdorffMeasure_def|addHaarScalarFactor_volume_hausdorffMeasure_ne_zero|euclideanHausdorffMeasure_smul₀|euclideanHausdorffMeasure_image|addHaar_closedBall|addHaar_ball_of_pos",
+        "protected theorem Tendsto.sub|Tendsto.mul_const|theorem tendsto_nhds_zero|lintegral_inter_add_sdiff|measure_inter_add_sdiff|withDensity_apply|theorem ae_restrict_iff",
+        "dimred_tr_ida_density_on_carrier|idtp_dema_upper_density_zero|rsd_tendsto_closedBall_density_of_approxTangent|rsd_tendsto_ball_density_of_closedBall",
+        "rg -n 'HasApproximateTangentSpaceAt|def blowUpMap|def CountablyRectifiable' .lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "git show ee6fe01ff88a4fae79345889f39a366b44e8e0b9:GMT/Ch07/Submission.lean",
+        "git show dbef2c15948a21d9574315bea458a9edb4f708e3:GMT/Ch07/Submission.lean",
+        "git show c3ca64f29e6259bb0947d084036f55b096f91e3f:GMT/Ch07/Submission.lean",
+        "git diff --quiet b4d606d 2d804b9 -- GMT/ lakefile.toml lake-manifest.json lean-toolchain",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/imrep-independent-audit/FrozenTypes.lean > /tmp/imrep-independent-audit/FrozenTypes.log 2>&1",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/imrep-independent-audit/EndToEnd.lean > /tmp/imrep-independent-audit/EndToEnd.log 2>&1"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Covering/Vitali.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Regular.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/EqHaar.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Instances/ENNReal/Lemmas.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/WithDensity.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-threshold-reduction-a1-imrep-density-ae-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-threshold-reduction-a1-imrep-density-ae-a1/decomposition-v2.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-5625b30197/accepted-candidate.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-regular-set-dense-a1-density-eq-multiplicity-a1-unweighted-density-one-a1/accepted-candidate.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-regular-set-dense-a1-density-eq-multiplicity-a1-closed-to-open-b-2625a8c412/accepted-candidate.json",
+        "/tmp/imrep-independent-audit/FrozenTypes.lean",
+        "/tmp/imrep-independent-audit/FrozenTypes.log",
+        "/tmp/imrep-independent-audit/EndToEnd.lean",
+        "/tmp/imrep-independent-audit/EndToEnd.log"
+      ],
+      "conclusion": "The project and mathlib match the manifest pins; inspected snapshot sources match the compiler sources. The cited covering, regularity, Hausdorff scaling, ball-volume and ENNReal limit lemmas support the supplied arguments, including n = 0. Searching the snapshot found none of the four proposed declaration names. The live DAG confirms three comparator-accepted reuses with byte-identical frozen types and one unreserved new name. All names are bare identifiers. Dependencies point from density_on_carrier to its three prerequisites and are acyclic. Independently generated Lean checks both exited 0: every frozen type elaborates as Prop before child implementations, and the accepted proofs, supplied carrier proof and supplied assembly establish the exact selected parent type. All five declarations depend only on propext, Classical.choice and Quot.sound. No problematic matrix or function-multiplication construction occurs. The split appropriately separates genuine obligations and completely covers the selected theorem."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "upper_density_zero",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and one-line type agree. Vitali selection, Hausdorff comparison, closed approximation for the finite restriction, countable threshold sets, localization and normalization prove the exact conclusion without assuming concentration of the original measure. The argument includes n = 0 and is non-circular. Reuse matches the accepted frozen type exactly."
+    },
+    {
+      "key": "unweighted_density_one",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All hypotheses match the type. The stated local finite-mass bound ensures eventual integrability of both cutoffs; plane-volume computation, blow-up scaling and tangent convergence give the required squeeze and ENNReal limit. No measurability assumption on M is silently needed: restriction is evaluated on measurable balls. The argument includes n = 0, and accepted reuse has the identical frozen type."
+    },
+    {
+      "key": "closed_to_open_ball_density",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact type matches the prose for arbitrary measures and extended-real limits. The rescaled-ball sandwich and order-topology argument are complete, including θ = ∞ and n = 0. Cancellation uses a positive finite dilation factor and introduces no hidden finiteness hypothesis. Reuse matches the accepted frozen type."
+    },
+    {
+      "key": "density_on_carrier",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose includes the hypotheses of the exact type. Restricting to W gives local finiteness, positivity gives ν ≤ μ, and openness supplies the finite closed ball needed by the tangent-density sibling. Countably many level-set applications and the two ENNReal inequalities yield the multiplicity limit. All three dependencies are declared and used non-circularly. Together with upper_density_zero off the carrier, this establishes the selected parent's indicator limit; the supplied assembly independently compiles."
+    }
+  ],
+  "required_changes": []
+}

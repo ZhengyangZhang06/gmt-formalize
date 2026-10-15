@@ -1,0 +1,101 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.hypercone_plane-a1.unit_normal-a1`
+- Child DAG node: `root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.hypercone_plane-a1.unit_normal-a1.hyperplane_projection-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source. Step 1 of the supplied proof of the parent ("Hence N_x := A₀ ∩ T_x^⊥ is a line and A₀ = T_x ⊕ N_x orthogonally"), used in its step 3 ("ν₀(x) ∈ N_x and ν₀(x) = λn") and, as the identity P_x = P_{A₀} − ν(x)⊗ν(x), to obtain the continuity of x ↦ P_x in (7a). Stated here for an abstract m-dimensional subspace Q ⊆ A₀ (in the parent Q = span T_x) and unit normal n.
+
+1. (Q is the orthogonal complement of n inside A₀.) Since n ∈ A₀ and n ≠ 0 (|n| = 1), the line ℝn is a 1-dimensional subspace of A₀, and the orthogonal complement of ℝn inside A₀, A₀ ∩ n^⊥, has dimension (m + 1) − 1 = m. Every v ∈ Q lies in A₀ (Q ⊆ A₀) and satisfies n·v = 0, so Q ⊆ A₀ ∩ n^⊥. Both spaces have dimension m, hence Q = A₀ ∩ n^⊥.
+
+2. (The candidate.) Fix w ∈ ℝ^P and put u := P_{A₀}w − (n·w)n. Then u ∈ A₀, because P_{A₀}w ∈ A₀ and n ∈ A₀. Moreover n·u = n·P_{A₀}w − (n·w)|n|² = (P_{A₀}n)·w − n·w = 0, since P_{A₀} is self-adjoint, P_{A₀}n = n (n ∈ A₀) and |n| = 1. By step 1, u ∈ Q.
+
+3. (Orthogonality of the remainder.) w − u = (w − P_{A₀}w) + (n·w)n. For v ∈ Q we have v ∈ A₀, so (w − P_{A₀}w)·v = 0 (w − P_{A₀}w is orthogonal to A₀), and n·v = 0 by hypothesis. Hence (w − u)·v = 0 for every v ∈ Q.
+
+4. (Conclusion.) The orthogonal projection P_Q w is the unique u ∈ Q with w − u orthogonal to Q (characterization of the orthogonal projection, Mathlib Submodule.eq_starProjection_of_mem_of_inner_eq_zero). By steps 2 and 3, P_Q w = u = P_{A₀}w − (n·w)n. ∎
+
+Remark (how the siblings use it). If u ∈ A₀ is orthogonal to Q, then P_Q u = 0 and P_{A₀}u = u, so the identity gives u = (n·u)n: every vector of A₀ orthogonal to Q is a multiple of n.
+
+## Key steps
+
+1. Dimension count: Q ⊆ A₀ ∩ n^⊥ and both are m-dimensional, so Q = A₀ ∩ n^⊥.
+2. u := P_{A₀}w − (n·w)n lies in A₀ and is orthogonal to n, hence u ∈ Q.
+3. w − u = (w − P_{A₀}w) + (n·w)n is orthogonal to Q, so u = P_Q w.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat local-references/123e8435b4a2469b/manifest.json; git rev-parse HEAD; git -C .lake/packages/mathlib rev-parse HEAD; git -C .lake/packages/simongmt rev-parse HEAD; sha256sum local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean`
+- `sed -n 195,300p GMT/Ch07/Contract.lean (IsEmbeddedSubmanifold, tangentSpace, IsOrientation, IsUnitOrientationOf, MultiVector, tangentialDivergence)`
+- `grep -rn 'abbrev Covector' .lake/packages/simongmt/Poincare; sed -n 1,80p simongmt/Poincare/SimonGMT/Chapter06/Forms.lean`
+- `python3 scans of dag.json: selected node (depth 5, max 6) and all children of hypercone_plane with statuses and frozen types; accepted nodes matching tangent-dimension, gluing, fundamental-lemma, [⋀^Fin, Orthonormal, unit-normal and retraction shapes (closest: fvmb_trace_starProjection_comp_eq_sum_inner, dgoj_covector_eq_det_mul_of_mem_span, codim1_lur_normal_covector_orientation; none states a needed child)`
+- `python3 read of hypercone_plane decomposition-v1.json (smooth_charts statement and proof; reused chart_tangent_space, density_one, locally_closed records)`
+- `grep -n 'theorem|lemma' mathlib/Mathlib/Geometry/Manifold/PartitionOfUnity.lean (exists_contMDiffMap_forall_mem_convex_of_local, SmoothPartitionOfUnity.exists_isSubordinate, contDiffAt_finsum)`
+- `grep -rn 'contMDiffAt_subtype_iff|contMDiffOn_iff_contDiffOn|contMDiffAt_iff_contDiffAt' mathlib/Mathlib/Geometry/Manifold; sed -n 1000,1020p Geometry/Manifold/IsManifold/Basic.lean; grep SigmaCompactSpace / IsOpen.locallyCompactSpace in Topology/Compactness`
+- `sed -n 20,120p mathlib/Mathlib/Analysis/Calculus/InverseFunctionTheorem/ContDiff.lean; grep -rn 'OpenPartialHomeomorph.contDiffAt_symm' mathlib/Mathlib/Analysis/Calculus`
+- `grep -rn 'compContinuousAlternatingMap|mkContinuous|ContinuousMultilinearMap.contDiff' in Topology/Algebra/Module/Alternating, Analysis/Normed/Module/Alternating, Analysis/Calculus/ContDiff/CPolynomial.lean`
+- `grep -n 'starProjection_apply_eq_zero_iff' mathlib/Mathlib/Analysis/InnerProductSpace/Projection/Basic.lean`
+- `runtime.py (flow gmt-claude-252c8df06c56): _solve_children, _existing_lean_name_problem, _accepted_checkpoint, _install_parent_supplied_child_handoff; store.py ensure`
+- `grep -c codim1_hcp_un_ dag.json (0); grep -rln codim1_hcp_un_ GMT/ .lake/packages/simongmt/Poincare (none); git for-each-ref (2639 distinct objects) | xargs git grep -l codim1_hcp_un_ -- 'GMT/*.lean' (none)`
+- `lean -DautoImplicit=false /tmp/un-split/check/{Types,Assembly,Inst,ProjCheck,HypUse}.lean (LEAN_PATH = .lake/build/lib/lean plus every package's .lake/build/lib/lean)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-sim-342a5e032a/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-sim-b5d5990773/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-sim-b5d5990773/parent-supplied-natural-proof.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Manifold/PartitionOfUnity.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Manifold/ContMDiff/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Manifold/ContMDiff/NormedSpace.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Manifold/IsManifold/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/InverseFunctionTheorem/ContDiff.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/Operations.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/CPolynomial.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Module/Alternating/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/Alternating/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Compactness/SigmaCompact.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Compactness/LocallyCompact.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Projection/Basic.lean`
+- `/runtime/flows/gmt-claude-252c8df06c56/_recursive_lean/runtime.py`
+- `/runtime/flows/gmt-claude-252c8df06c56/_recursive_lean/store.py`
+- `/tmp/un-split/check/Types.lean`
+- `/tmp/un-split/check/Assembly.lean`
+- `/tmp/un-split/check/Inst.lean`
+- `/tmp/un-split/check/ProjCheck.lean`
+- `/tmp/un-split/check/HypUse.lean`
+
+Pins.
+- The snapshot manifest records project b4d606db and Mathlib 25730c7c. These equal workspace HEAD and .lake/packages/mathlib (simongmt is at 2b366308).
+- The snapshot Contract.lean, workspace Contract.lean and Submission.lean are byte-identical (sha256 e4148e7f…).
+
+Library.
+- Covector (Euclid P) n = Euclid P [⋀^Fin n]→L[ℝ] ℝ (SimonGMT Chapter06/Forms.lean).
+- The snapshot Mathlib supplies what each child needs:
+  - smooth_glue: exists_contMDiffMap_forall_mem_convex_of_local and SmoothPartitionOfUnity.exists_isSubordinate (Geometry/Manifold/PartitionOfUnity.lean), the IsManifold instance for Opens, contMDiffAt_subtype_iff, contMDiffAt_iff_contDiffAt, and IsOpen.locallyCompactSpace.
+  - chart_retraction: HasStrictFDerivAt.toOpenPartialHomeomorph, ContDiffAt.to_localInverse and OpenPartialHomeomorph.contDiffAt_symm.
+  - cross_product, orientation_normal and normal_local_smooth: ContinuousMultilinearMap.contDiff and ContinuousLinearMap.compContinuousAlternatingMap.
+  - hyperplane_projection and zero_mean_curvature: Submodule.finrank_add_inf_finrank_orthogonal, Submodule.eq_starProjection_of_mem_of_inner_eq_zero, starProjection_apply_eq_zero_iff, LinearMap.trace_smulRight and ContDiffOn.continuousOn_fderiv_of_isOpen.
+  - tangent_subspace: hasDerivAt_iff_tendsto_slope_zero.
+  - chart_retraction (left inverse): LinearMap.exists_leftInverse_of_injective.
+- No library lemma and no accepted DAG node states any of the 9 new children in the needed form.
+
+DAG.
+- The selected node is at depth 5 (max 6), so its children are leaves.
+- chart_tangentSpace_eq_range_fderiv, dimred_rpd_submanifold_density_one and dimred_rpd_embedded_locally_closed are accepted (candidate commits d626082a69a0, e8842d90b78f, 6da66b1edf6f). They are reused with byte-identical types; the runtime returns existing nodes unchanged and skips their handoffs.
+- codim1_hcp_smooth_charts is decomposing under hypercone_plane, so it is used only in this node's glue.
+- The 9 new codim1_hcp_un_ names are unused everywhere.
+
+Lean.
+- All 12 child types elaborate.
+- The selected frozen type is kernel-checked from them plus smooth_charts, all as axioms.
+- Instances were checked by rfl.
+- hyperplane_projection is already fully proved.

@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.local_unit_rep-a1.pushforward_rep-a1.integral_image_transfer-a1",
+  "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.local_unit_rep-a1.pushforward_rep-a1",
+  "depth": 6,
+  "title": "Change of variables onto a Borel sub-image: ∫_B h = ∫_{G(B′)} g when h = 1_{B′}·J·(g∘G) a.e. on B",
+  "statement": "Let m, d, P ∈ ℕ, let B′ ⊆ B ⊆ ℝ^d be Borel sets, let G : ℝ^d → ℝ^P be continuous on B and injective on B, and let J, h : ℝ^d → ℝ and g : ℝ^P → ℝ. Write H^m := μHE[m] and use Bochner integrals, which take the value 0 for non-integrable functions. Assume:\n- (area formula) ∫_{G(B)} f dH^m = ∫_B J(v)·f(G(v)) dH^m(v) for every f : ℝ^P → ℝ;\n- h(v) = 1_{B′}(v)·J(v)·g(G(v)) for H^m⌞B-a.e. v.\nThen ∫_B h dH^m = ∫_{G(B′)} g dH^m.",
+  "lean_statement": "∀ (m d P : ℕ) (B B' : Set (Euclid d)) (G : Euclid d → Euclid P) (J h : Euclid d → ℝ) (g : Euclid P → ℝ), MeasurableSet B → MeasurableSet B' → B' ⊆ B → ContinuousOn G B → InjOn G B → (∀ f : Euclid P → ℝ, ∫ w in G '' B, f w ∂μHE[m] = ∫ v in B, J v * f (G v) ∂μHE[m]) → (∀ᵐ v ∂(μHE[m].restrict B), h v = B'.indicator (fun y => J y * g (G y)) v) → ∫ v in B, h v ∂μHE[m] = ∫ w in G '' B', g w ∂μHE[m]",
+  "lean_name": "codim1_pfr_setIntegral_image_transfer",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-18e0d65ecd-a1"
+}

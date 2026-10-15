@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.cone_splitting-a1.split_off_spine-a1.minimality_transfer-a1.competitor_mass-a1.box_cancellation-a1",
+  "parent_id": "root.dimension_reduction_results-a1.cone_splitting-a1.split_off_spine-a1.minimality_transfer-a1.competitor_mass-a1",
+  "depth": 6,
+  "title": "Box comparison to W₀: measure comparison off spt(S₀′ − S₀) and cancellation of the finite a·μ₀(B) in [0, ∞]",
+  "statement": "Let P, m ∈ ℕ, let S₀, S₀′ ∈ 𝒟_m(ℝ^P) be represented by IMReps R₀, R₀′ (IMRep univ m), μ₀ := R₀.measure, μ₀′ := R₀′.measure, let W₀, B ⊆ ℝ^P be open with B bounded, spt(S₀′ − S₀) ⊆ W₀ and W₀ ⊆ B (S₀′ − S₀ the contract difference), and let a, b, e ∈ [0, ∞] with b ≤ a and a ≠ ∞. If a·μ₀(B) ≤ (a − b)·μ₀(B) + b·μ₀′(B) + e (truncated subtraction in [0, ∞]), then b·M_{W₀}(S₀) ≤ b·M_{W₀}(S₀′) + e, where M_{W₀} = massOn W₀.",
+  "lean_statement": "∀ (P m : ℕ) (S₀ S₀' : GeometricCurrentOn (univ : Set (Euclid P)) m) (R₀ R₀' : IMRep (univ : Set (Euclid P)) m) (W₀ B : Set (Euclid P)) (a b e : ℝ≥0∞), R₀.Represents S₀ → R₀'.Represents S₀' → IsOpen W₀ → IsOpen B → Bornology.IsBounded B → (S₀' - S₀).support ⊆ W₀ → W₀ ⊆ B → b ≤ a → a ≠ ∞ → a * R₀.measure B ≤ (a - b) * R₀.measure B + b * R₀'.measure B + e → b * S₀.massOn W₀ ≤ b * S₀'.massOn W₀ + e",
+  "lean_name": "dimred_cs_sos_mt_cm_box_cancellation",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-cone-splitting-a1-split-off-spine-cfd4771394-a1"
+}

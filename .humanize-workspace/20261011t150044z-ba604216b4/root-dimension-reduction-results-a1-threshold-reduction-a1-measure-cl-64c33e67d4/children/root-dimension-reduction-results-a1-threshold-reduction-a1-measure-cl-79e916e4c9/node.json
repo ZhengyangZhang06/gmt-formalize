@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.threshold_reduction-a1.measure_class_reduction-a1.threshold_limit-a1.lower_bound_transfer-a1",
+  "parent_id": "root.dimension_reduction_results-a1.threshold_reduction-a1.measure_class_reduction-a1.threshold_limit-a1",
+  "depth": 5,
+  "title": "Lower bounds on balls with moving centres pass to a limit measure dominating compact-set limsups (parent step 7)",
+  "statement": "Let P ∈ ℕ. Let μ and μ_j (j ∈ ℕ) be measures on ℝ^P = Euclid P (Borel σ-algebra) such that limsup_{j→∞} μ_j(K) ≤ μ(K) (limsup in [0, ∞]) for every compact K ⊆ ℝ^P. Let w_j → w in ℝ^P, let s ∈ ℝ, and let h : ℝ → [0, ∞] be continuous. Assume that for all sufficiently large j, h(ρ) ≤ μ_j(B_ρ(w_j)) for every ρ ∈ (0, s), where B denotes an open ball. Then h(t) ≤ μ(B_t(w)) for every t ∈ (0, s).",
+  "lean_statement": "∀ (P : ℕ) (μ : Measure (Euclid P)) (μs : ℕ → Measure (Euclid P)) (ws : ℕ → Euclid P) (w : Euclid P) (s : ℝ) (h : ℝ → ℝ≥0∞), (∀ K : Set (Euclid P), IsCompact K → limsup (fun j => μs j K) atTop ≤ μ K) → Tendsto ws atTop (𝓝 w) → Continuous h → (∀ᶠ j in atTop, ∀ ρ ∈ Ioo 0 s, h ρ ≤ μs j (ball (ws j) ρ)) → ∀ t ∈ Ioo 0 s, h t ≤ μ (ball w t)",
+  "lean_name": "dimred_tr_mcr_tl_lower_bound_transfer",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-threshold-reduction-a1-measure-cl-79e916e4c9-a1"
+}

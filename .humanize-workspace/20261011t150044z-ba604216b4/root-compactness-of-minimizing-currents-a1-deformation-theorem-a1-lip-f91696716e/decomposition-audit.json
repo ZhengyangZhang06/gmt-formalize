@@ -1,0 +1,103 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cmcdt_lpo_pf|IsLipschitzPushforward|instance : Sub|def boundaryMassOn",
+        "norm_fderiv_le_of_lipschitz|tendstoUniformly_iff|tendstoUniformlyOn_iff|cauchySeq_of_le_tendsto_0|instContinuousEvalConst|notMem_iff_infDist_pos",
+        "cmcdt_lpo_pf",
+        "python3 /tmp/pf-independent-audit-3878a920/run_lean.py -o GMT/Ch07/Submission.olean GMT/Ch07/Submission.lean",
+        "python3 /tmp/pf-independent-audit-3878a920/run_lean.py Types.lean",
+        "python3 /tmp/pf-independent-audit-3878a920/run_lean.py AllProofs.lean",
+        "python3 /tmp/pf-independent-audit-3878a920/run_lean.py Assembly.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch06/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Module/Alternating/Topology.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/HausdorffDistance.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-lip-f91696716e/parent-child-handoff.json",
+        "/tmp/pf-independent-audit-3878a920/Types.lean",
+        "/tmp/pf-independent-audit-3878a920/AllProofs.lean",
+        "/tmp/pf-independent-audit-3878a920/Assembly.lean"
+      ],
+      "conclusion": "The split appropriately separates construction of the current and PA from their consequences. All eleven one-line propositions elaborate independently of child implementations, match their prose, and have unreserved bare identifiers. Dependencies, including inherited prerequisites, are correctly directed and acyclic. Fresh Lean 4.35.0-rc3 checks against a rebuilt frozen contract passed for every supplied proof and the exact selected parent assembly. Axiom reports contain only standard axioms and the four immutable inherited interfaces used as test assumptions; no sorryAx or circular parent reliance occurs. The Ch06 search hit is a rectifiable-current specification, not a reusable proof; contrary to the proposal's incidental reference description, Eucl and Euclid abbreviate the same space. The construction agrees with [Simon, Chapter 6, Lemma 2.29](https://web.stanford.edu/class/math285/ts-gmt)."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "approx_data",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type includes all six stated clauses and both identities on the same open neighborhood. Mollification, the derivative bound, uniform convergence and cutoff choice prove them using precisely the inherited Mo and CP interfaces."
+    },
+    {
+      "key": "form_bounds",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Continuity of the finite coefficient-norm formula and compact support give the first bound; exterior differentiation preserves test forms and gives the second. No additional dimension or positivity hypothesis is needed."
+    },
+    {
+      "key": "normal_closure",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Both clauses match exactly. The proof verifies the contract's subtraction instance, mass subadditivity, support inclusions and compactness, and handles degree zero and the double boundary explicitly."
+    },
+    {
+      "key": "pointwise_limit",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The Cauchy estimate constructs a limit, and the epsilon comparison proves convergence to that limit for every permitted approximating sequence. Nonnegativity of the comparison constant is justified; empty support and arbitrary real derivative bounds cause no gap."
+    },
+    {
+      "key": "current",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Common approximants and uniqueness of the pointwise limits establish linearity. The covector and mass bounds supply BC's exact hypothesis, producing a current with the full stated approximation property without assuming the parent operator."
+    },
+    {
+      "key": "identity",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Constant identity approximants satisfy every PA hypothesis, including the derivative bound in dimension zero. Uniqueness of limits and current extensionality prove the exact identity conclusion."
+    },
+    {
+      "key": "sub",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Normal closure justifies applying PA to the difference. Cutoffs around the union of supports provide common data for all three currents, and subtraction of their limits proves the stated law."
+    },
+    {
+      "key": "congr",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Agreement on the support makes the same smooth sequence converge uniformly there to both maps. Applying the explicitly assumed PA twice and using uniqueness proves equality without requiring derivative agreement."
+    },
+    {
+      "key": "mass_support",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The mass argument preserves the requested Lipschitz constant and justifies the ENNReal conversion using finite mass. The support argument treats empty support separately and uses positive distance from the compact image plus LOC. All hypotheses and dependencies match."
+    },
+    {
+      "key": "boundary",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Normality of both currents follows from the supplied mass assumptions and normal_closure. The paired cutoff identities permit PA in consecutive degrees; the resulting sequences agree by the definition of boundary."
+    },
+    {
+      "key": "smooth_approx",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "approx_data supplies one globally uniformly convergent smooth Lipschitz sequence before the test form is chosen. Its cutoffs and derivative bounds satisfy PA, proving precisely the parent's sixth conjunct."
+    }
+  ],
+  "required_changes": []
+}

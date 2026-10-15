@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.hypercone_plane-a1.simons_cone-a1.cone_normal-a1",
+  "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.hypercone_plane-a1.simons_cone-a1",
+  "depth": 6,
+  "title": "Homogeneity of the tangent spaces and of the unit normal of a cone",
+  "statement": "Let P, m ∈ ℕ, A₀ ⊆ ℝ^P a subspace with dim A₀ = m + 1, M ⊆ A₀ with IsEmbeddedSubmanifold 1 m M and tx ∈ M for all x ∈ M, t > 0; let ν : ℝ^P → ℝ^P be C^∞ on some open O ⊇ M, with ν(x) ∈ A₀, |ν(x)| = 1 and ν(x)·v = 0 for every v ∈ tangentSpace M x, for every x ∈ M. Then for every x ∈ M: x ∈ tangentSpace M x; Dν(x)x = 0; and for every t > 0: tangentSpace M (tx) = tangentSpace M x, ν(tx) = ν(x), and t·Dν(tx)v = Dν(x)v for every v ∈ tangentSpace M x.",
+  "lean_statement": "∀ (P m : ℕ) (A₀ : Submodule ℝ (Euclid P)) (M : Set (Euclid P)) (ν : Euclid P → Euclid P), Module.finrank ℝ A₀ = m + 1 → M ⊆ (A₀ : Set (Euclid P)) → IsEmbeddedSubmanifold 1 m M → (∀ t : ℝ, 0 < t → ∀ x ∈ M, t • x ∈ M) → (∃ O : Set (Euclid P), IsOpen O ∧ M ⊆ O ∧ ContDiffOn ℝ (⊤ : ℕ∞) ν O) → (∀ x ∈ M, ν x ∈ A₀ ∧ ‖ν x‖ = 1 ∧ ∀ v ∈ tangentSpace M x, inner ℝ (ν x) v = 0) → ∀ x ∈ M, x ∈ tangentSpace M x ∧ fderiv ℝ ν x x = 0 ∧ ∀ t : ℝ, 0 < t → tangentSpace M (t • x) = tangentSpace M x ∧ ν (t • x) = ν x ∧ ∀ v ∈ tangentSpace M x, t • fderiv ℝ ν (t • x) v = fderiv ℝ ν x v",
+  "lean_name": "codim1_hcp_sc_cone_normal_homogeneous",
+  "depends_on": [
+    "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.hypercone_plane-a1.simons_cone-a1.normal_complement-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.hypercone_plane-a1.simons_cone-a1.normal_complement-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-sim-2a2e87a3e6-a1"
+}

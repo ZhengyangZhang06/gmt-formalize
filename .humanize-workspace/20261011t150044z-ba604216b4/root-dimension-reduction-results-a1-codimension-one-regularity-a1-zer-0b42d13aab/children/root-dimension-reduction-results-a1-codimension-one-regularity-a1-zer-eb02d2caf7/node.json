@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.zero_scale_limit_plane-a1.blowup_region-a1",
+  "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.zero_scale_limit_plane-a1",
+  "depth": 4,
+  "title": "Blow-ups of a region boundary are region boundaries: η_{y,λ#}∂[[E]] = ∂[[η_{y,λ}(E)]] with orientation ξ_N(y + λ·)",
+  "statement": "Let P, n ∈ ℕ, let U, E ⊆ ℝ^P be arbitrary sets, ξ_N : ℝ^P → Λ_{n+1}(ℝ^P), T ∈ 𝒟_n(U) (GeometricCurrentOn U n), y ∈ ℝ^P and λ > 0. Let η := η_{y,λ} (dilation y λ, η(z) = λ^{−1}(z − y)) and η_#T := blowUp T y λ ∈ 𝒟_n(η(U)). If T(ω) = ∫_E ξ_N(z)(dω(z)) dH^{n+1}(z) for every ω ∈ 𝒟^n(U) (IsBoundaryOfRegion T E ξ_N, H^{n+1} = μHE[n+1]), then η_#T(ω) = ∫_{η(E)} ξ_N(y + λw)(dω(w)) dH^{n+1}(w) for every ω ∈ 𝒟^n(η(U)), i.e. IsBoundaryOfRegion (blowUp T y λ) (η(E)) (w ↦ ξ_N(y + λw)).",
+  "lean_statement": "∀ (P n : ℕ) (U E : Set (Euclid P)) (ξN : Euclid P → MultiVector P (n + 1)) (T : GeometricCurrentOn U n) (y : Euclid P) (lam : ℝ) (hlam : 0 < lam), IsBoundaryOfRegion T E ξN → IsBoundaryOfRegion (blowUp T y lam hlam.ne') (dilation y lam '' E) (fun w => ξN (y + lam • w))",
+  "lean_name": "codim1_zsl_blowUp_isBoundaryOfRegion",
+  "depends_on": [
+    "root.density_and_tangent_cones-a1.blowup_scaling-a1.testform_correspondence-a1",
+    "root.half_space_cone_lies_in_boundary-a1.tangent_projection_aemeasurable-a1.blowup_integral_continuous-a1.blowup_change_of_variables-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.density_and_tangent_cones-a1.blowup_scaling-a1.testform_correspondence-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-scaling-a1-testform-correspondence-a1-a1",
+      "result_commit": "5e184fbc2dc0f26dbd9ce6b79feabd198b8ba518",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.half_space_cone_lies_in_boundary-a1.tangent_projection_aemeasurable-a1.blowup_integral_continuous-a1.blowup_change_of_variables-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-half-space-cone-lies-in-boundary-a1-tangent-projection-aemeasura-a52ac21faf-a1",
+      "result_commit": "713eebc5c1a6b6da58d0d5ede7e1174c7c83e7cc",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-zer-eb02d2caf7-a1"
+}

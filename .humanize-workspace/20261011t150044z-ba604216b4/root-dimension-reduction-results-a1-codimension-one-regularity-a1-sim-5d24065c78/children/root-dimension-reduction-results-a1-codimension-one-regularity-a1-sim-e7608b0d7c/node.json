@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.area_comparison-a1.submanifold_approx_tangent-a1.chart_localization-a1",
+  "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.area_comparison-a1.submanifold_approx_tangent-a1",
+  "depth": 6,
+  "title": "Near x = ψ(v₀), the set N ∩ W coincides with the chart image of any open ball around v₀ contained in V (parent step 3)",
+  "statement": "Let P, m ∈ ℕ, N, W, W₀ ⊆ ℝ^P, V ⊆ ℝ^m, ψ : ℝ^m → ℝ^P, v₀ ∈ V and ρ > 0. Assume W and W₀ are open, ψ is continuous on V and injective on V, ψ(V) = W₀ ∩ N, V ∩ ψ^{-1}(K) is compact for every compact K ⊆ W₀, ψ(v₀) ∈ W, and the open ball B_ρ(v₀) is contained in V. Then there is δ > 0 with (N ∩ W) ∩ B_δ(ψ(v₀)) = ψ(B_ρ(v₀)) ∩ B_δ(ψ(v₀)).",
+  "lean_statement": "∀ (P m : ℕ) (N W W₀ : Set (Euclid P)) (V : Set (Euclid m)) (ψ : Euclid m → Euclid P) (v₀ : Euclid m) (ρ : ℝ), IsOpen W → IsOpen W₀ → ContinuousOn ψ V → InjOn ψ V → ψ '' V = W₀ ∩ N → (∀ K ⊆ W₀, IsCompact K → IsCompact (V ∩ ψ ⁻¹' K)) → v₀ ∈ V → ψ v₀ ∈ W → 0 < ρ → ball v₀ ρ ⊆ V → ∃ δ : ℝ, 0 < δ ∧ N ∩ W ∩ ball (ψ v₀) δ = ψ '' ball v₀ ρ ∩ ball (ψ v₀) δ",
+  "lean_name": "codim1_ac_sat_chart_localization",
+  "depends_on": [
+    "root.density_one_implies_regular-a1.mean_curvature_monotonicity-a1.chart_tangent_space-a1.inverse_continuity-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.density_one_implies_regular-a1.mean_curvature_monotonicity-a1.chart_tangent_space-a1.inverse_continuity-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-mean-curvature-monotonicity-a1-ch-0f11358db9-a1",
+      "result_commit": "5e4b215846243d699169f3e42b95b8e007ea2d70",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-sim-e7608b0d7c-a1"
+}

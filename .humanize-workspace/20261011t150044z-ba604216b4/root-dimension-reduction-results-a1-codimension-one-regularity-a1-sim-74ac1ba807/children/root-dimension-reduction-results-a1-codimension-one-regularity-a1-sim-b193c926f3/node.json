@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.hypercone_plane-a1.stability-a1.variation_field-a1",
+  "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.hypercone_plane-a1.stability-a1",
+  "depth": 6,
+  "title": "Admissible ambient extension Z of the normal variation ζν, with its tangential derivative",
+  "statement": "Admissible ambient extension of a normal variation. Data: P ∈ ℕ; U, O, M, C ⊆ ℝ^P; ν : ℝ^P → ℝ^P; ζ : ℝ^P → ℝ. Hypotheses: U and O are open; M ⊆ U and M ⊆ O; ν is C^∞ on O; |ν(x)| = 1 for x ∈ M; ζ is C^∞ on ℝ^P; C is compact, C ⊆ M, and ζ(x) = 0 for every x ∈ M ∖ C. Conclusion: there is a C^∞ map Z : ℝ^P → ℝ^P with compact support and tsupport Z ⊆ U such that (a) Z(x) = ζ(x)ν(x) for every x ∈ M; (b) DZ(x)τ = (Dζ(x)τ)ν(x) + ζ(x)Dν(x)τ for every x ∈ M and τ ∈ span(tangentSpace M x); (c) for every x ∈ M with x ∉ tsupport Z, ζ(x) = 0 and Dζ(x)τ = 0 for every τ ∈ span(tangentSpace M x). Here D = fderiv ℝ.",
+  "lean_statement": "∀ (P : ℕ) (U O M C : Set (Euclid P)) (ν : Euclid P → Euclid P) (ζ : Euclid P → ℝ), IsOpen U → IsOpen O → M ⊆ U → M ⊆ O → ContDiffOn ℝ (⊤ : ℕ∞) ν O → (∀ x ∈ M, ‖ν x‖ = 1) → ContDiff ℝ (⊤ : ℕ∞) ζ → IsCompact C → C ⊆ M → (∀ x ∈ M, x ∉ C → ζ x = 0) → ∃ Z : Euclid P → Euclid P, ContDiff ℝ (⊤ : ℕ∞) Z ∧ HasCompactSupport Z ∧ tsupport Z ⊆ U ∧ (∀ x ∈ M, Z x = ζ x • ν x) ∧ (∀ x ∈ M, ∀ τ ∈ Submodule.span ℝ (tangentSpace M x), fderiv ℝ Z x τ = fderiv ℝ ζ x τ • ν x + ζ x • fderiv ℝ ν x τ) ∧ (∀ x ∈ M, x ∉ tsupport Z → ζ x = 0 ∧ ∀ τ ∈ Submodule.span ℝ (tangentSpace M x), fderiv ℝ ζ x τ = 0)",
+  "lean_name": "codim1_hcp_stab_variation_field",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-sim-b193c926f3-a1"
+}

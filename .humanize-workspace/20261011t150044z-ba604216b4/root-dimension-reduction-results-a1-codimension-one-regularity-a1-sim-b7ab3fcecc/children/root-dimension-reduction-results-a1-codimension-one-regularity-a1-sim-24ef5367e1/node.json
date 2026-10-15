@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.offvertex_rep-a1.orientation_glue-a1",
+  "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.offvertex_rep-a1",
+  "depth": 5,
+  "title": "Local multiplicity-one representations by an embedded C¹ submanifold glue to one continuous orientation (parent steps 4–5, F3)",
+  "statement": "Let P, m ∈ ℕ, C ∈ 𝒟_m(ℝ^P) (GeometricCurrentOn univ m), M ⊆ ℝ^P a Borel embedded C¹ m-dimensional submanifold, ρ : ℝ^P → ℝ, and ξ_y : ℝ^P → Λ_m(ℝ^P) (ξs y) for each y ∈ ℝ^P. Write B_y := B_{ρ(y)}(y). Assume for every y ∈ M: ρ(y) > 0; ξ_y is an orientation of M ∩ B_y (IsOrientation m (M ∩ B_y) ξ_y); H^m(M ∩ B_y) < ∞; and C(ω) = ∫_{M ∩ B_y} ⟨ω(x), ξ_y(x)⟩ dH^m(x) for every ω ∈ 𝒟^m(ℝ^P) with tsupport ω ⊆ B_y (H^m = μHE[m]). Then there is ξ : ℝ^P → Λ_m(ℝ^P) such that: ξ is an orientation of M (IsOrientation m M ξ); ξ = ξ_y on M ∩ B_y for every y ∈ M; and C(ω) = ∫_M ⟨ω(x), ξ(x)⟩ dH^m(x) for every y ∈ M and every ω ∈ 𝒟^m(ℝ^P) with tsupport ω ⊆ B_y.",
+  "lean_statement": "∀ (P m : ℕ) (C : GeometricCurrentOn (univ : Set (Euclid P)) m) (M : Set (Euclid P)) (ρ : Euclid P → ℝ) (ξs : Euclid P → Euclid P → MultiVector P m), IsEmbeddedSubmanifold 1 m M → MeasurableSet M → (∀ y ∈ M, 0 < ρ y ∧ IsOrientation m (M ∩ ball y (ρ y)) (ξs y) ∧ μHE[m] (M ∩ ball y (ρ y)) ≠ ∞ ∧ ∀ ω : TestFormOn (univ : Set (Euclid P)) m, tsupport (ω : DifferentialForm (Euclid P) m) ⊆ ball y (ρ y) → C ω = ∫ x in M ∩ ball y (ρ y), ξs y x ((ω : DifferentialForm (Euclid P) m) x) ∂μHE[m]) → ∃ ξ : Euclid P → MultiVector P m, IsOrientation m M ξ ∧ (∀ y ∈ M, ∀ x ∈ M ∩ ball y (ρ y), ξ x = ξs y x) ∧ ∀ y ∈ M, ∀ ω : TestFormOn (univ : Set (Euclid P)) m, tsupport (ω : DifferentialForm (Euclid P) m) ⊆ ball y (ρ y) → C ω = ∫ x in M, ξ x ((ω : DifferentialForm (Euclid P) m) x) ∂μHE[m]",
+  "lean_name": "codim1_ovr_orientation_glue",
+  "depends_on": [
+    "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.offvertex_rep-a1.submanifold_local-a1",
+    "root.density_one_implies_regular-a1.imrep_mass_and_support-a1.unit_orientation_duality-a1",
+    "root.regular_set_dense-a1.integer_combination-a1.orientation_sign-a1",
+    "root.dimension_reduction_results-a1.regular_point_density-a1.density_one-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.offvertex_rep-a1.submanifold_local-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.density_one_implies_regular-a1.imrep_mass_and_support-a1.unit_orientation_duality-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-imrep-mass-and-support-a1-unit-or-24edf309fb-a1",
+      "result_commit": "9c8432cb0101c6d41f824c0d8191b92a92dbdd80",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.regular_set_dense-a1.integer_combination-a1.orientation_sign-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-regular-set-dense-a1-integer-combination-a1-orientation-sign-a1-a1",
+      "result_commit": "fe95347baaed6a2cf2ecde4455e2b32f361fde51",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.dimension_reduction_results-a1.regular_point_density-a1.density_one-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-regular-point-density-a1-density-one-a1-a1",
+      "result_commit": "e8842d90b78f15ebdbe728429ce98fccfaa6665c",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-sim-24ef5367e1-a1"
+}
