@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.flat_decomposition-a1.cauchy_subseq-a1",
+  "parent_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.flat_decomposition-a1",
+  "depth": 5,
+  "title": "A flat-Cauchy subsequence from finite nets, with real error currents and supports in a fixed compact set (Simon 7.2, (5))",
+  "statement": "Let P, m ∈ ℕ, n := m + 1, let L ⊆ ℝ^P be compact and let X_j ∈ 𝒟_n(ℝ^P) (j ∈ ℕ). Suppose the following holds for every ε ∈ (0, ∞]: there is a finite set 𝒬 ⊆ 𝒟_n(ℝ^P) such that for every j there are Q ∈ 𝒬, an integer multiplicity R ∈ 𝒟_{n+1}(ℝ^P) with spt R ⊆ L, and a current S ∈ 𝒟_n(ℝ^P), with X_j − Q − S = ∂R and M(R) + M(S) ≤ ε. Then there is a strictly increasing φ : ℕ → ℕ such that for every r ∈ ℕ there are an integer multiplicity R_r ∈ 𝒟_{n+1}(ℝ^P) with spt R_r ⊆ L and a current S_r ∈ 𝒟_n(ℝ^P) with X_{φ(r+1)} − X_{φ(r)} − S_r = ∂R_r and M(R_r) + M(S_r) ≤ 2^{−r}, written (2⁻¹)^r in [0, ∞]. M = mass = M_{ℝ^P}.",
+  "lean_statement": "∀ (P m : ℕ) (L : Set (Euclid P)) (X : ℕ → GeometricCurrentOn (univ : Set (Euclid P)) (m + 1)), IsCompact L → (∀ ε : ℝ≥0∞, 0 < ε → ∃ 𝒬 : Set (GeometricCurrentOn (univ : Set (Euclid P)) (m + 1)), 𝒬.Finite ∧ ∀ j, ∃ Q ∈ 𝒬, ∃ (R : GeometricCurrentOn (univ : Set (Euclid P)) (m + 2)) (S : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1)), IsIntegerMultiplicity R ∧ R.support ⊆ L ∧ X j - Q - S = R.boundary ∧ R.mass + S.mass ≤ ε) → ∃ φ : ℕ → ℕ, StrictMono φ ∧ ∀ r, ∃ (R : GeometricCurrentOn (univ : Set (Euclid P)) (m + 2)) (S : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1)), IsIntegerMultiplicity R ∧ R.support ⊆ L ∧ X (φ (r + 1)) - X (φ r) - S = R.boundary ∧ R.mass + S.mass ≤ (2⁻¹ : ℝ≥0∞) ^ r",
+  "lean_name": "dtc_bc_lc_fd_cauchy_subseq",
+  "depends_on": [
+    "root.compactness_of_minimizing_currents-a1.im_calculus-a1",
+    "root.compactness_of_minimizing_currents-a1.flat_convergence-a1.cauchy_subseq-a1.diagonal_subseq-a1",
+    "root.density_and_tangent_cones-a1.vanish_off_support-a1",
+    "root.regular_set_dense-a1.constant_multiplicity_reduction-a1.support_of_vanishing-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.compactness_of_minimizing_currents-a1.im_calculus-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-im-calculus-a1-a1",
+      "result_commit": "2af75d6921b01a9c889a45103692ca0af95ea394",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.compactness_of_minimizing_currents-a1.flat_convergence-a1.cauchy_subseq-a1.diagonal_subseq-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-flat-convergence-a1-cauchy-81bbc80940-a1",
+      "result_commit": "b046f226689afca88f2ceb966c9010ac5e581de0",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.density_and_tangent_cones-a1.vanish_off_support-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-vanish-off-support-a1-a1",
+      "result_commit": "44ef61f79e2168134f8a5a6d6520baba56052d67",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.regular_set_dense-a1.constant_multiplicity_reduction-a1.support_of_vanishing-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-regular-set-dense-a1-constant-multiplicity-reduction-a1-support-a67ad69f81-a1",
+      "result_commit": "02c6122c94d0280a6288d299659b2dab7b59e109",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-compari-e77772e34b-a1"
+}

@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.minimizing_and_measures-a1.mass_lsc-a1",
+  "parent_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.minimizing_and_measures-a1",
+  "depth": 4,
+  "title": "Lower semicontinuity of mass under weak convergence on exhausting domains, along any subsequence (parent's L3; Simon 6.2.14)",
+  "statement": "Let P, n ∈ ℕ. For j ∈ ℕ let U_j ⊆ ℝ^P be any set and S_j ∈ 𝒟_n(U_j) (GeometricCurrentOn (U_j) n), and let C ∈ 𝒟_n(ℝ^P). Assume (1) for every R ∈ ℝ, closedBall(0, R) ⊆ U_j for all sufficiently large j; and (2) S_j ⇀ C in ℝ^P in the sense of ConvergesWeakly: currentEval(S_j, ω) → C(ω) for every ω ∈ 𝒟ⁿ(ℝ^P). Then for every strictly increasing φ : ℕ → ℕ and every set O ⊆ ℝ^P, M_O(C) ≤ liminf_{i→∞} M_O(S_{φ(i)}) in [0, ∞]. Here M_O(T) = T.massOn O = sup{max(T(ω), 0) : ω ∈ 𝒟ⁿ(dom T), tsupport ω ⊆ O, |ω(x)| ≤ 1 for all x} ∈ [0, ∞] (SimonGMT massOn, Simon 6.2.5, Euclidean coefficient norm), spt is GeometricCurrentOn.support (Simon 6.2.11), and currentEval(S_j, ω) = S_j(ω) if ω is a test form with tsupport ω ⊆ U_j and 0 otherwise.",
+  "lean_statement": "∀ (P n : ℕ) (Us : ℕ → Set (Euclid P)) (Ss : (j : ℕ) → GeometricCurrentOn (Us j) n) (C : GeometricCurrentOn (univ : Set (Euclid P)) n), (∀ R : ℝ, ∀ᶠ j in atTop, closedBall (0 : Euclid P) R ⊆ Us j) → ConvergesWeakly Ss C → ∀ φ : ℕ → ℕ, StrictMono φ → ∀ O : Set (Euclid P), C.massOn O ≤ liminf (fun i => (Ss (φ i)).massOn O) atTop",
+  "lean_name": "dtc_bc_mm_massOn_le_liminf",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-compactness-a1-minimizing-an-e6da266120-a1"
+}

@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.isodiametric_bound-a1.steiner_volume-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.isodiametric_bound-a1",
+  "depth": 5,
+  "title": "Steiner symmetrization preserves Lebesgue measure (Cavalieri)",
+  "statement": "Let d ∈ ℕ, j ∈ Fin d and let A ⊆ ℝ^d = EuclideanSpace ℝ (Fin d) be compact. Let A^j_y := {t ∈ ℝ : y[j↦t] ∈ A}, where y[j↦t] is y with its j-th coordinate replaced by t (Lean: WithLp.toLp 2 (Function.update y.ofLp j t)), and S_j(A) := {y ∈ ℝ^d : A^j_y ≠ ∅ and |y_j| ≤ (L¹(A^j_y)).toReal/2}. If S_j(A) is measurable, then L^d(S_j(A)) = L^d(A), where L^d is the volume (Lebesgue measure) of EuclideanSpace ℝ (Fin d).",
+  "lean_statement": "∀ (d : ℕ) (j : Fin d) (A : Set (Euclid d)), IsCompact A → MeasurableSet {y : Euclid d | {t : ℝ | WithLp.toLp 2 (Function.update y.ofLp j t) ∈ A}.Nonempty ∧ |y j| ≤ (volume {t : ℝ | WithLp.toLp 2 (Function.update y.ofLp j t) ∈ A}).toReal / 2} → volume {y : Euclid d | {t : ℝ | WithLp.toLp 2 (Function.update y.ofLp j t) ∈ A}.Nonempty ∧ |y j| ≤ (volume {t : ℝ | WithLp.toLp 2 (Function.update y.ofLp j t) ∈ A}).toReal / 2} = volume A",
+  "lean_name": "cbr_ci_iso_steiner_volume_eq",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-b1e99d8ae2-a1"
+}

@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.de_giorgi-a1.flat_tangent_density-a1",
+  "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.de_giorgi-a1",
+  "depth": 5,
+  "title": "A flat tangent measure gives density one and the cone condition (Simon Ch. 3, Remark 1.5(3))",
+  "statement": "Let m ≥ 1, μ a Borel measure on ℝ^{m+1}, y ∈ ℝ^{m+1} and v ∈ ℝ^{m+1} with |v| = 1. Assume μ(B̄_{r₀}(y)) < ∞ for some r₀ > 0, and r^{-m} ∫ f(r^{-1}(z − y)) dμ(z) → ∫_{(span{v})^⊥} f dH^m as r ↓ 0 for every continuous compactly supported f : ℝ^{m+1} → ℝ (H^m = μHE[m]). Then, as r ↓ 0, μ(B̄_r(y))/(ω_m r^m) → 1 and μ(B_r(y))/(ω_m r^m) → 1 in [0, ∞] (ω_m = unitBallVolume m), and for every α > 0, μ({z : α|z − y| ≤ |⟨z − y, v⟩|} ∩ B̄_r(y))/r^m → 0.",
+  "lean_statement": "∀ (m : ℕ) (μ : Measure (Euclid (m + 1))) (y v : Euclid (m + 1)), 1 ≤ m → ‖v‖ = 1 → (∃ r₀ : ℝ, 0 < r₀ ∧ μ (closedBall y r₀) ≠ ∞) → (∀ f : Euclid (m + 1) → ℝ, Continuous f → HasCompactSupport f → Tendsto (fun r : ℝ => (r ^ m)⁻¹ * ∫ z, f (r⁻¹ • (z - y)) ∂μ) (𝓝[>] 0) (𝓝 (∫ z in ((Submodule.span ℝ {v})ᗮ : Set (Euclid (m + 1))), f z ∂μHE[m]))) → Tendsto (fun r : ℝ => μ (closedBall y r) / (unitBallVolume m * ENNReal.ofReal (r ^ m))) (𝓝[>] 0) (𝓝 1) ∧ Tendsto (fun r : ℝ => μ (ball y r) / (unitBallVolume m * ENNReal.ofReal (r ^ m))) (𝓝[>] 0) (𝓝 1) ∧ ∀ α : ℝ, 0 < α → Tendsto (fun r : ℝ => μ ({z | α * ‖z - y‖ ≤ |inner ℝ (z - y) v|} ∩ closedBall y r) / ENNReal.ofReal (r ^ m)) (𝓝[>] 0) (𝓝 0)",
+  "lean_name": "codim1_rdo_dg_flat_tangent_density_cone",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-96896b0cee-a1"
+}

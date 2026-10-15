@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.slicing-a1.lipschitz_leibniz-a1.immersion_antilipschitz-a1",
+  "parent_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.slicing-a1.lipschitz_leibniz-a1",
+  "depth": 6,
+  "title": "An injective C¹ immersion is anti-Lipschitz on compact sets (supplied step 4(b), \"Bi-Lipschitz chart\")",
+  "statement": "Let P, N ∈ ℕ, ψ : ℝ^N → ℝ^P be C¹ (ContDiff ℝ 1 ψ) and C ⊆ ℝ^N compact. Suppose ψ is injective on C and Dψ(y) = fderiv ℝ ψ y is injective for every y ∈ C. Then there is c > 0 with c|a − b| ≤ |ψ(a) − ψ(b)| for all a, b ∈ C.",
+  "lean_statement": "∀ (P N : ℕ) (ψ : Euclid N → Euclid P) (C : Set (Euclid N)), ContDiff ℝ 1 ψ → IsCompact C → InjOn ψ C → (∀ y ∈ C, Injective (fderiv ℝ ψ y)) → ∃ c : ℝ, 0 < c ∧ ∀ a ∈ C, ∀ b ∈ C, c * ‖a - b‖ ≤ ‖ψ a - ψ b‖",
+  "lean_name": "dtc_bc_lc_sl_ll_immersion_antilipschitz",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-compari-5cb575131b-a1"
+}
