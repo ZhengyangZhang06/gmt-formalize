@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.tilt_excess_step-a1.graph_weak_harmonic-a1",
+  "parent_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.tilt_excess_step-a1",
+  "depth": 5,
+  "title": "The Lipschitz approximation is approximately weakly harmonic",
+  "statement": "Let n ≥ 1, k ≥ 0, U ⊆ ℝ^{n+k} any set, W ⊆ U open, R = (M, θ, ξ_R) an integer multiplicity triple in U (IMRep U n) with μ := R.measure = θHⁿ⌞M (Hⁿ = μHE[n]), κ ∈ ℝ and H : ℝ^{n+k} → ℝ^{n+k} μ-a.e. strongly measurable with |H(x)| ≤ κ for all x. Assume R.firstVariation X = −∫⟨X, H⟩dμ for every C¹ compactly supported X with tsupport X ⊆ W, and that x ↦ p_x (projection onto T_xM := approxTangentPlane n M x) is μ-a.e. strongly measurable. Let ξ ∈ ℝ^{n+k}, r > 0 with B_r(ξ) ⊆ W, real numbers e, a, m ≥ 0, T an n-dimensional subspace, ι : ℝⁿ → ℝ^{n+k} and ι' : ℝᵏ → ℝ^{n+k} linear isometries with ⟨ιv, ι'w⟩ = 0 and ιv ∈ T for all v, w, and f : ℝⁿ → ℝᵏ with |f(v) − f(w)| ≤ |v − w| and |f(v)| ≤ r/4 for all v, w. Put Φ(v) := ξ + ιv + ι'f(v), F := Φ(ℝⁿ), fʲ := EuclideanSpace.proj j ∘ f. Assume: (height) |(x − ξ) − p_T(x − ξ)| ≤ r/4 for x ∈ spt μ ∩ B_r(ξ); (tangent identification) for μ-a.e. x ∈ B_r(ξ) and every v with x = Φ(v), f is differentiable at v and T_xM = LinearMap.range(ι + ι'∘Df(v)); θ = 1 μ-a.e. on B_r(ξ); Hⁿ((spt μ ∩ W) ∖ M) = 0; ∫_{B_r(ξ)} Σ_i|p_xe_i − p_Te_i|² dμ ≤ e (lower integral of ENNReal.ofReal; e_i = EuclideanSpace.single i 1); μ(B_r(ξ) ∖ F) + Hⁿ((F ∖ spt μ) ∩ B_r(ξ)) ≤ a; and μ(B_r(ξ)) ≤ m (the last three as ENNReal inequalities with ENNReal.ofReal on the right). Then, with D := B̆ⁿ_{r/2}(0) (open ball of ℝⁿ) and Bochner integrals: (E) for every j ∈ Fin k: ∫_D ‖Dfʲ(v)‖² dv ≤ 2e + a; (W) for every j ∈ Fin k, every C¹ function ζ : ℝⁿ → ℝ with compact support and tsupport ζ ⊆ D, and every G ∈ ℝ with ‖Dζ(v)‖ ≤ G for all v: |∫_D Σ_{i=1}^{n} ∂_ifʲ(v)∂_iζ(v) dv| ≤ G((2 + 2^{n+1}k)(e + a) + κrm), where ∂_ig(v) := (fderiv ℝ g v)(e_i).",
+  "lean_statement": "∀ (n k : ℕ), 0 < n → ∀ (U W : Set (Euclid (n + k))) (R : IMRep U n) (H : Euclid (n + k) → Euclid (n + k)) (κ : ℝ) (ξ : Euclid (n + k)) (r e a m : ℝ) (T : Submodule ℝ (Euclid (n + k))) (ι : Euclid n →ₗᵢ[ℝ] Euclid (n + k)) (ι' : Euclid k →ₗᵢ[ℝ] Euclid (n + k)) (f : Euclid n → Euclid k), IsOpen W → W ⊆ U → AEStronglyMeasurable H R.measure → (∀ x, ‖H x‖ ≤ κ) → (∀ X : Euclid (n + k) → Euclid (n + k), ContDiff ℝ 1 X → HasCompactSupport X → tsupport X ⊆ W → R.firstVariation X = -∫ x, inner ℝ (X x) (H x) ∂R.measure) → AEStronglyMeasurable (fun x => (approxTangentPlane n R.carrier x).starProjection) R.measure → 0 < r → closedBall ξ r ⊆ W → 0 ≤ e → 0 ≤ a → 0 ≤ m → Module.finrank ℝ T = n → (∀ v w, inner ℝ (ι v) (ι' w) = 0) → (∀ v, ι v ∈ T) → (∀ v w, ‖f v - f w‖ ≤ ‖v - w‖) → (∀ v, ‖f v‖ ≤ r / 4) → (∀ x ∈ R.measure.support ∩ closedBall ξ r, ‖(x - ξ) - T.starProjection (x - ξ)‖ ≤ r / 4) → (∀ᵐ x ∂R.measure, x ∈ closedBall ξ r → ∀ v : Euclid n, x = ξ + ι v + ι' (f v) → DifferentiableAt ℝ f v ∧ approxTangentPlane n R.carrier x = LinearMap.range (ι.toLinearMap + ι'.toLinearMap ∘ₗ (fderiv ℝ f v).toLinearMap)) → (∀ᵐ x ∂R.measure, x ∈ closedBall ξ r → R.mult x = 1) → μHE[n] ((R.measure.support ∩ W) \\ R.carrier) = 0 → ∫⁻ x in closedBall ξ r, ENNReal.ofReal (∑ i : Fin (n + k), ‖(approxTangentPlane n R.carrier x).starProjection (EuclideanSpace.single i (1 : ℝ)) - T.starProjection (EuclideanSpace.single i (1 : ℝ))‖ ^ 2) ∂R.measure ≤ ENNReal.ofReal e → R.measure (closedBall ξ r \\ range (fun v => ξ + ι v + ι' (f v))) + μHE[n] ((range (fun v => ξ + ι v + ι' (f v)) \\ R.measure.support) ∩ closedBall ξ r) ≤ ENNReal.ofReal a → R.measure (closedBall ξ r) ≤ ENNReal.ofReal m → (∀ j : Fin k, ∫ v in ball (0 : Euclid n) (r / 2), ‖fderiv ℝ (fun v => EuclideanSpace.proj j (f v)) v‖ ^ 2 ≤ 2 * e + a) ∧ ∀ (j : Fin k) (ζ : Euclid n → ℝ) (G : ℝ), ContDiff ℝ 1 ζ → HasCompactSupport ζ → tsupport ζ ⊆ ball (0 : Euclid n) (r / 2) → (∀ v, ‖fderiv ℝ ζ v‖ ≤ G) → |∫ v in ball (0 : Euclid n) (r / 2), ∑ i : Fin n, fderiv ℝ (fun v => EuclideanSpace.proj j (f v)) v (EuclideanSpace.single i (1 : ℝ)) * fderiv ℝ ζ v (EuclideanSpace.single i (1 : ℝ))| ≤ G * ((2 + 2 ^ (n + 1) * k) * (e + a) + κ * r * m)",
+  "lean_name": "dorag_tes_graph_weak_harmonic",
+  "depends_on": [
+    "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.tilt_excess_step-a1.graph_variation-a1",
+    "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.tilt_excess_step-a1.graph_transfer-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.tilt_excess_step-a1.graph_variation-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.tilt_excess_step-a1.graph_transfer-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-be8be2089d-a1"
+}

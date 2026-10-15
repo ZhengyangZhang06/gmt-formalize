@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_sector_endpoint_density-a1.flux_density-a1.identify_constant-a1",
+  "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_sector_endpoint_density-a1.flux_density-a1",
+  "depth": 5,
+  "title": "A density equal to c·p₁ with box limit 4m equals m·p₁",
+  "statement": "Let 0 < s ≤ 1, c ∈ ℝ, m ∈ ℕ, H : ℝ² → [0,∞] and I : ℝ → [0,∞]. Put B := (1 − s/8, 1 + s/8) × (−s, s), B' := (1 − s/8, 1 + s/8) × (−s/8, s/8) and Sq(s') := (1 − s', 1 + s') × (−s', s'). Assume (a) H(p) < ∞ for Lebesgue-a.e. p; (b) toReal(H(p)) = c·p_1 for a.e. p ∈ B; (c) ∫_{Sq(s')} H dp = I(s') for every s' ∈ (0, s/8]; (d) I(s')/ofReal(s'²) → 4m in [0,∞] as s' → 0⁺. Then H(p) = ofReal(m·p_1) for a.e. p ∈ B'.",
+  "lean_statement": "∀ (s c : ℝ) (m : ℕ) (H : ℝ × ℝ → ℝ≥0∞) (I : ℝ → ℝ≥0∞), 0 < s → s ≤ 1 → (∀ᵐ p : ℝ × ℝ, H p ≠ ∞) → (∀ᵐ p : ℝ × ℝ, p ∈ Ioo (1 - s / 8) (1 + s / 8) ×ˢ Ioo (-s) s → (H p).toReal = c * p.1) → (∀ s' : ℝ, 0 < s' → s' ≤ s / 8 → ∫⁻ p in Ioo (1 - s') (1 + s') ×ˢ Ioo (-s') s', H p = I s') → Tendsto (fun s' : ℝ => I s' / ENNReal.ofReal (s' ^ 2)) (𝓝[>] 0) (𝓝 (4 * (m : ℝ≥0∞))) → ∀ᵐ p : ℝ × ℝ, p ∈ Ioo (1 - s / 8) (1 + s / 8) ×ˢ Ioo (-(s / 8)) (s / 8) → H p = ENNReal.ofReal ((m : ℝ) * p.1)",
+  "lean_name": "idtp_cse_fd_identify_constant",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-a151e6a30b-a1"
+}

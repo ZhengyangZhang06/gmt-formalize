@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.two_dim_cone_density-a1.no_infinite_planar_pieces-a1.local_comparison-a1",
+  "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.two_dim_cone_density-a1.no_infinite_planar_pieces-a1",
+  "depth": 5,
+  "title": "Comparison of two measures on open subsets of small balls extends to a Borel set",
+  "statement": "Let P ∈ ℕ, let μ and ν be Borel measures on ℝ^P (Measure (Euclid P)), and let D ⊆ ℝ^P be a Borel set. Assume μ(K) ≠ ∞ for every compact K ⊆ ℝ^P, and that every w ∈ D has some ε > 0 such that ν(W) ≤ μ(W) for every open set W ⊆ B_ε(w). Then ν(D) ≤ μ(D).",
+  "lean_statement": "∀ (P : ℕ) (μ ν : Measure (Euclid P)) (D : Set (Euclid P)), (∀ K : Set (Euclid P), IsCompact K → μ K ≠ ∞) → MeasurableSet D → (∀ w ∈ D, ∃ ε : ℝ, 0 < ε ∧ ∀ W : Set (Euclid P), IsOpen W → W ⊆ ball w ε → ν W ≤ μ W) → ν D ≤ μ D",
+  "lean_name": "idtp_tdc_nipp_local_comparison",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-2a7a97cacf-a1"
+}

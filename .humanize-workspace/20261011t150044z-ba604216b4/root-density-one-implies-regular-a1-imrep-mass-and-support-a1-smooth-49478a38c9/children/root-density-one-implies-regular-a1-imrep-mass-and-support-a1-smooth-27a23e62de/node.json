@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.imrep_mass_and_support-a1.smooth_unit_approximation-a1.continuous_unit_extension-a1",
+  "parent_id": "root.density_one_implies_regular-a1.imrep_mass_and_support-a1.smooth_unit_approximation-a1",
+  "depth": 4,
+  "title": "Compactly supported continuous unit-norm extension of a covector field from a compact set",
+  "statement": "Let P, n be natural numbers, Λ := Covector (Euclid P) n and |·| := covectorEuclideanNorm. Let K ⊆ V ⊆ ℝ^P with K compact and V open. Let β : ℝ^P → Λ be continuous on K with |β(x)| ≤ 1 for all x ∈ K. Then there is a continuous g : ℝ^P → Λ with compact support such that tsupport g ⊆ V, |g(x)| ≤ 1 for every x ∈ ℝ^P, and g(x) = β(x) for every x ∈ K.",
+  "lean_statement": "∀ (P n : ℕ) (K V : Set (Euclid P)) (β : Euclid P → Covector (Euclid P) n), IsCompact K → IsOpen V → K ⊆ V → ContinuousOn β K → (∀ x ∈ K, covectorEuclideanNorm (β x) ≤ 1) → ∃ g : Euclid P → Covector (Euclid P) n, Continuous g ∧ HasCompactSupport g ∧ tsupport g ⊆ V ∧ (∀ x, covectorEuclideanNorm (g x) ≤ 1) ∧ ∀ x ∈ K, g x = β x",
+  "lean_name": "dor_ims_sua_continuous_unit_extension",
+  "depends_on": [
+    "root.density_one_implies_regular-a1.imrep_mass_and_support-a1.smooth_unit_approximation-a1.coeff_norm_rep-a1",
+    "root.density_one_implies_regular-a1.imrep_mass_and_support-a1.smooth_unit_approximation-a1.covector_finite_dimensional-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.density_one_implies_regular-a1.imrep_mass_and_support-a1.smooth_unit_approximation-a1.coeff_norm_rep-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.density_one_implies_regular-a1.imrep_mass_and_support-a1.smooth_unit_approximation-a1.covector_finite_dimensional-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-imrep-mass-and-support-a1-smooth-27a23e62de-a1"
+}

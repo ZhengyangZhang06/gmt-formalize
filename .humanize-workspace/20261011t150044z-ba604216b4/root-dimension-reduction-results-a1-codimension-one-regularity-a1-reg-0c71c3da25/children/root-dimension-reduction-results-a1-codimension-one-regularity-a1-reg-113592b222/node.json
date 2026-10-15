@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.de_giorgi-a1.volume_density_lower-a1.one_sided_density-a1",
+  "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.de_giorgi-a1.volume_density_lower-a1",
+  "depth": 6,
+  "title": "One-sided lower volume density from the Sobolev and annular estimates",
+  "statement": "Let m ∈ ℕ with m ≥ 1. Let D, G ⊆ ℝ^{m+1} with G Borel, μ a measure on ℝ^{m+1}, y ∈ ℝ^{m+1}, and ρ₁, C₁, c ∈ ℝ with c > 0, C₁ ≥ 0, B̄_{ρ₁}(y) ⊆ D, μ(B̄_{ρ₁}(y)) ≠ ∞, and μ(B̄_r(y)) ≠ 0 for every r > 0. Write L = volume = L^{m+1}. Assume:\n(S) for every C¹ function ζ : ℝ^{m+1} → ℝ with compact support, tsupport ζ ⊆ D and ζ ≥ 0, (∫_G ζ^{(m+1)/m} dL)^{m/(m+1)} ≤ c·(∫ ζ dμ + ∫_G ‖Dζ‖ dL);\n(A) for all ρ > 0, δ > 0 with ρ + δ < ρ₁, ofReal(δ)·μ(B̄_ρ(y)) ≤ ofReal(C₁)·L(G ∩ (B_{ρ+δ}(y) ∖ B̄_ρ(y))).\nThen there is c′ > 0 with ofReal(c′·ρ^{m+1}) ≤ L(G ∩ B_ρ(y)) for every ρ with 0 < ρ < ρ₁.",
+  "lean_statement": "∀ (m : ℕ) (D G : Set (Euclid (m + 1))) (μ : Measure (Euclid (m + 1))) (y : Euclid (m + 1)) (ρ₁ C₁ c : ℝ), 1 ≤ m → MeasurableSet G → 0 < c → 0 ≤ C₁ → closedBall y ρ₁ ⊆ D → μ (closedBall y ρ₁) ≠ ∞ → (∀ r : ℝ, 0 < r → μ (closedBall y r) ≠ 0) → (∀ ζ : Euclid (m + 1) → ℝ, ContDiff ℝ 1 ζ → HasCompactSupport ζ → tsupport ζ ⊆ D → (∀ z, 0 ≤ ζ z) → (∫ z in G, ζ z ^ ((m + 1 : ℝ) / m)) ^ ((m : ℝ) / (m + 1)) ≤ c * (∫ z, ζ z ∂μ + ∫ z in G, ‖fderiv ℝ ζ z‖)) → (∀ ρ δ : ℝ, 0 < ρ → 0 < δ → ρ + δ < ρ₁ → ENNReal.ofReal δ * μ (closedBall y ρ) ≤ ENNReal.ofReal C₁ * volume (G ∩ (ball y (ρ + δ) \\ closedBall y ρ))) → ∃ c' : ℝ, 0 < c' ∧ ∀ ρ : ℝ, 0 < ρ → ρ < ρ₁ → ENNReal.ofReal (c' * ρ ^ (m + 1)) ≤ volume (G ∩ ball y ρ)",
+  "lean_name": "codim1_rdo_dg_vdl_one_sided_density",
+  "depends_on": [
+    "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.de_giorgi-a1.volume_density_lower-a1.discrete_growth-a1",
+    "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.de_giorgi-a1.volume_density_lower-a1.finite_difference-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.de_giorgi-a1.volume_density_lower-a1.discrete_growth-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.de_giorgi-a1.volume_density_lower-a1.finite_difference-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-113592b222-a1"
+}

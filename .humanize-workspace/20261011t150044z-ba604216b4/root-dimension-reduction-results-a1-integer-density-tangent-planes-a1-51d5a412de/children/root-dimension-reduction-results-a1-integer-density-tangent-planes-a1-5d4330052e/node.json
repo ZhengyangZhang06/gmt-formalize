@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_sector_endpoint_density-a1.edge_tangent_plane-a1.rescaled_limit_mem-a1",
+  "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_sector_endpoint_density-a1.edge_tangent_plane-a1",
+  "depth": 5,
+  "title": "Rescaled points with a uniform lower mass bound converge into the support of the vague limit",
+  "statement": "Let P ∈ ℕ, μ a measure on ℝ^P with μ(K) < ∞ for every compact K ⊆ ℝ^P, S ⊆ ℝ^P closed, a, w ∈ ℝ^P, m ∈ ℝ, (λ_j)_{j∈ℕ} with λ_j > 0 and (w_j)_{j∈ℕ} in ℝ^P with w_j → w. Assume (V) for every continuous compactly supported g : ℝ^P → ℝ, λ_j^{−2}·∫ g(dilation a λ_j x) dμ(x) → m·∫_S g dH² (H² := μHE[2]); and (L) for every r > 0 and all sufficiently large j, ω_2·(λ_j r)² ≤ μ(B_{λ_j r}(a + λ_j w_j)) in [0, ∞], i.e. unitBallVolume 2 * ENNReal.ofReal ((λ_j r)^2) ≤ μ (ball (a + λ_j • w_j) (λ_j r)). Then w ∈ S.",
+  "lean_statement": "∀ (P : ℕ) (μ : Measure (Euclid P)) (S : Set (Euclid P)) (a w : Euclid P) (m : ℝ) (lams : ℕ → ℝ) (ws : ℕ → Euclid P), IsClosed S → (∀ K : Set (Euclid P), IsCompact K → μ K ≠ ∞) → (∀ j, 0 < lams j) → Tendsto ws atTop (𝓝 w) → (∀ g : Euclid P → ℝ, Continuous g → HasCompactSupport g → Tendsto (fun j => (lams j)⁻¹ ^ 2 * ∫ x, g (dilation a (lams j) x) ∂μ) atTop (𝓝 (m * ∫ x in S, g x ∂μHE[2]))) → (∀ r : ℝ, 0 < r → ∀ᶠ j in atTop, unitBallVolume 2 * ENNReal.ofReal ((lams j * r) ^ 2) ≤ μ (ball (a + lams j • ws j) (lams j * r))) → w ∈ S",
+  "lean_name": "idtp_cse_etp_rescaled_limit_mem",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-5d4330052e-a1"
+}

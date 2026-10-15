@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_sector_endpoint_density-a1.fibre_count-a1",
+  "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_sector_endpoint_density-a1",
+  "depth": 4,
+  "title": "Integrality of fibre multiplicities: k ≤ m, and k < m forces excess mass in the small boxes",
+  "statement": "Let P ∈ ℕ and C ∈ 𝒟_2(ℝ^P) be minimizing in ℝ^P (IsMinimizingIn C univ), with ∂C = 0 and a cone (IsConeCurrent C). Let Q be a 2-dimensional linear subspace of ℝ^P, a, e ∈ Q with |a| = |e| = 1 and ⟨a, e⟩ = 0, δ > 0 and k ∈ ℕ with k ≥ 1. Assume a ∈ spt C and that for all t > 0 and φ ∈ (0, δ) the point y := t(cos φ·a + sin φ·e) satisfies HasMassDensity C y k and spt C ∩ B_r(y) ⊆ Q for some r > 0. Let R = (M, θ, ξ) be an integer multiplicity representation of C, μ := R.measure, m ∈ ℕ with HasMassDensity C a m, and 0 < s ≤ 1/4 such that the localization property Loc(s) holds: for every s' ∈ (0, s] and every x ∈ spt C with ⟨x, a⟩ > 0, ||x| − 1| < s', |f(x)| < s' and |x − πx| ≤ 2s|x| one has |x − πx| < (s'/4)|x| and |x − a| < 3s' (π := Q.starProjection, f(x) := arctan(⟨x, e⟩/⟨x, a⟩)). For s' > 0 let Z(s, s') := {x : ⟨x, a⟩ > 0, ||x| − 1| < s', |f(x)| < s', |x − πx| < s|x|}. Then k ≤ m, and if k < m there is s₃ > 0 such that (4m + 2)·s'²·(1 − 2s') ≤ μ(Z(s, s')) (as ENNReal.ofReal of the left side) for every s' ∈ (0, s₃].",
+  "lean_statement": "∀ (P : ℕ) (C : GeometricCurrentOn (univ : Set (Euclid P)) 2) (Q : Submodule ℝ (Euclid P)) (a e : Euclid P) (δ : ℝ) (k : ℕ), IsMinimizingIn C univ → BoundaryVanishes C → IsConeCurrent C → Module.finrank ℝ Q = 2 → a ∈ Q → e ∈ Q → ‖a‖ = 1 → ‖e‖ = 1 → inner ℝ a e = 0 → 0 < δ → 1 ≤ k → a ∈ C.support → (∀ t φ : ℝ, 0 < t → 0 < φ → φ < δ → HasMassDensity C (t • (Real.cos φ • a + Real.sin φ • e)) k ∧ ∃ r : ℝ, 0 < r ∧ C.support ∩ ball (t • (Real.cos φ • a + Real.sin φ • e)) r ⊆ (Q : Set (Euclid P))) → ∀ (R : IMRep (univ : Set (Euclid P)) 2) (m : ℕ) (s : ℝ), R.Represents C → HasMassDensity C a m → 0 < s → s ≤ 1 / 4 → (∀ s' : ℝ, 0 < s' → s' ≤ s → ∀ x ∈ C.support, 0 < inner ℝ x a → |‖x‖ - 1| < s' → |Real.arctan (inner ℝ x e / inner ℝ x a)| < s' → ‖x - Q.starProjection x‖ ≤ 2 * s * ‖x‖ → ‖x - Q.starProjection x‖ < s' / 4 * ‖x‖ ∧ dist x a < 3 * s') → k ≤ m ∧ (k < m → ∃ s₃ : ℝ, 0 < s₃ ∧ ∀ s' : ℝ, 0 < s' → s' ≤ s₃ → ENNReal.ofReal ((4 * (m : ℝ) + 2) * s' ^ 2 * (1 - 2 * s')) ≤ R.measure {x : Euclid P | 0 < inner ℝ x a ∧ |‖x‖ - 1| < s' ∧ |Real.arctan (inner ℝ x e / inner ℝ x a)| < s' ∧ ‖x - Q.starProjection x‖ < s * ‖x‖})",
+  "lean_name": "idtp_cse_fibre_count_bound",
+  "depends_on": [
+    "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_sector_endpoint_density-a1.stationary_radial-a1",
+    "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_sector_endpoint_density-a1.fibre_area-a1",
+    "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_sector_endpoint_density-a1.sector_points-a1",
+    "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_sector_endpoint_density-a1.flux_density-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_sector_endpoint_density-a1.stationary_radial-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_sector_endpoint_density-a1.fibre_area-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_sector_endpoint_density-a1.sector_points-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_sector_endpoint_density-a1.flux_density-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-2bc2cca051-a1"
+}

@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "f30ac5c23e4ff659e065fca195a27b5e9bdd9a156eccf8951f3e6f37ac1f0523",
+  "git_delta": {
+    "base_commit": "c45477085be33936097621e1e006d2e98aa32e73",
+    "candidate_commit": "c3f0a255c08c491ed8d5d975ad80a1dab152a072",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "idod_spine_invariant_density_nat",
+    "diff_sha256": "a47ef16a2b515a2036d12924bccd4798c36a21b27d4c939c5d9f8e0458587e35",
+    "source_sha256": "d5a3ea12be85ef51166a87b3f7b05d2ec88088c4f906b9a3e9b4bb60cba610c0",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.idod_spine_invariant_density_nat",
+      "statement": "∀ (P n : ℕ) (S : GeometricCurrentOn (univ : Set (Euclid P)) n) (L : Submodule ℝ (Euclid P)) (θ₀ : ℝ), Module.finrank ℝ L < n → n ≤ Module.finrank ℝ L + 2 → IsMinimizingIn S univ → BoundaryVanishes S → (∀ y ∈ L, ∀ lam : ℝ, 0 < lam → ∀ (w : Euclid P) (θ : ℝ), HasMassDensity S w θ → HasMassDensity S (y + lam • w) θ) → HasMassDensity S 0 θ₀ → ∃ m : ℕ, θ₀ = m",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

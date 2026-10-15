@@ -1,0 +1,117 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "rg -n -l 'skeleton_retraction|cmcdt_|dtc_bc_tc_cl_dfm|DeformationTheorem|Isoperimetric|LipschitzPushforwardIntegerMultiplicity' .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT -g '*.lean'",
+        "rg -n 'cmcdt_|ptd_piece_image_approxTangent_ae|dtc_bc_lc_fd_dfm_mass_representation_core|dtc_bc_tc_cl_dfm_' .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT -g '*.lean'",
+        "ae_hasDerivAt|exists_partition_approximatesLinearOn_of_hasFDerivWithinAt",
+        "area_image_criticalSet_eq_zero|area_image_nondifferentiable_eq_zero|weighted_area_formula_lipschitz_injOn|areaJacobianAt_eq_normDet|areaJacobianAt_sq_eq_det_adjoint_comp|areaJacobianAt_eq_zero_iff_not_injective|measurable_areaJacobianAt",
+        "PATH=/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin:$PATH lake env lean /tmp/independent_deformation_audit/Types.lean",
+        "PATH=/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin:$PATH lake env lean /tmp/dtc_dfm_v2/Final2.lean",
+        "python3 /tmp/independent_deformation_audit/run_lean.py retraction_candidate",
+        "python3 /tmp/independent_deformation_audit/run_lean.py good_center_candidate",
+        "python3 /tmp/independent_deformation_audit/run_lean.py dilation_candidate",
+        "python3 /tmp/independent_deformation_audit/run_lean.py im_series_candidate",
+        "python3 /tmp/independent_deformation_audit/run_lean.py piece_tangent_candidate",
+        "python3 /tmp/independent_deformation_audit/run_lean.py mass_rep_candidate",
+        "python3 /tmp/independent_deformation_audit/run_lean.py Tools"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch06/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/Monotone.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Stieltjes.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/Thickening.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/Ball/Pointwise.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaLipschitz.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-compactness-a1-truncated-com-cba2d86b76/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-compactness-a1-truncated-com-cba2d86b76/decomposition-v2.json",
+        "/tmp/independent_deformation_audit/Types.lean",
+        "/tmp/independent_deformation_audit/Tools.lean",
+        "/tmp/independent_deformation_audit/retraction_candidate.lean",
+        "/tmp/independent_deformation_audit/good_center_candidate.lean",
+        "/tmp/independent_deformation_audit/dilation_candidate.lean",
+        "/tmp/independent_deformation_audit/im_series_candidate.lean",
+        "/tmp/independent_deformation_audit/piece_tangent_candidate.lean",
+        "/tmp/independent_deformation_audit/mass_rep_candidate.lean",
+        "/tmp/dtc_dfm_v2/Final2.lean"
+      ],
+      "conclusion": "The 11-child split appropriately establishes the selected dtc_bc_tc_cl_deformation_isoperimetric contract. The pinned revisions match; the snapshot contains separate Ch06 specifications but no proposed child declarations. All 11 frozen types independently elaborate as propositions and pass lexical validation. Names are bare identifiers; five are unreserved, and six are comparator-accepted reuses with identical frozen types. All six reused candidates freshly compile with only propext, Classical.choice and Quot.sound. Dependencies are correctly directed and acyclic, including existing reuse dependencies. The exact conditional parent assembly and supplied isoperimetric proof compile with those same axioms; composition through stand-ins establishes type compatibility only. No problematic matrix construction occurs. The mathematical stages also agree with [Simon, Chapter 6, §§5–6](https://web.stanford.edu/class/math285/ts-gmt.pdf)."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "retraction",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Exact accepted reuse. The cited full proof defines the total map, establishes translation equivariance, proves the radial distance estimate with the corrected 1/4 margin, and derives both required bounds."
+    },
+    {
+      "key": "good_center",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Prose and type agree. Periodic cylinder disjointness, Vitali covering and Fubini produce one centre valid for both measures and every permitted radius; zero measures are handled."
+    },
+    {
+      "key": "bv_median",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The mollified gradient estimate, Poincaré limit, integer median construction and trace estimate establish all three conclusions. The trace argument correctly permits smooth bounded fields without compact support."
+    },
+    {
+      "key": "dilation",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Exact accepted reuse. Proper affine push-forward gives linearity, inverse and boundary compatibility; coefficient and Hausdorff scaling give the exact mass, support and integrality statements, including degree zero."
+    },
+    {
+      "key": "im_series",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Absolute convergence constructs the current and proves its mass and support bounds. MR and IMC justify finite multiplicity sums, common tangent planes and cancellation of orientations, yielding an IM representation without a compactness theorem."
+    },
+    {
+      "key": "piece_tangent",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Exact accepted reuse with verified import and axiom compatibility. Density points, Jacobian differentiation and the rescaled area formula prove the stated almost-everywhere tangent convergence, including the required dimension equality."
+    },
+    {
+      "key": "mass_rep",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Exact accepted reuse. Continuous extension, vector Riesz representation, polar normalization and smooth unit approximation establish every field, including the pointwise orientation bound and mass equality on every open set."
+    },
+    {
+      "key": "pushforward",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof constructs both operators and verifies all clauses. B4 supplies the essential agreement between mollified push-forwards and the integral representation; PT and IMS establish integrality. Cutoffs, empty supports and degree-zero homotopies are handled."
+    },
+    {
+      "key": "skeleton",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The Stieltjes argument supplies radii making all required pieces normal. Locality justifies telescoping, summable shell estimates and IMS give integral limits, and the boundary mass and support arguments establish the exact conclusions. Out-of-range dimensions are explicitly handled."
+    },
+    {
+      "key": "face",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Disjoint face neighbourhoods control total variation. Integer medians and cube Stokes formulas produce the finite family, integral current and boundary, mass dichotomy and support bounds. The family is chosen before Q₀, and zero-dimensional boundaries are covered."
+    },
+    {
+      "key": "isoperimetric",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "DTr is an explicit antecedent, so this implication is non-circular. The zero-mass case and positive scale force Q = S = 0 and yield exactly the required filling bounds. The supplied Lean proof independently compiles."
+    }
+  ],
+  "required_changes": []
+}

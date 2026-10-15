@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.closure_compact-a1.segment_current-a1.line_hausdorff-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.closure_compact-a1.segment_current-a1",
+  "depth": 5,
+  "title": "H¹ along a unit-speed line is Lebesgue measure (change of variables)",
+  "statement": "Let P ∈ ℕ, a, τ ∈ ℝ^P with |τ| = 1, and φ(u) := a + uτ for u ∈ ℝ. For every Borel set A ⊆ ℝ: (i) φ(A) is a Borel subset of ℝ^P; (ii) H¹(φ(A)) = L¹(A); (iii) ∫_{φ(A)} h dH¹ = ∫_A h(a + uτ) du for every function h : ℝ^P → ℝ. Here H¹ is Mathlib's normalized Euclidean Hausdorff measure μHE[1] on ℝ^P (= EuclideanSpace ℝ (Fin P)), L¹ is volume on ℝ, and the integrals are Bochner integrals (value 0 when not integrable).",
+  "lean_statement": "∀ (P : ℕ) (a τ : Euclid P), ‖τ‖ = 1 → ∀ A : Set ℝ, MeasurableSet A → MeasurableSet ((fun u : ℝ => a + u • τ) '' A) ∧ μHE[1] ((fun u : ℝ => a + u • τ) '' A) = volume A ∧ ∀ h : Euclid P → ℝ, ∫ x in (fun u : ℝ => a + u • τ) '' A, h x ∂μHE[1] = ∫ u in A, h (a + u • τ)",
+  "lean_name": "cbr_cc_seg_line_hausdorff",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-48c294623d-a1"
+}
