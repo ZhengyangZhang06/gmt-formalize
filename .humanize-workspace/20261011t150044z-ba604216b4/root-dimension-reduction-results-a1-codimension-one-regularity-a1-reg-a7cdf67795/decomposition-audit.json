@@ -1,0 +1,120 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "git -C . rev-parse HEAD",
+        "git -C .lake/packages/mathlib rev-parse HEAD",
+        "git -C .lake/packages/simongmt rev-parse HEAD",
+        "exists_contDiff_support_eq_eq_one_iff|exists_isCompact_isClosed_sdiff_lt|exists_isOpen_lt_add|lipschitzWith_of_hasCompactSupport|hasDerivAt_integral_of_dominated_loc_of_deriv_le|trace_smulRight|integral_integral_swap",
+        "BV.*[Cc]ompact|[Cc]ompact.*BV|bv_compactness|bvc_",
+        "git show 043dcc28e6f06fdf02b550a807c0573e295fc4d9:GMT/Ch07/Submission.lean",
+        "git show 376e5f482d73f6f48d00a4945533b15f784859d5:GMT/Ch07/Submission.lean",
+        "git show b046f226689afca88f2ceb966c9010ac5e581de0:GMT/Ch07/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean -DautoImplicit=false /tmp/bvc-independent-audit-qcww2u9y/Types.lean > /tmp/bvc-independent-audit-qcww2u9y/Types.log 2>&1",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean -DautoImplicit=false /tmp/bvc-independent-audit-qcww2u9y/Full.lean > /tmp/bvc-independent-audit-qcww2u9y/Full.log 2>&1",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean -DautoImplicit=false /tmp/bvc-independent-audit-qcww2u9y/Reuses.lean > /tmp/bvc-independent-audit-qcww2u9y/Reuses.log 2>&1"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch02/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Manifold/PartitionOfUnity.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Regular.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/RCLike.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ParametricIntegral.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Trace.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Prod.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/BV.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-02.txt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-a7cdf67795/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-a7cdf67795/decomposition-review-retry.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-a7cdf67795/bvc-split-lean-prototype.lean.txt",
+        "/tmp/bvc-independent-audit-qcww2u9y/Types.lean",
+        "/tmp/bvc-independent-audit-qcww2u9y/Full.lean",
+        "/tmp/bvc-independent-audit-qcww2u9y/Reuses.lean",
+        "/tmp/bvc-independent-audit-qcww2u9y/Types.log",
+        "/tmp/bvc-independent-audit-qcww2u9y/Full.log",
+        "/tmp/bvc-independent-audit-qcww2u9y/Reuses.log"
+      ],
+      "conclusion": "The split is appropriate: its analytic, finite-net, extraction and limit obligations establish precisely the selected BV set-compactness theorem. Project and Mathlib revisions match the manifest; inspected Mathlib sources match the imported copies byte-for-byte. Regularity, smooth Urysohn, dominated differentiation, rank-one trace and Fubini declarations support the supplied proofs. The search found a BVCompactness specification in Ch02/Contract.lean, but its enclosing theorem has a sorry; it supplies no reusable proof. All twelve frozen types independently elaborate before any child implementation. The complete prototype and the three original accepted proofs independently recompile successfully; all thirteen prototype declarations use only propext, Classical.choice and Quot.sound. The parent type exactly matches the immutable handoff. Dependencies are acyclic and exactly match sibling references in the proofs. In the final 993-node DAG scan, nine names were fresh and three were accepted reuses with identical frozen types and proof bodies. Every name is a bare identifier. No matrix-unit construction occurs; derivative coercions, scalar arithmetic and ENNReal bounds have the intended meanings."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "smooth_indicator_approx",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and frozen type agree. Inner and outer regularity, followed by smooth Urysohn on a smaller ball, give the required compact topological support and pointwise bounds. The indicator domination proves the strict L¹ error. Empty sets and nonpositive radii are covered."
+    },
+    {
+      "key": "l1_duality",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof establishes the exact bounded-Borel contract. It derives M ≥ 0, approximates the positive and negative sign sets using its declared dependency, justifies integrability, and bounds the testing error by an arbitrary positive η. No unrestricted L¹ duality theorem is assumed."
+    },
+    {
+      "key": "translate_test",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The rank-one fields have the stated trace, norm bound and translated topological support. A common integrable compact-support bound justifies differentiation under the integral. Monotonicity yields the inequality with the correct sign. The zero-translation case and arbitrary real R are handled without circular reliance."
+    },
+    {
+      "key": "translation_l1",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The indicator difference is Borel and bounded by one. Translation invariance transfers its testing integral to the exact expression bounded by translate_test; l1_duality then gives the claimed local L¹ estimate. Both dependencies are correctly directed and instantiated."
+    },
+    {
+      "key": "mollify_l1",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Normalization gives the pointwise averaged-difference identity. Product integrability follows from domination by ρ on a finite-measure ball, justifying Fubini. Kernel support permits each translation estimate, and C ≥ 0 justifies the final bound. A separate ε > 0 assumption is unnecessary: normalization and support already force it."
+    },
+    {
+      "key": "mollified_lipschitz",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof supplies the exact common real bound L = max(1, 2Lρ·volume(tsupport ρ)). Change of variables and domination by two translated support indicators yield the global Lipschitz estimate uniformly in F. Compactness and measurability justify every integral."
+    },
+    {
+      "key": "sup_net",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The frozen type and reproduced proof exactly match accepted declaration dorag_ha_rb_sup_net at commit 043dcc28e6f06fdf02b550a807c0573e295fc4d9. The finite spatial net, bounded evaluation vectors and three-term estimate prove the stated conclusion, including the vacuous empty-K case."
+    },
+    {
+      "key": "mollifier",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The frozen type and proof exactly match accepted declaration dgcr_stc_exists_normalized_mollifier at commit 376e5f482d73f6f48d00a4945533b15f784859d5. A nonnegative smooth bump has strictly positive finite integral; normalization preserves compact support and the specified ordinary-support inclusion."
+    },
+    {
+      "key": "totally_bounded",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof correctly obtains a common eventual threshold, chooses centres only from that tail, and includes earlier indices separately. Two mollification errors and the finite sup-net error sum to less than θ. The indicator identity and finite ball measure justify conversion to the exact ENNReal conclusion."
+    },
+    {
+      "key": "close_subset",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Finite-centre pigeonhole and the symmetric-difference triangle inclusion prove the precise 2⁻ʳ pairwise bound. Measurability is unnecessary because measure monotonicity and subadditivity apply to arbitrary sets. Its empty dependency list is correct: total boundedness is an explicit hypothesis supplied by the parent."
+    },
+    {
+      "key": "diagonal_subseq",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The frozen type and proof exactly match accepted declaration cmc_fc_cs_diagonal_subseq at commit b046f226689afca88f2ceb966c9010ac5e581de0. Nested infinite refinements and increasing choices place both successive indices in the required clique. No symmetry or monotonicity of the relations is assumed."
+    },
+    {
+      "key": "fast_cauchy_limit",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The countable liminf is Borel. The proved tail-switch inclusion bounds its symmetric difference from G_j by successive differences. For j ≥ ⌈R⌉₊, ball containment and countable subadditivity give the geometric bound 2·2⁻ʲ, proving convergence for every real R without assuming the parent or L¹ compactness."
+    }
+  ],
+  "required_changes": []
+}

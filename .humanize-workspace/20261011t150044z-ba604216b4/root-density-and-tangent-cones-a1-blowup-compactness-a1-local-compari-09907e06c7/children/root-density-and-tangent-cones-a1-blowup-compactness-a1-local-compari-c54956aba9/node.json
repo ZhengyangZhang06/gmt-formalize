@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.slicing-a1.chart_pieces-a1",
+  "parent_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.slicing-a1",
+  "depth": 5,
+  "title": "C¹ chart decomposition of a countably rectifiable set adapted to a Lipschitz function, with tangent planes (Simon Ch. 3, Lemma 1.2, Remarks 1.3 and 1.5(2); Ch. 2, Theorem 1.5)",
+  "statement": "Let P, n ∈ ℕ, let M ⊆ ℝ^P be Borel and countably (n+1)-rectifiable with H^{n+1}(M ∩ K) < ∞ for every compact K (Hᵏ = μHE[k]), and let f : ℝ^P → ℝ be L-Lipschitz. Then there are, for j ∈ ℕ, maps ψ_j : ℝ^{n+1} → ℝ^P, open sets V_j ⊆ ℝ^{n+1}, Borel sets Y_j ⊆ ℝ^{n+1} and functions F_j : ℝ^{n+1} → ℝ such that for every j: ψ_j is C¹ on ℝ^{n+1}, injective on V_j, with Dψ_j(y) injective for y ∈ V_j; F_j is C¹; closure(Y_j) is compact and contained in V_j; ψ_j(Y_j) ⊆ M; f(ψ_j(y)) = F_j(y) for y ∈ Y_j; and for every y ∈ Y_j, M has approximate tangent space Dψ_j(y)(ℝ^{n+1}) at ψ_j(y) (Simon Ch. 3, 1.4). Moreover the sets ψ_j(Y_j) are pairwise disjoint and H^{n+1}(M ∖ ⋃_j ψ_j(Y_j)) = 0.",
+  "lean_statement": "∀ (P n : ℕ) (M : Set (Euclid P)) (f : Euclid P → ℝ) (L : NNReal), MeasurableSet M → CountablyRectifiable (n + 1) M → (∀ K : Set (Euclid P), IsCompact K → μHE[n + 1] (M ∩ K) ≠ ∞) → LipschitzWith L f → ∃ (ψ : ℕ → Euclid (n + 1) → Euclid P) (V Y : ℕ → Set (Euclid (n + 1))) (F : ℕ → Euclid (n + 1) → ℝ), (∀ j, IsOpen (V j) ∧ ContDiff ℝ 1 (ψ j) ∧ InjOn (ψ j) (V j) ∧ (∀ y ∈ V j, Injective (fderiv ℝ (ψ j) y)) ∧ ContDiff ℝ 1 (F j) ∧ MeasurableSet (Y j) ∧ IsCompact (closure (Y j)) ∧ closure (Y j) ⊆ V j ∧ ψ j '' Y j ⊆ M ∧ (∀ y ∈ Y j, f (ψ j y) = F j y) ∧ ∀ y ∈ Y j, HasApproximateTangentSpaceAt (n + 1) M (ψ j y) (LinearMap.range (fderiv ℝ (ψ j) y : Euclid (n + 1) →ₗ[ℝ] Euclid P))) ∧ Pairwise (fun i j => Disjoint (ψ i '' Y i) (ψ j '' Y j)) ∧ μHE[n + 1] (M \\ ⋃ j, ψ j '' Y j) = 0",
+  "lean_name": "dtc_bc_lc_sl_chart_pieces",
+  "depends_on": [
+    "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.slicing-a1.c1_approx-a1",
+    "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.slicing-a1.c1_tangent-a1",
+    "root.compactness_of_minimizing_currents-a1.im_calculus-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.slicing-a1.c1_approx-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.slicing-a1.c1_tangent-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.compactness_of_minimizing_currents-a1.im_calculus-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-im-calculus-a1-a1",
+      "result_commit": "2af75d6921b01a9c889a45103692ca0af95ea394",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-compari-c54956aba9-a1"
+}
