@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.weight_ge_one-a1.l1_constant-a1.scalar_tests-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.weight_ge_one-a1.l1_constant-a1",
+  "depth": 6,
+  "title": "Densities of weakly convergent density-represented top-dimensional currents converge against scalar test functions",
+  "statement": "Let n ∈ ℕ, U ⊆ ℝⁿ = Euclid n an arbitrary set, c ∈ ℝ, Y_k ∈ 𝒟_n(U) (GeometricCurrentOn U n) and u_k : ℝⁿ → ℝ (k ∈ ℕ). Write e := (e_0, …, e_{n−1}) with e_i := EuclideanSpace.single i 1. Assume (i) Y_k(ω) = ∫_U u_k(y)·ω(y)(e) dy for every k and every ω ∈ 𝒟ⁿ(U) (TestFormOn U n), and (ii) Y_k(ω) → c·∫_{ℝⁿ} ω(y)(e) dy as k → ∞ for every ω ∈ 𝒟ⁿ(U). Then for every b : ℝⁿ → ℝ that is C^∞ (ContDiff ℝ (⊤ : ℕ∞)), has compact support and satisfies tsupport b ⊆ U, ∫_U u_k(y)·b(y) dy → c·∫_{ℝⁿ} b(y) dy as k → ∞.",
+  "lean_statement": "∀ (n : ℕ) (U : Set (Euclid n)) (c : ℝ) (Y : ℕ → GeometricCurrentOn U n) (u : ℕ → Euclid n → ℝ), (∀ (k : ℕ) (ω : TestFormOn U n), Y k ω = ∫ y in U, u k y * (ω : DifferentialForm (Euclid n) n) y (fun i => EuclideanSpace.single i (1 : ℝ))) → (∀ ω : TestFormOn U n, Tendsto (fun k => Y k ω) atTop (𝓝 (c * ∫ y, (ω : DifferentialForm (Euclid n) n) y (fun i => EuclideanSpace.single i (1 : ℝ))))) → ∀ b : Euclid n → ℝ, ContDiff ℝ (⊤ : ℕ∞) b → HasCompactSupport b → tsupport b ⊆ U → Tendsto (fun k => ∫ y in U, u k y * b y) atTop (𝓝 (c * ∫ y, b y))",
+  "lean_name": "cbr_ci_pw_l1_scalar_test_tendsto",
+  "depends_on": [
+    "root.density_one_implies_regular-a1.epsilon_regularity-a1.graph_cycle_regular-a1.graph_orientation_jacobian-a1.det_covector-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.graph_cycle_regular-a1.graph_orientation_jacobian-a1.det_covector-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-graph-cycle-ee844cd15b-a1",
+      "result_commit": "017b0c1fe8fd4d32e469194d32b12ff196e92e1c",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-8f8dec9d07-a1"
+}

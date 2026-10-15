@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.cone_splitting-a1.split_off_spine-a1.minimality_transfer-a1.cube_cycle-a1.support_measure-a1",
+  "parent_id": "root.dimension_reduction_results-a1.cone_splitting-a1.split_off_spine-a1.minimality_transfer-a1.cube_cycle-a1",
+  "depth": 6,
+  "title": "For an integer multiplicity current on ℝ^P and closed F: spt T ⊆ F iff R.measure(Fᶜ) = 0",
+  "statement": "Let P, n ∈ ℕ, T ∈ 𝒟_n(ℝ^P) (GeometricCurrentOn univ n) and let R be an integer multiplicity representation (IMRep univ n) with R.Represents T. Let F ⊆ ℝ^P be closed. Then spt T ⊆ F if and only if R.measure(ℝ^P ∖ F) = 0, where R.measure = θ·H^n⌞M is the weight measure (μHE[n].restrict R.carrier).withDensity R.mult.",
+  "lean_statement": "∀ (P n : ℕ) (T : GeometricCurrentOn (univ : Set (Euclid P)) n) (R : IMRep (univ : Set (Euclid P)) n) (F : Set (Euclid P)), R.Represents T → IsClosed F → (T.support ⊆ F ↔ R.measure Fᶜ = 0)",
+  "lean_name": "dimred_cs_sos_mt_cc_support_subset_iff_measure",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-cone-splitting-a1-split-off-spine-d6229ece6b-a1"
+}

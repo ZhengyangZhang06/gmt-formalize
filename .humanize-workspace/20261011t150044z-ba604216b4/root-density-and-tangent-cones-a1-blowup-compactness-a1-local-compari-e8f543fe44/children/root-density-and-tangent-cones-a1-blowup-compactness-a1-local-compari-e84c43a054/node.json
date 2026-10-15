@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.flat_decomposition-a1.localize-a1.dini_measurable-a1",
+  "parent_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.flat_decomposition-a1.localize-a1",
+  "depth": 6,
+  "title": "Borel measurability of the left Dini derivative t ↦ liminf_{h→0+} h⁻¹μ({t − h < |x| < t}) (parent step 3(a)–(b))",
+  "statement": "Let P ∈ ℕ and let μ be a measure on ℝ^P (Euclid P) with μ(B_r) < ∞ for every r ∈ ℝ, where B_r := ball(0, r) (empty for r ≤ 0). For t ∈ ℝ let D(t) := liminf_{h→0+} ofReal(h⁻¹)·μ({x : t − h < |x| < t}) ∈ [0, ∞]. Here |x| is the Euclidean norm and the liminf is taken along the filter 𝓝[>]0 on ℝ, in the complete lattice [0, ∞]. Then D : ℝ → [0, ∞] is Borel measurable.",
+  "lean_statement": "∀ (P : ℕ) (μ : Measure (Euclid P)), (∀ r : ℝ, μ (ball (0 : Euclid P) r) < ∞) → Measurable (fun t : ℝ => liminf (fun h : ℝ => ENNReal.ofReal h⁻¹ * μ {x : Euclid P | t - h < ‖x‖ ∧ ‖x‖ < t}) (𝓝[>] 0))",
+  "lean_name": "dtc_bc_lc_fd_lz_dini_measurable",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-compari-e84c43a054-a1"
+}

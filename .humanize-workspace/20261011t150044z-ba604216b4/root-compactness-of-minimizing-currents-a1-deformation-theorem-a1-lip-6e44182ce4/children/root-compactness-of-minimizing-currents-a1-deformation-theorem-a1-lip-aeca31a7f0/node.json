@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.lipschitz_pushforward-a1.integrality-a1.cylinder_im-a1.piece_mass-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.lipschitz_pushforward-a1.integrality-a1.cylinder_im-a1",
+  "depth": 6,
+  "title": "Mass estimate for one product piece (supplied step 5, per piece)",
+  "statement": "Assume (L1) and (L2) as in slice_covector_bound. Let N, n ∈ ℕ, G : ℝⁿ → ℝ^N, A ⊆ ℝⁿ Borel, w : ℝⁿ → ℤ and c : ℝⁿ → ℝ measurable, G differentiable at every u ∈ A, and for every u ∈ A: c(u) ≥ 0 and |α(DG(u)e_0, …, DG(u)e_{n−1})| ≤ c(u)·|α| for every n-covector α on ℝ^N (|·| = covectorEuclideanNorm, D = fderiv ℝ). Let Ĝ, Â, ŵ satisfy Ĝ(z) = ι(z_0, G(tail z)), Â = {z : z_0 ∈ (0, 1), tail z ∈ A} and ŵ(z) = w(tail z) (notation as in piece_action). Then for every (n+1)-form ω on ℝ^{N+1} (any map ℝ^{N+1} → Λ^{n+1}) with |ω(y)| ≤ 1 for all y, ENNReal.ofReal(∫_Â ŵ(z)·ω(Ĝ(z))(DĜ(z)ê_0, …, DĜ(z)ê_n) dz) ≤ ∫⁻_A ENNReal.ofReal(|w(u)|·c(u)) du.",
+  "lean_statement": "(∀ (N N' k : ℕ) (A : Euclid N →L[ℝ] Euclid N') (β : Covector (Euclid N') k), covectorEuclideanNorm (β.compContinuousLinearMap A) ≤ ‖A‖ ^ k * covectorEuclideanNorm β) → (∀ (N k : ℕ) (v : Euclid N) (β : Covector (Euclid N) (k + 1)), covectorEuclideanNorm (β.curryLeft v) ≤ ‖v‖ * covectorEuclideanNorm β) → ∀ (N n : ℕ) (G : Euclid n → Euclid N) (A : Set (Euclid n)) (w : Euclid n → ℤ) (c : Euclid n → ℝ) (Gh : Euclid (n + 1) → Euclid (N + 1)) (Ah : Set (Euclid (n + 1))) (wh : Euclid (n + 1) → ℤ), MeasurableSet A → Measurable w → Measurable c → (∀ u ∈ A, DifferentiableAt ℝ G u) → (∀ u ∈ A, 0 ≤ c u ∧ ∀ α : Covector (Euclid N) n, |α (fun a => fderiv ℝ G u (EuclideanSpace.single a 1))| ≤ c u * covectorEuclideanNorm α) → (∀ z, Gh z = WithLp.toLp 2 (Fin.cons (WithLp.ofLp z 0) (WithLp.ofLp (G (WithLp.toLp 2 (Fin.tail (WithLp.ofLp z))))))) → Ah = {z : Euclid (n + 1) | WithLp.ofLp z 0 ∈ Ioo (0 : ℝ) 1 ∧ (WithLp.toLp 2 (Fin.tail (WithLp.ofLp z)) : Euclid n) ∈ A} → (∀ z, wh z = w (WithLp.toLp 2 (Fin.tail (WithLp.ofLp z)))) → ∀ ω : DifferentialForm (Euclid (N + 1)) (n + 1), (∀ y, covectorEuclideanNorm (ω y) ≤ 1) → ENNReal.ofReal (∫ z in Ah, (wh z : ℝ) * ω (Gh z) (fun a => fderiv ℝ Gh z (EuclideanSpace.single a 1))) ≤ ∫⁻ u in A, ENNReal.ofReal (|(w u : ℝ)| * c u)",
+  "lean_name": "cmcdt_lpi_cyl_piece_mass",
+  "depends_on": [
+    "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.lipschitz_pushforward-a1.integrality-a1.cylinder_im-a1.cyl_fubini-a1",
+    "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.lipschitz_pushforward-a1.integrality-a1.cylinder_im-a1.suspension_map-a1",
+    "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.lipschitz_pushforward-a1.integrality-a1.cylinder_im-a1.slice_covector_bound-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.lipschitz_pushforward-a1.integrality-a1.cylinder_im-a1.cyl_fubini-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.lipschitz_pushforward-a1.integrality-a1.cylinder_im-a1.suspension_map-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.lipschitz_pushforward-a1.integrality-a1.cylinder_im-a1.slice_covector_bound-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-lip-aeca31a7f0-a1"
+}

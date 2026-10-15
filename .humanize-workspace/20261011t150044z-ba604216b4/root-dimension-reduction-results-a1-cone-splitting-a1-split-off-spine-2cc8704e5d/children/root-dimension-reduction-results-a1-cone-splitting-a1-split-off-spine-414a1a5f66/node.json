@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.cone_splitting-a1.split_off_spine-a1.cone_filling_subspace-a1.compact_im_param-a1",
+  "parent_id": "root.dimension_reduction_results-a1.cone_splitting-a1.split_off_spine-a1.cone_filling_subspace-a1",
+  "depth": 5,
+  "title": "Integral Lipschitz parametrization of a compactly supported integer multiplicity current",
+  "statement": "Let P, n ∈ ℕ and let X ∈ 𝒟_n(ℝ^P) (GeometricCurrentOn univ n) be integer multiplicity with spt X compact. Then there is an IMRep R in ℝ^P representing X with R.carrier ⊆ spt X and μ_R(ℝ^P) = R.measure univ < ∞. Moreover, there are, for i ∈ ℕ, Lipschitz G_i : ℝ^n → ℝ^P, Borel A_i ⊆ ℝ^n, and measurable w_i : ℝ^n → ℤ and c_i : ℝ^n → ℝ such that:\n- G_i is differentiable at every point of A_i, and G_i(A_i) ⊆ spt X;\n- w_i is Lebesgue integrable on A_i;\n- for u ∈ A_i, c_i(u) ≥ 0 and |α(DG_i(u)e_0, …, DG_i(u)e_{n−1})| ≤ c_i(u)·|α| for every n-covector α (e_a = EuclideanSpace.single a 1, |α| = covectorEuclideanNorm α);\n- Σ_i ∫⁻_{A_i} |w_i|·c_i dL^n < ∞;\n- for every test form γ ∈ 𝒟^n(ℝ^P), the series Σ_i ∫_{A_i} w_i(u)·γ(G_i(u))(DG_i(u)e_0, …, DG_i(u)e_{n−1}) du converges to X(γ) (HasSum).\n(Step 7 of the parent proof, with the Jacobian weights replaced by the covector bounds c_i.)",
+  "lean_statement": "∀ (P n : ℕ) (X : GeometricCurrentOn (univ : Set (Euclid P)) n), IsIntegerMultiplicity X → IsCompact X.support → ∃ R : IMRep (univ : Set (Euclid P)) n, R.Represents X ∧ R.carrier ⊆ X.support ∧ R.measure univ ≠ ∞ ∧ ∃ (G : ℕ → Euclid n → Euclid P) (A : ℕ → Set (Euclid n)) (w : ℕ → Euclid n → ℤ) (c : ℕ → Euclid n → ℝ), (∀ i, ∃ L : NNReal, LipschitzWith L (G i)) ∧ (∀ i, MeasurableSet (A i)) ∧ (∀ i, Measurable (w i)) ∧ (∀ i, Measurable (c i)) ∧ (∀ i, ∀ u ∈ A i, DifferentiableAt ℝ (G i) u) ∧ (∀ i, G i '' A i ⊆ X.support) ∧ (∀ i, IntegrableOn (fun u => (w i u : ℝ)) (A i)) ∧ (∀ i, ∀ u ∈ A i, 0 ≤ c i u ∧ ∀ α : Covector (Euclid P) n, |α (fun a => fderiv ℝ (G i) u (EuclideanSpace.single a 1))| ≤ c i u * covectorEuclideanNorm α) ∧ ∑' i, ∫⁻ u in A i, ENNReal.ofReal (|(w i u : ℝ)| * c i u) ≠ ∞ ∧ ∀ γ : TestFormOn (univ : Set (Euclid P)) n, HasSum (fun i => ∫ u in A i, (w i u : ℝ) * (γ : DifferentialForm (Euclid P) n) (G i u) (fun a => fderiv ℝ (G i) u (EuclideanSpace.single a 1))) (X γ)",
+  "lean_name": "dimred_cs_sos_cfs_compact_im_param",
+  "depends_on": [
+    "root.density_and_tangent_cones-a1.vanish_off_support-a1",
+    "root.compactness_of_minimizing_currents-a1.mass_equals_rep_measure-a1",
+    "root.compactness_of_minimizing_currents-a1.im_calculus-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.density_and_tangent_cones-a1.vanish_off_support-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-vanish-off-support-a1-a1",
+      "result_commit": "44ef61f79e2168134f8a5a6d6520baba56052d67",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.compactness_of_minimizing_currents-a1.mass_equals_rep_measure-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-mass-equals-rep-measure-a1-a1",
+      "result_commit": "27de75e6856bea4ad251fe33afb1925333bb7655",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.compactness_of_minimizing_currents-a1.im_calculus-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-im-calculus-a1-a1",
+      "result_commit": "2af75d6921b01a9c889a45103692ca0af95ea394",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-cone-splitting-a1-split-off-spine-414a1a5f66-a1"
+}
