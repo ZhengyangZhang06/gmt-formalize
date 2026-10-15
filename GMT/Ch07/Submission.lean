@@ -77869,4 +77869,70 @@ provides, this inherited prerequisite is reused at its identical type. -/
 theorem Submission.idtp_cttp_ctc_density_tangent_cones : DensityAndTangentCones :=
   Submission.density_and_tangent_cones
 
+/-- **Tangent cones of minimizing cycles in `ℝᴾ`** (Simon 7.3.1(2), chapter-07.txt lines 302–309,
+with the density bound of Ch. 4, 3.13).  Let `C ∈ 𝒟ₙ(ℝᴾ)`, `n ≥ 1`, be minimizing in `ℝᴾ` with
+`∂C = 0`, let `p ∈ spt C` and `λⱼ > 0`, `λⱼ → 0`.  If `P < n`, every `n`-covector on `ℝᴾ`
+vanishes, so `C` kills every test form and `spt C = ∅` (`rsd_cmr_support_subset_of_vanish`);
+hence `P = n + k`.  With `U = N = ℝⁿ⁺ᵏ` (the identity chart) and `spt ∂C = spt 0 = ∅`, Simon 7.3.1
+(`idtp_cttp_ctc_density_tangent_cones`) gives a density `Θ` of `C`, upper semicontinuous on `ℝᴾ`,
+and at `p` a subsequence `λ_{φ(j)}` and a minimizing cone `C'` with `η_{p,λ_{φ(j)}#}C ⇀ C'`,
+`μ_{η_{p,λ_{φ(j)}#}C} → μ_{C'}` and `Θⁿ(μ_C, p) = Θⁿ(μ_{C'}, 0) = θ`.  For a representation
+`C = τ(M, ϑ, ξ)`, `M_W(C) = μ_C(W)` with `μ_C = ϑHⁿ⌞M` and `spt C = spt μ_C`
+(`dimred_im_mass_measure`), and the density of `μ_C` is `≥ 1` `μ_C`-a.e.
+(`dimred_mono_ae_ball_density_ge_one`), so upper semicontinuity of `Θ` gives `θ ≥ 1`
+(`dimred_mono_support_density_ge_one_of_usc`).  Finally `∂C' = 0`, `C'` being a weak limit of
+blow-ups of the cycle `C` (`idtp_tpf_blowUp_limit_boundaryVanishes`). -/
+theorem Submission.idtp_cttp_cycle_tangent_cone : ∀ (P n : ℕ) (C : GeometricCurrentOn (univ : Set (Euclid P)) n), 1 ≤ n → IsMinimizingIn C univ → BoundaryVanishes C → ∀ p ∈ C.support, ∀ (lams : ℕ → ℝ) (hlams : ∀ j, 0 < lams j), Tendsto lams atTop (𝓝 0) → ∃ (φ : ℕ → ℕ) (C' : GeometricCurrentOn (univ : Set (Euclid P)) n) (θ : ℝ), StrictMono φ ∧ ConvergesWeakly (fun j => blowUp C p (lams (φ j)) (hlams (φ j)).ne') C' ∧ MassMeasuresConverge (fun j => blowUp C p (lams (φ j)) (hlams (φ j)).ne') C' ∧ IsMinimizingIn C' univ ∧ IsConeCurrent C' ∧ BoundaryVanishes C' ∧ 1 ≤ θ ∧ HasMassDensity C p θ ∧ HasMassDensity C' 0 θ := by
+  intro P n C hn hmin hbd p hp lams hlams hlim
+  -- Step 1: `n ≤ P`; otherwise `n > P` vectors are dependent, every `n`-covector vanishes, `C`
+  -- kills every test form and `spt C = ∅`
+  have hnP : n ≤ P := by
+    by_contra! hPn
+    have hcov : ∀ α : Covector (Euclid P) n, α = 0 := fun α => by
+      ext v
+      refine α.toAlternatingMap.map_linearDependent v fun hv => ?_
+      have hcard := hv.fintype_card_le_finrank
+      rw [Fintype.card_fin, finrank_euclideanSpace_fin] at hcard
+      omega
+    refine Set.notMem_empty p ((Submission.rsd_cmr_support_subset_of_vanish P n univ ∅ C
+      isOpen_univ isCompact_empty (empty_subset _) fun ω _ => ?_).1 hp)
+    rw [show ω = 0 from Subtype.ext (funext fun x => (hcov _).trans (hcov _).symm)]
+    exact map_zero C.toCurrent
+  obtain ⟨k, rfl⟩ := Nat.exists_eq_add_of_le hnP
+  -- Step 2: `ℝⁿ⁺ᵏ` is an embedded `C²` `(n + k)`-submanifold of itself (the identity chart)
+  have huniv : IsEmbeddedSubmanifold 2 (n + k) (univ : Set (Euclid (n + k))) := by
+    intro y _
+    refine ⟨univ, univ, id, isOpen_univ, isOpen_univ, mem_univ y, contDiff_id.contDiffOn,
+      injOn_id _, by simp, fun K _ hK => by simpa using hK, fun z _ => ?_⟩
+    rw [fderiv_id]
+    exact fun a b h => h
+  -- Step 3: `spt ∂C = spt 0 = ∅`
+  have hbsupp : boundarySupport C = ∅ := by
+    obtain ⟨m, rfl⟩ : ∃ m, n = m + 1 := ⟨n - 1, by omega⟩
+    change C.boundary = 0 at hbd
+    change C.boundary.support = ∅
+    rw [hbd]
+    exact subset_empty_iff.mp (Submission.rsd_cmr_support_subset_of_vanish (m + 1 + k) m univ ∅ 0
+      isOpen_univ isCompact_empty (empty_subset _) fun ω _ => GeometricCurrentOn.zero_apply ω).1
+  -- Step 4: Simon 7.3.1 with `U = N = ℝⁿ⁺ᵏ`, `ℓ = k`: the density `Θ` of `C`, upper
+  -- semicontinuous on `ℝⁿ⁺ᵏ \ spt ∂C = ℝⁿ⁺ᵏ`, and at `p` the minimizing cone `C'`
+  obtain ⟨⟨Θ, hΘ, hΘusc⟩, htan⟩ := Submission.idtp_cttp_ctc_density_tangent_cones n k k le_rfl
+    univ univ C isOpen_univ huniv (by simp) (by rwa [Set.inter_self]) (by simp)
+  rw [hbsupp, Set.sdiff_empty] at hΘ hΘusc
+  obtain ⟨φ, C', hφ, hconv, hmeas, hC'min, hC'cone, θ, hθC, hθC'⟩ :=
+    htan p ⟨hp, by rw [hbsupp]; exact Set.notMem_empty p⟩ lams hlams hlim
+  -- Step 5: `θ ≥ 1`: for `C = τ(M, ϑ, ξ)`, `M_W(C) = μ_C(W)`, `spt C = spt μ_C`, the density of
+  -- `μ_C` is `≥ 1` `μ_C`-a.e., and `Θ` is upper semicontinuous
+  obtain ⟨R, hR⟩ := hmin.1
+  obtain ⟨hmass, hsupp, -⟩ := Submission.dimred_im_mass_measure (n + k) n univ C R isOpen_univ hR
+  have hθ1 : 1 ≤ θ := Submission.dimred_mono_support_density_ge_one_of_usc (n + k) n univ C
+    R.measure Θ isOpen_univ hmass (fun x hx => (hsupp x (mem_univ x)).1 hx)
+    (Submission.dimred_mono_ae_ball_density_ge_one (n + k) n univ R isOpen_univ) hΘ hΘusc p hp θ
+    hθC
+  -- Step 6: `∂C' = 0`, `C'` being the weak limit of the blow-ups `η_{p,λ_{φ(j)}#}C` of a cycle
+  have hC'bd : BoundaryVanishes C' := Submission.idtp_tpf_blowUp_limit_boundaryVanishes (n + k) n
+    univ C p (fun j => lams (φ j)) (fun j => hlams (φ j)) C' isOpen_univ (mem_univ p) hbd
+    (hlim.comp hφ.tendsto_atTop) hconv
+  exact ⟨φ, C', θ, hφ, hconv, hmeas, hC'min, hC'cone, hC'bd, hθ1, hθC, hθC'⟩
+
 end GMT.Ch07
