@@ -1,0 +1,115 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "rg -n 'structure IMRep|def IsUnitOrientationOf|def MultiVector|def IsIntegerMultiplicity|def IMRep.action|def IMRep.measure|def IMRep.Represents|namespace|open' .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "cmcdt_lpi_|dpf_rectifiable_bilipschitz_pieces|ptd_piece_image_approxTangent_ae|codim1_lura_gram_area_formula|codim1_lur_cd_injective_area_formula_gram|cmcdt_ims_imrep_of_int_density",
+        "weighted_area_formula_volume_of_injective_derivative|integral_area_formula_of_injective_derivative|area_image_compl_regularSet_eq_zero|measurableSet_areaRegularSet",
+        "exists_partition_approximatesLinearOn_of_hasFDerivWithinAt|ae_differentiableAt|integral_lineDeriv_mul_eq|ae_convolution_tendsto_right_of_locallyIntegrable|exists_hasCompactSupport_integral_sub_le|volume_preserving_piFinSuccAbove",
+        "measurable_fderiv|norm_fderiv_le_of_lipschitz|measurableSet_of_differentiableAt|tendsto_tsum_of_dominated_convergence|hasSum_integral_iUnion|gramSchmidtNormed_orthonormal|normDet_sq_eq_det_gram|eq_smul_basis_det",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/lpi-independent-audit/TypesAndAssembly.lean",
+        "sed -n '760,875p' /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/Jacobian.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/Rademacher.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/BumpFunction/Convolution.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/ContinuousMapDense.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Constructions/Pi.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/WeightedArea.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-lip-9bda5f8762/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-lip-9bda5f8762/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-bilipschi-4344c8c0d8/accepted-candidate.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-piece-tan-64a6473a66/accepted-candidate.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-db95546c3f/accepted-candidate.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-dad7016689/accepted-candidate.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-im-74efcb8c6f/accepted-candidate.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt",
+        "/tmp/lpi-independent-audit/TypesAndAssembly.lean"
+      ],
+      "conclusion": "The snapshot contract matches the workspace contract and submission; pinned revisions agree. No proposed declaration names occur in the snapshot. The five reused declarations have identical accepted frozen types and matching candidate records; their successful comparators permit only propext, Quot.sound and Classical.choice. All seven new names are unreserved bare identifiers. The dependency graph, including reused prerequisites, is acyclic and does not reach the selected parent. All twelve raw propositions independently elaborate without child implementations. Lean also verified the exact parent assembly using its recorded CB dependency, with only the three permitted axioms, and checked matrix multiplication, coordinate coercions, volume defaults and contraction conventions. Splitting is appropriate: every child contributes to conclusions (I) or (II), and the supplied proofs establish both."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "bilipschitz_pieces",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Identical accepted type; prose includes every hypothesis. Removing nonregular images, the approximately-linear partition and Borel disjointification prove the asserted coverage and derivative properties, including dimension zero."
+    },
+    {
+      "key": "piece_tangent",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Identical accepted type. Density gives the derivative lower bound; the localized rescaled area formula and Lebesgue differentiation establish precisely the defined approximate tangent predicate. Exceptional sets are independent of the test function."
+    },
+    {
+      "key": "area_lintegral",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Identical accepted type. The pinned weighted area theorem permits arbitrary nonnegative weights under exactly these hypotheses. The normDet–Gram identity proves both the stated Jacobian formula and its measurability."
+    },
+    {
+      "key": "area_integral",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Identical accepted type. The pinned Bochner area theorem explicitly requires no integrability hypothesis; volume normalization and the Gram identity give the exact proposition, including nonintegrable functions."
+    },
+    {
+      "key": "int_density_imrep",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Identical accepted type. Restricting to nonzero density, taking absolute integer multiplicity and adjusting orientation verifies all IMRep fields and the action identity for arbitrary forms. The locality theorem is a verified, non-circular prerequisite of the accepted declaration."
+    },
+    {
+      "key": "span_orientation",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proposition matches all four prose conclusions. Gram–Schmidt, the triangular coordinate determinant and orthogonal change of basis prove positivity, Hadamard, the evaluation identity and uniqueness up to sign, including empty families."
+    },
+    {
+      "key": "piece_representation",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The explicit antecedents and conclusions match the prose. Normalization, null-set transport, tangent locality and the measurable sign construction justify the integer weights. Area formulas prove integrability, the mass bound and HasSum without requiring compact support."
+    },
+    {
+      "key": "minor_continuity",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact minor and L¹-weight contract is proved by boundedness, Piola cancellation, mollified integration by parts and induction. The proof handles zero-order minors and repeated indices without relying on the parent or pullback-continuity child."
+    },
+    {
+      "key": "pullback_continuity",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The coordinate expansion matches the Lean derivative evaluations. Uniform continuity controls varying coefficients, and minor_continuity applies with integrable bounded-coefficient weights. Finite summation proves the exact limit, including degree zero and degree above the target dimension."
+    },
+    {
+      "key": "piece_current",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All hypotheses are explicit and sufficient. The regular nonzero-density set has finite measure; its bi-Lipschitz partition supplies measurable integer densities and unit orientations. The area formulas, IMC(b), mass estimates and IMSc construct and identify the required current."
+    },
+    {
+      "key": "pushforward_im",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "This is exactly conclusion (I) with the declared CB antecedent. Support-local pullback agreement, the chain rule, summable domination and termwise continuity identify the limit. Piece currents and the derived mass bounds permit IMS to prove integrality."
+    },
+    {
+      "key": "cylinder_im",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "This is exactly conclusion (II) with CB. The product derivative has the required Fin.cons order; volume transport and Fubini identify the action. Contraction bounds give summable masses, so piece_current and IMS validly replace the original product-carrier gluing."
+    }
+  ],
+  "required_changes": []
+}

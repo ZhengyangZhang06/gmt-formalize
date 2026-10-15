@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.face_replacement-a1.chain_boundary-a1.face_regroup-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.face_replacement-a1.chain_boundary-a1",
+  "depth": 5,
+  "title": "Integer regrouping of the signed faces of a lattice n-chain into a lattice (n−1)-chain",
+  "statement": "Let P, m ∈ ℕ, let s be a finite set of pairs p = (ι, b) with ι : Fin (m+1) → Fin P strictly increasing and b ∈ ℤ^P, and let β assign an integer to each pair. Then there are a finite set s' of pairs q = (ι', b') with ι' : Fin m → Fin P strictly increasing and b' ∈ ℤ^P, and integers β'_q, such that for every function I from pairs (ι', b') to ℝ: Σ_{p∈s} β_p Σ_{i∈Fin(m+1)} (−1)^i (I(ι∘succAbove i, b + 𝟙_{ι(i)}) − I(ι∘succAbove i, b)) = Σ_{q∈s'} β'_q I(q), where 𝟙_{ι(i)} = Pi.single (ι i) 1.",
+  "lean_statement": "∀ (P m : ℕ) (s : Finset ((Fin (m + 1) → Fin P) × (Fin P → ℤ))) (β : (Fin (m + 1) → Fin P) × (Fin P → ℤ) → ℤ), (∀ p ∈ s, StrictMono p.1) → ∃ (s' : Finset ((Fin m → Fin P) × (Fin P → ℤ))) (β' : (Fin m → Fin P) × (Fin P → ℤ) → ℤ), (∀ q ∈ s', StrictMono q.1) ∧ ∀ I : (Fin m → Fin P) × (Fin P → ℤ) → ℝ, ∑ p ∈ s, (β p : ℝ) * ∑ i : Fin (m + 1), (-1 : ℝ) ^ (i : ℕ) * (I (p.1 ∘ Fin.succAbove i, p.2 + Pi.single (p.1 i) 1) - I (p.1 ∘ Fin.succAbove i, p.2)) = ∑ q ∈ s', (β' q : ℝ) * I q",
+  "lean_name": "cmcdtfrcb_face_regroup",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-fac-bd3d9e9fe6-a1"
+}
