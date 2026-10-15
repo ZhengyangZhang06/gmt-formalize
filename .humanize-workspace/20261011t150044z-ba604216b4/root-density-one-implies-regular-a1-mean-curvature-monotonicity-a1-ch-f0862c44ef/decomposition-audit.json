@@ -1,0 +1,63 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "injective_iff_antilipschitz|bound_of_antilipschitz|isCompact_insert_range|theorem IsCompact.tendsto_subseq|hasDerivAt_iff_tendsto_slope|mem_iff_infDist_zero|continuous_infDist_pt|infDist_le_dist_of_mem|closed_of_finiteDimensional|theorem HasFDerivAt.isLittleO|theorem HasFDerivAt.comp_hasDerivAt|theorem HasDerivAt.div|theorem ContDiffOn.comp|theorem le_of_tendsto_of_tendsto",
+        "dsmc_chart_inverse_continuity|dsmc_chart_secant_estimate|dsmc_tangentSpace_subset_range_of_secant|dsmc_chart_range_subset_tangentSpace",
+        "abbrev EuclideanSpace|def EuclideanSpace|EuclideanSpace.*PiLp|norm_sq_eq",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/chart-tangent-independent-audit-j79jsy15/Statements.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/chart-tangent-independent-audit-j79jsy15/Assembly.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/chart-tangent-independent-audit-j79jsy15/FullCheck.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/FiniteDimension.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Compactness/Compact.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Sequences.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Defs.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/Deriv/Slope.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/HausdorffDistance.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/Comp.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-mean-curvature-monotonicity-a1-ch-f0862c44ef/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-mean-curvature-monotonicity-a1-ch-f0862c44ef/decomposition-v1.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-02.txt",
+        "/tmp/chart-tangent-independent-audit-j79jsy15/Statements.lean",
+        "/tmp/chart-tangent-independent-audit-j79jsy15/Assembly.lean",
+        "/tmp/chart-tangent-independent-audit-j79jsy15/FullCheck.lean"
+      ],
+      "conclusion": "Accept the four-way split of this selected chart theorem. The snapshot manifest pins project b4d606db1da5da8fa2c0292ad4924d97de8b3c4b and Mathlib 25730c7c759d108ef87ab70af2342a196760f79d; the active Mathlib revision agrees, and the snapshot contract is byte-identical to the workspace contract and Submission. Contract.lean:228 confirms the exact curve-velocity definition. The inspected Mathlib declarations support compact subsequences, derivative estimates, closed ranges, slope limits and composition. Euclid uses the Euclidean PiLp 2 structure; no matrix-unit construction occurs. All four exact one-line types elaborate as propositions before any child declaration exists. Independently compiled parent assembly proves the unchanged frozen type from the four child contracts. Recompiled complete proofs under namespace Submission use only propext, Classical.choice and Quot.sound, without sorryAx. All names are bare identifiers. No reservation matches occurred outside this branch among 1,032 DAG/decomposition JSON files, and no declaration matches occurred in the project snapshot or GMT sources. No previously accepted declaration is reused. Empty dependency lists are correct: inverse continuity and the secant estimate enter subsequent children as explicit hypotheses. Parent assembly obtains (ii), then (iii), then both inclusions for (i), without circularity."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "inverse_continuity",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and standalone Lean proposition agree, including the absence of openness assumptions. The proof constructs a convergent image sequence whose range plus limit is compact and contained in W. Properness supplies a subsequence limit inside V; relative continuity and injectivity identify it with v, contradicting the fixed positive separation. Every step is justified without invoking the child or parent conclusion."
+    },
+    {
+      "key": "secant_estimate",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type matches the hypotheses: W is open, v belongs to V, A is the injective derivative at v, and inverse continuity is explicit. The lower bound handles d = 0 separately. The differentiability estimates, positive radius choices, image equality and choice a = v' − v yield precisely the stated relative-error bound. No openness of V or unstated sibling theorem is used."
+    },
+    {
+      "key": "tangent_subset_range",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose matches the exact curve-based tangentSpace contract. The proof establishes that the range is closed and nonempty, bounds its distance from each small difference quotient, and passes to the derivative along the nontrivial punctured real neighbourhood filter. Choosing ε = e/(‖w‖ + 1) correctly includes w = 0. Neither q ∈ N nor injectivity of A is an additional requirement."
+    },
+    {
+      "key": "range_subset_tangent",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The statement and Lean type agree. Openness and r ≥ 1 justify the ambient derivative. The constant curve handles a = 0; otherwise the explicitly smooth rational reparametrization has derivative 1 at zero and keeps the parameter curve strictly inside V. Composition gives a C¹ curve on the entire required interval, and the chain rule gives velocity Dψ(v)a. The construction is complete and independent."
+    }
+  ],
+  "required_changes": []
+}
