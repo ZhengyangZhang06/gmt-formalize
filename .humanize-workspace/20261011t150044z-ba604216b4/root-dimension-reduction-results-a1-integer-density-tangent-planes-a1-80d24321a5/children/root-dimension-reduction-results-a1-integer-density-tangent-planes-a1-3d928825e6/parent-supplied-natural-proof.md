@@ -1,0 +1,97 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.integer_density-a1`
+- Child DAG node: `root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.integer_density-a1.planar_density_integer-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: step 3(b) and the (H1) argument of the parent proof. In Simon 7.3.3, proof of (1) (chapter-07.txt lines 476–510), the case of an n-plane in the dimension-reducing argument is excluded because densities of integer multiplicity currents are integers H^n-a.e. on their carrier (Simon Ch. 6, 3.1; in this formalization the a.e. density statement is supplied by the prerequisite Submission.idtp_imrep_measure_density_ae). No assumption on dim Q is needed.
+
+Notation: H^n := μHE[n]; ω := unitBallVolume n; ofReal = ENNReal.ofReal; B_ρ(x) is the open ball; 𝓝[>] 0 is the filter ρ ↓ 0, ρ > 0.
+
+1. Since S is integer multiplicity, choose R : IMRep ℝ^P n with R.Represents S. Write M := R.carrier, θ := R.mult (ℕ-valued, with θ(x) > 0 for x ∈ M by the field R.mult_pos) and μ := R.measure = (H^n⌞M).withDensity θ. For x ∈ ℝ^P let r_x(ρ) := μ(B_ρ(x))/(ω·ofReal(ρ^n)).
+
+2. Mass equals measure. Part (a) of the accepted prerequisite result Submission.dimred_im_mass_measure (with U := ℝ^P, which is open, and T := S) gives S.massOn W = μ(W) for every open W ⊆ ℝ^P. Balls are open, so for every x the density ratio of S at x, ρ ↦ S.massOn(B_ρ(x))/(ω·ofReal(ρ^n)), is exactly r_x.
+
+3. Local finiteness. Let K ⊆ ℝ^P be compact; it is closed, hence measurable. Then μ(K) = ∫⁻_K θ d(H^n⌞M) (withDensity_apply) = ∫⁻_{K ∩ M} θ dH^n (Measure.restrict_restrict) = ∫⁻_{M ∩ K} θ dH^n, which is ≠ ∞ by the field R.locallyIntegrable_mult K (K compact, K ⊆ ℝ^P). So μ(K) ≠ ∞ for every compact K.
+
+4. Almost-everywhere densities. Since n ≥ 1 and by step 3, the prerequisite result Submission.idtp_imrep_measure_density_ae applies to R (with U := ℝ^P): for H^n-a.e. x ∈ ℝ^P, r_x(ρ) → 1_M(x)·θ(x) in [0, ∞] along 𝓝[>] 0 (the right side is Set.indicator M (fun y => (θ(y) : [0, ∞])) x). Let G be the set of such x; by ae_iff, H^n(ℝ^P ∖ G) = 0.
+
+5. Uniqueness of limits. 𝓝[>] 0 on ℝ is a nontrivial filter and [0, ∞] is Hausdorff, so a function has at most one limit along it (tendsto_nhds_unique). For a, b ≥ 0, ofReal(a) = ofReal(b) implies a = b (ENNReal.ofReal_eq_ofReal_iff).
+
+6. Case H^n(M) = 0. Then H^n⌞M = 0 (Measure.restrict_eq_zero), so μ = 0 (withDensity_zero_left) and r_0(ρ) = 0/(ω·ofReal(ρ^n)) = 0 for every ρ; thus r_0 → 0. Since 0 ∈ Q, the hypothesis at y = 0 is HasMassDensity S 0 c', so by step 2, r_0 → ofReal(c'). By step 5, ofReal(c') = 0, i.e. c' ≤ 0 (ENNReal.ofReal_eq_zero), contradicting c' > 0. So this case cannot occur.
+
+7. Case H^n(M) ≠ 0. If M ∩ G were empty, then M ⊆ ℝ^P ∖ G and H^n(M) = 0 (measure_mono_null); so pick y ∈ M ∩ G.
+   - Since y ∈ G and y ∈ M, r_y → 1_M(y)·θ(y) = (θ(y) : [0, ∞]) = ofReal(θ(y)) (ENNReal.ofReal_natCast).
+   - The hypothesis at y and step 2 give r_y → ofReal(1_Q(y)·c').
+   - By step 5, ofReal(1_Q(y)·c') = (θ(y) : [0, ∞]).
+
+8. If y ∉ Q, then 1_Q(y)·c' = 0, so (θ(y) : [0, ∞]) = ofReal(0) = 0, contradicting θ(y) > 0 (y ∈ M). Hence y ∈ Q, 1_Q(y)·c' = c', and ofReal(c') = ofReal(θ(y)) with c' ≥ 0 and θ(y) ≥ 0, so c' = θ(y) by step 5. Take m := R.mult y ∈ ℕ. ∎
+
+## Key steps
+
+1. Represent S by R = (M, θ, ξ); by Submission.dimred_im_mass_measure (a), S.massOn W = R.measure W for open W, so the density ratios of S are those of R.measure.
+2. R.measure is finite on compact sets (field R.locallyIntegrable_mult), so Submission.idtp_imrep_measure_density_ae gives: for H^n-a.e. x the ratio tends to 1_M(x)θ(x).
+3. If H^n(M) = 0 then R.measure = 0 and the density of S at 0 ∈ Q would be 0 ≠ c' > 0.
+4. Otherwise pick y ∈ M where the a.e. limit holds; uniqueness of limits gives 1_Q(y)c' = θ(y) ≥ 1, so y ∈ Q and c' = θ(y) ∈ ℕ.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `git rev-parse HEAD; git -C .lake/packages/mathlib rev-parse HEAD; git -C .lake/packages/simongmt rev-parse HEAD (compared with local-references/123e8435b4a2469b/manifest.json)`
+- `cmp local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean GMT/Ch07/Contract.lean; cmp GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean`
+- `git show fb9bfaa2bb3b6a2fb2c8d2c902f098a63fc92f2d:GMT/Ch07/Submission.lean (layout of the accepted theorem Submission.idtp_convergesWeakly_massOn_le)`
+- `python3 scan of dag.json: lean_statement/status of dimred_im_mass_measure, dimred_minimizing_monotonicity, dimred_threshold_reduction, dimred_invariant_cone_splitting, dimred_one_dim_minimizing_cone, dtc_blowUp_massOn_image, idtp_convergesWeakly_massOn_le, idtp_imrep_measure_density_ae, idtp_two_dim_cone_integer_density, dimred_cs_mi_hasMassDensity_unique; dependency lists of the parent and grandparent nodes`
+- `grep -c 'idod_' dag.json DAG.md dag.mmd issue-workers.json problem.json (all 0); grep -rl 'idod_' nodes/ decomposition-reopenings/ (only this node's decomposition-v1/audit/receipt); grep -rl 'idod_' local-references/123e8435b4a2469b/project .lake/packages/simongmt (no match); git log --all -S 'idod_' (no match)`
+- `grep -rn 'theorem measure_null_of_locally_null|theorem IsCompact.eventually_forall_of_forall_eventually|theorem upperSemicontinuousOn_iff_preimage_Iio|protected lemma mul_lt_mul_iff_right|lemma withDensity_zero_left|theorem measure_ball_pos|theorem measure_ball_lt_top|theorem ofReal_div_of_pos|protected theorem Tendsto.mul|theorem le_of_tendsto|theorem mul_le_mul_right' local-references/123e8435b4a2469b/mathlib/Mathlib; grep -n 'theorem GeometricCurrentOn.massOn_mono' .lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean`
+- `sed -n 360,520p book/chapter-07.txt (Simon 7.3.3, Remark 3.4, Lemma 3.5, proof of 3.3(1), displays (1)-(15))`
+- `lake env lean /tmp/idod2/check/Probe.lean (#check of the library lemmas)`
+- `lake env lean /tmp/idod2/check/Assembly.lean (#print axioms check_parent)`
+- `lake env lean /tmp/idod2/check/Leaves1.lean (#print axioms check_C1, check_C2); lake env lean /tmp/idod2/check/Leaves2.lean (#print axioms check_C3, check_C4, check_C5)`
+- `lake env lean /tmp/idod2/check/FromJson.lean (statements and proofs regenerated from the final JSON strings)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/OuterMeasure/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Compactness/Compact.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Semicontinuity/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/OpenPos.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Typeclasses/Finite.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/WithDensity.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Basic/ENNReal/Operations.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Basic/ENNReal/Inv.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Instances/ENNReal/Lemmas.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Order/OrderClosed.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Algebra/Order/Monoid/Unbundled/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-80d24321a5/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-80d24321a5/parent-supplied-plan.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-80d24321a5/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-07.txt`
+- `/tmp/idod2/check/DepStubs.txt`
+- `/tmp/idod2/check/ChildStubs.txt`
+- `/tmp/idod2/check/Assembly.lean`
+- `/tmp/idod2/check/Leaves1.lean`
+- `/tmp/idod2/check/Leaves2.lean`
+- `/tmp/idod2/check/FromJson.lean`
+
+Pins match: the snapshot manifest records project b4d606db1da5da8fa2c0292ad4924d97de8b3c4b and Mathlib 25730c7c759d108ef87ab70af2342a196760f79d, equal to the workspace HEAD and .lake/packages/mathlib HEAD; SimonGMT is pinned at 2b3663083f3fe399b6296fb8eaee52169170e197. The snapshot Contract.lean is byte-identical to the workspace Contract.lean and Submission.lean, and accepted children are declared as `theorem Submission.X` inside `namespace GMT.Ch07` (checked on the accepted commit fb9bfaa2).
+
+Library support found in the snapshot: measure_null_of_locally_null (MeasureTheory/OuterMeasure/Basic.lean:150), measure_iUnion_null, IsCompact.eventually_forall_of_forall_eventually (Topology/Compactness/Compact.lean:459), upperSemicontinuousOn_iff_preimage_Iio (Topology/Semicontinuity/Basic.lean:914), measure_ball_pos (Measure/OpenPos.lean:212), measure_ball_lt_top (Measure/Typeclasses/Finite.lean:373), withDensity_zero_left (Measure/WithDensity.lean:83), ENNReal.ofReal_div_of_pos (Basic/ENNReal/Inv.lean:960), ENNReal.mul_lt_mul_iff_right (Basic/ENNReal/Operations.lean:83), ENNReal.Tendsto.mul / Tendsto.mul_const (Topology/Instances/ENNReal/Lemmas.lean:337, 359), le_of_tendsto (Topology/Order/OrderClosed.lean:133), and SimonGMT GeometricCurrentOn.massOn_mono (Chapter06/Mass.lean:81). In this Mathlib pin the monoid lemmas are named mul_le_mul_right/mul_le_mul_left (Algebra/Order/Monoid/Unbundled/Basic.lean:58, 66) and ENNReal lives under Mathlib/Basic/ENNReal.
+
+DAG: the cited results have these frozen types and states: dimred_im_mass_measure, dtc_blowUp_massOn_image, idtp_convergesWeakly_massOn_le and dimred_cs_mi_hasMassDensity_unique are accepted; dimred_minimizing_monotonicity, dimred_threshold_reduction, dimred_invariant_cone_splitting, dimred_one_dim_minimizing_cone, idtp_imrep_measure_density_ae and idtp_two_dim_cone_integer_density are frozen siblings of this node or of its parent. No match for idod_ in dag.json, DAG.md, dag.mmd, issue-workers.json, problem.json, the pinned project, SimonGMT or git history. The only hits are this node's own unmaterialized attempt-1 files (decomposition-v1.json, audit, receipt); the DAG lists no children for this node. The five names are therefore unreserved and are reused with identical types.
+
+Lean checks: stubs were generated verbatim from the dag.json types. Assembly.lean proves the frozen parent type from the children with axioms [propext, Classical.choice, Quot.sound, dimred_minimizing_monotonicity, idod_local_threshold_null]. Leaves1/Leaves2 prove each child's exact type from the stubs:
+- C1: standard axioms only;
+- C2: dtc_blowUp_massOn_image and idtp_convergesWeakly_massOn_le;
+- C3: dimred_im_mass_measure and idtp_imrep_measure_density_ae;
+- C4: dimred_invariant_cone_splitting, dimred_one_dim_minimizing_cone and idtp_two_dim_cone_integer_density;
+- C5: dimred_minimizing_monotonicity, dimred_threshold_reduction and C1–C4.
+No sorryAx appears. An independent reviewer agent re-ran a copy (/tmp/idod2_review/FromJson.lean) with identical axiom sets and accepted the split. Inline indicators, ENNReal products, casts and scalar multiplications have their intended instances, and no matrix construction occurs.
