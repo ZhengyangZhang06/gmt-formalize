@@ -1,0 +1,75 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.constant_planes-a1.finite_planes-a1`
+- Child DAG node: `root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.constant_planes-a1.finite_planes-a1.zero_offset-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: step 6 ("Some w_i = 0") of the selected proof, with the vanishing half of step 1 (a plane at distance ≥ r from 0 misses B_r(0)) proved inline. No dimension hypothesis, sign condition on the α_i or sibling lemma is needed.
+Notation: Hⁿ = μHE[n]; Π_i := {y : y − w_i ∈ V}; ofReal = ENNReal.ofReal (so ofReal(α_i) = 0 if α_i ≤ 0).
+1. (Contradiction hypothesis.) Suppose w_i ≠ 0 for every i ∈ Fin N. Then ‖w_i‖ > 0 for every i (norm_pos_iff).
+2. (A small radius.) There is r > 0 with r < ‖w_i‖ for every i. Indeed, for each i the condition r < ‖w_i‖ holds for all r in a neighbourhood of 0 (eventually_lt_nhds, as 0 < ‖w_i‖), hence eventually in the filter 𝓝[>]0; finitely many such conditions hold simultaneously eventually (Filter.eventually_all over the finite type Fin N); r > 0 holds eventually in 𝓝[>]0 (self_mem_nhdsWithin); and 𝓝[>]0 is a nontrivial filter, so some r satisfies all of them (Filter.Eventually.exists). (Concretely, for N ≥ 1, r := (min_i‖w_i‖)/2 works; for N = 0 any r > 0 works.)
+3. (Each plane misses B_r(0).) Fix i and let y ∈ Π_i, i.e. t := y − w_i ∈ V. As w_i ∈ V^⊥, ⟨t, w_i⟩ = 0 (Submodule.inner_right_of_mem_orthogonal), and Pythagoras (norm_add_sq_eq_norm_sq_add_norm_sq_real, stated in Mathlib in the product form ‖t + w_i‖·‖t + w_i‖ = ‖t‖·‖t‖ + ‖w_i‖·‖w_i‖) with t + w_i = y gives ‖y‖² = ‖t‖² + ‖w_i‖² ≥ ‖w_i‖². Since 0 < r < ‖w_i‖, ‖w_i‖² > r², so ‖y‖² > r². If ‖y‖ < r held, then 0 ≤ ‖y‖ < r would give ‖y‖² < r², a contradiction; hence ‖y‖ ≥ r and y ∉ B_r(0). Thus B_r(0) ∩ Π_i = ∅ for every i.
+4. (ν vanishes on B_r(0).) B_r(0) is open, hence measurable (measurableSet_ball). By the hypothesis on ν, the evaluation of a finite sum of measures (Measure.finsetSum_apply), Measure.smul_apply and Measure.restrict_apply (with the measurable set B_r(0)): ν(B_r(0)) = Σ_i ofReal(α_i)·Hⁿ(B_r(0) ∩ Π_i) = Σ_i ofReal(α_i)·Hⁿ(∅) = 0, by step 3.
+5. (Conclusion.) Step 4 contradicts the hypothesis ν(B_r(0)) > 0 for the radius r > 0 of step 2. Hence w_i = 0 for some i. (For N = 0 the sum is empty, ν = 0, and the same contradiction shows the hypotheses are inconsistent, so the statement holds.) ∎
+
+## Key steps
+
+1. If every w_i ≠ 0, choose r > 0 with r < ‖w_i‖ for all i (finitely many positive numbers).
+2. Pythagoras with w_i ∈ V^⊥ gives ‖y‖ ≥ ‖w_i‖ > r for y with y − w_i ∈ V, so every plane misses B_r(0).
+3. Hence ν(B_r(0)) = Σ_i ofReal(α_i)·Hⁿ(∅) = 0, contradicting ν(B_r(0)) > 0; so some w_i = 0.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json (mode local-project, project_commit b4d606db1da5da8fa2c0292ad4924d97de8b3c4b, mathlib_commit 25730c7c759d108ef87ab70af2342a196760f79d)`
+- `cmp <snapshot>/project/GMT/Ch07/Contract.lean GMT/Ch07/Contract.lean (identical); cmp GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean (identical)`
+- `rg -n 'cbr_ci_cp_fp' <snapshot>/project GMT (no match, exit 1); rg -n 'idtp_tdc_subspace_ball_measure' <snapshot>/project GMT (no match, exit 1; the reused theorem lives on its accepted candidate commit a029156d)`
+- `python3 -I scan of dag.json (1569 nodes): no lean_name with prefix cbr_ci_cp_fp; idtp_tdc_subspace_ball_measure is owned only by accepted node root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.two_dim_cone_density-a1.subspace_ball_measure-a1 (candidate_commit a029156d2b71053da5c6d27b9abcc46011c9cfac) with a byte-identical lean_statement; its parent-child-handoff.json supplied the accepted natural proof reproduced verbatim`
+- `grep -rn in <snapshot>/mathlib/Mathlib: Isometry.euclideanHausdorffMeasure_image (Geometry/Euclidean/Volume/Measure.lean:131), isometry_mul_right with to_additive isometry_add_right (Topology/MetricSpace/IsometricSMul.lean:93), norm_add_sq_eq_norm_sq_add_norm_sq_real (Analysis/InnerProductSpace/Basic.lean, product form), inner_right_of_mem_orthogonal (Analysis/InnerProductSpace/Orthogonal.lean:78), Real.le_sqrt_of_sq_le (Analysis/Real/Sqrt.lean:257), ENNReal.sum_le_tsum and tsum_const_eq_top_of_ne_zero (Topology/Algebra/InfiniteSum/ENNReal.lean:119,167), ENNReal.summable.tsum_le_of_sum_le (used at MeasureTheory/Measure/Restrict.lean:1081), Measure.sum_apply and sum_fintype (MeasureTheory/Measure/Sum.lean:39,109), finsetSum_apply (MeasureTheory/Measure/Module.lean; finset_sum_apply is a deprecated alias), ENNReal.toReal_sum (Basic/ENNReal/BigOperators.lean:117), ofReal_toReal, ofReal_le_iff_le_toReal, ofReal_div_of_pos, tendsto_ofReal, measure_ball_pos, measure_ball_lt_top, Set.infinite_coe_iff, measurableSet_ball (all found)`
+- `python3 -I importlib of verifier/gmt-compare.py contract_scope(GMT/Ch07/Contract.lean, 'GMT.Ch07.main_theorem'): replayed child scope = open Filter Function Set MeasureTheory Metric; open scoped ENNReal Topology; namespace GMT.Ch07; open Poincare.SimonGMT.Chapter06; open Poincare.SimonGMT.Chapter03 (CountablyRectifiable HasApproximateTangentSpaceAt); noncomputable section; end`
+- `lake env lean /tmp/fp-decomp-k7q2/Final.lean (pinned toolchain lean4 v4.35.0-rc3, Mathlib 25730c7c; file generated from the exact payload lean_statement strings and the DAG's frozen parent type): chk_plane_ball, chk_total_weight, chk_zero_offset and chk_assembly compile without warnings; #print axioms reports only propext, Classical.choice, Quot.sound`
+- `python3 -I /tmp/fp-decomp-k7q2/build/check.py: verifier/lean_contract.py validate_lean_statement on all 4 strings (pass, unchanged), key/lean_name schema regexes, acyclic depends_on (topological order subspace_ball, zero_offset, plane_ball, total_weight), reuse-identity check against dag.json`
+- `sed/grep of /runtime/flows/gmt-claude-b888e19cffb1/_recursive_lean/runtime.py (_decompose depth guard: depth 5 < max_depth 6; _existing_lean_name_problem; _accepted_checkpoint; _solve_children reuse of accepted names), leaf_verification.py check_source_delta (a leaf appends exactly one theorem; no helper declarations or set_option), prompts.py DECOMPOSE/DECOMPOSITION_AUDIT, decomposition_scope.py`
+- `independent reviewer subagent: recompiled /tmp/fp-review-x9/FinalCopy.lean (exit 0, standard axioms) and audited prose/Lean agreement and every child proof; verdict ACCEPT, no defects`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/IsometricSMul.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Orthogonal.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Real/Sqrt.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/InfiniteSum/ENNReal.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Sum.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Module.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Basic/ENNReal/BigOperators.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Basic/ENNReal/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Basic/ENNReal/Real.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Basic/ENNReal/Inv.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Instances/ENNReal/Lemmas.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/OpenPos.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Typeclasses/Finite.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Basic/Finite/Defs.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Constructions/BorelSpace/Metric.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-b3595d6587/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-b3595d6587/parent-supplied-natural-proof.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-661fba5cee/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-6c861e5511/decomposition-v1.json`
+- `/runtime/flows/gmt-claude-b888e19cffb1/_recursive_lean/runtime.py`
+- `/runtime/flows/gmt-claude-b888e19cffb1/_recursive_lean/leaf_verification.py`
+- `/runtime/flows/gmt-claude-b888e19cffb1/_recursive_lean/prompts.py`
+- `/runtime/flows/gmt-claude-b888e19cffb1/_recursive_lean/decomposition_scope.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/tmp/fp-decomp-k7q2/Final.lean`
+
+The snapshot contract is byte-identical to the workspace Contract.lean and Submission.lean (project b4d606db, Mathlib 25730c7c). No snapshot or DAG theorem states the offset-plane ball formula, the total-weight bound or the zero-offset lemma, so these are three new children; their names are unused in the DAG and in the project. The accepted idtp_tdc_subspace_ball_measure is reused with its byte-identical frozen type. Every Mathlib lemma cited in the child proofs exists in the snapshot and is reachable from import GMT.Ch07.Submission; complete scratch proofs compiled. The exact child types elaborate in the comparator's contract scope. The three new children are provable as single theorems from their listed dependencies, and the exact frozen parent type follows from total_weight and zero_offset, using only propext, Classical.choice and Quot.sound. No web source was needed: the argument is elementary (Pythagoras, isometry invariance of μHE[n], an elementary limit).
