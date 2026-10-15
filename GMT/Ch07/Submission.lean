@@ -86699,6 +86699,49 @@ theorem Submission.dtc_cone_of_constant_density : ∀ (P n : ℕ) (C : Geometric
     (Submission.dtc_cone_wedge_vanishes P n univ R
       (Submission.dtc_cone_radial_tangency P n R (unitBallVolume n * ENNReal.ofReal θ) hvar hball))
 
+/-- **Tangent limits of minimizing cycles have `n`-homogeneous weights** (Simon 7.3.1(2),
+chapter-07.txt lines 302–309 and 325–360, with the homogeneity of cone weights in the proof of
+7.4.5, lines 697–699), assuming (MON) (`dimred_minimizing_monotonicity`) and (MB)
+(`dimred_blowup_limit_moving_centres`).  `x ∈ spt T ⊆ U`.  (MB) with the constant centres
+`xⱼ = x` gives `φ` and `C`, minimizing in `ℝ^{n+k}` with `∂C = 0`, `η_{x,λ_{φ(j)}#}T ⇀ C` and
+`μ_{η_{x,λ_{φ(j)}#}T} → μ_C`.  (MON)(iii) with `d = n + ℓ` gives `Θⁿ(μ_T, x) = Θ(x)`, so
+`M_{B_ρ(0)}(C) = ωₙρⁿΘ(x)` for every `ρ > 0` (`dtc_blowUp_density`, book (1), (4)).  Every
+representation of `C` is stationary in `ℝ^{n+k}` (7.1.2 with `U = N = ℝ^{n+k}` and the identity
+chart), so `C` is a cone (`dtc_cone_of_constant_density`), and the weight of every representation
+of `C` satisfies `μ(λA) = λⁿ μ(A)` (`cone_current_imrep_measure_smul_image`). -/
+theorem Submission.dimred_tr_tangent_measure_homogeneous : (∀ (P n d : ℕ) (U N : Set (Euclid P)) (T : GeometricCurrentOn U n), 1 ≤ n → n ≤ d → d ≤ P → IsOpen U → IsEmbeddedSubmanifold 2 d N → (closure N \ N) ∩ U = ∅ → IsMinimizingIn T (U ∩ N) → T.support ⊆ U ∩ N → BoundaryVanishes T → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → ∃ Λ : ℝ, 0 ≤ Λ ∧ ∀ (y : Euclid P) (R : ℝ), closedBall y R ⊆ K → MonotoneOn (fun ρ : ℝ => ENNReal.ofReal (Real.exp (Λ * ρ) / ρ ^ n) * T.massOn (ball y ρ)) (Ioo 0 R)) ∧ (N = univ → ∀ (y : Euclid P) (R : ℝ), ball y R ⊆ U → MonotoneOn (fun ρ : ℝ => ENNReal.ofReal (1 / ρ ^ n) * T.massOn (ball y ρ)) (Ioo 0 R)) ∧ (∃ Θ : Euclid P → ℝ, (∀ y ∈ U, HasMassDensity T y (Θ y)) ∧ UpperSemicontinuousOn Θ U) ∧ ∀ y ∈ T.support, ∀ θ : ℝ, HasMassDensity T y θ → 1 ≤ θ) → (∀ (n k ℓ : ℕ), ℓ ≤ k → ∀ (U N : Set (Euclid (n + k))) (T : GeometricCurrentOn U n), 1 ≤ n → IsOpen U → IsEmbeddedSubmanifold 2 (n + ℓ) N → (closure N \ N) ∩ U = ∅ → IsMinimizingIn T (U ∩ N) → T.support ⊆ U ∩ N → BoundaryVanishes T → ∀ (x : Euclid (n + k)) (xs : ℕ → Euclid (n + k)) (lams : ℕ → ℝ) (hlams : ∀ j, 0 < lams j), x ∈ U → Tendsto xs atTop (𝓝 x) → Tendsto lams atTop (𝓝 0) → ∃ (φ : ℕ → ℕ) (C : GeometricCurrentOn (univ : Set (Euclid (n + k))) n), StrictMono φ ∧ ConvergesWeakly (fun j => blowUp T (xs (φ j)) (lams (φ j)) (hlams (φ j)).ne') C ∧ MassMeasuresConverge (fun j => blowUp T (xs (φ j)) (lams (φ j)) (hlams (φ j)).ne') C ∧ IsMinimizingIn C univ ∧ BoundaryVanishes C) → ∀ (n k ℓ : ℕ), ℓ ≤ k → ∀ (U N : Set (Euclid (n + k))) (T : GeometricCurrentOn U n), 1 ≤ n → IsOpen U → IsEmbeddedSubmanifold 2 (n + ℓ) N → (closure N \ N) ∩ U = ∅ → IsMinimizingIn T (U ∩ N) → T.support ⊆ U ∩ N → BoundaryVanishes T → ∀ x ∈ T.support, ∀ (lams : ℕ → ℝ) (hlams : ∀ j, 0 < lams j), Tendsto lams atTop (𝓝 0) → ∃ (φ : ℕ → ℕ) (C : GeometricCurrentOn (univ : Set (Euclid (n + k))) n), StrictMono φ ∧ ConvergesWeakly (fun j => blowUp T x (lams (φ j)) (hlams (φ j)).ne') C ∧ MassMeasuresConverge (fun j => blowUp T x (lams (φ j)) (hlams (φ j)).ne') C ∧ IsMinimizingIn C univ ∧ ∀ R : IMRep (univ : Set (Euclid (n + k))) n, R.Represents C → ∀ lam : ℝ, 0 < lam → ∀ A : Set (Euclid (n + k)), MeasurableSet A → R.measure ((fun x => lam • x) '' A) = ENNReal.ofReal (lam ^ n) * R.measure A := by
+  intro hMON hMB n k ℓ hℓ U N T hn hU hN hNU hmin hspt hbd x hx lams hlams hlim
+  -- Step 1: `x ∈ spt T ⊆ U ∩ N`
+  have hxU : x ∈ U := (hspt hx).1
+  -- Step 2: (MB) with the constant centres `xⱼ = x` gives `φ` and `C`, minimizing in `ℝ^{n+k}`
+  obtain ⟨φ, C, hφ, hconv, hmeas, hCmin, hCbd⟩ := hMB n k ℓ hℓ U N T hn hU hN hNU hmin hspt hbd
+    x (fun _ => x) lams hlams hxU tendsto_const_nhds hlim
+  -- Step 3: (MON)(iii) with `d = n + ℓ` gives the density `Θ(x)` of `T` at `x`
+  obtain ⟨Θ, hΘ, -⟩ := (hMON (n + k) n (n + ℓ) U N T hn (Nat.le_add_right n ℓ)
+    (Nat.add_le_add_left hℓ n) hU hN hNU hmin hspt hbd).2.2.1
+  -- Step 4: `M_{B_ρ(0)}(C) = ωₙρⁿΘ(x)` for every `ρ > 0` (book (1), (4))
+  obtain ⟨hCball, -⟩ := Submission.dtc_blowUp_density (n + k) n U T C x (Θ x)
+    (fun j => lams (φ j)) (fun j => hlams (φ j)) hU hn hxU hmin.1 hCmin.1
+    (hlim.comp hφ.tendsto_atTop) (hΘ x hxU) hmeas
+  -- Step 5: every representation of `C` is stationary in `ℝ^{n+k}` (7.1.2 with `U = N = ℝ^{n+k}`
+  -- and the identity chart)
+  have huniv : IsEmbeddedSubmanifold 2 (n + k) (univ : Set (Euclid (n + k))) := by
+    intro y _
+    refine ⟨univ, univ, id, isOpen_univ, isOpen_univ, mem_univ y, contDiff_id.contDiffOn,
+      injOn_id _, by simp, fun K _ hK => by simpa using hK, fun z _ => ?_⟩
+    rw [fderiv_id]
+    exact fun a b h => h
+  have hCstat : ∀ R : IMRep (univ : Set (Euclid (n + k))) n, R.Represents C →
+      R.IsStationaryAlong univ := fun R hR =>
+    Submission.stationaryAlong_of_minimizing_in_submanifold (n + k) n (n + k) univ univ C R
+      isOpen_univ huniv (by simp) (by rwa [inter_self]) hCbd hR (by simp)
+  -- Step 6: `C` has constant density ratio, so it is a cone
+  have hcone : IsConeCurrent C :=
+    Submission.dtc_cone_of_constant_density (n + k) n C (Θ x) hn hCmin.1 hCbd hCstat hCball
+  -- Steps 7–8: the weights of the cone `C` are `n`-homogeneous
+  exact ⟨φ, C, hφ, hconv, hmeas, hCmin, fun R hR lam hlam A hA =>
+    Submission.cone_current_imrep_measure_smul_image (n + k) n C R hcone hR lam hlam A hA⟩
+
 /-- **`TₓM ⊆ TₓN`** (Simon Ch. 3, 1.4 and Ch. 2, §4, (4.1)–(4.3); used in Ch. 4, 2.6–2.7).  Let
 `N` be an embedded `C¹` `d`-dimensional submanifold, `Hⁿ(M \ N) = 0` and `x ∈ N`.  Then every
 approximate tangent plane `Q` of `M` at `x` lies in `TₓN`.  Write `x = ψ(v)` for a chart `ψ` of
