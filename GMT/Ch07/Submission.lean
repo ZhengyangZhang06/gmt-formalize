@@ -95363,7 +95363,4 @@ theorem Submission.idtp_cse_rotation_conservation : ∀ (P : ℕ) (R : IMRep (un
     exact R.locallyIntegrable_mult _ (isCompact_closedBall _ _) (subset_univ _)
   exact ⟨Measure.integrableOn_of_bounded hfin hφm (ae_restrict_of_forall_mem hZm hbound), hint⟩
 
-/-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
-theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
-
 end GMT.Ch07
