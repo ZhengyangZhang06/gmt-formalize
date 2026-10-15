@@ -1,0 +1,86 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.dimension_reduction_results-a1.moving_blowups-a1.deformation_theorem-a1.face_replacement-a1.boundary_variation-a1`
+- Child DAG node: `root.dimension_reduction_results-a1.moving_blowups-a1.deformation_theorem-a1.face_replacement-a1.boundary_variation-a1.face_neighbourhoods-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: step 1 of the supplied proof of the selected theorem dimred_mbl_dtfr_boundary_variation (Simon Ch. 6, proof of 5.1, chapter-06.txt lines 1840–1857, where Q is analysed near the interior F̆ of each face; the parent makes the neighbourhoods explicit and pairwise disjoint), for an arbitrary dimension k. In the selected theorem, (S) is clause (c) of the sibling face_geometry; here it is a hypothesis. The parent's N_p is the set of x with t := p̃_p(x) ∈ Q₁ and dist(x, Φ_p t) < δ(t)/2, where δ(t) = min(1, min_j min(t_j, 1 − t_j)). Its arguments (i) and (ii) only use that some t ∈ Q₁ satisfies dist(x, Φ_p t) < δ(t)/2. So we take N_p to be the union, over all t ∈ Q₁, of these balls (dropping the projection condition t = p̃_p(x)), and we write the radius δ(t)/2 as finitely many strict inequalities. This needs no projection, no finite minimum and no continuity argument.
+
+Notation. Φ_p, Q₁, Cᵏ are as in the statement. An index pair is admissible if its first component is strictly increasing.
+
+1. Definition. For an index pair p and t ∈ Q₁ let
+ B_p(t) := {x ∈ Euclid P : 2·dist(x, Φ_p t) < 1} ∩ ⋂_{j ∈ Fin k} {x : 2·dist(x, Φ_p t) < min(t_j, 1 − t_j)},
+ and let N_p := ⋃_{t ∈ Q₁} B_p(t). In Lean: N := fun p => ⋃ t ∈ {t : Euclid k | ∀ j, 0 < t j ∧ t j < 1}, {x | 2 * dist x (Φ p t) < 1} ∩ ⋂ j, {x | 2 * dist x (Φ p t) < min (t j) (1 - t j)}. Thus x ∈ N_p iff some t ∈ Q₁ has 2·dist(x, Φ_p t) < 1 and 2·dist(x, Φ_p t) < min(t_j, 1 − t_j) for every j.
+2. N_p is open. For fixed p and t, the map x ↦ 2·dist(x, Φ_p t) is continuous (continuous_const.mul (continuous_id.dist continuous_const)). So each set {x : 2·dist(x, Φ_p t) < c} with c constant is open (isOpen_lt). B_p(t) is one such set intersected with a finite intersection of such sets over the finite type Fin k (isOpen_iInter_of_finite, IsOpen.inter), so it is open. N_p is a union of open sets (isOpen_biUnion), so it is open.
+3. The open face lies in N_p. Let y ∈ Q₁ and take t := y. Then dist(Φ_p y, Φ_p t) = 0, and 2·0 = 0 < 1. Also 0 < min(y_j, 1 − y_j) for every j, because 0 < y_j < 1 (lt_min_iff, sub_pos). Hence Φ_p(y) ∈ B_p(y) ⊆ N_p.
+4. Key inequality. Let p, q be admissible with q ≠ p, let t ∈ Q₁, y' ∈ Cᵏ and x ∈ B_p(t), and put D := dist(Φ_p t, Φ_q y'). Then 2·dist(x, Φ_p t) < D. Indeed, (S) applies to (p, q, t, y'), since p ≠ q by symmetry of ≠.
+ - If 1 ≤ D, use 2·dist(x, Φ_p t) < 1.
+ - If min(t_j, 1 − t_j) ≤ D for some j, use 2·dist(x, Φ_p t) < min(t_j, 1 − t_j).
+5. Other closed faces avoid N_p. Let p, q be admissible with q ≠ p and let y ∈ Cᵏ. Suppose x := Φ_q(y) ∈ N_p, say x ∈ B_p(t) with t ∈ Q₁. Step 4 with y' := y gives 2·dist(x, Φ_p t) < dist(Φ_p t, Φ_q y) = dist(x, Φ_p t) (dist_comm). This is impossible, since dist(x, Φ_p t) ≥ 0. Hence Φ_q(y) ∉ N_p.
+6. Disjointness. Let p, q be admissible with q ≠ p. Suppose x ∈ N_p ∩ N_q, say x ∈ B_p(t) and x ∈ B_q(t') with t, t' ∈ Q₁, and put D := dist(Φ_p t, Φ_q t').
+ - Since t' ∈ Q₁ ⊆ Cᵏ (the strict inequalities imply the weak ones), step 4 for (p, q, t, t') gives 2·dist(x, Φ_p t) < D.
+ - Since t ∈ Q₁ ⊆ Cᵏ, step 4 with p and q exchanged gives 2·dist(x, Φ_q t') < dist(Φ_q t', Φ_p t) = D. Here q is admissible, p ≠ q, x ∈ B_q(t') and y' := t.
+ - By the triangle inequality (dist_triangle, dist_comm), D ≤ dist(Φ_p t, x) + dist(x, Φ_q t') < D/2 + D/2 = D, a contradiction.
+ Hence N_p ∩ N_q = ∅, i.e. Disjoint (N p) (N q) (Set.disjoint_left).
+7. Conclusion. Steps 2, 3, 5 and 6 give the four required properties, for every admissible p and every admissible q ≠ p. For k = 0 nothing changes: the intersections over j are all of Euclid P, Q₁ = Cᵏ is the one-point space, and only the alternative 1 ≤ D of (S) can occur. ∎
+
+## Key steps
+
+1. N_p := ⋃_{t∈Q₁} {x : 2·dist(x, Φ_p t) < 1 and 2·dist(x, Φ_p t) < min(t_j, 1 − t_j) for all j}. It is a union of finite intersections of open sets, hence open, and it contains Φ_p(Q₁) (take t = y).
+2. (S) gives 2·dist(x, Φ_p t) < dist(Φ_p t, Φ_q y') whenever x lies in the t-piece of N_p, q ≠ p is admissible and y' ∈ [0,1]^k.
+3. Taking x = Φ_q y' gives a contradiction, so Φ_q([0,1]^k) ∩ N_p = ∅.
+4. Applying the inequality for (p, q) and for (q, p), together with the triangle inequality, gives N_p ∩ N_q = ∅.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat SNAPSHOT/manifest.json (project_commit b4d606db, mathlib_commit 25730c7c); git -C SNAPSHOT/mathlib rev-parse HEAD (25730c7c759d108ef87ab70af2342a196760f79d); md5sum GMT/Ch07/Submission.lean GMT/Ch07/Contract.lean (identical)`
+- `rg -n -l 'dimred_mbl_dtfrbv|cmcdtfrbv_face_covectors|cmr_cc_det_covector' SNAPSHOT/mathlib/Mathlib SNAPSHOT/project -g '*.lean' (no match); rg -n -l dimred_mbl_dtfrbv_face_neighbourhoods / _massOn_disjoint_sum_le / _face_test_form over SNAPSHOT/project, lake-packages-25730c7c/simongmt and workspace GMT (no match); grep -c of each new name in RUN/dag.json (0)`
+- `python3 -I scans of RUN/dag.json: status, candidate_commit, updated_at, depends_on and lean_statement of cmcdtfrbv_face_covectors (accepted, d7f25773, 2026-10-14T01:14:25Z), cmr_cc_det_covector_exists (accepted, fee01ff8) and cmr_cc_det_covector_basis_kronecker (accepted, 00788882); this node (decomposing, attempt 2, 01:29:31Z); the twin cmcdtfr_boundary_variation children (cmcdtfrbv_face_neighbourhoods and cmcdtfrbv_massOn_disjoint_sum_le: comparing at 01:30Z, accepted only after this attempt began; same types as two new children); byte equality of the reused frozen types and of the selected type with the twin type`
+- `cat of the face_covectors node files accepted-candidate.json, isolated-comparator-result.json (passed) and lean-audit-v1.json (machine-leaf, comparator_passed, Submission.cmcdtfrbv_face_covectors); python3 -I check that the three reused natural proofs and key steps are verbatim from their parent-child-handoff.json`
+- `grep/sed of /runtime/flows/gmt-claude-b888e19cffb1/_recursive_lean/runtime.py (_decompose depth guard, _existing_lean_name_problem, _accepted_checkpoint, _solve_children, _install_parent_supplied_child_handoff early return for accepted children, _solve resume of accepted candidates), store.py (refresh, accepted-status immutability), decomposition_recovery.py, prompts.py DECOMPOSITION_AUDIT, lean_contract.validate_lean_statement; swarm-project.json (max_depth 6, max_children 12, decomposition_attempts 5)`
+- `python3 -I contract_scope(GMT/Ch07/Contract.lean, GMT.Ch07.main_theorem) from verifier/gmt-compare.py: open Filter Function Set MeasureTheory Metric; open scoped ENNReal Topology; namespace GMT.Ch07; open Poincare.SimonGMT.Chapter06; open Poincare.SimonGMT.Chapter03 (CountablyRectifiable HasApproximateTangentSpaceAt); noncomputable section; end`
+- `sed/grep of SimonGMT Chapter06 Mass.lean (covectorEuclideanNorm, covectorEuclideanNorm_zero, massAdmissibleOn, GeometricCurrentOn.massOn, .mass, .massOn_mono, .le_massOn), Currents.lean (TestFormOn, GeometricCurrentOn, boundary, tsupport_exteriorDerivative_subset), CurrentLocalEquality.lean (support); grep 'abbrev Euclid' GMT/Ch07/Contract.lean (EuclideanSpace ℝ (Fin P))`
+- `rg -n 'theorem exists_contDiff_support_eq_eq_one_iff' (Geometry/Manifold/PartitionOfUnity.lean:789) and 'closure_thickening_subset_cthickening' (Topology/MetricSpace/Thickening.lean:293) in SNAPSHOT/mathlib`
+- `sed -n 1835,1900p and 600,625p of book/chapter-06.txt: Simon Ch. 6 §5 (26)–(33) and Remark 2.35, the sources cited in the child proofs`
+- `lake env lean on /tmp/dmfrbv2/lean/{Types,Assembly,FN,MD,FTF,FC}.lean on /tmp/dmfrbv2/gen/{TypesV2,AsmV2,FNV2,MDV2,FCV2,FTFV2,E2EV2}.lean, generated by /tmp/dmfrbv2/scripts/gen_lean.py from the exact lean_statement strings of the decomposition and dag.json; and on /tmp/dmfrbv2/gen2/FTFV2NoScope.lean (explicit (⊤ : ℕ∞), no open scoped ContDiff); #print axioms reports only propext, Classical.choice and Quot.sound`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Manifold/PartitionOfUnity.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/Thickening.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/swarm-project.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-deformation-the-9ba692d275/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-deformation-the-9ba692d275/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-fac-488f890568/accepted-candidate.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-fac-488f890568/isolated-comparator-result.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-fac-488f890568/lean-audit-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-fac-488f890568/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-mass-representation-a1-coo-498906c61d/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-mass-representation-a1-coo-40c536ad5f/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/runtime/flows/gmt-claude-b888e19cffb1/_recursive_lean/runtime.py`
+- `/runtime/flows/gmt-claude-b888e19cffb1/_recursive_lean/store.py`
+- `/runtime/flows/gmt-claude-b888e19cffb1/_recursive_lean/lean_contract.py`
+- `/tmp/dmfrbv2/gen/TypesV2.lean`
+- `/tmp/dmfrbv2/gen/AsmV2.lean`
+- `/tmp/dmfrbv2/gen/FNV2.lean`
+- `/tmp/dmfrbv2/gen/MDV2.lean`
+- `/tmp/dmfrbv2/gen/FCV2.lean`
+- `/tmp/dmfrbv2/gen/FTFV2.lean`
+- `/tmp/dmfrbv2/gen/E2EV2.lean`
+- `/tmp/dmfrbv2/gen2/FTFV2NoScope.lean`
+
+Pins match: project b4d606db, Mathlib 25730c7c and SimonGMT 2b36630. Submission.lean is byte-identical to the frozen contract. Neither the snapshot project nor Mathlib contains lattice-face neighbourhoods, face test forms or local-mass superadditivity, so these three obligations are new. They get fresh dimred_mbl_dtfrbv_* names, which collide with nothing in the DAG, the snapshot, Mathlib, SimonGMT or the workspace. The twin's cmcdtfrbv_face_neighbourhoods and cmcdtfrbv_massOn_disjoint_sum_le have identical types but were accepted only after this attempt began, so they are not reused. cmcdtfrbv_face_covectors, cmr_cc_det_covector_exists and cmr_cc_det_covector_basis_kronecker are accepted checkpoints whose frozen types are byte-identical to the proposed ones. Their natural proofs are reproduced verbatim. face_covectors became accepted at 01:14:25Z, before this attempt began, so the attempt-1 name objection no longer applies. Every cited Mathlib or SimonGMT name resolves under the frozen imports. The generated type, assembly, leaf and end-to-end files compile with only the standard axioms.

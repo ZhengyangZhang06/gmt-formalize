@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.moving_blowups-a1.deformation_theorem-a1.face_replacement-a1.face_integral_current-a1.mass_le-a1",
+  "parent_id": "root.dimension_reduction_results-a1.moving_blowups-a1.deformation_theorem-a1.face_replacement-a1.face_integral_current-a1",
+  "depth": 6,
+  "title": "Mass bound for a current given by integrable densities on coordinate unit faces (Simon (28) and first line of (30), i.e. (34a))",
+  "statement": "Let P, m ∈ ℕ and n := m + 1. Let s be a finite set of pairs p = (ι, b), where ι : Fin n → Fin P is strictly increasing and b : Fin P → ℤ. Let w_p : Euclid n → ℝ be Lebesgue integrable on Q₁ := {y ∈ Euclid n : 0 < y_i < 1 for all i} for every p ∈ s. Write e_l := EuclideanSpace.single l 1 ∈ Euclid P, Φ_p(y) := WithLp.toLp 2 (i ↦ (b i : ℝ)) + Σ_j y_j e_{ι(j)} and E_p := (e_{ι(0)}, …, e_{ι(m)}). Let D ∈ GeometricCurrentOn univ n satisfy D(ω) = Σ_{p∈s} ∫_{Q₁} w_p(y)·ω(Φ_p(y))(E_p) dy for every test n-form ω ∈ TestFormOn univ n. Then the mass of D, computed with the Euclidean coefficient norm covectorEuclideanNorm, satisfies M(D) = D.mass ≤ ENNReal.ofReal(Σ_{p∈s} ∫_{Q₁} |w_p|).",
+  "lean_statement": "∀ (P m : ℕ) (s : Finset ((Fin (m + 1) → Fin P) × (Fin P → ℤ))) (w : (Fin (m + 1) → Fin P) × (Fin P → ℤ) → Euclid (m + 1) → ℝ) (D : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1)), (∀ p ∈ s, StrictMono p.1) → (∀ p ∈ s, IntegrableOn (w p) {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1}) → (∀ ω : TestFormOn (univ : Set (Euclid P)) (m + 1), D ω = ∑ p ∈ s, ∫ y in {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1}, w p y * (ω : DifferentialForm (Euclid P) (m + 1)) (WithLp.toLp 2 (fun i => (p.2 i : ℝ)) + ∑ j, y j • EuclideanSpace.single (p.1 j) (1 : ℝ)) (fun j => EuclideanSpace.single (p.1 j) (1 : ℝ))) → D.mass ≤ ENNReal.ofReal (∑ p ∈ s, ∫ y in {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1}, |w p y|)",
+  "lean_name": "dimred_mbl_dtfric_mass_le",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-moving-blowups-a1-deformation-the-6ec4cfb691-a1"
+}
