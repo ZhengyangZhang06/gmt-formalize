@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.mass_representation-a1.representation_core-a1.mass_upper_bound-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.mass_representation-a1.representation_core-a1",
+  "depth": 4,
+  "title": "Mass upper bound M_W(T) ≤ μ(W) for a representation with |ξ(x)(α)| ≤ |α| (parent step 10)",
+  "statement": "Let P, n ∈ ℕ, U ⊆ ℝ^P, T ∈ 𝒟_n(U) (GeometricCurrentOn U n), μ a measure on ℝ^P and ξ : ℝ^P → Λ_n (MultiVector P n). Assume |ξ(x)(α)| ≤ covectorEuclideanNorm α for every x and every n-covector α, and T(ω) = ∫ ξ(x)(ω(x)) dμ(x) (Bochner integral) for every ω ∈ 𝒟ⁿ(U). Then M_W(T) = T.massOn W ≤ μ(W) for every set W ⊆ ℝ^P.",
+  "lean_statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (μ : Measure (Euclid P)) (ξ : Euclid P → MultiVector P n), (∀ (x : Euclid P) (α : Covector (Euclid P) n), |ξ x α| ≤ covectorEuclideanNorm α) → (∀ ω : TestFormOn U n, T ω = ∫ x, ξ x ((ω : DifferentialForm (Euclid P) n) x) ∂μ) → ∀ W : Set (Euclid P), T.massOn W ≤ μ W",
+  "lean_name": "cmrc_massOn_le_of_repr",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-mass-representation-a1-rep-951d596491-a1"
+}

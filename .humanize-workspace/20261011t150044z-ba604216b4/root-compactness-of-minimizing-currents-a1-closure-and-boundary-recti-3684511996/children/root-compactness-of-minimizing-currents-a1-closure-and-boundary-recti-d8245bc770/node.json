@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.isodiametric_bound-a1.steiner_compact-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.isodiametric_bound-a1",
+  "depth": 5,
+  "title": "Steiner symmetrization of a compact set is compact",
+  "statement": "Let d ∈ ℕ, j ∈ Fin d and let A ⊆ ℝ^d = EuclideanSpace ℝ (Fin d) be compact. Let A^j_y := {t ∈ ℝ : y[j↦t] ∈ A}, where y[j↦t] is y with its j-th coordinate replaced by t (Lean: WithLp.toLp 2 (Function.update y.ofLp j t)), and λ(y) := (L¹(A^j_y)).toReal. If λ : ℝ^d → ℝ is upper semicontinuous, then the Steiner symmetrization S_j(A) := {y ∈ ℝ^d : A^j_y ≠ ∅ and |y_j| ≤ λ(y)/2} is compact.",
+  "lean_statement": "∀ (d : ℕ) (j : Fin d) (A : Set (Euclid d)), IsCompact A → UpperSemicontinuous (fun y : Euclid d => (volume {t : ℝ | WithLp.toLp 2 (Function.update y.ofLp j t) ∈ A}).toReal) → IsCompact {y : Euclid d | {t : ℝ | WithLp.toLp 2 (Function.update y.ofLp j t) ∈ A}.Nonempty ∧ |y j| ≤ (volume {t : ℝ | WithLp.toLp 2 (Function.update y.ofLp j t) ∈ A}).toReal / 2}",
+  "lean_name": "cbr_ci_iso_steiner_isCompact",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-d8245bc770-a1"
+}
