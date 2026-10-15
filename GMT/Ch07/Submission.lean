@@ -40063,4 +40063,216 @@ theorem Submission.dimred_mbl_closure_and_boundary_rectifiability : (∀ (P d : 
     | succ d ih => exact Submission.dmcbr_closure_succ hREP hMR hIMC hSL hDT hVO d ih (hBR d ih)
   exact ⟨fun P d => hCL d P, fun P d => hBR d (hCL d) P⟩
 
+/-- **Simon Ch. 6, 2.15, 3.11 and 4.6–4.10** (compactness of moving blow-ups, by truncation at
+good slicing radii).  Let `Sⱼ ∈ 𝒟_{m+1}(Uⱼ)` be integer multiplicity with `∂Sⱼ = 0`, where the open
+`Uⱼ` eventually contain every ball `B̄_R(0)` and `M_{B_R(0)}(Sⱼ)` is eventually bounded.
+
+1. A subsequence `ψ` has `B̄_{Rₖ}(0) ⊆ U_{ψ(k)}`, `Rₖ = k + 8`.
+2. Write `S_{ψ(k)} = τ(Mₖ, θₖ, ξₖ)` with weight `μₖ`.  Slicing by `|·|` with `∂S_{ψ(k)} = 0`
+   (`dimred_mbl_slice_mass_bounds`, `μ′ = 0`) bounds `∫_{Rₖ/4}^{Rₖ/2} M_{B_{3Rₖ/4}}(∂Aₜ) dt` by
+   `μₖ(B̄_{Rₖ}(0)) < ∞`, where `Aₜ = S_{ψ(k)}⌞B_t`; so some `ρₖ ∈ (Rₖ/4, Rₖ/2)` has
+   `M_{B_{3Rₖ/4}}(∂A_{ρₖ}) < ∞`.
+3. The truncation `Ŝₖ` (`dimred_mbl_tc_truncate_at_good_radius`) is integer multiplicity in `ℝᴾ`
+   with weight `μₖ⌞B_{ρₖ}`, agrees with `S_{ψ(k)}` on forms supported in `B_{ρₖ}`, and has `∂Ŝₖ`
+   of finite mass vanishing in `B_{ρₖ}`.
+4. By the mass formula `M_O = μ(O)` (`dor_imrep_massOn_eq_measure_and_support`),
+   `M_O(Ŝₖ) ≤ M_O(S_{ψ(k)})`; for bounded open `O ⊆ B_r` and large `k` (`ρₖ ≥ r`) this gives
+   `M_O(Ŝₖ) + M_O(∂Ŝₖ) ≤ c_r`, and the finitely many other terms are finite.
+5. Weak compactness (`dimred_mbl_tc_weak_compactness`) gives `Ŝ_{φ₀(i)} ⇀ C` in `ℝᴾ`.
+6. The closure theorem (`dimred_mbl_closure_and_boundary_rectifiability`) makes `C` integer
+   multiplicity.
+7. Agreement on the expanding balls `B_{ρ_{φ₀(i)}}` (`dimred_mbl_tc_limit_of_agreement`) gives
+   `∂C = 0` and `S_{ψ(φ₀(i))} ⇀ C`. -/
+theorem Submission.dimred_mbl_truncated_compactness : ∀ (P m : ℕ) (Us : ℕ → Set (Euclid P)) (Ss : (j : ℕ) → GeometricCurrentOn (Us j) (m + 1)), (∀ j, IsOpen (Us j)) → (∀ R : ℝ, ∀ᶠ j in atTop, closedBall (0 : Euclid P) R ⊆ Us j) → (∀ j, IsIntegerMultiplicity (Ss j)) → (∀ R : ℝ, ∃ c : ℝ≥0∞, c ≠ ∞ ∧ ∀ᶠ j in atTop, (Ss j).massOn (ball 0 R) ≤ c) → (∀ j, (Ss j).boundary = 0) → ∃ (φ : ℕ → ℕ) (C : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1)) (Ŝ : ℕ → GeometricCurrentOn (univ : Set (Euclid P)) (m + 1)) (ρ : ℕ → ℝ), StrictMono φ ∧ IsIntegerMultiplicity C ∧ C.boundary = 0 ∧ ConvergesWeakly (fun j => Ss (φ j)) C ∧ (∀ j, IsIntegerMultiplicity (Ŝ j)) ∧ (∀ W : Set (Euclid P), IsOpen W → Bornology.IsBounded W → ⨆ j, ((Ŝ j).massOn W + (Ŝ j).boundary.massOn W) < ∞) ∧ WeaklyConvergesOn Ŝ C ∧ Tendsto ρ atTop atTop ∧ (∀ j, closedBall (0 : Euclid P) (ρ j) ⊆ Us (φ j)) ∧ ∀ (j : ℕ) (ω : TestFormOn (univ : Set (Euclid P)) (m + 1)), tsupport (ω : DifferentialForm (Euclid P) (m + 1)) ⊆ ball 0 (ρ j) → Ŝ j ω = currentEval (Ss (φ j)) (ω : DifferentialForm (Euclid P) (m + 1)) := by
+  have hIMC := Submission.cmc_imRep_locality_restrict_sub
+  have hRS := Submission.lcmp_imRep_measure_restrict
+  have hTR := Submission.dimred_mbl_tc_truncate_at_good_radius
+  have hWC := Submission.dimred_mbl_tc_weak_compactness
+  have hLT := Submission.dimred_mbl_tc_limit_of_agreement
+  have hMR := Submission.dor_imrep_massOn_eq_measure_and_support
+  have hSL := Submission.dimred_mbl_slice_mass_bounds
+  have hCL := Submission.dimred_mbl_closure_and_boundary_rectifiability
+  intro P m Us Ss hUo hball hIM hmass hbd
+  -- Step 1: a subsequence `ψ` with `B̄_{k+8}(0) ⊆ U_{ψ(k)}`
+  obtain ⟨ψ, hψ, hψball⟩ : ∃ ψ : ℕ → ℕ, StrictMono ψ ∧
+      ∀ k : ℕ, closedBall (0 : Euclid P) ((k : ℝ) + 8) ⊆ Us (ψ k) :=
+    Filter.extraction_forall_of_eventually (fun k => hball ((k : ℝ) + 8))
+  -- Steps 2–3: a good slicing radius `ρₖ ∈ (Rₖ/4, Rₖ/2)` and the truncation `Ŝₖ`, for each `k`
+  have key : ∀ k : ℕ, ∃ (ρ : ℝ) (Ŝ : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1))
+      (R' : IMRep (univ : Set (Euclid P)) (m + 1)) (R : IMRep (Us (ψ k)) (m + 1)),
+      ((k : ℝ) + 8) / 4 < ρ ∧ ρ < ((k : ℝ) + 8) / 2 ∧ R.Represents (Ss (ψ k)) ∧
+      R'.Represents Ŝ ∧ R'.measure = R.measure.restrict (ball 0 ρ) ∧
+      (∀ ω : TestFormOn (univ : Set (Euclid P)) (m + 1),
+        tsupport (ω : DifferentialForm (Euclid P) (m + 1)) ⊆ ball 0 ρ →
+          Ŝ ω = currentEval (Ss (ψ k)) (ω : DifferentialForm (Euclid P) (m + 1))) ∧
+      (∀ β : TestFormOn (univ : Set (Euclid P)) m,
+        tsupport (β : DifferentialForm (Euclid P) m) ⊆ ball 0 ρ → Ŝ.boundary β = 0) ∧
+      Ŝ.massOn univ ≠ ∞ ∧ Ŝ.boundary.massOn univ ≠ ∞ := by
+    intro k
+    have hR0pos : (0 : ℝ) < (k : ℝ) + 8 := by positivity
+    have hU : IsOpen (Us (ψ k)) := hUo (ψ k)
+    have hcU : closedBall (0 : Euclid P) ((k : ℝ) + 8) ⊆ Us (ψ k) := hψball k
+    obtain ⟨R, hR⟩ := hIM (ψ k)
+    obtain ⟨hac, haesm, hrestr⟩ := hRS P (m + 1) (Us (ψ k)) R
+    -- `μ = θ Hⁿ⌞M` is finite on compact subsets of `U_{ψ(k)}`
+    have hfin : ∀ K : Set (Euclid P), IsCompact K → K ⊆ Us (ψ k) → R.measure K < ∞ := by
+      intro K hK hKU
+      unfold IMRep.measure
+      rw [withDensity_apply _ hK.measurableSet, Measure.restrict_restrict hK.measurableSet,
+        Set.inter_comm K]
+      exact lt_top_iff_ne_top.2 (R.locallyIntegrable_mult K hK hKU)
+    -- `|ξ(x)(α)| ≤ |α|` for `μ`-a.e. `x`, as `μ ≪ Hⁿ⌞M`
+    have hbound1 : ∀ᵐ x ∂R.measure, ∀ α : Covector (Euclid P) (m + 1),
+        |R.orient x α| ≤ covectorEuclideanNorm α :=
+      hac.ae_le (hIMC.2.2.2 P (m + 1) (Us (ψ k)) R)
+    -- `(μ, ξ)` represents `S_{ψ(k)}`, and `(0, 0)` represents `∂S_{ψ(k)} = 0`
+    have hrep : ∀ ω : TestFormOn (Us (ψ k)) (m + 1), Ss (ψ k) ω =
+        ∫ x, R.orient x ((ω : DifferentialForm (Euclid P) (m + 1)) x) ∂R.measure := by
+      intro ω
+      rw [hR ω, ((hrestr univ R MeasurableSet.univ (by simp) rfl rfl).2 _),
+        Measure.restrict_univ]
+    have hrepb : ∀ η : TestFormOn (Us (ψ k)) m, (Ss (ψ k)).boundary η =
+        ∫ x, (0 : Euclid P → MultiVector P m) x ((η : DifferentialForm (Euclid P) m) x)
+          ∂(0 : Measure (Euclid P)) := by
+      intro η
+      rw [hbd (ψ k)]
+      simp
+    -- Step 2: slicing by `f = |·|` (`L = 1`); `Bₜ = 0`, so the slices are `∂Aₜ`
+    obtain ⟨A, B, hA, hB, -, -, hint⟩ := hSL P m (Us (ψ k)) (Ss (ψ k)) R.measure 0 R.orient 0
+      (fun x => ‖x‖) 1 hU hfin (fun K _ _ => by simp) haesm
+      (aestronglyMeasurable_zero_measure _) hbound1 (by simp) hrep hrepb lipschitzWith_one_norm
+    have hB0 : ∀ t, B t = 0 := fun t => GeometricCurrentOn.ext fun η => by
+      rw [hB]; simp
+    have hsub : ∀ t, (A t).boundary - B t = (A t).boundary := fun t =>
+      GeometricCurrentOn.ext fun η => by
+        show (A t).boundary η - B t η = (A t).boundary η
+        rw [hB0 t]; simp
+    have hballeq : ∀ t : ℝ, {x : Euclid P | ‖x‖ < t} = ball 0 t := fun t => by
+      ext x; simp
+    -- `∫_{Rₖ/4}^{Rₖ/2} M_{B_{3Rₖ/4}}(∂Aₜ) dt ≤ μ(B̄_{Rₖ}(0)) < ∞`
+    have hlint := hint (ball (0 : Euclid P) (3 * ((k : ℝ) + 8) / 4)) (((k : ℝ) + 8) / 4)
+      (((k : ℝ) + 8) / 2) isOpen_ball
+    simp only [hsub] at hlint
+    have hrhs : R.measure (ball (0 : Euclid P) (3 * ((k : ℝ) + 8) / 4) ∩
+        {x | ((k : ℝ) + 8) / 4 < ‖x‖ ∧ ‖x‖ < ((k : ℝ) + 8) / 2}) < ∞ := by
+      refine lt_of_le_of_lt (measure_mono ?_) (hfin _ (isCompact_closedBall 0 _) hcU)
+      intro x hx
+      simp only [mem_inter_iff, mem_ofPred_eq, mem_ball_zero_iff] at hx
+      rw [mem_closedBall_zero_iff]; linarith [hx.2.2]
+    -- so the integrand is finite at some `t ∈ (Rₖ/4, Rₖ/2)`: else the integral would be `∞`
+    have hex : ∃ t ∈ Ioo (((k : ℝ) + 8) / 4) (((k : ℝ) + 8) / 2),
+        (A t).boundary.massOn (ball (0 : Euclid P) (3 * ((k : ℝ) + 8) / 4)) ≠ ∞ := by
+      by_contra hcon
+      push Not at hcon
+      have h1 : ∫⁻ t in Ioo (((k : ℝ) + 8) / 4) (((k : ℝ) + 8) / 2),
+          (A t).boundary.massOn (ball (0 : Euclid P) (3 * ((k : ℝ) + 8) / 4)) = ∞ := by
+        rw [setLIntegral_congr_fun measurableSet_Ioo (fun t ht => hcon t ht)]
+        rw [lintegral_const, Measure.restrict_apply MeasurableSet.univ, univ_inter,
+          Real.volume_Ioo]
+        exact ENNReal.top_mul (by simp; linarith)
+      have h2 := lt_of_le_of_lt hlint (by simpa using hrhs)
+      rw [h1] at h2
+      exact lt_irrefl _ h2
+    obtain ⟨t, ⟨ht1, ht2⟩, htfin⟩ := hex
+    have ht0 : 0 < t := by linarith
+    have hts : t < 3 * ((k : ℝ) + 8) / 4 := by linarith
+    have hballU : ball (0 : Euclid P) (3 * ((k : ℝ) + 8) / 4) ⊆ Us (ψ k) :=
+      (ball_subset_closedBall.trans (closedBall_subset_closedBall (by linarith))).trans hcU
+    -- Step 3: truncation at the good radius `t`, with `s = 3Rₖ/4` and `A = Aₜ`
+    obtain ⟨Ŝ, R', hR', hR'meas, hagree, hbdry, hbmass⟩ := hTR P m (Us (ψ k)) (Ss (ψ k)) (A t) R
+      t (3 * ((k : ℝ) + 8) / 4) hU hR (fun β _ => by rw [hbd (ψ k)]; rfl) ht0 hts hballU
+      (fun ω => by rw [hA t ω, hballeq t]) htfin
+    -- `M(Ŝₖ) = μ(B_t) ≤ μ(B̄_t(0)) < ∞`
+    have hSmass : Ŝ.massOn univ ≠ ∞ := by
+      rw [(hMR P (m + 1) univ Ŝ R' isOpen_univ hR').1 univ isOpen_univ, hR'meas,
+        Measure.restrict_apply MeasurableSet.univ, univ_inter]
+      exact ne_of_lt (lt_of_le_of_lt (measure_mono ball_subset_closedBall)
+        (hfin _ (isCompact_closedBall 0 t)
+          ((closedBall_subset_closedBall (by linarith)).trans hcU)))
+    exact ⟨t, Ŝ, R', R, ht1, ht2, hR, hR', hR'meas, hagree, hbdry, hSmass,
+      ne_top_of_le_ne_top htfin hbmass⟩
+  choose ρ Ŝ R' Rk hρlo hρhi hRk hR' hR'meas hagree hbdry hSfin hbfin using key
+  -- `ρₖ > (k + 8)/4 → ∞`
+  have hρtend : Tendsto ρ atTop atTop := by
+    refine tendsto_atTop_mono (fun k => (hρlo k).le) ?_
+    have : Tendsto (fun k : ℕ => ((k : ℝ) + 8)) atTop atTop :=
+      tendsto_atTop_add_const_right _ _ tendsto_natCast_atTop_atTop
+    exact this.atTop_div_const (by norm_num)
+  -- Step 4: uniform bounds on bounded open sets
+  have hbound : ∀ W : Set (Euclid P), IsOpen W → Bornology.IsBounded W →
+      ⨆ k, ((Ŝ k).massOn W + (Ŝ k).boundary.massOn W) < ∞ := by
+    intro W hWo hWb
+    obtain ⟨r, hr⟩ := hWb.subset_ball (0 : Euclid P)
+    obtain ⟨c, hc, hcev⟩ := hmass r
+    have hcev' : ∀ᶠ k in atTop, (Ss (ψ k)).massOn (ball 0 r) ≤ c :=
+      hψ.tendsto_atTop.eventually hcev
+    have hρev : ∀ᶠ k in atTop, r ≤ ρ k := hρtend.eventually_ge_atTop r
+    obtain ⟨N, hN⟩ := eventually_atTop.1 (hcev'.and hρev)
+    -- the finitely many terms with `k < N` are finite
+    set F : ℝ≥0∞ := ∑ i ∈ Finset.range N, ((Ŝ i).massOn univ + (Ŝ i).boundary.massOn univ)
+      with hFdef
+    have hF : F ≠ ∞ := by
+      rw [hFdef, ENNReal.sum_ne_top]
+      intro i _
+      exact ENNReal.add_ne_top.2 ⟨hSfin i, hbfin i⟩
+    have hterm : ∀ k, (Ŝ k).massOn W + (Ŝ k).boundary.massOn W ≤ c + F := by
+      intro k
+      by_cases hk : N ≤ k
+      · obtain ⟨hck, hρk⟩ := hN k hk
+        -- `M_W(Ŝₖ) = μₖ(W ∩ B_{ρₖ}) ≤ μₖ(W) = M_W(S_{ψ(k)}) ≤ M_{B_r}(S_{ψ(k)}) ≤ c`
+        have h1 : (Ŝ k).massOn W ≤ c := by
+          rw [(hMR P (m + 1) univ (Ŝ k) (R' k) isOpen_univ (hR' k)).1 W hWo, hR'meas k,
+            Measure.restrict_apply hWo.measurableSet]
+          calc (Rk k).measure (W ∩ ball 0 (ρ k)) ≤ (Rk k).measure W :=
+                measure_mono inter_subset_left
+            _ = (Ss (ψ k)).massOn W :=
+                ((hMR P (m + 1) (Us (ψ k)) (Ss (ψ k)) (Rk k) (hUo _) (hRk k)).1 W hWo).symm
+            _ ≤ (Ss (ψ k)).massOn (ball 0 r) := (Ss (ψ k)).massOn_mono hr
+            _ ≤ c := hck
+        -- `M_W(∂Ŝₖ) = 0`: admissible forms are supported in `W ⊆ B_r ⊆ B_{ρₖ}`
+        have h2 : (Ŝ k).boundary.massOn W = 0 := by
+          refine le_antisymm ?_ zero_le
+          unfold GeometricCurrentOn.massOn
+          apply sSup_le
+          rintro _ ⟨β, hβ, rfl⟩
+          show ENNReal.ofReal ((Ŝ k).boundary β) ≤ 0
+          rw [hbdry k β (hβ.1.trans (hr.trans (ball_subset_ball hρk)))]
+          simp
+        rw [h2, add_zero]
+        exact h1.trans le_self_add
+      · push Not at hk
+        have hk' : k ∈ Finset.range N := Finset.mem_range.2 hk
+        calc (Ŝ k).massOn W + (Ŝ k).boundary.massOn W
+            ≤ (Ŝ k).massOn univ + (Ŝ k).boundary.massOn univ :=
+              add_le_add ((Ŝ k).massOn_mono (subset_univ _))
+                ((Ŝ k).boundary.massOn_mono (subset_univ _))
+          _ ≤ F := Finset.single_le_sum
+              (f := fun i => (Ŝ i).massOn univ + (Ŝ i).boundary.massOn univ)
+              (fun i _ => zero_le) hk'
+          _ ≤ c + F := le_add_self
+    exact lt_of_le_of_lt (iSup_le hterm)
+      (ENNReal.add_lt_top.2 ⟨lt_top_iff_ne_top.2 hc, lt_top_iff_ne_top.2 hF⟩)
+  -- Step 5: weak compactness
+  obtain ⟨φ₀, C, hφ₀, hconv⟩ := hWC P (m + 1) Ŝ (fun r => lt_of_le_of_lt
+    (iSup_mono fun k => le_self_add) (hbound (ball 0 r) isOpen_ball isBounded_ball))
+  have hsubbound : ∀ W : Set (Euclid P), IsOpen W → Bornology.IsBounded W →
+      ⨆ i, ((Ŝ (φ₀ i)).massOn W + (Ŝ (φ₀ i)).boundary.massOn W) < ∞ := fun W hWo hWb =>
+    lt_of_le_of_lt (iSup_le fun i =>
+      le_iSup (fun k => (Ŝ k).massOn W + (Ŝ k).boundary.massOn W) (φ₀ i)) (hbound W hWo hWb)
+  -- Step 6: the closure theorem in `U = ℝᴾ` (`W ⊂⊂ ℝᴾ` is bounded): `C` is integer multiplicity
+  have hCIM : IsIntegerMultiplicity C := hCL.1 P (m + 1) univ (fun i => Ŝ (φ₀ i)) C isOpen_univ
+    (fun i => ⟨R' (φ₀ i), hR' (φ₀ i)⟩)
+    (fun W hWo hWcc => hsubbound W hWo (hWcc.1.isBounded.subset subset_closure)) hconv
+  -- Step 7: agreement on the expanding balls `B_{ρ_{φ₀(i)}}`
+  have hρφ : Tendsto (fun i => ρ (φ₀ i)) atTop atTop := hρtend.comp hφ₀.tendsto_atTop
+  obtain ⟨hCbd, hCconv⟩ := hLT P m (fun i => Us (ψ (φ₀ i))) (fun i => Ss (ψ (φ₀ i)))
+    (fun i => Ŝ (φ₀ i)) C (fun i => ρ (φ₀ i)) hρφ hconv (fun i ω h => hagree (φ₀ i) ω h)
+    (fun i β h => hbdry (φ₀ i) β h)
+  refine ⟨fun i => ψ (φ₀ i), C, fun i => Ŝ (φ₀ i), fun i => ρ (φ₀ i), hψ.comp hφ₀, hCIM, hCbd,
+    hCconv, fun i => ⟨R' (φ₀ i), hR' (φ₀ i)⟩, hsubbound, hconv, hρφ, fun i => ?_,
+    fun i ω h => hagree (φ₀ i) ω h⟩
+  -- `B̄_{ρ}(0) ⊆ B̄_{R}(0) ⊆ U`, as `ρ < R/2 < R`
+  have h0 : (0 : ℝ) ≤ ((φ₀ i : ℕ) : ℝ) := Nat.cast_nonneg _
+  exact (closedBall_subset_closedBall (by linarith [hρhi (φ₀ i)])).trans (hψball (φ₀ i))
+
 end GMT.Ch07
