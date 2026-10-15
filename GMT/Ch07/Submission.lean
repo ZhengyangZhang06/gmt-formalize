@@ -451,6 +451,31 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Simon Ch. 6, 2.5** (fact (F1) in the proof of Ch. 6, 7.2): `M_G(A − B) ≤ M_G(A) + M_G(B)`.
+`M_G(A − B)` is the supremum of `(A − B)(ω)` over the forms `ω ∈ 𝒟ⁿ(U)` admissible for `M_G`
+(`spt ω ⊆ G`, `|ω| ≤ 1`).  For such `ω` the form `−ω` is admissible as well, since it has the
+same support and pointwise coefficient norm.  As `(A − B)(ω) = A(ω) + B(−ω)` and `ofReal` is
+subadditive, `(A − B)(ω)` is bounded by `M_G(A) + M_G(B)`. -/
+theorem Submission.cmc_fc_tb_massOn_sub_le : ∀ (P n : ℕ) (U G : Set (Euclid P)) (A B : GeometricCurrentOn U n), (A - B).massOn G ≤ A.massOn G + B.massOn G := by
+  intro P n U G A B
+  -- Step 1: `M_G(A − B)` is a supremum, so fix an admissible `ω`
+  apply sSup_le
+  rintro r ⟨ω, hω, rfl⟩
+  -- Step 2: `−ω` is admissible (same support, same coefficient norm)
+  have hnω : -ω ∈ massAdmissibleOn U n G := by
+    refine ⟨?_, fun x => ?_⟩
+    · rw [Submodule.coe_neg, tsupport_neg]
+      exact hω.1
+    · rw [Submodule.coe_neg, Pi.neg_apply, covectorEuclideanNorm_neg]
+      exact hω.2 x
+  -- Step 3: `(A − B)(ω) = A(ω) + B(−ω)`
+  have hAB : (A - B) ω = A ω + B (-ω) := by
+    change A.toCurrent ω - B.toCurrent ω = A.toCurrent ω + B.toCurrent (-ω)
+    rw [map_neg B.toCurrent ω, sub_eq_add_neg]
+  -- Steps 4–5: subadditivity of `ofReal`, and each admissible value is bounded by the mass
+  calc ENNReal.ofReal ((A - B) ω) = ENNReal.ofReal (A ω + B (-ω)) := by rw [hAB]
+    _ ≤ ENNReal.ofReal (A ω) + ENNReal.ofReal (B (-ω)) := ENNReal.ofReal_add_le
+    _ ≤ A.massOn G + B.massOn G := add_le_add (A.le_massOn hω) (B.le_massOn hnω)
 /-- **Simon 6.2.11** (a current vanishes off its support).  If `ω ∈ 𝒟ⁿ(U)` and
 `spt ω ∩ spt S = ∅`, then `S(ω) = 0`.  The compact set `K = spt ω ⊆ U` lies in the zero region of
 `S`, so finitely many open `W₁, …, Wₘ` on which `S` vanishes cover `K`.  A smooth partition of
@@ -1230,6 +1255,60 @@ theorem Submission.dtc_approxTangent_of_null_diff : ∀ (P n : ℕ) (M M' V : Se
     · exact measure_mono_null hsub hnullimg
   rw [hcut, hcut ((fun y : Euclid P => r⁻¹ • (y - x)) '' M'), Measure.restrict_congr_set hae]
 
+/-- **Simon Ch. 6, 3.1 and 2.16** (with Ch. 3, 1.4): if `T = τ(M, θ, ξ)` is integer multiplicity
+in `U` and `V ⊆ U` is open, then `T⌞V = τ(M ∩ V, θ, ξ)` is integer multiplicity in `V`.  The
+restricted triple inherits measurability, rectifiability, positivity and local integrability from
+`(M, θ, ξ)`.  At `Hⁿ`-a.e. `x ∈ M ∩ V` the approximate tangent space of `M` is also that of
+`M ∩ V`, as the removed set `M ∖ (M ∩ V)` misses the open set `V ∋ x`
+(`dtc_approxTangent_of_null_diff`).  A test form supported in `V` vanishes on `M ∖ V`, so its
+integrals over `M` and over `M ∩ V` agree.  Openness of `U` is not used. -/
+theorem Submission.dtc_restrictDomain_isIntegerMultiplicity : ∀ (P n : ℕ) (U V : Set (Euclid P)) (hVU : V ⊆ U) (T : GeometricCurrentOn U n), IsOpen V → IsIntegerMultiplicity T → IsIntegerMultiplicity (T.restrictDomain hVU) := by
+  rintro P n U V hVU T hV ⟨R, hR⟩
+  -- Step 1: `M ∩ V` is Borel
+  have hMV : MeasurableSet (R.carrier ∩ V) := R.measurableSet_carrier.inter hV.measurableSet
+  -- the restricted triple `R' = (M ∩ V, θ, ξ)` in `V`
+  let R' : IMRep V n :=
+    { carrier := R.carrier ∩ V
+      mult := R.mult
+      orient := R.orient
+      measurableSet_carrier := hMV
+      -- Step 2: `M ∩ V ⊆ V`
+      carrier_subset := inter_subset_right
+      -- Step 3: a subset of a countably `n`-rectifiable set is countably `n`-rectifiable
+      rectifiable := R.rectifiable.mono inter_subset_left
+      -- Step 4: `θ` is measurable, and positive on `M ∩ V ⊆ M`
+      measurable_mult := R.measurable_mult
+      mult_pos := fun x hx => R.mult_pos x hx.1
+      -- Step 5: for compact `K ⊆ V`, `(M ∩ V) ∩ K = M ∩ K` and `K ⊆ V ⊆ U`
+      locallyIntegrable_mult := fun K hK hKV => by
+        rw [inter_assoc, inter_eq_right.2 hKV]
+        exact R.locallyIntegrable_mult K hK (hKV.trans hVU)
+      -- Step 6: `Hⁿ⌞(M ∩ V) ≤ Hⁿ⌞M`
+      aestronglyMeasurable_orient :=
+        R.aestronglyMeasurable_orient.mono_measure (Measure.restrict_mono inter_subset_left le_rfl)
+      -- Step 7: at `Hⁿ⌞(M ∩ V)`-a.e. `x`, the plane `Q` oriented by `ξ(x)` stays the approximate
+      -- tangent space, since `(M ∖ (M ∩ V)) ∩ V = ∅`
+      orients := by
+        filter_upwards [ae_restrict_of_ae_restrict_of_subset
+          (inter_subset_left : R.carrier ∩ V ⊆ R.carrier) R.orients, ae_restrict_mem hMV]
+          with x hx hxMV
+        obtain ⟨Q, hQ, hξQ⟩ := hx
+        have hnull : μHE[n] ((R.carrier \ (R.carrier ∩ V)) ∩ V) = 0 := by
+          rw [sdiff_self_inter, sdiff_inter_self, measure_empty]
+        exact ⟨Q, Submission.dtc_approxTangent_of_null_diff P n R.carrier (R.carrier ∩ V) V x Q
+          inter_subset_left hV hxMV.2 hnull hQ, hξQ⟩ }
+  -- Step 8: `T⌞V(ω) = T(ιω) = ∫_M θ⟨ω, ξ⟩ dHⁿ = ∫_{M ∩ V} θ⟨ω, ξ⟩ dHⁿ`, as `ω = 0` off `V`
+  refine ⟨R', fun ω => ?_⟩
+  rw [GeometricCurrentOn.restrictDomain_apply, hR, testFormOnInclusion_coe]
+  change ∫ x in R.carrier, (R.mult x : ℝ) * R.orient x ((ω : DifferentialForm (Euclid P) n) x)
+      ∂μHE[n] =
+    ∫ x in R.carrier ∩ V, (R.mult x : ℝ) * R.orient x ((ω : DifferentialForm (Euclid P) n) x)
+      ∂μHE[n]
+  refine setIntegral_eq_of_subset_of_forall_sdiff_eq_zero R.measurableSet_carrier
+    inter_subset_left fun x hx => ?_
+  have hxω : x ∉ tsupport (ω : DifferentialForm (Euclid P) n) :=
+    fun h => hx.2 ⟨hx.1, ω.property.2 h⟩
+  rw [image_eq_zero_of_notMem_tsupport hxω, map_zero, mul_zero]
 /-- **An integer multiplicity triple essentially carried by a compact set moves to any domain
 containing it** (step 6.6 of the localization in the proof of Simon 7.3.1; Simon 6.3.1,
 chapter-06.txt lines 733–753).  If `R = (M, θ, ξ)` is an `IMRep` in `V`, `K ⊆ V ∩ U` is compact
@@ -1670,6 +1749,96 @@ theorem Submission.dimred_mbl_fc_extend_to_univ : (∀ (P n : ℕ) (U : Set (Euc
             rw [← hres, GeometricCurrentOn.boundary_apply, GeometricCurrentOn.boundary_apply,
               GeometricCurrentOn.restrictDomain_apply]
             rfl
+
+/-- **Simon Ch. 6, 7.2, (1)–(3)** (total boundedness in `U`), from the deformation theorem (DF),
+boundary rectifiability (BR), restriction (IR) and differences (IS) of integer multiplicity
+currents and the mass formula (ME).  Let `c ≥ 1` be the constant of (DF), choose `ρ > 0` with
+`2cρΛ < η` and let `𝒬` be the restrictions `Q̂|_U` of the finite family `𝒬̂` of (DF) for
+`(ρ, K, Λ)`.  Extend `X` to `Y` on `ℝᴾ` with `Y|_U = X`, `spt Y ⊆ K`, `M(Y) ≤ M(X)` and
+`M(∂Y) ≤ M(∂X)` (`dimred_mbl_fc_extend_to_univ`), and deform it: `Y − Q̂ − Ŝ = ∂R̂`.  As
+`M(∂R̂) ≤ M(Y) + M(Q̂) + M(Ŝ) < ∞` (`cmc_fc_tb_massOn_sub_le`), (BR) makes `∂R̂` integer
+multiplicity, hence so is `Ŝ = (Y − Q̂) − ∂R̂` by (IS).  Restriction to `U` keeps integer
+multiplicity (`dtc_restrictDomain_isIntegerMultiplicity`) and the identity `X − Q − S = ∂R`, and
+does not increase mass (`dtc_massOn_eq_of_agreeOn`): `M(R) + M(S) ≤ M(R̂) + M(Ŝ) ≤ 2cρΛ ≤ η`. -/
+theorem Submission.dimred_mbl_fc_total_bounded : (∀ (P m : ℕ), ∃ c : NNReal, 1 ≤ c ∧ ∀ (ρ : ℝ) (K : Set (Euclid P)) (Λ : NNReal), 0 < ρ → IsCompact K → ∃ 𝒬 : Set (GeometricCurrentOn (univ : Set (Euclid P)) (m + 1)), 𝒬.Finite ∧ ∀ T : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1), IsIntegerMultiplicity T → T.support ⊆ K → T.mass ≤ Λ → T.boundary.mass < ∞ → ∃ Q ∈ 𝒬, ∃ (R : GeometricCurrentOn (univ : Set (Euclid P)) (m + 2)) (S : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1)), IsIntegerMultiplicity Q ∧ IsIntegerMultiplicity Q.boundary ∧ IsIntegerMultiplicity R ∧ T - Q - S = R.boundary ∧ (Q = 0 ∨ ENNReal.ofReal (ρ ^ (m + 1)) ≤ Q.mass) ∧ Q.mass ≤ c * T.mass ∧ Q.boundary.mass ≤ c * T.boundary.mass ∧ R.mass ≤ c * ENNReal.ofReal ρ * T.mass ∧ S.mass ≤ c * ENNReal.ofReal ρ * T.boundary.mass ∧ Q.support ∪ R.support ⊆ thickening (3 * Real.sqrt P * ρ) T.support ∧ Q.boundary.support ∪ S.support ⊆ thickening (3 * Real.sqrt P * ρ) T.boundary.support) → (∀ (P d : ℕ) (U : Set (Euclid P)) (R : GeometricCurrentOn U (d + 1)), IsOpen U → IsIntegerMultiplicity R → (∀ W : Set (Euclid P), IsOpen W → CompactlyContained W U → R.boundary.massOn W < ∞) → IsIntegerMultiplicity R.boundary) → (∀ (P n : ℕ) (U : Set (Euclid P)) (R : IMRep U n) (E : Set (Euclid P)), IsOpen U → MeasurableSet E → ∃ (A : GeometricCurrentOn U n) (R' : IMRep U n), R'.Represents A ∧ R'.carrier = R.carrier ∩ E ∧ R'.mult = R.mult ∧ R'.orient = R.orient) → (∀ (P n : ℕ) (U : Set (Euclid P)) (A B : GeometricCurrentOn U n), IsOpen U → IsIntegerMultiplicity A → IsIntegerMultiplicity B → IsIntegerMultiplicity (A - B)) → (∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (R : IMRep U n), IsOpen U → R.Represents T → ∀ W : Set (Euclid P), IsOpen W → T.massOn W = R.measure W) → ∀ (P m : ℕ) (U K : Set (Euclid P)) (Λ : NNReal) (η : ℝ≥0∞), IsOpen U → IsCompact K → K ⊆ U → 0 < η → ∃ 𝒬 : Set (GeometricCurrentOn U (m + 1)), 𝒬.Finite ∧ ∀ X : GeometricCurrentOn U (m + 1), IsIntegerMultiplicity X → X.support ⊆ K → X.mass ≤ Λ → X.boundary.mass ≤ Λ → ∃ Q ∈ 𝒬, ∃ (R : GeometricCurrentOn U (m + 2)) (S : GeometricCurrentOn U (m + 1)), IsIntegerMultiplicity R ∧ IsIntegerMultiplicity S ∧ X - Q - S = R.boundary ∧ R.mass + S.mass ≤ η := by
+  intro DF BR IR IS ME P m U K Λ η hU hK hKU hη
+  -- Step 1: the constant `c ≥ 1` of (DF) and a scale `ρ = r > 0` with `r · 2cΛ < η`
+  obtain ⟨c, -, hDF⟩ := DF P m
+  obtain ⟨r, hr, hrη⟩ := ENNReal.exists_nnreal_pos_mul_lt (a := 2 * (c : ℝ≥0∞) * Λ)
+    (ENNReal.mul_ne_top (ENNReal.mul_ne_top ENNReal.ofNat_ne_top ENNReal.coe_ne_top)
+      ENNReal.coe_ne_top) hη.ne'
+  have hρη : (c : ℝ≥0∞) * ENNReal.ofReal r * Λ + c * ENNReal.ofReal r * Λ ≤ η := by
+    rw [ENNReal.ofReal_coe_nnreal]
+    calc (c : ℝ≥0∞) * r * Λ + c * r * Λ = r * (2 * c * Λ) := by ring
+      _ ≤ η := hrη.le
+  -- Step 2: the finite family `𝒬̂` of (DF) for `(ρ, K, Λ)`; `𝒬` is its image under `Z ↦ Z|_U`
+  obtain ⟨𝒬h, h𝒬h, hdef⟩ := hDF r K Λ (NNReal.coe_pos.mpr hr) hK
+  refine ⟨(fun Z => Z.restrictDomain (subset_univ U)) '' 𝒬h, h𝒬h.image _, ?_⟩
+  -- (F2), mass part: `M(Z|_U) = M_U(Z) ≤ M(Z)`
+  have hres : ∀ (d : ℕ) (Z : GeometricCurrentOn (univ : Set (Euclid P)) d),
+      (Z.restrictDomain (subset_univ U)).mass ≤ Z.mass := fun d Z =>
+    (Submission.dtc_massOn_eq_of_agreeOn P d univ U U (subset_univ U) Z
+      (Z.restrictDomain (subset_univ U)) subset_rfl fun _ _ => rfl).symm.le.trans
+      (Z.massOn_mono (subset_univ U))
+  intro X hX hXK hXm hXb
+  -- Step 3: extend `X` to `Y` on `ℝᴾ` (`M(Y), M(∂Y) ≤ Λ`) and deform: `Y − Q̂ − Ŝ = ∂R̂`
+  obtain ⟨Y, hY, rfl, hYK, hYm, hYb⟩ :=
+    Submission.dimred_mbl_fc_extend_to_univ IR ME P m U K X hU hK hKU hX hXK
+  have hYΛ : Y.mass ≤ Λ := hYm.trans hXm
+  have hYbΛ : Y.boundary.mass ≤ Λ := hYb.trans hXb
+  obtain ⟨Qh, hQh, Rh, Sh, hQhIM, -, hRhIM, hYQS, -, hQhm, -, hRhm, hShm, -, -⟩ :=
+    hdef Y hY hYK hYΛ (hYbΛ.trans_lt ENNReal.coe_lt_top)
+  -- Step 4: `M(∂R̂) = M(Y − Q̂ − Ŝ) ≤ M(Y) + M(Q̂) + M(Ŝ) < ∞`, so `∂R̂` is integer
+  -- multiplicity by (BR) in `ℝᴾ`, as `M_W(∂R̂) ≤ M(∂R̂)` for every `W`
+  have hbR : Rh.boundary.mass < ∞ := by
+    rw [← hYQS]
+    calc (Y - Qh - Sh).mass ≤ (Y - Qh).mass + Sh.mass :=
+          Submission.cmc_fc_tb_massOn_sub_le P (m + 1) univ univ (Y - Qh) Sh
+      _ ≤ Y.mass + Qh.mass + Sh.mass := by
+          gcongr
+          exact Submission.cmc_fc_tb_massOn_sub_le P (m + 1) univ univ Y Qh
+      _ ≤ Λ + c * Λ + c * ENNReal.ofReal r * Λ := by
+          gcongr
+          exacts [hQhm.trans (by gcongr), hShm.trans (by gcongr)]
+      _ < ∞ := by
+          rw [ENNReal.ofReal_coe_nnreal]
+          exact ENNReal.add_lt_top.2 ⟨ENNReal.add_lt_top.2 ⟨ENNReal.coe_lt_top,
+            ENNReal.mul_lt_top ENNReal.coe_lt_top ENNReal.coe_lt_top⟩,
+            ENNReal.mul_lt_top (ENNReal.mul_lt_top ENNReal.coe_lt_top ENNReal.coe_lt_top)
+              ENNReal.coe_lt_top⟩
+  have hbRIM : IsIntegerMultiplicity Rh.boundary :=
+    BR P (m + 1) univ Rh isOpen_univ hRhIM fun W _ _ =>
+      (Rh.boundary.massOn_mono (subset_univ W)).trans_lt hbR
+  -- `Ŝ = (Y − Q̂) − ∂R̂` (evaluate `Y − Q̂ − Ŝ = ∂R̂` at each `ω`), integer multiplicity by (IS)
+  have hSh : Sh = Y - Qh - Rh.boundary := by
+    ext ω
+    have h := congrArg (fun T : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1) => T ω) hYQS
+    change Y ω - Qh ω - Sh ω = Rh.boundary ω at h
+    change Sh ω = Y ω - Qh ω - Rh.boundary ω
+    linarith
+  have hShIM : IsIntegerMultiplicity Sh := by
+    rw [hSh]
+    exact IS P (m + 1) univ (Y - Qh) Rh.boundary isOpen_univ
+      (IS P (m + 1) univ Y Qh isOpen_univ hY hQhIM) hbRIM
+  -- Step 5: `Q := Q̂|_U ∈ 𝒬`, `R := R̂|_U` and `S := Ŝ|_U`; `R`, `S` are integer multiplicity (F2)
+  refine ⟨Qh.restrictDomain (subset_univ U), mem_image_of_mem _ hQh,
+    Rh.restrictDomain (subset_univ U), Sh.restrictDomain (subset_univ U),
+    Submission.dtc_restrictDomain_isIntegerMultiplicity P (m + 2) univ U (subset_univ U) Rh hU
+      hRhIM,
+    Submission.dtc_restrictDomain_isIntegerMultiplicity P (m + 1) univ U (subset_univ U) Sh hU
+      hShIM, ?_, ?_⟩
+  · -- `(X − Q − S)(ω) = (Y − Q̂ − Ŝ)(ιω) = ∂R̂(ιω) = R̂(ι dω) = ∂R(ω)` with `X = Y|_U`, since
+    -- `ι` commutes with `d` on the underlying forms
+    ext ω
+    exact congrArg (fun T : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1) =>
+      T (testFormOnInclusion (subset_univ U) (m + 1) ω)) hYQS
+  · -- Step 6: `M(R) + M(S) ≤ M(R̂) + M(Ŝ) ≤ cρM(Y) + cρM(∂Y) ≤ 2cρΛ ≤ η`
+    calc (Rh.restrictDomain (subset_univ U)).mass + (Sh.restrictDomain (subset_univ U)).mass
+        ≤ Rh.mass + Sh.mass := add_le_add (hres _ Rh) (hres _ Sh)
+      _ ≤ c * ENNReal.ofReal r * Y.mass + c * ENNReal.ofReal r * Y.boundary.mass :=
+          add_le_add hRhm hShm
+      _ ≤ c * ENNReal.ofReal r * Λ + c * ENNReal.ofReal r * Λ := by gcongr
+      _ ≤ η := hρη
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
