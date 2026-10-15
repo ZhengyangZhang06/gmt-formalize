@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.flat_convergence-a1.deformation-a1.jacobian_weak_continuity-a1.mollify_fderiv-a1",
+  "parent_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.flat_convergence-a1.deformation-a1.jacobian_weak_continuity-a1",
+  "depth": 6,
+  "title": "Derivative of the mollification of a Lipschitz function: D(ρ⋆f)(x)v = ∫ρ(t)·Df(x−t)v dt",
+  "statement": "Let k ∈ ℕ, L ∈ ℝ≥0, f : ℝᵏ → ℝ L-Lipschitz and ρ : ℝᵏ → ℝ of class C¹ with compact support (ℝᵏ = Euclid k with Lebesgue measure). Put f_ρ(y) := ∫ ρ(t)·f(y − t) dt. Then for all x, v ∈ ℝᵏ, Df_ρ(x)v = ∫ ρ(t)·Df(x − t)v dt, where D = fderiv ℝ (Df(z) is the zero map where f is not differentiable).",
+  "lean_statement": "∀ (k : ℕ) (L : NNReal) (f ρ : Euclid k → ℝ), LipschitzWith L f → ContDiff ℝ 1 ρ → HasCompactSupport ρ → ∀ x v : Euclid k, fderiv ℝ (fun y => ∫ t, ρ t * f (y - t)) x v = ∫ t, ρ t * fderiv ℝ f (x - t) v",
+  "lean_name": "dor_lmb_fcd_jwc_mollify_fderiv_eq",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-limsup-mass-bound-a1-flat-converg-756b58ae81-a1"
+}

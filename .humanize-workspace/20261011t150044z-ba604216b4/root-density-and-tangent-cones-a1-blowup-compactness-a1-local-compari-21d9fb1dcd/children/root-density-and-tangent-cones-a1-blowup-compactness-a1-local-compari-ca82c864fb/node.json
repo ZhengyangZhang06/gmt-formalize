@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.flat_decomposition-a1.series_limit-a1",
+  "parent_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.flat_decomposition-a1",
+  "depth": 5,
+  "title": "Summing a 2^{−r}-telescoping flat decomposition against the weak limit on V, with an integer multiplicity error current (Simon 7.2, series step; Simon 6.3)",
+  "statement": "Let P, m ∈ ℕ with n := m + 1 < P. Let V, L ⊆ ℝ^P with L compact, let Λ ∈ [0, ∞), and let X_r, Z_r, Y ∈ 𝒟_n(ℝ^P), R_r ∈ 𝒟_{n+1}(ℝ^P) and S_r ∈ 𝒟_n(ℝ^P) (r ∈ ℕ). Assume: Y and every Z_r are integer multiplicity; M(X_r) ≤ Λ for every r; for every r, R_r is integer multiplicity, spt R_r ⊆ L, X_{r+1} − X_r − S_r = ∂R_r and M(R_r) + M(S_r) ≤ 2^{−r}; and for every ω ∈ 𝒟ⁿ(ℝ^P) with tsupport ω ⊆ V, Z_r(ω) = X_r(ω) for all r and X_r(ω) → Y(ω) as r → ∞. Then for every q ∈ ℕ there are integer multiplicity R' ∈ 𝒟_{n+1}(ℝ^P) and S' ∈ 𝒟_n(ℝ^P) with Y − Z_q − S' = ∂R' and M_V(R') + M_V(S') ≤ 2·2^{−q} (in [0, ∞]; M = mass = M_{ℝ^P}, M_V = massOn V).",
+  "lean_statement": "∀ (P m : ℕ) (X Z : ℕ → GeometricCurrentOn (univ : Set (Euclid P)) (m + 1)) (Y : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1)) (R : ℕ → GeometricCurrentOn (univ : Set (Euclid P)) (m + 2)) (S : ℕ → GeometricCurrentOn (univ : Set (Euclid P)) (m + 1)) (V L : Set (Euclid P)) (Λ : NNReal), m + 1 < P → IsCompact L → IsIntegerMultiplicity Y → (∀ r, IsIntegerMultiplicity (Z r)) → (∀ r, (X r).mass ≤ Λ) → (∀ r, IsIntegerMultiplicity (R r) ∧ (R r).support ⊆ L ∧ X (r + 1) - X r - S r = (R r).boundary ∧ (R r).mass + (S r).mass ≤ (2⁻¹ : ℝ≥0∞) ^ r) → (∀ ω : TestFormOn (univ : Set (Euclid P)) (m + 1), tsupport (ω : DifferentialForm (Euclid P) (m + 1)) ⊆ V → (∀ r, Z r ω = X r ω) ∧ Tendsto (fun r => X r ω) atTop (𝓝 (Y ω))) → ∀ q : ℕ, ∃ (R' : GeometricCurrentOn (univ : Set (Euclid P)) (m + 2)) (S' : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1)), IsIntegerMultiplicity R' ∧ IsIntegerMultiplicity S' ∧ Y - Z q - S' = R'.boundary ∧ R'.massOn V + S'.massOn V ≤ 2 * (2⁻¹ : ℝ≥0∞) ^ q",
+  "lean_name": "dtc_bc_lc_fd_series_limit",
+  "depends_on": [
+    "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.flat_decomposition-a1.series-a1",
+    "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.flat_decomposition-a1.boundary_im-a1",
+    "root.compactness_of_minimizing_currents-a1.im_calculus-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.flat_decomposition-a1.series-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.flat_decomposition-a1.boundary_im-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.compactness_of_minimizing_currents-a1.im_calculus-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-im-calculus-a1-a1",
+      "result_commit": "2af75d6921b01a9c889a45103692ca0af95ea394",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-compari-ca82c864fb-a1"
+}
