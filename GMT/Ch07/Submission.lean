@@ -179168,4 +179168,52 @@ theorem Submission.dimred_zero_dim_minimizing_eq_zero : ∀ (P : ℕ) (U A : Set
   rw [(Submission.dimred_im_mass_measure P 0 U (T - X) R' hU hS).1 _ isOpen_ball hWU, hS0] at h1
   exact absurd h1 (not_le.2 zero_lt_one)
 
+/-- **Simon 7.3.3 (Theorem, p. 189)**, with `E ⊆ F` (README erratum 4).  For `n = 0`,
+`zero_dim_vanishing` gives `T = 0`; the zero current has zero mass, hence density `0` at every
+point, and empty support in the open set `U`, so `E = F = ∅` work.  For `n ≥ 1`,
+`integer_density` gives `E` with `H^{n−3+α}(E) = 0` and integer densities on `U \ E`, and
+`flat_off_null_set` gives `F₀` with `H^{n−2+α}(F₀) = 0` such that `T` is flat at arbitrarily small
+scales at every `x ∈ spt T \ F₀`.  Put `F := E ∪ F₀`.  Then `H^{n−2+α}(E) = H^{n−3+(1+α)}(E) = 0`,
+so `H^{n−2+α}(F) = 0`, and `flat_point_tangent_plane` gives a tangent plane at every
+`x ∈ spt T \ F`. -/
+theorem Submission.dimred_integer_density_and_tangent_planes : IntegerDensityAndTangentPlanes := by
+  intro n k ℓ hℓ U N T hU hN hNU hmin hspt hbd
+  rcases Nat.eq_zero_or_pos n with rfl | hn
+  · -- `n = 0`: `T = 0`
+    obtain rfl := Submission.dimred_zero_dim_minimizing_eq_zero (0 + k) U (U ∩ N) T hU hmin hspt
+    -- the zero current has zero mass on every set
+    have hmass : ∀ W : Set (Euclid (0 + k)), (0 : GeometricCurrentOn U 0).massOn W = 0 :=
+      fun W => nonpos_iff_eq_zero.1 <| sSup_le <| by
+        rintro _ ⟨ω, -, rfl⟩
+        simp
+    -- every `x ∈ U` has a ball `W ∋ x` with `closure W` compact in `U`, so `spt 0 = ∅`
+    have hsupp : (0 : GeometricCurrentOn U 0).support = ∅ := by
+      refine eq_empty_of_forall_notMem fun x hx => hx.2 ?_
+      obtain ⟨ε, hε, hεU⟩ := Metric.isOpen_iff.1 hU x hx.1
+      refine mem_sUnion_of_mem (mem_ball_self (half_pos hε))
+        ⟨isOpen_ball, ?_, ?_, fun ω _ => GeometricCurrentOn.zero_apply ω⟩
+      · exact (isCompact_closedBall x _).of_isClosed_subset isClosed_closure
+          closure_ball_subset_closedBall
+      · exact closure_ball_subset_closedBall.trans
+          ((closedBall_subset_ball (half_lt_self hε)).trans hεU)
+    refine ⟨∅, ∅, subset_rfl, fun α _ => measure_empty, fun x _ => ⟨0, ?_⟩,
+      fun α _ => measure_empty, fun x hx => ?_⟩
+    · -- `Θ⁰(μ_0, x) = 0`
+      refine ⟨by simp, ?_⟩
+      simp only [hmass, ENNReal.zero_div, Int.cast_zero, ENNReal.ofReal_zero]
+      exact tendsto_const_nhds
+    · rw [hsupp] at hx
+      exact absurd hx.1 (notMem_empty x)
+  · -- `n ≥ 1`: `E` from `integer_density`, `F := E ∪ F₀` with `F₀` from `flat_off_null_set`
+    obtain ⟨E, hE, hEΘ⟩ :=
+      Submission.idtp_integer_density_off_null n k ℓ hℓ U N T hn hU hN hNU hmin hspt hbd
+    obtain ⟨F₀, hF₀, hflat⟩ :=
+      Submission.idtp_flat_off_null_set n k ℓ hℓ U N T hn hU hN hNU hmin hspt hbd
+    refine ⟨E, E ∪ F₀, subset_union_left, hE, hEΘ, fun α hα => measure_union_null ?_ (hF₀ α hα),
+      fun x hx => Submission.idtp_tangent_plane_of_flat n k ℓ hℓ U N T hn hU hN hNU hmin hspt hbd
+        x hx.1 (hflat x ⟨hx.1, fun hxF₀ => hx.2 (Or.inr hxF₀)⟩)⟩
+    -- `H^{n−2+α}(E) = H^{n−3+(1+α)}(E) = 0`
+    have h := hE (1 + α) (by linarith)
+    rwa [show (n : ℝ) - 3 + (1 + α) = (n : ℝ) - 2 + α by ring] at h
+
 end GMT.Ch07
