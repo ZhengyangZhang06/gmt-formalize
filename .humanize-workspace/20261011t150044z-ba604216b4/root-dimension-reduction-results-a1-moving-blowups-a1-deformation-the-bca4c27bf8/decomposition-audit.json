@@ -1,0 +1,107 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "IMRep|IsUnitOrientationOf|instance : Sub|abbrev Euclid",
+        "dimred_mbl_dtfr_",
+        "euclideanHausdorffMeasure_zero_or_top|euclideanHausdorffMeasure_image|map_euclideanHausdorffMeasure|euclideanHausdorffMeasure_eq_volume",
+        "exists_contDiff_support_eq_eq_one_iff|volume_preserving_piFinSuccAbove|integral_eq_sub_of_hasDerivAt|eq_smul_basis_det|det_to_matrix_orthonormalBasis_real",
+        "def TestFormOnConverges|structure GeometricCurrentOn|def boundary|def IsSmoothForm|def covectorEuclideanNorm|def massAdmissibleOn|def massOn|def zeroRegion|def support",
+        "../../toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/dtfr-independent-audit-maubn9oh/Types.lean",
+        "../../toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/dtfr-independent-audit-maubn9oh/ProofAndSemantics.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Manifold/PartitionOfUnity.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Constructions/Pi.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/IntervalIntegral/FundThmCalculus.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-deformation-the-bca4c27bf8/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-deformation-the-bca4c27bf8/decomposition-v1.json",
+        "/tmp/dtfr-independent-audit-maubn9oh/Types.lean",
+        "/tmp/dtfr-independent-audit-maubn9oh/ProofAndSemantics.lean"
+      ],
+      "conclusion": "The eleven-child split is appropriate for this selected contract. All dependencies are acyclic and correctly directed; the handoff explicitly authorizes the cube-median predecessor. All names are bare identifiers, with no reservations in the latest 1768-node DAG and no matching declarations in the searched pinned sources. No previously accepted declaration is reused. Project, Mathlib and SimonGMT revisions match the pins. All eleven exact child propositions independently elaborated without child implementations; the type-only checks produced only expected sorry warnings. The assembly, regenerated with the exact proposed types, proves the exact selected contract conditionally on its declared predecessor and children. The assembly, both supplied calculus proofs, and checked supporting lemmas use only propext, Classical.choice and Quot.sound. Inline Euclidean constructions, smoothness order and current operations passed semantic checks. No problematic matrix IsUnit construction occurs. The remaining child proofs were independently checked step by step as mathematical proofs."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "face_geometry",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Prose and Lean type match. Product volume and coordinate expansion establish volume, isometry and diameter. The exhaustive separation cases use strict monotonicity correctly and include k = 0."
+    },
+    {
+      "key": "skeleton_null",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The countable affine-plane cover has dimensions r ≤ m. Finite measure on balls and the pinned zero-or-top lemma give H^(m+1)-nullity, which transfers through isometries. The proof includes P ≤ m and P = 0 without extra hypotheses."
+    },
+    {
+      "key": "plane_orientation",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The bump-function contradiction proves Q lies in the coordinate plane without requiring A measurable. Equal dimensions identify the planes, and the orthonormal change-of-basis determinant supplies one sign valid for every covector. The zero-dimensional case is covered."
+    },
+    {
+      "key": "face_divergence",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Coordinate smoothness, the distinct omitted-index coefficient bound, and the chain-rule trace computation prove all three conclusions with the correct signs. The supplied Lean proof independently checked against the exact proposed type using only standard axioms."
+    },
+    {
+      "key": "current_calculus",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Intersecting relatively compact zero neighbourhoods proves the support inclusion; negated admissible forms prove the mass bound. Derivative support and pointwise linearity prove the boundary assertions for arbitrary U. The exact Lean proof independently checked."
+    },
+    {
+      "key": "skeleton_decomposition",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The explicit antecedents match the selected contract. VO and MR remove the carrier off support; skeleton nullity and compactness give finitely many disjoint faces. IMC restriction and plane orientation yield measurable integer densities. Local integrability and change of variables establish the exact mass bound and action formula without assuming an unstated global mass bound."
+    },
+    {
+      "key": "face_integral_current",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Bounded multipliers establish integrability, and the order-zero uniform estimate supplies the required current continuity. Coefficient estimates and face_divergence give both mass bounds. Discarding zero-L1 densities proves precisely the stated closed-face support conclusion."
+    },
+    {
+      "key": "boundary_variation",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Face separation proves the neighbourhoods are disjoint. The explicit cutoff forms recover the divergence tests with norm at most one; near-optimal forms give the sum bound. The support conclusion follows from VO and the declared support dependencies, without an omitted skeleton-support or boundary-measure hypothesis."
+    },
+    {
+      "key": "polyhedral_im",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The construction verifies every IMRep field. Local equality with the affine plane proves the tangent condition, including vertices. Isometric change of variables proves representation; MR gives the exact mass sum, and integer coefficients yield the dichotomy."
+    },
+    {
+      "key": "chain_boundary",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The explicit subface maps and orientations match the frozen formula. Measure-preserving coordinate separation, Fubini and one-variable FTC prove cubical Stokes with correct signs. Regrouping produces integer coefficients independent of the test form, including m = 0."
+    },
+    {
+      "key": "finite_family",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Compactness bounds the lattice corners, leaving finitely many face indices. The coefficient bound gives finitely many integer vectors, and current extensionality makes the chosen encoding injective. Negative Λ and degenerate dimensions are handled; the family is independent of Q₀."
+    }
+  ],
+  "required_changes": []
+}

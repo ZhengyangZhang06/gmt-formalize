@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.moving_blowups-a1.deformation_theorem-a1.face_replacement-a1.plane_orientation-a1.frame_sign-a1",
+  "parent_id": "root.dimension_reduction_results-a1.moving_blowups-a1.deformation_theorem-a1.face_replacement-a1.plane_orientation-a1",
+  "depth": 6,
+  "title": "Orthonormal frames with the same span evaluate all n-covectors equally up to one global sign",
+  "statement": "Let P, n ∈ ℕ and let τ, e : Fin n → Euclid P (= ℝ^P) be orthonormal families for the Euclidean inner product with span(range τ) = span(range e). Then one of the following holds: (1) α(τ_0, …, τ_{n−1}) = α(e_0, …, e_{n−1}) for every n-covector α; or (2) α(τ_0, …, τ_{n−1}) = −α(e_0, …, e_{n−1}) for every n-covector α. Here an n-covector is an element of Covector (Euclid P) n, that is, a continuous alternating n-linear map α : (Euclid P)^n → ℝ, and α(v) denotes its value on v : Fin n → Euclid P.",
+  "lean_statement": "∀ (P n : ℕ) (τ e : Fin n → Euclid P), Orthonormal ℝ τ → Orthonormal ℝ e → Submodule.span ℝ (Set.range τ) = Submodule.span ℝ (Set.range e) → (∀ α : Covector (Euclid P) n, α τ = α e) ∨ (∀ α : Covector (Euclid P) n, α τ = -α e)",
+  "lean_name": "dimred_mbl_dtfrpo_orthonormal_frame_sign",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-moving-blowups-a1-deformation-the-3a60d12589-a1"
+}
