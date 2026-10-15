@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.two_dim_cone_density-a1.density_locally_constant-a1.accumulating_discs-a1",
+  "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.two_dim_cone_density-a1.density_locally_constant-a1",
+  "depth": 5,
+  "title": "Planar discs of uniform radius accumulating at an unstable point contradict finite mass",
+  "statement": "Let P ∈ ℕ, let C ∈ 𝒟₂(ℝ^P) be integer multiplicity, and let ρ > 0. For i ∈ ℕ let Q_i be linear subspaces of ℝ^P with dim Q_i = 2, z_i ∈ Q_i with z_i → b ∈ ℝ^P, and k_i ∈ ℕ. Assume every x ∈ Q_i ∩ B_ρ(z_i) admits ε > 0 such that spt C ∩ B_ε(x) = Q_i ∩ B_ε(x), HasMassDensity C y k_i for every y ∈ spt C ∩ B_ε(x), and H²(W ∩ Q_i) ≤ M_W(C) for every open W ⊆ B_ε(x). Assume also that b is unstable: there are no ε > 0 and m ∈ ℕ with HasMassDensity C y m for every y ∈ spt C ∩ B_ε(b). Then these hypotheses are contradictory (False).",
+  "lean_statement": "∀ (P : ℕ) (C : GeometricCurrentOn (univ : Set (Euclid P)) 2) (Q : ℕ → Submodule ℝ (Euclid P)) (z : ℕ → Euclid P) (k : ℕ → ℕ) (b : Euclid P) (ρ : ℝ), IsIntegerMultiplicity C → 0 < ρ → (∀ i, Module.finrank ℝ (Q i) = 2) → (∀ i, z i ∈ Q i) → Tendsto z atTop (𝓝 b) → (∀ i, ∀ x ∈ (Q i : Set (Euclid P)) ∩ ball (z i) ρ, ∃ ε : ℝ, 0 < ε ∧ C.support ∩ ball x ε = (Q i : Set (Euclid P)) ∩ ball x ε ∧ (∀ y ∈ C.support, y ∈ ball x ε → HasMassDensity C y (k i)) ∧ ∀ W : Set (Euclid P), IsOpen W → W ⊆ ball x ε → μHE[2] (W ∩ (Q i : Set (Euclid P))) ≤ C.massOn W) → (¬ ∃ (ε : ℝ) (m : ℕ), 0 < ε ∧ ∀ y ∈ C.support, y ∈ ball b ε → HasMassDensity C y m) → False",
+  "lean_name": "idtp_tdc_dlc_accumulating_discs",
+  "depends_on": [
+    "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.two_dim_cone_density-a1.density_locally_constant-a1.subspace_eq_of_inter_ball_eq-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.two_dim_cone_density-a1.density_locally_constant-a1.subspace_eq_of_inter_ball_eq-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-6924e76f13-a1"
+}

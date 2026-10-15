@@ -961,6 +961,200 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Uniqueness of planes**: fact (b) in the proof of `idtp_tdc_density_locally_constant`, the
+local constancy of the density of a two-dimensional minimizing cone away from `0`.  There it
+identifies the plane of a planar piece of `spt C` near a point.  Let `Q₁, Q₂` be linear subspaces
+of `ℝᴾ`, `x ∈ Q₁` and `t > 0`.  If `Q₁ ∩ B_t(x) = Q₂ ∩ B_t(x)`, then `Q₁ = Q₂`.  First,
+`x ∈ Q₁ ∩ B_t(x) = Q₂ ∩ B_t(x)`, so `x ∈ Q₂`.  Next, let `x ∈ Q`, `x ∈ Q'` and `Q ∩ B_t(x) ⊆ Q'`.
+For `v ∈ Q` and `s = t / (2(‖v‖ + 1)) > 0`, the point `x + s v` lies in `Q ∩ B_t(x) ⊆ Q'`, so
+`s v ∈ Q'` and `v ∈ Q'`.  This gives `Q₁ ≤ Q₂` and `Q₂ ≤ Q₁`. -/
+theorem Submission.idtp_tdc_dlc_subspace_eq_of_inter_ball_eq : ∀ (P : ℕ) (Q₁ Q₂ : Submodule ℝ (Euclid P)) (x : Euclid P) (t : ℝ), x ∈ Q₁ → 0 < t → (Q₁ : Set (Euclid P)) ∩ ball x t = (Q₂ : Set (Euclid P)) ∩ ball x t → Q₁ = Q₂ := by
+  intro P Q₁ Q₂ x t hx ht h
+  -- Step 1: `x ∈ Q₂`, as `x ∈ Q₁ ∩ B_t(x) = Q₂ ∩ B_t(x)`.
+  have hx₂ : x ∈ Q₂ := (h.subset ⟨hx, Metric.mem_ball_self ht⟩).1
+  -- Step 2: if `x ∈ Q`, `x ∈ Q'` and `Q ∩ B_t(x) ⊆ Q'`, then `Q ≤ Q'`.  For `v ∈ Q` and
+  -- `s = t / (2(‖v‖ + 1)) > 0`, `x + s • v ∈ Q` and `dist (x + s • v) x = s‖v‖ < t`, so
+  -- `x + s • v ∈ Q'`; then `s • v = (x + s • v) - x ∈ Q'` and `v ∈ Q'` as `s ≠ 0`.
+  have key : ∀ Q Q' : Submodule ℝ (Euclid P), x ∈ Q → x ∈ Q' →
+      (Q : Set (Euclid P)) ∩ ball x t ⊆ Q' → Q ≤ Q' := by
+    intro Q Q' hxQ hxQ' hsub v hv
+    have hs : 0 < t / (2 * (‖v‖ + 1)) := div_pos ht (by positivity)
+    have hball : x + (t / (2 * (‖v‖ + 1))) • v ∈ ball x t := by
+      rw [Metric.mem_ball, dist_eq_norm, add_sub_cancel_left, norm_smul, Real.norm_of_nonneg hs.le,
+        div_mul_eq_mul_div, div_lt_iff₀ (by positivity)]
+      nlinarith [norm_nonneg v]
+    have h₁ : x + (t / (2 * (‖v‖ + 1))) • v ∈ Q' := hsub ⟨Q.add_mem hxQ (Q.smul_mem _ hv), hball⟩
+    exact (Q'.smul_mem_iff hs.ne').1 ((Q'.add_mem_iff_right hxQ').1 h₁)
+  -- Step 3: `Q₁ ∩ B_t(x) ⊆ Q₂` and `Q₂ ∩ B_t(x) ⊆ Q₁`; conclude by antisymmetry.
+  exact le_antisymm (key Q₁ Q₂ hx hx₂ (h.subset.trans inter_subset_left))
+    (key Q₂ Q₁ hx₂ hx (h.symm.subset.trans inter_subset_left))
+/-- Radial projection to the unit sphere at most doubles the distance to a unit vector: if
+`y ≠ 0` and `|w| = 1`, then `|y/|y| − w| ≤ 2|y − w|` (fact (e) in the proof that the density of a
+2-dimensional minimizing cone is locally constant).  `|y/|y| − y| = |1/|y| − 1| |y| = |1 − |y||`,
+and `|1 − |y|| = ||w| − |y|| ≤ |y − w|` by the reverse triangle inequality; conclude by the
+triangle inequality through `y`. -/
+theorem Submission.idtp_tdc_dlc_normalize_dist_le : ∀ (P : ℕ) (y w : Euclid P), y ≠ 0 → ‖w‖ = 1 → ‖‖y‖⁻¹ • y - w‖ ≤ 2 * ‖y - w‖ := by
+  intro P y w hy hw
+  have hy0 : 0 < ‖y‖ := norm_pos_iff.mpr hy
+  -- `‖y‖⁻¹ • y - y = (‖y‖⁻¹ - 1) • y` has norm `|‖y‖⁻¹ - 1| ‖y‖ = |1 - ‖y‖|`
+  have h1 : ‖‖y‖⁻¹ • y - y‖ = |1 - ‖y‖| := by
+    have e : (‖y‖⁻¹ - 1) * ‖y‖ = 1 - ‖y‖ := by
+      rw [sub_mul, inv_mul_cancel₀ hy0.ne', one_mul]
+    rw [← e, abs_mul, abs_of_pos hy0, ← Real.norm_eq_abs, ← norm_smul, sub_smul, one_smul]
+  -- reverse triangle inequality, as `‖w‖ = 1`
+  have h2 : |1 - ‖y‖| ≤ ‖y - w‖ := by
+    rw [← hw, norm_sub_rev y w]
+    exact abs_norm_sub_norm_le w y
+  calc ‖‖y‖⁻¹ • y - w‖ ≤ ‖‖y‖⁻¹ • y - y‖ + ‖y - w‖ := norm_sub_le_norm_sub_add_norm_sub _ _ _
+    _ ≤ 2 * ‖y - w‖ := by rw [h1]; linarith
+/-- An orthonormal partner of a unit vector in a 2-plane (Gram–Schmidt in `Q`, used in the proof of
+Simon 7.3.3(1), p. 191, for 2-dimensional minimizing cones): if `Q ⊆ ℝᴾ` is a subspace with
+`dim Q = 2` and `z ∈ Q` has `‖z‖ = 1`, there is `e ∈ Q` with `‖e‖ = 1` and `⟪z, e⟫ = 0`, and
+`w = ⟪w, z⟫ z + ⟪w, e⟫ e` for every `w ∈ Q`.  As `dim Q = 2 > 1 = dim ℝz`, some `u ∈ Q` lies off
+the line `ℝz`, and `e` is the normalization of `u - ⟪z, u⟫ z`.  `(z, e)` is orthonormal, so
+`span {z, e} ⊆ Q` has dimension `2` and equals `Q`; the residual `w - ⟪w, z⟫ z - ⟪w, e⟫ e` lies in
+it and is orthogonal to `z` and `e`, hence vanishes. -/
+theorem Submission.idtp_tdc_dlc_ld_orthonormal_partner : ∀ (P : ℕ) (Q : Submodule ℝ (Euclid P)) (z : Euclid P), Module.finrank ℝ Q = 2 → z ∈ Q → ‖z‖ = 1 → ∃ e : Euclid P, e ∈ Q ∧ ‖e‖ = 1 ∧ inner ℝ z e = 0 ∧ ∀ w ∈ Q, w = inner ℝ w z • z + inner ℝ w e • e := by
+  intro P Q z hQ hzQ hz
+  have hzz : inner ℝ z z = (1 : ℝ) := by rw [real_inner_self_eq_norm_sq, hz, one_pow]
+  -- `Q ⊄ ℝ ∙ z`, since `finrank (ℝ ∙ z) = 1 < 2 = finrank Q`
+  have hz0 : z ≠ 0 := by
+    rintro rfl
+    rw [norm_zero] at hz
+    exact zero_ne_one hz
+  obtain ⟨u, huQ, hu⟩ : ∃ u ∈ Q, u ∉ ℝ ∙ z := by
+    refine IsConcreteLE.not_le_iff_exists.mp fun hle => ?_
+    have h := Submodule.finrank_mono hle
+    rw [hQ, finrank_span_singleton hz0] at h
+    omega
+  -- `v = u - ⟪z, u⟫ z` is a nonzero vector of `Q` orthogonal to `z`
+  obtain ⟨v, hvQ, hv0, hzv⟩ : ∃ v ∈ Q, v ≠ 0 ∧ inner ℝ z v = (0 : ℝ) := by
+    refine ⟨u - inner ℝ z u • z, Q.sub_mem huQ (Q.smul_mem _ hzQ), fun h => ?_, ?_⟩
+    · exact hu (Submodule.mem_span_singleton.mpr ⟨inner ℝ z u, (sub_eq_zero.mp h).symm⟩)
+    · rw [inner_sub_right, real_inner_smul_right, hzz, mul_one, sub_self]
+  -- `e = ‖v‖⁻¹ • v` is a unit vector of `Q` orthogonal to `z`
+  obtain ⟨e, heQ, he, hze⟩ : ∃ e ∈ Q, ‖e‖ = 1 ∧ inner ℝ z e = (0 : ℝ) := by
+    refine ⟨‖v‖⁻¹ • v, Q.smul_mem _ hvQ, ?_, ?_⟩
+    · rw [norm_smul, norm_inv, norm_norm, inv_mul_cancel₀ (norm_ne_zero_iff.mpr hv0)]
+    · rw [real_inner_smul_right, hzv, mul_zero]
+  have hez : inner ℝ e z = (0 : ℝ) := by rw [real_inner_comm, hze]
+  have hee : inner ℝ e e = (1 : ℝ) := by rw [real_inner_self_eq_norm_sq, he, one_pow]
+  refine ⟨e, heQ, he, hze, fun w hwQ => ?_⟩
+  -- `(z, e)` is orthonormal, so `span {z, e} ≤ Q` has dimension `2` and equals `Q`
+  have hon : Orthonormal ℝ ![z, e] := by
+    rw [orthonormal_iff_ite]
+    intro i j
+    fin_cases i <;> fin_cases j <;> simp [hz, he, hze, hez]
+  have hspan : Submodule.span ℝ (range ![z, e]) = Q := by
+    refine Submodule.eq_of_le_of_finrank_eq ?_ ?_
+    · rw [Submodule.span_le]
+      rintro _ ⟨i, rfl⟩
+      fin_cases i
+      · exact hzQ
+      · exact heQ
+    · rw [finrank_span_eq_card hon.linearIndependent, Fintype.card_fin, hQ]
+  -- the residual `d = w - ⟪w, z⟫ z - ⟪w, e⟫ e` lies in `Q = span {z, e}` and is orthogonal to `z`
+  -- and `e`, so `⟪d, d⟫ = 0`
+  obtain ⟨d, hd⟩ : ∃ d, d = w - (inner ℝ w z • z + inner ℝ w e • e) := ⟨_, rfl⟩
+  have hdz : inner ℝ d z = (0 : ℝ) := by
+    rw [hd, inner_sub_left, inner_add_left, real_inner_smul_left, real_inner_smul_left, hzz, hez,
+      mul_one, mul_zero, add_zero, sub_self]
+  have hde : inner ℝ d e = (0 : ℝ) := by
+    rw [hd, inner_sub_left, inner_add_left, real_inner_smul_left, real_inner_smul_left, hze, hee,
+      mul_zero, mul_one, zero_add, sub_self]
+  have hdQ : d ∈ Q := hd ▸ Q.sub_mem hwQ (Q.add_mem (Q.smul_mem _ hzQ) (Q.smul_mem _ heQ))
+  rw [← hspan] at hdQ
+  obtain ⟨c, hc⟩ := (Submodule.mem_span_range_iff_exists_fun ℝ).mp hdQ
+  rw [Fin.sum_univ_two, Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.cons_val_zero] at hc
+  have hdd : inner ℝ d d = (0 : ℝ) := by
+    rw [← hc, inner_add_left, real_inner_smul_left, real_inner_smul_left, real_inner_comm,
+      real_inner_comm (c 0 • z + c 1 • e) e, hc, hdz, hde, mul_zero, mul_zero, add_zero]
+  rw [← sub_eq_zero, ← hd]
+  exact inner_self_eq_zero.mp hdd
+/-- Points of a unit great-circle arc (used in the proof of Simon 7.3.3(1), pp. 191–192, for
+2-dimensional minimizing cones): if `z, e ∈ ℝᴾ` are orthonormal and `φ ≥ 0`, then
+`a = cos φ z + sin φ e` is a unit vector with `‖a − z‖ ≤ φ`.  By Pythagoras
+`‖s z + t e‖² = s² + t²`, so `‖a‖² = cos² φ + sin² φ = 1` and
+`‖a − z‖² = (cos φ − 1)² + sin² φ = 2 − 2 cos φ ≤ φ²`, as `1 − φ²/2 ≤ cos φ`. -/
+theorem Submission.idtp_tdc_dlc_ld_arc_point_bounds : ∀ (P : ℕ) (z e : Euclid P) (φ : ℝ), ‖z‖ = 1 → ‖e‖ = 1 → inner ℝ z e = 0 → 0 ≤ φ → ‖Real.cos φ • z + Real.sin φ • e‖ = 1 ∧ ‖Real.cos φ • z + Real.sin φ • e - z‖ ≤ φ := by
+  intro P z e φ hz he hze hφ
+  -- Pythagoras: `‖s z + t e‖² = s² + t²` for orthonormal `z, e`
+  have hpyth : ∀ s t : ℝ, ‖s • z + t • e‖ ^ 2 = s ^ 2 + t ^ 2 := by
+    intro s t
+    rw [norm_add_sq_real, norm_smul, norm_smul, real_inner_smul_left, real_inner_smul_right, hze,
+      hz, he, Real.norm_eq_abs, Real.norm_eq_abs]
+    ring_nf
+    rw [sq_abs, sq_abs]
+  refine ⟨?_, ?_⟩
+  · have h := hpyth (Real.cos φ) (Real.sin φ)
+    rw [Real.cos_sq_add_sin_sq] at h
+    exact (pow_eq_one_iff_of_nonneg (norm_nonneg _) two_ne_zero).mp h
+  · -- `a − z = (cos φ − 1) z + sin φ e`, so `‖a − z‖² = 2 − 2 cos φ ≤ φ²`
+    have hsub : Real.cos φ • z + Real.sin φ • e - z = (Real.cos φ - 1) • z + Real.sin φ • e := by
+      rw [sub_smul, one_smul]
+      abel
+    have h := hpyth (Real.cos φ - 1) (Real.sin φ)
+    rw [← hsub] at h
+    have hsq : ‖Real.cos φ • z + Real.sin φ • e - z‖ ^ 2 ≤ φ ^ 2 := by
+      rw [h]
+      nlinarith [Real.cos_sq_add_sin_sq φ, Real.one_sub_sq_div_two_le_cos (x := φ)]
+    exact (sq_le_sq₀ (norm_nonneg _) hφ).mp hsq
+/-- Angle parametrization of a unit vector in the plane of an orthonormal pair (used in the proof
+of Simon 7.3.3(1), p. 191, for 2-dimensional minimizing cones): if `‖z‖ = ‖e‖ = 1`, `z ⊥ e`, and
+the unit vector `w = ⟨w, z⟩z + ⟨w, e⟩e` has `‖w − z‖ < L/2`, then `w = cos θ z + sin θ v` with
+`0 ≤ θ < L` and `v = ±e`.  For `α = ⟨w, z⟩`, `β = ⟨w, e⟩`, `α² + β² = ⟨w, αz + βe⟩ = ‖w‖² = 1`,
+so `θ = arccos α ∈ [0, π]` has `cos θ = α` and `sin θ = √(1 − α²) = |β|`, and `v = ±e` absorbs
+the sign of `β`.  The chord is `‖w − z‖² = 2 − 2cos θ = 4sin²(θ/2)`, so `‖w − z‖ = 2sin(θ/2)`,
+and Jordan's inequality `(2/π)x ≤ sin x` (`0 ≤ x ≤ π/2`) gives `θ ≤ (π/2)‖w − z‖ < πL/4 ≤ L`.
+The hypotheses `‖e‖ = 1` and `⟨z, e⟩ = 0` are not needed. -/
+theorem Submission.idtp_tdc_dlc_ld_unit_vector_angle : ∀ (P : ℕ) (z e w : Euclid P) (L : ℝ), ‖z‖ = 1 → ‖e‖ = 1 → inner ℝ z e = 0 → ‖w‖ = 1 → w = inner ℝ w z • z + inner ℝ w e • e → ‖w - z‖ < L / 2 → ∃ (θ : ℝ) (v : Euclid P), 0 ≤ θ ∧ θ < L ∧ (v = e ∨ v = -e) ∧ w = Real.cos θ • z + Real.sin θ • v := by
+  intro P z e w L hz _he _hze hw hwd hL
+  -- `α = ⟨w, z⟩` and `β = ⟨w, e⟩` satisfy `α² + β² = ⟨w, αz + βe⟩ = ‖w‖² = 1`
+  have hsq : inner ℝ w z ^ 2 + inner ℝ w e ^ 2 = 1 := by
+    have h : inner ℝ w (inner ℝ w z • z + inner ℝ w e • e) = 1 := by
+      rw [← hwd, real_inner_self_eq_norm_sq, hw, one_pow]
+    rw [inner_add_right, real_inner_smul_right, real_inner_smul_right] at h
+    linear_combination h
+  have hα₁ : -1 ≤ inner ℝ w z := by nlinarith [sq_nonneg (inner ℝ w e)]
+  have hα₂ : inner ℝ w z ≤ 1 := by nlinarith [sq_nonneg (inner ℝ w e)]
+  -- `θ = arccos α ∈ [0, π]` has `cos θ = α` and `sin θ = √(1 - α²) = |β|`
+  obtain ⟨θ, hθ₀, hθπ, hcos, hsin⟩ : ∃ θ : ℝ, 0 ≤ θ ∧ θ ≤ Real.pi ∧
+      Real.cos θ = inner ℝ w z ∧ Real.sin θ = |inner ℝ w e| := by
+    refine ⟨Real.arccos (inner ℝ w z), Real.arccos_nonneg _, Real.arccos_le_pi _,
+      Real.cos_arccos hα₁ hα₂, ?_⟩
+    rw [Real.sin_arccos, ← Real.sqrt_sq_eq_abs]
+    congr 1
+    linarith
+  -- `‖w - z‖² = 2 - 2 cos θ = (2 sin(θ/2))²` with `sin(θ/2) ≥ 0`, so `‖w - z‖ = 2 sin(θ/2)`
+  have hs₀ : 0 ≤ Real.sin (θ / 2) :=
+    Real.sin_nonneg_of_nonneg_of_le_pi (by linarith) (by linarith [Real.pi_pos])
+  have hchord : ‖w - z‖ = 2 * Real.sin (θ / 2) := by
+    have h₁ := norm_sub_sq_real w z
+    have h₂ := Real.cos_two_mul_eq_one_sub (θ / 2)
+    rw [show 2 * (θ / 2) = θ by ring, hcos] at h₂
+    rw [hw, hz, h₂] at h₁
+    refine (pow_left_inj₀ (norm_nonneg _) (by linarith) two_ne_zero).mp ?_
+    rw [h₁]
+    ring
+  -- Jordan's inequality `(2/π)(θ/2) ≤ sin(θ/2)` gives `θ ≤ (π/2)‖w - z‖ < πL/4 ≤ L`
+  have hθL : θ < L := by
+    have hπ := Real.pi_pos
+    have hJ := Real.mul_le_sin (x := θ / 2) (by linarith) (by linarith)
+    have hL₀ : 0 < L := by linarith [norm_nonneg (w - z)]
+    have h₁ : θ / Real.pi < L / 4 := by
+      have : 2 / Real.pi * (θ / 2) = θ / Real.pi := by ring
+      linarith
+    rw [div_lt_iff₀ hπ] at h₁
+    have h₂ := mul_le_mul_of_nonneg_left Real.pi_le_four (by linarith : (0 : ℝ) ≤ L / 4)
+    linarith
+  -- `v = ±e` absorbs the sign of `β`: `sin θ • v = |β| • v = β • e`
+  rcases le_or_gt 0 (inner ℝ w e) with hβ | hβ
+  · refine ⟨θ, e, hθ₀, hθL, Or.inl rfl, ?_⟩
+    rw [hcos, hsin, abs_of_nonneg hβ]
+    exact hwd
+  · refine ⟨θ, -e, hθ₀, hθL, Or.inr rfl, ?_⟩
+    rw [hcos, hsin, abs_of_neg hβ, neg_smul_neg]
+    exact hwd
 /-- **Real induction on `[0, L)`** (the first-failure argument of the arc continuation): if
 `G 0`, `G` propagates a little to the right of every `φ ∈ [0, L)` where it holds, and `G φ`
 holds at every `φ ∈ (0, L)` such that `G` holds on `[0, φ)`, then `G` holds on `[0, L)`.  At
@@ -1251,6 +1445,81 @@ theorem Submission.idtp_tdc_subspace_ball_measure : ∀ (P n : ℕ) (Q : Submodu
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
+/-- **Support of a current vanishing away from a compact set** (Simon 6.2.11).  If `K ⊆ U` is
+compact and `F ∈ 𝒟ₙ(U)` kills every `ω ∈ 𝒟ⁿ(U)` with `spt ω ∩ K = ∅`, then `spt F ⊆ K` and
+`spt F` is compact.  For `y ∈ U \ K` choose `B_s(y) ⊆ U \ K`: the ball `W = B_{s/2}(y)` has compact
+closure `⊆ B̄_{s/2}(y) ⊆ U \ K` and every form supported in `W` misses `K`, so `y ∈ Z(F)`.  Hence
+`spt F = K \ Z(F)`, compact because the zero region `Z(F)` is open. -/
+theorem Submission.rsd_cmr_support_subset_of_vanish : ∀ (P n : ℕ) (U K : Set (Euclid P)) (F : GeometricCurrentOn U n), IsOpen U → IsCompact K → K ⊆ U → (∀ ω : TestFormOn U n, Disjoint (tsupport (ω : DifferentialForm (Euclid P) n)) K → F ω = 0) → F.support ⊆ K ∧ IsCompact F.support := by
+  intro P n U K F hU hK hKU hvan
+  -- Steps 1–2: no point of `U \ K` lies in `spt F = U \ Z(F)`, so `spt F ⊆ K`
+  have hsub : F.support ⊆ K := by
+    intro y hy
+    by_contra hyK
+    obtain ⟨s, hs, hball⟩ := Metric.isOpen_iff.mp (hU.sdiff hK.isClosed) y ⟨hy.1, hyK⟩
+    apply hy.2
+    -- `W = B_{s/2}(y)` is one of the open sets whose union is `Z(F)`
+    refine ⟨ball y (s / 2), ⟨isOpen_ball, ?_, ?_, ?_⟩, mem_ball_self (by positivity)⟩
+    · -- `closure W` is compact
+      exact (isCompact_closedBall y (s / 2)).of_isClosed_subset isClosed_closure
+        closure_ball_subset_closedBall
+    · -- `closure W ⊆ B̄_{s/2}(y) ⊆ B_s(y) ⊆ U \ K ⊆ U`
+      exact closure_ball_subset_closedBall.trans
+        ((closedBall_subset_ball (by linarith)).trans (hball.trans sdiff_subset))
+    · -- a form supported in `W ⊆ U \ K` misses `K`, so `F` kills it
+      intro ω hω
+      exact hvan ω (Set.disjoint_of_subset_left
+        (hω.trans ((ball_subset_ball (by linarith)).trans hball)) disjoint_sdiff_left)
+  -- Step 3: `spt F = K \ Z(F)` is compact, `Z(F)` being open
+  refine ⟨hsub, ?_⟩
+  have heq : F.support = K \ F.zeroRegion :=
+    Set.ext fun x => ⟨fun hx => ⟨hsub hx, hx.2⟩, fun hx => ⟨hKU hx.1, hx.2⟩⟩
+  rw [heq]
+  exact hK.diff F.isOpen_zeroRegion
+/-- **Blow-up domains eventually contain bounded sets** (Simon 7.3.3(2), proof: the domain
+claims for `η_{x,σᵢ#}T`).  If `U` is open, `x ∈ U`, `λᵢ > 0` and `λᵢ → 0`, then every bounded `K`
+lies in `η_{x,λᵢ}(U)` for all large `i`: with `B_δ(x) ⊆ U` and `K ⊆ B̄_r(0)`, eventually
+`λᵢ(|r| + 1) < δ`, and then each `w ∈ K` is `η_{x,λᵢ}(x + λᵢw)` with `x + λᵢw ∈ B_δ(x)`. -/
+theorem Submission.idtp_tpf_blowUp_domain_eventually : ∀ (P : ℕ) (U : Set (Euclid P)) (x : Euclid P) (lams : ℕ → ℝ), IsOpen U → x ∈ U → (∀ i, 0 < lams i) → Tendsto lams atTop (𝓝 0) → ∀ K : Set (Euclid P), Bornology.IsBounded K → ∀ᶠ i in atTop, K ⊆ dilation x (lams i) '' U := by
+  intro P U x lams hU hx hpos hlim K hK
+  -- `B_δ(x) ⊆ U` and `K ⊆ B̄_r(0)`
+  obtain ⟨δ, hδ, hball⟩ := Metric.isOpen_iff.mp hU x hx
+  obtain ⟨r, hr⟩ := hK.subset_closedBall 0
+  -- `λᵢ(|r| + 1) → 0 < δ`, so `λᵢ(|r| + 1) < δ` for all large `i`
+  have hlim' : Tendsto (fun i => lams i * (|r| + 1)) atTop (𝓝 0) := by
+    simpa using hlim.mul_const (|r| + 1)
+  filter_upwards [hlim'.eventually (gt_mem_nhds hδ)] with i hi w hw
+  -- `y = x + λᵢw` lies in `B_δ(x) ⊆ U`, and `η_{x,λᵢ}(y) = w`
+  refine ⟨x + lams i • w, hball ?_, ?_⟩
+  · have hw : ‖w‖ ≤ |r| + 1 := by
+      linarith [mem_closedBall_zero_iff.mp (hr hw), le_abs_self r]
+    rw [mem_ball, dist_eq_norm, add_sub_cancel_left, norm_smul, Real.norm_of_nonneg (hpos i).le]
+    exact (mul_le_mul_of_nonneg_left hw (hpos i).le).trans_lt hi
+  · simp only [dilation, dilationCLM, smul_apply, ContinuousLinearMap.id_apply, smul_add,
+      smul_smul, inv_mul_cancel₀ (hpos i).ne', one_smul, neg_add_cancel_left]
+/-- Dilation transfers a planar constant-density piece of a `2`-dimensional cone `C` (used in the
+proof of Simon 7.3.3(1), pp. 191–192, that `Θ²(μ_C, ·)` is locally constant on `spt C \ {0}`):
+for `s > 0`, if `spt C ∩ B_ε(s⁻¹x) = Q ∩ B_ε(s⁻¹x)` for a subspace `Q` and `Θ²(μ_C, y) = k` for
+every `y ∈ spt C ∩ B_ε(s⁻¹x)`, then the same holds with `B_{sε}(x)` in place of `B_ε(s⁻¹x)`.
+The map `y ↦ s⁻¹y` sends `B_{sε}(x)` onto `B_ε(s⁻¹x)` and preserves `Q`; by the dilation
+invariance of the cone (`Submission.idtp_tdc_cone_dilation` with factors `s⁻¹` and `s`), it also
+preserves `spt C`, and `Θ²(μ_C, s⁻¹y) = k` gives `Θ²(μ_C, y) = k`. -/
+theorem Submission.idtp_tdc_dlc_ld_cone_scale_piece : ∀ (P : ℕ) (C : GeometricCurrentOn (univ : Set (Euclid P)) 2) (Q : Submodule ℝ (Euclid P)) (x : Euclid P) (k : ℕ) (s ε : ℝ), IsIntegerMultiplicity C → IsConeCurrent C → 0 < s → C.support ∩ ball (s⁻¹ • x) ε = (Q : Set (Euclid P)) ∩ ball (s⁻¹ • x) ε → (∀ y ∈ C.support, y ∈ ball (s⁻¹ • x) ε → HasMassDensity C y k) → C.support ∩ ball x (s * ε) = (Q : Set (Euclid P)) ∩ ball x (s * ε) ∧ ∀ y ∈ C.support, y ∈ ball x (s * ε) → HasMassDensity C y k := by
+  intro P C Q x k s ε hIM hcone hs hA hB
+  -- `s⁻¹y ∈ spt C ↔ y ∈ spt C` and `Θ²(μ_C, su) = θ ↔ Θ²(μ_C, u) = θ`
+  have hS := (Submission.idtp_tdc_cone_dilation P 2 C hIM hcone s⁻¹ (inv_pos.mpr hs)).2.1
+  have hD := (Submission.idtp_tdc_cone_dilation P 2 C hIM hcone s hs).2.2
+  -- `s⁻¹y ∈ B_ε(s⁻¹x) ↔ y ∈ B_{sε}(x)` and `s⁻¹y ∈ Q ↔ y ∈ Q`
+  have hball : ∀ y : Euclid P, s⁻¹ • y ∈ ball (s⁻¹ • x) ε ↔ y ∈ ball x (s * ε) := by
+    intro y
+    rw [mem_ball, mem_ball, dist_smul₀, norm_inv, Real.norm_of_nonneg hs.le, inv_mul_lt_iff₀ hs]
+  have hQ : ∀ y : Euclid P, s⁻¹ • y ∈ Q ↔ y ∈ Q := fun y => Q.smul_mem_iff (inv_ne_zero hs.ne')
+  refine ⟨Set.ext fun y => ?_, fun y hy hyx => ?_⟩
+  -- the support equation at the point `s⁻¹y`
+  · simpa only [mem_inter_iff, SetLike.mem_coe, hS, hQ, hball] using Set.ext_iff.mp hA (s⁻¹ • y)
+  -- the density `k` at `s⁻¹y` transfers to `s(s⁻¹y) = y`
+  · simpa only [smul_inv_smul₀ hs.ne'] using
+      (hD (s⁻¹ • y) k).mpr (hB _ ((hS y).mpr hy) ((hball y).mpr hyx))
 /-- **Simon Ch. 6, 1.2 (p. 132)**: `Λⁿ(ℝᴾ)` is finite-dimensional.  An `n`-covector `α` is
 determined by its values `α(e_{I(1)}, …, e_{I(n)})` on tuples of standard basis vectors (alternating
 maps agreeing on distinct basis vectors are equal), so `α ↦ (α(e ∘ I))_{I : Fin n → Fin P}` is an
@@ -4599,37 +4868,6 @@ theorem Submission.rsd_cmr_eq_zero_of_vanish_off_compact : ∀ (P m : ℕ) (U B 
   have h := hoff _ hdisj
   rw [map_sub F.toCurrent ω (testFormOnInclusion hBU m ψ), hin ψ, sub_zero] at h
   exact h
-/-- **Support of a current vanishing away from a compact set** (Simon 6.2.11).  If `K ⊆ U` is
-compact and `F ∈ 𝒟ₙ(U)` kills every `ω ∈ 𝒟ⁿ(U)` with `spt ω ∩ K = ∅`, then `spt F ⊆ K` and
-`spt F` is compact.  For `y ∈ U \ K` choose `B_s(y) ⊆ U \ K`: the ball `W = B_{s/2}(y)` has compact
-closure `⊆ B̄_{s/2}(y) ⊆ U \ K` and every form supported in `W` misses `K`, so `y ∈ Z(F)`.  Hence
-`spt F = K \ Z(F)`, compact because the zero region `Z(F)` is open. -/
-theorem Submission.rsd_cmr_support_subset_of_vanish : ∀ (P n : ℕ) (U K : Set (Euclid P)) (F : GeometricCurrentOn U n), IsOpen U → IsCompact K → K ⊆ U → (∀ ω : TestFormOn U n, Disjoint (tsupport (ω : DifferentialForm (Euclid P) n)) K → F ω = 0) → F.support ⊆ K ∧ IsCompact F.support := by
-  intro P n U K F hU hK hKU hvan
-  -- Steps 1–2: no point of `U \ K` lies in `spt F = U \ Z(F)`, so `spt F ⊆ K`
-  have hsub : F.support ⊆ K := by
-    intro y hy
-    by_contra hyK
-    obtain ⟨s, hs, hball⟩ := Metric.isOpen_iff.mp (hU.sdiff hK.isClosed) y ⟨hy.1, hyK⟩
-    apply hy.2
-    -- `W = B_{s/2}(y)` is one of the open sets whose union is `Z(F)`
-    refine ⟨ball y (s / 2), ⟨isOpen_ball, ?_, ?_, ?_⟩, mem_ball_self (by positivity)⟩
-    · -- `closure W` is compact
-      exact (isCompact_closedBall y (s / 2)).of_isClosed_subset isClosed_closure
-        closure_ball_subset_closedBall
-    · -- `closure W ⊆ B̄_{s/2}(y) ⊆ B_s(y) ⊆ U \ K ⊆ U`
-      exact closure_ball_subset_closedBall.trans
-        ((closedBall_subset_ball (by linarith)).trans (hball.trans sdiff_subset))
-    · -- a form supported in `W ⊆ U \ K` misses `K`, so `F` kills it
-      intro ω hω
-      exact hvan ω (Set.disjoint_of_subset_left
-        (hω.trans ((ball_subset_ball (by linarith)).trans hball)) disjoint_sdiff_left)
-  -- Step 3: `spt F = K \ Z(F)` is compact, `Z(F)` being open
-  refine ⟨hsub, ?_⟩
-  have heq : F.support = K \ F.zeroRegion :=
-    Set.ext fun x => ⟨fun hx => ⟨hsub hx, hx.2⟩, fun hx => ⟨hKU hx.1, hx.2⟩⟩
-  rw [heq]
-  exact hK.diff F.isOpen_zeroRegion
 /-- **Simon 7.4.1** (`reg T`, chapter-07.txt lines 590–594) under `T = c T₀` in `V`: the
 regularity transfer of the reduction to multiplicity one behind 7.4.2 (lines 605–610), as in the
 proof of Ch. 5, 7.3 (chapter-05.txt lines 1388–1395).  If `V ⊆ U`, `c ∈ ℤ \ {0}`,
@@ -5121,28 +5359,6 @@ theorem Submission.idtp_cse_etp_plane_imrep : ∀ (P n : ℕ) (τ : Fin n → Eu
     show ((μHE[n] : Measure (Euclid P)).restrict (Q : Set (Euclid P))).withDensity
       (fun _ => ((c.natAbs : ℕ) : ℝ≥0∞)) = _
     exact withDensity_const _
-/-- **Blow-up domains eventually contain bounded sets** (Simon 7.3.3(2), proof: the domain
-claims for `η_{x,σᵢ#}T`).  If `U` is open, `x ∈ U`, `λᵢ > 0` and `λᵢ → 0`, then every bounded `K`
-lies in `η_{x,λᵢ}(U)` for all large `i`: with `B_δ(x) ⊆ U` and `K ⊆ B̄_r(0)`, eventually
-`λᵢ(|r| + 1) < δ`, and then each `w ∈ K` is `η_{x,λᵢ}(x + λᵢw)` with `x + λᵢw ∈ B_δ(x)`. -/
-theorem Submission.idtp_tpf_blowUp_domain_eventually : ∀ (P : ℕ) (U : Set (Euclid P)) (x : Euclid P) (lams : ℕ → ℝ), IsOpen U → x ∈ U → (∀ i, 0 < lams i) → Tendsto lams atTop (𝓝 0) → ∀ K : Set (Euclid P), Bornology.IsBounded K → ∀ᶠ i in atTop, K ⊆ dilation x (lams i) '' U := by
-  intro P U x lams hU hx hpos hlim K hK
-  -- `B_δ(x) ⊆ U` and `K ⊆ B̄_r(0)`
-  obtain ⟨δ, hδ, hball⟩ := Metric.isOpen_iff.mp hU x hx
-  obtain ⟨r, hr⟩ := hK.subset_closedBall 0
-  -- `λᵢ(|r| + 1) → 0 < δ`, so `λᵢ(|r| + 1) < δ` for all large `i`
-  have hlim' : Tendsto (fun i => lams i * (|r| + 1)) atTop (𝓝 0) := by
-    simpa using hlim.mul_const (|r| + 1)
-  filter_upwards [hlim'.eventually (gt_mem_nhds hδ)] with i hi w hw
-  -- `y = x + λᵢw` lies in `B_δ(x) ⊆ U`, and `η_{x,λᵢ}(y) = w`
-  refine ⟨x + lams i • w, hball ?_, ?_⟩
-  · have hw : ‖w‖ ≤ |r| + 1 := by
-      linarith [mem_closedBall_zero_iff.mp (hr hw), le_abs_self r]
-    rw [mem_ball, dist_eq_norm, add_sub_cancel_left, norm_smul, Real.norm_of_nonneg (hpos i).le]
-    exact (mul_le_mul_of_nonneg_left hw (hpos i).le).trans_lt hi
-  · simp only [dilation, dilationCLM, smul_apply, ContinuousLinearMap.id_apply, smul_add,
-      smul_smul, inv_mul_cancel₀ (hpos i).ne', one_smul, neg_add_cancel_left]
-
 /-- **`μ_C`-a.e. point lies in `spt C`** (Simon 6.2.11 with 6.3.2(3), the half
 `spt μ_C ⊆ spt C` of `spt C = spt μ_C`).  Let `C = τ(M, θ, ξ)` in `ℝᴾ`.  If `C` vanishes on the
 open set `W`, then for a basis `α₁, …, α_N` of `Λⁿ(ℝᴾ)`, `μ_C`-a.e. `x ∈ W` has `ξ(x)(αₖ) = 0` for
@@ -7621,6 +7837,83 @@ theorem Submission.idtp_cse_bml_tilt_excess_decay : ∀ (P : ℕ) (C : Geometric
   exact tendsto_of_tendsto_of_tendsto_of_le_of_le tendsto_const_nhds hD' (fun _ => zero_le)
     fun j => Submission.idtp_cse_bml_td_excess_bound P R.measure (fun x => R.orient x β) ϑ a
       (lams (φ j)) (hlams (φ j)) hfin hdm hd1 hϑc hϑcs (fun x => (hϑ01 x).1) hϑ1
+/-- Local-to-global comparison of measures on `ℝᴾ` (a step of the proof of Simon 7.3.3, for
+two-dimensional minimizing cones): if `μ` is finite on compact sets, `D` is Borel and every
+`w ∈ D` is the centre of a ball `B_ε(w)` on whose open subsets `ν ≤ μ`, then `ν(D) ≤ μ(D)`.
+On each such ball the finite measure `μ⌞B_ε(w)` is outer regular, so `ν ≤ μ` also holds on the
+Borel subsets of the ball; countably many of the balls cover `D` (Lindelöf), and the disjointed
+pieces of `D` add up by countable additivity. -/
+theorem Submission.idtp_tdc_nipp_local_comparison : ∀ (P : ℕ) (μ ν : Measure (Euclid P)) (D : Set (Euclid P)), (∀ K : Set (Euclid P), IsCompact K → μ K ≠ ∞) → MeasurableSet D → (∀ w ∈ D, ∃ ε : ℝ, 0 < ε ∧ ∀ W : Set (Euclid P), IsOpen W → W ⊆ ball w ε → ν W ≤ μ W) → ν D ≤ μ D := by
+  intro P μ ν D hμ hD hloc
+  -- (2) if `ν ≤ μ` on the open subsets of `B = B_ε(w)`, then `ν ≤ μ` on the Borel subsets of `B`:
+  -- `μ⌞B` is a finite measure by (1), hence outer regular
+  have hball : ∀ (w : Euclid P) (ε : ℝ),
+      (∀ W : Set (Euclid P), IsOpen W → W ⊆ ball w ε → ν W ≤ μ W) →
+      ∀ E : Set (Euclid P), MeasurableSet E → E ⊆ ball w ε → ν E ≤ μ E := by
+    intro w ε hW E hE hEB
+    -- (1) `μ(B_ε(w)) ≤ μ(closedBall w ε) < ∞`, closed balls being compact
+    have : IsFiniteMeasure (μ.restrict (ball w ε)) := ⟨by
+      rw [Measure.restrict_apply_univ]
+      exact (measure_mono ball_subset_closedBall).trans_lt
+        (hμ _ (isCompact_closedBall w ε)).lt_top⟩
+    refine le_of_forall_gt fun t ht => ?_
+    have hEt : μ.restrict (ball w ε) E < t := by
+      rwa [Measure.restrict_apply hE, inter_eq_left.mpr hEB]
+    obtain ⟨O, hEO, hO, hOt⟩ := Set.exists_isOpen_lt_of_lt E t hEt
+    rw [Measure.restrict_apply hO.measurableSet] at hOt
+    calc ν E ≤ ν (O ∩ ball w ε) := measure_mono (subset_inter hEO hEB)
+      _ ≤ μ (O ∩ ball w ε) := hW _ (hO.inter isOpen_ball) inter_subset_right
+      _ < t := hOt
+  -- (3) the case `D = ∅`
+  rcases D.eq_empty_or_nonempty with rfl | ⟨x, hx⟩
+  · simp
+  -- (4) countably many of the balls `B_{ε_w}(w)`, `w ∈ D`, cover `D`; enumerate them as `B_l`
+  choose! ε hεpos hε using hloc
+  obtain ⟨T, hTD, hTc, hTU⟩ := TopologicalSpace.isOpen_biUnion_countable D
+    (fun w => ball w (ε w)) fun w _ => isOpen_ball
+  have hDT : D ⊆ ⋃ w ∈ T, ball w (ε w) := by
+    rw [hTU]
+    exact fun y hy => mem_biUnion hy (mem_ball_self (hεpos y hy))
+  obtain ⟨w, hwT, -⟩ := mem_iUnion₂.mp (hDT hx)
+  obtain ⟨c, rfl⟩ := hTc.exists_eq_range ⟨w, hwT⟩
+  set B : ℕ → Set (Euclid P) := fun l => ball (c l) (ε (c l))
+  have hDB : D ⊆ ⋃ l, B l := by rwa [biUnion_range] at hDT
+  -- (5) the Borel pieces `E_l = D ∩ (B_l \ ⋃_{l' < l} B_{l'})`, pairwise disjoint with union `D`
+  have hEm : ∀ l, MeasurableSet (D ∩ disjointed B l) := fun l =>
+    hD.inter (MeasurableSet.disjointed (fun l => isOpen_ball.measurableSet) l)
+  have hEd : Pairwise (Disjoint on fun l => D ∩ disjointed B l) := fun i j hij =>
+    (disjoint_disjointed B hij).mono inter_subset_right inter_subset_right
+  have hEU : ⋃ l, D ∩ disjointed B l = D := by
+    rw [← inter_iUnion, iUnion_disjointed, inter_eq_left.mpr hDB]
+  -- (6) `ν(E_l) ≤ μ(E_l)` by (2), since `E_l ⊆ B_l`; sum over `l`
+  have hEle : ∀ l, ν (D ∩ disjointed B l) ≤ μ (D ∩ disjointed B l) := fun l =>
+    hball (c l) (ε (c l)) (hε (c l) (hTD (mem_range_self l))) _ (hEm l)
+      (inter_subset_right.trans (disjointed_subset B l))
+  calc ν D = ∑' l, ν (D ∩ disjointed B l) := by rw [← measure_iUnion hEd hEm, hEU]
+    _ ≤ ∑' l, μ (D ∩ disjointed B l) := ENNReal.tsum_le_tsum hEle
+    _ = μ D := by rw [← measure_iUnion hEd hEm, hEU]
+/-- `Hⁿ(Q ∩ B_ρ(y)) = ωₙρⁿ` for an `n`-dimensional linear subspace `Q` of `ℝᴾ`, `y ∈ Q` and
+`ρ > 0` (used in the proof of Simon 7.3.3(1), p. 191, for the density of the planes of a
+2-dimensional minimizing cone).  The inclusion `Q → ℝᴾ` is an isometry, so `Q ∩ B_ρ(y)` has the
+measure of the ball `B_ρ(y)` of `Q`; on `Q`, `μHE[n]` is the volume, Haar scaling gives
+`vol(B_ρ(y)) = ρⁿ vol(B_1(0))`, and orthonormal coordinates `Q ≃ₗᵢ ℝⁿ` preserve volume, so
+`vol(B_1(0)) = ωₙ`. -/
+theorem Submission.idtp_tdc_subspace_ball_measure : ∀ (P n : ℕ) (Q : Submodule ℝ (Euclid P)) (y : Euclid P) (ρ : ℝ), Module.finrank ℝ Q = n → y ∈ Q → 0 < ρ → μHE[n] ((Q : Set (Euclid P)) ∩ ball y ρ) = unitBallVolume n * ENNReal.ofReal (ρ ^ n) := by
+  intro P n Q y ρ hn hy hρ
+  subst hn
+  -- the inclusion `Q → ℝᴾ` is an isometry with range `Q`; `B_ρ(y)` pulls back to the ball of `Q`
+  have hball : μHE[Module.finrank ℝ Q] ((Q : Set (Euclid P)) ∩ ball y ρ) =
+      μHE[Module.finrank ℝ Q] (ball (⟨y, hy⟩ : Q) ρ) := by
+    rw [← isometry_subtype_coe.preimage_ball (⟨y, hy⟩ : Q) ρ,
+      isometry_subtype_coe.euclideanHausdorffMeasure_preimage, Subtype.range_coe, Set.inter_comm]
+  -- orthonormal coordinates `Q ≃ₗᵢ ℝⁿ` preserve volume and map `B_1(0)` onto `B_1(0)`
+  have hunit := (stdOrthonormalBasis ℝ Q).measurePreserving_repr.measure_preimage
+    (measurableSet_ball (x := (0 : Euclid (Module.finrank ℝ Q))) (ε := 1)).nullMeasurableSet
+  rw [LinearIsometryEquiv.preimage_ball, map_zero] at hunit
+  -- `μHE[n] = volume` on `Q`, then Haar scaling of balls
+  rw [hball, InnerProductSpace.euclideanHausdorffMeasure_eq_volume,
+    Measure.addHaar_ball_of_pos _ _ hρ, hunit, mul_comm]
+  rfl
 /-- **Simon Ch. 6, 1.2 and 1.5–1.7**: a unit orientation `ξ = ±τ₁ ∧ ⋯ ∧ τₙ` (`τ` orthonormal)
 has `|ξ(α)| ≤ |α|` for the Euclidean coefficient norm, and `L(ζ) = Σ_I ζ(dx^I) dx^I` (`I` strictly
 increasing) has `|L(ξ)| ≤ 1` and `ξ(L(ξ)) = 1`.  Every covector expands as `α = Σ_I α(e_I) dx^I`,
@@ -140688,6 +140981,41 @@ theorem Submission.idtp_cone_tangent_cone_planar : ∀ (P : ℕ) (C : GeometricC
   · exact_mod_cast (hθc ▸ hθ : (1 : ℝ) ≤ c.natAbs)
   · rw [hc ω, univ_inter]
 
+/-- **Density function of a 2-dimensional minimizing cone** (proof of Simon 7.3.3(1), p. 191, for
+2-dimensional minimizing cones).  Let `C ∈ 𝒟₂(ℝᴾ)` be a minimizing cone with `∂C = 0` and some
+`p ∈ spt C \ {0}`.  The tangent cone of `C` at `p` is a plane spanned by an orthonormal pair, so
+`P ≥ 2`, and monotonicity (`U = N = ℝᴾ`, identity chart) gives `Θ(y) = Θ²(μ_C, y)` at every `y`,
+upper semicontinuous.  At `q ∈ spt C \ {0}` the planar tangent cone gives `Θ²(μ_C, q) = |c| ≥ 1`,
+and the dilation invariance of the cone gives `Θ(sx) = Θ(x)` for `s > 0`; densities are unique. -/
+theorem Submission.idtp_tdc_dlc_cone_density_function : ∀ (P : ℕ) (C : GeometricCurrentOn (univ : Set (Euclid P)) 2), IsMinimizingIn C univ → BoundaryVanishes C → IsConeCurrent C → (∃ p ∈ C.support, p ≠ 0) → ∃ Θ : Euclid P → ℝ, (∀ y : Euclid P, HasMassDensity C y (Θ y)) ∧ UpperSemicontinuous Θ ∧ (∀ q ∈ C.support, q ≠ 0 → ∃ m : ℕ, 1 ≤ m ∧ Θ q = (m : ℝ)) ∧ ∀ (s : ℝ) (x : Euclid P), 0 < s → Θ (s • x) = Θ x := by
+  intro P C hmin hbd hcone ⟨p, hp, hp0⟩
+  -- `λⱼ = 1/(j + 1)`: `λⱼ > 0` and `λⱼ → 0`
+  have hlams : ∀ j : ℕ, 0 < 1 / ((j : ℝ) + 1) := fun j => by positivity
+  have hlams0 : Tendsto (fun j : ℕ => 1 / ((j : ℝ) + 1)) atTop (𝓝 0) :=
+    tendsto_one_div_add_atTop_nhds_zero_nat
+  -- Step 1: the tangent cone at `p` is planar, with an orthonormal pair `τ`; so `2 ≤ P`
+  obtain ⟨_, _, τ, _, _, _, _, hτ, -⟩ :=
+    Submission.idtp_cone_tangent_cone_planar P C hmin hbd hcone p hp hp0 _ hlams hlams0
+  have hP : 2 ≤ P := by
+    simpa [finrank_euclideanSpace_fin] using hτ.linearIndependent.fintype_card_le_finrank
+  -- Step 2: monotonicity with `U = N = ℝᴾ` (identity chart): `Θ²(μ_C, y)` exists at every `y`
+  -- and is upper semicontinuous
+  have hN : IsEmbeddedSubmanifold 2 P (univ : Set (Euclid P)) := fun y _ =>
+    ⟨univ, univ, id, isOpen_univ, isOpen_univ, mem_univ y, contDiffOn_id, injOn_id _,
+      by simp, fun K _ hK => by simpa using hK, fun z _ => by
+        rw [fderiv_id, ContinuousLinearMap.coe_id']; exact injective_id⟩
+  obtain ⟨-, -, ⟨Θ, hΘ, hΘusc⟩, -⟩ := Submission.dimred_minimizing_monotonicity P 2 P univ univ C
+    (by norm_num) hP le_rfl isOpen_univ hN (by simp) (by rwa [inter_self]) (by simp) hbd
+  have hΘ' : ∀ y, HasMassDensity C y (Θ y) := fun y => hΘ y (mem_univ y)
+  refine ⟨Θ, hΘ', upperSemicontinuousOn_univ_iff.1 hΘusc, fun q hq hq0 => ?_, fun s x hs => ?_⟩
+  · -- Step 3: at `q ∈ spt C \ {0}` the density is `|c| ≥ 1`; densities are unique
+    obtain ⟨_, _, _, c, _, _, _, _, _, hc, hCq, -⟩ :=
+      Submission.idtp_cone_tangent_cone_planar P C hmin hbd hcone q hq hq0 _ hlams hlams0
+    exact ⟨c.natAbs, hc,
+      Submission.dimred_cs_mi_hasMassDensity_unique P 2 univ C q _ _ (hΘ' q) hCq⟩
+  · -- Step 4: `Θ²(μ_C, x)` is also the density at `s x` (dilation invariance of the cone)
+    exact Submission.dimred_cs_mi_hasMassDensity_unique P 2 univ C (s • x) _ _ (hΘ' (s • x))
+      (((Submission.idtp_tdc_cone_dilation P 2 C hmin.1 hcone s hs).2.2 x (Θ x)).2 (hΘ' x))
 /-- **Tangent plane at an edge point of a planar sector of a 2-dimensional minimizing cone**
 (proof of Simon 7.3.3(1), case `n − d = 2`, chapter-07.txt lines 497–510).  Let `C ∈ 𝒟₂(ℝᴾ)` be
 a minimizing cone with `∂C = 0`, `a ∈ spt C` a unit vector, `(a, e)` an orthonormal basis of the
@@ -141178,6 +141506,141 @@ theorem Submission.idtp_cse_fibre_count_bound : ∀ (P : ℕ) (C : GeometricCurr
     _ = R.measure {x : Euclid P | 0 < inner ℝ x a ∧ |‖x‖ - 1| < s' ∧ |Real.arctan (inner ℝ x e / inner ℝ x a)| < s' ∧ ‖x - Q.starProjection x‖ < s * ‖x‖} := by
         rw [mul_right_comm, ← ENNReal.ofReal_mul (by positivity), one_div_mul_cancel h2s'.ne',
           ENNReal.ofReal_one, one_mul]
+/-- Finite-mass count in the proof of Simon 7.3.3(1) (pp. 191–192: `spt S₀` lies in finitely
+many 2-planes): a measure `μ` on `ℝᴾ` that is finite on compact sets admits no infinite pairwise
+disjoint family of measurable sets `Dᵢ ⊆ B_r(0)` with `μ(Dᵢ) ≥ c > 0`.  All `Dᵢ` lie in the
+compact ball `closedBall 0 r`, so `∞ = ∑ᵢ c ≤ ∑ᵢ μ(Dᵢ) = μ(⋃ᵢ Dᵢ) ≤ μ(closedBall 0 r) < ∞`. -/
+theorem Submission.idtp_tdc_nipp_disjoint_packing : ∀ (P : ℕ) (μ : Measure (Euclid P)) (D : ℕ → Set (Euclid P)) (r : ℝ) (c : ℝ≥0∞), (∀ K : Set (Euclid P), IsCompact K → μ K ≠ ∞) → c ≠ 0 → (∀ i, MeasurableSet (D i)) → (∀ i j, i ≠ j → Disjoint (D i) (D j)) → (∀ i, D i ⊆ ball 0 r) → (∀ i, c ≤ μ (D i)) → False := by
+  intro P μ D r c hμ hc hD hdisj hball hcD
+  -- `closedBall 0 r` is compact, yet `∞ = ∑ᵢ c ≤ ∑ᵢ μ(Dᵢ) = μ(⋃ᵢ Dᵢ) ≤ μ(closedBall 0 r)`
+  refine hμ _ (isCompact_closedBall 0 r) (top_le_iff.mp ?_)
+  calc ∞ = ∑' _ : ℕ, c := (ENNReal.tsum_const_eq_top_of_ne_zero hc).symm
+    _ ≤ ∑' i, μ (D i) := ENNReal.tsum_le_tsum hcD
+    _ = μ (⋃ i, D i) := (measure_iUnion (fun i j hij => hdisj i j hij) hD).symm
+    _ ≤ μ (closedBall 0 r) :=
+      measure_mono (iUnion_subset fun i => (hball i).trans ball_subset_closedBall)
+
+/-- Finite-mass count in the proof of Simon 7.3.3(1) (pp. 191–192), for discs in 2-planes: an
+integer multiplicity 2-current `C` in `ℝᴾ` admits no infinite pairwise disjoint family of discs
+`Dᵢ = Qᵢ ∩ B_ρ(zᵢ)` (`Qᵢ` a 2-plane, `zᵢ ∈ Qᵢ`, `|zᵢ| ≤ R`) such that every `w ∈ Dᵢ` has a ball
+`B_ε(w)` with `H²(W ∩ Qᵢ) ≤ M_W(C)` for its open subsets `W`.  For `C = τ(M, θ, ξ)` and
+`μ = θH²⌞M`, `M_W(C) = μ(W)` on open sets and `μ` is finite on compact sets, so local-to-global
+comparison of `H²⌞Qᵢ` with `μ` gives `μ(Dᵢ) ≥ H²(Dᵢ) = ω₂ρ² > 0`; all `Dᵢ` lie in `B_{R+ρ}(0)`,
+which contradicts the disjoint packing bound. -/
+theorem Submission.idtp_tdc_no_infinite_planar_pieces : ∀ (P : ℕ) (C : GeometricCurrentOn (univ : Set (Euclid P)) 2) (Q : ℕ → Submodule ℝ (Euclid P)) (z : ℕ → Euclid P) (ρ R : ℝ), IsIntegerMultiplicity C → 0 < ρ → (∀ i, Module.finrank ℝ (Q i) = 2) → (∀ i, z i ∈ Q i) → (∀ i, ‖z i‖ ≤ R) → (∀ i j, i ≠ j → Disjoint ((Q i : Set (Euclid P)) ∩ ball (z i) ρ) ((Q j : Set (Euclid P)) ∩ ball (z j) ρ)) → (∀ i, ∀ w ∈ (Q i : Set (Euclid P)) ∩ ball (z i) ρ, ∃ ε : ℝ, 0 < ε ∧ ∀ W : Set (Euclid P), IsOpen W → W ⊆ ball w ε → μHE[2] (W ∩ (Q i : Set (Euclid P))) ≤ C.massOn W) → False := by
+  intro P C Q z ρ R hC hρ hdim hz hR hdisj hloc
+  -- (1) `C = τ(M, θ, ξ)`; `μ = θH²⌞M` has `M_W(C) = μ(W)` for open `W` and is finite on compacts
+  obtain ⟨RC, hRC⟩ := hC
+  have hmass : ∀ W : Set (Euclid P), IsOpen W → C.massOn W = RC.measure W := fun W hW =>
+    (Submission.dimred_im_mass_measure P 2 univ C RC isOpen_univ hRC).1 W hW (subset_univ W)
+  have hfin : ∀ K : Set (Euclid P), IsCompact K → RC.measure K ≠ ∞ := by
+    intro K hK
+    rw [IMRep.measure, withDensity_apply _ hK.measurableSet,
+      Measure.restrict_restrict hK.measurableSet, inter_comm]
+    exact RC.locallyIntegrable_mult K hK (subset_univ K)
+  -- the discs `Dᵢ = Qᵢ ∩ B_ρ(zᵢ)` are Borel, `Qᵢ` being closed
+  have hQm : ∀ i, MeasurableSet (Q i : Set (Euclid P)) := fun i =>
+    (Submodule.closed_of_finiteDimensional (Q i)).measurableSet
+  have hDm : ∀ i, MeasurableSet ((Q i : Set (Euclid P)) ∩ ball (z i) ρ) := fun i =>
+    (hQm i).inter measurableSet_ball
+  -- (2) `H²(Dᵢ) ≤ μ(Dᵢ)`: local-to-global comparison of `H²⌞Qᵢ` with `μ`
+  have hle : ∀ i, μHE[2] ((Q i : Set (Euclid P)) ∩ ball (z i) ρ) ≤
+      RC.measure ((Q i : Set (Euclid P)) ∩ ball (z i) ρ) := by
+    intro i
+    have hloc' : ∀ w ∈ (Q i : Set (Euclid P)) ∩ ball (z i) ρ, ∃ ε : ℝ, 0 < ε ∧
+        ∀ W : Set (Euclid P), IsOpen W → W ⊆ ball w ε →
+          μHE[2].restrict (Q i : Set (Euclid P)) W ≤ RC.measure W := by
+      intro w hw
+      obtain ⟨ε, hε, hW⟩ := hloc i w hw
+      refine ⟨ε, hε, fun W hWo hWB => ?_⟩
+      rw [Measure.restrict_apply' (hQm i), ← hmass W hWo]
+      exact hW W hWo hWB
+    have h := Submission.idtp_tdc_nipp_local_comparison P RC.measure
+      (μHE[2].restrict (Q i : Set (Euclid P))) _ hfin (hDm i) hloc'
+    rwa [Measure.restrict_apply' (hQm i), inter_eq_left.mpr inter_subset_left] at h
+  -- (3) `H²(Dᵢ) = ω₂ρ² =: c > 0`
+  have hc0 : unitBallVolume 2 * ENNReal.ofReal (ρ ^ 2) ≠ 0 :=
+    mul_ne_zero (measure_ball_pos volume (0 : Euclid 2) one_pos).ne'
+      (ENNReal.ofReal_pos.mpr (pow_pos hρ 2)).ne'
+  have hcD : ∀ i, unitBallVolume 2 * ENNReal.ofReal (ρ ^ 2) ≤
+      RC.measure ((Q i : Set (Euclid P)) ∩ ball (z i) ρ) := fun i =>
+    (Submission.idtp_tdc_subspace_ball_measure P 2 (Q i) (z i) ρ (hdim i) (hz i)
+      hρ).symm.le.trans (hle i)
+  -- (4) all `Dᵢ` lie in `B_{R+ρ}(0)`, and infinitely many disjoint ones force `μ(B_{R+ρ}(0)) = ∞`
+  refine Submission.idtp_tdc_nipp_disjoint_packing P RC.measure
+    (fun i => (Q i : Set (Euclid P)) ∩ ball (z i) ρ) (R + ρ) _ hfin hc0 hDm hdisj
+    (fun i => inter_subset_right.trans (ball_subset_ball' ?_)) hcD
+  rw [dist_zero_right]
+  linarith [hR i]
+
+/-- Planar discs of a fixed radius accumulating at an unstable point contradict finite mass
+(proof of Simon 7.3.3(1), chapter-07.txt lines 497–510, where the book cites [Whi82] for the
+classification of 2-dimensional minimizing cones; steps 11–14 of the proof that the density of
+such a cone is locally constant off `0`).  Two discs `Dᵢ = Qᵢ ∩ B_ρ(zᵢ)` on distinct planes are
+disjoint: near a common point both planes coincide with `spt C`.  A plane `Q'` with `Qᵢ = Q'` for
+infinitely many `i` contains `b = lim zᵢ`, so `b` lies in one of its discs and `Θ²(μ_C, ·)` is
+constant near `b`.  Hence infinitely many distinct planes occur; their discs are pairwise disjoint,
+have bounded centres and carry the mass bound `H²(W ∩ Qᵢ) ≤ M_W(C)`, which
+`idtp_tdc_no_infinite_planar_pieces` excludes. -/
+theorem Submission.idtp_tdc_dlc_accumulating_discs : ∀ (P : ℕ) (C : GeometricCurrentOn (univ : Set (Euclid P)) 2) (Q : ℕ → Submodule ℝ (Euclid P)) (z : ℕ → Euclid P) (k : ℕ → ℕ) (b : Euclid P) (ρ : ℝ), IsIntegerMultiplicity C → 0 < ρ → (∀ i, Module.finrank ℝ (Q i) = 2) → (∀ i, z i ∈ Q i) → Tendsto z atTop (𝓝 b) → (∀ i, ∀ x ∈ (Q i : Set (Euclid P)) ∩ ball (z i) ρ, ∃ ε : ℝ, 0 < ε ∧ C.support ∩ ball x ε = (Q i : Set (Euclid P)) ∩ ball x ε ∧ (∀ y ∈ C.support, y ∈ ball x ε → HasMassDensity C y (k i)) ∧ ∀ W : Set (Euclid P), IsOpen W → W ⊆ ball x ε → μHE[2] (W ∩ (Q i : Set (Euclid P))) ≤ C.massOn W) → (¬ ∃ (ε : ℝ) (m : ℕ), 0 < ε ∧ ∀ y ∈ C.support, y ∈ ball b ε → HasMassDensity C y m) → False := by
+  intro P C Q z k b ρ hIM hρ hdim hzQ hz hgood hunst
+  -- `spt C ∩ B_ε(x) = Q' ∩ B_ε(x)` persists on the smaller balls `B_t(x)`, `t ≤ ε`
+  have hrestr : ∀ (Q' : Submodule ℝ (Euclid P)) (x : Euclid P) (ε t : ℝ), t ≤ ε →
+      C.support ∩ ball x ε = (Q' : Set (Euclid P)) ∩ ball x ε →
+      C.support ∩ ball x t = (Q' : Set (Euclid P)) ∩ ball x t := by
+    intro Q' x ε t htε h
+    have hball : ball x ε ∩ ball x t = ball x t := Set.inter_eq_right.mpr (ball_subset_ball htε)
+    rw [← hball, ← inter_assoc, h, inter_assoc]
+  -- (1) discs on distinct planes are disjoint: near a common point both planes equal `spt C`
+  have hdisj : ∀ i j, Q i ≠ Q j →
+      Disjoint ((Q i : Set (Euclid P)) ∩ ball (z i) ρ) ((Q j : Set (Euclid P)) ∩ ball (z j) ρ) := by
+    intro i j hij
+    refine Set.disjoint_left.mpr fun x hxi hxj => hij ?_
+    obtain ⟨ε₁, hε₁, hspt₁, -⟩ := hgood i x hxi
+    obtain ⟨ε₂, hε₂, hspt₂, -⟩ := hgood j x hxj
+    exact Submission.idtp_tdc_dlc_subspace_eq_of_inter_ball_eq P (Q i) (Q j) x (min ε₁ ε₂) hxi.1
+      (lt_min hε₁ hε₂) ((hrestr (Q i) x ε₁ _ (min_le_left ε₁ ε₂) hspt₁).symm.trans
+        (hrestr (Q j) x ε₂ _ (min_le_right ε₁ ε₂) hspt₂))
+  -- (2) each plane occurs for only finitely many `i`
+  have hfin : ∀ Q' : Submodule ℝ (Euclid P), (Q ⁻¹' {Q'}).Finite := by
+    intro Q'
+    by_contra hinf
+    have hclose : ∀ η > 0, ∃ i, Q i = Q' ∧ dist (z i) b < η := by
+      intro η hη
+      obtain ⟨N, hN⟩ := Metric.tendsto_atTop.mp hz η hη
+      obtain ⟨i, hi, hNi⟩ := Set.Infinite.exists_gt hinf N
+      exact ⟨i, hi, hN i hNi.le⟩
+    -- (2a) `b ∈ Q'`: the closed subspace `Q'` contains `zᵢ` for infinitely many `i`, and `zᵢ → b`
+    have hbQ : b ∈ (Q' : Set (Euclid P)) := by
+      refine (Submodule.closed_of_finiteDimensional Q').closure_subset
+        (Metric.mem_closure_iff.mpr fun η hη => ?_)
+      obtain ⟨i, hi, hd⟩ := hclose η hη
+      exact ⟨z i, hi ▸ hzQ i, by rwa [dist_comm]⟩
+    -- (2b) then `b` lies in a disc `Dᵢ` with `Qᵢ = Q'`, so `Θ²(μ_C, ·) = kᵢ` on `spt C` near `b`,
+    -- against the instability of `b`
+    obtain ⟨i, hi, hd⟩ := hclose ρ hρ
+    obtain ⟨ε, hε, -, hdens, -⟩ := hgood i b ⟨hi ▸ hbQ, mem_ball'.mpr hd⟩
+    exact hunst ⟨ε, k i, hε, hdens⟩
+  -- (3) hence infinitely many distinct planes occur: indices `iₗ` with pairwise distinct `Q iₗ`
+  have hrange : (range Q).Infinite := by
+    intro hfinr
+    have h := hfinr.preimage' fun Q' _ => hfin Q'
+    rw [preimage_range] at h
+    exact Set.infinite_univ h
+  obtain ⟨e⟩ : Nonempty (ℕ ↪ range Q) := ⟨hrange.natEmbedding _⟩
+  choose idx hidx using fun l => Set.mem_range.mp (e l).2
+  have hne : ∀ l l', l ≠ l' → Q (idx l) ≠ Q (idx l') := fun l l' hll' h =>
+    hll' (e.injective (Subtype.ext ((hidx l).symm.trans (h.trans (hidx l')))))
+  -- (4) the centres converge, so they are bounded
+  obtain ⟨R, hR⟩ := isBounded_iff_forall_norm_le.mp (Metric.isBounded_range_of_tendsto z hz)
+  -- (5) infinitely many pairwise disjoint discs of radius `ρ` with bounded centres, each carrying
+  -- the mass bound `H²(W ∩ Qᵢ) ≤ M_W(C)`, contradict the local finiteness of `μ_C`
+  exact Submission.idtp_tdc_no_infinite_planar_pieces P C (fun l => Q (idx l))
+    (fun l => z (idx l)) ρ R hIM hρ (fun l => hdim (idx l)) (fun l => hzQ (idx l))
+    (fun l => hR _ (mem_range_self (idx l))) (fun l l' hll' => hdisj _ _ (hne l l' hll'))
+    (fun l w hw => by
+      obtain ⟨ε, hε, -, -, hmass⟩ := hgood (idx l) w hw
+      exact ⟨ε, hε, hmass⟩)
 
 /-- **Density at the edge of a planar sector of a 2-dimensional minimizing cone** (proof of
 7.3.3(1), case `n − d = 2`, chapter-07.txt lines 497–510, where the structure of 2-dimensional
@@ -141359,5 +141822,304 @@ theorem Submission.idtp_tdc_arc_continuation : ∀ (P : ℕ) (C : GeometricCurre
       ⟨hψQ, mem_ball_self hε⟩
     rw [← hsupp] at hψ
     exact hψ.1
+
+/-- **Mass of a planar piece** (step 6 of the proof of `idtp_tdc_dlc_light_disc`, toward the local
+constancy of the density of a two-dimensional minimizing cone away from `0`, Simon 7.3.3(1)).  Let
+`C` be a `2`-dimensional minimizing cone in `ℝᴾ` with `∂C = 0`, `Q` a linear subspace, `x ∈ Q`,
+`x ≠ 0`, `k ≥ 1` and `ε > 0`, with `spt C ∩ B_ε(x) = Q ∩ B_ε(x)` and density `k` on
+`spt C ∩ B_ε(x)`.  Then some `ε' > 0` keeps both properties and has `H²(W ∩ Q) ≤ M_W(C)` for every
+open `W ⊆ B_ε'(x)`.  As `x ∈ Q ∩ B_ε(x) = spt C ∩ B_ε(x)`, `idtp_cone_constant_density_planar`
+gives `δ > 0` and a plane `Q₂` with `spt C ∩ B_δ(x) = Q₂ ∩ B_δ(x)` and `M_W(C) = k H²(W ∩ Q₂)` for
+open `W ⊆ B_δ(x)`.  Take `ε' = min(ε, δ)`.  Then `Q ∩ B_ε'(x) = spt C ∩ B_ε'(x) = Q₂ ∩ B_ε'(x)`, so
+`W ∩ Q = W ∩ Q₂` for `W ⊆ B_ε'(x)`, and `H²(W ∩ Q) ≤ k H²(W ∩ Q) = M_W(C)` as `k ≥ 1`. -/
+theorem Submission.idtp_tdc_dlc_ld_piece_mass_bound : ∀ (P : ℕ) (C : GeometricCurrentOn (univ : Set (Euclid P)) 2) (Q : Submodule ℝ (Euclid P)) (x : Euclid P) (k : ℕ) (ε : ℝ), IsMinimizingIn C univ → BoundaryVanishes C → IsConeCurrent C → 1 ≤ k → x ∈ Q → x ≠ 0 → 0 < ε → C.support ∩ ball x ε = (Q : Set (Euclid P)) ∩ ball x ε → (∀ y ∈ C.support, y ∈ ball x ε → HasMassDensity C y k) → ∃ ε' : ℝ, 0 < ε' ∧ C.support ∩ ball x ε' = (Q : Set (Euclid P)) ∩ ball x ε' ∧ (∀ y ∈ C.support, y ∈ ball x ε' → HasMassDensity C y k) ∧ ∀ W : Set (Euclid P), IsOpen W → W ⊆ ball x ε' → μHE[2] (W ∩ (Q : Set (Euclid P))) ≤ C.massOn W := by
+  intro P C Q x k ε hmin hbd hcone hk hxQ hx0 hε hA hB
+  -- Step 1: `x ∈ spt C`, as `x ∈ Q ∩ B_ε(x) = spt C ∩ B_ε(x)`
+  have hxC : x ∈ C.support := (hA.symm.subset ⟨hxQ, mem_ball_self hε⟩).1
+  -- Step 2: the planar structure at `x`: `spt C ∩ B_δ(x) = Q₂ ∩ B_δ(x)` and
+  -- `M_W(C) = k H²(W ∩ Q₂)` for open `W ⊆ B_δ(x)`
+  obtain ⟨δ, Q₂, hδ, -, -, hC₂, hmass⟩ :=
+    Submission.idtp_cone_constant_density_planar P C x k ε hmin hbd hcone hxC hx0 hε hB
+  -- Step 3: `ε' = min ε δ`; restricting both equations to `B_ε'(x)` gives
+  -- `spt C ∩ B_ε'(x) = Q ∩ B_ε'(x)` and `Q ∩ B_ε'(x) = Q₂ ∩ B_ε'(x)`
+  have hε' : ball x (min ε δ) ⊆ ball x ε := ball_subset_ball (min_le_left ε δ)
+  have hδ' : ball x (min ε δ) ⊆ ball x δ := ball_subset_ball (min_le_right ε δ)
+  have hrestrict : ∀ (S₁ S₂ : Set (Euclid P)) (r : ℝ), ball x (min ε δ) ⊆ ball x r →
+      S₁ ∩ ball x r = S₂ ∩ ball x r → S₁ ∩ ball x (min ε δ) = S₂ ∩ ball x (min ε δ) := by
+    intro S₁ S₂ r hr h
+    rw [← inter_eq_right.2 hr, ← inter_assoc, ← inter_assoc, h]
+  have hA' := hrestrict _ _ ε hε' hA
+  have hQQ₂ : (Q : Set (Euclid P)) ∩ ball x (min ε δ) = (Q₂ : Set (Euclid P)) ∩ ball x (min ε δ) :=
+    hA'.symm.trans (hrestrict _ _ δ hδ' hC₂)
+  -- Step 4: the support equation and the density `k` hold on `B_ε'(x) ⊆ B_ε(x)`
+  refine ⟨min ε δ, lt_min hε hδ, hA', fun y hy hyx => hB y hy (hε' hyx), fun W hW hWx => ?_⟩
+  -- Step 5: `W ∩ Q = W ∩ Q₂`, as `W ⊆ B_ε'(x)`
+  have hWQ : W ∩ (Q : Set (Euclid P)) = W ∩ (Q₂ : Set (Euclid P)) := by
+    ext y
+    exact ⟨fun hy => ⟨hy.1, (hQQ₂.subset ⟨hy.2, hWx hy.1⟩).1⟩,
+      fun hy => ⟨hy.1, (hQQ₂.symm.subset ⟨hy.2, hWx hy.1⟩).1⟩⟩
+  -- Step 6: `H²(W ∩ Q) ≤ k H²(W ∩ Q) = M_W(C)`, as `k ≥ 1`
+  rw [hmass W hW (hWx.trans hδ'), ← hWQ]
+  exact le_mul_of_one_le_left zero_le (Nat.one_le_cast.2 hk)
+
+/-- **Planar disc around a light point** (steps 7–10 of the proof of
+`idtp_tdc_density_locally_constant`, the local constancy of the density of a two-dimensional
+minimizing cone away from `0`; proof of Simon 7.3.3(1), case `n − d = 2`, chapter-07.txt
+lines 497–510, where the structure of 2-dimensional minimizing cones is cited to [Whi82]).  Let
+`C ∈ 𝒟₂(ℝᴾ)` be a minimizing cone with `∂C = 0`, `z ∈ spt C` with `|z| = 1`, `k ≥ 1`, with
+`Θ²(μ_C, y) = k` for every `y ∈ spt C ∩ B_δ(z)`, and suppose that every `a ∈ spt C ∩ B_L(z)` with
+`|a| = 1` and `Θ²(μ_C, a) = k` has a neighbourhood `B_δ'(a)` on which the density of `C` is a
+constant `k'`.  Then there is a 2-plane `Q ∋ z` such that every `x ∈ Q ∩ B_ρ(z)`,
+`ρ = min(1/2, L/4)`, has `ε > 0` with `spt C ∩ B_ε(x) = Q ∩ B_ε(x)`, `Θ²(μ_C, y) = k` on
+`spt C ∩ B_ε(x)` and `H²(W ∩ Q) ≤ M_W(C)` for open `W ⊆ B_ε(x)`.  The plane `Q` at `z` comes from
+`idtp_cone_constant_density_planar`, and `idtp_tdc_dlc_ld_orthonormal_partner` gives a unit
+`e ∈ Q` with `e ⊥ z`.  The arc continuation along `±e` (`idtp_tdc_arc_continuation`) makes every
+`cos φ·z + sin φ·(±e)`, `0 ≤ φ < L`, good; its endpoint hypothesis is the assumption on `a`, since
+the arc point `a` is a unit vector with `|a − z| ≤ φ < L` (`idtp_tdc_dlc_ld_arc_point_bounds`).
+Every unit `w ∈ Q` with `|w − z| < L/2` is such an arc point
+(`idtp_tdc_dlc_ld_unit_vector_angle`).  For `x ∈ Q ∩ B_ρ(z)`, `|x| > 1/2` and `w = x/|x|` has
+`|w − z| ≤ 2|x − z| < L/2` (`idtp_tdc_dlc_normalize_dist_le`); dilating the good ball of `w` by
+`|x|` (`idtp_tdc_dlc_ld_cone_scale_piece`) makes `x` good, and
+`idtp_tdc_dlc_ld_piece_mass_bound` shrinks its radius to add the mass bound. -/
+theorem Submission.idtp_tdc_dlc_light_disc : ∀ (P : ℕ) (C : GeometricCurrentOn (univ : Set (Euclid P)) 2) (z : Euclid P) (k : ℕ) (δ L : ℝ), IsMinimizingIn C univ → BoundaryVanishes C → IsConeCurrent C → z ∈ C.support → ‖z‖ = 1 → 1 ≤ k → 0 < δ → 0 < L → (∀ y ∈ C.support, y ∈ ball z δ → HasMassDensity C y k) → (∀ a ∈ C.support, ‖a‖ = 1 → a ∈ ball z L → HasMassDensity C a k → ∃ (δ' : ℝ) (k' : ℕ), 0 < δ' ∧ ∀ y ∈ C.support, y ∈ ball a δ' → HasMassDensity C y k') → ∃ Q : Submodule ℝ (Euclid P), Module.finrank ℝ Q = 2 ∧ z ∈ Q ∧ ∀ x ∈ (Q : Set (Euclid P)) ∩ ball z (min (1 / 2) (L / 4)), ∃ ε : ℝ, 0 < ε ∧ C.support ∩ ball x ε = (Q : Set (Euclid P)) ∩ ball x ε ∧ (∀ y ∈ C.support, y ∈ ball x ε → HasMassDensity C y k) ∧ ∀ W : Set (Euclid P), IsOpen W → W ⊆ ball x ε → μHE[2] (W ∩ (Q : Set (Euclid P))) ≤ C.massOn W := by
+  intro P C z k δ L hmin hbd hcone hzC hz hk hδ hL hdens hconst
+  have hz0 : z ≠ 0 := by
+    rintro rfl
+    rw [norm_zero] at hz
+    exact zero_ne_one hz
+  -- Step 1: the plane `Q ∋ z` with `spt C ∩ B_δ₁(z) = Q ∩ B_δ₁(z)`
+  obtain ⟨δ₁, Q, hδ₁, hQ, hzQ, hC₁, -⟩ :=
+    Submission.idtp_cone_constant_density_planar P C z k δ hmin hbd hcone hzC hz0 hδ hdens
+  -- Step 2: a unit `e ∈ Q` with `e ⊥ z` and `w = ⟨w, z⟩ z + ⟨w, e⟩ e` for `w ∈ Q`
+  obtain ⟨e, heQ, he, hze, hdecomp⟩ :=
+    Submission.idtp_tdc_dlc_ld_orthonormal_partner P Q z hQ hzQ hz
+  -- Step 3: for `v = ±e`, every arc point `cos φ • z + sin φ • v`, `0 ≤ φ < L`, is good
+  have harc : ∀ v : Euclid P, (v = e ∨ v = -e) → ∀ φ : ℝ, 0 ≤ φ → φ < L → ∃ ε : ℝ, 0 < ε ∧
+      C.support ∩ ball (Real.cos φ • z + Real.sin φ • v) ε =
+        (Q : Set (Euclid P)) ∩ ball (Real.cos φ • z + Real.sin φ • v) ε ∧
+      ∀ y ∈ C.support, y ∈ ball (Real.cos φ • z + Real.sin φ • v) ε → HasMassDensity C y k := by
+    intro v hv
+    have hvQ : v ∈ Q := by
+      rcases hv with h | h <;> rw [h]
+      · exact heQ
+      · exact Q.neg_mem heQ
+    have hv1 : ‖v‖ = 1 := by
+      rcases hv with h | h <;> rw [h]
+      · exact he
+      · rw [norm_neg, he]
+    have hzv : inner ℝ z v = (0 : ℝ) := by
+      rcases hv with h | h <;> rw [h]
+      · exact hze
+      · rw [inner_neg_right, hze, neg_zero]
+    refine Submission.idtp_tdc_arc_continuation P C Q z v k L hmin hbd hcone hQ hzQ hvQ hz hv1 hzv
+      hk ?_ ?_
+    -- (i) `z` is good with radius `min δ δ₁`
+    · have hsub : ball z (min δ δ₁) ⊆ ball z δ₁ := ball_subset_ball (min_le_right δ δ₁)
+      refine ⟨min δ δ₁, lt_min hδ hδ₁, ?_,
+        fun y hy hyz => hdens y hy (ball_subset_ball (min_le_left δ δ₁) hyz)⟩
+      rw [← inter_eq_right.2 hsub, ← inter_assoc, hC₁, inter_assoc]
+    -- (ii) an arc point `a` of density `k` is a unit vector with `|a − z| ≤ φ < L`, so the
+    -- hypothesis on `a` gives a constant density near `a`
+    · intro φ hφ0 hφL ha hak
+      obtain ⟨ha1, haz⟩ :=
+        Submission.idtp_tdc_dlc_ld_arc_point_bounds P z v φ hz hv1 hzv hφ0.le
+      refine hconst _ ha ha1 ?_ hak
+      rw [mem_ball, dist_eq_norm]
+      linarith
+  -- Step 4: every unit `w ∈ Q` with `|w − z| < L/2` is an arc point, hence good
+  have hunit : ∀ w ∈ Q, ‖w‖ = 1 → ‖w - z‖ < L / 2 → ∃ ε : ℝ, 0 < ε ∧
+      C.support ∩ ball w ε = (Q : Set (Euclid P)) ∩ ball w ε ∧
+      ∀ y ∈ C.support, y ∈ ball w ε → HasMassDensity C y k := by
+    intro w hwQ hw hwz
+    obtain ⟨θ, v, hθ0, hθL, hv, hwv⟩ :=
+      Submission.idtp_tdc_dlc_ld_unit_vector_angle P z e w L hz he hze hw (hdecomp w hwQ) hwz
+    rw [hwv]
+    exact harc v hv θ hθ0 hθL
+  refine ⟨Q, hQ, hzQ, ?_⟩
+  rintro x ⟨hxQ, hxz⟩
+  rw [mem_ball, dist_eq_norm] at hxz
+  have hρ₁ : min (1 / 2 : ℝ) (L / 4) ≤ 1 / 2 := min_le_left _ _
+  have hρ₂ : min (1 / 2 : ℝ) (L / 4) ≤ L / 4 := min_le_right _ _
+  -- Step 5: `|x| > 1/2`, and `w = x/|x| ∈ Q` is a unit vector with `|w − z| ≤ 2|x − z| < L/2`
+  have hx : 1 / 2 < ‖x‖ := by
+    have h := norm_sub_norm_le z x
+    rw [norm_sub_rev, hz] at h
+    linarith
+  have hx0 : x ≠ 0 := by
+    rintro rfl
+    rw [norm_zero] at hx
+    linarith
+  have hs : 0 < ‖x‖ := norm_pos_iff.mpr hx0
+  have hw1 : ‖‖x‖⁻¹ • x‖ = 1 := by
+    rw [norm_smul, norm_inv, norm_norm, inv_mul_cancel₀ hs.ne']
+  have hwz : ‖‖x‖⁻¹ • x - z‖ < L / 2 := by
+    have h := Submission.idtp_tdc_dlc_normalize_dist_le P x z hx0 hz
+    linarith
+  -- `w` is good with some radius `ε`; dilating by `|x|` makes `x` good with radius `|x| ε`
+  obtain ⟨ε, hε, hA, hB⟩ := hunit (‖x‖⁻¹ • x) (Q.smul_mem _ hxQ) hw1 hwz
+  obtain ⟨hA', hB'⟩ :=
+    Submission.idtp_tdc_dlc_ld_cone_scale_piece P C Q x k ‖x‖ ε hmin.1 hcone hs hA hB
+  -- Step 6: shrink the radius to add `H²(W ∩ Q) ≤ M_W(C)` for open `W ⊆ B_ε(x)`
+  exact Submission.idtp_tdc_dlc_ld_piece_mass_bound P C Q x k (‖x‖ * ε) hmin hbd hcone hk hxQ hx0
+    (mul_pos hs hε) hA' hB'
+
+/-- **The density of a 2-dimensional minimizing cone is locally constant away from its vertex**
+(proof of Simon 7.3.3(1), p. 191, for 2-dimensional minimizing cones; chapter-07.txt lines
+497–510 cite [Whi82] for their structure).  Let `C ∈ 𝒟₂(ℝᴾ)` be a minimizing cone with `∂C = 0`
+and `p ∈ spt C \ {0}`.  Then `Θ²(μ_C, ·)` is a constant `k ∈ ℕ` on `spt C ∩ B_δ(p)` for some
+`δ > 0`.  Call a point *stable* if this holds there.  Stability is dilation invariant, so if `p`
+is unstable, so is `p/|p|`; choose an unstable `b` with `|b| = 1` of least density `m₀`.  The
+density `Θ` is upper semicontinuous, so `Θ ≤ m₀` on `spt C ∩ B_r(b)` and `Θ = m₀` at the unstable
+unit points of `B_r(b)`.  As `b` is unstable, stable unit points `zᵢ → b` of density `kᵢ < m₀`
+exist.  Each carries a planar disc `Qᵢ ∩ B_ρ(zᵢ)` of a fixed radius `ρ` with `μ_C ≥ H²⌞Qᵢ`
+(`idtp_tdc_dlc_light_disc`).  Discs of this kind accumulating at an unstable point contradict the
+finiteness of mass (`idtp_tdc_dlc_accumulating_discs`). -/
+theorem Submission.idtp_tdc_density_locally_constant : ∀ (P : ℕ) (C : GeometricCurrentOn (univ : Set (Euclid P)) 2), IsMinimizingIn C univ → BoundaryVanishes C → IsConeCurrent C → ∀ p ∈ C.support, p ≠ 0 → ∃ (δ : ℝ) (k : ℕ), 0 < δ ∧ ∀ y ∈ C.support, y ∈ ball p δ → HasMassDensity C y k := by
+  intro P C hmin hbd hcone p hp hp0
+  classical
+  -- `q` is stable if `Θ²(μ_C, ·)` is a constant natural number on `spt C ∩ B_δ(q)`, some `δ > 0`
+  set Stable : Euclid P → Prop := fun q => ∃ (δ : ℝ) (k : ℕ), 0 < δ ∧
+    ∀ y ∈ C.support, y ∈ ball q δ → HasMassDensity C y k
+  -- Steps 2–3: the density `Θ` is upper semicontinuous, a positive integer on `spt C \ {0}` and
+  -- dilation invariant
+  obtain ⟨Θ, hΘ, hΘusc, hΘint, hΘdil⟩ :=
+    Submission.idtp_tdc_dlc_cone_density_function P C hmin hbd hcone ⟨p, hp, hp0⟩
+  -- Fact (a): densities are unique
+  have huniq : ∀ (y : Euclid P) (θ : ℝ), HasMassDensity C y θ → θ = Θ y := fun y θ h =>
+    Submission.dimred_cs_mi_hasMassDensity_unique P 2 univ C y θ (Θ y) h (hΘ y)
+  -- Step 4: stability is invariant under the dilations `x ↦ sx`, `s > 0`
+  have hstab : ∀ (s : ℝ) (q : Euclid P), 0 < s → Stable (s • q) → Stable q := by
+    rintro s q hs ⟨δ, k, hδ, hk⟩
+    have hdil := Submission.idtp_tdc_cone_dilation P 2 C hmin.1 hcone s hs
+    refine ⟨δ / s, k, div_pos hδ hs, fun y hy hyq => (hdil.2.2 y k).1
+      (hk _ ((hdil.2.1 y).2 hy) ?_)⟩
+    rw [mem_ball, dist_smul₀, Real.norm_of_nonneg hs.le]
+    calc s * dist y q < s * (δ / s) := mul_lt_mul_of_pos_left (mem_ball.1 hyq) hs
+      _ = δ := mul_div_cancel₀ δ hs.ne'
+  -- Step 1: argue by contradiction; then `p/|p|` is an unstable point of the unit sphere
+  by_contra hpS
+  have hnp : 0 < ‖p‖ := norm_pos_iff.2 hp0
+  have hex : ∃ m : ℕ, ∃ q ∈ C.support, ‖q‖ = 1 ∧ ¬ Stable q ∧ Θ q = m := by
+    have hb' : ‖p‖⁻¹ • p ∈ C.support :=
+      ((Submission.idtp_tdc_cone_dilation P 2 C hmin.1 hcone _ (inv_pos.2 hnp)).2.1 p).2 hp
+    have hb'1 : ‖‖p‖⁻¹ • p‖ = 1 := by
+      rw [norm_smul, norm_inv, norm_norm, inv_mul_cancel₀ hnp.ne']
+    obtain ⟨m, -, hm⟩ := hΘint _ hb' fun h => by
+      rw [h, norm_zero] at hb'1
+      exact zero_ne_one hb'1
+    exact ⟨m, _, hb', hb'1, fun h => hpS (hstab _ p (inv_pos.2 hnp) h), hm⟩
+  -- Step 5: an unstable unit point `b` of least density `m₀`
+  obtain ⟨m₀, ⟨b, hb, hb1, hbS, hbΘ⟩, hm₀min⟩ : ∃ m₀ : ℕ,
+      (∃ q ∈ C.support, ‖q‖ = 1 ∧ ¬ Stable q ∧ Θ q = m₀) ∧
+        ∀ m : ℕ, (∃ q ∈ C.support, ‖q‖ = 1 ∧ ¬ Stable q ∧ Θ q = m) → m₀ ≤ m :=
+    ⟨Nat.find hex, Nat.find_spec hex, fun m hm => Nat.find_min' hex hm⟩
+  have hm₀le : ∀ q ∈ C.support, ‖q‖ = 1 → ¬ Stable q → (m₀ : ℝ) ≤ Θ q := by
+    intro q hq hq1 hqS
+    obtain ⟨m, -, hm⟩ := hΘint q hq fun h => by
+      rw [h, norm_zero] at hq1
+      exact zero_ne_one hq1
+    rw [hm]
+    exact_mod_cast hm₀min m ⟨q, hq, hq1, hqS, hm⟩
+  -- upper semicontinuity at `b`: `Θ < m₀ + 1` on `B_r(b)`, `r ≤ 1/2`
+  obtain ⟨r₀, hr₀, hr₀Θ⟩ := Metric.eventually_nhds_iff.1
+    (hΘusc b ((m₀ : ℝ) + 1) (by show Θ b < (m₀ : ℝ) + 1; rw [hbΘ]; exact lt_add_one _))
+  obtain ⟨r, hr0, hrr₀, hr12⟩ : ∃ r : ℝ, 0 < r ∧ r ≤ r₀ ∧ r ≤ 1 / 2 :=
+    ⟨min r₀ (1 / 2), lt_min hr₀ (by norm_num), min_le_left _ _, min_le_right _ _⟩
+  -- (5a) on `spt C ∩ B_r(b)` the density is a natural number in `[1, m₀]`
+  have h5a : ∀ y ∈ C.support, dist y b < r → y ≠ 0 ∧ ∃ m : ℕ, 1 ≤ m ∧ m ≤ m₀ ∧ Θ y = m := by
+    intro y hy hyb
+    have hy0 : y ≠ 0 := by
+      rintro rfl
+      rw [dist_comm, dist_zero_right, hb1] at hyb
+      linarith
+    obtain ⟨m, hm1, hm⟩ := hΘint y hy hy0
+    have hlt : (m : ℝ) < m₀ + 1 := hm ▸ hr₀Θ (lt_of_lt_of_le hyb hrr₀)
+    exact ⟨hy0, m, hm1, Nat.lt_succ_iff.1 (by exact_mod_cast hlt), hm⟩
+  -- (5b) the unstable unit points of `B_r(b)` have density exactly `m₀`
+  have h5b : ∀ q ∈ C.support, ‖q‖ = 1 → ¬ Stable q → dist q b < r → Θ q = m₀ := by
+    intro q hq hq1 hqS hqb
+    obtain ⟨-, m, -, hm, hΘq⟩ := h5a q hq hqb
+    have hle := hm₀le q hq hq1 hqS
+    rw [hΘq] at hle ⊢
+    exact_mod_cast le_antisymm hm (by exact_mod_cast hle)
+  -- Step 6: stable unit points of density `< m₀` accumulate at `b`
+  have hlight : ∀ η : ℝ, 0 < η → η ≤ r → ∃ (z : Euclid P) (k : ℕ) (δ : ℝ), z ∈ C.support ∧
+      ‖z‖ = 1 ∧ dist z b < η ∧ 1 ≤ k ∧ k < m₀ ∧ 0 < δ ∧
+      ∀ y ∈ C.support, y ∈ ball z δ → HasMassDensity C y k := by
+    intro η hη hηr
+    -- `b` is unstable: some `w ∈ spt C ∩ B_{η/2}(b)` has density `≠ m₀`, hence `< m₀`
+    obtain ⟨w, hw, hwb, hwΘ⟩ : ∃ w ∈ C.support, w ∈ ball b (η / 2) ∧
+        ¬ HasMassDensity C w m₀ := by
+      by_contra h
+      exact hbS ⟨η / 2, m₀, half_pos hη, fun w hw hwb =>
+        Classical.byContradiction fun hwΘ => h ⟨w, hw, hwb, hwΘ⟩⟩
+    obtain ⟨hw0, m, hm1, hmm₀, hΘw⟩ := h5a w hw (lt_of_lt_of_le (mem_ball.1 hwb) (by linarith))
+    have hmlt : m < m₀ := lt_of_le_of_ne hmm₀ fun h => hwΘ (by rw [← h, ← hΘw]; exact hΘ w)
+    -- `z = w/|w|` is a unit point of `spt C` with `|z − b| ≤ 2|w − b| < η` and `Θ(z) = m`
+    have hnw : 0 < ‖w‖ := norm_pos_iff.2 hw0
+    have hzC : ‖w‖⁻¹ • w ∈ C.support :=
+      ((Submission.idtp_tdc_cone_dilation P 2 C hmin.1 hcone _ (inv_pos.2 hnw)).2.1 w).2 hw
+    have hz1 : ‖‖w‖⁻¹ • w‖ = 1 := by
+      rw [norm_smul, norm_inv, norm_norm, inv_mul_cancel₀ hnw.ne']
+    have hzb : dist (‖w‖⁻¹ • w) b < η := by
+      rw [dist_eq_norm]
+      calc ‖‖w‖⁻¹ • w - b‖ ≤ 2 * ‖w - b‖ :=
+            Submission.idtp_tdc_dlc_normalize_dist_le P w b hw0 hb1
+        _ < 2 * (η / 2) := mul_lt_mul_of_pos_left (mem_ball_iff_norm.1 hwb) two_pos
+        _ = η := by ring
+    have hΘz : Θ (‖w‖⁻¹ • w) = m := by rw [hΘdil _ _ (inv_pos.2 hnw), hΘw]
+    -- `z` is stable by (5b), and its constant nearby density is `Θ(z) = m`
+    have hzS : Stable (‖w‖⁻¹ • w) := by
+      by_contra hzS'
+      have h := h5b _ hzC hz1 hzS' (lt_of_lt_of_le hzb hηr)
+      rw [hΘz] at h
+      exact hmlt.ne (by exact_mod_cast h)
+    obtain ⟨δ, k, hδ, hk⟩ := hzS
+    have hkm : k = m := by
+      have h := huniq _ _ (hk _ hzC (mem_ball_self hδ))
+      rw [hΘz] at h
+      exact_mod_cast h
+    rw [hkm] at hk
+    exact ⟨_, m, δ, hzC, hz1, hzb, hm1, hmlt, hδ, hk⟩
+  -- the light points `zᵢ`, with `|zᵢ − b| < ηᵢ = (r/4)/(i + 1) → 0`
+  have hη : ∀ i : ℕ, 0 < r / 4 * (1 / ((i : ℝ) + 1)) ∧ r / 4 * (1 / ((i : ℝ) + 1)) ≤ r / 4 := by
+    intro i
+    have h1 : 1 / ((i : ℝ) + 1) ≤ 1 := by
+      rw [div_le_one (by positivity)]
+      linarith [(Nat.cast_nonneg i : (0 : ℝ) ≤ i)]
+    exact ⟨by positivity, mul_le_of_le_one_right (by positivity) h1⟩
+  choose z k δ hzC hz1 hzb hk1 hkm₀ hδ hkδ using fun i : ℕ =>
+    hlight (r / 4 * (1 / ((i : ℝ) + 1))) (hη i).1 (by linarith [(hη i).2])
+  -- Steps 7–10: each `zᵢ` carries a planar disc `Qᵢ ∩ B_ρ(zᵢ)`, `ρ = min(1/2, r/8)`, near whose
+  -- points `spt C = Qᵢ`, `Θ = kᵢ` and `μ_C ≥ H²⌞Qᵢ`
+  have hdisc : ∀ i, ∃ Q : Submodule ℝ (Euclid P), Module.finrank ℝ Q = 2 ∧ z i ∈ Q ∧
+      ∀ x ∈ (Q : Set (Euclid P)) ∩ ball (z i) (min (1 / 2) (r / 2 / 4)), ∃ ε : ℝ, 0 < ε ∧
+        C.support ∩ ball x ε = (Q : Set (Euclid P)) ∩ ball x ε ∧
+        (∀ y ∈ C.support, y ∈ ball x ε → HasMassDensity C y (k i)) ∧
+        ∀ W : Set (Euclid P), IsOpen W → W ⊆ ball x ε →
+          μHE[2] (W ∩ (Q : Set (Euclid P))) ≤ C.massOn W := by
+    intro i
+    refine Submission.idtp_tdc_dlc_light_disc P C (z i) (k i) (δ i) (r / 2) hmin hbd hcone
+      (hzC i) (hz1 i) (hk1 i) (hδ i) (half_pos hr0) (hkδ i) ?_
+    -- a unit point `a ∈ spt C ∩ B_{r/2}(zᵢ)` of density `kᵢ < m₀` lies in `B_r(b)`; were it
+    -- unstable, (5b) would give it density `m₀`
+    intro a ha ha1 haz hak
+    by_contra haS
+    have hab : dist a b < r := by
+      calc dist a b ≤ dist a (z i) + dist (z i) b := dist_triangle _ _ _
+        _ < r / 2 + r / 4 := add_lt_add (mem_ball.1 haz) ((hzb i).trans_le (hη i).2)
+        _ < r := by linarith
+    have h := h5b a ha ha1 haS hab
+    rw [← huniq a _ hak] at h
+    exact (hkm₀ i).ne (by exact_mod_cast h)
+  choose Q hQ2 hzQ hQdisc using hdisc
+  -- Steps 11–14: planar discs of a fixed radius accumulating at the unstable point `b`
+  -- contradict the finiteness of mass
+  have hlim : Tendsto z atTop (𝓝 b) := by
+    rw [tendsto_iff_dist_tendsto_zero]
+    refine squeeze_zero (fun i => dist_nonneg) (fun i => (hzb i).le) ?_
+    simpa only [mul_zero] using tendsto_one_div_add_atTop_nhds_zero_nat.const_mul (r / 4)
+  exact Submission.idtp_tdc_dlc_accumulating_discs P C Q z k b (min (1 / 2) (r / 2 / 4)) hmin.1
+    (lt_min (by norm_num) (by positivity)) hQ2 hzQ hlim hQdisc hbS
 
 end GMT.Ch07

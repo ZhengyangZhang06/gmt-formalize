@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.two_dim_cone_density-a1.density_locally_constant-a1.cone_density_function-a1",
+  "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.two_dim_cone_density-a1.density_locally_constant-a1",
+  "depth": 5,
+  "title": "An upper semicontinuous, dilation-invariant density function of a 2-dimensional minimizing cone, a positive integer on its support away from the vertex",
+  "statement": "Let P ∈ ℕ and let C ∈ 𝒟₂(ℝ^P) be minimizing in ℝ^P (IsMinimizingIn C univ), with ∂C = 0 (BoundaryVanishes C) and a cone (IsConeCurrent C). Suppose spt C contains some p ≠ 0. Then there is Θ : ℝ^P → ℝ with the following properties: HasMassDensity C y Θ(y) for every y ∈ ℝ^P; Θ is upper semicontinuous; for every q ∈ spt C with q ≠ 0 there is m ∈ ℕ with m ≥ 1 and Θ(q) = m; and Θ(s·x) = Θ(x) for all s > 0 and x ∈ ℝ^P.",
+  "lean_statement": "∀ (P : ℕ) (C : GeometricCurrentOn (univ : Set (Euclid P)) 2), IsMinimizingIn C univ → BoundaryVanishes C → IsConeCurrent C → (∃ p ∈ C.support, p ≠ 0) → ∃ Θ : Euclid P → ℝ, (∀ y : Euclid P, HasMassDensity C y (Θ y)) ∧ UpperSemicontinuous Θ ∧ (∀ q ∈ C.support, q ≠ 0 → ∃ m : ℕ, 1 ≤ m ∧ Θ q = (m : ℝ)) ∧ ∀ (s : ℝ) (x : Euclid P), 0 < s → Θ (s • x) = Θ x",
+  "lean_name": "idtp_tdc_dlc_cone_density_function",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-c3b3b777cb-a1"
+}
