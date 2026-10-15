@@ -1,0 +1,94 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_sector_endpoint_density-a1.box_mass_limits-a1.tilt_decay-a1`
+- Child DAG node: `root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_sector_endpoint_density-a1.box_mass_limits-a1.tilt_decay-a1.excess_bound-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: steps 6, 7 (the inequality 0 ≤ D_j ≤ A_j − |C_j(ω_ϑ)|) and 8 of the supplied proof of the selected node, at a single scale t. The selected node applies it with μ := R.measure, d := R.orient(·)(β) and t := t_j.
+Notation: h(x) := ϑ(dilation a t x), B := ball a (3t), D := ∫ h dμ − |∫ h·d dμ|.
+1. (The dilation.) dilation a t x = −(t⁻¹•a) + t⁻¹•x = t⁻¹•(x − a). Let e be x ↦ t⁻¹•x (Homeomorph.smulOfNeZero t⁻¹, as t⁻¹ ≠ 0) followed by z ↦ −(t⁻¹•a) + z (Homeomorph.addLeft (−(t⁻¹•a))). Then e is a homeomorphism of ℝ^P, and e(x) = dilation a t x for all x.
+2. (h is integrable.) h = ϑ ∘ e is continuous, and HasCompactSupport h holds by HasCompactSupport.comp_homeomorph. The hypothesis μ(K) < ∞ for compact K is exactly IsFiniteMeasureOnCompacts μ. So h is μ-integrable (Continuous.integrable_of_hasCompactSupport). Also h(x) = ϑ(dilation a t x) ≥ 0 for every x.
+3. (h = 1 on B.) Let x ∈ B, i.e. ‖x − a‖ < 3t. Then ‖dilation a t x‖ = ‖t⁻¹•(x − a)‖ = t⁻¹‖x − a‖ < 3, using t > 0. Hence h(x) = 1 by the hypothesis on ϑ.
+4. (Integrability of the products.) |d| = ‖d‖ is a.e.-strongly measurable. The products h·d and h·|d| are a.e.-strongly measurable, h being continuous. μ-a.e. we have |d| ≤ 1, hence |h·d| = h|d| ≤ h and |h·|d|| = h|d| ≤ h, using h ≥ 0. By Integrable.mono' with the integrable dominating function h, both h·d and h·|d| are μ-integrable. Consequently h(1 − |d|) = h − h|d| is integrable. Moreover h(1 − |d|) ≥ 0 μ-a.e., because 1 − |d| ≥ 0 a.e.
+5. (Ball estimate.) B is open, hence measurable, so ∫⁻_B ofReal(1 − |d|) dμ = ∫⁻ 1_B·ofReal(1 − |d|) dμ (lintegral_indicator). Compare the integrands at every x:
+- if x ∈ B, then 1_B(x)·ofReal(1 − |d(x)|) = ofReal(1 − |d(x)|) = ofReal(h(x)(1 − |d(x)|)), by step 3;
+- if x ∉ B, the left side is 0 ≤ ofReal(h(x)(1 − |d(x)|)).
+By lintegral_mono (a pointwise inequality everywhere; no measurability required), ∫⁻_B ofReal(1 − |d|) dμ ≤ ∫⁻ ofReal(h(1 − |d|)) dμ. This equals ofReal(∫ h(1 − |d|) dμ) by ofReal_integral_eq_lintegral_ofReal, the integrand being integrable and a.e. nonnegative by step 4.
+6. (Calibration inequality.) By integral_sub (step 4), ∫ h(1 − |d|) dμ = ∫ h dμ − ∫ h|d| dμ. Also |∫ h·d dμ| ≤ ∫ |h·d| dμ = ∫ h|d| dμ, by abs_integral_le_integral_abs and |h·d| = h|d| (h ≥ 0). Therefore ∫ h(1 − |d|) dμ ≤ ∫ h dμ − |∫ h·d dμ| = D.
+7. (Rescaling.) Steps 5, 6 and monotonicity of ofReal give ∫⁻_B ofReal(1 − |d|) dμ ≤ ofReal(D). ENNReal division by ofReal(t²) is monotone in the numerator. So the left side of the claim is ≤ ofReal(D)/ofReal(t²) = ofReal(D/t²), by ENNReal.ofReal_div_of_pos (t² > 0). Finally, since t⁻² > 0, D/t² = t⁻²∫ h dμ − t⁻²|∫ h·d dμ| = t⁻²∫ h dμ − |t⁻²∫ h·d dμ|. With h(x) = ϑ(dilation a t x), this is exactly the argument of ofReal on the right-hand side of the claim. ∎
+Formalization note: this exact statement was proved in a scratch build.
+- Measure instance: `have : IsFiniteMeasureOnCompacts μ := ⟨fun K hK => hloc K hK⟩`.
+- Homeomorphism: `let e : Euclid P ≃ₜ Euclid P := (Homeomorph.smulOfNeZero t⁻¹ (inv_ne_zero ht.ne')).trans (Homeomorph.addLeft (-(t⁻¹ • a)))`, with `e x = dilation a t x` by `simp [e, dilation, dilationCLM]`; compact support from `hϑcs.comp_homeomorph e`.
+- Dilation formula: `dilation a t x = t⁻¹ • (x - a)` by `simp [dilation, dilationCLM, smul_sub]; abel`.
+- Step 3: `rw [hdil, norm_smul, norm_inv, Real.norm_of_nonneg ht.le, inv_mul_lt_iff₀ ht]` after `rw [mem_ball, dist_eq_norm] at hx`, then `linarith`.
+- Step 4: `|d|` is a.e.-strongly measurable via `hdm.norm`.
+- Step 5: `rw [ofReal_integral_eq_lintegral_ofReal hE_int hE_nonneg, ← lintegral_indicator measurableSet_ball]` and `apply lintegral_mono`. In the in-ball case, `show _ ≤ ENNReal.ofReal (h x * (1 - |d x|))` before rewriting with step 3.
+- Step 6: `integral_sub` and `abs_integral_le_integral_abs`.
+- Step 7: `gcongr`, then `(ENNReal.ofReal_div_of_pos ht2).symm`, then `congr 1; rw [abs_mul, abs_of_nonneg (by positivity : (0 : ℝ) ≤ t⁻¹ ^ 2)]; field_simp`.
+
+## Key steps
+
+1. h := ϑ∘dilation a t is continuous with compact support (dilation a t is a homeomorphism), hence μ-integrable; h ≥ 0 and h = 1 on B_{3t}(a).
+2. h·d, h·|d| and h(1 − |d|) are integrable, being dominated by h a.e. since |d| ≤ 1 a.e.; and h(1 − |d|) ≥ 0 a.e.
+3. ∫⁻_{B_{3t}(a)} ofReal(1 − |d|) dμ ≤ ∫⁻ ofReal(h(1 − |d|)) dμ = ofReal(∫ h(1 − |d|) dμ).
+4. ∫ h(1 − |d|) = ∫ h − ∫ h|d| ≤ ∫ h − |∫ h·d|.
+5. Divide by ofReal(t²): ofReal(D)/ofReal(t²) = ofReal(t⁻²∫ h − |t⁻²∫ h·d|).
+
+## Reference use
+
+### local-project
+
+Queries:
+- `diff -q GMT/Ch07/Submission.lean <snapshot>/project/GMT/Ch07/Submission.lean (identical); cat <snapshot>/manifest.json (project b4d606db, mathlib 25730c7c); rg -n 'def currentEval|def dilation|def blowUp|def ConvergesWeakly' <snapshot>/project/GMT/Ch07/*.lean`
+- `rg -n 'theorem one_of_mem_closedBall|theorem hasCompactSupport|protected theorem contDiff|theorem nonneg|theorem le_one' <snapshot>/mathlib/Mathlib/Analysis/Calculus/BumpFunction/Basic.lean`
+- `rg -n 'smul_right|comp_homeomorph' <snapshot>/mathlib/Mathlib/Topology/Algebra/Support.lean; rg -n 'smulOfNeZero' <snapshot>/mathlib/Mathlib/Topology/Algebra/ConstMulAction.lean`
+- `rg -n 'theorem Continuous.integrable_of_hasCompactSupport|theorem ofReal_integral_eq_lintegral_ofReal|theorem lintegral_indicator |theorem ofReal_div_of_pos|theorem tendsto_ofReal|theorem tendsto_of_tendsto_of_tendsto_of_le_of_le |lemma inv_mul_lt_iff₀' <snapshot>/mathlib/Mathlib`
+- `rg -n "theorem Integrable.mono'|theorem integral_sub |lemma abs_integral_le_integral_abs|theorem lintegral_mono |theorem integral_congr_ae|lemma integral_nonneg" <snapshot>/mathlib/Mathlib/MeasureTheory; rg -n 'cast_natAbs' <snapshot>/mathlib/Mathlib/Algebra; rg -n 'theorem Continuous.comp_aestronglyMeasurable|protected theorem norm' <snapshot>/mathlib/Mathlib/MeasureTheory/Function/StronglyMeasurable/AEStronglyMeasurable.lean; rg -n 'theorem tendsto_of_subseq_tendsto' <snapshot>/mathlib/Mathlib`
+- `grep -rn 'idtp_cse_bml_td_|cutoff_test_form|blowUp_smul_form_eval' <snapshot>/project (no match); grep -c <name> dag.json and grep -rl <name> nodes/ for the 3 new names (0 each); parallel grep -rl --include=*.lean idtp_cse_bml_td_ over 1529 .swarm-worktrees/*/gmt-ch07/GMT (no match)`
+- `python3 scans of dag.json: lean_statement/status/worktree/candidate_commit of the selected node, sibling subseq_criterion, and accepted dtc_blowUp_testForm_corr, cbr_imRep_measure_basic, cmc_fcl_imrep_integral_data; search for equivalent statements (currentEval (blowUp …) with g (dilation …), ofReal (1 - |…|), cutoff test forms): none besides the selected node; survey of 142 'Reuse note' precedents in nodes/*/decomposition-v1.json and their DAG linkage`
+- `lake env lean /tmp/td-decomp-x9f3/check/{Probe,Stmts,ParentAsm,ChildA,ChildB,ChildC,DifProbe,DilProbe,AllChecks,FullCheck}.lean with #print axioms`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/BumpFunction/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Support.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/ConstMulAction.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/LocallyIntegrable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/L1Space/Integrable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/StronglyMeasurable/AEStronglyMeasurable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Basic/ENNReal/Inv.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Instances/ENNReal/Lemmas.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Order/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Algebra/Order/Ring/Int.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Algebra/Order/GroupWithZero/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Order/Filter/AtTopBot/CountablyGenerated.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-b424f4de74/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-scaling-a1-testform-correspondence-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-scaling-a1-testform-correspondence-a1/isolated-comparator-result.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-6249c06eba/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-6249c06eba/isolated-comparator-result.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-zer-0d752561a6/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/.swarm-worktrees/eb6bc99651941a0fc50c/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/.swarm-worktrees/30001e5dfdc7b496b2ce/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/tmp/td-decomp-x9f3/check/AllChecks.lean`
+- `/tmp/td-decomp-x9f3/check/FullCheck.lean`
+- `/tmp/td-decomp-x9f3/scripts/subs.json`
+
+The snapshot's project Submission.lean is byte-identical to the workspace's, which is the compiler authority (frozen contract b4d606db, mathlib 25730c7c, SimonGMT 2b36630).
+
+Every Mathlib name used in the child proofs exists at these pins: ContDiffBump.{contDiff, continuous, nonneg, le_one, hasCompactSupport, one_of_mem_closedBall}, HasCompactSupport.smul_right, HasCompactSupport.comp_homeomorph (to_additive of HasCompactMulSupport.comp_homeomorph), Homeomorph.smulOfNeZero, Continuous.integrable_of_hasCompactSupport, Integrable.mono', integral_sub, integral_congr_ae, integral_nonneg, abs_integral_le_integral_abs, lintegral_indicator, lintegral_mono, ofReal_integral_eq_lintegral_ofReal, ENNReal.ofReal_div_of_pos, ENNReal.tendsto_ofReal, Nat.cast_natAbs, inv_mul_lt_iff₀, Continuous.comp_aestronglyMeasurable, AEStronglyMeasurable.norm, tendsto_of_tendsto_of_tendsto_of_le_of_le and dite_eq_left. setLIntegral_mono needs Measurable g, so the ball estimate uses lintegral_indicator plus lintegral_mono instead.
+
+The proposed names are unreserved: they occur nowhere in the snapshot, dag.json, nodes/ or any worktree. No existing DAG node states an equivalent lemma.
+
+The two reused declarations are accepted with passed isolated comparators, and their lean_statements are byte-identical to dag.json.
+
+All five child types elaborate. With the real accepted proofs, the children and the parent's exact frozen type compile using only propext, Classical.choice and Quot.sound.
