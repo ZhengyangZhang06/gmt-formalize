@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.tilt_excess_step-a1.graph_height-a1.mult_one_domination-a1",
+  "parent_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.tilt_excess_step-a1.graph_height-a1",
+  "depth": 6,
+  "title": "Multiplicity one makes the IM measure dominated by Hⁿ",
+  "statement": "Let P, n ∈ ℕ, U ⊆ ℝᴾ any set, and R = (M, θ, ξ_R) an integer multiplicity triple in U (IMRep U n) with μ := R.measure = (Hⁿ⌞M).withDensity θ, where Hⁿ = μHE[n] and θ = R.mult. Let B ⊆ ℝᴾ be measurable, and assume θ(x) = R.mult x = 1 for μ-a.e. x ∈ B. Then μ⌞B ≤ Hⁿ⌞B as measures (R.measure.restrict B ≤ μHE[n].restrict B). Moreover, for every set A ⊆ B and every function h : ℝᴾ → [0, ∞] (no measurability assumed), ∫⁻_A h dμ ≤ ∫⁻_A h dHⁿ (lower Lebesgue integrals over the restricted measures).",
+  "lean_statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (R : IMRep U n) (B : Set (Euclid P)), MeasurableSet B → (∀ᵐ x ∂R.measure, x ∈ B → R.mult x = 1) → R.measure.restrict B ≤ (μHE[n] : Measure (Euclid P)).restrict B ∧ ∀ (A : Set (Euclid P)) (h : Euclid P → ℝ≥0∞), A ⊆ B → (∫⁻ x in A, h x ∂R.measure) ≤ ∫⁻ x in A, h x ∂μHE[n]",
+  "lean_name": "dorag_tes_gah_mult_one_le_hausdorff",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-b1d1e3c3c6-a1"
+}

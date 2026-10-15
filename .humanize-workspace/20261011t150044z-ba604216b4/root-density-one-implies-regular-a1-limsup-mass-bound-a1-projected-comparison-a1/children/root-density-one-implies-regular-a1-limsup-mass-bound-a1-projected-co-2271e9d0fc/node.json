@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.projected_comparison-a1.pf_integer-a1",
+  "parent_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.projected_comparison-a1",
+  "depth": 4,
+  "title": "The C¹ push-forward of an integer multiplicity current carried by a compact set is integer multiplicity (Simon 6.3.3–3.9, corrected)",
+  "statement": "Assume (TL), the frozen statement of the sibling-of-parent node dor_lmb_approx_tangent_locality: for all P, n ∈ ℕ, every open U ⊆ ℝ^P and Borel sets A ⊆ B ⊆ U with Hⁿ(B ∩ K) < ∞ for every compact K ⊆ U, for Hⁿ-a.e. x ∈ A and every linear subspace Q, B has approximate tangent space Q at x (Simon Ch. 3, 1.4; HasApproximateTangentSpaceAt) if and only if A does. Let P, n ∈ ℕ with n ≥ 1, U ⊆ ℝ^P open, R = (M, θ, ξ) an integer multiplicity triple in U (IMRep U n), K ⊆ U compact with Hⁿ(M ∖ K) = 0, O ⊆ ℝ^P open with K ⊆ O, f : ℝ^P → ℝ^P of class C¹ on O with f(K) ⊆ U, and Q ∈ 𝒟_n(U) with Q(ω) = ∫_M θ(x)·ξ(x)(ω(f(x))∘Df(x)) dHⁿ(x) for every ω ∈ 𝒟ⁿ(U) (Df(x) = fderiv ℝ f x, α∘L = α.compContinuousLinearMap L). Then Q is integer multiplicity: Q = τ(C, N', ζ') for some integer multiplicity triple (C, N', ζ') in U (IsIntegerMultiplicity Q).",
+  "lean_statement": "(∀ (P n : ℕ) (U A B : Set (Euclid P)), IsOpen U → MeasurableSet A → MeasurableSet B → A ⊆ B → B ⊆ U → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μHE[n] (B ∩ K) ≠ ∞) → ∀ᵐ x ∂(μHE[n].restrict A), ∀ Q : Submodule ℝ (Euclid P), HasApproximateTangentSpaceAt n B x Q ↔ HasApproximateTangentSpaceAt n A x Q) → ∀ (P n : ℕ) (U K O : Set (Euclid P)) (R : IMRep U n) (f : Euclid P → Euclid P) (Q : GeometricCurrentOn U n), IsOpen U → 0 < n → IsCompact K → K ⊆ U → μHE[n] (R.carrier \\ K) = 0 → IsOpen O → K ⊆ O → ContDiffOn ℝ 1 f O → f '' K ⊆ U → (∀ ω : TestFormOn U n, Q ω = ∫ x in R.carrier, (R.mult x : ℝ) * R.orient x (((ω : DifferentialForm (Euclid P) n) (f x)).compContinuousLinearMap (fderiv ℝ f x)) ∂μHE[n]) → IsIntegerMultiplicity Q",
+  "lean_name": "dor_lmb_pc_pushforward_isIntegerMultiplicity",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-limsup-mass-bound-a1-projected-co-2271e9d0fc-a1"
+}

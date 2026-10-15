@@ -1,0 +1,115 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.density_one_implies_regular-a1.epsilon_regularity-a1.graph_cycle_regular-a1.approx_tangent_graph-a1`
+- Child DAG node: `root.density_one_implies_regular-a1.epsilon_regularity-a1.graph_cycle_regular-a1.approx_tangent_graph-a1.graph_image_flat-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: three pieces of the parent-supplied proof of dgcr_approxTangent_eq_graph_tangent:
+- step 1: coercivity ‖v − v′‖ ≤ ‖Φ(v) − Φ(v′)‖, and differentiability of Φ at v₀;
+- step 4: the differentiability estimate;
+- the case 'a ∈ Σ' of step 5.
+The parent's domain D = B_s(0) is replaced by an arbitrary set D ⊆ ℝⁿ; only differentiability of u at v₀ is used.
+
+Notation: ℝ^m = Euclid m; Φ(v) := z + ιv + ι'(u(v)); x₀ := Φ(v₀) = z + ιv₀ + ι'(u(v₀)); F := fderiv ℝ Φ v₀; L := range F, with F viewed as a linear map.
+
+Formalization note: unless split further, this is a machine leaf: one theorem appended to GMT/Ch07/Submission.lean, with no new import or helper. Every lemma cited is in the import closure of GMT.Ch07.Submission.
+
+1. Coercivity. For every v ∈ ℝⁿ, linearity of ι and ι' gives Φ(v) − x₀ = ι(v − v₀) + ι'(u(v) − u(v₀)). The two summands are orthogonal by hypothesis, and ι, ι' preserve norms (LinearIsometry.norm_map). By Pythagoras (norm_add_sq_eq_norm_sq_add_norm_sq_of_inner_eq_zero), ‖Φ(v) − x₀‖² = ‖v − v₀‖² + ‖u(v) − u(v₀)‖² ≥ ‖v − v₀‖². As both norms are nonnegative, ‖v − v₀‖ ≤ ‖Φ(v) − x₀‖.
+
+2. Differentiability.
+- v ↦ z + ιv is differentiable at v₀: it is a constant plus the continuous linear map ι.
+- v ↦ ι'(u(v)) is differentiable at v₀: it is the continuous linear map ι' composed with u, which is differentiable at v₀ by hypothesis.
+Hence Φ is differentiable at v₀, and HasFDerivAt Φ F v₀.
+
+3. Little-o estimate.
+- By HasFDerivAt.isLittleO, (v ↦ Φ(v) − x₀ − F(v − v₀)) = o(v ↦ v − v₀) as v → v₀.
+- For the given ε > 0 (IsLittleO.def): eventually for v near v₀, ‖Φ(v) − x₀ − F(v − v₀)‖ ≤ ε‖v − v₀‖.
+- By Metric.eventually_nhds_iff there is ρ > 0 such that this inequality holds for every v with dist(v, v₀) < ρ. This is the required ρ.
+
+4. Let y ∈ Φ(D) with dist(y, x₀) < ρ, and write y = Φ(v) with v ∈ D.
+- By step 1, dist(v, v₀) = ‖v − v₀‖ ≤ ‖Φ(v) − x₀‖ = dist(y, x₀) < ρ.
+- Put t := F(v − v₀); then t ∈ L (LinearMap.mem_range_self).
+- By step 3, and then step 1 with ε ≥ 0: ‖y − x₀ − t‖ = ‖Φ(v) − x₀ − F(v − v₀)‖ ≤ ε‖v − v₀‖ ≤ ε‖y − x₀‖. ∎
+
+## Key steps
+
+1. Pythagoras with ⟨ιa, ι'b⟩ = 0 and norm preservation gives ‖v − v₀‖ ≤ ‖Φ(v) − Φ(v₀)‖ for every v.
+2. Φ = z + ι + ι'∘u is differentiable at v₀. The little-o estimate gives ρ > 0 with ‖Φ(v) − Φ(v₀) − DΦ(v₀)(v − v₀)‖ ≤ ε‖v − v₀‖ whenever dist(v, v₀) < ρ.
+3. For y = Φ(v) ∈ Φ(D) with dist(y, Φ(v₀)) < ρ, coercivity gives dist(v, v₀) < ρ. Then t := DΦ(v₀)(v − v₀) ∈ range DΦ(v₀) satisfies ‖y − Φ(v₀) − t‖ ≤ ε‖v − v₀‖ ≤ ε‖y − Φ(v₀)‖.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cmp local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean GMT/Ch07/Contract.lean; cmp GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean; git rev-parse HEAD; python3 read lake-manifest.json package revs; git rev-parse HEAD in .lake/packages/mathlib`
+- `grep -n "def HasApproximateTangentSpaceAt\|def blowUpMap\|theorem HasApproximateTangentSpaceAt\|lemma HasApproximateTangentSpaceAt\|support_euclideanHausdorffMeasure_restrict_submodule\|regular_euclideanHausdorffMeasure_restrict_submodule\|^import" Chapter03/Rectifiable.lean (simongmt)`
+- `grep -n -A12 "theorem euclideanHausdorffMeasure_image_le_of_lipschitzOn" Chapter02/Lipschitz.lean; grep -n "^namespace\|^end" Chapter02/Lipschitz.lean`
+- `rg -n "theorem .*[Aa]pproximateTangent|theorem .*approxTangent" --glob '*.lean' simongmt/Poincare/SimonGMT`
+- `rg -n "theorem measure_eq_zero_iff_ae_notMem|theorem IsClosed.notMem_iff_infDist_pos|theorem infDist_le_infDist_add_dist|theorem infDist_le_dist_of_mem|theorem norm_add_sq_eq_norm_sq_add_norm_sq_of_inner_eq_zero|theorem eq_of_le_of_finrank_eq|theorem integral_pos_iff_support_of_nonneg\b|theorem Continuous.integrable_of_hasCompactSupport|lemma mem_support_iff_forall|theorem finrank_euclideanSpace_fin|theorem ContDiffOn.differentiableOn\b|theorem integral_eq_zero_of_ae|theorem eventually_nhds_iff\b" local-references/123e8435b4a2469b/mathlib/Mathlib`
+- `rg -n "notMem_iff_infDist_pos|finrank_range_of_inj|closed_of_finiteDimensional|HasFDerivAt.isLittleO|HasFDerivAt.const_add|theorem intro \[|Ioo_mem_nhdsGT" local-references/123e8435b4a2469b/mathlib/Mathlib (snapshot)`
+- `python3 scan of every lean_name in dag.json and nodes/*/*.json (566 names); grep -rl dgcr_atg over the run's nodes/ and dag.json; git grep -l dgcr_atg <all 979 refs> -- GMT/Ch07/Submission.lean (exit 1: no match)`
+- `read nodes/root-minimizing-implies-stationary-a1-approx-tangent-in-submanifold-a1/decomposition-v{1,2}.json and decomposition-audit-v{1,2}.json (atsm_approxTangent_le_of_flat); nodes/root-density-one-implies-regular-a1-epsilon-regularity-a1-graph-cycle-regular-a1/decomposition-v3.json (sibling types); git show <accepted child ref>:GMT/Ch07/Submission.lean (child placement)`
+- `python3 -I /tmp/atg-work/gen_cmp.py (lean_contract.validate_lean_statement + gmt-compare.child_modules contract mode); lake env lean /tmp/atg-work/{Parent,Types,B2,All,CmpCheck,Inlined}.lean with #check and #print axioms`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/lake-manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/Lipschitz.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/OuterMeasure/AE.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/HausdorffDistance.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/FiniteDimensional/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Dimension/Finrank.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/LocallyIntegrable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Support.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/Defs.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Defs.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Add.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Module/FiniteDimension.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Support.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/Pseudo/Defs.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-epsilon-regularity-a1-graph-cycle-b5ecd87c13/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-epsilon-regularity-a1-graph-cycle-b5ecd87c13/parent-supplied-natural-proof.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-epsilon-regularity-a1-graph-cycle-regular-a1/decomposition-v3.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-approx-tangent-in-submanifold-a1/decomposition-v2.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-approx-tangent-in-submanifold-a1/decomposition-audit-v2.json`
+- `/tmp/atg-work/gen_cmp.py`
+- `/tmp/atg-work/children.json`
+- `/tmp/atg-work/Types.lean`
+- `/tmp/atg-work/All.lean`
+- `/tmp/atg-work/CmpCheck.lean`
+- `/tmp/atg-work/Inlined.lean`
+
+Snapshot, project and package revisions agree:
+- The snapshot manifest records project b4d606d and Mathlib 25730c7c, equal to the workspace HEAD and the lake-manifest Mathlib pin.
+- simongmt is pinned at 2b36630.
+- The snapshot Contract.lean is byte-identical to the workspace Contract.lean, and Submission.lean is byte-identical to the contract.
+
+Reusable facts, all in the import closure of GMT.Ch07.Submission (checked by compiling files that import only that module):
+- From simongmt Chapter03/Rectifiable.lean: HasApproximateTangentSpaceAt (finrank Q = n plus convergence of ∫_{blowUpMap x r '' M} f dμHE[n] along 𝓝[>] 0 for f ∈ C_c), HasApproximateTangentSpaceAt.finrank_eq, blowUpMap x r y = r⁻¹ • (y − x), regular_ and support_euclideanHausdorffMeasure_restrict_submodule.
+- From Chapter02/Lipschitz.lean: Poincare.SimonGMT.Chapter02.euclideanHausdorffMeasure_image_le_of_lipschitzOn.
+- From snapshot Mathlib: measure_eq_zero_iff_ae_notMem, IsClosed.notMem_iff_infDist_pos, infDist_le_infDist_add_dist, infDist_le_dist_of_mem, norm_add_sq_eq_norm_sq_add_norm_sq_of_inner_eq_zero, Submodule.eq_of_le_of_finrank_eq, LinearMap.finrank_range_of_inj, finrank_euclideanSpace_fin, integral_pos_iff_support_of_nonneg, Continuous.integrable_of_hasCompactSupport, Measure.mem_support_iff_forall, integral_eq_zero_of_ae, HasFDerivAt.isLittleO and HasFDerivAt.const_add (aliases), Submodule.closed_of_finiteDimensional, HasCompactSupport.intro (to_additive), Ioo_mem_nhdsGT (confirmed by #check).
+- ContDiffOn.differentiableOn takes n ≠ 0 in this Mathlib.
+
+Existing lemmas and names:
+- No existing simongmt lemma bounds an approximate tangent plane by a flat direction; the Chapter04 approximate-tangent results concern density.
+- The analogous atsm_approxTangent_le_of_flat (global null hypothesis) is only reserved in another branch's decomposition and is not comparator-accepted, so a uniquely named local variant is used.
+- No dgcr_atg_ name collides anywhere: DAG, node JSONs, and all 979 git refs.
+
+Lean checks:
+- All three child types and the parent type pass validate_lean_statement and elaborate in the exact comparator contract scope generated by gmt-compare.child_modules.
+- The exact frozen parent type follows from the three exact child types without sorry.
+- Complete single-theorem proofs of all three children compile, also when inserted into a byte copy of Submission.lean.
+- Only propext, Classical.choice and Quot.sound are used.
