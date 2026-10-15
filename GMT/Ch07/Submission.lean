@@ -9354,6 +9354,49 @@ theorem Submission.dimred_tr_iterated_blowup_limit : ∀ (P n : ℕ) (U : Set (E
     simpa using hlams0.mul_const (ss k)
   filter_upwards [hev _ _ ha ht 0 ((R : ℝ) + 1)] with i hi
   exact hloc _ 0 _ _ (mul_pos (hlams i) (hss k)) (by positivity) hi
+/-- **The blow-up class `𝒯` of a minimizing current** (Simon 7.3.3, proof of (1), chapter-07.txt
+lines 443–486; the hypotheses of Appendix A.4).  Assume (IM), (MON), (MB) and (TAN).  Fix an
+integer multiplicity representation `RT` of `T` (part of `IsMinimizingIn`), write
+`μ_T = RT.measure`, `W = B_{2r}(z)` and `η_{a,t} = dilation a t`, and let `𝓜` consist of the
+rescalings `t⁻ⁿ η_{a,t#}(μ_T⌞W)` with `0 < t ≤ r`, `|a − z| ≤ r − t`, and of the weights `μ_S` of
+integer multiplicity representations of the weak limits `S` of `η_{cᵢ,tᵢ#}T` with
+`|cᵢ − z| < r − tᵢ`, `tᵢ → 0` and `cᵢ` convergent.  Properties (1)–(2) of `𝓜` are
+`Submission.dimred_tr_bc_class_finite_density`, (3) is `Submission.dimred_tr_bc_class_rescale`,
+(4) is `Submission.dimred_tr_bc_class_tangent`, the constant `Λ` and (5) come from
+`Submission.dimred_tr_bc_class_monotone`, and (6)–(7) are
+`Submission.dimred_tr_bc_class_anchor_infinite`; each is applied to this `𝓜` through its
+membership characterization, with `Submission.dimred_tr_imrep_density_ae`,
+`Submission.dtc_blowUp_imrep`, `Submission.dimred_tr_blowup_calculus` and
+`Submission.dimred_tr_iterated_blowup_limit` for the remaining hypotheses. -/
+theorem Submission.dimred_tr_blowup_class : (∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (R : IMRep U n), IsOpen U → R.Represents T → (∀ W : Set (Euclid P), IsOpen W → W ⊆ U → T.massOn W = R.measure W) ∧ (∀ x ∈ U, (x ∈ T.support ↔ ∀ ε : ℝ, 0 < ε → R.measure (ball x ε) ≠ 0)) ∧ ∀ R' : IMRep U n, R'.Represents T → R'.measure = R.measure) → (∀ (P n d : ℕ) (U N : Set (Euclid P)) (T : GeometricCurrentOn U n), 1 ≤ n → n ≤ d → d ≤ P → IsOpen U → IsEmbeddedSubmanifold 2 d N → (closure N \ N) ∩ U = ∅ → IsMinimizingIn T (U ∩ N) → T.support ⊆ U ∩ N → BoundaryVanishes T → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → ∃ Λ : ℝ, 0 ≤ Λ ∧ ∀ (y : Euclid P) (R : ℝ), closedBall y R ⊆ K → MonotoneOn (fun ρ : ℝ => ENNReal.ofReal (Real.exp (Λ * ρ) / ρ ^ n) * T.massOn (ball y ρ)) (Ioo 0 R)) ∧ (N = univ → ∀ (y : Euclid P) (R : ℝ), ball y R ⊆ U → MonotoneOn (fun ρ : ℝ => ENNReal.ofReal (1 / ρ ^ n) * T.massOn (ball y ρ)) (Ioo 0 R)) ∧ (∃ Θ : Euclid P → ℝ, (∀ y ∈ U, HasMassDensity T y (Θ y)) ∧ UpperSemicontinuousOn Θ U) ∧ ∀ y ∈ T.support, ∀ θ : ℝ, HasMassDensity T y θ → 1 ≤ θ) → (∀ (n k ℓ : ℕ), ℓ ≤ k → ∀ (U N : Set (Euclid (n + k))) (T : GeometricCurrentOn U n), 1 ≤ n → IsOpen U → IsEmbeddedSubmanifold 2 (n + ℓ) N → (closure N \ N) ∩ U = ∅ → IsMinimizingIn T (U ∩ N) → T.support ⊆ U ∩ N → BoundaryVanishes T → ∀ (x : Euclid (n + k)) (xs : ℕ → Euclid (n + k)) (lams : ℕ → ℝ) (hlams : ∀ j, 0 < lams j), x ∈ U → Tendsto xs atTop (𝓝 x) → Tendsto lams atTop (𝓝 0) → ∃ (φ : ℕ → ℕ) (C : GeometricCurrentOn (univ : Set (Euclid (n + k))) n), StrictMono φ ∧ ConvergesWeakly (fun j => blowUp T (xs (φ j)) (lams (φ j)) (hlams (φ j)).ne') C ∧ MassMeasuresConverge (fun j => blowUp T (xs (φ j)) (lams (φ j)) (hlams (φ j)).ne') C ∧ IsMinimizingIn C univ ∧ BoundaryVanishes C) → (∀ (n k ℓ : ℕ), ℓ ≤ k → ∀ (U N : Set (Euclid (n + k))) (T : GeometricCurrentOn U n), 1 ≤ n → IsOpen U → IsEmbeddedSubmanifold 2 (n + ℓ) N → (closure N \ N) ∩ U = ∅ → IsMinimizingIn T (U ∩ N) → T.support ⊆ U ∩ N → BoundaryVanishes T → ∀ x ∈ T.support, ∀ (lams : ℕ → ℝ) (hlams : ∀ j, 0 < lams j), Tendsto lams atTop (𝓝 0) → ∃ (φ : ℕ → ℕ) (C : GeometricCurrentOn (univ : Set (Euclid (n + k))) n), StrictMono φ ∧ ConvergesWeakly (fun j => blowUp T x (lams (φ j)) (hlams (φ j)).ne') C ∧ MassMeasuresConverge (fun j => blowUp T x (lams (φ j)) (hlams (φ j)).ne') C ∧ IsMinimizingIn C univ ∧ ∀ R : IMRep (univ : Set (Euclid (n + k))) n, R.Represents C → ∀ lam : ℝ, 0 < lam → ∀ A : Set (Euclid (n + k)), MeasurableSet A → R.measure ((fun x => lam • x) '' A) = ENNReal.ofReal (lam ^ n) * R.measure A) → ∀ (n k ℓ : ℕ), ℓ ≤ k → ∀ (U N : Set (Euclid (n + k))) (T : GeometricCurrentOn U n), 1 ≤ n → IsOpen U → IsEmbeddedSubmanifold 2 (n + ℓ) N → (closure N \ N) ∩ U = ∅ → IsMinimizingIn T (U ∩ N) → T.support ⊆ U ∩ N → BoundaryVanishes T → ∀ (z : Euclid (n + k)) (r : ℝ) (dens : Measure (Euclid (n + k)) → Euclid (n + k) → ℝ), 0 < r → closedBall z (2 * r) ⊆ U → (∀ (μ : Measure (Euclid (n + k))) (x : Euclid (n + k)), dens μ x = (limsup (fun ρ : ℝ => μ (ball x ρ) / (unitBallVolume n * ENNReal.ofReal (ρ ^ n))) (𝓝[>] 0)).toReal) → ∃ (𝓜 : Set (Measure (Euclid (n + k)))) (Λ : ℝ), (∀ μ ∈ 𝓜, ∀ K : Set (Euclid (n + k)), IsCompact K → μ K ≠ ∞) ∧ (∀ μ ∈ 𝓜, μ = (μHE[n] : Measure (Euclid (n + k))).withDensity (fun x => ENNReal.ofReal (dens μ x))) ∧ (∀ μ ∈ 𝓜, ∀ (y : Euclid (n + k)) (lam : ℝ), 0 < lam → lam < 1 → ‖y‖ ≤ 1 - lam → ENNReal.ofReal (lam⁻¹ ^ n) • μ.map (dilation y lam) ∈ 𝓜) ∧ (∀ μ ∈ 𝓜, ∀ y : Euclid (n + k), ‖y‖ < 1 → ∀ lams : ℕ → ℝ, (∀ j, 0 < lams j) → StrictAnti lams → Tendsto lams atTop (𝓝 0) → ∃ (sub : ℕ → ℕ) (ν : Measure (Euclid (n + k))), StrictMono sub ∧ ν ∈ 𝓜 ∧ (∀ lam : ℝ, 0 < lam → ∀ s : Set (Euclid (n + k)), MeasurableSet s → ν ((fun x => lam • x) '' s) = ENNReal.ofReal (lam ^ n) * ν s) ∧ ∀ f : Euclid (n + k) → ℝ, Continuous f → HasCompactSupport f → Tendsto (fun j => ∫ x, f x ∂(ENNReal.ofReal ((lams (sub j))⁻¹ ^ n) • μ.map (dilation y (lams (sub j))))) atTop (𝓝 (∫ x, f x ∂ν))) ∧ (∀ μ ∈ 𝓜, ∀ (y : Euclid (n + k)) (R : ℝ), closedBall y R ⊆ closedBall 0 2 → MonotoneOn (fun ρ : ℝ => ENNReal.ofReal (Real.exp (Λ * ρ) / ρ ^ n) * μ (ball y ρ)) (Ioo 0 R)) ∧ (∃ μ₀ ∈ 𝓜, ∀ w ∈ ball (0 : Euclid (n + k)) 1, ∀ θ : ℝ, HasMassDensity T (z + r • w) θ → dens μ₀ w = θ) ∧ ∀ ν ∈ 𝓜, ν univ = ∞ → ∃ (S : GeometricCurrentOn (univ : Set (Euclid (n + k))) n) (xs : ℕ → Euclid (n + k)) (lams : ℕ → ℝ) (hlams : ∀ i, 0 < lams i), (∀ i, xs i ∈ ball z r) ∧ Tendsto lams atTop (𝓝 0) ∧ ConvergesWeakly (fun i => blowUp T (xs i) (lams i) (hlams i).ne') S ∧ IsMinimizingIn S univ ∧ BoundaryVanishes S ∧ ∀ y, HasMassDensity S y (dens ν y) := by
+  intro hIM hMON hMB hTAN n k ℓ hℓk U N T hn hU hN hNU hTmin hTspt hTbd z r dens hr hzU hdens
+  obtain ⟨RT, hRT⟩ := hTmin.1
+  obtain ⟨𝓜, hM⟩ : ∃ 𝓜 : Set (Measure (Euclid (n + k))), ∀ μ : Measure (Euclid (n + k)),
+      μ ∈ 𝓜 ↔ ((∃ (a : Euclid (n + k)) (t : ℝ), 0 < t ∧ t ≤ r ∧ dist a z ≤ r - t ∧
+        μ = ENNReal.ofReal (t⁻¹ ^ n) • (RT.measure.restrict (ball z (2 * r))).map
+          (dilation a t)) ∨
+        ∃ (S : GeometricCurrentOn (univ : Set (Euclid (n + k))) n)
+          (RS : IMRep (univ : Set (Euclid (n + k))) n) (cs : ℕ → Euclid (n + k)) (ts : ℕ → ℝ)
+          (hts : ∀ i, 0 < ts i) (b : Euclid (n + k)), (∀ i, dist (cs i) z < r - ts i) ∧
+          Tendsto ts atTop (𝓝 0) ∧ Tendsto cs atTop (𝓝 b) ∧
+          ConvergesWeakly (fun i => blowUp T (cs i) (ts i) (hts i).ne') S ∧ RS.Represents S ∧
+          μ = RS.measure) :=
+    ⟨_, fun μ => Iff.rfl⟩
+  obtain ⟨h1, h2⟩ := Submission.dimred_tr_bc_class_finite_density
+    Submission.dimred_tr_imrep_density_ae Submission.dtc_blowUp_imrep n k ℓ hℓk U N T hn hU hN
+    hNU hTmin hTspt hTbd z r RT 𝓜 hr hzU hRT hM dens hdens
+  have h3 := Submission.dimred_tr_bc_class_rescale Submission.dimred_tr_blowup_calculus
+    Submission.dtc_blowUp_imrep n k ℓ hℓk U N T hn hU hN hNU hTmin hTspt hTbd z r RT 𝓜 hr hzU
+    hRT hM
+  have h4 := Submission.dimred_tr_bc_class_tangent hIM hMON hMB hTAN
+    Submission.dimred_tr_blowup_calculus Submission.dtc_blowUp_imrep
+    Submission.dimred_tr_iterated_blowup_limit n k ℓ hℓk U N T hn hU hN hNU hTmin hTspt hTbd z r
+    RT 𝓜 hr hzU hRT hM
+  obtain ⟨Λ, h5⟩ := Submission.dimred_tr_bc_class_monotone hIM hMON hMB n k ℓ hℓk U N T hn hU
+    hN hNU hTmin hTspt hTbd z r RT 𝓜 hr hzU hRT hM
+  obtain ⟨h6, h7⟩ := Submission.dimred_tr_bc_class_anchor_infinite hIM hMON hMB n k ℓ hℓk U N T
+    hn hU hN hNU hTmin hTspt hTbd z r RT 𝓜 hr hzU hRT hM dens hdens
+  exact ⟨𝓜, Λ, h1, h2, h3, h4, h5, h6, h7⟩
 /-- **Simon Ch. 6, 1.1 and 1.7**: a unit orientation `ξ = ±τ₁ ∧ ⋯ ∧ τₙ` of a plane (`τ`
 orthonormal) is a nonzero `n`-vector of norm at most one.  `|ξ(α)| = |α(τ)| ≤ ‖α‖ ∏ᵢ ‖τᵢ‖ = ‖α‖`
 gives `‖ξ‖ ≤ 1`.  The covector `δ(w) = Σ_σ sgn σ ∏ᵢ ⟨τᵢ, w_{σ(i)}⟩ = det(⟨τᵢ, wⱼ⟩)`, the
