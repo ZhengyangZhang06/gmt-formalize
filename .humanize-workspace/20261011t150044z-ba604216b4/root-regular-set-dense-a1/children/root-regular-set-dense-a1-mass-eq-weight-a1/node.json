@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.regular_set_dense-a1.mass_eq_weight-a1",
+  "parent_id": "root.regular_set_dense-a1",
+  "depth": 2,
+  "title": "Simon 6.3.2(3): the mass of an integer multiplicity current on an open set equals its weight",
+  "statement": "Let P, n ∈ ℕ, let U ⊆ ℝ^P be open, T ∈ 𝒟_n(U), and let R = (M, θ, ξ) be an integer multiplicity representation of T in U. That is, R is an IMRep:\n- M ⊆ U is Borel and countably n-rectifiable;\n- θ : ℝ^P → ℕ is Borel, with θ ≥ 1 on M and ∫_{M∩K} θ dH^n < ∞ for every compact K ⊆ U;\n- ξ is H^n⌞M-measurable and, for H^n-a.e. x ∈ M, ξ(x) = ±τ₁∧⋯∧τ_n for an orthonormal basis τ of an approximate tangent plane of M at x;\n- T(ω) = ∫_M θ⟨ω, ξ⟩ dH^n for every ω ∈ 𝒟^n(U).\nThen M_W(T) = μ_T(W) for every open W ⊆ U. Here M_W(T) = sup{T(ω) : ω ∈ 𝒟^n(U), spt ω ⊆ W, |ω(x)| ≤ 1 for all x} ∈ [0, ∞], with |·| the Euclidean coefficient norm of covectors (T.massOn W), and μ_T(W) = ∫_{M∩W} θ dH^n (R.measure W).",
+  "lean_statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (R : IMRep U n), IsOpen U → R.Represents T → ∀ W : Set (Euclid P), IsOpen W → W ⊆ U → T.massOn W = R.measure W",
+  "lean_name": "rsd_massOn_eq_measure",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-regular-set-dense-a1-mass-eq-weight-a1-a1"
+}
