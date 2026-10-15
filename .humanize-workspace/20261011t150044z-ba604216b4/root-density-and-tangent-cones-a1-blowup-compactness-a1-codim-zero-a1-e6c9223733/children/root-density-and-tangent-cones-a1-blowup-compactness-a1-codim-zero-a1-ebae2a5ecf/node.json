@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.codim_zero-a1.top_density-a1.orient_sign-a1",
+  "parent_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.codim_zero-a1.top_density-a1",
+  "depth": 5,
+  "title": "Top-dimensional orientations are ±e₁∧⋯∧eₙ almost everywhere, with a measurable sign",
+  "statement": "Let n ∈ ℕ, let V ⊆ ℝⁿ = Euclid n be an arbitrary set (no openness is needed), and let R : IMRep V n be an integer multiplicity triple (M, θ, ξ) with M = R.carrier and ξ = R.orient : ℝⁿ → MultiVector n n. Let Hⁿ = μHE[n] and e = ⇑(EuclideanSpace.basisFun (Fin n) ℝ). Then there is a measurable σ : ℝⁿ → ℝ such that, for Hⁿ⌞M-almost every y, two things hold: σ(y) = 1 or σ(y) = −1, and ξ(y)(α) = σ(y)·α(e) for every n-covector α ∈ Covector (Euclid n) n.",
+  "lean_statement": "∀ (n : ℕ) (V : Set (Euclid n)) (R : IMRep V n), ∃ σ : Euclid n → ℝ, Measurable σ ∧ ∀ᵐ y ∂(μHE[n].restrict R.carrier), (σ y = 1 ∨ σ y = -1) ∧ ∀ α : Covector (Euclid n) n, R.orient y α = σ y * α ⇑(EuclideanSpace.basisFun (Fin n) ℝ)",
+  "lean_name": "dtc_bc_cz_top_density_orient_sign",
+  "depends_on": [
+    "root.density_and_tangent_cones-a1.blowup_compactness-a1.codim_zero-a1.top_density-a1.det_covector-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.codim_zero-a1.top_density-a1.det_covector-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-compactness-a1-codim-zero-a1-ebae2a5ecf-a1"
+}

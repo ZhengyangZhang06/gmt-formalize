@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.codim_zero-a1.top_density-a1",
+  "parent_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.codim_zero-a1",
+  "depth": 4,
+  "title": "Top-dimensional integer multiplicity currents have an integer-valued L¹_loc density (Lemma A)",
+  "statement": "Let n ≥ 1, V ⊆ ℝⁿ open and X ∈ 𝒟_n(V) (GeometricCurrentOn V n) integer multiplicity (IsIntegerMultiplicity X). Let e = (e₁, …, eₙ) be the standard basis of ℝⁿ (EuclideanSpace.basisFun (Fin n) ℝ) and, for an n-covector α, write α(e) := α(e₁, …, eₙ). Then there is g : ℝⁿ → ℤ such that y ↦ (g(y) : ℝ) is locally Lebesgue-integrable on V (LocallyIntegrableOn (fun y => (g y : ℝ)) V volume) and X(ω) = ∫_{ℝⁿ} g(y)·ω(y)(e) dLⁿ(y) for every ω ∈ 𝒟ⁿ(V) (TestFormOn V n).",
+  "lean_statement": "∀ (n : ℕ) (V : Set (Euclid n)) (X : GeometricCurrentOn V n), 0 < n → IsOpen V → IsIntegerMultiplicity X → ∃ g : Euclid n → ℤ, LocallyIntegrableOn (fun y => (g y : ℝ)) V volume ∧ ∀ ω : TestFormOn V n, X ω = ∫ y, (g y : ℝ) * (ω : DifferentialForm (Euclid n) n) y ⇑(EuclideanSpace.basisFun (Fin n) ℝ)",
+  "lean_name": "dtc_bc_cz_top_density",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-compactness-a1-codim-zero-a1-e6c9223733-a1"
+}

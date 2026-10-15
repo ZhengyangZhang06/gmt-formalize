@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.isodiametric_bound-a1.volume_le_hausdorff-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.isodiametric_bound-a1",
+  "depth": 5,
+  "title": "Lebesgue measure is at most (ω_d/2^d)·μH[d] on ℝ^d (completion of Simon 2.9)",
+  "statement": "For every d ∈ ℕ, the Lebesgue measure L^d = volume on ℝ^d = EuclideanSpace ℝ (Fin d) is dominated by (ω_d/2^d)·μH[d]: L^d(s) ≤ (ω_d/2^d)·μH[d](s) for every set s ⊆ ℝ^d (as measures, L^d ≤ (ω_d/2^d)•μH[d]). Here ω_d = unitBallVolume d = L^d(ball(0, 1)), and μH[d] is Mathlib's d-dimensional Hausdorff measure (weight diam^d, no normalising constant).",
+  "lean_statement": "∀ (d : ℕ), (volume : Measure (Euclid d)) ≤ (unitBallVolume d / 2 ^ d) • (μH[(d : ℝ)] : Measure (Euclid d))",
+  "lean_name": "cbr_ci_iso_volume_le_smul_hausdorff",
+  "depends_on": [
+    "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.isodiametric_bound-a1.isodiametric-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.isodiametric_bound-a1.isodiametric-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-e097dd5dae-a1"
+}
