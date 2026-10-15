@@ -2782,16 +2782,6 @@ Ch. 6, Remark 2.6(a); step 1(a) of the mass formula, Remark 6.3.2(3)): `|α(τ)|
 `n! α(τ)² ≤ Σ_j α(f ∘ j)² = n! |α|_E²` by `regcomp_covector_sq_sum_orthonormalBasis`. -/
 theorem Submission.regcomp_covector_eval_orthonormal_le : ∀ (P n : ℕ) (α : Covector (Euclid P) n) (τ : Fin n → Euclid P), Orthonormal ℝ τ → |α τ| ≤ covectorEuclideanNorm α := by
   intro P n α τ hτ
-/-- **The Euclidean coefficient norm is a continuous seminorm dominated by the operator norm**
-(Simon Ch. 6, 1.15 and 2.4; used by the smooth approximation of test forms behind the mass of
-`τ(M, θ, ξ)`).  With `e` the standard basis of `ℝᴾ`, let `c_I α = α(e_{I(0)}, …, e_{I(n-1)})`
-for strictly increasing `I : Fin n → Fin P` and `c_I α = 0` otherwise.  Then
-`covectorEuclideanNorm α = ‖v α‖` for the coefficient vector
-`v α = (c_I α)_I ∈ EuclideanSpace ℝ (Fin n → Fin P)`, which is linear in `α`; this gives the
-triangle inequality and homogeneity.  `|c_I α| ≤ ‖α‖ ∏ₖ ‖e_{I(k)}‖ = ‖α‖` gives the bound with
-`C = √(card (Fin n → Fin P))`, and then the norm is `C`-Lipschitz, hence continuous. -/
-theorem Submission.rsd_mw_tfa_norm_props : ∀ (P n : ℕ), (∀ α α' : Covector (Euclid P) n, covectorEuclideanNorm (α + α') ≤ covectorEuclideanNorm α + covectorEuclideanNorm α') ∧ (∀ (t : ℝ) (α : Covector (Euclid P) n), covectorEuclideanNorm (t • α) = |t| * covectorEuclideanNorm α) ∧ (∃ C : ℝ, 0 ≤ C ∧ ∀ α : Covector (Euclid P) n, covectorEuclideanNorm α ≤ C * ‖α‖) ∧ Continuous (fun α : Covector (Euclid P) n => covectorEuclideanNorm α) := by
-  intro P n
   classical
   -- Step 1: `n ≤ P`, and an orthonormal basis `f` of `ℝᴾ` with `f (ι k) = τ k`, `ι = Fin.castLE`
   have hnP : n ≤ P := by
@@ -7013,99 +7003,6 @@ theorem Submission.cmr_vr_jordan_decomposition : ∀ (X : Type) [TopologicalSpac
     fun f => {h | ∀ x, |h x| ≤ (f x : ℝ)}
   have hA0 : ∀ f, (0 : CompactlySupportedContinuousMap X ℝ) ∈ A f := by
     intro f x
-    rw [hN, hN, hsmul, norm_smul, Real.norm_eq_abs]
-  -- Step 5: `|c_I α| ≤ ‖α‖ ∏ₖ ‖e_{I(k)}‖ = ‖α‖`
-  have hc : ∀ (I : Fin n → Fin P) (α : Covector (Euclid P) n), |c I α| ≤ ‖α‖ := by
-    intro I α
-    by_cases hI : StrictMono I
-    · simpa [c, e, hI, Real.norm_eq_abs] using α.le_opNorm (fun i => e (I i))
-    · simp [c, hI]
-  -- Step 6: (iii) with `C = √(card (Fin n → Fin P))`
-  have h3 : ∀ α : Covector (Euclid P) n,
-      covectorEuclideanNorm α ≤ Real.sqrt (Fintype.card (Fin n → Fin P)) * ‖α‖ := by
-    intro α
-    have hsum : ∑ I, ‖(v α).ofLp I‖ ^ 2 ≤ ∑ _I : Fin n → Fin P, ‖α‖ ^ 2 :=
-      Finset.sum_le_sum fun I _ => by
-        simpa [v, Real.norm_eq_abs] using pow_le_pow_left₀ (abs_nonneg _) (hc I α) 2
-    rw [hN, EuclideanSpace.norm_eq]
-    calc Real.sqrt (∑ I, ‖(v α).ofLp I‖ ^ 2) ≤ Real.sqrt (∑ _I : Fin n → Fin P, ‖α‖ ^ 2) :=
-          Real.sqrt_le_sqrt hsum
-      _ = Real.sqrt (Fintype.card (Fin n → Fin P)) * ‖α‖ := by
-          rw [Finset.sum_const, Finset.card_univ, nsmul_eq_mul,
-            Real.sqrt_mul (Nat.cast_nonneg _), Real.sqrt_sq (norm_nonneg _)]
-  -- Step 7: (iv), `|N α - N α'| ≤ N (α - α') ≤ C ‖α - α'‖`, so `N` is Lipschitz
-  have hlip : ∀ α α' : Covector (Euclid P) n, dist (covectorEuclideanNorm α)
-      (covectorEuclideanNorm α') ≤ Real.sqrt (Fintype.card (Fin n → Fin P)) * dist α α' := by
-    intro α α'
-    have ha : covectorEuclideanNorm α ≤
-        covectorEuclideanNorm (α - α') + covectorEuclideanNorm α' := by
-      simpa only [sub_add_cancel] using h1 (α - α') α'
-    have hb : covectorEuclideanNorm α' ≤
-        covectorEuclideanNorm (α - α') + covectorEuclideanNorm α := by
-      have h := h1 (α' - α) α
-      rwa [sub_add_cancel, ← neg_sub, covectorEuclideanNorm_neg] at h
-    have hC := h3 (α - α')
-    rw [Real.dist_eq, dist_eq_norm, abs_le]
-    constructor <;> linarith
-  exact ⟨h1, h2, ⟨_, Real.sqrt_nonneg _, h3⟩,
-    (LipschitzWith.of_dist_le_mul (K := ⟨_, Real.sqrt_nonneg _⟩) hlip).continuous⟩
-/-- **Integrability and zeroth-order bound of the pairing `∫_E ⟨ω, ξ⟩ dμ`** (Simon 6.2.4–6.2.5,
-`μ⌞E ∧ ξ` as a current; used for restrictions of currents in the slicing argument of 7.2.4).
-If `|⟨α, ξ(x)⟩| ≤ |α|` for every `n`-covector `α` and `μ`-a.e. `x`, and the continuous form
-`ω` vanishes off a measurable `K` with `μ(K) < ∞` and `|ω| ≤ ε`, then `|ξ(ω)| ≤ ε 1_K`
-`μ`-a.e., so `ξ(ω)` is `μ⌞E`-integrable and `|∫_E ξ(ω) dμ| ≤ ε μ(K ∩ E) ≤ ε μ(K)`. -/
-theorem Submission.cmcs_rc_pairing_integrable_abs_le : ∀ (P n : ℕ) (μ : Measure (Euclid P)) (ξ : Euclid P → MultiVector P n) (E K : Set (Euclid P)) (ω : DifferentialForm (Euclid P) n) (ε : ℝ), AEStronglyMeasurable ξ μ → (∀ᵐ x ∂μ, ∀ α : Covector (Euclid P) n, |ξ x α| ≤ covectorEuclideanNorm α) → Continuous ω → MeasurableSet K → μ K < ∞ → (∀ x, x ∉ K → ω x = 0) → (∀ x, covectorEuclideanNorm (ω x) ≤ ε) → Integrable (fun x => ξ x (ω x)) (μ.restrict E) ∧ |∫ x in E, ξ x (ω x) ∂μ| ≤ ε * (μ K).toReal := by
-  intro P n μ ξ E K ω ε hξm hξb hω hK hμK hzero hε
-  -- Step 1: `ε ≥ 0`
-  have hε0 : 0 ≤ ε := (covectorEuclideanNorm_nonneg _).trans (hε 0)
-  -- Step 2: `F x = ξ x (ω x)` is a.e. strongly measurable
-  have hmeas : AEStronglyMeasurable (fun x => ξ x (ω x)) μ :=
-    (isBoundedBilinearMap_apply (𝕜 := ℝ) (E := Covector (Euclid P) n)
-      (F := ℝ)).continuous.comp_aestronglyMeasurable₂ (g := fun Λ α => Λ α) hξm
-      hω.aestronglyMeasurable
-  -- Step 3: `‖F x‖ ≤ K.indicator ε x` a.e.
-  have hbd : ∀ᵐ x ∂μ, ‖ξ x (ω x)‖ ≤ K.indicator (fun _ => ε) x := by
-    filter_upwards [hξb] with x hx
-    by_cases hxK : x ∈ K
-    · rw [indicator_of_mem hxK, Real.norm_eq_abs]
-      exact (hx (ω x)).trans (hε x)
-    · rw [indicator_of_notMem hxK, hzero x hxK, map_zero, norm_zero]
-  -- Step 4: the dominating function is integrable
-  have hg : Integrable (K.indicator (fun _ => ε)) μ :=
-    (integrableOn_const hμK.ne).integrable_indicator hK
-  -- Step 5: integrability of `F`, then on `μ.restrict E`
-  have hint : Integrable (fun x => ξ x (ω x)) μ := hg.mono' hmeas hbd
-  refine ⟨hint.restrict, ?_⟩
-  -- Step 6: `‖∫_E F‖ ≤ ∫_E g = ν.real K * ε`
-  have h1 : ‖∫ x in E, ξ x (ω x) ∂μ‖ ≤ ∫ x in E, K.indicator (fun _ => ε) x ∂μ :=
-    norm_integral_le_of_norm_le hg.restrict (ae_restrict_of_ae hbd)
-  rw [integral_indicator_const ε hK, smul_eq_mul] at h1
-  -- Step 7: `ν K = μ (K ∩ E) ≤ μ K`, multiply by `ε ≥ 0`
-  rw [← Real.norm_eq_abs]
-  refine h1.trans ?_
-  rw [mul_comm]
-  refine mul_le_mul_of_nonneg_left ?_ hε0
-  rw [measureReal_def, Measure.restrict_apply hK]
-  exact ENNReal.toReal_mono hμK.ne (measure_mono inter_subset_left)
-/-- **A linear functional on `𝒟ⁿ(U)` with zeroth-order bounds is a current** (Simon 6.2.1; used
-for the restricted currents `ω ↦ ∫_E ⟨ω, ξ⟩ dμ` in the slicing argument behind 7.2.4).  Suppose
-every compact `K ⊆ U` has a `c` with `|L(ω)| ≤ c M` whenever `spt ω ⊆ K` and `‖ω(x)‖ ≤ M` for all
-`x`.  Take `S = L`.  If `ωⱼ → 0` in `𝒟ⁿ(U)` with supports in the compact `K ⊆ U`, the order-`0`
-part of the uniform convergence on `K` gives `‖ωⱼ(x)‖ ≤ η` for large `j`.  Off `K` this holds
-because `ωⱼ(x) = 0`.  With `η = δ / (|c| + 1)`, `|L(ωⱼ)| ≤ c η ≤ |c| η < δ`. -/
-theorem Submission.cmcs_rc_order_zero_current : ∀ (P n : ℕ) (U : Set (Euclid P)) (L : TestFormOn U n →ₗ[ℝ] ℝ), (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → ∃ c : ℝ, ∀ (ω : TestFormOn U n) (M : ℝ), tsupport (ω : DifferentialForm (Euclid P) n) ⊆ K → (∀ x, ‖(ω : DifferentialForm (Euclid P) n) x‖ ≤ M) → |L ω| ≤ c * M) → ∃ S : GeometricCurrentOn U n, ∀ ω : TestFormOn U n, S ω = L ω := by
-  intro P n U L hL
-  -- Step 1: `S = ⟨L, h⟩`, so `S ω = L ω` and only `L(ωⱼ) → 0` for `ωⱼ → 0` remains
-  refine ⟨⟨L, fun ωs hconv => ?_⟩, fun ω => rfl⟩
-  -- Step 2: the common compact support `K ⊆ U` and the constant `c` for `K`
-  obtain ⟨K, hK, hKU, hsupp, -, hunif⟩ := hconv
-  obtain ⟨c, hc⟩ := hL K hK hKU
-  -- Step 3: order-`0` uniform convergence on `K`, to the zero form
-  have h0 := Metric.tendstoUniformlyOn_iff.mp (hunif 0)
-  have hz : ∀ x, iteratedFDeriv ℝ 0
-      ((0 : TestFormOn U n) : DifferentialForm (Euclid P) n) x = 0 := by
-    intro x
-    rw [← norm_eq_zero, norm_iteratedFDeriv_zero]
     simp
   have hbdd : ∀ f, BddAbove (Λ '' A f) := by
     intro f
@@ -7248,6 +7145,44 @@ theorem Submission.cmcs_rc_order_zero_current : ∀ (P n : ℕ) (U : Set (Euclid
   refine ⟨PositiveLinearMap.mk₀ (Vh.toLinearMap + Λ) hdom, Vh, fun f => ?_⟩
   show Λ f = (Vh f + Λ f) - Vh f
   ring
+/-- **Integrability and zeroth-order bound of the pairing `∫_E ⟨ω, ξ⟩ dμ`** (Simon 6.2.4–6.2.5,
+`μ⌞E ∧ ξ` as a current; used for restrictions of currents in the slicing argument of 7.2.4).
+If `|⟨α, ξ(x)⟩| ≤ |α|` for every `n`-covector `α` and `μ`-a.e. `x`, and the continuous form
+`ω` vanishes off a measurable `K` with `μ(K) < ∞` and `|ω| ≤ ε`, then `|ξ(ω)| ≤ ε 1_K`
+`μ`-a.e., so `ξ(ω)` is `μ⌞E`-integrable and `|∫_E ξ(ω) dμ| ≤ ε μ(K ∩ E) ≤ ε μ(K)`. -/
+theorem Submission.cmcs_rc_pairing_integrable_abs_le : ∀ (P n : ℕ) (μ : Measure (Euclid P)) (ξ : Euclid P → MultiVector P n) (E K : Set (Euclid P)) (ω : DifferentialForm (Euclid P) n) (ε : ℝ), AEStronglyMeasurable ξ μ → (∀ᵐ x ∂μ, ∀ α : Covector (Euclid P) n, |ξ x α| ≤ covectorEuclideanNorm α) → Continuous ω → MeasurableSet K → μ K < ∞ → (∀ x, x ∉ K → ω x = 0) → (∀ x, covectorEuclideanNorm (ω x) ≤ ε) → Integrable (fun x => ξ x (ω x)) (μ.restrict E) ∧ |∫ x in E, ξ x (ω x) ∂μ| ≤ ε * (μ K).toReal := by
+  intro P n μ ξ E K ω ε hξm hξb hω hK hμK hzero hε
+  -- Step 1: `ε ≥ 0`
+  have hε0 : 0 ≤ ε := (covectorEuclideanNorm_nonneg _).trans (hε 0)
+  -- Step 2: `F x = ξ x (ω x)` is a.e. strongly measurable
+  have hmeas : AEStronglyMeasurable (fun x => ξ x (ω x)) μ :=
+    (isBoundedBilinearMap_apply (𝕜 := ℝ) (E := Covector (Euclid P) n)
+      (F := ℝ)).continuous.comp_aestronglyMeasurable₂ (g := fun Λ α => Λ α) hξm
+      hω.aestronglyMeasurable
+  -- Step 3: `‖F x‖ ≤ K.indicator ε x` a.e.
+  have hbd : ∀ᵐ x ∂μ, ‖ξ x (ω x)‖ ≤ K.indicator (fun _ => ε) x := by
+    filter_upwards [hξb] with x hx
+    by_cases hxK : x ∈ K
+    · rw [indicator_of_mem hxK, Real.norm_eq_abs]
+      exact (hx (ω x)).trans (hε x)
+    · rw [indicator_of_notMem hxK, hzero x hxK, map_zero, norm_zero]
+  -- Step 4: the dominating function is integrable
+  have hg : Integrable (K.indicator (fun _ => ε)) μ :=
+    (integrableOn_const hμK.ne).integrable_indicator hK
+  -- Step 5: integrability of `F`, then on `μ.restrict E`
+  have hint : Integrable (fun x => ξ x (ω x)) μ := hg.mono' hmeas hbd
+  refine ⟨hint.restrict, ?_⟩
+  -- Step 6: `‖∫_E F‖ ≤ ∫_E g = ν.real K * ε`
+  have h1 : ‖∫ x in E, ξ x (ω x) ∂μ‖ ≤ ∫ x in E, K.indicator (fun _ => ε) x ∂μ :=
+    norm_integral_le_of_norm_le hg.restrict (ae_restrict_of_ae hbd)
+  rw [integral_indicator_const ε hK, smul_eq_mul] at h1
+  -- Step 7: `ν K = μ (K ∩ E) ≤ μ K`, multiply by `ε ≥ 0`
+  rw [← Real.norm_eq_abs]
+  refine h1.trans ?_
+  rw [mul_comm]
+  refine mul_le_mul_of_nonneg_left ?_ hε0
+  rw [measureReal_def, Measure.restrict_apply hK]
+  exact ENNReal.toReal_mono hμK.ne (measure_mono inter_subset_left)
 /-- Common dominating measure (the common density step of the vector Riesz representation behind
 the mass representation of currents, Simon Ch. 6, 2.7–2.8, used for Simon 7.2.4): if every `aᵢ`
 and `bᵢ` (`i ∈ Fin m`) is finite on compact sets, then so is `μ₀ := ∑ᵢ (aᵢ + bᵢ)`, and
@@ -8002,19 +7937,6 @@ theorem Submission.dimred_mbl_current_foundations : (∀ (P n : ℕ) (U : Set (E
   -- locally finite `M(∂T)`: `μ` vanishes on `Hⁿ`-null sets (2.36)
   exact ⟨μ, ξ, hμU, hμK, hμW, hξ, hξα, hTξ, fun hbd =>
     Submission.dimred_mbl_fnd_null_of_representation P n U T μ ξ hU hbd hμU hμK hμW hξ hξα hTξ⟩
-    by_cases hx : x ∈ K
-    · have h := hN j hj x hx
-      rw [hz, dist_zero_left, norm_iteratedFDeriv_zero] at h
-      exact h.le
-    · rw [image_eq_zero_of_notMem_tsupport (fun h => hx (hsupp j h)), norm_zero]
-      exact hη.le
-  -- Step 5: `|L(ωⱼ)| ≤ c η ≤ |c| η < δ`
-  rw [Real.dist_eq, sub_zero]
-  calc |L (ωs j)| ≤ c * (δ / (|c| + 1)) := hc (ωs j) _ (hsupp j) hsmall
-    _ ≤ |c| * (δ / (|c| + 1)) := mul_le_mul_of_nonneg_right (le_abs_self c) hη.le
-    _ < δ := by
-      rw [mul_div_assoc', div_lt_iff₀ (by positivity)]
-      nlinarith [abs_nonneg c]
 
 /-- **Restriction of a measure-represented current** (Simon Ch. 6, 2.9:
 `T ⌞ A(ω) = ∫_A ⟨ω, T⃗⟩ dμ_T`), for an arbitrary pair `(μ, ξ)` and an arbitrary set `E`: if `μ` is
