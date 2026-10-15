@@ -1,0 +1,85 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "idtp_cse_etp_",
+        "idtp_cone_tangent_cone_planar",
+        "dimred_im_mass_measure",
+        "dtc_blowUp_imrep",
+        "dimred_cs_mi_hasMassDensity_unique",
+        "rsd_imrep_compact_measure_ne_top",
+        "idtp_cse_massOn_ball_lower_bound",
+        "countablyRectifiable_range|hasApproximateTangentSpaceAt_submodule",
+        "euclideanHausdorffMeasure_preimage|euclideanHausdorffMeasure_eq_volume",
+        "theorem integral_map|theorem integral_smul_measure|theorem integral_const_mul",
+        "def apply|ofCompleteSpace|starProjection_eq_self_iff|eq_starProjection_of_mem_of_inner_eq_zero",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/etp_independent_audit_20261013/FrozenBodyCheck.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Projection/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Module/Alternating/Topology.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-51d5a412de/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-51d5a412de/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-im-mass-measure-a1/comparison-identity-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-scaling-a1-rep-pushforward-a1/comparison-identity-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-regular-set-dense-a1-density-eq-multiplicity-a1-imrep-local-finiteness-a1/comparison-identity-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-cone-splitting-a1-measure-invaria-4c3c1790aa/comparison-identity-v1.json",
+        "/tmp/etp_independent_audit_20261013/FrozenBodyCheck.lean"
+      ],
+      "conclusion": "The seven-way split is appropriate and establishes this selected parent contract. All names are bare, distinct and unreserved; searches found no conflicting DAG declaration or other decomposition. Dependencies are correctly directed and acyclic, including external prerequisites. Reused accepted types exactly match comparator records, whose permitted axioms were checked. Every child type is a standalone one-line proposition matching its prose. A scratch module containing byte-identical frozen declaration bodies compiled all standalone types, seven proofs and the exact parent assembly (exit 0). Five children use only standard axioms; blowup_vague_limit and edge_direction_support additionally use exactly their stated accepted prerequisites. The parent uses exactly six documented external prerequisites, including the two pending results. No audited proof depends on sorryAx. Projection, measure scaling and alternating-map instances are appropriate; no matrix-unit construction occurs."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "plane_imrep",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Prose and type agree for arbitrary n, including zero. The proof supplies every IMRep field, establishes compact-local finiteness through the isometric parametrization, and correctly computes orientation, action and measure. Pulling a real constant outside the integral requires no additional integrability hypothesis."
+    },
+    {
+      "key": "blowup_vague_limit",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof constructs the limit representation using plane_imrep, obtains the exact push-forward measure from the accepted blow-up lemma, and applies MassMeasuresConverge with the correct varying domains. The resulting limit holds for every representation and test function without choosing another subsequence."
+    },
+    {
+      "key": "plane_frame_sign",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All frame and dimension hypotheses match. Equal-dimensional span inclusions establish the plane equality; the coordinate determinant satisfies D² = 1, and alternation gives the asserted common integer sign for every covector. No circularity or matrix-instance ambiguity occurs."
+    },
+    {
+      "key": "rescaled_limit_mem",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The bump-function contradiction proves the exact statement. Compact-local finiteness justifies integrability and finite ENNReal-to-real comparisons. The eventual lower bound contradicts the zero limit outside closed S. Neither positivity of m nor convergence of the scales to zero is needed."
+    },
+    {
+      "key": "edge_direction_support",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The polar coefficient identity works for arbitrary a and e, so no orthonormality hypothesis is missing. Taking l₀ = δ is valid. The accepted mass/support identity and uniqueness of density limits rigorously exclude positive-density points outside the support."
+    },
+    {
+      "key": "cusp",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The contradiction sequence has strictly positive distances tending to zero. Both subsequence passages preserve the required common vague convergence. The lower bound supplies rescaled_limit_mem, while continuity of the projection defect yields the contradiction. The declared dependency is sufficient and non-circular."
+    },
+    {
+      "key": "localization",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof establishes the projection formula and every normalization identity under the stated hypotheses. The choice s₀ = min(1/4, s₁/6) permits applying the cusp bound, which gives η < 4s'/27 and both claimed strict inequalities. The constants and strictness are correct."
+    }
+  ],
+  "required_changes": []
+}

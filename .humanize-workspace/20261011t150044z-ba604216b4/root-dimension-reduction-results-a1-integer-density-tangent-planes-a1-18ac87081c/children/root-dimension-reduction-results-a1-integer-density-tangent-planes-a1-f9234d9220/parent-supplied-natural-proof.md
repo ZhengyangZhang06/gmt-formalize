@@ -1,0 +1,54 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_sector_endpoint_density-a1`
+- Child DAG node: `root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_sector_endpoint_density-a1.stationary_radial-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: parent step 5 (stationarity from minimality, Simon 7.1.2; radial tangency from the accepted cone lemma). Notation: μ := R.measure, H^n := μHE[n].
+1. (Stationarity along ℝ^P.) Case P < n: every n-covector on ℝ^P vanishes (n vectors in a space of dimension P < n are linearly dependent, and alternating maps vanish on linearly dependent families, Mathlib `AlternatingMap.map_linearDependent`), so every test form is 0 and C = 0; then M_{ℝ^P}(C) = 0, so μ(ℝ^P) = M_{ℝ^P}(C) = 0 by `Submission.dimred_im_mass_measure` (a) (U = W = univ), hence μ = 0, H^n(M) ≤ μ(M) = 0 (θ ≥ 1 on M), R.firstVariation X = ∫_M θ·div_M X dH^n = 0 for every X, and (b) holds trivially; the statement follows. Case P ≥ n: write P = n + k₀ (P is a bound variable, so it may be replaced by n + k₀). Apply `Submission.minimizing_implies_stationary` (Simon 7.1.2, the result cited in the parent's step 5) with k := ℓ := k₀ (ℓ ≤ k), U := N := univ, T := C. Its hypotheses hold: univ is open; IsEmbeddedSubmanifold 2 (n + k₀) univ holds with the identity chart (V := W := univ, ψ := id: id is C^∞ and injective, id '' univ = univ ∩ univ, V ∩ id⁻¹(K) = K is compact for compact K ⊆ W, fderiv ℝ id z = id is injective); (closure univ ∖ univ) ∩ univ = ∅; spt C ⊆ univ; IsMinimizingIn C (univ ∩ univ) since univ ∩ univ = univ; BoundaryVanishes C. For the given R it yields R.IsStationaryAlong univ, i.e. R.firstVariation X = 0 for every X with ContDiff ℝ 1 X, HasCompactSupport X, tsupport X ⊆ univ and X(x) ∈ tangentSpace univ x for every x ∈ univ ∩ univ. (Optional alternative, not needed for the argument: `Submission.stationaryAlong_of_minimizing_in_submanifold` with U := N := univ, d := P, T := C gives R.IsStationaryAlong univ directly, without the case split; its hypotheses are the ones just listed together with R.Represents C and H^n(M ∖ univ) = H^n(∅) = 0.)
+2. (Tangent space of ℝ^P.) tangentSpace univ x = ℝ^P for every x: for v ∈ ℝ^P the curve γ(t) := x + t·v is C¹ on (−1, 1), maps (−1, 1) into univ, γ(0) = x and HasDerivAt γ v 0. Hence every X satisfies the tangency condition of step 1, and tsupport X ⊆ univ holds trivially. This proves (a).
+3. (Cone scaling of balls.) By `Submission.cone_current_imrep_measure_smul_image` (C is a cone and R represents C), μ(λ•A) = ofReal(λ^n)·μ(A) for every λ > 0 and Borel A. For ρ > 0, ρ•B_1(0) = B_ρ(0) (Mathlib `smul_unitBall`: c•B(0, 1) = B(0, ‖c‖) for c ≠ 0), so μ(B_ρ(0)) = μ(B_1(0))·ofReal(ρ^n).
+4. (Radial tangency.) Apply `Submission.dtc_cone_radial_tangency` to R with a := μ(B_1(0)) ∈ [0, ∞]: its first hypothesis is (a) and its second is step 3. It gives p_{T_x}(x) = x for μ-a.e. x, which is (b). ∎
+
+## Key steps
+
+1. If P < n then C = 0 and μ = 0 (trivial); otherwise P = n + k₀ and minimizing_implies_stationary with U = N = ℝ^P (identity chart) gives stationarity along ℝ^P.
+2. tangentSpace ℝ^P x = ℝ^P, so R.firstVariation X = 0 for every C¹ compactly supported X.
+3. cone_current_imrep_measure_smul_image gives μ(B_ρ(0)) = μ(B_1(0))·ρ^n.
+4. dtc_cone_radial_tangency gives p_{T_x}(x) = x for μ-a.e. x.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `python3 scan of dag.json: status/lean_statement of the selected node, its siblings (idtp_cone_tangent_cone_planar, idtp_imrep_measure_density_ae, idtp_carrier_area_formula) and the cross-branch results dimred_im_mass_measure, dimred_minimizing_monotonicity, minimizing_implies_stationary, stationaryAlong_of_minimizing_in_submanifold, cone_current_imrep_measure_smul_image, imrep_represents_support_eq_inter_measure_support, imrep_approxTangent_starProjection_aesm, dtc_blowUp_massOn_image, dtc_blowUp_imrep, dtc_blowUp_testForm_corr, dtc_approxTangent_dilation, dtc_approxTangent_of_null_diff, dtc_cone_radial_tangency, dsmc_firstVariation_eq_integral`
+- `python3 DAG reachability from each external dependency (depends_on + children) to the selected node: none reaches it`
+- `grep -o 'idtp_cse_[A-Za-z0-9_]*' dag.json (no match); grep -rl idtp_cse_ nodes/ (only this node's own v1 records); grep -rl --include=*.lean idtp_cse_ .swarm-worktrees/*/gmt-ch07/GMT (no match); grep -rl idtp_cse_ local-references/123e8435b4a2469b/project (no match)`
+- `grep -rn 'hasApproximateTangentSpaceAt_submodule|HasApproximateTangentSpaceAt.unique|HasApproximateTangentSpaceAt.finrank_eq|countablyRectifiable_range|ae_eq_const_of_weak_coordinate_derivatives_zero|def CountablyRectifiable|def HasApproximateTangentSpaceAt' .lake/packages/simongmt/Poincare/SimonGMT`
+- `grep -rn 'lintegral_comp_polarCoord_symm|IsOpen.ae_eq_zero_of_integral_contDiff_smul_eq_zero|smoothTransition|support_mem_ae|volume_preserving_finTwoArrow|PiLp.volume_preserving_ofLp|Isometry.euclideanHausdorffMeasure_image|euclideanHausdorffMeasure_eq_volume|euclideanHausdorffMeasure_smul₀|lintegral_withDensity_eq_lintegral_mul_non_measurable|map_linearDependent|smul_unitBall|integral_eq_lintegral_of_nonneg_ae|measure_prod_null|exists_measurable_superset_of_null|ContinuousMap.instSeparableSpace' .lake/packages/mathlib/Mathlib`
+- `lake env lean /tmp/cse2/check/Stmts.lean (all 11 child types plus the parent type elaborate; only sorry warnings)`
+- `lake env lean /tmp/cse2/check/Parent.lean (hypothesis-only assembly of the parent from edge_tangent_plane, box_mass_limits, fibre_count; #print axioms: propext, Classical.choice, Quot.sound)`
+- `gh issue view 4821 --comments; issue-workers.json, run.json, operator-dependency-edits and decomposition-reopenings inspected for the cause of the unregistered attempt-1 decomposition`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-18ac87081c/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-18ac87081c/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-18ac87081c/decomposition-audit-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/DistributionalConstancy.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/mathlib/Mathlib/Analysis/SpecialFunctions/PolarCoord.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/mathlib/Mathlib/Analysis/Distribution/AEEqOfIntegralContDiff.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/mathlib/Mathlib/MeasureTheory/Measure/Support.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/mathlib/Mathlib/Topology/ContinuousMap/SecondCountableSpace.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/mathlib/Mathlib/MeasureTheory/Measure/WithDensity.lean`
+- `/tmp/cse2/check/Stmts.lean`
+- `/tmp/cse2/check/Parent.lean`
+
+Pins and contract match: the workspace Submission.lean (GMT.Ch07, frozen opens) is the compiler authority, with mathlib 25730c7c and SimonGMT 2b36630. All Mathlib and SimonGMT names cited in the child proofs exist at these pins, including countablyRectifiable_range and the hereditarily-Lindelöf support_mem_ae. The 11 proposed idtp_cse_* names are unreserved: they occur in no DAG node, other node record, worktree or the snapshot. The only occurrences are this node's own unregistered attempt-1 records, which hold identical Lean types. All 11 types elaborate. The parent follows from edge_tangent_plane, box_mass_limits and fibre_count, kernel-checked with standard axioms only. External prerequisites are the accepted dtc_*/dimred_im_mass_measure/imrep_*/dsmc_*/cone_current_* lemmas and the pending minimizing_implies_stationary, dimred_minimizing_monotonicity and the three parent siblings; their DAG types match their uses and none depends back on this node.

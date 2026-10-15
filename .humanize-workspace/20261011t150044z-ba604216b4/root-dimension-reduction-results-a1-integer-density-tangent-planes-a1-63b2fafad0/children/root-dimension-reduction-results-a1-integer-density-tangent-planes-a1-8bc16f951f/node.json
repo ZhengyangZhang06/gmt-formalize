@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_sector_endpoint_density-a1.alpha_homogeneous-a1.countable_separating_tests-a1.ae_zero_of_rat_intervals-a1",
+  "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_sector_endpoint_density-a1.alpha_homogeneous-a1.countable_separating_tests-a1",
+  "depth": 6,
+  "title": "Vanishing integrals over all rational subintervals force a.e. vanishing",
+  "statement": "Let c, d be real numbers and let w : ℝ → ℝ be Lebesgue-integrable on (c, d). If ∫_{(p,q)} w(α) dα = 0 for all rational numbers p, q with c < p < q < d, then w vanishes almost everywhere on (c, d): for almost every α ∈ ℝ, α ∈ (c, d) implies w(α) = 0.",
+  "lean_statement": "∀ (c d : ℝ) (w : ℝ → ℝ), IntegrableOn w (Ioo c d) → (∀ p q : ℚ, c < (p : ℝ) → (p : ℝ) < (q : ℝ) → (q : ℝ) < d → ∫ α in Ioo (p : ℝ) (q : ℝ), w α = 0) → ∀ᵐ α, α ∈ Ioo c d → w α = 0",
+  "lean_name": "idtp_cse_ah_cst_ae_zero_of_rat_intervals",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-8bc16f951f-a1"
+}

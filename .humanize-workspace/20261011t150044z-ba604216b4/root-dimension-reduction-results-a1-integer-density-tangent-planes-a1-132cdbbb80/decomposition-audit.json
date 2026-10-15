@@ -1,0 +1,95 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "idtp_cse_ah_",
+        "theorem IsOpen.ae_eq_zero_of_integral_contDiff_smul_eq_zero",
+        "theorem ae_tendsto_average",
+        "IsUnifLocDoublingMeasure",
+        "theorem (setIntegral_prod_mul|integral_prod_mul)",
+        "Python comparison of proposed names and exact Lean types against dag.json; dependency-cycle check; exact comparison with the supplied assembly premises and conclusions",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/ah-independent-audit/Contracts.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/ah-independent-audit/API.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/ah-decomp/final/Checks.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/ah-independent-audit/UnavailableAPI.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-132cdbbb80/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-132cdbbb80/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Distribution/AEEqOfIntegralContDiff.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Prod.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Prod.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Covering/DensityTheorem.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/EqHaar.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Haar/NormedSpace.lean",
+        "/tmp/ah-independent-audit/Contracts.lean",
+        "/tmp/ah-independent-audit/API.lean",
+        "/tmp/ah-independent-audit/UnavailableAPI.lean",
+        "/tmp/ah-decomp/final/Checks.lean"
+      ],
+      "conclusion": "The split is appropriate for the selected analytic theorem. All nine exact propositions independently elaborate without declaring or implementing any child. Their prose includes the hypotheses, and their bare identifiers are unreserved; no identical existing DAG declaration was found for reuse. The four sibling dependency edges are correctly directed and acyclic. Independently rerunning the supplied assemblies proves that the exact child contracts imply the selected parent's frozen s/8 conclusion and that the four prerequisites imply slice_ae_const. The bump and product-reduction proofs also compile. These checks and the inspected library results use only propext, Classical.choice and Quot.sound. Product-volume and doubling instances were verified; product factorization genuinely requires no integrability assumptions. Compiler probes confirm the three cited unavailable APIs are unavailable, while the replacement proofs' principal APIs are available. The snapshot Submission matches the workspace source, and mathlib matches the pinned revision."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "normalized_bump",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type matches the prose. The explicit smooth-transition construction has compact support strictly inside the interval and positive integral; normalization gives integral one. The supplied construction independently compiles."
+    },
+    {
+      "key": "antiderivative_test",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof handles empty support, so no additional c < d hypothesis is needed. Otherwise compact support provides interior endpoints; FTC gives deriv ψ = g everywhere, and the zero integral forces the primitive to vanish beyond its support. This proves the exact C¹ and tsupport conclusions."
+    },
+    {
+      "key": "slice_integral_ae_zero",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The hypotheses match exactly. Bounded compactly supported factors justify integrability and Fubini, support conditions justify whole-space integral identities, and the fundamental lemma gives precisely the stated almost-everywhere slice conclusion."
+    },
+    {
+      "key": "countable_separating_tests",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The supplied proof completely constructs the sequence, including empty intervals and invalid enumeration entries. Dominated convergence gives vanishing rational-interval integrals; continuity of the primitive and Lebesgue differentiation establish the exact separating property without circular reliance."
+    },
+    {
+      "key": "slice_ae_const",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The four declared dependencies suffice and are acyclic. Mean-zero corrected tests admit supported antiderivatives; countable intersection makes their slice identities simultaneous. Subtracting the normalized-bump average then permits the separating lemma. The exact hypothesis-only assembly independently compiles."
+    },
+    {
+      "key": "ae_eq_slice_average",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The measurable-representative argument supplies the measurability required to reverse the iterated almost-everywhere statement. Since c < d, each slice constant equals its stated average. Product Fubini and the projection's null-set preservation transfer the equality back to H."
+    },
+    {
+      "key": "product_integral_reduce",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The unusually general contract is valid: the pinned setIntegral_prod_mul identity has no integrability hypotheses. Support localization, almost-everywhere substitution and normalization prove exactly the displayed identity. The supplied proof independently compiles."
+    },
+    {
+      "key": "ae_scaling_of_weak_scaling",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Positive r justifies the change of variables and cancellation. Both interval-integrability hypotheses are correctly used to justify the tested difference and integral linearity. The fundamental lemma yields the exact almost-everywhere scaling conclusion."
+    },
+    {
+      "key": "ae_linear_of_ae_scaling",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Almost-everywhere strong measurability suffices through the measurable representative and null-set transfers under nonzero scaling. Tonelli correctly exchanges the exceptional-set quantifiers; the chosen u₀ and explicit interval bounds give precisely the s/8 window, including s = 1."
+    }
+  ],
+  "required_changes": []
+}

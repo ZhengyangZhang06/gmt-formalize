@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_sector_endpoint_density-a1.fibre_area-a1.polar_jacobian-a1.gram_det_two_plane-a1",
+  "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_sector_endpoint_density-a1.fibre_area-a1.polar_jacobian-a1",
+  "depth": 6,
+  "title": "Gram determinant of two linear functionals restricted to a 2-plane (Lagrange identity + Parseval)",
+  "statement": "Let P ∈ ℕ, T a linear subspace of ℝ^P with dim T = 2, (u_i)_{i ∈ Fin(dim T)} := stdOrthonormalBasis ℝ T (vectors of T viewed in ℝ^P), p_T := T.starProjection, and p, q ∈ ℝ^P. Let G be the dim T × dim T matrix G_ij := ⟨p,u_i⟩⟨p,u_j⟩ + ⟨q,u_i⟩⟨q,u_j⟩. Then det G = |p_T p|²·|p_T q|² − ⟨p_T p, p_T q⟩².",
+  "lean_statement": "∀ (P : ℕ) (T : Submodule ℝ (Euclid P)) (p q : Euclid P), Module.finrank ℝ T = 2 → Matrix.det (Matrix.of fun i j : Fin (Module.finrank ℝ T) => inner ℝ p (stdOrthonormalBasis ℝ T i : Euclid P) * inner ℝ p (stdOrthonormalBasis ℝ T j : Euclid P) + inner ℝ q (stdOrthonormalBasis ℝ T i : Euclid P) * inner ℝ q (stdOrthonormalBasis ℝ T j : Euclid P)) = ‖T.starProjection p‖ ^ 2 * ‖T.starProjection q‖ ^ 2 - inner ℝ (T.starProjection p) (T.starProjection q) ^ 2",
+  "lean_name": "idtp_cse_fa_pj_gram_det_two_plane",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-7906a25b77-a1"
+}
