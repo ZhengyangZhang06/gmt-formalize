@@ -141177,4 +141177,66 @@ theorem Submission.idtp_tdc_acont_endpoint_density : ∀ (P : ℕ) (C : Geometri
     (Real.cos φ₀ • z + Real.sin φ₀ • e) (Real.sin φ₀ • z - Real.cos φ₀ • e) φ₀ k hmin hbd hcone hQ
     (hγQ φ₀) heaQ (hnorm φ₀) hea hae hφ₀ hk hasupp hsector⟩
 
+/-- **Continuation along a great circle of a 2-dimensional minimizing cone** (proof of 7.3.3(1),
+case `n − d = 2`, chapter-07.txt lines 497–510, where the structure of 2-dimensional minimizing
+cones is cited to [Whi82]).  Let `C ∈ 𝒟₂(ℝᴾ)` be a minimizing cone with `∂C = 0`, let `z, e` be
+an orthonormal pair in the 2-plane `Q`, let `γ(φ) = cos φ·z + sin φ·e`, and call `γ(φ)` *good* if
+for some `ε > 0`, `spt C ∩ B_ε(γ(φ)) = Q ∩ B_ε(γ(φ))` and `Θ²(μ_C, y) = k` for every
+`y ∈ spt C ∩ B_ε(γ(φ))`.  If `γ(0) = z` is good and the density of `C` is locally constant near
+every `γ(φ) ∈ spt C` with `Θ²(μ_C, γ(φ)) = k`, `0 < φ < L`, then `γ(φ)` is good for every
+`0 ≤ φ < L`.  Goodness of `γ(φ)` with radius `ε` passes to `γ(ψ)` with radius `ε/2` for
+`φ < ψ < φ + ε/2`, as `γ` is `1`-Lipschitz (`idtp_tdc_acont_great_circle`).  If `γ(ψ)` is good for
+all `0 ≤ ψ < φ`, then `a = γ(φ) ∈ spt C` and `Θ²(μ_C, a) = k`
+(`idtp_tdc_acont_endpoint_density`); the constant density `k'` near `a` is `Θ²(μ_C, a) = k` by
+uniqueness of densities, so `a` is good (`idtp_tdc_acont_endpoint_plane`).  Real induction on
+`[0, L)` (`idtp_tdc_acont_real_induction`) concludes. -/
+theorem Submission.idtp_tdc_arc_continuation : ∀ (P : ℕ) (C : GeometricCurrentOn (univ : Set (Euclid P)) 2) (Q : Submodule ℝ (Euclid P)) (z e : Euclid P) (k : ℕ) (L : ℝ), IsMinimizingIn C univ → BoundaryVanishes C → IsConeCurrent C → Module.finrank ℝ Q = 2 → z ∈ Q → e ∈ Q → ‖z‖ = 1 → ‖e‖ = 1 → inner ℝ z e = 0 → 1 ≤ k → (∃ ε : ℝ, 0 < ε ∧ C.support ∩ ball z ε = (Q : Set (Euclid P)) ∩ ball z ε ∧ ∀ y ∈ C.support, y ∈ ball z ε → HasMassDensity C y k) → (∀ φ : ℝ, 0 < φ → φ < L → Real.cos φ • z + Real.sin φ • e ∈ C.support → HasMassDensity C (Real.cos φ • z + Real.sin φ • e) k → ∃ (δ : ℝ) (k' : ℕ), 0 < δ ∧ ∀ y ∈ C.support, y ∈ ball (Real.cos φ • z + Real.sin φ • e) δ → HasMassDensity C y k') → ∀ φ : ℝ, 0 ≤ φ → φ < L → ∃ ε : ℝ, 0 < ε ∧ C.support ∩ ball (Real.cos φ • z + Real.sin φ • e) ε = (Q : Set (Euclid P)) ∩ ball (Real.cos φ • z + Real.sin φ • e) ε ∧ ∀ y ∈ C.support, y ∈ ball (Real.cos φ • z + Real.sin φ • e) ε → HasMassDensity C y k := by
+  intro P C Q z e k L hmin hbd hcone hQ hzQ heQ hz he hze hk hstart hconst
+  -- Step 0: `γ` is `1`-Lipschitz
+  obtain ⟨-, hlip, -⟩ := Submission.idtp_tdc_acont_great_circle P z e hz he hze
+  -- Step 2 (first failure): real induction on `[0, L)` for `G(φ)` := "`γ(φ)` is good"
+  refine Submission.idtp_tdc_acont_real_induction (fun φ => ∃ ε : ℝ, 0 < ε ∧
+      C.support ∩ ball (Real.cos φ • z + Real.sin φ • e) ε =
+        (Q : Set (Euclid P)) ∩ ball (Real.cos φ • z + Real.sin φ • e) ε ∧
+      ∀ y ∈ C.support, y ∈ ball (Real.cos φ • z + Real.sin φ • e) ε → HasMassDensity C y k)
+    L ?_ ?_ ?_
+  -- `G(0)` is hypothesis (i), as `γ(0) = z`
+  · simpa only [Real.cos_zero, Real.sin_zero, one_smul, zero_smul, add_zero] using hstart
+  -- Step 1 (goodness is open): `G(φ)` with radius `ε` gives `G(ψ)` with radius `ε/2` for
+  -- `φ < ψ < φ + ε/2`, since `|γ(ψ) − γ(φ)| ≤ ψ − φ < ε/2` gives `B_{ε/2}(γ(ψ)) ⊆ B_ε(γ(φ))`
+  · rintro φ - - ⟨ε, hε, hsupp, hdens⟩
+    refine ⟨ε / 2, half_pos hε, fun ψ hφψ hψε => ?_⟩
+    have hsub : ball (Real.cos ψ • z + Real.sin ψ • e) (ε / 2) ⊆
+        ball (Real.cos φ • z + Real.sin φ • e) ε := by
+      refine ball_subset_ball' ?_
+      have hψφ := hlip ψ φ
+      rw [abs_of_pos (sub_pos.2 hφψ)] at hψφ
+      rw [dist_eq_norm]
+      linarith
+    refine ⟨ε / 2, half_pos hε, ?_, fun y hy hyψ => hdens y hy (hsub hyψ)⟩
+    rw [← inter_eq_right.2 hsub, ← inter_assoc, hsupp, inter_assoc]
+  -- `G` on `[0, φ)` with `0 < φ < L` gives `G(φ)`
+  · intro φ hφ0 hφL hbelow
+    -- Steps 3–4: `a = γ(φ) ∈ spt C` and `Θ²(μ_C, a) = k`
+    obtain ⟨ha, hak⟩ := Submission.idtp_tdc_acont_endpoint_density P C Q z e k φ hmin hbd hcone
+      hQ hzQ heQ hz he hze hk hφ0 fun ψ hψ0 hψφ => hbelow ψ hψ0.le hψφ
+    -- Step 5: hypothesis (ii) gives density `k'` on `spt C ∩ B_δ(a)`, and `k' = Θ²(μ_C, a) = k`
+    obtain ⟨δ, k', hδ, hdens⟩ := hconst φ hφ0 hφL ha hak
+    have hk' : k' = k := by
+      exact_mod_cast Submission.dimred_cs_mi_hasMassDensity_unique P 2 univ C _ _ _
+        (hdens _ ha (mem_ball_self hδ)) hak
+    rw [hk'] at hdens
+    -- Steps 6–7: the arc `γ((0, φ))` lies in `spt C` (each `γ(ψ)` is the centre of a good ball),
+    -- so the plane at `a` is `Q` and `a` is good
+    refine Submission.idtp_tdc_acont_endpoint_plane P C Q z e k φ δ hmin hbd hcone hQ hzQ heQ hz
+      he hze hφ0 (fun ψ hψ0 hψφ => ?_) ha hδ hdens
+    obtain ⟨ε, hε, hsupp, -⟩ := hbelow ψ hψ0.le hψφ
+    have hψQ : Real.cos ψ • z + Real.sin ψ • e ∈ Q :=
+      Q.add_mem (Q.smul_mem _ hzQ) (Q.smul_mem _ heQ)
+    have hψ : Real.cos ψ • z + Real.sin ψ • e ∈
+        (Q : Set (Euclid P)) ∩ ball (Real.cos ψ • z + Real.sin ψ • e) ε :=
+      ⟨hψQ, mem_ball_self hε⟩
+    rw [← hsupp] at hψ
+    exact hψ.1
+
 end GMT.Ch07
