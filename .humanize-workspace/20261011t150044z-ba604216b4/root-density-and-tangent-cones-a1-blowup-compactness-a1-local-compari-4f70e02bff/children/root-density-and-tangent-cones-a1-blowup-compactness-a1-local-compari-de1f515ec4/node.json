@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.slicing-a1.chart_coarea-a1.jacobian_identity-a1",
+  "parent_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.slicing-a1.chart_coarea-a1",
+  "depth": 6,
+  "title": "Jacobian identity (★) for the level-set parametrisation (parent steps 0(c) and 2)",
+  "statement": "Let n, P ∈ ℕ. Let A : ℝ^{n+1} → ℝ^P be an injective linear map and ℓ : ℝ^{n+1} → ℝ linear. Let v ∈ A(ℝ^{n+1}) satisfy ⟨v, Ae⟩ = ℓ(e) for all e ∈ ℝ^{n+1}. Let D : ℝ^{n+1} → ℝ^{n+1} be an injective linear map with ℓ(Dz) = z_0 for all z. Let ι : ℝⁿ → ℝ^{n+1} be linear with (ιw)_0 = 0 and (ιw)_{i+1} = w_i (i < n). Put C := A∘D∘ι, and for a linear map X between finite-dimensional inner product spaces let J(X) := √det(X*X). Then C is injective, C(ℝⁿ) = A(ℝ^{n+1}) ∩ (ℝv)^⊥, and J(C) = |v|·J(A)·|det D|.",
+  "lean_statement": "∀ (n P : ℕ) (A : Euclid (n + 1) →L[ℝ] Euclid P) (ℓ : Euclid (n + 1) →L[ℝ] ℝ) (v : Euclid P) (D : Euclid (n + 1) →L[ℝ] Euclid (n + 1)) (ι : Euclid n →L[ℝ] Euclid (n + 1)), Injective A → v ∈ LinearMap.range (A : Euclid (n + 1) →ₗ[ℝ] Euclid P) → (∀ e, inner ℝ v (A e) = ℓ e) → Injective D → (∀ z, ℓ (D z) = z 0) → (∀ w, ι w 0 = 0 ∧ ∀ i : Fin n, ι w i.succ = w i) → Injective (A ∘L D ∘L ι) ∧ LinearMap.range ((A ∘L D ∘L ι : Euclid n →L[ℝ] Euclid P) : Euclid n →ₗ[ℝ] Euclid P) = LinearMap.range (A : Euclid (n + 1) →ₗ[ℝ] Euclid P) ⊓ (ℝ ∙ v)ᗮ ∧ Real.sqrt (((A ∘L D ∘L ι).adjoint ∘L (A ∘L D ∘L ι)).det) = ‖v‖ * Real.sqrt ((A.adjoint ∘L A).det) * |D.det|",
+  "lean_name": "dtc_bc_lc_sl_cc_jacobian_identity",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-compari-de1f515ec4-a1"
+}

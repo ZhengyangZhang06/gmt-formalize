@@ -1,0 +1,143 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.dimension_reduction_results-a1.moving_blowups-a1.deformation_theorem-a1`
+- Child DAG node: `root.dimension_reduction_results-a1.moving_blowups-a1.deformation_theorem-a1.skeleton_deformation-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: steps E1–E5 of the parent proof (Simon Ch. 6, proof of 5.1, displays (1)–(25)) together with the trivial cases of E0, giving the parent's (21), (24), (25), the integrality of Q₀, R₁ and the supports of E5. Differences from the parent's text:
+ - the good centre (E1), the retraction (Lemma D), the push-forward/homotopy calculus (Parts A–B) and the summation of integer multiplicity pieces (closing step of B3) are the sibling theorems dimred_mbl_dt_good_center (GC), dimred_mbl_dt_skeleton_retraction (RET), dimred_mbl_dt_lipschitz_pushforward_homotopy (PF) and dimred_mbl_dt_im_series (IMS);
+ - the parent's X_ν = X_0 + Σ_{i<ν}Y_i is used through its dyadic shells: below W_0 = X_0 = T⌞{d ≥ ρ*_0}, W_{i+1} = Y_i = T⌞shell_i, r_ν = ρ*_ν, and each shell is deformed with its own Lipschitz extension of ψ, as in the parent's E3 estimates;
+ - integrality of Q₀ and R₁ (parent E4) is obtained by applying the closing combination step of B3 (= IMS) directly to the integer multiplicity shell contributions, using the parent's identity Φ_ψ(T) = ψ_#X_0 + Σ_iψ_#Y_i = Q₀ in this summed form; the parent's own route through Φ_ψ for the locally Lipschitz ψ performs the same combination over a finer partition;
+ - (L*(a), d, L_n as in Part D; constants c₂, Nβ of the parent become c_R, C_G below.)
+
+Notation. n := m + 1. (VO), (MR), (REP), (IMC), (SL) are the five displayed hypotheses. All currents are on univ in ℝ^P. For currents A, B, "A + B" abbreviates A − (0 − B) (the contract's subtraction is pointwise, and currents with equal values are equal, GeometricCurrentOn.ext). ‖ω‖ := sup_x|ω(x)|, and |X(ω)| ≤ M(X)‖ω‖ for every current X (for ε > 0, ±ω/(‖ω‖ + ε) is admissible; let ε ↓ 0). NC_k := k-currents with compact support, finite mass and (k ≥ 1) finite boundary mass; NC_k is closed under differences. Support facts (from the definitions and (VO)): spt(A − B) ⊆ spt A ∪ spt B; spt ∂A ⊆ spt A; spt 0 = ∅; a current vanishing on every test form whose support is disjoint from a closed set E has support in E (every x ∉ E has a ball with compact closure disjoint from E). L_n := {x : ∃ s, P ≤ n + |s|, x_i ∈ ℤ (i ∈ s)} is closed (a finite union of the closed sets {x : x_i ∈ ℤ, i ∈ s}).
+
+1. Trivial cases (parent E0). If n ≥ P then L_n = ℝ^P (s = ∅). Take Q₀ := T, R₁ := 0, S₁ := 0 and c := 1: T − T − 0 = 0 = ∂0, T and 0 are integer multiplicity, the mass bounds are equalities or 0 ≤ ·, and spt T ⊆ cthickening(√P, spt T), spt ∂T ⊆ cthickening(√P, spt ∂T), spt 0 = ∅ (this is the parent's ℓ = 0 case Q₀ := T, R₁ := S₁ := 0; the case n > P is included). From now on n < P, so RET and GC apply. Let c_R > 0 be RET's constant, C_G := (GC's constant) + 1 > 0, c₄ := 8(1 + √Pc_R), and
+ c := max(1, c₄ⁿ(1 + 2C_G), √P2ⁿc₄ⁿ(1 + 2C_G), √P(2c₄)^{n−1}(1 + 2C_G), c₄^{n−1}(1 + 2C_G)),
+ which depends only on P and m. Let (push, homot) be the operators of PF applied to (VO), (MR), (REP), (IMC). The zero current (in every degree) is integer multiplicity (the IMRep with empty carrier, multiplicity 0, orientation 0). Let T be as in the statement. If M(T) = 0 then T = 0 (|T(ω)| ≤ M(T)‖ω‖), ∂T = 0, and Q₀ = R₁ = S₁ = 0 work. Assume M(T) > 0.
+
+2. Measures (parent E0, E2). Let R_T = (M, θ, ξ) be an IMRep of T and μ_T := R_T.measure = θHⁿ⌞M. By (MR), μ_T(W) = M_W(T) for open W, so μ_T(ℝ^P) = M(T) < ∞, and μ_T(ℝ^P ∖ spt T) = M_{ℝ^P∖spt T}(T) = 0 ((MR) on the open set ℝ^P ∖ spt T; every admissible form supported there is killed by T by (VO)). Further: T(ω) = ∫ξ(ω) dμ_T (definition of Represents and of the density measure); ξ is μ_T-a.e. strongly measurable (μ_T ≪ Hⁿ⌞M); |ξ(x)(α)| ≤ |α| for μ_T-a.e. x by (IMC)(d); μ_T is finite on compact sets. Since M(∂T) < ∞, (REP) (U = univ) gives μ_∂, ξ_∂ with μ_∂(W) = M_W(∂T) for open W, |ξ_∂| ≤ 1 and ∂T(η) = ∫ξ_∂(η) dμ_∂; moreover μ_∂(ℝ^P) = M(∂T) and μ_∂(ℝ^P ∖ spt ∂T) = M_{ℝ^P∖spt ∂T}(∂T) = 0 ((REP) on that open set and (VO)).
+
+3. Good centre (parent E1; GC). GC applied to the finite measures μ_T, μ_∂ gives a with |a_i − 1/2| < 1/4 such that, for d := dist(·, L*(a)), L*(a) the set of y with at least m + 2 coordinates in a_i + ℤ,
+ (6) μ_T({d < r}) ≤ C_Gr^{n+1}M(T), (7) μ_∂({d < r}) ≤ C_Gr^{n+1}M(∂T) for r ∈ (0, 1/4].
+ In particular μ_T({d = 0}) = μ_∂({d = 0}) = 0.
+
+4. Retraction (parent Lemma D; RET). RET with this a gives ψ with: if d(x) > 0 then ψ(x) ∈ L_n and |ψ(x) − x| ≤ √P; and ψ is (c_R/r)-Lipschitz on {d ≥ r} for r ∈ (0, 1/4]. For r ∈ (0, 1/4] let φ_r be the componentwise McShane extension of ψ|{d ≥ r} (Mathlib LipschitzOnWith.extend_real for each coordinate x ↦ ψ(x)_i, which is (c_R/r)-Lipschitz on {d ≥ r}); the parent's "extensions: factor ≤ √P". Then φ_r : ℝ^P → ℝ^P is (√Pc_R/r)-Lipschitz and φ_r = ψ on {d ≥ r}. Put Λ(r) := max(1, √Pc_R/r); id and φ_r are Λ(r)-Lipschitz, and Λ(r) ≤ c₄2^j whenever r ≥ 2^{−j−3}.
+
+5. Slicing and good radii (parent E2; Simon (8)–(10)). Apply (SL) with U = univ, k = m, T, μ := μ_T, μ' := μ_∂, ξ, ξ' := ξ_∂, f := d, L := 1 (d is 1-Lipschitz; the measures are finite on compact sets, and the a.e. bounds and representations hold by 2). This gives currents A_t ∈ 𝒟_n, B_t ∈ 𝒟_{n−1} (the parent's T_t = T⌞{d < t} and (∂T)_t) with A_t(ω) = ∫_{d<t}ξ(ω) dμ_T, B_t(η) = ∫_{d<t}ξ_∂(η) dμ_∂, ∂A_t(η) = B_t(η) when tsupport η ∩ {d = t} = ∅, and, for Z_t := ∂A_t − B_t, M(Z_t) ≤ liminf_{h↓0}h^{−1}μ_T({t − h < d < t}). Split into the cases m = 0 (n = 1: B_t and Z_t are 0-currents, for which boundaryMassOn is 0 by definition and no boundary condition is needed) and m = k' + 1 (in Lean: cases m, so that the degree of ∂T is literally k' + 1). If m = k' + 1, apply (SL) also to ∂T, which has degree k' + 1 (k := k', μ := μ_∂, ξ := ξ_∂, μ' := 0, ξ' := 0, valid because ∂∂T = 0; f := d). Its A'_t has the same values as B_t, so A'_t = B_t; its B'_t = 0; and M(∂B_t) ≤ liminf_{h↓0}h^{−1}μ_∂({t − h < d < t}).
+ F(t) := (μ_T({d < t})).toReal and F_∂(t) := (μ_∂({d < t})).toReal (finite measures) are real-valued and nondecreasing on all of ℝ, and μ_T({t − h < d < t}) ≤ ENNReal.ofReal(F(t) − F(t − h)) for h > 0 (as {t − h < d < t} ⊆ {d < t} ∖ {d < t − h}), likewise for μ_∂. At every t where F and F_∂ are differentiable (all t outside a Lebesgue null set, Mathlib Monotone.ae_differentiableAt), ENNReal.ofReal(h⁻¹)·μ_T({t − h < d < t}) ≤ ENNReal.ofReal((F(t) − F(t − h))/h) → ENNReal.ofReal(F'(t)) as h ↓ 0, so M(Z_t) ≤ ENNReal.ofReal(F'(t)) and M(∂B_t) ≤ ENNReal.ofReal(F_∂'(t)) < ∞; and F' = deriv F ≥ 0 (F nondecreasing). For ν ≥ 0 let ρ_ν := 2^{−ν−2}. F' is measurable and ∫_{ρ_ν/2}^{ρ_ν}F' ≤ F(ρ_ν) − F(ρ_ν/2) ≤ μ_T({d < ρ_ν}) ≤ C_Gρ_ν^{n+1}M(T) (Mathlib MonotoneOn.intervalIntegrable_deriv, MonotoneOn.intervalIntegral_deriv_mem_uIcc, and (6)). By Markov's inequality, F' > 4C_Gρ_νⁿM(T) on a subset of (ρ_ν/2, ρ_ν) of measure ≤ ρ_ν/4. As (ρ_ν/2, ρ_ν) has length ρ_ν/2 > ρ_ν/4, there is r_ν := ρ*_ν ∈ (ρ_ν/2, ρ_ν) at which F and F_∂ are differentiable and F'(r_ν) ≤ 4C_Gρ_νⁿM(T). Hence
+ (10) M(Z_{r_ν}) ≤ 4C_Gρ_νⁿM(T) and M(∂B_{r_ν}) < ∞ (if m ≥ 1).
+ (The parent also asks μ_T({d = r_ν}) = 0; this is not needed below because the shells are half-open and each is deformed with its own extension.)
+ Since r_{ν+1} < ρ_{ν+1} = ρ_ν/2 < r_ν, the r_ν strictly decrease to 0, r_ν ≤ 1/4 and r_ν > 2^{−ν−3}. Write A_ν := A_{r_ν}, B_ν := B_{r_ν}, Z_ν := Z_{r_ν}.
+
+6. The pieces (parent E2–E3). For j ≥ 0 define W_0 := T − A_0, W_j := A_{j−1} − A_j (j ≥ 1), D_0 := ∂T − B_0, D_j := B_{j−1} − B_j (j ≥ 1). Let E_0 := {d ≥ r_0} and E_j := {r_j ≤ d < r_{j−1}} (j ≥ 1) (the parent's {d ≥ ρ*_0} and shell_{j−1}).
+ (6a) W_j(ω) = ∫_{E_j}ξ(ω) dμ_T and D_j(η) = ∫_{E_j}ξ_∂(η) dμ_∂. Hence M(W_0) ≤ M(T) and M(D_0) ≤ M(∂T), and for j ≥ 1, by (6), (7) with r_{j−1} < ρ_{j−1} = 2^{−j−1}: M(W_j) ≤ C_G2^{−(j+1)(n+1)}M(T) and M(D_j) ≤ C_G2^{−(j+1)(n+1)}M(∂T).
+ (6b) W_j is integer multiplicity: (IMC)(b) with E := E_j gives a current represented by (M ∩ E_j, θ, ξ), whose values are ∫_{E_j}ξ(ω) dμ_T = W_j(ω).
+ (6c) Supports: spt W_j ⊆ spt T ∩ closure(E_j) ⊆ spt T ∩ {d ≥ r_j} and spt D_j ⊆ spt ∂T ∩ {d ≥ r_j}. Indeed, if ω vanishes on spt T ∩ closure(E_j), the integrand of (6a) vanishes μ_T-a.e. on E_j (μ_T(ℝ^P ∖ spt T) = 0), so W_j vanishes on forms supported off this closed set. spt Z_j ⊆ {d = r_j} by the third clause of (SL). Also spt A_t ⊆ spt T and spt B_t ⊆ spt ∂T ⊆ spt T, so all supports above are compact.
+ (6d) Boundaries: ∂A_t = B_t + Z_t, hence ∂W_0 = D_0 − Z_0 and ∂W_j = D_j + Z_{j−1} − Z_j (j ≥ 1) (the parent's ∂Y_i = (∂T)⌞shell_i + Z_{ρ*_i} − Z_{ρ*_{i+1}}). For m ≥ 1, ∂D_0 = −∂B_0, ∂D_j = ∂B_{j−1} − ∂B_j and ∂Z_j = −∂B_j have finite mass by (10). Hence W_j ∈ NC_n and D_j, Z_j ∈ NC_{n−1} (for m = 0 there is no boundary condition in degree 0).
+ (6e) Σ_{j=0}^NW_j = T − A_N and M(A_N) ≤ μ_T({d < r_N}) ≤ C_Gρ_N^{n+1}M(T) → 0 (the parent's M(T_{ρ*_ν}) → μ_T(L*(a)) = 0).
+
+7. Deforming the pieces (parent E3, (11)–(20)). For j ≥ 0 let φ_j := φ_{r_j} and Λ_j := Λ(r_j) ≤ c₄2^j (as r_j > 2^{−j−3}); Λ_j ≤ Λ_{j+1}. Then φ_j = ψ on spt W_j ∪ spt D_j ∪ spt Z_j ⊆ {d ≥ r_j}, and φ_{j+1} = ψ = φ_j on spt Z_j ⊆ {d = r_j} ⊆ {d ≥ r_{j+1}}. Define
+ V_j := push n φ_j W_j, H_j := homot n id φ_j W_j, Y_j := push (n−1) φ_j D_j, E'_j := homot (n−1) id φ_j D_j, L_j := push (n−1) φ_j Z_j, K_j := homot (n−1) id φ_j Z_j
+ (the parent's ψ_#Y_i, h_#([[0,1]] × Y_i), ψ_#((∂T)⌞shell_i), h_#([[0,1]] × (∂T)⌞shell_i), ψ_#Z, h_#([[0,1]] × Z)).
+ - By PF (locality, all maps Λ_{j+1}-Lipschitz; for push take the unused second pair G = G' := id): push (n−1) φ_{j+1} Z_j = L_j and homot (n−1) id φ_{j+1} Z_j = K_j. Also push k F 0 = 0 and homot k F G 0 = 0 (linearity with X = Y = 0); this is used when expanding A + B = A − (0 − B) below.
+ - By PF (identity and homotopy formula in degree n = m + 1, with F = id, G = φ_j, Λ = Λ_j): V_j − W_j − homot (n−1) id φ_j (∂W_j) = ∂H_j (the parent's (20) for one shell).
+ - By PF (linearity, all pieces in NC_{n−1}) and (6d): homot (n−1) id φ_j (∂W_0) = E'_0 − K_0 and homot (n−1) id φ_j (∂W_j) = E'_j + K_{j−1} − K_j (j ≥ 1).
+ - By PF (boundary commutation and linearity): ∂V_0 = Y_0 − L_0 and ∂V_j = Y_j + L_{j−1} − L_j (j ≥ 1).
+ Summing over j = 0,…,N (telescoping):
+ (S1) Σ_{j≤N}(V_j − W_j − ∂H_j) = Σ_{j≤N}E'_j − K_N, (S2) ∂(Σ_{j≤N}V_j) = Σ_{j≤N}Y_j − L_N.
+ W_j is integer multiplicity, so by the integrality clause of PF (degree k + 1 = n), V_j = push n φ_j W_j (with F = G := φ_j) and H_j = homot n id φ_j W_j (with F := id, G := φ_j) are integer multiplicity.
+ Estimates (PF mass bounds; |φ_j(x) − x| = |ψ(x) − x| ≤ √P on the supports, since d > 0 there):
+ M(V_0) ≤ c₄ⁿM(T), M(V_j) ≤ c₄ⁿ2^{jn}C_G2^{−(j+1)(n+1)}M(T) ≤ c₄ⁿC_G2^{−j}M(T);
+ M(H_0) ≤ √P(2c₄)ⁿM(T), M(H_j) ≤ √P(2c₄)ⁿC_G2^{−j}M(T);
+ M(Y_0) ≤ c₄^{n−1}M(∂T), M(Y_j) ≤ c₄^{n−1}C_G2^{−2j}M(∂T); M(E'_0) ≤ √P(2c₄)^{n−1}M(∂T), M(E'_j) ≤ √P(2c₄)^{n−1}C_G2^{−2j}M(∂T);
+ M(L_N) ≤ Λ_N^{n−1}M(Z_N) ≤ c₄^{n−1}2^{N(n−1)}·4C_G2^{−(N+2)n}M(T) ≤ 4C_Gc₄^{n−1}2^{−N}M(T) → 0, and likewise M(K_N) ≤ √P(2Λ_N)^{n−1}M(Z_N) → 0 (the parent's vanishing Z-terms).
+ Hence Σ_jM(V_j) ≤ c₄ⁿ(1 + 2C_G)M(T), Σ_jM(H_j) ≤ √P(2c₄)ⁿ(1 + 2C_G)M(T), Σ_jM(E'_j) ≤ √P(2c₄)^{n−1}(1 + 2C_G)M(∂T) and Σ_jM(Y_j) ≤ c₄^{n−1}(1 + 2C_G)M(∂T).
+
+8. Limits (parent E4; IMS).
+ - IMS (degree n = m + 1) gives Q₀ with Q₀(ω) = Σ_jV_j(ω): integer multiplicity, M(Q₀) ≤ Σ_jM(V_j) ≤ cM(T), spt Q₀ ⊆ closure ⋃_jspt V_j.
+ - By (IMC)(c), 0 − H_j is integer multiplicity (0 and H_j are), with M(0 − H_j) ≤ M(H_j). IMS (degree m + 2) gives R₁ with R₁(ζ) = Σ_j(0 − H_j)(ζ): integer multiplicity, M(R₁) ≤ cM(T), spt R₁ ⊆ closure ⋃_jspt H_j.
+ - IMS (degree m + 1, existence part) gives S₁ with S₁(ω) = Σ_j(0 − E'_j)(ω), M(S₁) ≤ cM(∂T), spt S₁ ⊆ closure ⋃_jspt E'_j.
+ Identity (parent (21)). Evaluate (S1) at ω: Σ_{j≤N}V_j(ω) − T(ω) + A_N(ω) − Σ_{j≤N}H_j(dω) = Σ_{j≤N}E'_j(ω) − K_N(ω). As N → ∞, A_N(ω) → 0 and K_N(ω) → 0 (masses → 0), so Q₀(ω) − T(ω) + R₁(dω) = −S₁(ω), i.e. (T − Q₀ − S₁)(ω) = ∂R₁(ω). Hence T − Q₀ − S₁ = R₁.boundary.
+ Boundary mass (parent (25)). The finite sums Ŝ_N := Σ_{j≤N}V_j converge weakly to Q₀, so ∂Ŝ_N → ∂Q₀ weakly (SimonGMT WeaklyConvergesOn.boundary) and M(∂Q₀) ≤ liminf_NM(∂Ŝ_N) (SimonGMT WeaklyConvergesOn.massOn_le_liminf). By (S2), M(∂Ŝ_N) ≤ Σ_jM(Y_j) + M(L_N), so M(∂Q₀) ≤ c₄^{n−1}(1 + 2C_G)M(∂T) ≤ cM(∂T).
+
+9. Supports (parent E5, (22)–(23)).
+ - spt V_j ⊆ φ_j(spt W_j) = ψ(spt W_j) ⊆ L_n ∩ cthickening(√P, spt T) (RET, as d > 0 on spt W_j ⊆ spt T). Both sets are closed, so spt Q₀ ⊆ L_n ∩ cthickening(√P, spt T).
+ - spt H_j ⊆ {x + t(φ_j(x) − x) : x ∈ spt W_j, t ∈ [0,1]} ⊆ cthickening(√P, spt T) (PF), so spt R₁ ⊆ cthickening(√P, spt T) (spt(0 − H_j) ⊆ spt H_j).
+ - Likewise spt E'_j ⊆ cthickening(√P, spt ∂T), so spt S₁ ⊆ cthickening(√P, spt ∂T).
+ - Finally, if tsupport ω ∩ cthickening(√P, spt ∂T) = ∅, then Y_j(ω) = 0 for all j (spt Y_j ⊆ φ_j(spt D_j) ⊆ cthickening(√P, spt ∂T); (VO)), so ∂Ŝ_N(ω) = −L_N(ω) → 0 and ∂Q₀(ω) = lim∂Ŝ_N(ω) = 0; hence spt ∂Q₀ ⊆ cthickening(√P, spt ∂T).
+
+10. Q₀, R₁, S₁ satisfy all conclusions with the constant c of 1 (c ≥ 1): integrality (8), the identity (8), spt Q₀ ⊆ L_n (9), the four mass bounds (7)–(8) and the support inclusions (9). ∎
+
+## Key steps
+
+1. Trivial cases n ≥ P (Q₀ := T) and T = 0; constants from RET and GC.
+2. Measures μ_T (IMRep, MR, VO) and μ_∂ (REP); good centre a with μ_T, μ_∂({d < r}) ≤ C r^{n+1}·mass (GC).
+3. Retraction ψ (RET) and its McShane extensions φ_r with Lipschitz constant √P c_R/r.
+4. Slicing (SL) and Lebesgue differentiation of F(t) = μ_T({d < t}) give radii r_ν ∈ (ρ_ν/2, ρ_ν) with M(Z_{r_ν}) ≤ 4Cρ_νⁿM(T) and finite boundary slices.
+5. Dyadic shells W_j, D_j (integer multiplicity, normal, supports in {d ≥ r_j}) with ∂W_j = D_j + Z_{j−1} − Z_j.
+6. PF: deformations V_j, homotopies H_j, E'_j; telescoping of the slice terms by locality; geometric mass estimates.
+7. IMS: Q₀ := ΣV_j and R₁ := Σ(0 − H_j) integer multiplicity, S₁ := Σ(0 − E'_j); identity T − Q₀ − S₁ = ∂R₁; M(∂Q₀) by lower semicontinuity.
+8. Supports: ψ maps into L_n and moves points by ≤ √P; homotopy supports; spt ∂Q₀ via vanishing of the deformed ∂T-pieces and of the slice terms in the limit.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat RUN/local-references/123e8435b4a2469b/manifest.json (project_commit b4d606db, mathlib_commit 25730c7c); git -C SNAPSHOT/mathlib rev-parse HEAD (25730c7c); git rev-parse HEAD (b4d606db); cmp GMT/Ch07/Submission.lean GMT/Ch07/Contract.lean (identical)`
+- `rg -n -i 'deformation theorem|federer|polyhedral|cubical|skeleton|lipschitz.*push|homotopy' SNAPSHOT/project/GMT -g '*.lean' (only the unproved Ch06 specifications DeformationTheorem and LipschitzPushforwardIntegerMultiplicity with main_theorem := by sorry; Ch07 does not import Ch06)`
+- `rg -n -i -l 'federer.?fleming|deformation theorem|polyhedral chain|flat norm' SNAPSHOT/mathlib/Mathlib -g '*.lean' (no match)`
+- `rg -n 'dimred_mbl_dt' SNAPSHOT/project SNAPSHOT/mathlib GMT lake-packages-25730c7c/simongmt (no match); python3 scan of RUN/dag.json lean_names (1048 nodes) for the eight proposed names (none)`
+- `rg -n 'theorem infEDist_smul₀' SNAPSHOT/mathlib/Mathlib/Analysis/Normed/Module/Ball/Pointwise.lean; rg -n "theorem cthickening_subset_thickening'|theorem cthickening_cthickening_subset|theorem cthickening_subset_of_subset|theorem mem_cthickening_iff|protected theorem _root_.IsCompact.cthickening" SNAPSHOT/mathlib/Mathlib/Topology/MetricSpace/Thickening.lean; rg -n 'theorem map_coord_zero' SNAPSHOT/mathlib/Mathlib/Topology/Algebra/Module/Alternating/Basic.lean (all found)`
+- `rg over lake-packages-25730c7c/mathlib/Mathlib and lake-packages-25730c7c/simongmt/Poincare for every Mathlib/SimonGMT name cited in the eight child proofs (all present, e.g. MeasureTheory.Measure.euclideanHausdorffMeasure_smul₀ at Geometry/Euclidean/Volume/Measure.lean:152, LipschitzOnWith.hausdorffMeasure_image_le at MeasureTheory/Measure/Hausdorff.lean:733, LipschitzWith.ae_differentiableAt at Analysis/Calculus/Rademacher.lean:385, area_image_criticalSet_eq_zero at SimonGMT Chapter02/AreaCritical.lean:185)`
+- `grep/sed of SimonGMT Chapter06 Currents.lean, Mass.lean, CurrentLocalEquality.lean, Forms.lean and Chapter03/Rectifiable.lean (GeometricCurrentOn, ext, zero_apply, boundary, massAdmissibleOn, massOn, mass, le_massOn, covectorEuclideanNorm_neg, WeaklyConvergesOn.boundary, WeaklyConvergesOn.massOn_le_liminf, zeroRegion, support, isOpen_zeroRegion, Covector, DifferentialForm, CountablyRectifiable, blowUpMap, HasApproximateTangentSpaceAt, HasApproximateTangentSpaceAt.unique)`
+- `python3 scans of RUN/dag.json: selected node (decomposing, attempt 2, children []); frozen types of the four resolved dependencies (dtc_vanish_off_support and dor_imrep_massOn_eq_measure_and_support accepted; dimred_mbl_current_foundations and dimred_mbl_slice_mass_bounds decomposing); foundations == (cmc_exists_massRepresentation) ∧ (cmc_imRep_locality_restrict_sub), SL == cmc_slice_mass_bounds, MR == accepted cmc_massOn_eq_imRep_measure (all true); twin cmc_deformation_theorem has the same type and its eight children have these eight types (all decomposing)`
+- `python3/cat of this node's decomposition-v1.json, decomposition-audit-v1.json, decomposition-review-receipt-v1.json and decomposition-scope-v1.json (digest 1445be18…, same as this session), and of the twin's decomposition-v2.json, decomposition-review-receipt-v1/v2.json and its children's decomposition-audit-v1.json`
+- `grep/sed of /runtime/flows/gmt-claude-b888e19cffb1/_recursive_lean/runtime.py (_decompose, _existing_lean_name_problem, _overlay_accepted_children), decomposition_scope.py, lean_contract.py and verifier/gmt-compare.py (child_modules, contract_scope); both validate_lean_statement implementations on all eight types`
+- `lake env lean /tmp/dmdt2/lean/Types.lean and /tmp/dmdt2/chal/Challenge_<key>.lean for all eight keys (only sorry warnings); lake env lean /tmp/dmdt2/lean/InstCheck.lean (clean); lake env lean /tmp/dmdt2/lean/AssemblyAx.lean (#print axioms dmdt_assembly_check: propext, Classical.choice, Quot.sound)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch06/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch06/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/Ball/Pointwise.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/Thickening.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Module/Alternating/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/AffineCurrentPushforward.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaCritical.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/mathlib/Mathlib/Analysis/Calculus/Rademacher.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-deformation-theorem-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-deformation-theorem-a1/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-deformation-theorem-a1/decomposition-audit-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-deformation-theorem-a1/decomposition-scope-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1/decomposition-v2.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1/decomposition-review-receipt-v2.json`
+- `/runtime/flows/gmt-claude-b888e19cffb1/_recursive_lean/runtime.py`
+- `/runtime/flows/gmt-claude-b888e19cffb1/_recursive_lean/decomposition_scope.py`
+- `/runtime/flows/gmt-claude-b888e19cffb1/_recursive_lean/lean_contract.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/tmp/dmdt2/lean/Types.lean`
+- `/tmp/dmdt2/lean/InstCheck.lean`
+- `/tmp/dmdt2/lean/Assembly.lean`
+- `/tmp/dmdt2/lean/AssemblyAx.lean`
+- `/tmp/dmdt2/chal/Challenge_skeleton_retraction.lean`
+- `/tmp/dmdt2/chal/Challenge_skeleton_deformation.lean`
+- `/tmp/dmdt2/chal/Challenge_face_replacement.lean`
+
+Pins match (project b4d606db, Mathlib 25730c7c, SimonGMT 2b366308), and Submission.lean is byte-identical to the frozen contract. Neither the snapshot project nor Mathlib contains a deformation theorem, Lipschitz push-forward of currents, polyhedral chains or flat norms; the snapshot's Ch06 DeformationTheorem is an unproved specification that Ch07 does not import. All eight obligations are therefore new, and every cited Mathlib/SimonGMT name exists. The parent's resolved dependencies enter as exact antecedents. The eight child types are identical to this node's audited but never-activated v1 and to the twin's twice-audited split. They elaborate in the comparator's challenge form, pass both validators and collide with no DAG name. The Lean assembly proves the exact parent type from the four dependency types and the dilation, skeleton_deformation and face_replacement types, using only propext, Classical.choice and Quot.sound.

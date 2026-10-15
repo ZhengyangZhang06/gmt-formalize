@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.constant_planes-a1.growth_dimension-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.constant_planes-a1",
+  "depth": 5,
+  "title": "Translation invariance under V and growth O(Rⁿ) force dim V ≤ n",
+  "statement": "Let P, n ∈ ℕ, ν a Borel measure on ℝ^P, V ⊆ ℝ^P a linear subspace and C ∈ [0, ∞) (C : ℝ≥0∞, C ≠ ∞). Assume ν({x : v + x ∈ A}) = ν(A) for every v ∈ V and every Borel A ⊆ ℝ^P, ν(B_R(0)) ≤ C·Rⁿ for every R > 0, and ν(B_1(0)) > 0 (open balls). Then dim V ≤ n.",
+  "lean_statement": "∀ (P n : ℕ) (ν : Measure (Euclid P)) (V : Submodule ℝ (Euclid P)) (C : ℝ≥0∞), C ≠ ∞ → (∀ v ∈ V, ∀ A : Set (Euclid P), MeasurableSet A → ν ((fun x => v + x) ⁻¹' A) = ν A) → (∀ R : ℝ, 0 < R → ν (ball 0 R) ≤ C * ENNReal.ofReal (R ^ n)) → 0 < ν (ball 0 1) → Module.finrank ℝ V ≤ n",
+  "lean_name": "cbr_ci_cp_finrank_le_of_growth",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-15e43615f0-a1"
+}

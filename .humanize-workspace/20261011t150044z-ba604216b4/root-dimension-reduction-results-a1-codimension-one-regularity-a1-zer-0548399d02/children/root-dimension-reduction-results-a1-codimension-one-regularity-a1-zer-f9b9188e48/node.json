@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.zero_scale_limit_plane-a1.bv_compactness-a1.translate_continuity-a1",
+  "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.zero_scale_limit_plane-a1.bv_compactness-a1",
+  "depth": 5,
+  "title": "Continuity of translations in measure on balls (L¹-continuity of translation for indicator functions)",
+  "statement": "Let m ∈ ℕ, let F ⊆ ℝ^m (= Euclid m) be measurable and R ∈ ℝ. For z ∈ ℝ^m put F − z := {v : v + z ∈ F} and Φ(z) := L^m(((F − z) Δ F) ∩ B_R(0)), where L^m is Lebesgue measure and B_R(0) the open ball. Then Φ(z) → 0 in [0, ∞] as z → 0.",
+  "lean_statement": "∀ (m : ℕ) (F : Set (Euclid m)) (R : ℝ), MeasurableSet F → Tendsto (fun z : Euclid m => volume (symmDiff ((fun v => v + z) ⁻¹' F) F ∩ ball (0 : Euclid m) R)) (𝓝 0) (𝓝 0)",
+  "lean_name": "codim1_zsl_pc_translate_tendsto_zero",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-zer-f9b9188e48-a1"
+}
