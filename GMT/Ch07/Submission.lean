@@ -194,6 +194,26 @@ misprint for `ℝ^{n+k}`; `N = ℝ^{n+k}` is the case `ℓ = k`).  For an `n`-cu
 `∂S = ∂T`, `spt ∂T`, `M_W(∂T)` are read with Simon's convention `∂T = 0` if `n = 0` (6.2.3).
 -/
 
+
+/-!
+# Simon, *Introduction to Geometric Measure Theory*, Chapter 7 "Area Minimizing Currents"
+(printed pp. 181–204)
+
+Frozen contract.  Currents, boundary, mass, support and weak convergence are the clean SimonGMT
+objects of `Poincare.SimonGMT.Chapter06`: `GeometricCurrentOn U n` (Simon 6.2.1), `T.boundary`
+(6.2.3), `T.massOn W` = `M_W(T)` (6.2.5, Euclidean coefficient norm), `T.mass` (6.2.4),
+`T.support` (6.2.11), `WeaklyConvergesOn` (6.2.13), and the proper affine push-forward
+`GeometricCurrentOn.affinePushforward` (6.2.23).  Everything else (integer multiplicity currents,
+minimizing currents, densities, blow-ups, tangent cones, `reg T`, `sing T`, the associated
+varifold) is defined below from primitive data.  `Hⁿ` is Mathlib's normalized `μHE[n]`; null-set
+statements use Mathlib's `μH[s]` (same null sets as Simon's `Hˢ`).
+
+**Conventions.**  The ambient space is `ℝ^{n+k}` (`Euclid (n + k)`); when a submanifold `N` is
+present it has dimension `n + ℓ`, `ℓ ≤ k` (Simon writes `N^{n+ℓ} ⊂ ℝ^{n+ℓ}`, `ℓ ≤ k`, a
+misprint for `ℝ^{n+k}`; `N = ℝ^{n+k}` is the case `ℓ = k`).  For an `n`-current, `∂T = 0`,
+`∂S = ∂T`, `spt ∂T`, `M_W(∂T)` are read with Simon's convention `∂T = 0` if `n = 0` (6.2.3).
+-/
+
 open Filter Function Set MeasureTheory Metric
 open scoped ENNReal Topology
 
@@ -5127,107 +5147,6 @@ theorem Submission.regcomp_covectorEuclideanNorm_seminorm_retract : ∀ (P n : �
     (EuclideanSpace.equiv (Fin n → Fin P) ℝ).symm.toContinuousLinearMap.comp
       (ContinuousLinearMap.pi ev)
   have hΦ : ∀ α, ‖Φ α‖ = covectorEuclideanNorm α := by
-/-- Lower semicontinuity of mass under weak convergence on exhausting domains (Simon 6.2.14, as
-used in 7.2.4 and 7.3.1): if every closed ball `B̄_R(0)` lies in `Uⱼ` for all large `j` and
-`Sⱼ ⇀ C` in `ℝᴾ`, then `M_O(C) ≤ liminf_i M_O(S_{φ(i)})` for every subsequence `φ` and every `O`.
-An `ω` admissible for `M_O(C)` has compact support, so it lies in some `B̄_R(0)` and is admissible
-for `S_{φ(i)}` for all large `i`; hence `ofReal(C(ω)) = liminf_i ofReal(S_{φ(i)}(ω))` is at most
-`liminf_i M_O(S_{φ(i)})`. -/
-theorem Submission.dtc_bc_mm_massOn_le_liminf : ∀ (P n : ℕ) (Us : ℕ → Set (Euclid P)) (Ss : (j : ℕ) → GeometricCurrentOn (Us j) n) (C : GeometricCurrentOn (univ : Set (Euclid P)) n), (∀ R : ℝ, ∀ᶠ j in atTop, closedBall (0 : Euclid P) R ⊆ Us j) → ConvergesWeakly Ss C → ∀ φ : ℕ → ℕ, StrictMono φ → ∀ O : Set (Euclid P), C.massOn O ≤ liminf (fun i => (Ss (φ i)).massOn O) atTop := by
-  intro P n Us Ss C hUs hconv φ hφ O
-  -- `M_O(C)` is a supremum: bound each admissible evaluation `ofReal(C(ω))`.
-  refine sSup_le ?_
-  rintro r ⟨ω, hω, rfl⟩
-  set w : DifferentialForm (Euclid P) n := (ω : DifferentialForm (Euclid P) n)
-  have hwt : IsTestForm w := ω.property.1
-  -- `tsupport ω` is compact, so it lies in a closed ball, eventually contained in `U_{φ(i)}`.
-  obtain ⟨R, hR⟩ := hwt.2.isCompact.isBounded.subset_closedBall (0 : Euclid P)
-  have hev : ∀ᶠ i in atTop, closedBall (0 : Euclid P) R ⊆ Us (φ i) :=
-    hφ.tendsto_atTop.eventually (hUs R)
-  -- There `ω` is admissible for `S_{φ(i)}`, and `currentEval` is its evaluation.
-  have hle : ∀ᶠ i in atTop,
-      ENNReal.ofReal (currentEval (Ss (φ i)) w) ≤ (Ss (φ i)).massOn O := by
-    filter_upwards [hev] with i hi
-    have hmem : IsTestForm w ∧ tsupport w ⊆ Us (φ i) := ⟨hwt, hR.trans hi⟩
-    have heval : currentEval (Ss (φ i)) w = Ss (φ i) ⟨w, hmem⟩ := by
-      unfold currentEval
-      exact dite_eq_left hmem
-    rw [heval]
-    exact (Ss (φ i)).le_massOn (omega := ⟨w, hmem⟩) ⟨hω.1, hω.2⟩
-  -- `currentEval (S_{φ(i)}) ω → C(ω)`, so `ofReal(C(ω))` is the liminf of `ofReal` of these values.
-  calc ENNReal.ofReal (C ω)
-      = liminf (fun i => ENNReal.ofReal (currentEval (Ss (φ i)) w)) atTop :=
-        (ENNReal.tendsto_ofReal ((hconv ω).comp hφ.tendsto_atTop)).liminf_eq.symm
-    _ ≤ liminf (fun i => (Ss (φ i)).massOn O) atTop := liminf_le_liminf hle
-/-- **Simon Ch. 6, 1.2 and 1.5–1.7**: a unit orientation `ξ = ±τ₁ ∧ ⋯ ∧ τₙ` (`τ` orthonormal)
-has `|ξ(α)| ≤ |α|` for the Euclidean coefficient norm, and `L(ζ) = Σ_I ζ(dx^I) dx^I` (`I` strictly
-increasing) has `|L(ξ)| ≤ 1` and `ξ(L(ξ)) = 1`.  Every covector expands as `α = Σ_I α(e_I) dx^I`,
-and `dx^I(e_J) = δ_IJ`.  Expanding `δ_τ(v) = det(⟨τᵢ, vⱼ⟩)` at `v = τ` gives the Cauchy–Binet
-identity `Σ_I dx^I(τ)² = 1`; with Cauchy–Schwarz, `|α(τ)| ≤ |α|`. -/
-theorem Submission.dor_ims_unitOrientation_dual : ∀ (P n : ℕ), ∃ L : MultiVector P n →L[ℝ] Covector (Euclid P) n, ∀ (ξ : MultiVector P n) (Q : Submodule ℝ (Euclid P)), IsUnitOrientationOf ξ Q → (∀ α : Covector (Euclid P) n, |ξ α| ≤ covectorEuclideanNorm α) ∧ covectorEuclideanNorm (L ξ) ≤ 1 ∧ ξ (L ξ) = 1 := by
-  intro P n
-  -- `W u v = Σ_σ sgn σ ∏ₖ ⟨uₖ, v_{σ k}⟩ = det(⟨uₖ, vⱼ⟩)`; `dx^I = W (e ∘ I)` and `δ_τ = W τ`
-  let W : (Fin n → Euclid P) → Covector (Euclid P) n := fun u =>
-    ContinuousMultilinearMap.alternatization
-      ((ContinuousMultilinearMap.mkPiAlgebra ℝ (Fin n) ℝ).compContinuousLinearMap
-        fun k => innerSL ℝ (u k))
-  have hW : ∀ u v, W u v =
-      ∑ σ : Equiv.Perm (Fin n), Equiv.Perm.sign σ • ∏ k, inner ℝ (u k) (v (σ k)) := by
-    intro u v
-    simp only [W, ContinuousMultilinearMap.alternatization_apply_apply,
-      ContinuousMultilinearMap.compContinuousLinearMap_apply,
-      ContinuousMultilinearMap.mkPiAlgebra_apply, innerSL_apply_apply, Function.comp_apply]
-  -- `W u v = W v u` (the determinant of the transpose): substitute `σ ↦ σ⁻¹` and `k ↦ σ k`
-  have hWsymm : ∀ u v, W u v = W v u := by
-    intro u v
-    rw [hW, hW]
-    refine Fintype.sum_equiv (Equiv.inv (Equiv.Perm (Fin n))) _ _ fun σ => ?_
-    rw [Equiv.inv_apply, Equiv.Perm.sign_inv,
-      ← Equiv.prod_comp σ (fun k => inner ℝ (v k) (u (σ⁻¹ k)))]
-    simp only [Equiv.Perm.coe_inv, Equiv.symm_apply_apply, real_inner_comm]
-  -- `W u u = 1` for orthonormal `u`: only `σ = 1` contributes
-  have hW1 : ∀ u, Orthonormal ℝ u → W u u = 1 := by
-    intro u hu
-    rw [hW, Finset.sum_eq_single (1 : Equiv.Perm (Fin n))]
-    · rw [Equiv.Perm.sign_one, one_smul]
-      refine Finset.prod_eq_one fun k _ => ?_
-      rw [Equiv.Perm.coe_one, id, real_inner_self_eq_norm_sq, hu.norm_eq_one, one_pow]
-    · intro σ _ hσ
-      obtain ⟨k, hk⟩ : ∃ k, σ k ≠ k := by
-        by_contra! h
-        exact hσ (Equiv.ext h)
-      rw [Finset.prod_eq_zero (Finset.mem_univ k) (hu.inner_eq_zero hk.symm), smul_zero]
-    · exact fun h => absurd (Finset.mem_univ _) h
-  -- Kronecker property `dx^I(e_J) = δ_IJ` for strictly increasing `I`, `J`: a nonzero term
-  -- forces `J ∘ σ = I`, so `range I = range J` and `I = J`
-  let e := EuclideanSpace.basisFun (Fin P) ℝ
-  have he : ∀ i j, inner ℝ (e i) (e j) = if i = j then (1 : ℝ) else 0 :=
-    orthonormal_iff_ite.mp e.orthonormal
-  have hK : ∀ I J : Fin n → Fin P, StrictMono I → StrictMono J →
-      W (fun k => e (I k)) (fun k => e (J k)) = if I = J then 1 else 0 := by
-    intro I J hI hJ
-    split_ifs with hIJ
-    · subst hIJ
-      have hIo : Orthonormal ℝ (fun k => e (I k)) := e.orthonormal.comp I hI.injective
-      exact hW1 _ hIo
-    · rw [hW]
-      refine Finset.sum_eq_zero fun σ _ => ?_
-      rw [Finset.prod_eq_zero_iff.mpr, smul_zero]
-      by_contra! h
-      apply hIJ
-      have hJσ : J ∘ σ = I := funext fun k => by
-        have := h k (Finset.mem_univ k)
-        rw [he] at this
-        split_ifs at this with hk
-        · exact hk.symm
-        · exact absurd rfl this
-      rw [← (StrictMono.range_inj_of_wellFoundedLT hI hJ), ← hJσ, EquivLike.range_comp]
-  -- expansion `α = Σ_{I ∈ S} α(e_I) dx^I`: both sides are alternating, so compare them on
-  -- `e ∘ f`, `f` injective; writing `f = J ∘ σ⁻¹` with `J` strictly increasing (`J = f ∘ sort f`)
-  -- reduces this to `e ∘ J`, where it is the Kronecker property
-  let S : Finset (Fin n → Fin P) := Finset.univ.filter StrictMono
-  have hE : ∀ α : Covector (Euclid P) n,
-      α = ∑ I ∈ S, α (fun k => e (I k)) • W (fun k => e (I k)) := by
     intro α
     rw [EuclideanSpace.norm_eq, covectorEuclideanNorm]
     congr 1
@@ -12929,6 +12848,38 @@ theorem Submission.cmc_imRep_locality_restrict_sub : (∀ (P n : ℕ) (U M M' : 
       exact hατ
     · rw [h α, abs_neg]
       exact hατ
+/-- Lower semicontinuity of mass under weak convergence on exhausting domains (Simon 6.2.14, as
+used in 7.2.4 and 7.3.1): if every closed ball `B̄_R(0)` lies in `Uⱼ` for all large `j` and
+`Sⱼ ⇀ C` in `ℝᴾ`, then `M_O(C) ≤ liminf_i M_O(S_{φ(i)})` for every subsequence `φ` and every `O`.
+An `ω` admissible for `M_O(C)` has compact support, so it lies in some `B̄_R(0)` and is admissible
+for `S_{φ(i)}` for all large `i`; hence `ofReal(C(ω)) = liminf_i ofReal(S_{φ(i)}(ω))` is at most
+`liminf_i M_O(S_{φ(i)})`. -/
+theorem Submission.dtc_bc_mm_massOn_le_liminf : ∀ (P n : ℕ) (Us : ℕ → Set (Euclid P)) (Ss : (j : ℕ) → GeometricCurrentOn (Us j) n) (C : GeometricCurrentOn (univ : Set (Euclid P)) n), (∀ R : ℝ, ∀ᶠ j in atTop, closedBall (0 : Euclid P) R ⊆ Us j) → ConvergesWeakly Ss C → ∀ φ : ℕ → ℕ, StrictMono φ → ∀ O : Set (Euclid P), C.massOn O ≤ liminf (fun i => (Ss (φ i)).massOn O) atTop := by
+  intro P n Us Ss C hUs hconv φ hφ O
+  -- `M_O(C)` is a supremum: bound each admissible evaluation `ofReal(C(ω))`.
+  refine sSup_le ?_
+  rintro r ⟨ω, hω, rfl⟩
+  set w : DifferentialForm (Euclid P) n := (ω : DifferentialForm (Euclid P) n)
+  have hwt : IsTestForm w := ω.property.1
+  -- `tsupport ω` is compact, so it lies in a closed ball, eventually contained in `U_{φ(i)}`.
+  obtain ⟨R, hR⟩ := hwt.2.isCompact.isBounded.subset_closedBall (0 : Euclid P)
+  have hev : ∀ᶠ i in atTop, closedBall (0 : Euclid P) R ⊆ Us (φ i) :=
+    hφ.tendsto_atTop.eventually (hUs R)
+  -- There `ω` is admissible for `S_{φ(i)}`, and `currentEval` is its evaluation.
+  have hle : ∀ᶠ i in atTop,
+      ENNReal.ofReal (currentEval (Ss (φ i)) w) ≤ (Ss (φ i)).massOn O := by
+    filter_upwards [hev] with i hi
+    have hmem : IsTestForm w ∧ tsupport w ⊆ Us (φ i) := ⟨hwt, hR.trans hi⟩
+    have heval : currentEval (Ss (φ i)) w = Ss (φ i) ⟨w, hmem⟩ := by
+      unfold currentEval
+      exact dite_eq_left hmem
+    rw [heval]
+    exact (Ss (φ i)).le_massOn (omega := ⟨w, hmem⟩) ⟨hω.1, hω.2⟩
+  -- `currentEval (S_{φ(i)}) ω → C(ω)`, so `ofReal(C(ω))` is the liminf of `ofReal` of these values.
+  calc ENNReal.ofReal (C ω)
+      = liminf (fun i => ENNReal.ofReal (currentEval (Ss (φ i)) w)) atTop :=
+        (ENNReal.tendsto_ofReal ((hconv ω).comp hφ.tendsto_atTop)).liminf_eq.symm
+    _ ≤ liminf (fun i => (Ss (φ i)).massOn O) atTop := liminf_le_liminf hle
 /-- **Simon Ch. 6, 1.2 and 1.5–1.7**: a unit orientation `ξ = ±τ₁ ∧ ⋯ ∧ τₙ` (`τ` orthonormal)
 has `|ξ(α)| ≤ |α|` for the Euclidean coefficient norm, and `L(ζ) = Σ_I ζ(dx^I) dx^I` (`I` strictly
 increasing) has `|L(ξ)| ≤ 1` and `ξ(L(ξ)) = 1`.  Every covector expands as `α = Σ_I α(e_I) dx^I`,
@@ -23640,126 +23591,6 @@ data** (Simon Ch. 6, Definitions 3.1 and 4.4; for the slice `(M₊ ∩ f⁻¹(t)
 `n`-rectifiable, `θ` Borel with `θ > 0` on `S` and `∫_{S ∩ K} θ dHⁿ < ∞` for compact `K`, and `ζ`
 `Hⁿ⌞A`-measurable with `ζ(x)` a unit orientation of `TₓS` for `Hⁿ`-a.e. `x ∈ A`.  Then
 `(A, θ, ζ)` is an `IMRep` in `ℝᴾ`.
-/-- **Simon Ch. 6, 3.2(3)**: if `T = τ(M, θ, ξ)` in the open set `U`, then
-`M_W(T) = μ_R(W) = ∫_{M ∩ W} θ dHⁿ` for every open `W`.  The upper bound
-`dor_ims_massOn_le_measure` and the lower bound `dor_ims_measure_le_massOn` give equality by
-antisymmetry. -/
-theorem Submission.cmc_massOn_eq_imRep_measure : ∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (R : IMRep U n), IsOpen U → R.Represents T → ∀ W : Set (Euclid P), IsOpen W → T.massOn W = R.measure W := by
-  intro P n U T R hU hR W hW
-  exact le_antisymm (Submission.dor_ims_massOn_le_measure P n U T R hR W)
-    (Submission.dor_ims_measure_le_massOn P n U T R hU hR W hW)
-/-- **Simon 6.2.11** (a current vanishes off its support).  If `ω ∈ 𝒟ⁿ(U)` and
-`spt ω ∩ spt S = ∅`, then `S(ω) = 0`.  The compact set `K = spt ω ⊆ U` lies in the zero region of
-`S`, so finitely many open `W₁, …, Wₘ` on which `S` vanishes cover `K`.  A smooth partition of
-unity `ψ₁, …, ψₘ` on `K` subordinate to them splits `ω = Σᵢ ψᵢω` into test forms with
-`spt (ψᵢω) ⊆ Wᵢ`, each annihilated by `S`. -/
-theorem Submission.dtc_vanish_off_support : ∀ (P n : ℕ) (U : Set (Euclid P)) (S : GeometricCurrentOn U n) (ω : TestFormOn U n), Disjoint (tsupport (ω : DifferentialForm (Euclid P) n)) S.support → S ω = 0 := by
-  intro P n U S ω hdisj
-  classical
-  -- `K = spt ω` is a compact subset of `U`
-  set K := tsupport (ω : DifferentialForm (Euclid P) n)
-  have hKc : IsCompact K := ω.property.1.2
-  have hKU : K ⊆ U := ω.property.2
-  -- `K` lies in the zero region `⋃₀ 𝒲`, hence in finitely many members of `𝒲`
-  let 𝒲 : Set (Set (Euclid P)) :=
-    {W | IsOpen W ∧ IsCompact (closure W) ∧ closure W ⊆ U ∧ S.VanishesOn W}
-  have hKZ : K ⊆ ⋃ W : 𝒲, (W : Set (Euclid P)) := by
-    intro x hx
-    have hxZ : x ∈ S.zeroRegion := by
-      by_contra hxZ
-      exact Set.disjoint_left.mp hdisj hx ⟨hKU hx, hxZ⟩
-    rwa [GeometricCurrentOn.zeroRegion, Set.sUnion_eq_iUnion] at hxZ
-  obtain ⟨t, ht⟩ := hKc.elim_finite_subcover (fun W : 𝒲 => (W : Set (Euclid P)))
-    (fun W => W.2.1) hKZ
-  let Wt : t → Set (Euclid P) := fun i => ((i : 𝒲) : Set (Euclid P))
-  have hKt : K ⊆ ⋃ i, Wt i := by
-    intro x hx
-    obtain ⟨W, hW, hxW⟩ := Set.mem_iUnion₂.mp (ht hx)
-    exact Set.mem_iUnion.mpr ⟨⟨W, hW⟩, hxW⟩
-  -- a smooth partition of unity `ψᵢ` on `K` with `spt ψᵢ ⊆ Wᵢ`
-  obtain ⟨ψ, hψ⟩ := SmoothPartitionOfUnity.exists_isSubordinate
-    (modelWithCornersSelf ℝ (Euclid P)) hKc.isClosed Wt (fun i => (i : 𝒲).2.1) hKt
-  -- each `ψᵢω` is a test form in `U` supported in `Wᵢ`
-  have hmem : ∀ i, (fun x => ψ i x • (ω : DifferentialForm (Euclid P) n) x) ∈ TestFormOn U n ∧
-      tsupport (fun x => ψ i x • (ω : DifferentialForm (Euclid P) n) x) ⊆ Wt i := by
-    intro i
-    have hsK : tsupport (fun x => ψ i x • (ω : DifferentialForm (Euclid P) n) x) ⊆ K :=
-      tsupport_smul_subset_right _ _
-    refine ⟨⟨⟨?_, ?_⟩, hsK.trans hKU⟩, (tsupport_smul_subset_left _ _).trans (hψ i)⟩
-    · exact (contMDiff_iff_contDiff.mp (ψ i).contMDiff).smul ω.property.1.1
-    · exact IsCompact.of_isClosed_subset hKc (isClosed_tsupport _) hsK
-  let ωi : t → TestFormOn U n := fun i => ⟨_, (hmem i).1⟩
-  -- `ω = Σᵢ ψᵢω`, since `Σᵢ ψᵢ = 1` on `K` and `ω = 0` off `K`
-  have hsum : ω = ∑ i, ωi i := by
-    apply Subtype.ext
-    funext x
-    rw [Submodule.coe_sum, Finset.sum_apply]
-    change (ω : DifferentialForm (Euclid P) n) x =
-      ∑ i, ψ i x • (ω : DifferentialForm (Euclid P) n) x
-    by_cases hx : x ∈ K
-    · rw [← Finset.sum_smul, ← finsum_eq_sum_of_fintype, ψ.sum_eq_one hx, one_smul]
-    · have h0 : (ω : DifferentialForm (Euclid P) n) x = 0 := image_eq_zero_of_notMem_tsupport hx
-      simp [h0]
-  -- linearity: `S(ω) = Σᵢ S(ψᵢω) = 0`
-  change S.toCurrent ω = 0
-  rw [hsum, map_sum]
-  exact Finset.sum_eq_zero fun i _ => (i : 𝒲).2.2.2.2 (ωi i) (hmem i).2
-
-/-- Mass agrees away from `spt (S − T)`.  If `spt (S − T) ⊆ K` and `G ∩ K = ∅`, then
-`M_G(S) = M_G(T)`.  Both masses are suprema over the same admissible forms `ω ∈ 𝒟ⁿ(U)` with
-`spt ω ⊆ G` and `|ω| ≤ 1`; for each of them `spt ω` misses `spt (S − T) ⊆ K`, so
-`S(ω) − T(ω) = (S − T)(ω) = 0` by Simon 6.2.11. -/
-theorem Submission.cmc_ml_massOn_eq_of_disjoint_sub_support : ∀ (P n : ℕ) (U : Set (Euclid P)) (S T : GeometricCurrentOn U n) (K G : Set (Euclid P)), (S - T).support ⊆ K → Disjoint G K → S.massOn G = T.massOn G := by
-  intro P n U S T K G hK hGK
-  -- `M_G(S)` and `M_G(T)` are suprema over the same admissible set
-  refine congrArg sSup (Set.image_congr fun ω hω => ?_)
-  -- `spt ω ⊆ G` misses `spt (S − T) ⊆ K`, so `S(ω) − T(ω) = (S − T)(ω) = 0`
-  have h0 : S ω - T ω = 0 :=
-    Submission.dtc_vanish_off_support P n U (S - T) ω (Disjoint.mono hω.1 hK hGK)
-  exact congrArg ENNReal.ofReal (sub_eq_zero.mp h0)
-/-- **Simon Ch. 6, 1.1 and 1.7**: a unit orientation `ξ = ±τ₁ ∧ ⋯ ∧ τₙ` of a plane (`τ`
-orthonormal) is a nonzero `n`-vector of norm at most one.  `|ξ(α)| = |α(τ)| ≤ ‖α‖ ∏ᵢ ‖τᵢ‖ = ‖α‖`
-gives `‖ξ‖ ≤ 1`.  The covector `δ(w) = Σ_σ sgn σ ∏ᵢ ⟨τᵢ, w_{σ(i)}⟩ = det(⟨τᵢ, wⱼ⟩)`, the
-alternatization of `w ↦ ∏ᵢ ⟨τᵢ, wᵢ⟩`, has `δ(τ) = 1` by orthonormality, so `ξ(δ) = ±1 ≠ 0`. -/
-theorem Submission.imsupp_unit_orientation_ne_zero_norm_le_one : ∀ (P n : ℕ) (ξ : MultiVector P n) (Q : Submodule ℝ (Euclid P)), IsUnitOrientationOf ξ Q → ξ ≠ 0 ∧ ‖ξ‖ ≤ 1 := by
-  rintro P n ξ Q ⟨τ, hτ, -, hξ⟩
-  -- `|ξ(α)| = |α(τ)|` for either sign
-  have hnorm : ∀ α : Covector (Euclid P) n, ‖ξ α‖ = ‖α τ‖ := fun α => by
-    rcases hξ with h | h
-    · rw [h α]
-    · rw [h α, norm_neg]
-  refine ⟨fun h0 => ?_, ContinuousLinearMap.opNorm_le_bound ξ zero_le_one fun α => ?_⟩
-  · -- the covector `δ(w) = Σ_σ sgn σ ∏ᵢ ⟨τᵢ, w_{σ(i)}⟩` has `δ(τ) = 1`: the term `σ = 1` is
-    -- `∏ᵢ ‖τᵢ‖² = 1`, and for `σ ≠ 1` some factor `⟨τᵢ, τ_{σ(i)}⟩`, `σ(i) ≠ i`, vanishes
-    obtain ⟨δ, hδ⟩ : ∃ δ : Covector (Euclid P) n, δ τ = 1 := by
-      refine ⟨ContinuousMultilinearMap.alternatization
-        ((ContinuousMultilinearMap.mkPiAlgebra ℝ (Fin n) ℝ).compContinuousLinearMap
-          fun i => innerSL ℝ (τ i)), ?_⟩
-      rw [ContinuousMultilinearMap.alternatization_apply_apply,
-        Finset.sum_eq_single (1 : Equiv.Perm (Fin n))]
-      · rw [Equiv.Perm.sign_one, one_smul, Equiv.Perm.coe_one, Function.comp_id,
-          ContinuousMultilinearMap.compContinuousLinearMap_apply,
-          ContinuousMultilinearMap.mkPiAlgebra_apply]
-        refine Finset.prod_eq_one fun i _ => ?_
-        rw [innerSL_apply_apply, real_inner_self_eq_norm_sq, hτ.norm_eq_one, one_pow]
-      · intro σ _ hσ
-        obtain ⟨i, hi⟩ : ∃ i, σ i ≠ i := by
-          by_contra! h
-          exact hσ (Equiv.ext h)
-        rw [ContinuousMultilinearMap.compContinuousLinearMap_apply,
-          ContinuousMultilinearMap.mkPiAlgebra_apply,
-          Finset.prod_eq_zero (Finset.mem_univ i) ?_, smul_zero]
-        rw [innerSL_apply_apply, Function.comp_apply]
-        exact hτ.inner_eq_zero hi.symm
-      · exact fun h => absurd (Finset.mem_univ _) h
-    -- `ξ = 0` would give `0 = ‖ξ(δ)‖ = ‖δ(τ)‖ = 1`
-    have h := hnorm δ
-    rw [h0, hδ, zero_apply, norm_zero, norm_one] at h
-    exact zero_ne_one h
-  · -- `|ξ(α)| = |α(τ)| ≤ ‖α‖ ∏ᵢ ‖τᵢ‖ = ‖α‖`
-    rw [hnorm, one_mul]
-    calc ‖α τ‖ ≤ ‖α‖ * ∏ i, ‖τ i‖ := ContinuousAlternatingMap.le_opNorm α τ
-      _ = ‖α‖ := by rw [Finset.prod_eq_one fun i _ => hτ.norm_eq_one i, mul_one]
 
 `θ ≥ 1` on `S` makes `S` locally `Hⁿ`-finite, so tangent locality (`cmc_imRep_locality_restrict_sub`
 (a) with `U = ℝᴾ`) gives `TₓA = TₓS` for `Hⁿ`-a.e. `x ∈ A`; rectifiability, positivity and local
@@ -37957,6 +37788,18 @@ theorem Submission.dtc_bc_lc_rc_cycle_competitor : ∀ (P m : ℕ) (U A W K : Se
       show S ω - (0 - XU ω) - S ω = 0
       rw [hX0, sub_zero, sub_zero, sub_self]
   exact hmin.2 W _ hW hWU hZim hbd hspt.2 (hspt.1.trans hKAW)
+/-- Mass agrees away from `spt (S − T)`.  If `spt (S − T) ⊆ K` and `G ∩ K = ∅`, then
+`M_G(S) = M_G(T)`.  Both masses are suprema over the same admissible forms `ω ∈ 𝒟ⁿ(U)` with
+`spt ω ⊆ G` and `|ω| ≤ 1`; for each of them `spt ω` misses `spt (S − T) ⊆ K`, so
+`S(ω) − T(ω) = (S − T)(ω) = 0` by Simon 6.2.11. -/
+theorem Submission.cmc_ml_massOn_eq_of_disjoint_sub_support : ∀ (P n : ℕ) (U : Set (Euclid P)) (S T : GeometricCurrentOn U n) (K G : Set (Euclid P)), (S - T).support ⊆ K → Disjoint G K → S.massOn G = T.massOn G := by
+  intro P n U S T K G hK hGK
+  -- `M_G(S)` and `M_G(T)` are suprema over the same admissible set
+  refine congrArg sSup (Set.image_congr fun ω hω => ?_)
+  -- `spt ω ⊆ G` misses `spt (S − T) ⊆ K`, so `S(ω) − T(ω) = (S − T)(ω) = 0`
+  have h0 : S ω - T ω = 0 :=
+    Submission.dtc_vanish_off_support P n U (S - T) ω (Disjoint.mono hω.1 hK hGK)
+  exact congrArg ENNReal.ofReal (sub_eq_zero.mp h0)
 /-- **Simon 6.2.5, 6.2.16** (mass across a change of domain).  If `W ⊆ V ⊆ U`, and
 `S ∈ 𝒟ₙ(U)`, `S' ∈ 𝒟ₙ(V)` agree on every `ω ∈ 𝒟ⁿ(V)` with `spt ω ⊆ W`, then
 `M_W(S) = M_W(S')`.  A form admissible for `M_W` has `spt ω ⊆ W ⊆ V`, so the admissible forms in
@@ -52608,128 +52451,6 @@ theorem Submission.cmc_ml_measure_eq_of_eq_on_open_subsets : ∀ (P : ℕ) (O : 
   rw [hAunion, hmono.measure_iUnion, hmono.measure_iUnion]
   refine iSup_congr fun i => ?_
   rw [← Measure.restrict_apply hA, ← Measure.restrict_apply hA, hrestr i]
-/-- **Simon 7.2.4, (12)–(13)** (upper bound on compact sets): let `μ` be finite on compact
-subsets of `ℝᴾ`, and suppose that for every compact `K`, `ε > 0` and subsequence `ψ` there are
-`K ⊆ W ⊆ thickening ε K` and a further subsequence `φ'` with `limsup_i μ_{ψ(φ'(i))}(W) ≤ μ(W)`.
-Then `limsup_j μ_j(K) ≤ μ(K)` for every compact `K`.  If `μ(thickening ε K) < b < limsup_j μ_j(K)`,
-then `μ_{ψ(i)}(K) > b` along a subsequence `ψ`, and
-`b ≤ limsup_i μ_{ψ(φ'(i))}(W) ≤ μ(W) ≤ μ(thickening ε K) < b`.  Hence
-`limsup_j μ_j(K) ≤ μ(thickening ε K)` for every `ε > 0`, and `μ(thickening ε K) → μ(K)` as
-`ε ↓ 0` by continuity from above (`K` is closed and `μ(thickening 1 K) ≤ μ(cthickening 1 K) < ∞`).
--/
-theorem Submission.dtc_bc_mm_limsup_le_of_subseq : ∀ (P : ℕ) (μs : ℕ → Measure (Euclid P)) (μ : Measure (Euclid P)), (∀ K : Set (Euclid P), IsCompact K → μ K < ∞) → (∀ (K : Set (Euclid P)) (ε : ℝ), IsCompact K → 0 < ε → ∀ ψ : ℕ → ℕ, StrictMono ψ → ∃ W : Set (Euclid P), K ⊆ W ∧ W ⊆ thickening ε K ∧ ∃ φ' : ℕ → ℕ, StrictMono φ' ∧ limsup (fun i => μs (ψ (φ' i)) W) atTop ≤ μ W) → ∀ K : Set (Euclid P), IsCompact K → limsup (fun j => μs j K) atTop ≤ μ K := by
-  intro P μs μ hfin hsub K hK
-  -- `limsup_j μ_j(K) ≤ μ(thickening ε K)` for every `ε > 0`.
-  have hthick : ∀ ε : ℝ, 0 < ε → limsup (fun j => μs j K) atTop ≤ μ (thickening ε K) := by
-    intro ε hε
-    by_contra hlt
-    obtain ⟨b, hab, hbL⟩ := exists_between (not_le.mp hlt)
-    obtain ⟨ψ, hψ, hψb⟩ := extraction_of_frequently_atTop (frequently_lt_of_lt_limsup (h := hbL))
-    obtain ⟨W, hKW, hWε, φ', -, hW⟩ := hsub K ε hK hε ψ hψ
-    have hb : b ≤ limsup (fun i => μs (ψ (φ' i)) W) atTop :=
-      le_limsup_of_frequently_le (Frequently.of_forall fun i =>
-        (hψb (φ' i)).le.trans (measure_mono hKW))
-    exact (hb.trans (hW.trans (measure_mono hWε))).not_gt hab
-  -- Continuity from above: `μ(thickening r K) → μ(K)` as `r ↓ 0`.
-  have hT : Tendsto (fun r => μ (thickening r K)) (𝓝[>] 0) (𝓝 (μ K)) :=
-    tendsto_measure_thickening_of_isClosed ⟨1, one_pos, ((measure_mono
-      (thickening_subset_cthickening 1 K)).trans_lt (hfin _ hK.cthickening)).ne⟩ hK.isClosed
-  exact ge_of_tendsto hT (eventually_nhdsWithin_of_forall hthick)
-
-/-- **Simon 7.2.4, (8)**, localized (minimality of the limit `C`).  For a competitor `S` with
-`K = spt(S − C)` compact and `K ⊆ W`, pick `ε > 0` with `thickening ε K ⊆ W`; the local comparison
-with `ψ = id` gives an open `W'`, `K ⊆ W' ⊆ W`, and `φ'` with `limsup M_{W'}(S_{φ'(i)}) ≤ M_{W'}(S)`,
-so `M_{W'}(C) ≤ liminf M_{W'}(S_{φ'(i)}) ≤ M_{W'}(S)` by lower semicontinuity of mass.  Off `K` the
-currents `S` and `C` agree, so their weights `μ_S, μ_C` agree on the Borel set `W \ W' ⊆ ℝᴾ \ K`,
-and `M_W(C) = μ_C(W') + μ_C(W \ W') ≤ μ_S(W') + μ_S(W \ W') = M_W(S)`. -/
-theorem Submission.dtc_bc_mm_isMinimizingIn_univ : ∀ (P n : ℕ) (Us : ℕ → Set (Euclid P)) (Ss : (j : ℕ) → GeometricCurrentOn (Us j) n) (C : GeometricCurrentOn (univ : Set (Euclid P)) n), (∀ R : ℝ, ∀ᶠ j in atTop, closedBall (0 : Euclid P) R ⊆ Us j) → IsIntegerMultiplicity C → ConvergesWeakly Ss C → (∀ (K : Set (Euclid P)) (ε : ℝ), IsCompact K → 0 < ε → ∀ ψ : ℕ → ℕ, StrictMono ψ → ∃ W : Set (Euclid P), IsOpen W ∧ K ⊆ W ∧ W ⊆ thickening ε K ∧ ∃ φ' : ℕ → ℕ, StrictMono φ' ∧ ∀ S : GeometricCurrentOn (univ : Set (Euclid P)) n, IsIntegerMultiplicity S → SameBoundary S C → (S - C).support ⊆ K → limsup (fun j => (Ss (ψ (φ' j))).massOn W) atTop ≤ S.massOn W) → IsMinimizingIn C univ := by
-  intro P n Us Ss C hUs hC hconv hcomp
-  refine ⟨hC, fun W S hW _ hS hbd hKc hsub => ?_⟩
-  -- `K = spt(S − C)` is a compact subset of `W`; pick `ε > 0` with `thickening ε K ⊆ W`
-  set K := (S - C).support
-  have hKW : K ⊆ W := fun x hx => (hsub hx).2
-  obtain ⟨ε, hε, hεW⟩ := hKc.exists_thickening_subset_open hW hKW
-  -- the local comparison with `ψ = id`: `K ⊆ W' ⊆ W`, `limsup M_{W'}(S_{φ'(i)}) ≤ M_{W'}(S)`
-  obtain ⟨W', hW'o, hKW', hW'ε, φ', hφ', hcmp⟩ := hcomp K ε hKc hε id strictMono_id
-  have hW'W : W' ⊆ W := hW'ε.trans hεW
-  -- lower semicontinuity: `M_{W'}(C) ≤ liminf M_{W'}(S_{φ'(i)}) ≤ limsup ≤ M_{W'}(S)`
-  have hCS : C.massOn W' ≤ S.massOn W' :=
-    le_trans (Submission.dtc_bc_mm_massOn_le_liminf P n Us Ss C hUs hconv φ' hφ' W')
-      (le_trans liminf_le_limsup (hcmp S hS hbd subset_rfl))
-  -- on open sets the masses are the weights `μ_C = μ_{R_C}` and `μ_S = μ_{R_S}`
-  obtain ⟨RC, hRC⟩ := hC
-  obtain ⟨RS, hRS⟩ := hS
-  have hmC := Submission.cmc_massOn_eq_imRep_measure P n univ C RC isOpen_univ hRC
-  have hmS := Submission.cmc_massOn_eq_imRep_measure P n univ S RS isOpen_univ hRS
-  -- `μ_S = μ_C` on the open subsets of `ℝᴾ \ K` (there `S = C`), hence on its Borel subsets
-  have hagree : ∀ A : Set (Euclid P), MeasurableSet A → A ⊆ Kᶜ → RS.measure A = RC.measure A :=
-    Submission.cmc_ml_measure_eq_of_eq_on_open_subsets P Kᶜ RS.measure RC.measure
-      hKc.isClosed.isOpen_compl
-      (fun K' hK' _ =>
-        (Submission.rsd_imrep_compact_measure_ne_top P n univ RS K' hK' (subset_univ _)).2)
-      (fun G hG hGK => by
-        rw [← hmS G hG, ← hmC G hG]
-        exact Submission.cmc_ml_massOn_eq_of_disjoint_sub_support P n univ S C K G subset_rfl
-          (subset_compl_iff_disjoint_right.mp hGK))
-  have hdiff : RS.measure (W \ W') = RC.measure (W \ W') :=
-    hagree _ (hW.measurableSet.diff hW'o.measurableSet) fun x hx hxK => hx.2 (hKW' hxK)
-  -- additivity: `M_W(C) = μ_C(W') + μ_C(W \ W') ≤ μ_S(W') + μ_S(W \ W') = M_W(S)`
-  have hsplit : ∀ μ : Measure (Euclid P), μ W' + μ (W \ W') = μ W := fun μ => by
-    rw [← measure_inter_add_sdiff W hW'o.measurableSet, inter_eq_right.mpr hW'W]
-  calc C.massOn W = RC.measure W' + RC.measure (W \ W') := by rw [hmC W hW, hsplit]
-    _ ≤ RS.measure W' + RS.measure (W \ W') := by
-        rw [← hmC W' hW'o, ← hmS W' hW'o, hdiff]
-        exact add_le_add hCS le_rfl
-    _ = S.massOn W := by rw [hmS W hW, hsplit]
-/-- **Simon 7.2.4 (12)–(14)** (chapter-07.txt lines 260–288): for the weights `μⱼ = θⱼ Hⁿ⌞Mⱼ`
-of `Sⱼ = τ(Mⱼ, θⱼ, ξⱼ)` and `μ = θ Hⁿ⌞M` of `C = τ(M, θ, ξ)`, (a) `μ(K) < ∞` and (b)
-`limsup_j μⱼ(K) ≤ μ(K)` for compact `K`, and (c) `μ(G) ≤ liminf_j μⱼ(G)` for bounded open `G`.
-On open sets mass is the weight (Simon 6.3.2(3)); (c) is the lower semicontinuity of mass, and
-(b) is the local comparison with the admissible competitor `S = C`, passed to the whole sequence
-by the subsequence-of-subsequence criterion (lines 278–280). -/
-theorem Submission.dtc_bc_mm_measure_bounds : ∀ (P n : ℕ) (Us : ℕ → Set (Euclid P)) (Ss : (j : ℕ) → GeometricCurrentOn (Us j) n) (C : GeometricCurrentOn (univ : Set (Euclid P)) n), (∀ j, IsOpen (Us j)) → (∀ R : ℝ, ∀ᶠ j in atTop, closedBall (0 : Euclid P) R ⊆ Us j) → ConvergesWeakly Ss C → (∀ (K : Set (Euclid P)) (ε : ℝ), IsCompact K → 0 < ε → ∀ ψ : ℕ → ℕ, StrictMono ψ → ∃ W : Set (Euclid P), IsOpen W ∧ K ⊆ W ∧ W ⊆ thickening ε K ∧ ∃ φ' : ℕ → ℕ, StrictMono φ' ∧ ∀ S : GeometricCurrentOn (univ : Set (Euclid P)) n, IsIntegerMultiplicity S → SameBoundary S C → (S - C).support ⊆ K → limsup (fun j => (Ss (ψ (φ' j))).massOn W) atTop ≤ S.massOn W) → ∀ Rs : (j : ℕ) → IMRep (Us j) n, (∀ j, (Rs j).Represents (Ss j)) → ∀ R : IMRep (univ : Set (Euclid P)) n, R.Represents C → (∀ K : Set (Euclid P), IsCompact K → R.measure K < ∞) ∧ (∀ K : Set (Euclid P), IsCompact K → limsup (fun j => (Rs j).measure K) atTop ≤ R.measure K) ∧ (∀ G : Set (Euclid P), IsOpen G → Bornology.IsBounded G → R.measure G ≤ liminf (fun j => (Rs j).measure G) atTop) := by
-  intro P n Us Ss C hUs hexh hconv hloc Rs hRs R hR
-  -- on open sets mass is the weight: `M_G(C) = μ(G)` and `M_G(Sⱼ) = μⱼ(G)`
-  have hC : ∀ G : Set (Euclid P), IsOpen G → C.massOn G = R.measure G := fun G hG =>
-    Submission.cmc_massOn_eq_imRep_measure P n univ C R isOpen_univ hR G hG
-  have hS : ∀ G : Set (Euclid P), IsOpen G → ∀ j, (Ss j).massOn G = (Rs j).measure G :=
-    fun G hG j =>
-      Submission.cmc_massOn_eq_imRep_measure P n (Us j) (Ss j) (Rs j) (hUs j) (hRs j) G hG
-  -- (a): `μ(K) = ∫_{M ∩ K} θ dHⁿ < ∞`
-  have ha : ∀ K : Set (Euclid P), IsCompact K → R.measure K < ∞ := fun K hK =>
-    lt_top_iff_ne_top.2
-      (Submission.rsd_imrep_compact_measure_ne_top P n univ R K hK (subset_univ K)).2
-  -- `C` is an admissible competitor for itself: `∂C = ∂C`, and `spt(C − C) = ∅` since `C − C`
-  -- vanishes on every ball `B₁(x)`, whose closure is compact
-  have hsame : SameBoundary C C := by
-    cases n
-    · trivial
-    · rfl
-  have hspt : ∀ K : Set (Euclid P), (C - C).support ⊆ K := by
-    intro K x hx
-    have hx' : x ∈ univ \ (C - C).zeroRegion := hx
-    refine absurd (mem_sUnion.2 ⟨ball x 1, ?_, mem_ball_self one_pos⟩) hx'.2
-    refine ⟨isOpen_ball, isBounded_ball.isCompact_closure, subset_univ _, fun ω _ => ?_⟩
-    exact sub_self (C ω)
-  refine ⟨ha, ?_, ?_⟩
-  · -- (b): the comparison with `S = C` gives `limsup_i μ_{ψ(φ'(i))}(W) ≤ μ(W)` on the open
-    -- `W ⊇ K` it provides, the hypothesis of the subsequence criterion
-    refine Submission.dtc_bc_mm_limsup_le_of_subseq P (fun j => (Rs j).measure) R.measure ha ?_
-    intro K ε hK hε ψ hψ
-    obtain ⟨W, hW, hKW, hWK, φ', hφ', hcmp⟩ := hloc K ε hK hε ψ hψ
-    refine ⟨W, hKW, hWK, φ', hφ', ?_⟩
-    calc limsup (fun i => (Rs (ψ (φ' i))).measure W) atTop
-        = limsup (fun i => (Ss (ψ (φ' i))).massOn W) atTop := by
-          congr 1; funext i; exact (hS W hW _).symm
-      _ ≤ C.massOn W := hcmp C ⟨R, hR⟩ hsame (hspt K)
-      _ = R.measure W := hC W hW
-  · -- (c): lower semicontinuity of mass along the whole sequence (`φ = id`)
-    intro G hG _
-    calc R.measure G = C.massOn G := (hC G hG).symm
-      _ ≤ liminf (fun i => (Ss (id i)).massOn G) atTop :=
-          Submission.dtc_bc_mm_massOn_le_liminf P n Us Ss C hexh hconv id strictMono_id G
-      _ = liminf (fun j => (Rs j).measure G) atTop := by
-          congr 1; funext j; exact hS G hG j
 
 /-- **Foundations of the closure step** (Simon Ch. 6, 2.7–2.8, 2.35–2.37, 3.1, 8.3; Ch. 1, 4.4).
 (REP): a current `T` with locally finite mass is `T(ω) = ∫ ⟨ω, ξ⟩ dμ` with `μ(W) = M_W(T)` and
@@ -60655,6 +60376,129 @@ theorem Submission.dtc_bc_lc_good_level : ∀ (P : ℕ) (g : ℕ → ℝ → ℝ
   have hS : {x | h x = t} ⊆ S := fun x (hx : h x = t) => show a < h x ∧ h x < b from hx ▸ ht
   rw [← Measure.restrict_eq_self (μ i) hS]
   exact nonpos_iff_eq_zero.1 (not_lt.1 fun hpos => hCt (mem_iUnion.2 ⟨i, hpos⟩))
+/-- **Simon 7.2.4, (12)–(13)** (upper bound on compact sets): let `μ` be finite on compact
+subsets of `ℝᴾ`, and suppose that for every compact `K`, `ε > 0` and subsequence `ψ` there are
+`K ⊆ W ⊆ thickening ε K` and a further subsequence `φ'` with `limsup_i μ_{ψ(φ'(i))}(W) ≤ μ(W)`.
+Then `limsup_j μ_j(K) ≤ μ(K)` for every compact `K`.  If `μ(thickening ε K) < b < limsup_j μ_j(K)`,
+then `μ_{ψ(i)}(K) > b` along a subsequence `ψ`, and
+`b ≤ limsup_i μ_{ψ(φ'(i))}(W) ≤ μ(W) ≤ μ(thickening ε K) < b`.  Hence
+`limsup_j μ_j(K) ≤ μ(thickening ε K)` for every `ε > 0`, and `μ(thickening ε K) → μ(K)` as
+`ε ↓ 0` by continuity from above (`K` is closed and `μ(thickening 1 K) ≤ μ(cthickening 1 K) < ∞`).
+-/
+theorem Submission.dtc_bc_mm_limsup_le_of_subseq : ∀ (P : ℕ) (μs : ℕ → Measure (Euclid P)) (μ : Measure (Euclid P)), (∀ K : Set (Euclid P), IsCompact K → μ K < ∞) → (∀ (K : Set (Euclid P)) (ε : ℝ), IsCompact K → 0 < ε → ∀ ψ : ℕ → ℕ, StrictMono ψ → ∃ W : Set (Euclid P), K ⊆ W ∧ W ⊆ thickening ε K ∧ ∃ φ' : ℕ → ℕ, StrictMono φ' ∧ limsup (fun i => μs (ψ (φ' i)) W) atTop ≤ μ W) → ∀ K : Set (Euclid P), IsCompact K → limsup (fun j => μs j K) atTop ≤ μ K := by
+  intro P μs μ hfin hsub K hK
+  -- `limsup_j μ_j(K) ≤ μ(thickening ε K)` for every `ε > 0`.
+  have hthick : ∀ ε : ℝ, 0 < ε → limsup (fun j => μs j K) atTop ≤ μ (thickening ε K) := by
+    intro ε hε
+    by_contra hlt
+    obtain ⟨b, hab, hbL⟩ := exists_between (not_le.mp hlt)
+    obtain ⟨ψ, hψ, hψb⟩ := extraction_of_frequently_atTop (frequently_lt_of_lt_limsup (h := hbL))
+    obtain ⟨W, hKW, hWε, φ', -, hW⟩ := hsub K ε hK hε ψ hψ
+    have hb : b ≤ limsup (fun i => μs (ψ (φ' i)) W) atTop :=
+      le_limsup_of_frequently_le (Frequently.of_forall fun i =>
+        (hψb (φ' i)).le.trans (measure_mono hKW))
+    exact (hb.trans (hW.trans (measure_mono hWε))).not_gt hab
+  -- Continuity from above: `μ(thickening r K) → μ(K)` as `r ↓ 0`.
+  have hT : Tendsto (fun r => μ (thickening r K)) (𝓝[>] 0) (𝓝 (μ K)) :=
+    tendsto_measure_thickening_of_isClosed ⟨1, one_pos, ((measure_mono
+      (thickening_subset_cthickening 1 K)).trans_lt (hfin _ hK.cthickening)).ne⟩ hK.isClosed
+  exact ge_of_tendsto hT (eventually_nhdsWithin_of_forall hthick)
+
+/-- **Simon 7.2.4, (8)**, localized (minimality of the limit `C`).  For a competitor `S` with
+`K = spt(S − C)` compact and `K ⊆ W`, pick `ε > 0` with `thickening ε K ⊆ W`; the local comparison
+with `ψ = id` gives an open `W'`, `K ⊆ W' ⊆ W`, and `φ'` with `limsup M_{W'}(S_{φ'(i)}) ≤ M_{W'}(S)`,
+so `M_{W'}(C) ≤ liminf M_{W'}(S_{φ'(i)}) ≤ M_{W'}(S)` by lower semicontinuity of mass.  Off `K` the
+currents `S` and `C` agree, so their weights `μ_S, μ_C` agree on the Borel set `W \ W' ⊆ ℝᴾ \ K`,
+and `M_W(C) = μ_C(W') + μ_C(W \ W') ≤ μ_S(W') + μ_S(W \ W') = M_W(S)`. -/
+theorem Submission.dtc_bc_mm_isMinimizingIn_univ : ∀ (P n : ℕ) (Us : ℕ → Set (Euclid P)) (Ss : (j : ℕ) → GeometricCurrentOn (Us j) n) (C : GeometricCurrentOn (univ : Set (Euclid P)) n), (∀ R : ℝ, ∀ᶠ j in atTop, closedBall (0 : Euclid P) R ⊆ Us j) → IsIntegerMultiplicity C → ConvergesWeakly Ss C → (∀ (K : Set (Euclid P)) (ε : ℝ), IsCompact K → 0 < ε → ∀ ψ : ℕ → ℕ, StrictMono ψ → ∃ W : Set (Euclid P), IsOpen W ∧ K ⊆ W ∧ W ⊆ thickening ε K ∧ ∃ φ' : ℕ → ℕ, StrictMono φ' ∧ ∀ S : GeometricCurrentOn (univ : Set (Euclid P)) n, IsIntegerMultiplicity S → SameBoundary S C → (S - C).support ⊆ K → limsup (fun j => (Ss (ψ (φ' j))).massOn W) atTop ≤ S.massOn W) → IsMinimizingIn C univ := by
+  intro P n Us Ss C hUs hC hconv hcomp
+  refine ⟨hC, fun W S hW _ hS hbd hKc hsub => ?_⟩
+  -- `K = spt(S − C)` is a compact subset of `W`; pick `ε > 0` with `thickening ε K ⊆ W`
+  set K := (S - C).support
+  have hKW : K ⊆ W := fun x hx => (hsub hx).2
+  obtain ⟨ε, hε, hεW⟩ := hKc.exists_thickening_subset_open hW hKW
+  -- the local comparison with `ψ = id`: `K ⊆ W' ⊆ W`, `limsup M_{W'}(S_{φ'(i)}) ≤ M_{W'}(S)`
+  obtain ⟨W', hW'o, hKW', hW'ε, φ', hφ', hcmp⟩ := hcomp K ε hKc hε id strictMono_id
+  have hW'W : W' ⊆ W := hW'ε.trans hεW
+  -- lower semicontinuity: `M_{W'}(C) ≤ liminf M_{W'}(S_{φ'(i)}) ≤ limsup ≤ M_{W'}(S)`
+  have hCS : C.massOn W' ≤ S.massOn W' :=
+    le_trans (Submission.dtc_bc_mm_massOn_le_liminf P n Us Ss C hUs hconv φ' hφ' W')
+      (le_trans liminf_le_limsup (hcmp S hS hbd subset_rfl))
+  -- on open sets the masses are the weights `μ_C = μ_{R_C}` and `μ_S = μ_{R_S}`
+  obtain ⟨RC, hRC⟩ := hC
+  obtain ⟨RS, hRS⟩ := hS
+  have hmC := Submission.cmc_massOn_eq_imRep_measure P n univ C RC isOpen_univ hRC
+  have hmS := Submission.cmc_massOn_eq_imRep_measure P n univ S RS isOpen_univ hRS
+  -- `μ_S = μ_C` on the open subsets of `ℝᴾ \ K` (there `S = C`), hence on its Borel subsets
+  have hagree : ∀ A : Set (Euclid P), MeasurableSet A → A ⊆ Kᶜ → RS.measure A = RC.measure A :=
+    Submission.cmc_ml_measure_eq_of_eq_on_open_subsets P Kᶜ RS.measure RC.measure
+      hKc.isClosed.isOpen_compl
+      (fun K' hK' _ =>
+        (Submission.rsd_imrep_compact_measure_ne_top P n univ RS K' hK' (subset_univ _)).2)
+      (fun G hG hGK => by
+        rw [← hmS G hG, ← hmC G hG]
+        exact Submission.cmc_ml_massOn_eq_of_disjoint_sub_support P n univ S C K G subset_rfl
+          (subset_compl_iff_disjoint_right.mp hGK))
+  have hdiff : RS.measure (W \ W') = RC.measure (W \ W') :=
+    hagree _ (hW.measurableSet.diff hW'o.measurableSet) fun x hx hxK => hx.2 (hKW' hxK)
+  -- additivity: `M_W(C) = μ_C(W') + μ_C(W \ W') ≤ μ_S(W') + μ_S(W \ W') = M_W(S)`
+  have hsplit : ∀ μ : Measure (Euclid P), μ W' + μ (W \ W') = μ W := fun μ => by
+    rw [← measure_inter_add_sdiff W hW'o.measurableSet, inter_eq_right.mpr hW'W]
+  calc C.massOn W = RC.measure W' + RC.measure (W \ W') := by rw [hmC W hW, hsplit]
+    _ ≤ RS.measure W' + RS.measure (W \ W') := by
+        rw [← hmC W' hW'o, ← hmS W' hW'o, hdiff]
+        exact add_le_add hCS le_rfl
+    _ = S.massOn W := by rw [hmS W hW, hsplit]
+/-- **Simon 7.2.4 (12)–(14)** (chapter-07.txt lines 260–288): for the weights `μⱼ = θⱼ Hⁿ⌞Mⱼ`
+of `Sⱼ = τ(Mⱼ, θⱼ, ξⱼ)` and `μ = θ Hⁿ⌞M` of `C = τ(M, θ, ξ)`, (a) `μ(K) < ∞` and (b)
+`limsup_j μⱼ(K) ≤ μ(K)` for compact `K`, and (c) `μ(G) ≤ liminf_j μⱼ(G)` for bounded open `G`.
+On open sets mass is the weight (Simon 6.3.2(3)); (c) is the lower semicontinuity of mass, and
+(b) is the local comparison with the admissible competitor `S = C`, passed to the whole sequence
+by the subsequence-of-subsequence criterion (lines 278–280). -/
+theorem Submission.dtc_bc_mm_measure_bounds : ∀ (P n : ℕ) (Us : ℕ → Set (Euclid P)) (Ss : (j : ℕ) → GeometricCurrentOn (Us j) n) (C : GeometricCurrentOn (univ : Set (Euclid P)) n), (∀ j, IsOpen (Us j)) → (∀ R : ℝ, ∀ᶠ j in atTop, closedBall (0 : Euclid P) R ⊆ Us j) → ConvergesWeakly Ss C → (∀ (K : Set (Euclid P)) (ε : ℝ), IsCompact K → 0 < ε → ∀ ψ : ℕ → ℕ, StrictMono ψ → ∃ W : Set (Euclid P), IsOpen W ∧ K ⊆ W ∧ W ⊆ thickening ε K ∧ ∃ φ' : ℕ → ℕ, StrictMono φ' ∧ ∀ S : GeometricCurrentOn (univ : Set (Euclid P)) n, IsIntegerMultiplicity S → SameBoundary S C → (S - C).support ⊆ K → limsup (fun j => (Ss (ψ (φ' j))).massOn W) atTop ≤ S.massOn W) → ∀ Rs : (j : ℕ) → IMRep (Us j) n, (∀ j, (Rs j).Represents (Ss j)) → ∀ R : IMRep (univ : Set (Euclid P)) n, R.Represents C → (∀ K : Set (Euclid P), IsCompact K → R.measure K < ∞) ∧ (∀ K : Set (Euclid P), IsCompact K → limsup (fun j => (Rs j).measure K) atTop ≤ R.measure K) ∧ (∀ G : Set (Euclid P), IsOpen G → Bornology.IsBounded G → R.measure G ≤ liminf (fun j => (Rs j).measure G) atTop) := by
+  intro P n Us Ss C hUs hexh hconv hloc Rs hRs R hR
+  -- on open sets mass is the weight: `M_G(C) = μ(G)` and `M_G(Sⱼ) = μⱼ(G)`
+  have hC : ∀ G : Set (Euclid P), IsOpen G → C.massOn G = R.measure G := fun G hG =>
+    Submission.cmc_massOn_eq_imRep_measure P n univ C R isOpen_univ hR G hG
+  have hS : ∀ G : Set (Euclid P), IsOpen G → ∀ j, (Ss j).massOn G = (Rs j).measure G :=
+    fun G hG j =>
+      Submission.cmc_massOn_eq_imRep_measure P n (Us j) (Ss j) (Rs j) (hUs j) (hRs j) G hG
+  -- (a): `μ(K) = ∫_{M ∩ K} θ dHⁿ < ∞`
+  have ha : ∀ K : Set (Euclid P), IsCompact K → R.measure K < ∞ := fun K hK =>
+    lt_top_iff_ne_top.2
+      (Submission.rsd_imrep_compact_measure_ne_top P n univ R K hK (subset_univ K)).2
+  -- `C` is an admissible competitor for itself: `∂C = ∂C`, and `spt(C − C) = ∅` since `C − C`
+  -- vanishes on every ball `B₁(x)`, whose closure is compact
+  have hsame : SameBoundary C C := by
+    cases n
+    · trivial
+    · rfl
+  have hspt : ∀ K : Set (Euclid P), (C - C).support ⊆ K := by
+    intro K x hx
+    have hx' : x ∈ univ \ (C - C).zeroRegion := hx
+    refine absurd (mem_sUnion.2 ⟨ball x 1, ?_, mem_ball_self one_pos⟩) hx'.2
+    refine ⟨isOpen_ball, isBounded_ball.isCompact_closure, subset_univ _, fun ω _ => ?_⟩
+    exact sub_self (C ω)
+  refine ⟨ha, ?_, ?_⟩
+  · -- (b): the comparison with `S = C` gives `limsup_i μ_{ψ(φ'(i))}(W) ≤ μ(W)` on the open
+    -- `W ⊇ K` it provides, the hypothesis of the subsequence criterion
+    refine Submission.dtc_bc_mm_limsup_le_of_subseq P (fun j => (Rs j).measure) R.measure ha ?_
+    intro K ε hK hε ψ hψ
+    obtain ⟨W, hW, hKW, hWK, φ', hφ', hcmp⟩ := hloc K ε hK hε ψ hψ
+    refine ⟨W, hKW, hWK, φ', hφ', ?_⟩
+    calc limsup (fun i => (Rs (ψ (φ' i))).measure W) atTop
+        = limsup (fun i => (Ss (ψ (φ' i))).massOn W) atTop := by
+          congr 1; funext i; exact (hS W hW _).symm
+      _ ≤ C.massOn W := hcmp C ⟨R, hR⟩ hsame (hspt K)
+      _ = R.measure W := hC W hW
+  · -- (c): lower semicontinuity of mass along the whole sequence (`φ = id`)
+    intro G hG _
+    calc R.measure G = C.massOn G := (hC G hG).symm
+      _ ≤ liminf (fun i => (Ss (id i)).massOn G) atTop :=
+          Submission.dtc_bc_mm_massOn_le_liminf P n Us Ss C hexh hconv id strictMono_id G
+      _ = liminf (fun j => (Rs j).measure G) atTop := by
+          congr 1; funext j; exact hS G hG j
+
 /-- **Simon 6.3.2(3), 6.2.16** (locality of the weight measure).  If `R₁, R₂` represent
 `T₁ ∈ 𝒟ₙ(U₁)`, `T₂ ∈ 𝒟ₙ(U₂)` and `T₁ = T₂` in the open set `W ⊆ U₁ ∩ U₂`, then
 `μ_{R₁}⌞W = μ_{R₂}⌞W`.  For open `G ⊆ W` the admissible forms for `M_G(Tᵢ)` are forms in
@@ -61495,6 +61339,7 @@ theorem Submission.dtc_bc_blowUp_hypotheses : ∀ (m k ℓ : ℕ) (U N : Set (Eu
       Submission.dtc_bc_local_retraction (m + 1 + k) (m + 1 + ℓ) N x hN hxN
     exact Submission.dtc_bc_bh_rescaled_retraction (m + 1 + k) U N x δ π hU hxU hxN hδ hC hmaps
       hid hlip lams hlams hlim G hG
+
 /-- **Simon 7.2.4** (proof, pp. 186–187: (8) and its localization, (12)–(14) and the closing
 "standard approximation argument").  Let `Sⱼ ∈ 𝒟ₙ(Uⱼ)`, the open `Uⱼ` exhausting `ℝᴾ`, converge
 weakly to the integer multiplicity `C ∈ 𝒟ₙ(ℝᴾ)`, and assume the local comparison: for compact `K`,
