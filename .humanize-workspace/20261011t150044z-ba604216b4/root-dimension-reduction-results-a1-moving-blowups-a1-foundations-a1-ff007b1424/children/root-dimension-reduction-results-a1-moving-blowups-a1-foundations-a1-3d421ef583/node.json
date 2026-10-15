@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.moving_blowups-a1.foundations-a1.testform_extension-a1.limit_functional-a1",
+  "parent_id": "root.dimension_reduction_results-a1.moving_blowups-a1.foundations-a1.testform_extension-a1",
+  "depth": 5,
+  "title": "Limit of T along test forms converging uniformly with supports in a fixed W ⊂⊂ U (selected proof, steps 4–5)",
+  "statement": "Let P, n, d ∈ ℕ and let c : Λ := Covector (Euclid P) n → ℝ^d = EuclideanSpace ℝ (Fin d) be a continuous linear equivalence with |α| := covectorEuclideanNorm α = ‖c α‖ for every α ∈ Λ. Let U ⊆ ℝ^P be any set, T ∈ 𝒟_n(U) (GeometricCurrentOn U n), and m : Set(ℝ^P) → ℝ any function such that |T(ω)| ≤ r·m(W) whenever W ⊆ ℝ^P is open with W ⊂⊂ U (CompactlyContained W U: closure W is compact and contained in U), ω ∈ 𝒟ⁿ(U) (TestFormOn U n), tsupport ω ⊆ W, r ∈ ℝ and |ω(x)| ≤ r for all x. Then there is Φ : (ℝ^P → Λ) → ℝ such that T(ω_k) → Φ(G) as k → ∞ whenever G : ℝ^P → Λ, W ⊆ ℝ^P is open with W ⊂⊂ U, (ω_k) is a sequence in TestFormOn U n with tsupport ω_k ⊆ W for every k, and (ε_k) is a real sequence with ε_k → 0 and |ω_k(x) − G(x)| ≤ ε_k for all k and x.",
+  "lean_statement": "∀ (P n d : ℕ) (c : Covector (Euclid P) n ≃L[ℝ] EuclideanSpace ℝ (Fin d)) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (m : Set (Euclid P) → ℝ), (∀ α : Covector (Euclid P) n, covectorEuclideanNorm α = ‖c α‖) → (∀ (W : Set (Euclid P)) (ω : TestFormOn U n) (r : ℝ), IsOpen W → CompactlyContained W U → tsupport (ω : DifferentialForm (Euclid P) n) ⊆ W → (∀ x, covectorEuclideanNorm ((ω : DifferentialForm (Euclid P) n) x) ≤ r) → |T ω| ≤ r * m W) → ∃ Φ : (Euclid P → Covector (Euclid P) n) → ℝ, ∀ (G : Euclid P → Covector (Euclid P) n) (W : Set (Euclid P)) (ωs : ℕ → TestFormOn U n) (εs : ℕ → ℝ), IsOpen W → CompactlyContained W U → (∀ k, tsupport (ωs k : DifferentialForm (Euclid P) n) ⊆ W) → (∀ k x, covectorEuclideanNorm ((ωs k : DifferentialForm (Euclid P) n) x - G x) ≤ εs k) → Tendsto εs atTop (𝓝 0) → Tendsto (fun k => T (ωs k)) atTop (𝓝 (Φ G))",
+  "lean_name": "dimred_mbl_fnd_tfe_exists_limit_functional",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-moving-blowups-a1-foundations-a1-3d421ef583-a1"
+}
