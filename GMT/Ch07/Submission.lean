@@ -179168,7 +179168,4 @@ theorem Submission.dimred_zero_dim_minimizing_eq_zero : ∀ (P : ℕ) (U A : Set
   rw [(Submission.dimred_im_mass_measure P 0 U (T - X) R' hU hS).1 _ isOpen_ball hWU, hS0] at h1
   exact absurd h1 (not_le.2 zero_lt_one)
 
-/-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
-theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
-
 end GMT.Ch07
