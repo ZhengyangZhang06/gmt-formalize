@@ -1,0 +1,119 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.de_giorgi-a1.rectifiable_criterion-a1`
+- Child DAG node: `root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.de_giorgi-a1.rectifiable_criterion-a1.compact_cover-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source. Parent proof, steps 3 and 6: the printed choice of π_1, …, π_N with E = ⋃_j E_j, and the conclusion “we can then evidently select Lipschitz functions f_1, …, f_J … such that E ⊆ ⋃_j Q_j(graph f_j)” of Simon Ch. 3, proof of 1.6 “⇐” (chapter-03.txt lines 214–219 and 247–260). In codimension one the subspaces π_j are replaced by directions v_j on the unit sphere. Dependencies: cone_exclusion, lipschitz_graph.
+
+1. Reference directions. The unit sphere S^m := {u ∈ E : |u| = 1} is compact, so it is covered by finitely many open balls of radius 1/16 centred on it: there is a finite V ⊆ S^m with S^m ⊆ ⋃_{v∈V} B_{1/16}(v).
+
+2. Finite cover of K. K is compact and δ/4 > 0, so there is a finite set C₀ ⊆ K with K ⊆ ⋃_{c∈C₀} B_{δ/4}(c).
+
+3. Pieces. For v ∈ V and c ∈ C₀ let S_{v,c} := {x ∈ K : |ν(x) − v| < 1/16} ∩ B_{δ/4}(c). If x, x′ ∈ S_{v,c}, then |x′ − x| ≤ |x′ − c| + |c − x| < δ/4 + δ/4 = δ/2 and |ν(x) − v| < 1/16. So cone_exclusion, applied to μ, ν, K, δ, ε, the points x, x′ ∈ K and the vector v, gives |⟨x′ − x, v⟩| ≤ ½|x′ − x|. Since |v| = 1, lipschitz_graph yields a closed countably m-rectifiable Γ_{v,c} ⊇ S_{v,c}.
+
+4. The union. Let Γ := ⋃_{v∈V} ⋃_{c∈C₀} Γ_{v,c}. It is closed as a finite union of closed sets, and countably m-rectifiable as a countable union of countably m-rectifiable sets (SimonGMT `countablyRectifiable_sUnion` applied to the finite family {Γ_{v,c}}).
+
+5. K ⊆ Γ. Let x ∈ K. Since |ν(x)| = 1, ν(x) ∈ S^m, so |ν(x) − v| < 1/16 for some v ∈ V by step 1; by step 2, x ∈ B_{δ/4}(c) for some c ∈ C₀. Hence x ∈ S_{v,c} ⊆ Γ_{v,c} ⊆ Γ. ∎
+
+Lean note (non-normative aid). The following tactic proof of `Submission.codim1_rdo_dg_rc_compact_cover` (the frozen type above, followed by `:= by`) compiles against the frozen contract: `import GMT.Ch07.Submission`, inside `namespace GMT.Ch07` with the contract's `open`s, Lean v4.35.0-rc3, Mathlib 25730c7c; `#print axioms` gives only propext, Classical.choice, Quot.sound. Sibling lemmas used: `Submission.codim1_rdo_dg_rc_cone_exclusion`, `Submission.codim1_rdo_dg_rc_closed_graph_cover`.
+```lean
+  intro m μ ν K δ ε hν1 hK hδ hε0 hε1 hlow hup
+  obtain ⟨V, hVs, hVfin, hVcov⟩ :=
+    (isCompact_sphere (0 : Euclid (m + 1)) 1).finite_cover_balls (e := 1 / 16) (by norm_num)
+  obtain ⟨C, -, hCfin, hCcov⟩ := hK.finite_cover_balls (e := δ / 4) (by positivity)
+  have hS : ∀ v ∈ V, ∀ c ∈ C, ∃ Γ : Set (Euclid (m + 1)), IsClosed Γ ∧ CountablyRectifiable m Γ ∧
+      {x | x ∈ K ∧ dist (ν x) v < 1 / 16} ∩ ball c (δ / 4) ⊆ Γ := by
+    intro v hv c _
+    have hv1 : ‖v‖ = 1 := by simpa using hVs hv
+    apply Submission.codim1_rdo_dg_rc_closed_graph_cover m v _ hv1
+    rintro x ⟨⟨hxK, hxv⟩, hxc⟩ x' ⟨⟨hx'K, -⟩, hx'c⟩
+    apply Submission.codim1_rdo_dg_rc_cone_exclusion m μ ν K δ ε hν1 hε0 hε1 hlow hup x hxK x' hx'K v
+    · rw [← dist_eq_norm]; exact hxv.le
+    · calc ‖x' - x‖ = dist x' x := (dist_eq_norm _ _).symm
+        _ ≤ dist x' c + dist c x := dist_triangle _ _ _
+        _ < δ / 4 + δ / 4 := add_lt_add (mem_ball.1 hx'c) (by rw [dist_comm]; exact mem_ball.1 hxc)
+        _ = δ / 2 := by ring
+  choose! Γ hΓc hΓr hΓS using hS
+  refine ⟨⋃ v ∈ V, ⋃ c ∈ C, Γ v c, ?_, ?_, ?_⟩
+  · exact hVfin.isClosed_biUnion fun v hv => hCfin.isClosed_biUnion fun c hc => hΓc v hv c hc
+  · have hD : ((fun p : Euclid (m + 1) × Euclid (m + 1) => Γ p.1 p.2) '' (V ×ˢ C)).Countable :=
+      ((hVfin.prod hCfin).image _).countable
+    have heq : ⋃₀ ((fun p : Euclid (m + 1) × Euclid (m + 1) => Γ p.1 p.2) '' (V ×ˢ C)) =
+        ⋃ v ∈ V, ⋃ c ∈ C, Γ v c := by
+      ext x; simp only [sUnion_image, mem_iUnion, mem_prod, Prod.exists, exists_prop]
+      constructor
+      · rintro ⟨v, c, ⟨hv, hc⟩, hx⟩; exact ⟨v, hv, c, hc, hx⟩
+      · rintro ⟨v, hv, c, hc, hx⟩; exact ⟨v, c, ⟨hv, hc⟩, hx⟩
+    rw [← heq]
+    refine Poincare.SimonGMT.Chapter03.countablyRectifiable_sUnion hD ?_
+    rintro S ⟨⟨v, c⟩, ⟨hv, hc⟩, rfl⟩
+    exact hΓr v hv c hc
+  · intro x hxK
+    have hνx : ν x ∈ sphere (0 : Euclid (m + 1)) 1 := by simpa using hν1 x
+    obtain ⟨v, hv, hxv⟩ := mem_iUnion₂.1 (hVcov hνx)
+    obtain ⟨c, hc, hxc⟩ := mem_iUnion₂.1 (hCcov hxK)
+    exact mem_iUnion₂.2 ⟨v, hv, mem_iUnion₂.2 ⟨c, hc, hΓS v hv c hc ⟨⟨hxK, mem_ball.1 hxv⟩, hxc⟩⟩⟩
+```
+
+## Key steps
+
+1. Choose a finite 1/16-net V of the unit sphere and a finite δ/4-net C₀ ⊆ K of K.
+2. On S_{v,c} = {x ∈ K : |ν(x) − v| < 1/16} ∩ B_{δ/4}(c), cone_exclusion gives the two-point cone condition in direction v.
+3. lipschitz_graph covers each S_{v,c} by a closed countably m-rectifiable Γ_{v,c}; their finite union is closed, countably m-rectifiable and contains K.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat local-references/123e8435b4a2469b/manifest.json; sha256sum <snapshot>/project/GMT/Ch07/Contract.lean GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean`
+- `python3 scans of dag.json: selected node (depth 5, no children), sibling flat_tangent_density frozen type, collision check of the 7 codim1_rdo_dg_rc_* names, statements mentioning CountablyRectifiable or 16 ^ (cbrr_*, dpf*, codim1_rdo_*)`
+- `rg -n 'theorem measurable_measure_prodMk_left|theorem LipschitzOnWith.extend_real|isClosed_range|finite_cover_balls|exists_isCompact_diff_lt|orthogonal_span_singleton|fromOrthogonalSpanSingleton|isOpen_biUnion_countable|isOpen_iUnion_countable|tendsto_measure_iUnion_atTop|Measurable.inner|instance.*InnerRegularCompactLTTop' <snapshot>/mathlib/Mathlib`
+- `grep -n '^theorem|^def' lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `sed -n 100,280p book/chapter-03.txt (printed proof of Simon Ch. 3, 1.6 ⇐)`
+- `lake env lean -DautoImplicit=false /tmp/rc-split-check/Names.lean and Names2.lean (#check of the lemmas above inside the import closure of GMT.Ch07.Submission)`
+- `lake env lean -DautoImplicit=false /tmp/rc-split-check/Types.lean, Assembly.lean, Full.lean and /tmp/rc-final/Verify.lean (7 child types, child proofs rebuilt from the returned JSON, parent assembly with a sorry stub of the uncle; #print axioms)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Prod.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/Lipschitz.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/Antilipschitz.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Projection/FiniteDimensional.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Regular.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/RegularityCompacts.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Continuity.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/Pseudo/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/SpecialFunctions/Inner.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-4681cd171c/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-03.txt`
+- `/tmp/rc-split-check/Full.lean`
+- `/tmp/rc-final/Verify.lean`
+
+Pins: the snapshot manifest pins project b4d606db and Mathlib 25730c7c, and the snapshot Contract.lean, workspace Contract.lean and Submission.lean are byte-identical (sha256 e4148e7f9503aa28…).
+
+No local declaration states any of the seven children. SimonGMT Chapter03/Rectifiable.lean supplies only the definition CountablyRectifiable and the lemmas countablyRectifiable_range, _iUnion, _sUnion, _of_measure_zero and CountablyRectifiable.mono, which the children use. The related general-codimension DAG branch (cbr_rectifiable_of_approx_tangent → cbrr_cone_claim, cbrr_rectifiable_of_uniform_density) is unaccepted and has different types, so nothing is reused.
+
+Snapshot Mathlib supplies:
+- measurable_measure_prodMk_left (Prod.lean:97);
+- LipschitzOnWith.extend_real (Lipschitz.lean:308);
+- AntilipschitzWith.isClosed_range (Antilipschitz.lean:175);
+- OrthonormalBasis.fromOrthogonalSpanSingleton (PiL2.lean:1157);
+- MeasurableSet.exists_isCompact_sdiff_lt (Regular.lean:843), with an InnerRegularCompactLTTop instance for every measure on Euclid (RegularityCompacts.lean:186);
+- tendsto_measure_iUnion_atTop (Continuity.lean:198);
+- IsCompact.finite_cover_balls (Pseudo/Basic.lean:260);
+- TopologicalSpace.isOpen_biUnion_countable.
+Measurable.inner (SpecialFunctions/Inner.lean) is outside the import closure, so Continuous.measurable2 is used instead.
+
+Lean: all 7 child types elaborate after import GMT.Ch07.Submission in namespace GMT.Ch07 with the contract opens. Every child is proved with axioms propext, Classical.choice, Quot.sound only. The selected frozen type is proved from halving_step, of_halving and a sorry stub of the uncle Submission.codim1_rdo_dg_flat_tangent_density_cone; the only extra axiom is sorryAx, from that stub.
+
+Names: the 7 codim1_rdo_dg_rc_* identifiers occur nowhere in dag.json (945 nodes), GMT/, SimonGMT or Mathlib.

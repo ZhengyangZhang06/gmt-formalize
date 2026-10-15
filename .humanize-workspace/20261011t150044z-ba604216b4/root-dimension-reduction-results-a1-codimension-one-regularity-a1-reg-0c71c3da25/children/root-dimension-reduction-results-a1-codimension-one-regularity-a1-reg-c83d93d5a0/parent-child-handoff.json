@@ -1,0 +1,76 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat local-references/123e8435b4a2469b/manifest.json (project b4d606db, mathlib 25730c7c); git status / git log in the workspace (clean, HEAD b4d606db = snapshot project commit)",
+        "python3 scans of dag.json: frozen types of de_giorgi-a1 children (cutoff_estimates-a1, sobolev_perimeter-a1, selected volume_density_lower-a1); regex scan for trace/fderiv/cutoff/bump/rpow statements; collision check of the 7 proposed codim1_rdo_dg_vdl_* names and 5 scratch helper names (0 hits among 974 nodes)",
+        "git show bc0bc2b9 -- GMT/Ch07/Submission.lean (accepted Submission.dorag_th_radial_cutoff technique and type)",
+        "rg in snapshot mathlib: integral_smul_fderiv_eq_neg_fderiv_smul_of_integrable, integral_bilinear_hasFDerivAt_right_eq_neg_left_of_integrable, tendsto_integral_filter_of_dominated_convergence, integral_add_compl, trace_eq_sum_inner, geom_mean_le_arith_mean_weighted, norm_fderiv_le_of_lipschitz, HasCompactSupport.fderiv, hasDerivAt_iff_tendsto_slope_zero, contDiff_one_iff_deriv, Continuous.integral_hasStrictDerivAt",
+        "lake env lean -DautoImplicit=false /tmp/vdl-split-check/Avail.lean (#check of the above inside the frozen import closure of GMT.Ch07.Submission)",
+        "sed -n 640,760p book/chapter-03.txt (Simon Ch. 3, 4.3, (10)-(11))",
+        "sed of runtime.py (_decompose, _solve_children, _existing_lean_name_problem), prompts.py (DECOMPOSITION_AUDIT, RLCR_LEAN_TASK), verifier/gmt-compare.py header; cat swarm-project.json (max_depth 6, max_children 12)",
+        "lake env lean -DautoImplicit=false on /tmp/vdl-split-check/Assembly.lean, /tmp/vdl-split-check/EndToEnd.lean and /tmp/vdl-split-check/{A,B,C,D,E,F,G}/Proof.lean with #print axioms"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/LineDeriv/IntegrationByParts.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/DominatedConvergence.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Trace.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/MeanInequalities.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Const.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/Deriv/Slope.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/Deriv.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/IntervalIntegral/FundThmCalculus.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-0c71c3da25/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-03.txt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/swarm-project.json",
+        "/runtime/flows/gmt-claude-d253855dab51/_recursive_lean/runtime.py",
+        "/runtime/flows/gmt-claude-d253855dab51/_recursive_lean/prompts.py",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+        "/tmp/vdl-split-check/Assembly.lean",
+        "/tmp/vdl-split-check/EndToEnd.lean",
+        "/tmp/vdl-split-check/A/Proof.lean",
+        "/tmp/vdl-split-check/B/Proof.lean",
+        "/tmp/vdl-split-check/C/Proof.lean",
+        "/tmp/vdl-split-check/D/Proof.lean",
+        "/tmp/vdl-split-check/E/Proof.lean",
+        "/tmp/vdl-split-check/F/Proof.lean",
+        "/tmp/vdl-split-check/G/Proof.lean"
+      ],
+      "conclusion": "Pins: the snapshot manifest (project b4d606db, Mathlib 25730c7c) matches the clean workspace HEAD. Library: Mathlib's integration-by-parts lemmas exist in the snapshot (IntegrationByParts.lean:179-226) but are NOT in the frozen import closure of GMT.Ch07.Submission (Lean reports Unknown identifier). divergence_integral_zero therefore uses integral_add_right_eq_self, tendsto_integral_filter_of_dominated_convergence (DominatedConvergence.lean:67) and LinearMap.trace_eq_sum_inner (InnerProductSpace/Trace.lean:25). All of the following are available: AM-GM (MeanInequalities.lean:129), integral_add_compl (Bochner/Set.lean:158), norm_fderiv_le_of_lipschitz (FDeriv/Basic.lean:947), HasCompactSupport.fderiv (FDeriv/Const.lean:389), hasDerivAt_iff_tendsto_slope_zero (Deriv/Slope.lean:82), contDiff_one_iff_deriv (ContDiff/Deriv.lean:98), Continuous.integral_hasStrictDerivAt (FundThmCalculus.lean:656) and Real.smoothTransition. No local or accepted DAG declaration states any of the following: the thin-annulus C1 cut-off with O(1/delta) gradient, the discrete integration lemma, the finite-difference inequality, int div phi = 0, or the complement Gauss-Green identity. The accepted dorag_th_radial_cutoff (commit bc0bc2b9) has a fixed r/2-to-r ratio, and doragm_sab_cutoff_profile has no gradient bound, so no identical-type reuse is possible. DAG: the 7 proposed codim1_rdo_dg_vdl_* names and the 5 scratch helper names occur in none of the 974 nodes. Lean: all 7 child types elaborate in the contract scope. Assembly.lean proves the parent's exact frozen type from the 7 children plus stubs of the 2 resolved sibling dependencies. EndToEnd.lean compiles real proofs of all 7 children (#print axioms: propext, Classical.choice, Quot.sound for each) together with the assembly (parent axioms: propext, sorryAx, Classical.choice, Quot.sound, where sorryAx comes only from the two sibling stubs). Runtime: depth 5 < max_depth 6, so the children are leaves. The child comparator elaborates the frozen type in the contract scope and checks it with exact Submission.<lean_name>."
+    }
+  ],
+  "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.de_giorgi-a1.volume_density_lower-a1",
+  "child_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.de_giorgi-a1.volume_density_lower-a1.divergence_integral_zero-a1",
+  "subproblem": {
+    "key": "divergence_integral_zero",
+    "title": "The divergence of a compactly supported C¹ vector field integrates to zero",
+    "statement": "For every P ∈ ℕ and every C¹ map φ : ℝ^P → ℝ^P (ContDiff ℝ 1) with compact support, ∫_{ℝ^P} trace(Dφ(z)) dL^P(z) = 0. Here Dφ(z) = fderiv ℝ φ z, viewed as a linear map ℝ^P → ℝ^P, and L^P = volume.",
+    "lean_statement": "∀ (P : ℕ) (φ : Euclid P → Euclid P), ContDiff ℝ 1 φ → HasCompactSupport φ → ∫ z, LinearMap.trace ℝ (Euclid P) (fderiv ℝ φ z : Euclid P →ₗ[ℝ] Euclid P) = 0",
+    "lean_name": "codim1_rdo_dg_vdl_integral_divergence_eq_zero",
+    "depends_on": [],
+    "natural_proof": "Source: parent proof step 5 ('For C¹ compactly supported φ, ∫_E div φ dL = 0'). The parent sketches Fubini plus the fundamental theorem of calculus in each coordinate. We prove the same fact by translation invariance of Lebesgue measure and dominated convergence. This is a rigour-only departure: it needs no product decomposition of ℝ^P, and Mathlib's integration-by-parts file is outside the frozen import closure.\n1. Let E := ℝ^P, L := volume (translation invariant) and S := tsupport φ (compact). Since φ is C¹, Dφ is continuous. Dφ vanishes on the open set E ∖ S, so Dφ has compact support (HasCompactSupport.fderiv) and M := sup_z ‖Dφ(z)‖ < ∞. By the mean value inequality, ‖φ(z′) − φ(z)‖ ≤ M‖z′ − z‖ for all z, z′. φ is continuous with compact support, hence integrable, and so is each translate z ↦ φ(z + a).\n2. Claim: ∫ Dφ(z)w dL(z) = 0 for every w ∈ E (Bochner integral in E). For t ∈ ℝ let g_t(z) := t^{-1}(φ(z + tw) − φ(z)).\n (a) ∫ g_t dL = t^{-1}(∫ φ(z + tw) dL(z) − ∫ φ dL) = 0, by linearity and translation invariance (integral_add_right_eq_self).\n (b) For each z, g_t(z) → Dφ(z)w as t → 0 with t ≠ 0. Indeed φ is differentiable at z, so t ↦ φ(z + tw) has derivative Dφ(z)w at 0 (HasFDerivAt.hasLineDerivAt); equivalently its difference quotient at 0 converges (hasDerivAt_iff_tendsto_slope_zero).\n (c) Domination for 0 < |t| ≤ 1, which holds eventually as t → 0 with t ≠ 0. Let K′ := S + B̄_{‖w‖}(0). It is compact, as the image of S × B̄_{‖w‖}(0) under addition, so L(K′) < ∞. If z ∉ K′, then z ∉ S, and also z + tw ∉ S (otherwise z = (z + tw) + (−tw) ∈ K′, since ‖tw‖ ≤ ‖w‖); so g_t(z) = 0. For all z, ‖g_t(z)‖ ≤ |t|^{-1}·M‖tw‖ = M‖w‖. Thus ‖g_t‖ ≤ M‖w‖·1_{K′}, an integrable bound independent of t. Each g_t is continuous, hence measurable.\n (d) By dominated convergence along the countably generated filter t → 0, t ≠ 0 (tendsto_integral_filter_of_dominated_convergence), ∫ g_t dL → ∫ Dφ(z)w dL(z). By (a) all these integrals are 0, so the limit is 0.\n3. Let (e_i)_{i<P} be the standard orthonormal basis (EuclideanSpace.basisFun). For linear A : E → E, trace A = Σ_i ⟨e_i, A e_i⟩ (LinearMap.trace_eq_sum_inner). Each z ↦ Dφ(z)e_i is continuous with compact support, hence integrable, and so is z ↦ ⟨e_i, Dφ(z)e_i⟩. Interchange the integral with the finite sum and with the continuous linear functional ⟨e_i, ·⟩ (ContinuousLinearMap.integral_comp_comm). By step 2, ∫ trace Dφ(z) dL = Σ_i ⟨e_i, ∫ Dφ(z)e_i dL⟩ = Σ_i ⟨e_i, 0⟩ = 0. ∎\nValidation note (not part of the proof): a Lean proof of exactly this frozen statement along these lines compiled against the frozen import closure with axioms propext, Classical.choice, Quot.sound (scratch file /tmp/vdl-split-check/E/Proof.lean, outside the repository).",
+    "proof_key_steps": [
+      "Dφ is continuous with compact support; φ is M-Lipschitz and integrable.",
+      "The difference quotients g_t(z) = t^{-1}(φ(z+tw) − φ(z)) have integral 0 by translation invariance.",
+      "g_t → Dφ(·)w pointwise, and ‖g_t‖ ≤ M‖w‖·1_{S + B̄_{‖w‖}}; dominated convergence gives ∫ Dφ(z)w dz = 0.",
+      "trace Dφ = Σ_i ⟨e_i, Dφ e_i⟩; integrating termwise gives 0."
+    ]
+  },
+  "audit": {
+    "key": "divergence_integral_zero",
+    "acceptable": true,
+    "natural_proof_acceptable": true,
+    "reason": "The exact type expresses the stated divergence integral in every finite dimension. Compact support bounds the continuous derivative and supplies an integrable common bound for the translation difference quotients. Their zero integrals pass to the derivative by dominated convergence. The finite orthonormal-basis trace expansion completes the proof without relying on the parent."
+  },
+  "resolved_dependencies": [],
+  "plan_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-c83d93d5a0/parent-supplied-plan.md",
+  "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-c83d93d5a0/parent-supplied-natural-proof.md",
+  "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-c83d93d5a0/parent-supplied-natural-proof.json"
+}
