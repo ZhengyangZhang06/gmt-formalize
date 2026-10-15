@@ -169828,4 +169828,57 @@ theorem Submission.idod_local_threshold_null : ∀ (n k ℓ : ℕ), ℓ ≤ k �
     rw [← hexp]
     exact hred.1 α hα
 
+/-- **Simon 7.3.3(1)**: `Θⁿ(μ_T, x) ∈ ℤ` for every `x ∈ U \ E`, where `H^{n−3+α}(E) = 0` for all
+`α > 0`.  By monotonicity the density `Θ = Θⁿ(μ_T, ·)` exists on `U` and is upper semicontinuous
+there; `E` is the set of points of `U` where it is not an integer.  For such `x`, `m := ⌈Θ(x)⌉ ≥ 1`
+and `m − 1 + β ≤ Θ(x) < m − β` for a rational `β > 0` (the union in (3)).  The set
+`{y ∈ U : Θ(y) < m − β}` is open, so it contains `B̄_{4σ}(x)` for some `σ > 0`, and the local
+estimate (5) makes `{y ∈ B_σ(x) : Θ(y) ≥ m − 1 + β}` `H^{n−3+α}`-null.  Hence each
+`{y ∈ U : m − 1 + β ≤ Θ(y) < m − β}` is locally null, so null, and `E` lies in their countable
+union. -/
+theorem Submission.idtp_integer_density_off_null : ∀ (n k ℓ : ℕ), ℓ ≤ k → ∀ (U N : Set (Euclid (n + k))) (T : GeometricCurrentOn U n), 1 ≤ n → IsOpen U → IsEmbeddedSubmanifold 2 (n + ℓ) N → (closure N \ N) ∩ U = ∅ → IsMinimizingIn T (U ∩ N) → T.support ⊆ U ∩ N → BoundaryVanishes T → ∃ E : Set (Euclid (n + k)), (∀ α : ℝ, 0 < α → μH[(n : ℝ) - 3 + α] E = 0) ∧ ∀ x ∈ U \ E, ∃ m : ℤ, HasMassDensity T x m := by
+  intro n k ℓ hℓ U N T hn hU hN hNU hmin hspt hbd
+  -- the density `Θ = Θⁿ(μ_T, ·)` exists on `U` and is upper semicontinuous there
+  obtain ⟨Θ, hΘ, hΘusc⟩ := (Submission.dimred_minimizing_monotonicity (n + k) n (n + ℓ) U N T hn
+    (Nat.le_add_right n ℓ) (Nat.add_le_add_left hℓ n) hU hN hNU hmin hspt hbd).2.2.1
+  -- `E` is the set of points of `U` with non-integer density
+  refine ⟨{x | x ∈ U ∧ ∀ j : ℤ, Θ x ≠ j}, fun α hα => ?_, fun x hx => ?_⟩
+  · -- `{x ∈ U : m − 1 + q ≤ Θ(x) < m − q}` (`m ≥ 1`, `q > 0` rational) is locally null
+    have hnull : ∀ (m : ℕ) (q : ℚ), μH[(n : ℝ) - 3 + α]
+        {x | x ∈ U ∧ 1 ≤ m ∧ 0 < (q : ℝ) ∧ (m : ℝ) - 1 + q ≤ Θ x ∧ Θ x < (m : ℝ) - q} = 0 := by
+      intro m q
+      refine measure_null_of_locally_null _ fun x hx => ?_
+      obtain ⟨hxU, hm, hq, -, hxq⟩ := hx
+      -- `{Θ < m − q}` is a neighbourhood of `x` in the open set `U`
+      have hev : ∀ᶠ y in 𝓝 x, y ∈ U ∧ Θ y < (m : ℝ) - q := by
+        have h := upperSemicontinuousWithinAt_iff.1 (hΘusc x hxU) _ hxq
+        rw [hU.nhdsWithin_eq hxU] at h
+        exact (hU.eventually_mem hxU).and h
+      obtain ⟨ε, hε, hεsub⟩ := Metric.eventually_nhds_iff_ball.1 hev
+      -- on `B̄_{4σ}(x)`, `σ = ε / 8`, the density is `< m − q`: apply the local estimate
+      have hσ : (0 : ℝ) < ε / 8 := by positivity
+      have hcb : closedBall x (4 * (ε / 8)) ⊆ ball x ε := closedBall_subset_ball (by linarith)
+      have hZ := Submission.idod_local_threshold_null n k ℓ hℓ U N T hn hU hN hNU hmin hspt hbd
+        m q (ε / 8) x hm hq hσ (fun y hy => (hεsub y (hcb hy)).1)
+        (fun y hy => ⟨Θ y, (hεsub y (hcb hy)).2, hΘ y (hεsub y (hcb hy)).1⟩) α hα
+      refine ⟨_, mem_nhdsWithin.2 ⟨ball x (ε / 8), isOpen_ball, mem_ball_self hσ, ?_⟩, hZ⟩
+      rintro y ⟨hy, hyU, -, -, hyq, -⟩
+      exact ⟨hy, Θ y, hyq, hΘ y hyU⟩
+    refine measure_mono_null (fun x hx => ?_)
+      (measure_iUnion_null fun m => measure_iUnion_null fun q => hnull m q)
+    -- a non-integer `Θ(x) ≥ 0` lies in `[m − 1 + q, m − q)` for `m = ⌈Θ(x)⌉` and small `q`
+    obtain ⟨hxU, hxE⟩ := hx
+    have h0 : 0 ≤ Θ x := (hΘ x hxU).1
+    have hpos : 0 < Θ x := h0.lt_of_ne' (by simpa using hxE 0)
+    have hlt : Θ x < ⌈Θ x⌉₊ := (Nat.le_ceil _).lt_of_ne (by simpa using hxE ⌈Θ x⌉₊)
+    have hgt : (⌈Θ x⌉₊ : ℝ) - 1 < Θ x := by linarith [Nat.ceil_lt_add_one h0]
+    obtain ⟨q, hq0, hq⟩ := exists_rat_btwn (lt_min (sub_pos.2 hgt) (sub_pos.2 hlt))
+    refine mem_iUnion.2 ⟨⌈Θ x⌉₊, mem_iUnion.2 ⟨q, hxU, Nat.one_le_ceil_iff.2 hpos, hq0, ?_, ?_⟩⟩
+    · linarith [min_le_left (Θ x - (⌈Θ x⌉₊ - 1)) (⌈Θ x⌉₊ - Θ x)]
+    · linarith [min_le_right (Θ x - (⌈Θ x⌉₊ - 1)) (⌈Θ x⌉₊ - Θ x)]
+  · -- off `E` the density is an integer
+    obtain ⟨hxU, hxE⟩ := hx
+    by_contra h
+    exact hxE ⟨hxU, fun j hj => h ⟨j, hj ▸ hΘ x hxU⟩⟩
+
 end GMT.Ch07
