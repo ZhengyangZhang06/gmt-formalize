@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "cf98658b3c8ab878806161c413b32edf459db0a19d57716a0330eed61fa1f185",
+  "git_delta": {
+    "base_commit": "9a576a4c930d607b846cce593a7fd87ec2b5844a",
+    "candidate_commit": "aba04605f2886bded559986ab2b005cf9de25edb",
+    "target": "GMT/Ch07/Submission.lean",
+    "changed_files": [
+      "GMT/Ch07/Submission.lean"
+    ],
+    "diff_sha256": "a1d2a7c99b19f1b8b99819153fb038621ca3a1761a6e150247460a17ac012631",
+    "source_sha256": "25774016f7b3dcd8f7ab20de6b3ef5014006dbb6ad1962303b47c242325f546b",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.density_and_tangent_cones",
+      "statement": "DensityAndTangentCones",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

@@ -1,0 +1,58 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "exists_orthonormalBasis_extension_of_card_eq|basisFun_apply|sum_sq_inner_right",
+        "sum_of_injective|prod_of_injective|map_coord_zero|compContinuousLinearMap_apply|orthonormal_iff_ite",
+        "def covectorEuclideanNorm|theorem covectorEuclideanNorm_nonneg|abbrev Covector",
+        "regcomp_covector_sq_sum_orthonormalBasis",
+        "regcomp_covector_eval_orthonormal_le",
+        "cbr_ci_pw_cb_pullback_covectorEuclideanNorm_eq",
+        "git show 16144a475b272196ba8b2bd15f104028282dbcfc -- GMT/Ch07/Submission.lean",
+        "git show b7846b639953f647296619e6e73dec8a8a22ba73 -- GMT/Ch07/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/covector-decomposition-independent-audit/Audit.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Orthonormal.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Algebra/BigOperators/Group/Finset/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Module/Alternating/Basic.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-41fcf433f1/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-41fcf433f1/decomposition-v1.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-regular-components-are-minimizing-a1-imrep-mass-formula-a1-covec-c35871b74d/accepted-candidate.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-regular-components-are-minimizing-a1-imrep-mass-formula-a1-covec-930e70c904/accepted-candidate.json",
+        "/tmp/cbpw-decomp/Final.lean",
+        "/tmp/covector-decomposition-independent-audit/Audit.lean"
+      ],
+      "conclusion": "The split is appropriate: two accepted declarations are reused with byte-identical frozen types, and the new pullback equality isolates the remaining obligation. The new name has no DAG reservation; all three names are bare identifiers. Dependencies, including the reused declarations' transitive obligations, are acyclic and do not depend on the selected parent. The snapshot contract matches the workspace contract; pinned definitions and lemmas support the supplied arguments. Independent Lean replay checked every frozen proposition before declaring the children, compiled the accepted proofs, pullback proof, and exact parent assembly without placeholders, and reported only propext, Classical.choice, and Quot.sound for all four declarations. The requested parent digest was independently reproduced."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "sq_sum",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The standalone one-line type exactly matches the prose and accepted declaration. Slotwise Parseval establishes basis invariance; alternation removes noninjective tuples; the unique increasing-tuple/permutation factorization counts each squared coefficient n! times. The norm definition and nonnegative radicand justify the final identity, including n = 0 and n > P. This is a complete, non-circular proof with no undeclared dependency."
+    },
+    {
+      "key": "eval_le",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and frozen type agree, and reuse matches the accepted declaration exactly. Orthonormality supplies the dimension bound and basis extension. The injective permutation image contributes n! identical squared evaluations; comparison with sq_sum, positive-factorial cancellation, and norm nonnegativity prove the claimed bound. Its sole dependency is correctly directed to sq_sum, and its conclusion directly supplies parent part (a)."
+    },
+    {
+      "key": "pullback_eq",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The fresh name and standalone type are valid, with every hypothesis explicit. The proof correctly computes the projection on the extended basis, identifies the surviving tuples through an injective map, and proves all other terms vanish. Applying sq_sum twice and cancelling the nonzero factorial gives norm equality, including zero-dimensional and degree-zero cases. The proof is complete and non-circular. Weakening equality to ≤ supplies parent part (b); together with eval_le it proves the exact selected parent."
+    }
+  ],
+  "required_changes": []
+}
