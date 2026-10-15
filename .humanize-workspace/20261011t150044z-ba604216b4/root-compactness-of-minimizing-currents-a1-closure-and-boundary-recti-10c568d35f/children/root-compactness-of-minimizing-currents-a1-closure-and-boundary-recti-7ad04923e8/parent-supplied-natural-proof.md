@@ -1,0 +1,99 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.boundary_im-a1`
+- Child DAG node: `root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.boundary_im-a1.extension_masses-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: parent proof, Step 6: M(R̂') ≤ M(R') and M(∂R̂') ≤ M(∂R'), proved by (VO) and a cutoff equal to 1 near B̄_r(x₀). This is the "(Equivalently: … by (VO))" route of that step (Simon Ch. 6, 2.4–2.5 and 2.11). Uses the sibling lcmp_massOn_le_of_vanish_off_compact (key vanish_off_compact), a comparator-accepted declaration reused at its frozen type. Notation: |α| = covectorEuclideanNorm α. M_W(X) = X.massOn W is the supremum of ofReal X(ω) over test forms ω of the domain of X with tsupport ω ⊆ W and |ω(x)| ≤ 1 for all x ("admissible for M_W"). For a current X on ℝ^P, M(X) = M_{ℝ^P}(X), and for a current on U, M = M_U (GeometricCurrentOn.mass). ι : 𝒟^m(U) → 𝒟^m(ℝ^P) is testFormOnInclusion (subset_univ U); it does not change the underlying form.
+1. Y vanishes off C. Let ω ∈ 𝒟^{k+1}(ℝ^P) with tsupport ω ∩ C = ∅. Since spt Y ⊆ C, tsupport ω ∩ spt Y = ∅, so Y(ω) = 0 by (VO).
+2. ∂Y vanishes off C. Let η ∈ 𝒟^k(ℝ^P) with tsupport η ∩ C = ∅. Then ∂Y(η) = Y(dη) (GeometricCurrentOn.boundary_apply). Also tsupport dη ⊆ tsupport η (tsupport_exteriorDerivative_subset), so ∂Y(η) = 0 by step 1.
+3. Localizing the masses. C is compact, U is open and C ⊆ U. Apply lcmp_massOn_le_of_vanish_off_compact with V := U and the arbitrary set ℝ^P, to Y (by step 1) and to ∂Y (by step 2). This gives M(Y) = M_{ℝ^P}(Y) ≤ M_U(Y) and M(∂Y) = M_{ℝ^P}(∂Y) ≤ M_U(∂Y).
+4. Comparison with a restriction. Let m ∈ ℕ, Z ∈ 𝒟_m(ℝ^P) and Z' ∈ 𝒟_m(U) with Z(ιω) = Z'(ω) for every ω ∈ 𝒟^m(U). We show M_U(Z) ≤ M_U(Z') = M(Z'). Let ω ∈ 𝒟^m(ℝ^P) be admissible for M_U(Z), i.e. tsupport ω ⊆ U and |ω| ≤ 1. The same form is a test form with tsupport ⊆ U, so it defines ω' ∈ 𝒟^m(U) with ιω' = ω, and ω' is admissible for M_U(Z'). Hence ofReal(Z(ω)) = ofReal(Z'(ω')) ≤ M_U(Z'). Taking the supremum gives the claim.
+5. The hypothesis of step 4 holds in two cases. For (Z, Z') = (Y, Y|_U) it is the definition of restrictDomain. For (Z, Z') = (∂Y, ∂(Y|_U)): ∂(Y|_U)(ω) = (Y|_U)(dω) = Y(ι(dω)) and ∂Y(ιω) = Y(d(ιω)), and ι(dω) and d(ιω) are the same form dω.
+6. Combining steps 3–5: M(Y) ≤ M_U(Y) ≤ M(Y|_U) and M(∂Y) ≤ M_U(∂Y) ≤ M(∂(Y|_U)). ∎
+
+Lean note (verified realization of the numbered proof above; not part of the proof). The following tactic proof of `Submission.cbr_bim_extension_mass_bounds` compiles against the frozen contract (Lean v4.35.0-rc3, Mathlib 25730c7c, SimonGMT 2b366308). It is placed after `import GMT.Ch07.Submission`, inside `namespace GMT.Ch07` with the contract's `open` commands, with the reused sibling declaration `Submission.lcmp_massOn_le_of_vanish_off_compact` in scope. `#print axioms` reports only propext, Classical.choice and Quot.sound, and `exact Submission.cbr_bim_extension_mass_bounds` closes the frozen type in the comparator scope. Do not open the ContDiff scope, whose notation makes ω a token; smoothness is written ContDiff ℝ (⊤ : ℕ∞).
+```lean
+  intro hVO P k U C Y hU hC hCU hYC
+  have hvY : ∀ ω : TestFormOn (univ : Set (Euclid P)) (k + 1),
+      Disjoint (tsupport (ω : DifferentialForm (Euclid P) (k + 1))) C → Y ω = 0 :=
+    fun ω hω => hVO P (k + 1) univ Y ω (hω.mono_right hYC)
+  have hvB : ∀ η : TestFormOn (univ : Set (Euclid P)) k,
+      Disjoint (tsupport (η : DifferentialForm (Euclid P) k)) C → Y.boundary η = 0 := by
+    intro η hη
+    rw [GeometricCurrentOn.boundary_apply]
+    exact hvY _ (hη.mono_left (tsupport_exteriorDerivative_subset _))
+  -- mass over U of Y ≤ mass of the restriction
+  have hres : ∀ {m : ℕ} (Z : GeometricCurrentOn (univ : Set (Euclid P)) m) (Z' : GeometricCurrentOn U m),
+      (∀ ω : TestFormOn U m, Z (testFormOnInclusion (subset_univ U) m ω) = Z' ω) →
+      Z.massOn U ≤ Z'.massOn U := by
+    intro m Z Z' hZ
+    apply sSup_le
+    rintro _ ⟨ω, ⟨hsupp, hnorm⟩, rfl⟩
+    let ω' : TestFormOn U m := ⟨ω, ω.property.1, hsupp⟩
+    have h1 : Z ω = Z' ω' := by rw [← hZ ω']; rfl
+    change ENNReal.ofReal (Z ω) ≤ Z'.massOn U
+    rw [h1]
+    exact Z'.le_massOn ⟨hsupp, hnorm⟩
+  refine ⟨?_, ?_⟩
+  · calc Y.mass = Y.massOn univ := rfl
+      _ ≤ Y.massOn U := Submission.lcmp_massOn_le_of_vanish_off_compact P (k + 1) univ U C Y hC hU hCU hvY univ
+      _ ≤ (Y.restrictDomain (subset_univ U)).massOn U := hres Y _ (fun ω => rfl)
+  · calc Y.boundary.mass = Y.boundary.massOn univ := rfl
+      _ ≤ Y.boundary.massOn U := Submission.lcmp_massOn_le_of_vanish_off_compact P k univ U C Y.boundary hC hU hCU hvB univ
+      _ ≤ (Y.restrictDomain (subset_univ U)).boundary.massOn U := hres Y.boundary _ (fun ω => rfl)
+```
+
+## Key steps
+
+1. By (VO) and spt Y ⊆ C, Y and ∂Y vanish on forms whose support misses C (d does not enlarge supports).
+2. lcmp_massOn_le_of_vanish_off_compact gives M(Y) ≤ M_U(Y) and M(∂Y) ≤ M_U(∂Y).
+3. Every form admissible for M_U in ℝ^P is an admissible form of U with the same value, so M_U(Y) ≤ M(Y|_U) and M_U(∂Y) ≤ M(∂(Y|_U)).
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json (project_commit b4d606db1da5da8fa2c0292ad4924d97de8b3c4b = workspace HEAD, mathlib_commit 25730c7c759d108ef87ab70af2342a196760f79d); cmp snapshot project/GMT/Ch07/Contract.lean with workspace GMT/Ch07/Contract.lean and Submission.lean (identical)`
+- `rg -n 'cbr_bim_|cbr_boundary_isIntegerMultiplicity|rsd_mw_tfa_norm_props|cmr_abs_apply_le_massOn|lcmp_massOn_le_of_vanish_off_compact|lcmp_imRep_measure_restrict|dtc_extend_by_zero' /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT (no match)`
+- `rg -n in /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib for: 'theorem enorm_integral_le_lintegral_enorm', 'theorem lintegral_indicator_one_le', 'theorem setIntegral_eq_integral_of_forall_compl_eq_zero', 'theorem setLIntegral_congr_fun', 'theorem withDensity_apply ', 'theorem restrict_restrict (hs', 'protected theorem dist_left', 'theorem tendsto_pow_atTop_nhds_zero_of_lt_one', 'lemma squeeze_zero', 'image_eq_zero_of_notMem_tsupport', 'AbsolutelyContinuous.ae_le', 'theorem lintegral_const', 'theorem isCompact_sphere', 'theorem ae_restrict_of_ae ', 'theorem volume_Ioo', 'theorem tsupport_smul_subset_right', 'theorem withDensity_absolutelyContinuous', 'theorem integral_withDensity_eq_integral_smul', 'theorem restrict_withDensity'`
+- `sed/grep of SimonGMT Chapter06 Currents.lean, Mass.lean, CurrentLocalEquality.lean (GeometricCurrentOn, boundary, boundary_boundary, WeaklyConvergesOn.boundary, massOn, mass, le_massOn, massOn_mono, restrictDomain, testFormOnInclusion, zeroRegion, support, exteriorDerivativeTestOn, tsupport_exteriorDerivative_subset)`
+- `python3 scan of dag.json (1033 nodes): status, candidate_commit and frozen lean_statement of the five reused names and of the six dependency theorems, cbr_isIntegerMultiplicity_of_local and cbr_measure_convergence_tools; uniqueness of every proposed name; identical/near-identical types for the three new statements`
+- `git show <commit>:GMT/Ch07/Submission.lean for f492ba4a00, 7a706164ba, a3cc98d1f0, ae810e9b4c, 2527748da7`
+- `grep/sed of /runtime/flows/gmt-claude-b888e19cffb1/_recursive_lean/runtime.py (_decompose, _solve_children node bound and in-memory audit, _existing_lean_name_problem, _accepted_checkpoint, _install_parent_supplied_child_handoff, _reference_use_problem) and store.py ensure; max_nodes history in .humanize/swarm-configs`
+- `python3 -I build3.py: verifier/lean_contract.py validate_lean_statement on the 8 statements; verifier/gmt-compare.py contract_scope + child_modules(contract) challenge files`
+- `lake env lean /tmp/bim-decomp-r3/lean/AllChallenges.lean (8 challenges elaborate), All.lean (reused accepted proofs + 3 new Lean notes + parent assembly), Hyp.lean (#print axioms CbrCheck_assembly: propext, Classical.choice, Quot.sound), Sol.lean (exact Submission.X closes all 8 challenges)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/VectorMeasure/Integral.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/ContinuousLinearMap.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/WithDensity.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/AbsolutelyContinuous.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/Lipschitz.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/ProperSpace.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/Pseudo/Lemmas.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Support.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/SpecificLimits/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-10c568d35f/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-10c568d35f/decomposition-v2.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-10c568d35f/decomposition-audit-v2.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/runtime/flows/gmt-claude-b888e19cffb1/_recursive_lean/runtime.py`
+- `/runtime/flows/gmt-claude-b888e19cffb1/_recursive_lean/store.py`
+
+The snapshot (project b4d606d = workspace HEAD, Mathlib 25730c7c) has a Contract.lean byte-identical to the workspace Contract.lean and Submission.lean. No proposed or reused name occurs in the snapshot project. The five reused names each belong to exactly one DAG node, with status accepted, a candidate commit and a frozen type byte-identical to the proposed lean_statement. The three new cbr_bim_* names are unreserved among the 1033 DAG nodes, and no DAG node has an identical type. Every Mathlib lemma used by the child proofs exists in the snapshot (squeeze_zero is a lemma in Topology/MetricSpace/Pseudo/Lemmas.lean; AbsolutelyContinuous.ae_le is an alias in AbsolutelyContinuous.lean). Every SimonGMT declaration used exists in the pinned package. SimonGMT Chapter06 has no slicing, deformation or closure theorem, which justifies the hypotheses-as-arguments form and the split. All eight statements pass the verifier's lexical check and elaborate as comparator challenges. The reused accepted proofs, the three new Lean notes and the parent assembly compile together. A hypothesis-only assembly proves the exact frozen parent type from the eight children and the frozen type of the existing dependency cbr_isIntegerMultiplicity_of_local, with axioms propext, Classical.choice and Quot.sound only.

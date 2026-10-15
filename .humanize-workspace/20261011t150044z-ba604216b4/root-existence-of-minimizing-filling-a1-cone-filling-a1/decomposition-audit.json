@@ -1,0 +1,118 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cone_filling|conefilling|exists_cone|homotopy operator|poincaré lemma|poincare lemma",
+        "exists_contDiff_support_eq_eq_one_iff|measure_compl_support|volume_preserving_piFinSuccAbove|volume_preserving_symm_measurableEquiv_toLp|hasFDerivAt_integral_of_dominated_of_fderiv_le..|enorm_integral_le_lintegral_enorm|norm_fderiv_le_of_lipschitz|theorem measurable_fderiv ",
+        "def curryLeft|curryLeft_apply|norm_curryLeft|norm_curryLeft_le|curryLeftL",
+        "ae_dimensionalUpperDensity_eq_zero_outside|simon_theorem_3_6|def HasApproximateTangentSpaceAt|unique.*HasApproximate|theorem HasApproximateTangentSpaceAt.unique|exists_partition_approximatesLinearOn_of_hasFDerivWithinAt",
+        "git show 918eb38eb0f008565b3ac7b39050fcbdb28ab475:GMT/Ch07/Submission.lean",
+        "python3 -I -u /tmp/cone-independent-audit/run_checks.py"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Manifold/PartitionOfUnity.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ParametricIntegral.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/DifferentialForm/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/Alternating/Curry.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Support.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Constructions/Pi.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Haar/InnerProductSpace.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/Jacobian.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter01/DensityComparison.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-existence-of-minimizing-filling-a1-cone-filling-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-existence-of-minimizing-filling-a1-cone-filling-a1/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt",
+        "/tmp/cone-independent-audit/TypesAssembly.lean",
+        "/tmp/cone-independent-audit/TypesAssembly.log",
+        "/tmp/cone-independent-audit/candidates.json",
+        "/tmp/cone-independent-audit/run_checks.py",
+        "/tmp/cone-independent-audit/results.json",
+        "/tmp/cone-independent-audit/verified.json"
+      ],
+      "conclusion": "The split is appropriate and establishes the selected cone-filling contract. The snapshot contract matches the workspace byte-for-byte; Mathlib and SimonGMT revisions match their pins. Relevant cutoff, differentiation, measure-support, product-volume and partition lemmas were inspected. No relevant cone-filling or homotopy-operator declaration matched the stated snapshot searches. All twelve exact one-line propositions elaborate independently as hypotheses, without child declarations; a conditional Lean assembly proves the exact selected parent using only standard axioms. All names are bare identifiers: four are unreserved, and eight reuse comparator-accepted declarations with byte-identical frozen types. Accepted receipts, candidate source hashes and dependency closures were checked. All eight reused candidates were independently compiled, and their target declarations depend only on propext, Classical.choice and Quot.sound. Dependencies are acyclic and correctly directed. Fin.cons, Euclidean inner products and extended norms have the intended meanings; Gram matrices use Matrix.of, and no problematic IsUnit construction occurs."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "support_vanishing",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact type matches the prose, including arbitrary U. Compactness and a subordinate smooth partition of unity give the asserted vanishing without assuming U open. Identical accepted reuse and clean axiom dependencies were verified."
+    },
+    {
+      "key": "param_integral",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof covers every complete real normed target V: compact parameter-neighbourhood bounds justify differentiation, and induction through continuous-linear-map targets proves smoothness. Both conjuncts match the frozen type; identical accepted reuse was verified."
+    },
+    {
+      "key": "cone_current",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The homotopy identity, cutoff construction, finite-mass continuity estimate, boundary calculation and compact-cone support argument prove every conclusion, including the precise form-level formula. The positive degree n+1 removes the zero-degree obstruction. The two declared dependencies suffice."
+    },
+    {
+      "key": "imrep_mass_support",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Unit-orientation duality and smooth unit-ball approximation prove both mass inequalities; the zero-region argument then proves the support identity. Openness and local integrability are correctly used. Prose, frozen type and accepted declaration agree."
+    },
+    {
+      "key": "imrep_parametric_rep",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The supplied proof derives integrable integer weights, the total-weight bound, HasSum representation and arbitrary a.e. pullback from the accepted bi-Lipschitz, orientation and area-formula dependencies. It also covers k=0. Identical reuse and its accepted acyclic closure were verified."
+    },
+    {
+      "key": "im_parametrization",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The mass/support identity and compact support give finite total measure. Restricting parametrization domains to the conull support preimage and converting integer-valued real weights by floor preserve integrability and HasSum. Every output follows from the two declared dependencies."
+    },
+    {
+      "key": "cone_parametrization",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The bounded retraction and clipped cone maps provide the required Lipschitz parametrizations. The derivative formula, Gram estimate, product-volume identification and justified Fubini step prove finite total weight and the exact HasSum formula. All necessary inputs are explicit hypotheses; no additional sibling dependency is required."
+    },
+    {
+      "key": "imrep_calculus",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Density-zero comparison proves tangent locality, which supplies the orientation fields for restriction and differences. Cauchy–Binet proves the orientation bound. All four conjuncts and their domain hypotheses match the exact accepted type, including degree zero."
+    },
+    {
+      "key": "im_series",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Absolute evaluation summability constructs the current and proves its mass and support bounds. Under integer multiplicity, finite overlap, common tangent planes and signed multiplicities construct its IMRep. VO, MR and IMC are explicit antecedents; the proof is non-circular."
+    },
+    {
+      "key": "lipschitz_piece_im",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Positive degree justifies discarding non-injective derivatives, including nondifferentiability points. The bi-Lipschitz partition, accepted image-current theorem and explicitly assumed series theorem produce the exact integral representation. All antecedents and accepted dependencies were checked."
+    },
+    {
+      "key": "gram_bounds",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The multilinear expansion, Cauchy–Binet identity and Cauchy–Schwarz inequality prove the first conjunct; the determinant covector proves the second. Degenerate dimensions are covered. The Matrix.of expressions have the intended matrix meaning, and identical accepted reuse was verified."
+    },
+    {
+      "key": "parametrized_is_im",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The declared dependencies discharge VO, MR and IMC and construct integer-multiplicity pieces. Gram bounds make their masses summable; the series theorem and uniqueness of HasSum identify the resulting integer-multiplicity current with T. This closes the selected parent assembly without circular reliance."
+    }
+  ],
+  "required_changes": []
+}

@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.existence_of_minimizing_filling-a1.cone_filling-a1.cone_parametrization-a1.gram_cone-a1.orth_residual-a1",
+  "parent_id": "root.existence_of_minimizing_filling-a1.cone_filling-a1.cone_parametrization-a1.gram_cone-a1",
+  "depth": 5,
+  "title": "Orthogonal residual against a finite family: a − Σ c_l w_l is orthogonal to every w_j and has norm ≤ ‖a‖",
+  "statement": "Let P, k ∈ ℕ, a ∈ ℝ^P (Euclid P) and w = (w_0, …, w_{k−1}) with every w_i ∈ ℝ^P (no linear independence assumed). Then there exist c_0, …, c_{k−1} ∈ ℝ such that a' := a − Σ_{l<k} c_l w_l satisfies ⟨a', w_j⟩ = 0 for every j < k, and ‖a'‖ ≤ ‖a‖.",
+  "lean_statement": "∀ (P k : ℕ) (a : Euclid P) (w : Fin k → Euclid P), ∃ c : Fin k → ℝ, (∀ j : Fin k, inner ℝ (a - ∑ l, c l • w l) (w j) = 0) ∧ ‖a - ∑ l, c l • w l‖ ≤ ‖a‖",
+  "lean_name": "ecf_cp_gc_orth_residual",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-existence-of-minimizing-filling-a1-cone-filling-a1-cone-parametr-95c796c85b-a1"
+}

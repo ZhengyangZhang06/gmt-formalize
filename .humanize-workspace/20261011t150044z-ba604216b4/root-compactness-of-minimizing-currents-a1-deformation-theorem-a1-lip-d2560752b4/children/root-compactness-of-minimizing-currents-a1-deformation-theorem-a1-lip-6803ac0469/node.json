@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.lipschitz_pushforward-a1.integrality-a1.pullback_continuity-a1.minor_bound-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.lipschitz_pushforward-a1.integrality-a1.pullback_continuity-a1",
+  "depth": 6,
+  "title": "Jacobian minors of a Lipschitz map are measurable and bounded by r!·L^r",
+  "statement": "Let m, p, r ∈ ℕ and L ≥ 0, let v : ℝ^m → ℝ^p be L-Lipschitz, and let a : Fin r → Fin p (rows) and b : Fin r → Fin m (columns). For u ∈ ℝ^m put M(u) := det((Dv(u)e_{b(t)})_{a(s)})_{s,t ∈ Fin r}. Here Dv(u) := fderiv ℝ v u (the zero map where v is not differentiable), and e_t := EuclideanSpace.single t 1 is the standard basis of ℝ^m. Then M is (Borel) measurable on ℝ^m, and |M(u)| ≤ r!·L^r for every u ∈ ℝ^m.",
+  "lean_statement": "∀ (m p r : ℕ) (L : NNReal) (v : Euclid m → Euclid p) (a : Fin r → Fin p) (b : Fin r → Fin m), LipschitzWith L v → Measurable (fun u => Matrix.det (Matrix.of fun s t => fderiv ℝ v u (EuclideanSpace.single (b t) 1) (a s))) ∧ ∀ u, |Matrix.det (Matrix.of fun s t => fderiv ℝ v u (EuclideanSpace.single (b t) 1) (a s))| ≤ (r.factorial : ℝ) * (L : ℝ) ^ r",
+  "lean_name": "cmcdt_lpi_pc_minor_measurable_bound",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-lip-6803ac0469-a1"
+}

@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "acf42d0e9104cf60635ebf00ea8bd62707e953633a5f48a1b1df3b57988e88ff",
+  "git_delta": {
+    "base_commit": "1b2fb0e9593aff52f2ff5a26068874353e8b5953",
+    "candidate_commit": "78e71f74dd477e2627ca3c3b6df421971866afd1",
+    "target": "GMT/Ch07/Submission.lean",
+    "changed_files": [
+      "GMT/Ch07/Submission.lean"
+    ],
+    "diff_sha256": "b2043e20956aa4add8810cbd054583adc225155cb4153943aaf281a47d2b23c8",
+    "source_sha256": "f3a8503084092c5afe94742a14dde51b5616f899f5aef4ede8989a7b94e7db31",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.existence_of_minimizing_filling",
+      "statement": "ExistenceOfMinimizingFilling",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

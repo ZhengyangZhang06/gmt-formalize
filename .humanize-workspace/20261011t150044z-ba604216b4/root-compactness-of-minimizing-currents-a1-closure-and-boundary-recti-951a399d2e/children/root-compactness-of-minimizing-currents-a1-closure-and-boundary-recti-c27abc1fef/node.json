@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.weight_ge_one-a1.null_off_image-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.weight_ge_one-a1",
+  "depth": 5,
+  "title": "A density matched by a pushed-forward measure vanishes off the image of the carrier",
+  "statement": "Let P, n ∈ ℕ, U ⊆ ℝⁿ open, u : ℝⁿ → ℝ Lebesgue integrable on U, σ a finite Borel measure on ℝ^P, q : ℝ^P → ℝⁿ continuous, h : ℝ^P → ℝ σ-integrable and A ⊆ ℝ^P with σ(ℝ^P ∖ A) = 0. Assume ∫_U b(y)u(y)dy = ∫b(q(x))h(x)dσ(x) for every smooth (ContDiff ℝ ⊤) compactly supported b : ℝⁿ → ℝ with tsupport b ⊆ U. Then Lⁿ(B ∩ {u ≠ 0}) ≤ Lⁿ(B ∩ q(A)) (Lⁿ = volume, an outer measure on the right) for every measurable B ⊆ U.",
+  "lean_statement": "∀ (P n : ℕ) (U : Set (Euclid n)) (u : Euclid n → ℝ) (σ : Measure (Euclid P)) (q : Euclid P → Euclid n) (h : Euclid P → ℝ) (A : Set (Euclid P)), IsOpen U → Continuous q → IntegrableOn u U → σ univ < ∞ → Integrable h σ → σ Aᶜ = 0 → (∀ b : Euclid n → ℝ, ContDiff ℝ (⊤ : ℕ∞) b → HasCompactSupport b → tsupport b ⊆ U → ∫ y in U, b y * u y = ∫ x, b (q x) * h x ∂σ) → ∀ B : Set (Euclid n), MeasurableSet B → B ⊆ U → volume (B ∩ {y | u y ≠ 0}) ≤ volume (B ∩ q '' A)",
+  "lean_name": "cbr_ci_pw_density_null_off_image",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-c27abc1fef-a1"
+}
