@@ -952,6 +952,7 @@ theorem Submission.idtp_cse_etp_rescaled_limit_mem : ∀ (P : ℕ) (μ : Measure
   -- step 5: `0 < κ r² ≤ lim λⱼ⁻² ∫ g ∘ ηⱼ dμ = 0`, a contradiction
   have h := ge_of_tendsto hlim hlow
   have hpos : 0 < (unitBallVolume 2).toReal * r ^ 2 := mul_pos hκ (pow_pos hr 2)
+  linarith
 /-- **Simon Ch. 6, 1.2 and 1.5–1.7**: a unit orientation `ξ = ±τ₁ ∧ ⋯ ∧ τₙ` (`τ` orthonormal)
 has `|ξ(α)| ≤ |α|` for the Euclidean coefficient norm, and `L(ζ) = Σ_I ζ(dx^I) dx^I` (`I` strictly
 increasing) has `|L(ξ)| ≤ 1` and `ξ(L(ξ)) = 1`.  Every covector expands as `α = Σ_I α(e_I) dx^I`,
