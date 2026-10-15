@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.flat_convergence-a1.deformation-a1.im_pushforward-a1",
+  "parent_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.flat_convergence-a1.deformation-a1",
+  "depth": 5,
+  "title": "Lipschitz push-forward of a finite-mass IM representation: integer multiplicity, limit of smooth push-forwards, locality (Simon 6.3.3–3.9 with 2.24, 2.29)",
+  "statement": "Conventions: ℝ^P = Euclid P and Hᵈ = μHE[d]. For U ⊆ ℝ^P, 𝒟^d(U) = TestFormOn U d (smooth d-forms on ℝ^P with compact support contained in U) and 𝒟_d(U) = GeometricCurrentOn U d; ∂X = X.boundary (∂X(ω) = X(dω)); X − Y is the contract subtraction (pointwise on test forms). For G ⊆ ℝ^P, M_G(X) = X.massOn G is the supremum of max(X(ω), 0) over ω ∈ 𝒟^d(U) with tsupport ω ⊆ G and |ω(x)| ≤ 1 for all x, where |·| is the Euclidean coefficient norm of covectors (covectorEuclideanNorm); M(X) = X.mass = M_U(X). An IMRep R = (M, θ, ξ) in U is the contract structure IMRep U d; R represents X when X(ω) = ∫_M θ⟨ω, ξ⟩ dHᵈ for every ω ∈ 𝒟^d(U), where ⟨ω, ξ⟩(x) = ξ(x)(ω(x)); μ_R = θ·Hᵈ⌞M is R.measure and R.action(β) = ∫_M θ ξ(β) dHᵈ for any d-form β; X is integer multiplicity (IM, IsIntegerMultiplicity X) if some IMRep represents it. X vanishes off a set E if X(ω) = 0 for every ω whose tsupport is disjoint from E. Assume (IMS) the exact frozen statement of dor_lmb_fc_im_series (a resolved dependency of the parent node, not yet accepted, hence taken as an antecedent): for all P, m, every open U ⊆ ℝ^P and IM currents X_r ∈ 𝒟_{m+1}(U) (r ∈ ℕ) with Σ_r M(X_r) ≠ ∞ there is an IM Y ∈ 𝒟_{m+1}(U) with Σ_r X_r(ω) = Y(ω) (HasSum) for every ω ∈ 𝒟^{m+1}(U) and M(Y) ≤ Σ_r M(X_r). For all N, N', k ∈ ℕ and every IMRep R = (M, θ, ξ) of degree k in univ ⊆ ℝ^N with finite total measure R.measure(ℝ^N) ≠ ∞, there is a function Y assigning to every map F : ℝ^N → ℝ^{N'} a current Y(F) ∈ 𝒟_k(ℝ^{N'}) (domain univ) such that: (a) for every Λ ∈ ℝ≥0 and every Λ-Lipschitz F, Y(F) is IM and, for every sequence of C¹ Λ-Lipschitz maps F_j : ℝ^N → ℝ^{N'} converging uniformly to F and every ω ∈ 𝒟^k(ℝ^{N'}), R.action(F_j^#ω) → Y(F)(ω), where F_j^#ω(x) := ω(F_j(x)) ∘ DF_j(x) (in Lean (ω (F_j x)).compContinuousLinearMap (fderiv ℝ F_j x)); (b) if F, F' are Λ-Lipschitz and F(x) = F'(x) for Hᵏ-a.e. x ∈ M, then Y(F) = Y(F'). (Y(F) is Simon's F_#τ(M, θ, ξ) of 3.6, which is IM by 3.9 and is the limit of the smooth push-forwards of 2.24(2), 2.29.)",
+  "lean_statement": "(∀ (P m : ℕ) (U : Set (Euclid P)) (X : ℕ → GeometricCurrentOn U (m + 1)), IsOpen U → (∀ r, IsIntegerMultiplicity (X r)) → ∑' r, (X r).mass ≠ ∞ → ∃ Y : GeometricCurrentOn U (m + 1), IsIntegerMultiplicity Y ∧ (∀ ω : TestFormOn U (m + 1), HasSum (fun r => X r ω) (Y ω)) ∧ Y.mass ≤ ∑' r, (X r).mass) → ∀ (N N' k : ℕ) (R : IMRep (univ : Set (Euclid N)) k), R.measure univ ≠ ∞ → ∃ Y : (Euclid N → Euclid N') → GeometricCurrentOn (univ : Set (Euclid N')) k, (∀ (F : Euclid N → Euclid N') (Λ : NNReal), LipschitzWith Λ F → IsIntegerMultiplicity (Y F) ∧ ∀ Fs : ℕ → Euclid N → Euclid N', (∀ j, ContDiff ℝ 1 (Fs j)) → (∀ j, LipschitzWith Λ (Fs j)) → TendstoUniformly Fs F atTop → ∀ ω : TestFormOn (univ : Set (Euclid N')) k, Tendsto (fun j => R.action (fun x => ((ω : DifferentialForm (Euclid N') k) (Fs j x)).compContinuousLinearMap (fderiv ℝ (Fs j) x))) atTop (𝓝 (Y F ω))) ∧ ∀ (F F' : Euclid N → Euclid N') (Λ : NNReal), LipschitzWith Λ F → LipschitzWith Λ F' → (∀ᵐ x ∂(μHE[k].restrict R.carrier), F x = F' x) → Y F = Y F'",
+  "lean_name": "dor_lmb_fcd_im_pushforward",
+  "depends_on": [
+    "root.density_one_implies_regular-a1.limsup_mass_bound-a1.flat_convergence-a1.deformation-a1.jacobian_weak_continuity-a1",
+    "root.compactness_of_minimizing_currents-a1.im_calculus-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.flat_convergence-a1.deformation-a1.jacobian_weak_continuity-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.compactness_of_minimizing_currents-a1.im_calculus-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-im-calculus-a1-a1",
+      "result_commit": "2af75d6921b01a9c889a45103692ca0af95ea394",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-limsup-mass-bound-a1-flat-converg-3cd71b3c6f-a1"
+}

@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_constant_density_planar-a1.stationary_cone_sheet_planar-a1.tangent_plane_mem-a1",
+  "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_constant_density_planar-a1.stationary_cone_sheet_planar-a1",
+  "depth": 5,
+  "title": "The tangent plane of a locally radially invariant C¹ surface at p is 2-dimensional and contains p",
+  "statement": "For every P ∈ ℕ, every M ⊆ ℝ^P that is an embedded C¹ 2-dimensional submanifold (IsEmbeddedSubmanifold 1 2 M), every p ∈ M and every ρ > 0 such that t·x ∈ M whenever x ∈ M ∩ B_ρ(p), t > 0 and t·x ∈ B_ρ(p): the linear span Q := span(tangentSpace M p) has dimension 2 and p ∈ Q.",
+  "lean_statement": "∀ (P : ℕ) (M : Set (Euclid P)) (p : Euclid P) (ρ : ℝ), IsEmbeddedSubmanifold 1 2 M → p ∈ M → 0 < ρ → (∀ x ∈ M ∩ ball p ρ, ∀ t : ℝ, 0 < t → t • x ∈ ball p ρ → t • x ∈ M) → Module.finrank ℝ (Submodule.span ℝ (tangentSpace M p)) = 2 ∧ p ∈ Submodule.span ℝ (tangentSpace M p)",
+  "lean_name": "idtp_ccd_scsp_tangent_plane_mem",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-d9e27ebf59-a1"
+}

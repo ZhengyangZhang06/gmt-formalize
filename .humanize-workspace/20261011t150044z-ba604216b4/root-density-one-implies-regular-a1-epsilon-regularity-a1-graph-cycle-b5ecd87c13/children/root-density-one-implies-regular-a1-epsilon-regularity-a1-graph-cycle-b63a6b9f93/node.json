@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.graph_cycle_regular-a1.approx_tangent_graph-a1.graph_tangent_finrank-a1",
+  "parent_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.graph_cycle_regular-a1.approx_tangent_graph-a1",
+  "depth": 5,
+  "title": "The tangent plane of an orthogonal graph map is n-dimensional",
+  "statement": "Let n, k ∈ ℕ, and let ι : ℝⁿ → ℝ^{n+k} and ι' : ℝ^k → ℝ^{n+k} be linear isometries with ⟨ιv, ι'w⟩ = 0 for all v ∈ ℝⁿ, w ∈ ℝ^k. Let u : ℝⁿ → ℝ^k be differentiable at v₀ ∈ ℝⁿ, let z ∈ ℝ^{n+k}, and put Φ(v) := z + ιv + ι'u(v). Then the linear subspace range DΦ(v₀) ⊆ ℝ^{n+k} has dimension n. Here DΦ(v₀) = fderiv ℝ Φ v₀, viewed as a linear map.",
+  "lean_statement": "∀ (n k : ℕ) (ι : Euclid n →ₗᵢ[ℝ] Euclid (n + k)) (ι' : Euclid k →ₗᵢ[ℝ] Euclid (n + k)) (u : Euclid n → Euclid k) (z : Euclid (n + k)) (v₀ : Euclid n), (∀ v w, inner ℝ (ι v) (ι' w) = 0) → DifferentiableAt ℝ u v₀ → Module.finrank ℝ (LinearMap.range (fderiv ℝ (fun v => z + ι v + ι' (u v)) v₀ : Euclid n →ₗ[ℝ] Euclid (n + k))) = n",
+  "lean_name": "dgcr_atg_graph_tangent_finrank",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-graph-cycle-b63a6b9f93-a1"
+}

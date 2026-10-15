@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.projected_comparison-a1.pf_boundary-a1",
+  "parent_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.projected_comparison-a1",
+  "depth": 4,
+  "title": "The C¹ push-forward of a cycle carried by a compact set is a cycle",
+  "statement": "Let P, n ∈ ℕ, U ⊆ ℝ^P open, R = (M, θ, ξ) an integer multiplicity triple in U (IMRep U n) representing X ∈ 𝒟_n(U), K ⊆ U compact with Hⁿ(M ∖ K) = 0 (Hⁿ = μHE[n]), O ⊆ ℝ^P open with K ⊆ O, f : ℝ^P → ℝ^P of class C¹ on O, and Q ∈ 𝒟_n(U) with Q(ω) = ∫_M θ(x)·ξ(x)(ω(f(x))∘Df(x)) dHⁿ(x) for every ω ∈ 𝒟ⁿ(U) (Df(x) = fderiv ℝ f x, α∘L = α.compContinuousLinearMap L). If ∂X = 0 in U (BoundaryVanishes X; vacuous for n = 0), then ∂Q = 0 in U (BoundaryVanishes Q). This is Simon Ch. 6, 2.24(1) for the push-forward Q = f_#X.",
+  "lean_statement": "∀ (P n : ℕ) (U K O : Set (Euclid P)) (R : IMRep U n) (f : Euclid P → Euclid P) (X Q : GeometricCurrentOn U n), IsOpen U → IsCompact K → K ⊆ U → μHE[n] (R.carrier \\ K) = 0 → IsOpen O → K ⊆ O → ContDiffOn ℝ 1 f O → R.Represents X → BoundaryVanishes X → (∀ ω : TestFormOn U n, Q ω = ∫ x in R.carrier, (R.mult x : ℝ) * R.orient x (((ω : DifferentialForm (Euclid P) n) (f x)).compContinuousLinearMap (fderiv ℝ f x)) ∂μHE[n]) → BoundaryVanishes Q",
+  "lean_name": "dor_lmb_pc_pushforward_boundaryVanishes",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-limsup-mass-bound-a1-projected-co-37b1b9b07b-a1"
+}

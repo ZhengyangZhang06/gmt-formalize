@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.tilt_excess_step-a1.graph_area-a1.det_bound-a1",
+  "parent_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.tilt_excess_step-a1.graph_area-a1",
+  "depth": 6,
+  "title": "Determinant bounds 1 ≤ det(id + B*B) ≤ 1 + 2ⁿ Σ|Beᵢ|² for ‖B‖ ≤ 1",
+  "statement": "Let n, k ∈ ℕ and let B : ℝⁿ → ℝᵏ be a continuous linear map with operator norm ‖B‖ ≤ 1. Let det(id + B*B) be the determinant (ContinuousLinearMap.det) of the endomorphism id_{ℝⁿ} + B*∘B of ℝⁿ, where B* is the adjoint. Then 1 ≤ det(id + B*B) and det(id + B*B) ≤ 1 + 2ⁿ Σ_{i ∈ Fin n} |B e_i|², where e_i = EuclideanSpace.single i 1 is the i-th standard basis vector of ℝⁿ = Euclid n.",
+  "lean_statement": "∀ (n k : ℕ) (B : Euclid n →L[ℝ] Euclid k), ‖B‖ ≤ 1 → 1 ≤ (ContinuousLinearMap.id ℝ (Euclid n) + B.adjoint ∘L B).det ∧ (ContinuousLinearMap.id ℝ (Euclid n) + B.adjoint ∘L B).det ≤ 1 + 2 ^ n * ∑ i : Fin n, ‖B (EuclideanSpace.single i (1 : ℝ))‖ ^ 2",
+  "lean_name": "dorag_tes_ga_det_id_add_adjoint_comp_bounds",
+  "depends_on": [
+    "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.tilt_excess_step-a1.graph_area-a1.prod_bound-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.tilt_excess_step-a1.graph_area-a1.prod_bound-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-758a008bda-a1"
+}

@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.two_dim_cone_density-a1.density_locally_constant-a1.normalize_dist_le-a1",
+  "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.two_dim_cone_density-a1.density_locally_constant-a1",
+  "depth": 5,
+  "title": "Radial projection to the unit sphere at most doubles the distance to a unit vector",
+  "statement": "Let P ∈ ℕ and y, w ∈ ℝ^P with y ≠ 0 and |w| = 1. Then |y/|y| − w| ≤ 2|y − w|.",
+  "lean_statement": "∀ (P : ℕ) (y w : Euclid P), y ≠ 0 → ‖w‖ = 1 → ‖‖y‖⁻¹ • y - w‖ ≤ 2 * ‖y - w‖",
+  "lean_name": "idtp_tdc_dlc_normalize_dist_le",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-4b5b05bbd1-a1"
+}
