@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.moving_blowups-a1.minimizing_and_measures-a1.measure_bounds-a1",
+  "parent_id": "root.dimension_reduction_results-a1.moving_blowups-a1.minimizing_and_measures-a1",
+  "depth": 4,
+  "title": "Semicontinuity of the mass measures along the sequence: finiteness and lim sup bound on compacts, lim inf bound on open sets (Simon 7.2.4 (13), (14))",
+  "statement": "Let P, n ∈ ℕ. For j ∈ ℕ let U_j ⊆ ℝ^P be open and S_j ∈ 𝒟_n(U_j), and let C ∈ 𝒟_n(ℝ^P). Assume (1) for every r ∈ ℝ, closedBall(0, r) ⊆ U_j for all sufficiently large j; (2) S_j ⇀ C in ℝ^P (ConvergesWeakly); (3) (local comparison) for every compact K ⊆ ℝ^P, every ε > 0 and every strictly increasing ψ : ℕ → ℕ there are an open W with K ⊆ W ⊆ thickening(ε, K) and a strictly increasing φ' : ℕ → ℕ such that limsup_i M_W(S_{ψ(φ'(i))}) ≤ M_W(S) for every integer multiplicity S ∈ 𝒟_n(ℝ^P) with SameBoundary S C (∂S = ∂C if n ≥ 1, vacuous if n = 0) and spt(S − C) ⊆ K. Let R_j be an integer multiplicity representation of S_j in U_j for every j (R_j : IMRep U_j n with R_j.Represents S_j) and R an integer multiplicity representation of C in ℝ^P; put μ_j := R_j.measure = θ_j Hⁿ⌞M_j and μ := R.measure = θ Hⁿ⌞M. Then (a) μ(K) < ∞ for every compact K ⊆ ℝ^P; (b) limsup_j μ_j(K) ≤ μ(K) for every compact K ⊆ ℝ^P; (c) μ(G) ≤ liminf_j μ_j(G) for every open G ⊆ ℝ^P (lim sup and lim inf in [0, ∞]). Notation: 𝒟_n(V) = GeometricCurrentOn V n; 𝒟ⁿ(V) = TestFormOn V n (smooth compactly supported n-forms ω on ℝ^P with tsupport ω ⊆ V); for Y ∈ 𝒟_n(V) and any O ⊆ ℝ^P, M_O(Y) := Y.massOn O = sup{ofReal(Y(ω)) : ω ∈ 𝒟ⁿ(V), tsupport ω ⊆ O, |ω(x)| ≤ 1 for all x} ∈ [0, ∞] (SimonGMT massOn, |·| the Euclidean coefficient norm of covectors); currentEval(Y, ω) := Y(ω) if ω is a test form with tsupport ω ⊆ V and 0 otherwise; S_j ⇀ C (ConvergesWeakly Ss C) means currentEval(S_j, ω) → C(ω) for every ω ∈ 𝒟ⁿ(ℝ^P); thickening(ε, K) = {x : inf_{y∈K} |x − y| < ε}.",
+  "lean_statement": "∀ (P n : ℕ) (Us : ℕ → Set (Euclid P)) (Ss : (j : ℕ) → GeometricCurrentOn (Us j) n) (C : GeometricCurrentOn (univ : Set (Euclid P)) n), (∀ j, IsOpen (Us j)) → (∀ R : ℝ, ∀ᶠ j in atTop, closedBall (0 : Euclid P) R ⊆ Us j) → ConvergesWeakly Ss C → (∀ (K : Set (Euclid P)) (ε : ℝ), IsCompact K → 0 < ε → ∀ ψ : ℕ → ℕ, StrictMono ψ → ∃ W : Set (Euclid P), IsOpen W ∧ K ⊆ W ∧ W ⊆ thickening ε K ∧ ∃ φ' : ℕ → ℕ, StrictMono φ' ∧ ∀ S : GeometricCurrentOn (univ : Set (Euclid P)) n, IsIntegerMultiplicity S → SameBoundary S C → (S - C).support ⊆ K → limsup (fun j => (Ss (ψ (φ' j))).massOn W) atTop ≤ S.massOn W) → ∀ Rs : (j : ℕ) → IMRep (Us j) n, (∀ j, (Rs j).Represents (Ss j)) → ∀ R : IMRep (univ : Set (Euclid P)) n, R.Represents C → (∀ K : Set (Euclid P), IsCompact K → R.measure K < ∞) ∧ (∀ K : Set (Euclid P), IsCompact K → limsup (fun j => (Rs j).measure K) atTop ≤ R.measure K) ∧ (∀ G : Set (Euclid P), IsOpen G → R.measure G ≤ liminf (fun j => (Rs j).measure G) atTop)",
+  "lean_name": "dimred_mbl_mm_measure_bounds",
+  "depends_on": [
+    "root.compactness_of_minimizing_currents-a1.mass_equals_rep_measure-a1",
+    "root.dimension_reduction_results-a1.moving_blowups-a1.minimizing_and_measures-a1.mass_lsc-a1",
+    "root.dimension_reduction_results-a1.moving_blowups-a1.minimizing_and_measures-a1.limsup_criterion-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.compactness_of_minimizing_currents-a1.mass_equals_rep_measure-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-mass-equals-rep-measure-a1-a1",
+      "result_commit": "27de75e6856bea4ad251fe33afb1925333bb7655",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.dimension_reduction_results-a1.moving_blowups-a1.minimizing_and_measures-a1.mass_lsc-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.dimension_reduction_results-a1.moving_blowups-a1.minimizing_and_measures-a1.limsup_criterion-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-moving-blowups-a1-minimizing-and-4f5080237f-a1"
+}

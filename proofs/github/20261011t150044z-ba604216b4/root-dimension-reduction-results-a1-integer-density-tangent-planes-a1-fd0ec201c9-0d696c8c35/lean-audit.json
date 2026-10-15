@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "06d2c52aa8db22ba65e45f4749db7048efd6e7a0fc800bfbad77b0537f2e7c33",
+  "git_delta": {
+    "base_commit": "b01a663bebe9df5e0b503c61382902ea6dba98a8",
+    "candidate_commit": "8123dfa1627246b9375e796aa376ea222ddc6579",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "idod_local_threshold_null",
+    "diff_sha256": "c5ae40d507a8cc04fcb4e3bb31ced854d4a42fa9f20b28025ed8deeef65c34c1",
+    "source_sha256": "cb6602fbedb6a049d601c195aa0ade0a28c71a6040bf3df8d6cb78029bd4f3b0",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.idod_local_threshold_null",
+      "statement": "∀ (n k ℓ : ℕ), ℓ ≤ k → ∀ (U N : Set (Euclid (n + k))) (T : GeometricCurrentOn U n), 1 ≤ n → IsOpen U → IsEmbeddedSubmanifold 2 (n + ℓ) N → (closure N \\ N) ∩ U = ∅ → IsMinimizingIn T (U ∩ N) → T.support ⊆ U ∩ N → BoundaryVanishes T → ∀ (m : ℕ) (β σ : ℝ) (x₀ : Euclid (n + k)), 1 ≤ m → 0 < β → 0 < σ → closedBall x₀ (4 * σ) ⊆ U → (∀ y ∈ closedBall x₀ (4 * σ), ∃ θ : ℝ, θ < (m : ℝ) - β ∧ HasMassDensity T y θ) → ∀ α : ℝ, 0 < α → μH[(n : ℝ) - 3 + α] {x | x ∈ ball x₀ σ ∧ ∃ θ : ℝ, (m : ℝ) - 1 + β ≤ θ ∧ HasMassDensity T x θ} = 0",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

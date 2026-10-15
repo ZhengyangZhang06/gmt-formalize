@@ -1,0 +1,99 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "git rev-parse HEAD",
+        "git -C .lake/packages/mathlib rev-parse HEAD",
+        "git -C .lake/packages/simongmt rev-parse HEAD",
+        "weighted_area_formula_volume_of_injective_derivative|weighted_area_formula_of_injective_derivative|measurable_areaJacobianAt",
+        "normDet_sq_eq_det_gram|adjugate_fin_succ_eq_det_submatrix|theorem adjugate_mul",
+        "volume_preserving_piFinSuccAbove|volume_preserving_ofLp|volume_preserving_toLp|lintegral_prod_right.|^theorem lintegral_prod ",
+        "isOpen_iUnion_countable|theorem Countable.exists_eq_range",
+        "theorem.*contDiffAt_symm|lemma.*contDiffAt_symm",
+        "rg -l -i 'co-?area' .lake/packages/simongmt/Poincare/SimonGMT",
+        "git show d5ba41d68f1ca2e5ef9b0ebdd62cf01e6e24a919:GMT/Ch07/Submission.lean",
+        "git show 013681e40995ed13506dee23046e6ced0faf990a:GMT/Ch07/Submission.lean",
+        "v.validate_lean_statement(c['lean_statement'])",
+        "cmp.child_modules(c,dict(submission_module='GMT.Ch07.Submission',root_theorem='GMT.Ch07.main_theorem'),base,'contract')",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/pc-independent-audit-p62wztsa/VerifiedAssembly.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/lake-manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/NormDet.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Matrix/Adjugate.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Constructions/Pi.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Haar/InnerProductSpace.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Prod.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Constructions/Polish/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Measurable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/Operations.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/WeightedArea.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-limsup-mass-bound-a1-slicing-a1-s-ec35f2137a/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-limsup-mass-bound-a1-slicing-a1-s-ec35f2137a/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-db95546c3f/isolated-comparator-result.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-zer-2511ff6312/isolated-comparator-result.json",
+        "/tmp/pc-independent-audit-p62wztsa/VerifiedAssembly.lean",
+        "/tmp/pc-independent-audit-p62wztsa/VerifiedAssembly.log",
+        "/tmp/pc-independent-audit-p62wztsa/dag-name-check.json"
+      ],
+      "conclusion": "Independently verified the pinned revisions, unchanged frozen context, and supplied parent digest. The consulted sources support the area formula with arbitrary weights, cofactor identity, Euclidean volume splitting, Tonelli, inverse-function construction, and measurable countable gluing. No nonlinear coarea declaration was found in the SimonGMT search. Splitting into these analytic obligations is appropriate: their conclusions establish the exact selected parent through regular-part reduction, disjoint chart patches, and gluing. Dependencies are acyclic and match the proof references. All names are bare identifiers; the six new names are unreserved in the final 1582-node DAG scan. Both reused declarations have identical frozen types and successful comparator receipts. All eight types passed lexical validation and separate comparator-challenge elaboration. Independently reconstructed proofs and the exact parent assembly compiled under frozen imports, each with only propext, Classical.choice, and Quot.sound. Source-delta checks passed. Matrix constructions use Matrix.of correctly; there is no erroneous function-multiplication IsUnit contract."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "gram_cofactor",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Prose and type match, including absence of linear independence. The coefficient expansion gives Ac = δ and c₀ = ‖u‖²; the adjugate identity and diagonal cofactor give precisely the claimed determinant identity. This also handles singular matrices and n = 0 without division."
+    },
+    {
+      "key": "gram_area_formula",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Valid reuse of the comparator-accepted declaration with byte-identical type. The Gram/normDet identification and measurable derivative prove the Jacobian assertion; the cited weighted area formula has exactly the stated differentiability, injectivity, and arbitrary-weight hypotheses. The accepted implementation independently compiles under the frozen imports without additional axioms."
+    },
+    {
+      "key": "slice_tonelli",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The statement includes all necessary hypotheses. The proof constructs a Borel supported integrand despite Φ being unrestricted off S, verifies each slice parametrization and its derivative, applies gram_area_formula, and uses the correctly normalized Euclidean product splitting and Tonelli. It proves both conclusions for every n, including zero."
+    },
+    {
+      "key": "param_coarea",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The range and pairing hypotheses match the prose exactly. They supply the coefficient-span and dual-vector conditions for gram_cofactor. Taking square roots yields J′ = ‖G∘Φ‖J; the slice and ambient area formulas then give the exact equality and measurability. No measurability assumption on G is silently introduced."
+    },
+    {
+      "key": "local_inverse",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Valid reuse with identical frozen type and verified comparator acceptance. Finite-dimensional injectivity supplies an invertible derivative; restricting the inverse-function chart to the open invertibility locus supplies every stated set and inverse property. Inverse regularity establishes C¹ on the entire target. The proof is independent of the selected parent."
+    },
+    {
+      "key": "straightening_cover",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The explicit first-coordinate straightening map has injective derivative by the supplied coordinate argument. local_inverse gives the charts; differentiating the inverse identity proves derivative bijectivity. Second countability and the explicitly handled empty-family case produce precisely the countable cover required by the type."
+    },
+    {
+      "key": "chart_patch",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof establishes Borel measurability of S = B ∩ Ψ⁻¹(Z), differentiability and injectivity of ψ∘Ψ, and both transported-gradient conditions. Openness justifies differentiating F∘Ψ = first coordinate. The verified image identities transfer param_coarea to exactly the stated patch and level sets."
+    },
+    {
+      "key": "coarea_glue",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type matches all prose hypotheses, including arbitrary weights. Lusin–Souslin and injectivity ensure measurable, disjoint image pieces. Countable additivity gives pointwise slice sums and the ambient sum; AEMeasurable.tsum and lintegral_tsum then establish both conclusions. No unstated weight measurability or circular coarea assumption is used."
+    }
+  ],
+  "required_changes": []
+}

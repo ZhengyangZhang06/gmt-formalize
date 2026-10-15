@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.support_null-a1",
+  "parent_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1",
+  "depth": 4,
+  "title": "The support minus the carrier is Hⁿ-null",
+  "statement": "Let n ≥ 1, k ≥ 0, U ⊆ ℝ^{n+k} any set, R = (M, θ, ξ) an integer multiplicity triple in U (IMRep U n) with μ := R.measure = θHⁿ⌞M (Hⁿ = μHE[n]), W ⊆ U open, κ ∈ ℝ, H : ℝ^{n+k} → ℝ^{n+k} μ-a.e. strongly measurable with |H(x)| ≤ κ for all x, such that R.firstVariation X = −∫⟨X, H⟩dμ for every C¹ compactly supported X : ℝ^{n+k} → ℝ^{n+k} with tsupport X ⊆ W. Then Hⁿ((spt μ ∩ W) ∖ M) = 0, where Hⁿ = μHE[n].",
+  "lean_statement": "∀ (n k : ℕ), 0 < n → ∀ (U W : Set (Euclid (n + k))) (R : IMRep U n) (H : Euclid (n + k) → Euclid (n + k)) (κ : ℝ), IsOpen W → W ⊆ U → AEStronglyMeasurable H R.measure → (∀ x, ‖H x‖ ≤ κ) → (∀ X : Euclid (n + k) → Euclid (n + k), ContDiff ℝ 1 X → HasCompactSupport X → tsupport X ⊆ W → R.firstVariation X = -∫ x, inner ℝ (X x) (H x) ∂R.measure) → μHE[n] ((R.measure.support ∩ W) \\ R.carrier) = 0",
+  "lean_name": "dorag_support_sdiff_carrier_null",
+  "depends_on": [
+    "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.monotonicity-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.monotonicity-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-bca0eeb76e-a1"
+}

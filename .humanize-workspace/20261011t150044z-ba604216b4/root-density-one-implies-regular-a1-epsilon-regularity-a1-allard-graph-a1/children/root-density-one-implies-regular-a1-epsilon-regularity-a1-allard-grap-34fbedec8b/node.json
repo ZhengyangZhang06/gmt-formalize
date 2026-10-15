@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.tangent_projection_measurable-a1",
+  "parent_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1",
+  "depth": 4,
+  "title": "Measurability of the approximate tangent projection of an integer multiplicity triple",
+  "statement": "Let P, n ∈ ℕ, U ⊆ ℝ^P any set and R = (M, θ, ξ) an integer multiplicity triple in U (Lean IMRep U n) with weight μ_R = θHⁿ⌞M (R.measure). Then the map x ↦ p_{T_xM} from ℝ^P to the continuous linear endomorphisms of ℝ^P, where p_{T_xM} is the orthogonal projection onto T_xM := approxTangentPlane n M x (the approximate tangent plane of M at x when it exists, the zero subspace otherwise), is almost everywhere strongly measurable with respect to μ_R.",
+  "lean_statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (R : IMRep U n), AEStronglyMeasurable (fun x => (approxTangentPlane n R.carrier x).starProjection) R.measure",
+  "lean_name": "dorag_approxTangent_starProjection_aesm",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-34fbedec8b-a1"
+}

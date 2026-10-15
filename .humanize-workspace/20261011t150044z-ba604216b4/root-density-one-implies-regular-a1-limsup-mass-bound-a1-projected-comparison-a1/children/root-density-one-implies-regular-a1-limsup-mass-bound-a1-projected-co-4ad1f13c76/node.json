@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.projected_comparison-a1.competitor_mass-a1",
+  "parent_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.projected_comparison-a1",
+  "depth": 4,
+  "title": "Mass bound for the competitor Z + f_#X when f fixes Z on G and Y = Z + X",
+  "statement": "Let P, n ∈ ℕ, U ⊆ ℝ^P open, G ⊆ ℝ^P open with G ⊂⊂ U (CompactlyContained G U: closure G is compact and contained in U), O ⊆ ℝ^P open with G ⊆ O, f : ℝ^P → ℝ^P of class C¹ on O, and Λ ≥ 0 with ‖Df(x)‖ ≤ Λ for every x ∈ G (Df(x) = fderiv ℝ f x, operator norm). Let RZ = (M_Z, θ_Z, ξ_Z), RX = (M_X, θ_X, ξ_X) and RY = (M_Y, θ_Y, ξ_Y) be integer multiplicity triples in U (IMRep U n) and Y, S ∈ 𝒟_n(U), and write τ(R)(ω) := R.action ω = ∫_{M_R} θ_R ξ_R(ω) dHⁿ (Hⁿ = μHE[n]). Assume: RY represents Y; Y(ω) = τ(RZ)(ω) + τ(RX)(ω) for every ω ∈ 𝒟ⁿ(U); for Hⁿ-a.e. x ∈ M_Z ∩ G (i.e. Hⁿ⌞(M_Z ∩ G)-a.e.), f(x) = x and ξ_Z(x)(α∘Df(x)) = ξ_Z(x)(α) for every n-covector α; Hⁿ(M_X ∖ G) = 0; and S(ω) = τ(RZ)(ω) + ∫_{M_X} θ_X(x)·ξ_X(x)(ω(f(x))∘Df(x)) dHⁿ(x) for every ω ∈ 𝒟ⁿ(U). Then M_G(S) ≤ Λⁿ·μ_{RY}(G), i.e. S.massOn G ≤ ENNReal.ofReal(Λⁿ)·RY.measure G, where M_G(S) is the supremum of S(ω) over ω ∈ 𝒟ⁿ(U) with spt ω ⊆ G and |ω(z)|_E ≤ 1 for all z (Simon 6.2.5, Euclidean coefficient norm) and μ_{RY} = θ_Y·Hⁿ⌞M_Y.",
+  "lean_statement": "∀ (P n : ℕ) (U G O : Set (Euclid P)) (RZ RX RY : IMRep U n) (Y S : GeometricCurrentOn U n) (f : Euclid P → Euclid P) (Λ : ℝ), IsOpen U → IsOpen G → CompactlyContained G U → IsOpen O → G ⊆ O → ContDiffOn ℝ 1 f O → 0 ≤ Λ → (∀ x ∈ G, ‖fderiv ℝ f x‖ ≤ Λ) → RY.Represents Y → (∀ ω : TestFormOn U n, Y ω = RZ.action (ω : DifferentialForm (Euclid P) n) + RX.action (ω : DifferentialForm (Euclid P) n)) → (∀ᵐ x ∂(μHE[n].restrict (RZ.carrier ∩ G)), f x = x ∧ ∀ α : Covector (Euclid P) n, RZ.orient x (α.compContinuousLinearMap (fderiv ℝ f x)) = RZ.orient x α) → μHE[n] (RX.carrier \\ G) = 0 → (∀ ω : TestFormOn U n, S ω = RZ.action (ω : DifferentialForm (Euclid P) n) + ∫ x in RX.carrier, (RX.mult x : ℝ) * RX.orient x (((ω : DifferentialForm (Euclid P) n) (f x)).compContinuousLinearMap (fderiv ℝ f x)) ∂μHE[n]) → S.massOn G ≤ ENNReal.ofReal (Λ ^ n) * RY.measure G",
+  "lean_name": "dor_lmb_pc_competitor_massOn_le",
+  "depends_on": [
+    "root.density_one_implies_regular-a1.limsup_mass_bound-a1.projected_comparison-a1.orient_comp-a1",
+    "root.regular_set_dense-a1.integer_combination-a1.combination_construction-a1",
+    "root.regular_set_dense-a1.integer_combination-a1.combination_action-a1",
+    "root.half_space_cone_lies_in_boundary-a1.imrep_measure_unique-a1.vector_density_ae_eq-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.projected_comparison-a1.orient_comp-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.regular_set_dense-a1.integer_combination-a1.combination_construction-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-regular-set-dense-a1-integer-combination-a1-combination-construction-a1-a1",
+      "result_commit": "0af9ed599cb8b131973221f740cf2b64fb2fe357",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.regular_set_dense-a1.integer_combination-a1.combination_action-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-regular-set-dense-a1-integer-combination-a1-combination-action-a1-a1",
+      "result_commit": "faacb9cb5caf6ce728ef10ab3b0f5bdd7a47b04d",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.half_space_cone_lies_in_boundary-a1.imrep_measure_unique-a1.vector_density_ae_eq-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-half-space-cone-lies-in-boundary-a1-imrep-measure-unique-a1-vect-8c0391929c-a1",
+      "result_commit": "2d0f5bbe8de725944c1d9c73d65c6163f6d67b07",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-limsup-mass-bound-a1-projected-co-4ad1f13c76-a1"
+}

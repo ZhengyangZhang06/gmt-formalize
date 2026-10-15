@@ -1,0 +1,59 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "euclideanHausdorffMeasure_eq_volume|def apply \\(m : ι → E\\)|theorem le_opNorm|theorem integral_const_mul",
+        "def IsTestForm|def TestFormOn|def TestFormOnConverges|structure GeometricCurrentOn|countablyRectifiable_of_measure_zero|countablyRectifiable_range|hasApproximateTangentSpaceAt_submodule",
+        "comp_aestronglyMeasurable₂|exists_bound_of_continuous|theorem restrict_restrict |theorem restrict_apply |theorem span_eq|protected theorem orthonormal",
+        "rg -n --glob '*.lean' 'dtc_bc_cz_unit_current_imrep|dtc_imrep_current' .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project GMT .lake/packages/simongmt/Poincare",
+        "git show 642d7450f79f28435ddba02f9c815e2208bcee00:GMT/Ch07/Submission.lean",
+        "git merge-base --is-ancestor 642d7450f79f28435ddba02f9c815e2208bcee00 72492511afd00b8c420351880d323ae50023c935",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/unit-current-independent-audit/IndependentTypesAssembly.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/unit-current-independent-audit/SuppliedClosure.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Submission.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Module/Alternating/Topology.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/Alternating/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/StronglyMeasurable/AEStronglyMeasurable.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/FTaylorSeries.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Basis/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-localize-a1-imrep-current-a1/accepted-candidate.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-compactness-a1-codim-zero-a1-1e9a471351/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-compactness-a1-codim-zero-a1-1e9a471351/decomposition-v1.json",
+        "/tmp/unit-current-independent-audit/IndependentTypesAssembly.lean",
+        "/tmp/unit-current-independent-audit/SuppliedClosure.lean"
+      ],
+      "conclusion": "Independently confirmed the project/mathlib pins, workspace compatibility, and relevant definitions and lemmas. Neither child name occurs in the searched snapshot project or current library sources. The DAG reserves dtc_imrep_current only for the comparator-accepted declaration with the byte-identical frozen type; its receipt, source hash, and retained artifact hashes match. The new name is unreserved. Both child propositions elaborate independently in comparator scope. The conditional assembly and supplied full closure compile; their axiom reports contain only propext, Classical.choice, and Quot.sound. The reused proof is byte-identical to the accepted candidate's theorem. The split is appropriate: the explicit representation and general current construction jointly prove exactly dtc_bc_cz_unit_current. Both children have empty dependencies, and neither proof relies on the selected parent or the other child."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "unit_imrep",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line proposition exactly matches the prose and is independently usable without the implementation. The proof verifies every IMRep field for the empty representation when c = 0 and the constant representation otherwise. Rectifiability, compact-set integrability, the full-space approximate tangent, and the signed standard orientation follow from the checked definitions and lemmas. Evaluation has the intended continuous-linear-map type. The action calculation correctly uses normalized Hausdorff measure = volume and sign(c)·natAbs(c) = c; integral_const_mul requires no integrability hypothesis. The unused positivity assumption on n is harmless. The bare declaration name is unreserved, and the proof is complete and non-circular."
+    },
+    {
+      "key": "imrep_current",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact proposition matches the prose for arbitrary P, n and U; no openness or positive-degree hypothesis is required by these definitions. The proof establishes the almost-everywhere orientation bound, strong measurability, compactly supported multiplicity integrability, integrand domination, and linearity. Its explicit ε/(C_K + 1) estimate proves precisely the required sequential continuity, including zero-mass cases. It does not rely on the selected parent. dtc_imrep_current is a valid bare name reused from a comparator-accepted declaration with an identical frozen type; compatibility and standard-axiom checks passed."
+    }
+  ],
+  "required_changes": []
+}

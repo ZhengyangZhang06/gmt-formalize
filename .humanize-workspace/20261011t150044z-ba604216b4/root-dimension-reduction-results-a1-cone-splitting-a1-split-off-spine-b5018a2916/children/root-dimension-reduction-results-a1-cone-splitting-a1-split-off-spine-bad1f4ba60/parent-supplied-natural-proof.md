@@ -1,0 +1,85 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.dimension_reduction_results-a1.cone_splitting-a1.split_off_spine-a1.minimality_transfer-a1.cube_cycle-a1`
+- Child DAG node: `root.dimension_reduction_results-a1.cone_splitting-a1.split_off_spine-a1.minimality_transfer-a1.cube_cycle-a1.cube_geometry-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: Steps 3, 6 and 7 of the parent proof ("Q_r is closed (hence Borel)", "Q_r is closed and bounded, spt Y is compact", "F ⊆ {x : |⟨g_i, x⟩| ≤ r for all i} ∩ q⁻¹(spt Y): for x = t + y with t ∈ Q_r ⊆ G and y ∈ spt Y ⊆ G^⊥, ⟨g_i, x⟩ = ⟨g_i, t⟩ ... and q(x) = q(t) + q(y) = 0 + y"), with K in place of spt Y.
+
+1. (Expansion in G.) Every t ∈ G satisfies t = Σ_i ⟨g_i, t⟩ g_i. Indeed, t ∈ span(range g) gives coefficients c : Fin k → ℝ with t = Σ_b c_b g_b (Submodule.mem_span_range_iff_exists_fun). For each i, ⟨g_i, t⟩ = Σ_b c_b ⟨g_i, g_b⟩ = c_i, because ⟨g_i, g_i⟩ = ‖g_i‖² = 1 and ⟨g_i, g_b⟩ = 0 for b ≠ i (orthonormality). Replacing each c_i by ⟨g_i, t⟩ gives the expansion.
+2. (Q_r is closed.) G is a finite-dimensional subspace of ℝ^P, hence closed (Submodule.closed_of_finiteDimensional). For each i the map t ↦ |⟨g_i, t⟩| is continuous, so {t : |⟨g_i, t⟩| ≤ r} is closed, and so is the intersection over i. Q_r is the intersection of G with this set, hence closed.
+3. (Q_r is bounded.) For t ∈ Q_r, step 1 and the triangle inequality give ‖t‖ = ‖Σ_i ⟨g_i, t⟩ g_i‖ ≤ Σ_i |⟨g_i, t⟩|·‖g_i‖ = Σ_i |⟨g_i, t⟩| ≤ k·r. Hence Q_r ⊆ closedBall(0, k·r), a bounded set (if r < 0, Q_r is empty and this holds trivially).
+4. (Compactness, (i) and (ii).) ℝ^P is a proper metric space, so the closed bounded set Q_r is compact (Metric.isCompact_of_isClosed_isBounded). The set Q_r + K = image2 (+) Q_r K is the image of the compact set Q_r × K under the continuous addition map, hence compact (IsCompact.add).
+5. (Inclusion (iii).) Let x = t + y with t ∈ Q_r and y ∈ K, so y ∈ G^⊥. For each i, g_i ∈ G (Submodule.subset_span), hence ⟨g_i, y⟩ = 0 (Submodule.inner_right_of_mem_orthogonal) and ⟨g_i, x⟩ = ⟨g_i, t⟩ + ⟨g_i, y⟩ = ⟨g_i, t⟩, so |⟨g_i, x⟩| = |⟨g_i, t⟩| ≤ r. Further, q is linear; t ∈ G ⊆ (G^⊥)^⊥ (Submodule.le_orthogonal_orthogonal), so q(t) = 0 (Submodule.starProjection_apply_eq_zero_iff), and y ∈ G^⊥ gives q(y) = y (Submodule.starProjection_eq_self_iff). Thus q(x) = q(t) + q(y) = y ∈ K, i.e. x ∈ q⁻¹(K). Hence x ∈ {x : |⟨g_i, x⟩| ≤ r for all i} ∩ q⁻¹(K). ∎
+
+## Key steps
+
+1. For t ∈ G = span(g), orthonormality gives t = Σ_i ⟨g_i, t⟩ g_i.
+2. Q_r is closed (G closed as a finite-dimensional subspace; |⟨g_i, ·⟩| ≤ r closed) and bounded by ‖t‖ ≤ Σ_i |⟨g_i, t⟩| ≤ k r, hence compact; Q_r + K is compact as the image of Q_r × K under addition.
+3. For x = t + y (t ∈ Q_r, y ∈ K ⊆ G^⊥): ⟨g_i, x⟩ = ⟨g_i, t⟩ so |⟨g_i, x⟩| ≤ r, and q(x) = q(t) + q(y) = 0 + y ∈ K.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat manifest.json (project b4d606db1, mathlib 25730c7c); diff -q snapshot project/GMT/Ch07/Contract.lean vs workspace GMT/Ch07/Contract.lean (identical)`
+- `python3 over dag.json: selected node record (depth 5, max_depth 6 from runtime._decompose), ancestors' depends_on (cube_cycle, minimality_transfer, cone_splitting, dimension_reduction_results), sibling frozen types (idtp_fons_cs_sos_product_current, dimred_cs_sos_mt_interior_product, dimred_cs_sos_mt_cube_stokes, dimred_cs_sos_mt_face_currents, lcmp_massOn_le_add_of_eval_eq) and cited accepted types (imrep_represents_massOn_eq_measure, imrep_carrier_sdiff_support_null, rsd_isIntegerMultiplicity_int_combination, dimred_im_mass_measure)`
+- `grep over all 2203 accepted dag.json declarations for 'boundary.support', '.support)ᶜ', 'ᶜ = 0' with '.support', '↔ R.measure', '∃ S : GeometricCurrentOn ... ∀ ω', 'image2', 'smul|•' (found cmcdt_lpo_tk_boundary_support_subset, imrep_represents_support_eq_inter_measure_support, dor_lmb_fcd_sd_im_concentrated; none with the needed scalar/iff/product-support/cube/cycle form)`
+- `cut -f2 dag dump | grep dimred_cs_sos_mt_cc / _cc_ (no collision for the five proposed names)`
+- `grep -n over simongmt Chapter06/{Currents,CurrentLocalEquality,Mass}.lean: GeometricCurrentOn, boundary_apply, boundary_boundary, exteriorDerivativeTestOn, tsupport_exteriorDerivative_subset, VanishesOn, zeroRegion, support, isOpen_zeroRegion, massOn, mass`
+- `rg -n over snapshot mathlib: starProjection_apply_eq_zero_iff, starProjection_eq_self_iff, le_orthogonal_orthogonal, isClosed_orthogonal, IsCompact.mul (to_additive IsCompact.add), setLIntegral_mono', setLIntegral_eq_zero_iff, measure_mono_null, Submodule.closed_of_finiteDimensional, isCompact_of_isClosed_isBounded, mem_span_range_iff_exists_fun`
+- `grep -n '3.5\|left to the reader' book/chapter-07.txt (Lemma 7.3.5, lines 407-418: proof left to the reader)`
+- `grep -n over runtime.py (_decompose, _existing_lean_name_problem, child id reuse), inherited.py (cited_inherited), models.py/lean_contract.py (ScopedDecomposition, validate_lean_statement)`
+- `lake env lean /tmp/cc-decomp/check/{Probe,Types,Children,Combined}.lean (Lean v4.35.0-rc3, import GMT.Ch07.Submission)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-cone-splitting-a1-split-off-spine-b5018a2916/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-cone-splitting-a1-split-off-spine-b5018a2916/parent-supplied-natural-proof.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-cone-splitting-a1-split-off-spine-7f270cb1eb/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Projection/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Projection/Submodule.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Orthogonal.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Monoid.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/OuterMeasure/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-07.txt`
+- `/runtime/flows/gmt-claude-cf346c63e6ef/_recursive_lean/runtime.py`
+- `/runtime/flows/gmt-claude-cf346c63e6ef/_recursive_lean/inherited.py`
+- `/runtime/flows/gmt-claude-cf346c63e6ef/_recursive_lean/models.py`
+- `/tmp/cc-decomp/check/Types.lean`
+- `/tmp/cc-decomp/check/Children.lean`
+- `/tmp/cc-decomp/check/Combined.lean`
+
+Pins match. The snapshot manifest records project b4d606db1 (= workspace HEAD) and mathlib 25730c7c. The snapshot Contract.lean is identical to the workspace one.
+
+Source text. Simon leaves Lemma 7.3.5 to the reader (chapter-07.txt lines 407–418), so the parent proof is the project's own argument. The child proofs are extracted from its Steps 1, 5, 6 and 7.
+
+Reuse search. No accepted DAG declaration has the needed form of any child. The closest are:
+- cmcdt_lpo_tk_boundary_support_subset: only c = 1;
+- imrep_represents_support_eq_inter_measure_support and dor_lmb_fcd_sd_im_concentrated: different shapes.
+These are also not ancestor dependencies, so they cannot be cited, and the five fresh names are used. The proposed names collide with no DAG node.
+
+Inheritance. The children cite only accepted ancestor dependencies by exact name, so the controller inherits them:
+- imrep_carrier_sdiff_support_null, rsd_isIntegerMultiplicity_int_combination (minimality_transfer);
+- dimred_im_mass_measure (cone_splitting);
+- lcmp_massOn_le_add_of_eval_eq (cube_cycle).
+
+Library facts. The SimonGMT facts used are present in the pinned simongmt package: GeometricCurrentOn.boundary_apply, boundary_boundary, tsupport_exteriorDerivative_subset, zeroRegion/support/isOpen_zeroRegion and mass = massOn U. The Mathlib facts used are present in the snapshot: starProjection_apply_eq_zero_iff, starProjection_eq_self_iff, le_orthogonal_orthogonal, isClosed_orthogonal, IsCompact.add, setLIntegral_mono', withDensity_absolutelyContinuous, closed_of_finiteDimensional and isCompact_of_isClosed_isBounded.
+
+Lean checks. All five child types elaborate after import GMT.Ch07.Submission in namespace GMT.Ch07 with the contract's opens.
+- Types.lean: the frozen parent type compiles in full from the child, sibling and inherited stubs.
+- Children.lean: all five children compile with real proofs. support_smul_boundary and cube_geometry use only standard axioms; the others take sorryAx only from the inherited accepted-lemma stubs.
+- Combined.lean: re-checks the real child proofs together with the parent proof.
+
+ScopedDecomposition validation passes, the dependencies are acyclic and the names are fresh.

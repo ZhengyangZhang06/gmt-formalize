@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.threshold_reduction-a1.blowup_calculus-a1",
+  "parent_id": "root.dimension_reduction_results-a1.threshold_reduction-a1",
+  "depth": 3,
+  "title": "Blow-up calculus: mass scaling, pull-back form of currentEval, composition of blow-ups",
+  "statement": "Let P, n ∈ ℕ, U ⊆ ℝ^P any set, T ∈ 𝒟_n(U) (GeometricCurrentOn U n), x ∈ ℝ^P and λ > 0. Write η := η_{x,λ} = dilation x λ, η(p) = λ⁻¹(p − x). For an n-form ω on ℝ^P let η^#ω := affinePullbackForm (dilationCLM P λ) (−λ⁻¹x) ω, i.e. (η^#ω)(p) = ω(η(p))∘(λ⁻¹·id). Then: (i) for every W ⊆ ℝ^P, M_W(η_{x,λ#}T) = λ^{−n}·M_{η⁻¹(W)}(T) in [0, ∞], i.e. (blowUp T x λ).massOn W = ofReal(λ⁻¹ⁿ)·T.massOn (dilation x λ ⁻¹' W); (ii) currentEval(η_{x,λ#}T, ω) = currentEval(T, η^#ω) for every n-form ω on ℝ^P; (iii) for every y ∈ ℝ^P, μ > 0 and every n-form ω, currentEval(η_{y,μ#}(η_{x,λ#}T), ω) = currentEval(η_{x+λy,λμ#}T, ω). Here currentEval(A, ω) = A(ω) if ω is a test form with support in the domain of A, and 0 otherwise.",
+  "lean_statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (x : Euclid P) (lam : ℝ) (hlam : 0 < lam), (∀ W : Set (Euclid P), (blowUp T x lam hlam.ne').massOn W = ENNReal.ofReal (lam⁻¹ ^ n) * T.massOn (dilation x lam ⁻¹' W)) ∧ (∀ ω : DifferentialForm (Euclid P) n, currentEval (blowUp T x lam hlam.ne') ω = currentEval T (affinePullbackForm (dilationCLM P lam) (-(lam⁻¹ • x)) ω)) ∧ ∀ (y : Euclid P) (mu : ℝ) (hmu : 0 < mu) (ω : DifferentialForm (Euclid P) n), currentEval (blowUp (blowUp T x lam hlam.ne') y mu hmu.ne') ω = currentEval (blowUp T (x + lam • y) (lam * mu) (mul_pos hlam hmu).ne') ω",
+  "lean_name": "dimred_tr_blowup_calculus",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-threshold-reduction-a1-blowup-calculus-a1-a1"
+}

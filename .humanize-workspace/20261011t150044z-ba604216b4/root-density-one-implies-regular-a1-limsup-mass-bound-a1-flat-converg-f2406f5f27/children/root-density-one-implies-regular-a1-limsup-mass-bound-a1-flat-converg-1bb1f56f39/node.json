@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.flat_convergence-a1.deformation-a1.skeleton_deformation-a1.shells-a1",
+  "parent_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.flat_convergence-a1.deformation-a1.skeleton_deformation-a1",
+  "depth": 6,
+  "title": "Dyadic shell decomposition of T and ∂T along the level sets of f (shells, slices, boundary relations, masses)",
+  "statement": "Let P, m ∈ ℕ; T ∈ 𝒟_{m+1}(ℝ^P) (domain univ) represented by an IMRep RT = (M, θ, ξ) in univ; RB = (M', θ', ξ') an IMRep in univ representing ∂T; K ⊆ ℝ^P closed with T vanishing off K; f : ℝ^P → ℝ continuous; r : ℕ → ℝ antitone; and Z_j ∈ 𝒟_m(ℝ^P) (j ∈ ℕ) with Z_j(ω) = ∫_{M∩{f<r_j}} θ⟨dω, ξ⟩ dH^{m+1} − ∫_{M'∩{f<r_j}} θ'⟨ω, ξ'⟩ dH^m for every j and ω ∈ 𝒟^m(ℝ^P). Put E_j := K ∩ {x : r_j ≤ f(x)}. Then there are W_j, A_j ∈ 𝒟_{m+1}(ℝ^P) and D_j ∈ 𝒟_m(ℝ^P) (j ∈ ℕ) such that: every W_j and D_j is integer multiplicity; W_j, D_j and Z_j vanish off E_j; ∂W_0(ω) = D_0(ω) − Z_0(ω) and ∂W_{j+1}(ω) = D_{j+1}(ω) + Z_j(ω) − Z_{j+1}(ω) for all j, ω; Σ_{j=0}^{N} W_j(ω) = T(ω) − A_N(ω) for all N, ω; M(W_0) = μ_RT({r_0 ≤ f}), M(W_{j+1}) = μ_RT({r_{j+1} ≤ f < r_j}), M(D_0) = μ_RB({r_0 ≤ f}), M(D_{j+1}) = μ_RB({r_{j+1} ≤ f < r_j}) and M(A_N) = μ_RT({f < r_N}).",
+  "lean_statement": "∀ (P m : ℕ) (T : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1)) (RT : IMRep (univ : Set (Euclid P)) (m + 1)) (RB : IMRep (univ : Set (Euclid P)) m) (K : Set (Euclid P)) (f : Euclid P → ℝ) (r : ℕ → ℝ) (Z : ℕ → GeometricCurrentOn (univ : Set (Euclid P)) m), RT.Represents T → RB.Represents T.boundary → IsClosed K → Continuous f → Antitone r → (∀ ω : TestFormOn (univ : Set (Euclid P)) (m + 1), Disjoint (tsupport (ω : DifferentialForm (Euclid P) (m + 1))) (K) → T ω = 0) → (∀ j (ω : TestFormOn (univ : Set (Euclid P)) m), Z j ω = (∫ x in RT.carrier ∩ {x | f x < r j}, (RT.mult x : ℝ) * RT.orient x (exteriorDerivative (ω : DifferentialForm (Euclid P) m) x) ∂μHE[m + 1]) - ∫ x in RB.carrier ∩ {x | f x < r j}, (RB.mult x : ℝ) * RB.orient x ((ω : DifferentialForm (Euclid P) m) x) ∂μHE[m]) → ∃ (W A : ℕ → GeometricCurrentOn (univ : Set (Euclid P)) (m + 1)) (D : ℕ → GeometricCurrentOn (univ : Set (Euclid P)) m), (∀ j, IsIntegerMultiplicity (W j)) ∧ (∀ j, IsIntegerMultiplicity (D j)) ∧ (∀ j (ω : TestFormOn (univ : Set (Euclid P)) (m + 1)), Disjoint (tsupport (ω : DifferentialForm (Euclid P) (m + 1))) (K ∩ {x | r j ≤ f x}) → W j ω = 0) ∧ (∀ j (ω : TestFormOn (univ : Set (Euclid P)) m), Disjoint (tsupport (ω : DifferentialForm (Euclid P) m)) (K ∩ {x | r j ≤ f x}) → D j ω = 0) ∧ (∀ j (ω : TestFormOn (univ : Set (Euclid P)) m), Disjoint (tsupport (ω : DifferentialForm (Euclid P) m)) (K ∩ {x | r j ≤ f x}) → Z j ω = 0) ∧ (∀ ω : TestFormOn (univ : Set (Euclid P)) m, (W 0).boundary ω = D 0 ω - Z 0 ω) ∧ (∀ j (ω : TestFormOn (univ : Set (Euclid P)) m), (W (j + 1)).boundary ω = D (j + 1) ω + Z j ω - Z (j + 1) ω) ∧ (∀ N (ω : TestFormOn (univ : Set (Euclid P)) (m + 1)), ∑ j ∈ Finset.range (N + 1), W j ω = T ω - A N ω) ∧ (W 0).mass = RT.measure {x | r 0 ≤ f x} ∧ (∀ j, (W (j + 1)).mass = RT.measure {x | r (j + 1) ≤ f x ∧ f x < r j}) ∧ (D 0).mass = RB.measure {x | r 0 ≤ f x} ∧ (∀ j, (D (j + 1)).mass = RB.measure {x | r (j + 1) ≤ f x ∧ f x < r j}) ∧ ∀ N, (A N).mass = RT.measure {x | f x < r N}",
+  "lean_name": "dor_lmb_fcd_sd_shells",
+  "depends_on": [
+    "root.density_one_implies_regular-a1.limsup_mass_bound-a1.flat_convergence-a1.deformation-a1.skeleton_deformation-a1.im_restrict-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.flat_convergence-a1.deformation-a1.skeleton_deformation-a1.im_restrict-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-limsup-mass-bound-a1-flat-converg-1bb1f56f39-a1"
+}

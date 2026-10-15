@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_sector_endpoint_density-a1.alpha_homogeneous-a1.ae_scaling_of_weak_scaling-a1",
+  "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_sector_endpoint_density-a1.alpha_homogeneous-a1",
+  "depth": 5,
+  "title": "A distributional scaling identity gives h(ru) = r·h(u) almost everywhere",
+  "statement": "Let a, b, r ∈ ℝ with r > 0, and let h : ℝ → ℝ be integrable on (a, b) and on (ra, rb). Assume ∫_ℝ l(t/r)·h(t) dt = r²·∫_ℝ l(t)·h(t) dt for every l ∈ C¹(ℝ) with tsupport l ⊆ (a, b). Then h(ru) = r·h(u) for almost every u ∈ (a, b).",
+  "lean_statement": "∀ (a b r : ℝ) (h : ℝ → ℝ), 0 < r → IntegrableOn h (Ioo a b) → IntegrableOn h (Ioo (r * a) (r * b)) → (∀ l : ℝ → ℝ, ContDiff ℝ 1 l → tsupport l ⊆ Ioo a b → ∫ t, l (t / r) * h t = r ^ 2 * ∫ t, l t * h t) → ∀ᵐ u, u ∈ Ioo a b → h (r * u) = r * h u",
+  "lean_name": "idtp_cse_ah_ae_scaling_of_weak_scaling",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-1fbc09489d-a1"
+}

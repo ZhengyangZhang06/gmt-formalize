@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.two_dim_cone_density-a1.density_locally_constant-a1.light_disc-a1.arc_point_bounds-a1",
+  "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.two_dim_cone_density-a1.density_locally_constant-a1.light_disc-a1",
+  "depth": 6,
+  "title": "Points of a unit great-circle arc are unit vectors within arc length of the start",
+  "statement": "Let P ∈ ℕ, let z, e ∈ ℝ^P with ‖z‖ = 1, ‖e‖ = 1 and ⟨z, e⟩ = 0, and let φ ∈ ℝ with φ ≥ 0. Then ‖cos φ · z + sin φ · e‖ = 1 and ‖cos φ · z + sin φ · e − z‖ ≤ φ.",
+  "lean_statement": "∀ (P : ℕ) (z e : Euclid P) (φ : ℝ), ‖z‖ = 1 → ‖e‖ = 1 → inner ℝ z e = 0 → 0 ≤ φ → ‖Real.cos φ • z + Real.sin φ • e‖ = 1 ∧ ‖Real.cos φ • z + Real.sin φ • e - z‖ ≤ φ",
+  "lean_name": "idtp_tdc_dlc_ld_arc_point_bounds",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-541cde9c3f-a1"
+}

@@ -1,0 +1,102 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.dimension_reduction_results-a1.threshold_reduction-a1`
+- Child DAG node: `root.dimension_reduction_results-a1.threshold_reduction-a1.blowup_calculus-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: the dilation identities used throughout the parent proof (step 1: "under any dilation μ_{η_{y,λ#}A} = λ^{−n}(η_{y,λ})_#μ_A"; step 2(c),(e): η_{y,λ′}∘η_{x_i,λ_i} = η_{x_i+λ_iy,λ_iλ′} and A_{k,i}(ω) = (η_{x_i,s_i#}T′)(η_{y,λ_k}^#ω)), proved here from the definitions of blowUp (Simon 6.2.23), massOn (6.2.5) and currentEval. Part (i) is proved directly in step 5 by the correspondence of admissible forms. (The same identity in image form, (blowUp T x λ).massOn (dilation x λ '' W) = ofReal(λ⁻¹ⁿ)·T.massOn W, is the comparator-accepted declaration Submission.dtc_blowUp_massOn_image of node root.density_and_tangent_cones-a1.blowup_scaling-a1.mass_scaling-a1. It is a reading reference only, not a dependency of this child; the numbered proof is self-contained.)
+1. (Facts about η and η^#.) η is an affine bijection of ℝ^P with inverse η⁻¹(q) = x + λq; both maps are homeomorphisms, and η⁻¹(B_ρ(w)) = B_{λρ}(x + λw). For an n-form ω and a point p, multilinearity gives (η^#ω)(p)(v_1, …, v_n) = ω(η p)(λ⁻¹v_1, …, λ⁻¹v_n) = λ^{−n}·ω(η p)(v_1, …, v_n), i.e. (η^#ω)(p) = λ^{−n}ω(η(p)). Consequently:
+(a) (η^#ω)(p) = 0 iff ω(η(p)) = 0. So support(η^#ω) = η⁻¹(support ω), and since η is a homeomorphism, tsupport(η^#ω) = η⁻¹(tsupport ω).
+(b) Write (η⁻¹)^#β for the pull-back by η⁻¹, (η⁻¹)^#β(q) = β(x + λq)∘(λ·id), which is affinePullbackForm (λ·id) x β. Pull-back is contravariant: affinePullbackForm L₁ b₁ (affinePullbackForm L₂ b₂ ω) = affinePullbackForm (L₂∘L₁) (b₂ + L₂b₁) ω, by evaluating both sides at p. In particular η^#((η⁻¹)^#β) = β and (η⁻¹)^#(η^#ω) = ω.
+(c) Affine pull-backs preserve C^∞ forms (affinePullbackForm_isSmoothForm), and η and η⁻¹ are proper. By (a) and (b), IsTestForm(η^#ω) ↔ IsTestForm(ω).
+(d) covectorEuclideanNorm((η^#ω)(p)) = λ^{−n}·covectorEuclideanNorm(ω(η(p))), because all coordinate coefficients of the covector are multiplied by λ^{−n}.
+2. (Unfolding blowUp.) By definition, blowUp T x λ = (T.restrictDomain h).affinePushforward (dilationCLM P λ) (−λ⁻¹x) hproper, where the restricted domain η⁻¹(η(U)) equals U. Hence for ω ∈ 𝒟ⁿ(η(U)) (TestFormOn (dilation x λ '' U) n), (blowUp T x λ)(ω) = T(η^#ω). Here η^#ω is regarded as an element of TestFormOn U n, since tsupport η^#ω = η⁻¹(tsupport ω) ⊆ η⁻¹(η(U)) = U (affinePushforward_apply, restrictDomain_apply, testFormOnInclusion_coe; currents applied to equal underlying forms agree by proof irrelevance).
+3. (Proof of (ii).) Suppose ω is a test form with tsupport ω ⊆ η(U). By 1(a),(c), η^#ω is a test form with tsupport ⊆ U, so by step 2 and the definition of currentEval both sides equal T(η^#ω). Otherwise, either ω is not a test form, and then neither is η^#ω (1(c)); or tsupport ω ⊄ η(U), and then tsupport η^#ω = η⁻¹(tsupport ω) ⊄ U (η is bijective). In both cases both sides are 0.
+4. (Proof of (iii).) Let η₁ := dilation x λ, η₂ := dilation y μ and η₃ := dilation (x + λy) (λμ). Then η₂∘η₁ = η₃, since μ⁻¹(λ⁻¹(p − x) − y) = (λμ)⁻¹(p − x − λy). By the composition rule 1(b), η₁^#(η₂^#ω) = η₃^#ω as forms: the linear parts are μ⁻¹λ⁻¹·id = (λμ)⁻¹·id and the translations agree by the displayed identity. Applying (ii) twice gives
+currentEval(blowUp (blowUp T x λ) y μ, ω) = currentEval(blowUp T x λ, η₂^#ω) = currentEval(T, η₁^#η₂^#ω) = currentEval(T, η₃^#ω) = currentEval(blowUp T (x + λy) (λμ), ω).
+5. (Proof of (i).) Let W ⊆ ℝ^P and write W′ := η⁻¹(W) = dilation x λ ⁻¹' W. By definition (SimonGMT massOn), M_W(blowUp T x λ) is the supremum in [0, ∞] of ofReal((blowUp T x λ)(ω)) over the admissible set 𝒜 := massAdmissibleOn (η(U)) n W = {ω ∈ 𝒟ⁿ(η(U)) : tsupport ω ⊆ W, covectorEuclideanNorm(ω(q)) ≤ 1 for all q}, and M_{W′}(T) is the supremum of ofReal(T(β)) over ℬ := massAdmissibleOn U n W′ = {β ∈ 𝒟ⁿ(U) : tsupport β ⊆ W′, covectorEuclideanNorm(β(p)) ≤ 1 for all p}.
+(a) Φ(ω) := λⁿ·η^#ω maps 𝒜 into ℬ. By 1(a), 1(c) and step 2, η^#ω is a test form with tsupport η^#ω = η⁻¹(tsupport ω) ⊆ η⁻¹(W) ∩ η⁻¹(η(U)) = W′ ∩ U, so Φ(ω) ∈ 𝒟ⁿ(U) and tsupport Φ(ω) ⊆ W′. By 1(d), covectorEuclideanNorm(Φ(ω)(p)) = λⁿ·λ^{−n}·covectorEuclideanNorm(ω(η(p))) ≤ 1.
+(b) Ψ(β) := λ^{−n}·(η⁻¹)^#β maps ℬ into 𝒜. The map η⁻¹(q) = x + λq is a proper affine bijection with linear part λ·id, so (η⁻¹)^#β(q) = β(x + λq)∘(λ·id) = λⁿβ(η⁻¹(q)) is smooth, tsupport (η⁻¹)^#β = η(tsupport β) is compact and contained in η(W′) ∩ η(U) ⊆ W ∩ η(U), and covectorEuclideanNorm(Ψ(β)(q)) = λ^{−n}·λⁿ·covectorEuclideanNorm(β(η⁻¹(q))) ≤ 1 (the computation of 1(d) with λ replaced by λ⁻¹).
+(c) By 1(b), η^#((η⁻¹)^#β) = β and (η⁻¹)^#(η^#ω) = ω, so Φ(Ψ(β)) = β and Ψ(Φ(ω)) = ω: Φ is a bijection 𝒜 → ℬ.
+(d) For ω ∈ 𝒜, step 2 and linearity give (blowUp T x λ)(ω) = T(η^#ω) = λ^{−n}·T(Φ(ω)). Hence, by (c), {ofReal((blowUp T x λ)(ω)) : ω ∈ 𝒜} = {ofReal(λ^{−n}·T(β)) : β ∈ ℬ} = {ofReal(λ^{−n})·ofReal(T(β)) : β ∈ ℬ}, using ofReal(ab) = ofReal(a)·ofReal(b) for a ≥ 0.
+(e) Taking suprema, and using that multiplication by the finite constant ofReal(λ^{−n}) commutes with suprema in [0, ∞] (ENNReal.mul_sSup, or ENNReal.mul_iSup), M_W(blowUp T x λ) = ofReal(λ^{−n})·M_{W′}(T). Since λ^{−n} = (λ⁻¹)ⁿ, this is (blowUp T x λ).massOn W = ofReal(λ⁻¹ⁿ)·T.massOn (dilation x λ ⁻¹' W), which is (i). It holds for every W ⊆ ℝ^P, open or not, and for every U.
+6. Parts (i), (ii) and (iii) are proved in steps 5, 3 and 4. ∎
+
+## Key steps
+
+1. η^#ω(p) = λ^{−n}ω(η(p)); hence tsupport η^#ω = η⁻¹(tsupport ω), test forms correspond, the coefficient norm scales by λ^{−n}, and affine pull-backs compose contravariantly.
+2. Unfolding blowUp (restrictDomain + affinePushforward) gives (η_{x,λ#}T)(ω) = T(η^#ω) for ω ∈ 𝒟ⁿ(η(U)); case analysis on the currentEval guard proves (ii).
+3. (iii) follows from (ii) applied twice and η_{y,μ}∘η_{x,λ} = η_{x+λy,λμ}.
+4. (i): ω ↦ λⁿη^#ω is a bijection from the admissible forms of M_W(η_{x,λ#}T) onto those of M_{η⁻¹(W)}(T), with inverse β ↦ λ^{−n}(η⁻¹)^#β, and (η_{x,λ#}T)(ω) = λ^{−n}T(λⁿη^#ω); multiplication by ofReal(λ^{−n}) commutes with suprema.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json; git rev-parse HEAD; git -C .lake/packages/mathlib rev-parse HEAD; git -C .lake/packages/simongmt rev-parse HEAD`
+- `sha256sum GMT/Ch07/Submission.lean GMT/Ch07/Contract.lean .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `grep -n 'theorem hausdorffMeasure_image_le' <snapshot>/mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean`
+- `grep -n 'addHaarScalarFactor_volume_hausdorffMeasure_ne_zero\|theorem euclideanHausdorffMeasure_def' <snapshot>/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean`
+- `rg -c dimred_tr_ <snapshot>/project (exit 1, no match); rg -l dimred_tr_ GMT .lake/packages/simongmt/Poincare --glob '*.lean' (exit 1, no match)`
+- `grep -n 'def HasApproximateTangentSpaceAt' -A 14 and grep -n 'def blowUpMap' -A 5 .lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `sed -n 85,125p .lake/packages/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean (VanishesOn, zeroRegion, support)`
+- `python3 inspection of dag.json: status, candidate_commit and lean_statement of the selected node, of its registered dependencies im_mass_measure, monotonicity and moving_blowups, of root.abstract_dimension_reduction-a1 and of the six reused nodes; string comparison of the children's leading premises with these frozen types`
+- `python3 /tmp/tr-a7/scripts/check_reuse_types.py dag.json (git show <candidate>:GMT/Ch07/Submission.lean, declared type vs dag.json up to whitespace, sorry occurrences); git cat-file -e <candidate>^{commit}; isolated-comparator-result.json and comparator-v1.log of the six reused nodes`
+- `python3 /tmp/tr-a7/scripts/graph_check.py decomposition-v6.json dag.json 5000 12 (replica of _dependency_problem, _existing_lean_name_problem and the max_nodes bound)`
+- `lake env lean /tmp/tr-a7/lean/Types.lean; lake env lean /tmp/tr-a7/lean/Assembly.lean; lake env lean /tmp/tr-a7/lean/TangentCheck.lean`
+- `python3 reading of decomposition-v1..v6.json, decomposition-audit-v*.json, decomposition-review-receipt-v*.json and decomposition-scope-v*.json of the selected node; grep -l 'threshold_reduction' cluster-state/logs/gmt-ch07/*.log; max_nodes in .humanize/swarm-configs/9619fab3de46466e954c3c0e22455dff.json and 53f9bac0ca76443b9b296465895cebc9.json`
+- `gh api repos/humanfia/math-lean-flow/contents/_recursive_lean/{runtime,store,github_runtime,decomposition_scope}.py?ref=feature/humanize-api-update-claude; grep -n '_decompose\|_solve_children\|_existing_lean_name_problem\|_overlay_accepted_children\|_reference_use_problem\|def ensure' on the fetched copies`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-threshold-reduction-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-threshold-reduction-a1/decomposition-v6.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-threshold-reduction-a1/decomposition-audit-v6.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-threshold-reduction-a1/decomposition-review-receipt-v5.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-threshold-reduction-a1/decomposition-scope-v6.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-abstract-dimension-reduction-a1/isolated-comparator-result.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-stationary-of-minimizing-a1/isolated-comparator-result.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-density-a1/isolated-comparator-result.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-cone-a1/isolated-comparator-result.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-half-space-cone-lies-in-boundary-a1-cone-measure-homogeneous-a1/isolated-comparator-result.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-scaling-a1-rep-pushforward-a1/isolated-comparator-result.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/swarm-configs/9619fab3de46466e954c3c0e22455dff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/swarm-configs/53f9bac0ca76443b9b296465895cebc9.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/logs/gmt-ch07/9619fab3de46466e954c3c0e22455dff.log`
+- `/tmp/tr-a7/lean/Types.lean`
+- `/tmp/tr-a7/lean/Assembly.lean`
+- `/tmp/tr-a7/lean/TangentCheck.lean`
+- `/tmp/tr-a7/scripts/graph_check.py`
+- `/tmp/tr-a7/scripts/check_reuse_types.py`
+- `/tmp/tr7-mlf/runtime.py`
+
+Pins match. The snapshot manifest records project b4d606d and mathlib 25730c7c, equal to the workspace HEAD and to .lake/packages/mathlib; simongmt is 2b36630 as pinned in lakefile.toml. The snapshot Contract.lean, the workspace Contract.lean and Submission.lean are byte-identical (sha256 e4148e7f…).
+
+Library facts the children use exist where cited:
+- The snapshot mathlib has LipschitzWith.hausdorffMeasure_image_le (Hausdorff.lean:745), used in the parent assembly.
+- It has addHaarScalarFactor_volume_hausdorffMeasure_ne_zero (Measure.lean:96), used for the normalization Hⁿ = c_n·μH[n].
+- SimonGMT's HasApproximateTangentSpaceAt (Rectifiable.lean:102) and support = U ∖ zeroRegion are as the children's proofs use them. zeroRegion is a union of open sets with compact closure in U on which the current vanishes (CurrentLocalEquality.lean:99–117).
+
+No dimred_tr_ identifier exists in the snapshot project, GMT, SimonGMT or dag.json.
+
+The six reused declarations are accepted, and their candidate commits are present. Their dag.json types equal the children's lean_statements and the candidates' declarations (up to whitespace). Each candidate's only sorry is the frozen main_theorem, and each isolated comparator result passed.
+
+Lean checks:
+- All 12 child types elaborate after import GMT.Ch07.Submission.
+- The parent assembly compiles from exactly the three registered dependencies, abstract_dimension_reduction and the three new children it uses, with no sorryAx.
+- The tangent child compiles from exactly its four reused siblings.
+
+The graph and name replica passes against the current 2327-node DAG, with room for 6 new nodes under max_nodes = 5000.
+
+Attempt 6 was audited acceptable. It failed activation only because the old worker's max_nodes was 1000, below the DAG size, so it is resubmitted unchanged.

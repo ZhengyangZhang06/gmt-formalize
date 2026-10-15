@@ -1,0 +1,66 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "idtp_cse_fa_|structure IMRep|def IMRep.measure|def approxTangentPlane|idtp_carrier_area_formula|imrep_approxTangent_starProjection_aesm",
+        "volume_preserving_toLp|volume_preserving_ofLp|volume_preserving_finTwoArrow|aemeasurable_comp_iff|lintegral_comp_emb|theorem comp_fderiv|setLIntegral_withDensity_eq_setLIntegral_mul_non_measurable|sum_sq_inner_left|sum_inner_mul_inner|inner_starProjection_left_eq_right|eq_starProjection_of_mem_of_inner_eq_zero|contDiffAt_norm|hasStrictFDerivAt_norm_sq|HasFDerivAt.arctan|isOpen_inter_preimage|theorem det_fin_two",
+        "idtp_cse_fa_",
+        "git -C .lake/packages/mathlib rev-parse HEAD",
+        "git -C .lake/packages/simongmt rev-parse HEAD",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/fa-independent-audit-cee8ee6e/Contracts.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/fa-decomp-7c1e/check/Parent.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/fa-decomp-7c1e/check/C1.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/fa-decomp-7c1e/verify/C2.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/fa-decomp-7c1e/check/C3.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Submission.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Projection/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Calculus.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Equiv.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Haar/InnerProductSpace.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Constructions/Pi.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Dynamics/Ergodic/MeasurePreserving.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Map.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/WithDensity.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-2d6a9d83f4/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-2d6a9d83f4/decomposition-v1.json",
+        "/tmp/fa-independent-audit-cee8ee6e/Contracts.lean",
+        "/tmp/fa-decomp-7c1e/check/C1.lean",
+        "/tmp/fa-decomp-7c1e/verify/C2.lean",
+        "/tmp/fa-decomp-7c1e/check/C3.lean",
+        "/tmp/fa-decomp-7c1e/check/Parent.lean",
+        "/tmp/fa-independent-audit-cee8ee6e/dorag_aa_ae_finrank_approxTangentPlane.lean",
+        "/tmp/fa-independent-audit-cee8ee6e/cbr_imRep_measure_basic.lean",
+        "/tmp/fa-independent-audit-cee8ee6e/imrep_approxTangent_starProjection_aesm.lean"
+      ],
+      "conclusion": "The split is appropriate and establishes the selected fibre-area contract. Pinned revisions match, and workspace definitions are byte-identical to the snapshot. All child types are standalone one-line propositions and elaborate without child implementations. All names are bare, unreserved identifiers; searches found no collisions outside this node's proposal records. Dependency traversal found no cycles or return paths to the selected parent. Independent compiler runs checked children 1 and 2, child 3 relative to the exact pending carrier-area contract, and assembly of the exact frozen parent from the proposed children and accepted prerequisites. Reused prerequisite types match their comparator-accepted contracts. All checked proofs, including the reused prerequisites, depend only on propext, Classical.choice and Quot.sound."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "sector_open_smooth",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and Lean proposition agree, including arbitrary Q, a, e and s. The proof establishes nonvanishing denominators and x ≠ 0 on Ω before applying smoothness, then proves openness by intersecting the appropriate open sets. Both conclusions follow without additional hypotheses or circular dependencies."
+    },
+    {
+      "key": "polar_jacobian",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All geometric hypotheses match the exact Lean type. The proof correctly derives the projection and derivative formulas, expands the two-dimensional Gram determinant, and applies Parseval using radial tangency. Positivity justifies division and the final square root. Matrix.of supplies the intended matrix construction. The supplied proof is complete and independently kernel-checked."
+    },
+    {
+      "key": "area_formula_prod",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose includes every hypothesis of the exact Lean proposition. The coordinate equivalence preserves product Lebesgue measure; its derivative identity, fibre correspondence, and measurable-embedding transport establish both conclusions. The proof uses the exact existing carrier-area contract, explicitly declared upstream and still pending, with no circular dependency. It requires no further proof planning."
+    }
+  ],
+  "required_changes": []
+}

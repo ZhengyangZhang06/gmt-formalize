@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_off_null_set-a1.cone_class-a1.tangent_measures-a1.blowup_integrals-a1",
+  "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_off_null_set-a1.cone_class-a1.tangent_measures-a1",
+  "depth": 6,
+  "title": "Blow-up integrals of compactly supported functions: eventual localization to an open neighbourhood, and eventual vanishing at a null ball (parent steps 1–2)",
+  "statement": "Let P, n ∈ ℕ. For a measure ν on ℝ^P, a ∈ ℝ^P and s > 0, write ν^{a,s} := ofReal(s^{−n})•ν.map(dilation a s), where dilation a s (y) = s⁻¹(y − a). Let λ_j > 0 (j ∈ ℕ) with λ_j → 0, and let f : ℝ^P → ℝ have compact support. No continuity or integrability of f is assumed; integrals are Bochner integrals. (a) If μ is a measure on ℝ^P, G ⊆ ℝ^P is open and p ∈ G, then ∫ f d(μ⌞G)^{p,λ_j} = ∫ f dμ^{p,λ_j} for all sufficiently large j. (b) If μ is a measure on ℝ^P, p ∈ ℝ^P, ε > 0 and μ(B_ε(p)) = 0, then ∫ f dμ^{p,λ_j} = 0 for all sufficiently large j.",
+  "lean_statement": "(∀ (P n : ℕ) (μ : Measure (Euclid P)) (G : Set (Euclid P)) (p : Euclid P) (lams : ℕ → ℝ) (f : Euclid P → ℝ), IsOpen G → p ∈ G → (∀ j, 0 < lams j) → Tendsto lams atTop (𝓝 0) → HasCompactSupport f → ∀ᶠ j in atTop, ∫ x, f x ∂(ENNReal.ofReal ((lams j)⁻¹ ^ n) • (μ.restrict G).map (dilation p (lams j))) = ∫ x, f x ∂(ENNReal.ofReal ((lams j)⁻¹ ^ n) • μ.map (dilation p (lams j)))) ∧ ∀ (P n : ℕ) (μ : Measure (Euclid P)) (p : Euclid P) (ε : ℝ) (lams : ℕ → ℝ) (f : Euclid P → ℝ), 0 < ε → μ (ball p ε) = 0 → (∀ j, 0 < lams j) → Tendsto lams atTop (𝓝 0) → HasCompactSupport f → ∀ᶠ j in atTop, ∫ x, f x ∂(ENNReal.ofReal ((lams j)⁻¹ ^ n) • μ.map (dilation p (lams j))) = 0",
+  "lean_name": "idtp_fons_cc_tm_blowup_integrals",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-8dcb296910-a1"
+}

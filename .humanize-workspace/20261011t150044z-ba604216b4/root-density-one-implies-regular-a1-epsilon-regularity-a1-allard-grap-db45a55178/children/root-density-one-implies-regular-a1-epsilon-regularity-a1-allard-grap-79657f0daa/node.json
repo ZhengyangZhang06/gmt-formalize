@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.graph_c1-a1.graph_tangent_ae-a1",
+  "parent_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.graph_c1-a1",
+  "depth": 5,
+  "title": "Tangent planes and decay planes along the Lipschitz graph (parent step 3; Simon 5.(10))",
+  "statement": "Let n, k ∈ ℕ, U, W ⊆ ℝ^{n+k} with W open and W ⊆ U, R ∈ IMRep U n, μ := R.measure, M := R.carrier, κ ∈ ℝ, ι : ℝⁿ → ℝ^{n+k}, ι' : ℝᵏ → ℝ^{n+k} linear isometries with ⟨ιv, ι'w⟩ = 0, f : ℝⁿ → ℝᵏ with |f(v) − f(w)| ≤ ¼|v − w| and f(0) = 0, z ∈ ℝ^{n+k}, a > 0, Φ(v) := z + ιv + ι'f(v), graph Df(v) := range(ι + ι'∘Df(v)) (Df = fderiv ℝ f). Assume (hP) x ↦ p_x is μ-a.e. strongly measurable; (hdens) unitBallVolume n ≤ (e^{κt}/tⁿ)μ(B_t(y)) for y ∈ spt μ, t > 0, B_t(y) ⊆ W; (hnull) Hⁿ((spt μ ∩ W) ∖ M) = 0; (htan) for Hⁿ⌞(M ∩ W)-a.e. x and every v with x = Φ(v), f is differentiable at v and approxTangentPlane n M x = graph Df(v); B_a(z) ⊆ W; spt μ ∩ B_a(z) = Φ(ℝⁿ) ∩ B_a(z). Then for Lⁿ-a.e. v with |v| < 4a/5: f is differentiable at v, approxTangentPlane n M Φ(v) = graph Df(v), and every subspace S such that, for some s₀ > 0 and K ∈ ℝ, ∫_{B_s(Φ(v))}|p_x − p_S|²dμ ≤ ofReal(Ks^{n+1}) for all s ∈ (0, s₀], equals graph Df(v).",
+  "lean_statement": "∀ (n k : ℕ) (U W : Set (Euclid (n + k))) (R : IMRep U n) (κ : ℝ) (ι : Euclid n →ₗᵢ[ℝ] Euclid (n + k)) (ι' : Euclid k →ₗᵢ[ℝ] Euclid (n + k)) (f : Euclid n → Euclid k) (z : Euclid (n + k)) (a : ℝ), IsOpen W → W ⊆ U → AEStronglyMeasurable (fun x => (approxTangentPlane n R.carrier x).starProjection) R.measure → (∀ y ∈ R.measure.support, ∀ t : ℝ, 0 < t → closedBall y t ⊆ W → unitBallVolume n ≤ ENNReal.ofReal (Real.exp (κ * t) / t ^ n) * R.measure (closedBall y t)) → μHE[n] ((R.measure.support ∩ W) \\ R.carrier) = 0 → (∀ᵐ x ∂(μHE[n].restrict (R.carrier ∩ W)), ∀ v : Euclid n, x = z + ι v + ι' (f v) → DifferentiableAt ℝ f v ∧ approxTangentPlane n R.carrier x = LinearMap.range (ι.toLinearMap + ι'.toLinearMap ∘ₗ (fderiv ℝ f v).toLinearMap)) → (∀ v w, inner ℝ (ι v) (ι' w) = 0) → (∀ v w, ‖f v - f w‖ ≤ 1 / 4 * ‖v - w‖) → f 0 = 0 → 0 < a → closedBall z a ⊆ W → R.measure.support ∩ closedBall z a = range (fun v => z + ι v + ι' (f v)) ∩ closedBall z a → ∀ᵐ v ∂volume, v ∈ ball (0 : Euclid n) (4 * a / 5) → DifferentiableAt ℝ f v ∧ approxTangentPlane n R.carrier (z + ι v + ι' (f v)) = LinearMap.range (ι.toLinearMap + ι'.toLinearMap ∘ₗ (fderiv ℝ f v).toLinearMap) ∧ ∀ (S : Submodule ℝ (Euclid (n + k))) (s₀ K : ℝ), 0 < s₀ → (∀ s : ℝ, 0 < s → s ≤ s₀ → ∫⁻ x in closedBall (z + ι v + ι' (f v)) s, ENNReal.ofReal (∑ i : Fin (n + k), ‖(approxTangentPlane n R.carrier x).starProjection (EuclideanSpace.single i (1 : ℝ)) - S.starProjection (EuclideanSpace.single i (1 : ℝ))‖ ^ 2) ∂R.measure ≤ ENNReal.ofReal (K * s ^ (n + 1))) → S = LinearMap.range (ι.toLinearMap + ι'.toLinearMap ∘ₗ (fderiv ℝ f v).toLinearMap)",
+  "lean_name": "dorag_gc_graph_tangent_ae",
+  "depends_on": [
+    "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.graph_c1-a1.graph_pushforward-a1",
+    "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.graph_c1-a1.decay_plane-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.graph_c1-a1.graph_pushforward-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.graph_c1-a1.decay_plane-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-79657f0daa-a1"
+}

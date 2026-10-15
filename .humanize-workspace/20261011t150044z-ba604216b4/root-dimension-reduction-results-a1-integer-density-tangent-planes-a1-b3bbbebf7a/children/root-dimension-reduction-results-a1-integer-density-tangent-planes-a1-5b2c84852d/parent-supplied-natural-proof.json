@@ -1,0 +1,57 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "python3 scan of dag.json: selected node rotation_conservation-a1 (depth 4, depends_on []), parent cone_sector_endpoint_density-a1 and its 11 children (lean_name/status/depends_on/lean_statement)",
+        "python3 scan of dag.json for lean_name in {imrep_approxTangent_starProjection_aesm, dsmc_firstVariation_eq_integral} (both accepted) and for lean_statements containing tangentialDivergence, smoothTransition, fderiv or LinearMap.trace",
+        "grep -c idtp_cse_rc_ dag.json; grep -rl idtp_cse_rc_ nodes/ local-references/123e8435b4a2469b/project; grep -rl --include=*.lean idtp_cse_rc_ .swarm-worktrees/*/gmt-ch07/GMT (all no match)",
+        "git show 1d65cf6d4d473fe727cd0ad43b45f3adfea87280:GMT/Ch07/Submission.lean (proof base = bare contract); cmp local-references/123e8435b4a2469b/project/GMT/Ch07/Submission.lean GMT/Ch07/Submission.lean (identical)",
+        "grep -rn 'trace_smulRight|trace_comp_comm|trace_eq_sum_inner' Mathlib; grep smoothTransition Mathlib/Analysis/SpecialFunctions/SmoothTransition.lean",
+        "grep -rn 'inner_starProjection_left_eq_right|eq_starProjection_of_mem_of_inner_eq_zero|norm_sq_eq_add_norm_sq_starProjection|starProjection_orthogonal_val|starProjection_eq_sum_rankOne' Mathlib/Analysis/InnerProductSpace",
+        "grep -rn 'HasFDerivAt.smul|HasFDerivAt.mul|HasFDerivAt.pow|hasDerivAt_inv|HasFDerivAt.div|hasStrictFDerivAt_norm_sq|contDiffAt_norm|arctan_strictMono|arctan_one|hasDerivAt_arctan|contDiff_arctan|support_deriv_subset|notMem_tsupport_iff_eventuallyEq|pi_gt_three|two_le_pi|eq_of_le_of_finrank_eq|finrank_span_eq_card' Mathlib",
+        "grep -rl 'theorem Submission.fvmb_trace_starProjection_comp_eq_sum_inner' .swarm-worktrees/*/gmt-ch07/GMT/Ch07 (accepted helper; Mathlib's trace_eq_sum_inner suffices instead)",
+        "cmp of every cited Mathlib file between local-references/123e8435b4a2469b/mathlib and .lake/packages/mathlib (all identical)",
+        "lake env lean /tmp/rc_decomp/Stmts.lean (4 child types elaborate; hypothesis-only parent assembly; #print axioms parent_from_children: propext, Classical.choice, Quot.sound)",
+        "lake env lean /tmp/rc_decomp/Full.lean (all 4 children proved without sorry; parent_given_external from children + external lemma types; #print axioms: propext, Classical.choice, Quot.sound)"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-b3bbbebf7a/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-b3bbbebf7a/parent-supplied-plan.md",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Trace.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Trace.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/SpecialFunctions/SmoothTransition.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Projection/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Mul.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Pow.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/Deriv/Inv.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Calculus.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/SpecialFunctions/Trigonometric/Arctan.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/SpecialFunctions/Trigonometric/ArctanDeriv.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/Deriv/Support.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/FiniteDimensional/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Dimension/Constructions.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/.swarm-worktrees/680526641c473b4bafe0/gmt-ch07/GMT/Ch07/Submission.lean",
+        "/tmp/rc_decomp/Stmts.lean",
+        "/tmp/rc_decomp/Small.lean",
+        "/tmp/rc_decomp/Test.lean",
+        "/tmp/rc_decomp/Full.lean"
+      ],
+      "conclusion": "The frozen opens and definitions of the snapshot and workspace Submission.lean (GMT.Ch07) are the compiler authority, with mathlib 25730c7c; the snapshot's Mathlib files equal .lake/packages/mathlib byte for byte. The proof base 1d65cf6 holds only the contract. The external lemmas imrep_approxTangent_starProjection_aesm and dsmc_firstVariation_eq_integral are accepted DAG nodes whose types match their use in the parent assembly. The children need no external lemma: they use only Mathlib. Relevant declarations exist at this pin: LinearMap.trace_smulRight, trace_comp_comm', trace_eq_sum_inner, Real.smoothTransition.{contDiffAt,one_of_one_le,zero_of_nonpos}, Submodule.{eq_starProjection_of_mem_of_inner_eq_zero,inner_starProjection_left_eq_right,norm_sq_eq_add_norm_sq_starProjection,starProjection_orthogonal_val}, HasFDerivAt.{fun_smul,fun_mul,pow}, hasDerivAt_inv, hasStrictFDerivAt_norm_sq, contDiffAt_norm, Real.{arctan_strictMono,arctan_one,arctan_neg,hasDerivAt_arctan,contDiff_arctan,two_le_pi}, support_deriv_subset and notMem_tsupport_iff_eventuallyEq. Some names are absent at this pin: HasFDerivAt.div for E -> R, HasFDerivAt.norm and an imported Real.pi_gt_three; the child proofs avoid them. The accepted helper fvmb_trace_starProjection_comp_eq_sum_inner is not needed. The four idtp_cse_rc_* names are unreserved. All four types elaborate. All four children are kernel-checked, and the exact parent type follows from them plus the two external lemma types with standard axioms only."
+    }
+  ],
+  "proof": "Source: steps 1–2 of the parent proof (Simon Ch. 4, 2.3: div_M X(x) = trace(p_{T_xM} ∘ DX(x))).\nConventions: ⟨·,·⟩ is the symmetric real inner product of ℝ^P; T := approxTangentPlane n M x; p := T.starProjection, the orthogonal projection onto T; A y := ⟨y,a⟩e − ⟨y,e⟩a; X(y) := g(y)·A y.\n1. (A is linear and skew.) A is the continuous linear map (innerSL ℝ a).smulRight e − (innerSL ℝ e).smulRight a, using ⟨a,y⟩ = ⟨y,a⟩. For every w ∈ ℝ^P, ⟨w, A w⟩ = ⟨w,a⟩⟨w,e⟩ − ⟨w,e⟩⟨w,a⟩ = 0.\n2. (Derivative of X.) g has derivative Dg(x) at x, and the linear map A is its own derivative. By the product rule for a scalar function times a vector function (HasFDerivAt.fun_smul), X is differentiable at x with DX(x) = g(x)·A + Dg(x)(·)·A x. That is, DX(x)u = g(x)·A u + Dg(x)(u)·A x for all u.\n3. (Splitting the trace.) By definition, tangentialDivergence n M X x = tr(p ∘ DX(x)). Since p is linear, p ∘ DX(x) = g(x)·(p ∘ A) + R with R u := Dg(x)(u)·p(A x). By linearity of the trace, tr(p ∘ DX(x)) = g(x)·tr(p ∘ A) + tr R.\n4. (Rank-one term.) R is the rank-one map u ↦ L(u)·w with L := Dg(x) and w := p(A x), and its trace is L(w) (LinearMap.trace_smulRight). Hence tr R = Dg(x)(p(A x)).\n5. (tr(p ∘ A) = 0.) p is idempotent: for every u, p u ∈ T and p fixes T, so p(p u) = p u (Submodule.starProjection_apply_mem, Submodule.starProjection_eq_self_iff). Hence tr(p∘A) = tr(p∘(p∘A)), which equals tr((p∘A)∘p) by cyclicity of the trace (LinearMap.trace_comp_comm'). Let (b_i) be an orthonormal basis of ℝ^P (stdOrthonormalBasis). Then tr((p∘A)∘p) = Σ_i ⟨b_i, p(A(p b_i))⟩ (LinearMap.trace_eq_sum_inner). Since p is self-adjoint (Submodule.inner_starProjection_left_eq_right), this is Σ_i ⟨p b_i, A(p b_i)⟩, which is 0 by step 1.\n6. (Conclusion.) tangentialDivergence n M X x = g(x)·0 + Dg(x)(p(A x)) = Dg(x)((approxTangentPlane n M x).starProjection(⟨x,a⟩e − ⟨x,e⟩a)). ∎",
+  "key_steps": [
+    "A y = ⟨y,a⟩e − ⟨y,e⟩a is a continuous linear map with ⟨w, A w⟩ = 0 for all w.",
+    "Product rule: DX(x) = g(x)·A + Dg(x)(·)·A x.",
+    "tr(p∘DX(x)) = g(x)·tr(p∘A) + tr(u ↦ Dg(x)(u)·p(Ax)), and the rank-one trace equals Dg(x)(p(Ax)).",
+    "tr(p∘A) = tr(p∘A∘p) = Σ_i ⟨p b_i, A p b_i⟩ = 0, by idempotence, cyclicity, self-adjointness and skewness."
+  ],
+  "unresolved": [],
+  "validation_notes": []
+}

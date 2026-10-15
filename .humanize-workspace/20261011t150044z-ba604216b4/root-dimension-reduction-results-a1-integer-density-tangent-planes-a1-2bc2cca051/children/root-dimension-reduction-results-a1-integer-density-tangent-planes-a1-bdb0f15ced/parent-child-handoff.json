@@ -1,0 +1,80 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "python3 scan of dag.json (key 'nodes'): lean_statement/status of fibre_count-a1 and its siblings stationary_radial-a1, fibre_area-a1, sector_points-a1, flux_density-a1, and of the accepted cross-branch lemma imrep_represents_support_eq_inter_measure_support",
+        "python3 scan of dag.json lean_name for idtp_cse_fc_planar_fibre_geometry|idtp_cse_fc_tsum_count_arith|idtp_cse_fc_fibre_pointwise|idtp_cse_fc_square_lintegral_lower|idtp_cse_fc_jacobian_upper (no match); grep -rl idtp_cse_fc run dir and nodes/*/decomposition-v*.json (no match); rg -c 'idtp_cse_' local-references/123e8435b4a2469b/project (no match)",
+        "python3 scan of accepted DAG lemmas for reusable planar/arctan/starProjection or tsum-counting facts (none applicable); search for an a.e.-support lemma (only imrep_represents_support_eq_inter_measure_support / dor_imrep_massOn_eq_measure_and_support, accepted)",
+        "rg -n 'theorem (eq_starProjection_of_mem_of_inner_eq_zero|starProjection_eq_self_iff|mem_iff_norm_starProjection|norm_starProjection_apply_le|finrank_span_eq_card|eq_of_le_of_finrank_eq|sum_lt_sum_of_nonempty|finite_const_le_of_tsum_ne_top|two_le_pi|arctan_tan|cos_arctan|sin_arctan|setLIntegral_mono_ae|setLIntegral_const|lintegral_indicator_le|ae_restrict_neBot)' local-references/123e8435b4a2469b/mathlib",
+        "rg -n 'support_mem_ae|mem_span_range_iff_exists_fun|lintegral_add_left|lintegral_indicator_const|volume_Ioo|prod_prod|volume_eq_prod' local-references/123e8435b4a2469b/mathlib/Mathlib",
+        "grep -rn 'mul_lt_mul_right|mul_le_mul_iff_left|mul_lt_mul_iff_left|mul_left_inj' .lake/packages/mathlib/Mathlib/Basic/ENNReal/Operations.lean; grep pi_gt_three (only in Mathlib/Analysis/Real/Pi/Bounds.lean, not imported by the contract)",
+        "diff GMT/Ch07/Submission.lean local-references/123e8435b4a2469b/project/GMT/Ch07/Submission.lean (identical)",
+        "lake env lean /tmp/fc_split_check/Stmts.lean (5 child types elaborate, sorry warnings only)",
+        "lake env lean /tmp/fc_split_check/Final.lean (5 children proved: axioms propext, Classical.choice, Quot.sound; parent idtp_cse_fibre_count_bound proved from the children plus verbatim stubs of the 4 siblings and the accepted support lemma)"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-2bc2cca051/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-2bc2cca051/parent-supplied-natural-proof.md",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-18ac87081c/decomposition-v2.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Projection/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Basic/ENNReal/BigOperators.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/InfiniteSum/ENNReal.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Dimension/Constructions.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/FiniteDimensional/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Finsupp/LinearCombination.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/SpecialFunctions/Trigonometric/Arctan.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/SpecialFunctions/Trigonometric/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Add.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Support.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Prod.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/mathlib/Mathlib/Basic/ENNReal/Operations.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/mathlib/Mathlib/Analysis/Real/Pi/Bounds.lean",
+        "/tmp/fc_split_check/Stmts.lean",
+        "/tmp/fc_split_check/Final.lean"
+      ],
+      "conclusion": "Pins and contract match. The workspace GMT/Ch07/Submission.lean is byte-identical to the snapshot project copy (project b4d606db1, mathlib 25730c7c). All Mathlib names cited in the child proofs exist at this pin. Real.pi_gt_three is not reachable from the contract imports, so Real.two_le_pi is used. mul_le_mul_right' is absent, so gcongr is used. No accepted DAG lemma already provides the planar projection/arctan facts, the ENNReal fibre-counting lemma, the rectangle lower bound or the Jacobian bound, so the 5 children are new. Their idtp_cse_fc_* names occur nowhere in dag.json, nodes/, GMT/ or the snapshot. The only cross-branch lemma used is the accepted Submission.imrep_represents_support_eq_inter_measure_support, in the parent assembly. All 5 child types elaborate in the frozen context and were fully proved with standard axioms only. The selected parent type was compiled from these children plus verbatim stubs of its 4 sibling prerequisites and the accepted support lemma."
+    }
+  ],
+  "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_sector_endpoint_density-a1.fibre_count-a1",
+  "child_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_sector_endpoint_density-a1.fibre_count-a1.fibre_pointwise-a1",
+  "subproblem": {
+    "key": "fibre_pointwise",
+    "title": "Pointwise fibre count: N(p) ≥ m, and on the sector side k ≤ m and k < m forces N(p) ≥ m + 1",
+    "statement": "Let P ∈ ℕ, R = (M, θ, ξ) ∈ IMRep(ℝ^P, 2) (M = R.carrier, θ = R.mult), Q a 2-dimensional linear subspace of ℝ^P, a, e ∈ Q with |a| = |e| = 1 and ⟨a, e⟩ = 0, s ∈ ℝ with 0 < s ≤ 1/4, m, k ∈ ℕ, and p = (p₁, p₂) ∈ ℝ × ℝ with |p₁ − 1| < s and |p₂| < s. Put π := Q.starProjection, f(x) := arctan(⟨x, e⟩/⟨x, a⟩), Ax := ⟨x, a⟩e − ⟨x, e⟩a, T_x := approxTangentPlane 2 M x, p_{T_x} := (T_x).starProjection (orthogonal projection onto T_x), w(x) := |p_{T_x}(Ax)|, Z_s := {x : ⟨x, a⟩ > 0, ||x| − 1| < s, |f(x)| < s, |x − πx| < s|x|}, F̃(x) := (|x|, f(x)), X(p) := M ∩ Z_s ∩ F̃⁻¹{p}, H(p) := Σ'_{x ∈ X(p)} θ(x)·ofReal(w(x)) and N(p) := Σ'_{x ∈ X(p)} θ(x) (tsums in [0, ∞] over the subtype). Assume H(p) = ofReal(m·p₁). Then m ≤ N(p); and if x_Q(p) := p₁(cos p₂·a + sin p₂·e) lies in M with θ(x_Q(p)) = k and T_{x_Q(p)} = Q, then k ≤ m, and k < m implies m + 1 ≤ N(p).",
+    "lean_statement": "∀ (P : ℕ) (R : IMRep (univ : Set (Euclid P)) 2) (Q : Submodule ℝ (Euclid P)) (a e : Euclid P) (s : ℝ) (m k : ℕ) (p : ℝ × ℝ), Module.finrank ℝ Q = 2 → a ∈ Q → e ∈ Q → ‖a‖ = 1 → ‖e‖ = 1 → inner ℝ a e = 0 → 0 < s → s ≤ 1 / 4 → |p.1 - 1| < s → |p.2| < s → ∑' x : ↥(R.carrier ∩ {x : Euclid P | 0 < inner ℝ x a ∧ |‖x‖ - 1| < s ∧ |Real.arctan (inner ℝ x e / inner ℝ x a)| < s ∧ ‖x - Q.starProjection x‖ < s * ‖x‖} ∩ (fun x : Euclid P => (‖x‖, Real.arctan (inner ℝ x e / inner ℝ x a))) ⁻¹' {p}), (R.mult x : ℝ≥0∞) * ENNReal.ofReal ‖(approxTangentPlane 2 R.carrier (x : Euclid P)).starProjection (inner ℝ (x : Euclid P) a • e - inner ℝ (x : Euclid P) e • a)‖ = ENNReal.ofReal ((m : ℝ) * p.1) → (m : ℝ≥0∞) ≤ ∑' x : ↥(R.carrier ∩ {x : Euclid P | 0 < inner ℝ x a ∧ |‖x‖ - 1| < s ∧ |Real.arctan (inner ℝ x e / inner ℝ x a)| < s ∧ ‖x - Q.starProjection x‖ < s * ‖x‖} ∩ (fun x : Euclid P => (‖x‖, Real.arctan (inner ℝ x e / inner ℝ x a))) ⁻¹' {p}), (R.mult x : ℝ≥0∞) ∧ ((p.1 • (Real.cos p.2 • a + Real.sin p.2 • e)) ∈ R.carrier → R.mult (p.1 • (Real.cos p.2 • a + Real.sin p.2 • e)) = k → approxTangentPlane 2 R.carrier (p.1 • (Real.cos p.2 • a + Real.sin p.2 • e)) = Q → k ≤ m ∧ (k < m → (m : ℝ≥0∞) + 1 ≤ ∑' x : ↥(R.carrier ∩ {x : Euclid P | 0 < inner ℝ x a ∧ |‖x‖ - 1| < s ∧ |Real.arctan (inner ℝ x e / inner ℝ x a)| < s ∧ ‖x - Q.starProjection x‖ < s * ‖x‖} ∩ (fun x : Euclid P => (‖x‖, Real.arctan (inner ℝ x e / inner ℝ x a))) ⁻¹' {p}), (R.mult x : ℝ≥0∞)))",
+    "lean_name": "idtp_cse_fc_fibre_pointwise",
+    "depends_on": [
+      "planar_geometry",
+      "count_arith"
+    ],
+    "natural_proof": "Source: parent steps 1, 3 and 4 at a single point p. Notation as in the statement; put t := p₁, α := p₂ and x₀ := x_Q(p) = t(cos α·a + sin α·e).\n1. (Ranges.) From |t − 1| < s ≤ 1/4 we get t > 1 − s ≥ 3/4 > 0. From |α| < s ≤ 1/4 and Real.pi ≥ 2 (`Real.two_le_pi`) we get |α| < 1/4 < 1 ≤ Real.pi/2.\n2. (Planar facts.) Apply sibling `Submission.idtp_cse_fc_planar_fibre_geometry` to Q, a, e. Part (a): for every subspace T (p_T := T.starProjection) and every x, |p_T(Ax)| ≤ |πx| ≤ |x|. With t > 0 and |α| < Real.pi/2 (step 1), part (b) gives ⟨x₀, a⟩ > 0, |x₀| = t, f(x₀) = α, πx₀ = x₀ and |π(Ax₀)| = t. Part (c): every x with ⟨x, a⟩ > 0, |x| = t, f(x) = α and x ≠ x₀ has |πx| < t.\n3. (Fibre points.) Let x ∈ X(p). Then x ∈ M; x ∈ Z_s, in particular ⟨x, a⟩ > 0; and F̃(x) = p, i.e. |x| = t and f(x) = α. By (a) with T := T_x: w(x) ≤ |πx| ≤ |x| = t.\n4. (Claim m ≤ N(p).) Apply sibling `Submission.idtp_cse_fc_tsum_count_arith` with ι := X(p) (the subtype), θ(x) := R.mult x, w as above, t and m. Its hypotheses hold: t > 0 (step 1); w(x) ≤ t for all x ∈ X(p) (step 3); and Σ'_{x ∈ X(p)} θ(x)·ofReal(w(x)) = H(p) = ofReal(m·t) (hypothesis). Its first conclusion is m ≤ N(p).\n5. (x₀ lies in the fibre.) Assume x₀ ∈ M, θ(x₀) = k and T_{x₀} = Q. By (b): ⟨x₀, a⟩ > 0; ||x₀| − 1| = |t − 1| < s; |f(x₀)| = |α| < s; and |x₀ − πx₀| = |0| = 0 < s·t = s|x₀| since s, t > 0. So x₀ ∈ Z_s. Also F̃(x₀) = (|x₀|, f(x₀)) = (t, α) = p. Hence x₀ ∈ X(p); let i₀ be the corresponding element of the subtype.\n6. (Hypotheses of the second conclusion.) θ(i₀) = k. Next, w(i₀) = |p_{T_{x₀}}(Ax₀)| = |π(Ax₀)| = t, using T_{x₀} = Q and (b). Every i ∈ X(p) lies in M, so θ(i) ≥ 1 (`R.mult_pos`). If i ≠ i₀ in the subtype, then i ≠ x₀ as points of ℝ^P. By step 3, ⟨i, a⟩ > 0, |i| = t and f(i) = α, so (c) gives |πi| < t, and therefore w(i) ≤ |πi| < t by (a).\n7. (Conclusion.) The second conclusion of `Submission.idtp_cse_fc_tsum_count_arith` (with i₀ and k) gives k ≤ m, and k < m ⟹ m + 1 ≤ N(p). Together with step 4 this proves the statement. ∎",
+    "proof_key_steps": [
+      "|p₁ − 1| < s ≤ 1/4 and |p₂| < s give t = p₁ > 0 and |α| = |p₂| < Real.pi/2.",
+      "Fibre points x satisfy |x| = t, f(x) = α and ⟨x,a⟩ > 0, so w(x) ≤ |πx| ≤ t (planar_geometry (a)).",
+      "count_arith (i) with H(p) = ofReal(m t) gives m ≤ N(p).",
+      "If x_Q(p) ∈ M, θ = k and T = Q, then x_Q(p) ∈ Z_s ∩ F̃⁻¹{p} with w = t, and every other fibre point has w < t (planar_geometry (b), (c)).",
+      "count_arith (ii) gives k ≤ m, and k < m ⟹ m + 1 ≤ N(p)."
+    ]
+  },
+  "audit": {
+    "key": "fibre_pointwise",
+    "acceptable": true,
+    "natural_proof_acceptable": true,
+    "reason": "The proof establishes the required parameter ranges, fibre membership of the planar point, its weight t, and strict weight bounds for every other subtype element. R.mult_pos supplies positivity on the entire fibre. Both conclusions follow from precisely the two declared dependencies, with no circular reliance or unstated geometric hypothesis. The prose and Lean type agree."
+  },
+  "resolved_dependencies": [
+    "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_sector_endpoint_density-a1.fibre_count-a1.planar_geometry-a1",
+    "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_sector_endpoint_density-a1.fibre_count-a1.count_arith-a1"
+  ],
+  "plan_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-bdb0f15ced/parent-supplied-plan.md",
+  "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-bdb0f15ced/parent-supplied-natural-proof.md",
+  "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-bdb0f15ced/parent-supplied-natural-proof.json"
+}

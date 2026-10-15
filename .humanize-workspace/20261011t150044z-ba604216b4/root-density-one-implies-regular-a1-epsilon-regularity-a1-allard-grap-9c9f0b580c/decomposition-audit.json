@@ -1,0 +1,78 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "integral_lineDeriv_mul_eq|ae_differentiableAt|variable.*FiniteDimensional|variable.*IsAddHaarMeasure",
+        "fderiv_comp_smul|fderiv_const_smul_field|iteratedFDeriv_two_apply|measurable_fderiv_apply_const",
+        "integral_mul_le_Lp_mul_Lq_of_nonneg|theorem.*integrable_mul|theorem.*of_bound|lemma.*of_bound|integrable_sq",
+        "dorag_haa_|lipschitz_ibp|weakly_harmonic|setIntegral_comp_smul|rellich|Rellich|Weyl|weyl",
+        "HarmonicApproximationLemma|harmonic|Harmonic",
+        "LEAN_PATH=/tmp/independent-harmonic-audit-xo0dtzdc/module-path /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/independent-harmonic-audit-xo0dtzdc/Types.lean",
+        "LEAN_PATH=/tmp/independent-harmonic-audit-xo0dtzdc/module-path /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/independent-harmonic-audit-xo0dtzdc/Assembly.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch05/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/Rademacher.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Equiv.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Add.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/FTaylorSeries.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Haar/NormedSpace.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/L1Space/Integrable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-9c9f0b580c/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-9c9f0b580c/decomposition-v1.json",
+        "/tmp/dorag-ha-approx-split/Full.lean",
+        "/tmp/independent-harmonic-audit-xo0dtzdc/Types.lean",
+        "/tmp/independent-harmonic-audit-xo0dtzdc/Assembly.lean",
+        "/tmp/independent-harmonic-audit-xo0dtzdc/Assembly.lean.log"
+      ],
+      "conclusion": "The installed project and Mathlib revisions match the manifest; the contract and 14 inspected Mathlib sources byte-match the snapshot. The pinned declarations support the claimed integration by parts, L² estimates, unconditional derivative identities and arbitrary-function Haar change of variables. No reusable proved child declaration was found in the searched project sources; Ch05's related HarmonicApproximationLemma is a different proposition whose main theorem uses sorry.\n\nSplitting the selected Submission.dorag_ha_approximation into these six obligations is appropriate. All names are bare identifiers, with no reservations in another DAG branch. Dependencies are correctly directed and acyclic, including the existing sibling dependencies. Every frozen child type independently elaborates as a one-line proposition without a child implementation. All six supplied Lean proofs recompiled successfully. An assembly taking exactly the four frozen sibling contracts as explicit hypotheses proves the exact selected parent type. Its axiom report, and those of all six children, contain only propext, Classical.choice and Quot.sound, with no sorryAx. The retained compactness argument agrees with [Simon, Chapter 5 §3, Lemma 3.1](https://math.stanford.edu/~lms/ntu-gmt-text.pdf#page=73)."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "lipschitz_ibp",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and exact type agree. Support localization, compactly supported C¹ coordinate derivatives, Rademacher's theorem and signed line-derivative integration by parts establish each coordinate identity. The proof separately justifies integrability before summation. It covers arbitrary R and n, without circular reliance or missing hypotheses."
+    },
+    {
+      "key": "l2_pairing",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type exactly expresses the prose assumptions and conclusion. L² membership justifies products and integral subtraction; Hölder supplies the stated square-root bound, whose convergence follows by continuity and squeezing. The supplied argument is complete and independent."
+    },
+    {
+      "key": "weakly_harmonic_limit",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The contract matches the prose, including arbitrary centering constants and no positivity requirement on R or δ. Compact closed-ball bounds establish the required L² memberships. Applying lipschitz_ibp to u_j−c_j gives pairings tending to zero; l2_pairing and uniqueness of limits give the exact distributional identity. Only the two declared children are used, with no Weyl or parent-theorem reliance."
+    },
+    {
+      "key": "ball_rescale",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The arbitrary-function proposition matches the prose. The pinned Haar theorem gives the integral identity without measurability or integrability assumptions. The indicator argument independently proves integrability equivalence, validating both the integrable and non-integrable cases. Positive-radius and dimension factors are correct."
+    },
+    {
+      "key": "rescale_hypotheses",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact type preserves every hypothesis and the same Lipschitz constant. The unconditional derivative identities are valid at nondifferentiability points. The transformed test function satisfies all smoothness, support and derivative-bound requirements; ball_rescale then gives both quantitative bounds. The proof uses only its declared dependency and requires no additional sign assumption on δ."
+    },
+    {
+      "key": "rescale_conclusion",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and type agree, including arbitrary w and ε. The explicit rescaled h satisfies local smoothness and harmonicity through the verified first- and second-derivative identities. ball_rescale transfers both integrability assertions and gives precisely the R₀ⁿ and R₀^(n+2) bounds. No global smoothness assumption or undeclared child dependency is introduced."
+    }
+  ],
+  "required_changes": []
+}

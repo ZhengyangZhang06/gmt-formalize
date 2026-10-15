@@ -1,0 +1,459 @@
+{
+  "schema_version": 1,
+  "run_id": "20261011T150044Z-ba604216b4",
+  "parent_id": "root.regular_set_dense-a1.mass_eq_weight-a1.weight_le_mass-a1",
+  "dispatch_branch": "proof-workspace/gmt-ch07/20261011t150044z-ba604216b4/dispatch/root-regular-set-dense-a1-mass-eq-weight-a1-weight-le-mass-a1",
+  "source_commit": "b4d606db1da5da8fa2c0292ad4924d97de8b3c4b",
+  "comparator_command": "python3 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py --lean-target {lean_target} --verifier-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier --verify-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification --packages /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c --frozen-commit b4d606db1da5da8fa2c0292ad4924d97de8b3c4b {node_id}",
+  "comparator_success": "Your solution is okay!",
+  "lean_target": "GMT/Ch07/Submission.lean",
+  "children": [
+    {
+      "node_id": "root.regular_set_dense-a1.mass_eq_weight-a1.weight_le_mass-a1.eval_formula-a1",
+      "key": "eval_formula",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-regular-set-dense-a1-mass-eq-weight-a1-weight-le-mass-a1-eval-formula-a1-a1",
+      "bundle_path": ".humanize-workspace/20261011t150044z-ba604216b4/root-regular-set-dense-a1-mass-eq-weight-a1-weight-le-mass-a1/children/root-regular-set-dense-a1-mass-eq-weight-a1-weight-le-mass-a1-eval-formula-a1",
+      "handoff": {
+        "reference_use": [
+          {
+            "source": "local-project",
+            "queries": [
+              "cat nodes/root-regular-set-dense-a1-mass-eq-weight-a1-weight-le-mass-a1/{parent-child-handoff.json,decomposition-v1.json}",
+              "python3 -I scans of dag.json (298 nodes): lean_name, theorems, status and depth of this node, its siblings and root.half_space_cone_lies_in_boundary-a1.imrep_measure_unique-a1.orientation_norm_bound-a1",
+              "grep -rl rsd_mw_wlm GMT .humanize; git log --all --oneline -S rsd_mw_wlm; git log --all --oneline -S orient_opNorm_le_one",
+              "git show 0325970d8b47298803106a41abbcdb3c8c9ac103 -- GMT",
+              "rg -n 'measure_le_massOn|massOn_le_measure|orient_opNorm|opNorm_le_one|unit_orientation_norm' local-references/123e8435b4a2469b/project -t lean",
+              "rg -n 'theorem of_pseudoMetrizableSpace|theorem isCompact_isClosed|theorem trans ' mathlib/Mathlib/MeasureTheory/Measure/Regular.lean",
+              "rg -n 'theorem exists_open_between_and_isCompact_closure' mathlib/Mathlib/Topology/Separation/Regular.lean",
+              "rg -n 'theorem withDensity_apply |theorem withDensity_absolutelyContinuous ' mathlib/Mathlib/MeasureTheory/Measure/WithDensity.lean",
+              "rg -n 'theorem integral_withDensity_eq_integral_smul ' mathlib/Mathlib/MeasureTheory/Integral/Bochner/ContinuousLinearMap.lean; rg -n 'theorem setIntegral_eq_integral_of_forall_compl_eq_zero' mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean; rg -n 'theorem ofReal_integral_eq_lintegral_ofReal' mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+              "rg -n 'isBoundedBilinearMap_apply :' mathlib/Mathlib/Analysis/Normed/Operator/BoundedLinearMaps.lean; rg -n 'theorem opNorm_smul_le|theorem opNorm_le_bound ' mathlib/Mathlib/Analysis/Normed/Operator/Basic.lean",
+              "rg -n 'lemma isFiniteMeasure_restrict' mathlib/Mathlib/MeasureTheory/Measure/Typeclasses/Finite.lean; rg -n 'theorem le_of_forall_lt ' mathlib/Mathlib/Order/Basic.lean",
+              "sed -n 420,640p verifier/gmt-compare.py; cat verifier/lean_contract.py",
+              "python3 -I /tmp/rsd-mw-wlm-v2-scripts/build.py",
+              "lake env lean /tmp/rsd-mw-wlm-v2/{Full,FromProofs}.lean; lake env lean /tmp/rsd-mw-wlm-v2/cmp/*_{Challenge,SolutionEmu}.lean",
+              "lake env lean /tmp/rsd-mw-wlm-v2-review/{Stubbed,AxStubbed,FromProofsUncleAx,Probe}.lean"
+            ],
+            "files": [
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Regular.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Separation/Regular.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/WithDensity.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/ContinuousLinearMap.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Operator/BoundedLinearMaps.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Operator/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Typeclasses/Finite.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Order/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-regular-set-dense-a1-mass-eq-weight-a1-weight-le-mass-a1/parent-child-handoff.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-regular-set-dense-a1-mass-eq-weight-a1-weight-le-mass-a1/decomposition-v1.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py",
+              "/tmp/rsd-mw-wlm-v2/FromProofs.lean",
+              "/tmp/rsd-mw-wlm-v2/subproblems.json",
+              "/tmp/rsd-mw-wlm-v2-review/Stubbed.lean",
+              "/tmp/rsd-mw-wlm-v2-review/FromProofsUncleAx.lean"
+            ],
+            "conclusion": "Snapshot (project b4d606d, Mathlib 25730c7c): the workspace Contract.lean and Submission.lean are identical (457 lines).\n\nNo snapshot project declaration proves any child. rg for measure_le_massOn, massOn_le_measure, orient_opNorm, opNorm_le_one and unit_orientation_norm over the project finds no match.\n\nThe proposition of child 1 is proved in another branch as unit_orientation_norm_le_one (commit 0325970d). That name is reserved by an active node there and is not merged into this branch, so attempt 1's reuse was rejected. Child 1 is re-proved under the fresh name rsd_mw_wlm_orient_opNorm_le_one.\n\nMathlib tools located in the snapshot:\n- InnerRegularWRT.trans, of_pseudoMetrizableSpace and isCompact_isClosed (Regular.lean:280/674/684)\n- exists_open_between_and_isCompact_closure (Separation/Regular.lean:364)\n- withDensity_apply and withDensity_absolutelyContinuous (WithDensity.lean:44/146)\n- integral_withDensity_eq_integral_smul (Bochner/ContinuousLinearMap.lean:251)\n- setIntegral_eq_integral_of_forall_compl_eq_zero (Bochner/Set.lean:486)\n- isBoundedBilinearMap_apply (BoundedLinearMaps.lean:391)\n- ofReal_integral_eq_lintegral_ofReal (Bochner/Basic.lean:739)\n- isFiniteMeasure_restrict (Typeclasses/Finite.lean:40)\n- le_of_forall_lt (Order/Basic.lean:352)\n- opNorm_le_bound and opNorm_smul_le (Operator/Basic.lean:196/329)\n\nLean checks in the replayed contract scope:\n- All five children compile from the Lean-route blocks of their natural proofs, with axioms propext, Classical.choice and Quot.sound only.\n- The exact parent type compiles from the children plus the two uncle stubs. With the uncles as axioms, the parent depends only on those two and the standard axioms.\n- All challenge files from the verifier's child_modules elaborate.\n\nNames: none of the five lean_names occurs in dag.json (298 nodes), GMT/, .humanize (apart from this node's rejected v1) or any git ref."
+          }
+        ],
+        "parent_id": "root.regular_set_dense-a1.mass_eq_weight-a1.weight_le_mass-a1",
+        "child_id": "root.regular_set_dense-a1.mass_eq_weight-a1.weight_le_mass-a1.eval_formula-a1",
+        "subproblem": {
+          "key": "eval_formula",
+          "title": "T(ω) as the integral of ⟨ω, ξ⟩ against the weight restricted to a set containing spt ω",
+          "statement": "Let P, n ∈ ℕ, U ⊆ ℝ^P, T ∈ 𝒟_n(U) (GeometricCurrentOn U n), and let R = (M, θ, ξ) be an IMRep in U with R.Represents T, i.e. T(ω) = R.action ω = ∫_M θ(x)·ξ(x)(ω(x)) dH^n(x) for every ω ∈ TestFormOn U n. Let μ := R.measure = (H^n⌞M).withDensity θ. Then for every set V ⊆ ℝ^P and every ω ∈ TestFormOn U n with tsupport ω ⊆ V, T(ω) = ∫ ξ(x)(ω(x)) d(μ⌞V)(x) (real Bochner integral against the restriction of μ to V).",
+          "lean_statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (R : IMRep U n), R.Represents T → ∀ (V : Set (Euclid P)) (ω : TestFormOn U n), tsupport (ω : DifferentialForm (Euclid P) n) ⊆ V → T ω = ∫ x, R.orient x ((ω : DifferentialForm (Euclid P) n) x) ∂(R.measure.restrict V)",
+          "lean_name": "rsd_mw_wlm_eval_eq_integral_restrict",
+          "depends_on": [],
+          "natural_proof": "Source: parent proof, step 7 (computing T ω̃).\n\nNotation: H := μHE[n], M := R.carrier, θ := R.mult, ξ := R.orient, μ := R.measure. Fix V ⊆ ℝ^P and ω ∈ TestFormOn U n with tsupport ω ⊆ V. Put g(x) := ξ(x)(ω(x)) ∈ ℝ.\n\n1. Representation. By R.Represents T, T(ω) = R.action ω = ∫_M θ(x)·g(x) dH(x), the real Bochner integral against H⌞M.\n2. Localization to V.\n- If x ∉ V, then x ∉ tsupport ω, so ω(x) = 0 (image_eq_zero_of_notMem_tsupport). Hence g(x) = ξ(x)(0) = 0, since ξ(x) is linear.\n- For a function vanishing outside V, ∫_V g dμ = ∫ g dμ (setIntegral_eq_integral_of_forall_compl_eq_zero). This holds for every function g and every set V, with no integrability or measurability assumption.\n- By definition ∫ g d(μ⌞V) = ∫_V g dμ, so ∫ g d(μ⌞V) = ∫ g dμ.\n3. Removing the density.\n- The density of μ is x ↦ (θ(x) : [0, ∞]), which equals the coercion of the ℝ≥0-valued function x ↦ (θ(x) : ℝ≥0) (ENNReal.coe_natCast). So μ = (H⌞M).withDensity (x ↦ ((θ(x) : ℝ≥0) : [0, ∞])).\n- x ↦ (θ(x) : ℝ≥0) is measurable: it is the measurable map θ : ℝ^P → ℕ followed by a map out of ℕ (measurable_from_nat.comp R.measurable_mult).\n- For a measurable ℝ≥0-valued density f, ∫ g d((H⌞M).withDensity f) = ∫ f(x)•g(x) d(H⌞M)(x) for every g, integrable or not (integral_withDensity_eq_integral_smul).\n- With f = θ, f(x)•g(x) = (θ(x) : ℝ)·g(x) (NNReal.smul_def, NNReal.coe_natCast). Hence ∫ g dμ = ∫_M θ(x)·g(x) dH(x).\n4. Combining 1–3: T(ω) = ∫_M θ·g dH = ∫ g dμ = ∫ g d(μ⌞V). No openness or measurability of U or V is needed. ∎\n\nLean route (kernel-checked in the frozen contract scope; axioms propext, Classical.choice, Quot.sound):\n  intro P n U T R hR V ω hωV\n  rw [hR ω, setIntegral_eq_integral_of_forall_compl_eq_zero]\n  · have hμ : R.measure = (μHE[n].restrict R.carrier).withDensity (fun x => ((R.mult x : NNReal) : ℝ≥0∞)) := by simp [IMRep.measure]\n    have hmeas : Measurable fun x => (R.mult x : NNReal) := measurable_from_nat.comp R.measurable_mult\n    rw [hμ, integral_withDensity_eq_integral_smul hmeas]\n    simp [IMRep.action, NNReal.smul_def]\n  · intro x hx\n    have h0 : (ω : DifferentialForm (Euclid P) n) x = 0 := image_eq_zero_of_notMem_tsupport fun h => hx (hωV h)\n    simp [h0]",
+          "proof_key_steps": [
+            "R.Represents T gives T(ω) = ∫_M θ·ξ(ω) dH^n.",
+            "ξ(x)(ω(x)) = 0 off V because ω vanishes off tsupport ω ⊆ V, so ∫ over μ⌞V equals ∫ over μ.",
+            "Write the density as the measurable ℝ≥0-valued θ and apply integral_withDensity_eq_integral_smul, so ∫ g dμ = ∫_M θ·g dH^n."
+          ]
+        },
+        "audit": {
+          "key": "eval_formula",
+          "acceptable": true,
+          "natural_proof_acceptable": true,
+          "reason": "The exact statement follows from representation, vanishing outside V and conversion through the measurable NNReal-valued density. The cited localization and density identities require neither measurability of V nor an additional integrability hypothesis."
+        },
+        "resolved_dependencies": [],
+        "plan_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-regular-set-dense-a1-mass-eq-weight-a1-weight-le-mass-a1-eval-formula-a1/parent-supplied-plan.md",
+        "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-regular-set-dense-a1-mass-eq-weight-a1-weight-le-mass-a1-eval-formula-a1/parent-supplied-natural-proof.md",
+        "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-regular-set-dense-a1-mass-eq-weight-a1-weight-le-mass-a1-eval-formula-a1/parent-supplied-natural-proof.json"
+      }
+    },
+    {
+      "node_id": "root.regular_set_dense-a1.mass_eq_weight-a1.weight_le_mass-a1.integrable_comp-a1",
+      "key": "integrable_comp",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-regular-set-dense-a1-mass-eq-weight-a1-weight-le-mass-a1-integrable-comp-a1-a1",
+      "bundle_path": ".humanize-workspace/20261011t150044z-ba604216b4/root-regular-set-dense-a1-mass-eq-weight-a1-weight-le-mass-a1/children/root-regular-set-dense-a1-mass-eq-weight-a1-weight-le-mass-a1-integrable-comp-a1",
+      "handoff": {
+        "reference_use": [
+          {
+            "source": "local-project",
+            "queries": [
+              "cat nodes/root-regular-set-dense-a1-mass-eq-weight-a1-weight-le-mass-a1/{parent-child-handoff.json,decomposition-v1.json}",
+              "python3 -I scans of dag.json (298 nodes): lean_name, theorems, status and depth of this node, its siblings and root.half_space_cone_lies_in_boundary-a1.imrep_measure_unique-a1.orientation_norm_bound-a1",
+              "grep -rl rsd_mw_wlm GMT .humanize; git log --all --oneline -S rsd_mw_wlm; git log --all --oneline -S orient_opNorm_le_one",
+              "git show 0325970d8b47298803106a41abbcdb3c8c9ac103 -- GMT",
+              "rg -n 'measure_le_massOn|massOn_le_measure|orient_opNorm|opNorm_le_one|unit_orientation_norm' local-references/123e8435b4a2469b/project -t lean",
+              "rg -n 'theorem of_pseudoMetrizableSpace|theorem isCompact_isClosed|theorem trans ' mathlib/Mathlib/MeasureTheory/Measure/Regular.lean",
+              "rg -n 'theorem exists_open_between_and_isCompact_closure' mathlib/Mathlib/Topology/Separation/Regular.lean",
+              "rg -n 'theorem withDensity_apply |theorem withDensity_absolutelyContinuous ' mathlib/Mathlib/MeasureTheory/Measure/WithDensity.lean",
+              "rg -n 'theorem integral_withDensity_eq_integral_smul ' mathlib/Mathlib/MeasureTheory/Integral/Bochner/ContinuousLinearMap.lean; rg -n 'theorem setIntegral_eq_integral_of_forall_compl_eq_zero' mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean; rg -n 'theorem ofReal_integral_eq_lintegral_ofReal' mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+              "rg -n 'isBoundedBilinearMap_apply :' mathlib/Mathlib/Analysis/Normed/Operator/BoundedLinearMaps.lean; rg -n 'theorem opNorm_smul_le|theorem opNorm_le_bound ' mathlib/Mathlib/Analysis/Normed/Operator/Basic.lean",
+              "rg -n 'lemma isFiniteMeasure_restrict' mathlib/Mathlib/MeasureTheory/Measure/Typeclasses/Finite.lean; rg -n 'theorem le_of_forall_lt ' mathlib/Mathlib/Order/Basic.lean",
+              "sed -n 420,640p verifier/gmt-compare.py; cat verifier/lean_contract.py",
+              "python3 -I /tmp/rsd-mw-wlm-v2-scripts/build.py",
+              "lake env lean /tmp/rsd-mw-wlm-v2/{Full,FromProofs}.lean; lake env lean /tmp/rsd-mw-wlm-v2/cmp/*_{Challenge,SolutionEmu}.lean",
+              "lake env lean /tmp/rsd-mw-wlm-v2-review/{Stubbed,AxStubbed,FromProofsUncleAx,Probe}.lean"
+            ],
+            "files": [
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Regular.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Separation/Regular.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/WithDensity.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/ContinuousLinearMap.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Operator/BoundedLinearMaps.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Operator/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Typeclasses/Finite.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Order/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-regular-set-dense-a1-mass-eq-weight-a1-weight-le-mass-a1/parent-child-handoff.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-regular-set-dense-a1-mass-eq-weight-a1-weight-le-mass-a1/decomposition-v1.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py",
+              "/tmp/rsd-mw-wlm-v2/FromProofs.lean",
+              "/tmp/rsd-mw-wlm-v2/subproblems.json",
+              "/tmp/rsd-mw-wlm-v2-review/Stubbed.lean",
+              "/tmp/rsd-mw-wlm-v2-review/FromProofsUncleAx.lean"
+            ],
+            "conclusion": "Snapshot (project b4d606d, Mathlib 25730c7c): the workspace Contract.lean and Submission.lean are identical (457 lines).\n\nNo snapshot project declaration proves any child. rg for measure_le_massOn, massOn_le_measure, orient_opNorm, opNorm_le_one and unit_orientation_norm over the project finds no match.\n\nThe proposition of child 1 is proved in another branch as unit_orientation_norm_le_one (commit 0325970d). That name is reserved by an active node there and is not merged into this branch, so attempt 1's reuse was rejected. Child 1 is re-proved under the fresh name rsd_mw_wlm_orient_opNorm_le_one.\n\nMathlib tools located in the snapshot:\n- InnerRegularWRT.trans, of_pseudoMetrizableSpace and isCompact_isClosed (Regular.lean:280/674/684)\n- exists_open_between_and_isCompact_closure (Separation/Regular.lean:364)\n- withDensity_apply and withDensity_absolutelyContinuous (WithDensity.lean:44/146)\n- integral_withDensity_eq_integral_smul (Bochner/ContinuousLinearMap.lean:251)\n- setIntegral_eq_integral_of_forall_compl_eq_zero (Bochner/Set.lean:486)\n- isBoundedBilinearMap_apply (BoundedLinearMaps.lean:391)\n- ofReal_integral_eq_lintegral_ofReal (Bochner/Basic.lean:739)\n- isFiniteMeasure_restrict (Typeclasses/Finite.lean:40)\n- le_of_forall_lt (Order/Basic.lean:352)\n- opNorm_le_bound and opNorm_smul_le (Operator/Basic.lean:196/329)\n\nLean checks in the replayed contract scope:\n- All five children compile from the Lean-route blocks of their natural proofs, with axioms propext, Classical.choice and Quot.sound only.\n- The exact parent type compiles from the children plus the two uncle stubs. With the uncles as axioms, the parent depends only on those two and the standard axioms.\n- All challenge files from the verifier's child_modules elaborate.\n\nNames: none of the five lean_names occurs in dag.json (298 nodes), GMT/, .humanize (apart from this node's rejected v1) or any git ref."
+          }
+        ],
+        "parent_id": "root.regular_set_dense-a1.mass_eq_weight-a1.weight_le_mass-a1",
+        "child_id": "root.regular_set_dense-a1.mass_eq_weight-a1.weight_le_mass-a1.integrable_comp-a1",
+        "subproblem": {
+          "key": "integrable_comp",
+          "title": "A continuous linear image of an a.e. unit-bounded measurable n-vector field is integrable",
+          "statement": "Let P, n ∈ ℕ and let ν be a finite measure on ℝ^P (Euclid P). Let ξ : ℝ^P → MultiVector P n be ν-a.e. strongly measurable with ‖ξ(x)‖ ≤ 1 for ν-a.e. x, where MultiVector P n = (Covector (Euclid P) n →L[ℝ] ℝ) carries its operator norm. Let J : MultiVector P n →L[ℝ] Covector (Euclid P) n be a continuous linear map. Then x ↦ J(ξ(x)) is ν-integrable (Bochner integrability, with the operator norm on Covector (Euclid P) n).",
+          "lean_statement": "∀ (P n : ℕ) (ν : Measure (Euclid P)) (ξ : Euclid P → MultiVector P n) (J : MultiVector P n →L[ℝ] Covector (Euclid P) n), IsFiniteMeasure ν → AEStronglyMeasurable ξ ν → (∀ᵐ x ∂ν, ‖ξ x‖ ≤ 1) → Integrable (fun x => J (ξ x)) ν",
+          "lean_name": "rsd_mw_wlm_integrable_clm_comp",
+          "depends_on": [],
+          "natural_proof": "Source: parent proof, step 4 (the bound C_J for J and the integrability of β = J∘ξ), including its Lean note.\n\n1. Smallness near 0. J is continuous at 0 and J(0) = 0. Applying continuity at 0 with tolerance 1 gives δ > 0 such that ‖J(w)‖ < 1 for every w ∈ MultiVector P n with ‖w‖ < δ.\n- Lean: do not use ‖J‖. The Norm instance on MultiVector P n →L[ℝ] Covector (Euclid P) n is not synthesized in the pinned Mathlib.\n- Instead retype the continuity of J to the metric topologies; Lean accepts this definitional equality: have hJc : @Continuous (MultiVector P n) (Covector (Euclid P) n) PseudoMetricSpace.toUniformSpace.toTopologicalSpace PseudoMetricSpace.toUniformSpace.toTopologicalSpace J := J.continuous.\n- Then obtain ⟨δ, hδ, h⟩ := Metric.continuous_iff.1 hJc 0 1 one_pos.\n- Pass between dist and norm with convert … using 1 and dist_zero_right, plus map_zero for J 0 = 0. A plain simpa [dist_eq_norm] does not match the instances.\n2. Bound on the closed unit ball. Let ‖w‖ ≤ 1.\n- ‖(δ/2)·w‖ ≤ |δ/2|·‖w‖ ≤ δ/2 < δ, by the operator-norm inequality ContinuousLinearMap.opNorm_smul_le. Do not use norm_smul on MultiVector P n: NormSMulClass ℝ (MultiVector P n) is not synthesized in this setting.\n- So by step 1 and linearity of J, (δ/2)·‖J(w)‖ = ‖J((δ/2)·w)‖ < 1. This uses map_smul, norm_smul on Covector (Euclid P) n (which works) and Real.norm_of_nonneg.\n- Hence ‖J(w)‖ ≤ C := 2/δ.\n3. Measurability. J is continuous and ξ is ν-a.e. strongly measurable, so x ↦ J(ξ(x)) is ν-a.e. strongly measurable (J.continuous.comp_aestronglyMeasurable).\n4. Domination. For ν-a.e. x we have ‖ξ(x)‖ ≤ 1, hence ‖J(ξ(x))‖ ≤ C by step 2. The constant function C is ν-integrable because ν is finite (integrable_const). By domination (Integrable.mono' with filter_upwards on the a.e. bound), x ↦ J(ξ(x)) is ν-integrable. ∎\n\nLean route (kernel-checked in the frozen contract scope; axioms propext, Classical.choice, Quot.sound):\n  intro P n ν ξ J hν hξ hξ1\n  obtain ⟨δ, hδ, hJδ⟩ : ∃ δ > 0, ∀ w : MultiVector P n, ‖w‖ < δ → ‖J w‖ < 1 := by\n    have hJc : @Continuous (MultiVector P n) (Covector (Euclid P) n) PseudoMetricSpace.toUniformSpace.toTopologicalSpace PseudoMetricSpace.toUniformSpace.toTopologicalSpace J := J.continuous\n    obtain ⟨δ, hδ, h⟩ := Metric.continuous_iff.1 hJc 0 1 one_pos\n    refine ⟨δ, hδ, fun w hw => ?_⟩\n    have h' := h w (by convert hw using 1; exact dist_zero_right w)\n    convert h' using 1\n    rw [map_zero]\n    exact (dist_zero_right _).symm\n  have hbound : ∀ w : MultiVector P n, ‖w‖ ≤ 1 → ‖J w‖ ≤ 2 / δ := by\n    intro w hw\n    have h2 : ‖(δ / 2) • w‖ < δ := by\n      calc ‖(δ / 2) • w‖ ≤ ‖δ / 2‖ * ‖w‖ := ContinuousLinearMap.opNorm_smul_le _ _\n        _ ≤ δ / 2 * 1 := by rw [Real.norm_of_nonneg (by positivity)]; exact mul_le_mul_of_nonneg_left hw (by positivity)\n        _ < δ := by linarith\n    have := hJδ _ h2\n    rw [map_smul, norm_smul, Real.norm_of_nonneg (by positivity)] at this\n    rw [le_div_iff₀ hδ]\n    nlinarith\n  refine Integrable.mono' (integrable_const (2 / δ)) (J.continuous.comp_aestronglyMeasurable hξ) ?_\n  filter_upwards [hξ1] with x hx using hbound _ hx",
+          "proof_key_steps": [
+            "Continuity of J at 0 (via the metric topologies) gives δ > 0 with ‖J w‖ < 1 whenever ‖w‖ < δ.",
+            "Homogeneity: ‖w‖ ≤ 1 implies ‖(δ/2)w‖ < δ, hence ‖J w‖ ≤ 2/δ.",
+            "J∘ξ is a.e.-strongly measurable as a continuous map of an a.e.-strongly measurable map.",
+            "‖J(ξ x)‖ ≤ 2/δ ν-a.e. and constants are integrable on the finite measure ν, so J∘ξ is integrable (Integrable.mono')."
+          ]
+        },
+        "audit": {
+          "key": "integrable_comp",
+          "acceptable": true,
+          "natural_proof_acceptable": true,
+          "reason": "The type matches the stated finite-measure integrability claim. Continuity and scaling give a uniform bound on J applied to the unit ball; continuous composition supplies measurability, and domination proves integrability. The instance-sensitive steps independently compile."
+        },
+        "resolved_dependencies": [],
+        "plan_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-regular-set-dense-a1-mass-eq-weight-a1-weight-le-mass-a1-integrable-comp-a1/parent-supplied-plan.md",
+        "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-regular-set-dense-a1-mass-eq-weight-a1-weight-le-mass-a1-integrable-comp-a1/parent-supplied-natural-proof.md",
+        "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-regular-set-dense-a1-mass-eq-weight-a1-weight-le-mass-a1-integrable-comp-a1/parent-supplied-natural-proof.json"
+      }
+    },
+    {
+      "node_id": "root.regular_set_dense-a1.mass_eq_weight-a1.weight_le_mass-a1.integral_estimate-a1",
+      "key": "integral_estimate",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-regular-set-dense-a1-mass-eq-weight-a1-weight-le-mass-a1-integra-a67a38d715-a1",
+      "bundle_path": ".humanize-workspace/20261011t150044z-ba604216b4/root-regular-set-dense-a1-mass-eq-weight-a1-weight-le-mass-a1/children/root-regular-set-dense-a1-mass-eq-weight-a1-weight-le-mass-a1-integra-a67a38d715",
+      "handoff": {
+        "reference_use": [
+          {
+            "source": "local-project",
+            "queries": [
+              "cat nodes/root-regular-set-dense-a1-mass-eq-weight-a1-weight-le-mass-a1/{parent-child-handoff.json,decomposition-v1.json}",
+              "python3 -I scans of dag.json (298 nodes): lean_name, theorems, status and depth of this node, its siblings and root.half_space_cone_lies_in_boundary-a1.imrep_measure_unique-a1.orientation_norm_bound-a1",
+              "grep -rl rsd_mw_wlm GMT .humanize; git log --all --oneline -S rsd_mw_wlm; git log --all --oneline -S orient_opNorm_le_one",
+              "git show 0325970d8b47298803106a41abbcdb3c8c9ac103 -- GMT",
+              "rg -n 'measure_le_massOn|massOn_le_measure|orient_opNorm|opNorm_le_one|unit_orientation_norm' local-references/123e8435b4a2469b/project -t lean",
+              "rg -n 'theorem of_pseudoMetrizableSpace|theorem isCompact_isClosed|theorem trans ' mathlib/Mathlib/MeasureTheory/Measure/Regular.lean",
+              "rg -n 'theorem exists_open_between_and_isCompact_closure' mathlib/Mathlib/Topology/Separation/Regular.lean",
+              "rg -n 'theorem withDensity_apply |theorem withDensity_absolutelyContinuous ' mathlib/Mathlib/MeasureTheory/Measure/WithDensity.lean",
+              "rg -n 'theorem integral_withDensity_eq_integral_smul ' mathlib/Mathlib/MeasureTheory/Integral/Bochner/ContinuousLinearMap.lean; rg -n 'theorem setIntegral_eq_integral_of_forall_compl_eq_zero' mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean; rg -n 'theorem ofReal_integral_eq_lintegral_ofReal' mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+              "rg -n 'isBoundedBilinearMap_apply :' mathlib/Mathlib/Analysis/Normed/Operator/BoundedLinearMaps.lean; rg -n 'theorem opNorm_smul_le|theorem opNorm_le_bound ' mathlib/Mathlib/Analysis/Normed/Operator/Basic.lean",
+              "rg -n 'lemma isFiniteMeasure_restrict' mathlib/Mathlib/MeasureTheory/Measure/Typeclasses/Finite.lean; rg -n 'theorem le_of_forall_lt ' mathlib/Mathlib/Order/Basic.lean",
+              "sed -n 420,640p verifier/gmt-compare.py; cat verifier/lean_contract.py",
+              "python3 -I /tmp/rsd-mw-wlm-v2-scripts/build.py",
+              "lake env lean /tmp/rsd-mw-wlm-v2/{Full,FromProofs}.lean; lake env lean /tmp/rsd-mw-wlm-v2/cmp/*_{Challenge,SolutionEmu}.lean",
+              "lake env lean /tmp/rsd-mw-wlm-v2-review/{Stubbed,AxStubbed,FromProofsUncleAx,Probe}.lean"
+            ],
+            "files": [
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Regular.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Separation/Regular.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/WithDensity.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/ContinuousLinearMap.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Operator/BoundedLinearMaps.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Operator/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Typeclasses/Finite.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Order/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-regular-set-dense-a1-mass-eq-weight-a1-weight-le-mass-a1/parent-child-handoff.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-regular-set-dense-a1-mass-eq-weight-a1-weight-le-mass-a1/decomposition-v1.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py",
+              "/tmp/rsd-mw-wlm-v2/FromProofs.lean",
+              "/tmp/rsd-mw-wlm-v2/subproblems.json",
+              "/tmp/rsd-mw-wlm-v2-review/Stubbed.lean",
+              "/tmp/rsd-mw-wlm-v2-review/FromProofsUncleAx.lean"
+            ],
+            "conclusion": "Snapshot (project b4d606d, Mathlib 25730c7c): the workspace Contract.lean and Submission.lean are identical (457 lines).\n\nNo snapshot project declaration proves any child. rg for measure_le_massOn, massOn_le_measure, orient_opNorm, opNorm_le_one and unit_orientation_norm over the project finds no match.\n\nThe proposition of child 1 is proved in another branch as unit_orientation_norm_le_one (commit 0325970d). That name is reserved by an active node there and is not merged into this branch, so attempt 1's reuse was rejected. Child 1 is re-proved under the fresh name rsd_mw_wlm_orient_opNorm_le_one.\n\nMathlib tools located in the snapshot:\n- InnerRegularWRT.trans, of_pseudoMetrizableSpace and isCompact_isClosed (Regular.lean:280/674/684)\n- exists_open_between_and_isCompact_closure (Separation/Regular.lean:364)\n- withDensity_apply and withDensity_absolutelyContinuous (WithDensity.lean:44/146)\n- integral_withDensity_eq_integral_smul (Bochner/ContinuousLinearMap.lean:251)\n- setIntegral_eq_integral_of_forall_compl_eq_zero (Bochner/Set.lean:486)\n- isBoundedBilinearMap_apply (BoundedLinearMaps.lean:391)\n- ofReal_integral_eq_lintegral_ofReal (Bochner/Basic.lean:739)\n- isFiniteMeasure_restrict (Typeclasses/Finite.lean:40)\n- le_of_forall_lt (Order/Basic.lean:352)\n- opNorm_le_bound and opNorm_smul_le (Operator/Basic.lean:196/329)\n\nLean checks in the replayed contract scope:\n- All five children compile from the Lean-route blocks of their natural proofs, with axioms propext, Classical.choice and Quot.sound only.\n- The exact parent type compiles from the children plus the two uncle stubs. With the uncles as axioms, the parent depends only on those two and the standard axioms.\n- All challenge files from the verifier's child_modules elaborate.\n\nNames: none of the five lean_names occurs in dag.json (298 nodes), GMT/, .humanize (apart from this node's rejected v1) or any git ref."
+          }
+        ],
+        "parent_id": "root.regular_set_dense-a1.mass_eq_weight-a1.weight_le_mass-a1",
+        "child_id": "root.regular_set_dense-a1.mass_eq_weight-a1.weight_le_mass-a1.integral_estimate-a1",
+        "subproblem": {
+          "key": "integral_estimate",
+          "title": "Integral lower bound for ⟨ω, ξ⟩ from an L¹-close unit dual field",
+          "statement": "Let P, n ∈ ℕ and let ν be a finite measure on ℝ^P (Euclid P). Let ξ : ℝ^P → MultiVector P n be ν-a.e. strongly measurable. Let β, ω : ℝ^P → Covector (Euclid P) n, with ω continuous and N(ω(x)) ≤ 1 for every x, where N := covectorEuclideanNorm. Assume that for ν-a.e. x, |ξ(x)(α)| ≤ N(α) for every n-covector α, and ξ(x)(β(x)) = 1. Let ε ∈ ℝ satisfy ∫⁻ ENNReal.ofReal(N(ω(x) − β(x))) dν(x) < ENNReal.ofReal ε. Then ν(ℝ^P).toReal − ε < ∫ ξ(x)(ω(x)) dν(x).",
+          "lean_statement": "∀ (P n : ℕ) (ν : Measure (Euclid P)) (ξ : Euclid P → MultiVector P n) (β ω : Euclid P → Covector (Euclid P) n) (ε : ℝ), IsFiniteMeasure ν → AEStronglyMeasurable ξ ν → Continuous ω → (∀ x, covectorEuclideanNorm (ω x) ≤ 1) → (∀ᵐ x ∂ν, (∀ α : Covector (Euclid P) n, |ξ x α| ≤ covectorEuclideanNorm α) ∧ ξ x (β x) = 1) → ∫⁻ x, ENNReal.ofReal (covectorEuclideanNorm (ω x - β x)) ∂ν < ENNReal.ofReal ε → (ν univ).toReal - ε < ∫ x, ξ x (ω x) ∂ν",
+          "lean_name": "rsd_mw_wlm_sub_lt_integral",
+          "depends_on": [],
+          "natural_proof": "Source: parent proof, step 8 (estimate). The parent integrates d(x) = N(ω(x) − β(x)) as a Bochner integral. Here it is compared only through lower integrals, so no measurability of β is needed.\n\nNotation: N := covectorEuclideanNorm, h(x) := ξ(x)(ω(x)), d(x) := N(ω(x) − β(x)) ≥ 0. Let G be the set of x where |ξ(x)(α)| ≤ N(α) for every α and ξ(x)(β(x)) = 1. By hypothesis, ν-a.e. x lies in G.\n\n1. Measurability of h.\n- The evaluation map (L, a) ↦ L(a), from MultiVector P n × Covector (Euclid P) n to ℝ, is a bounded bilinear map (isBoundedBilinearMap_apply), hence continuous.\n- x ↦ (ξ(x), ω(x)) is ν-a.e. strongly measurable, because ξ is and ω is continuous (AEStronglyMeasurable.prodMk).\n- So h is ν-a.e. strongly measurable. Lean: isBoundedBilinearMap_apply.continuous.comp_aestronglyMeasurable (hξ.prodMk hω.aestronglyMeasurable). ContinuousLinearMap.aestronglyMeasurable_comp₂ with ContinuousLinearMap.id does not elaborate here, and continuous_eval fails because no ContinuousEval instance is found.\n2. Integrability of h. For x ∈ G, |h(x)| ≤ N(ω(x)) ≤ 1 (take α = ω(x)). The constant 1 is ν-integrable because ν is finite. So h is ν-integrable (Integrable.mono' with integrable_const).\n3. Pointwise bounds. Let x ∈ G.\n- (a) h(x) ≤ |h(x)| ≤ 1, so 1 − h(x) ≥ 0.\n- (b) By linearity of ξ(x), h(x) = ξ(x)(β(x)) + ξ(x)(ω(x) − β(x)) = 1 + ξ(x)(ω(x) − β(x)) ≥ 1 − |ξ(x)(ω(x) − β(x))| ≥ 1 − N(ω(x) − β(x)) = 1 − d(x).\n- Hence 0 ≤ 1 − h(x) ≤ d(x) for ν-a.e. x.\n4. The integral of 1 − h. 1 − h is ν-integrable, and ∫(1 − h) dν = ν(ℝ^P).toReal·1 − ∫ h dν = ν(ℝ^P).toReal − ∫ h dν. This uses integral_sub, integral_const, and ν.real univ = (ν univ).toReal (measureReal_def).\n5. Comparison with d.\n- 1 − h is integrable and ≥ 0 a.e., so ENNReal.ofReal(∫(1 − h) dν) = ∫⁻ ENNReal.ofReal(1 − h(x)) dν (ofReal_integral_eq_lintegral_ofReal).\n- By step 3 and monotonicity of ENNReal.ofReal, this is ≤ ∫⁻ ENNReal.ofReal(d(x)) dν (lintegral_mono_ae), which is < ENNReal.ofReal ε by hypothesis.\n- Monotonicity of the lower integral needs no measurability, so nothing is required of β or d.\n6. Conclusion. ENNReal.ofReal a < ENNReal.ofReal b implies a < b (ENNReal.ofReal_lt_ofReal_iff'). So ∫(1 − h) dν < ε, i.e. ν(ℝ^P).toReal − ∫ h dν < ε by step 4, i.e. ν(ℝ^P).toReal − ε < ∫ h dν. If ε ≤ 0, the hypothesis is impossible, since a lower integral is never < ENNReal.ofReal ε = 0; the argument covers this case unchanged. ∎\n\nLean route (kernel-checked in the frozen contract scope; axioms propext, Classical.choice, Quot.sound):\n  intro P n ν ξ β ω ε hν hξ hω hωN hG hlt\n  have hhm : AEStronglyMeasurable (fun x => ξ x (ω x)) ν := isBoundedBilinearMap_apply.continuous.comp_aestronglyMeasurable (hξ.prodMk hω.aestronglyMeasurable)\n  have hh_int : Integrable (fun x => ξ x (ω x)) ν := by\n    refine Integrable.mono' (integrable_const (1 : ℝ)) hhm ?_\n    filter_upwards [hG] with x hx\n    rw [Real.norm_eq_abs]\n    exact (hx.1 (ω x)).trans (hωN x)\n  have hpt : ∀ᵐ x ∂ν, 0 ≤ 1 - ξ x (ω x) ∧ 1 - ξ x (ω x) ≤ covectorEuclideanNorm (ω x - β x) := by\n    filter_upwards [hG] with x hx\n    have hsplit : ξ x (ω x) = ξ x (β x) + ξ x (ω x - β x) := by rw [← map_add, add_sub_cancel]\n    have h1 := (abs_le.1 ((hx.1 (ω x)).trans (hωN x))).2\n    have h2 := (abs_le.1 (hx.1 (ω x - β x))).1\n    constructor\n    · linarith\n    · rw [hsplit, hx.2]; linarith\n  have h1h_int : Integrable (fun x => 1 - ξ x (ω x)) ν := (integrable_const 1).sub hh_int\n  have hint_eq : ∫ x, (1 - ξ x (ω x)) ∂ν = (ν univ).toReal - ∫ x, ξ x (ω x) ∂ν := by\n    rw [integral_sub (integrable_const 1) hh_int, integral_const, smul_eq_mul, mul_one, measureReal_def]\n  have hofreal : ENNReal.ofReal (∫ x, (1 - ξ x (ω x)) ∂ν) < ENNReal.ofReal ε := by\n    rw [ofReal_integral_eq_lintegral_ofReal h1h_int (hpt.mono fun x hx => hx.1)]\n    calc ∫⁻ x, ENNReal.ofReal (1 - ξ x (ω x)) ∂ν ≤ ∫⁻ x, ENNReal.ofReal (covectorEuclideanNorm (ω x - β x)) ∂ν := lintegral_mono_ae (hpt.mono fun x hx => ENNReal.ofReal_le_ofReal hx.2)\n      _ < ENNReal.ofReal ε := hlt\n  have := (ENNReal.ofReal_lt_ofReal_iff'.1 hofreal).1\n  linarith",
+          "proof_key_steps": [
+            "h = ξ(ω) is a.e.-strongly measurable via the continuous bilinear evaluation map, and |h| ≤ N(ω) ≤ 1 a.e., so h ∈ L¹(ν).",
+            "A.e., 0 ≤ 1 − h ≤ N(ω − β), using linearity of ξ(x), ξ(x)(β(x)) = 1 and |ξ(x)(α)| ≤ N(α).",
+            "∫(1 − h) dν = ν(ℝ^P).toReal − ∫ h dν.",
+            "ofReal(∫(1 − h)) = ∫⁻ ofReal(1 − h) ≤ ∫⁻ ofReal N(ω − β) < ofReal ε, hence ν(ℝ^P).toReal − ε < ∫ h dν."
+          ]
+        },
+        "audit": {
+          "key": "integral_estimate",
+          "acceptable": true,
+          "natural_proof_acceptable": true,
+          "reason": "The hypotheses and strict conclusion match exactly. The proof establishes integrability of h = ξ(ω), then compares the nonnegative integrable function 1 − h with N(ω − β) through lower integrals. This validly avoids any measurability assumption on β and yields the claimed strict bound."
+        },
+        "resolved_dependencies": [],
+        "plan_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-regular-set-dense-a1-mass-eq-weight-a1-weight-le-mass-a1-integra-a67a38d715/parent-supplied-plan.md",
+        "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-regular-set-dense-a1-mass-eq-weight-a1-weight-le-mass-a1-integra-a67a38d715/parent-supplied-natural-proof.md",
+        "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-regular-set-dense-a1-mass-eq-weight-a1-weight-le-mass-a1-integra-a67a38d715/parent-supplied-natural-proof.json"
+      }
+    },
+    {
+      "node_id": "root.regular_set_dense-a1.mass_eq_weight-a1.weight_le_mass-a1.open_approx-a1",
+      "key": "open_approx",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-regular-set-dense-a1-mass-eq-weight-a1-weight-le-mass-a1-open-approx-a1-a1",
+      "bundle_path": ".humanize-workspace/20261011t150044z-ba604216b4/root-regular-set-dense-a1-mass-eq-weight-a1-weight-le-mass-a1/children/root-regular-set-dense-a1-mass-eq-weight-a1-weight-le-mass-a1-open-approx-a1",
+      "handoff": {
+        "reference_use": [
+          {
+            "source": "local-project",
+            "queries": [
+              "cat nodes/root-regular-set-dense-a1-mass-eq-weight-a1-weight-le-mass-a1/{parent-child-handoff.json,decomposition-v1.json}",
+              "python3 -I scans of dag.json (298 nodes): lean_name, theorems, status and depth of this node, its siblings and root.half_space_cone_lies_in_boundary-a1.imrep_measure_unique-a1.orientation_norm_bound-a1",
+              "grep -rl rsd_mw_wlm GMT .humanize; git log --all --oneline -S rsd_mw_wlm; git log --all --oneline -S orient_opNorm_le_one",
+              "git show 0325970d8b47298803106a41abbcdb3c8c9ac103 -- GMT",
+              "rg -n 'measure_le_massOn|massOn_le_measure|orient_opNorm|opNorm_le_one|unit_orientation_norm' local-references/123e8435b4a2469b/project -t lean",
+              "rg -n 'theorem of_pseudoMetrizableSpace|theorem isCompact_isClosed|theorem trans ' mathlib/Mathlib/MeasureTheory/Measure/Regular.lean",
+              "rg -n 'theorem exists_open_between_and_isCompact_closure' mathlib/Mathlib/Topology/Separation/Regular.lean",
+              "rg -n 'theorem withDensity_apply |theorem withDensity_absolutelyContinuous ' mathlib/Mathlib/MeasureTheory/Measure/WithDensity.lean",
+              "rg -n 'theorem integral_withDensity_eq_integral_smul ' mathlib/Mathlib/MeasureTheory/Integral/Bochner/ContinuousLinearMap.lean; rg -n 'theorem setIntegral_eq_integral_of_forall_compl_eq_zero' mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean; rg -n 'theorem ofReal_integral_eq_lintegral_ofReal' mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+              "rg -n 'isBoundedBilinearMap_apply :' mathlib/Mathlib/Analysis/Normed/Operator/BoundedLinearMaps.lean; rg -n 'theorem opNorm_smul_le|theorem opNorm_le_bound ' mathlib/Mathlib/Analysis/Normed/Operator/Basic.lean",
+              "rg -n 'lemma isFiniteMeasure_restrict' mathlib/Mathlib/MeasureTheory/Measure/Typeclasses/Finite.lean; rg -n 'theorem le_of_forall_lt ' mathlib/Mathlib/Order/Basic.lean",
+              "sed -n 420,640p verifier/gmt-compare.py; cat verifier/lean_contract.py",
+              "python3 -I /tmp/rsd-mw-wlm-v2-scripts/build.py",
+              "lake env lean /tmp/rsd-mw-wlm-v2/{Full,FromProofs}.lean; lake env lean /tmp/rsd-mw-wlm-v2/cmp/*_{Challenge,SolutionEmu}.lean",
+              "lake env lean /tmp/rsd-mw-wlm-v2-review/{Stubbed,AxStubbed,FromProofsUncleAx,Probe}.lean"
+            ],
+            "files": [
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Regular.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Separation/Regular.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/WithDensity.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/ContinuousLinearMap.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Operator/BoundedLinearMaps.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Operator/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Typeclasses/Finite.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Order/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-regular-set-dense-a1-mass-eq-weight-a1-weight-le-mass-a1/parent-child-handoff.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-regular-set-dense-a1-mass-eq-weight-a1-weight-le-mass-a1/decomposition-v1.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py",
+              "/tmp/rsd-mw-wlm-v2/FromProofs.lean",
+              "/tmp/rsd-mw-wlm-v2/subproblems.json",
+              "/tmp/rsd-mw-wlm-v2-review/Stubbed.lean",
+              "/tmp/rsd-mw-wlm-v2-review/FromProofsUncleAx.lean"
+            ],
+            "conclusion": "Snapshot (project b4d606d, Mathlib 25730c7c): the workspace Contract.lean and Submission.lean are identical (457 lines).\n\nNo snapshot project declaration proves any child. rg for measure_le_massOn, massOn_le_measure, orient_opNorm, opNorm_le_one and unit_orientation_norm over the project finds no match.\n\nThe proposition of child 1 is proved in another branch as unit_orientation_norm_le_one (commit 0325970d). That name is reserved by an active node there and is not merged into this branch, so attempt 1's reuse was rejected. Child 1 is re-proved under the fresh name rsd_mw_wlm_orient_opNorm_le_one.\n\nMathlib tools located in the snapshot:\n- InnerRegularWRT.trans, of_pseudoMetrizableSpace and isCompact_isClosed (Regular.lean:280/674/684)\n- exists_open_between_and_isCompact_closure (Separation/Regular.lean:364)\n- withDensity_apply and withDensity_absolutelyContinuous (WithDensity.lean:44/146)\n- integral_withDensity_eq_integral_smul (Bochner/ContinuousLinearMap.lean:251)\n- setIntegral_eq_integral_of_forall_compl_eq_zero (Bochner/Set.lean:486)\n- isBoundedBilinearMap_apply (BoundedLinearMaps.lean:391)\n- ofReal_integral_eq_lintegral_ofReal (Bochner/Basic.lean:739)\n- isFiniteMeasure_restrict (Typeclasses/Finite.lean:40)\n- le_of_forall_lt (Order/Basic.lean:352)\n- opNorm_le_bound and opNorm_smul_le (Operator/Basic.lean:196/329)\n\nLean checks in the replayed contract scope:\n- All five children compile from the Lean-route blocks of their natural proofs, with axioms propext, Classical.choice and Quot.sound only.\n- The exact parent type compiles from the children plus the two uncle stubs. With the uncles as axioms, the parent depends only on those two and the standard axioms.\n- All challenge files from the verifier's child_modules elaborate.\n\nNames: none of the five lean_names occurs in dag.json (298 nodes), GMT/, .humanize (apart from this node's rejected v1) or any git ref."
+          }
+        ],
+        "parent_id": "root.regular_set_dense-a1.mass_eq_weight-a1.weight_le_mass-a1",
+        "child_id": "root.regular_set_dense-a1.mass_eq_weight-a1.weight_le_mass-a1.open_approx-a1",
+        "subproblem": {
+          "key": "open_approx",
+          "title": "Inner approximation of the weight of an open set by open sets of finite weight",
+          "statement": "Let P, n ∈ ℕ, let U ⊆ ℝ^P be any set, and let R = (M, θ, ξ) be an IMRep in U (Euclid P), with weight μ := R.measure = (H^n⌞M).withDensity θ, where H^n = μHE[n]. Let W ⊆ ℝ^P be open with W ⊆ U, and let c ∈ [0, ∞] with c < μ(W). Then there is an open set V ⊆ ℝ^P with V ⊆ W, c < μ(V) and μ(V) < ∞.",
+          "lean_statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (R : IMRep U n) (W : Set (Euclid P)), IsOpen W → W ⊆ U → ∀ c : ℝ≥0∞, c < R.measure W → ∃ V : Set (Euclid P), IsOpen V ∧ V ⊆ W ∧ c < R.measure V ∧ R.measure V < ∞",
+          "lean_name": "rsd_mw_wlm_exists_open_measure_between",
+          "depends_on": [],
+          "natural_proof": "Source: parent proof, step 3 (choice of K and V), including its stated alternative for K.\n\nNotation: H := μHE[n], M := R.carrier, θ := R.mult, μ := R.measure = (H⌞M).withDensity (x ↦ (θ(x) : [0, ∞])). All sets below are subsets of ℝ^P = Euclid P with its Borel σ-algebra.\n\n1. A compact core K. ℝ^P is a σ-compact metric space and μ is a measure on its Borel sets.\n- Every open set is inner regular for μ with respect to closed sets. An open set W is the increasing union of the closed sets F_j := {y : dist(y, ℝ^P ∖ W) ≥ 1/j} (F_j := ℝ^P if W = ℝ^P), so μ(F_j) ↑ μ(W) by continuity from below (Mathlib: Measure.InnerRegularWRT.of_pseudoMetrizableSpace μ).\n- Every closed set F is inner regular for μ with respect to compact sets. F is the increasing union of the compact sets F ∩ B̄(0, j), so μ(F ∩ B̄(0, j)) ↑ μ(F) (Mathlib: Measure.InnerRegularWRT.isCompact_isClosed μ, which uses σ-compactness).\n- Compose the two (Measure.InnerRegularWRT.trans) and use c < μ(W) with W open. This gives a compact K ⊆ W with c < μ(K).\n- Equivalently, use the exhaustion of parent step 3: K_j := {y : ‖y‖ ≤ j and B(y, 1/j) ⊆ W} is compact and increasing with union W, so μ(K_j) ↑ μ(W) > c.\n2. An open V with compact closure. ℝ^P is locally compact and regular, K is compact, W is open and K ⊆ W. So there is an open set V with K ⊆ V, closure V ⊆ W and closure V compact (exists_open_between_and_isCompact_closure). In particular V ⊆ closure V ⊆ W.\n3. Lower bound. By monotonicity, μ(V) ≥ μ(K) > c.\n4. Finiteness. closure V is closed, hence Borel measurable.\n- By the definition of a measure with density on measurable sets (withDensity_apply) and of restriction (Measure.restrict_restrict, which uses the measurability of closure V): μ(closure V) = ∫⁻_{closure V} θ d(H⌞M) = ∫⁻_{closure V ∩ M} θ dH = ∫⁻_{M ∩ closure V} θ dH.\n- closure V is compact and closure V ⊆ W ⊆ U. So the structure field R.locallyIntegrable_mult, applied to the compact set closure V, says that this lower integral is ≠ ∞.\n- Hence μ(V) ≤ μ(closure V) < ∞.\n5. Conclusion. V is open, V ⊆ W, c < μ(V) and μ(V) < ∞. The openness of U is not used.\n\nLean route (kernel-checked in the frozen contract scope; axioms propext, Classical.choice, Quot.sound):\n  intro P n U R W hW hWU c hc\n  obtain ⟨K, hKW, hK, hcK⟩ := ((Measure.InnerRegularWRT.isCompact_isClosed R.measure).trans (Measure.InnerRegularWRT.of_pseudoMetrizableSpace R.measure)) hW c hc\n  obtain ⟨V, hVo, hKV, hVW, hVc⟩ := exists_open_between_and_isCompact_closure hK hW hKW\n  refine ⟨V, hVo, subset_closure.trans hVW, hcK.trans_le (measure_mono hKV), ?_⟩\n  have hcl : R.measure (closure V) ≠ ∞ := by\n    unfold IMRep.measure\n    rw [withDensity_apply _ isClosed_closure.measurableSet, Measure.restrict_restrict isClosed_closure.measurableSet, Set.inter_comm]\n    exact R.locallyIntegrable_mult _ hVc (hVW.trans hWU)\n  exact (measure_mono subset_closure).trans_lt hcl.lt_top",
+          "proof_key_steps": [
+            "Inner regularity (open sets by closed sets, closed sets by compact sets) gives a compact K ⊆ W with c < μ(K).",
+            "exists_open_between_and_isCompact_closure gives an open V ⊇ K with closure V compact and contained in W.",
+            "μ(V) ≥ μ(K) > c by monotonicity.",
+            "μ(closure V) = ∫⁻_{M ∩ closure V} θ dH^n ≠ ∞ by withDensity_apply, restrict_restrict and R.locallyIntegrable_mult, so μ(V) < ∞."
+          ]
+        },
+        "audit": {
+          "key": "open_approx",
+          "acceptable": true,
+          "natural_proof_acceptable": true,
+          "reason": "All hypotheses match. Inner approximation supplies a compact core; an open neighborhood with compact closure inside W then has finite weight by R.locallyIntegrable_mult. No global finiteness or openness of U is assumed."
+        },
+        "resolved_dependencies": [],
+        "plan_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-regular-set-dense-a1-mass-eq-weight-a1-weight-le-mass-a1-open-approx-a1/parent-supplied-plan.md",
+        "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-regular-set-dense-a1-mass-eq-weight-a1-weight-le-mass-a1-open-approx-a1/parent-supplied-natural-proof.md",
+        "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-regular-set-dense-a1-mass-eq-weight-a1-weight-le-mass-a1-open-approx-a1/parent-supplied-natural-proof.json"
+      }
+    },
+    {
+      "node_id": "root.regular_set_dense-a1.mass_eq_weight-a1.weight_le_mass-a1.orient_opnorm_bound-a1",
+      "key": "orient_opnorm_bound",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-regular-set-dense-a1-mass-eq-weight-a1-weight-le-mass-a1-orient-e00ab99338-a1",
+      "bundle_path": ".humanize-workspace/20261011t150044z-ba604216b4/root-regular-set-dense-a1-mass-eq-weight-a1-weight-le-mass-a1/children/root-regular-set-dense-a1-mass-eq-weight-a1-weight-le-mass-a1-orient-e00ab99338",
+      "handoff": {
+        "reference_use": [
+          {
+            "source": "local-project",
+            "queries": [
+              "cat nodes/root-regular-set-dense-a1-mass-eq-weight-a1-weight-le-mass-a1/{parent-child-handoff.json,decomposition-v1.json}",
+              "python3 -I scans of dag.json (298 nodes): lean_name, theorems, status and depth of this node, its siblings and root.half_space_cone_lies_in_boundary-a1.imrep_measure_unique-a1.orientation_norm_bound-a1",
+              "grep -rl rsd_mw_wlm GMT .humanize; git log --all --oneline -S rsd_mw_wlm; git log --all --oneline -S orient_opNorm_le_one",
+              "git show 0325970d8b47298803106a41abbcdb3c8c9ac103 -- GMT",
+              "rg -n 'measure_le_massOn|massOn_le_measure|orient_opNorm|opNorm_le_one|unit_orientation_norm' local-references/123e8435b4a2469b/project -t lean",
+              "rg -n 'theorem of_pseudoMetrizableSpace|theorem isCompact_isClosed|theorem trans ' mathlib/Mathlib/MeasureTheory/Measure/Regular.lean",
+              "rg -n 'theorem exists_open_between_and_isCompact_closure' mathlib/Mathlib/Topology/Separation/Regular.lean",
+              "rg -n 'theorem withDensity_apply |theorem withDensity_absolutelyContinuous ' mathlib/Mathlib/MeasureTheory/Measure/WithDensity.lean",
+              "rg -n 'theorem integral_withDensity_eq_integral_smul ' mathlib/Mathlib/MeasureTheory/Integral/Bochner/ContinuousLinearMap.lean; rg -n 'theorem setIntegral_eq_integral_of_forall_compl_eq_zero' mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean; rg -n 'theorem ofReal_integral_eq_lintegral_ofReal' mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+              "rg -n 'isBoundedBilinearMap_apply :' mathlib/Mathlib/Analysis/Normed/Operator/BoundedLinearMaps.lean; rg -n 'theorem opNorm_smul_le|theorem opNorm_le_bound ' mathlib/Mathlib/Analysis/Normed/Operator/Basic.lean",
+              "rg -n 'lemma isFiniteMeasure_restrict' mathlib/Mathlib/MeasureTheory/Measure/Typeclasses/Finite.lean; rg -n 'theorem le_of_forall_lt ' mathlib/Mathlib/Order/Basic.lean",
+              "sed -n 420,640p verifier/gmt-compare.py; cat verifier/lean_contract.py",
+              "python3 -I /tmp/rsd-mw-wlm-v2-scripts/build.py",
+              "lake env lean /tmp/rsd-mw-wlm-v2/{Full,FromProofs}.lean; lake env lean /tmp/rsd-mw-wlm-v2/cmp/*_{Challenge,SolutionEmu}.lean",
+              "lake env lean /tmp/rsd-mw-wlm-v2-review/{Stubbed,AxStubbed,FromProofsUncleAx,Probe}.lean"
+            ],
+            "files": [
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Regular.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Separation/Regular.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/WithDensity.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/ContinuousLinearMap.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Operator/BoundedLinearMaps.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Operator/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Typeclasses/Finite.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Order/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-regular-set-dense-a1-mass-eq-weight-a1-weight-le-mass-a1/parent-child-handoff.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-regular-set-dense-a1-mass-eq-weight-a1-weight-le-mass-a1/decomposition-v1.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py",
+              "/tmp/rsd-mw-wlm-v2/FromProofs.lean",
+              "/tmp/rsd-mw-wlm-v2/subproblems.json",
+              "/tmp/rsd-mw-wlm-v2-review/Stubbed.lean",
+              "/tmp/rsd-mw-wlm-v2-review/FromProofsUncleAx.lean"
+            ],
+            "conclusion": "Snapshot (project b4d606d, Mathlib 25730c7c): the workspace Contract.lean and Submission.lean are identical (457 lines).\n\nNo snapshot project declaration proves any child. rg for measure_le_massOn, massOn_le_measure, orient_opNorm, opNorm_le_one and unit_orientation_norm over the project finds no match.\n\nThe proposition of child 1 is proved in another branch as unit_orientation_norm_le_one (commit 0325970d). That name is reserved by an active node there and is not merged into this branch, so attempt 1's reuse was rejected. Child 1 is re-proved under the fresh name rsd_mw_wlm_orient_opNorm_le_one.\n\nMathlib tools located in the snapshot:\n- InnerRegularWRT.trans, of_pseudoMetrizableSpace and isCompact_isClosed (Regular.lean:280/674/684)\n- exists_open_between_and_isCompact_closure (Separation/Regular.lean:364)\n- withDensity_apply and withDensity_absolutelyContinuous (WithDensity.lean:44/146)\n- integral_withDensity_eq_integral_smul (Bochner/ContinuousLinearMap.lean:251)\n- setIntegral_eq_integral_of_forall_compl_eq_zero (Bochner/Set.lean:486)\n- isBoundedBilinearMap_apply (BoundedLinearMaps.lean:391)\n- ofReal_integral_eq_lintegral_ofReal (Bochner/Basic.lean:739)\n- isFiniteMeasure_restrict (Typeclasses/Finite.lean:40)\n- le_of_forall_lt (Order/Basic.lean:352)\n- opNorm_le_bound and opNorm_smul_le (Operator/Basic.lean:196/329)\n\nLean checks in the replayed contract scope:\n- All five children compile from the Lean-route blocks of their natural proofs, with axioms propext, Classical.choice and Quot.sound only.\n- The exact parent type compiles from the children plus the two uncle stubs. With the uncles as axioms, the parent depends only on those two and the standard axioms.\n- All challenge files from the verifier's child_modules elaborate.\n\nNames: none of the five lean_names occurs in dag.json (298 nodes), GMT/, .humanize (apart from this node's rejected v1) or any git ref."
+          }
+        ],
+        "parent_id": "root.regular_set_dense-a1.mass_eq_weight-a1.weight_le_mass-a1",
+        "child_id": "root.regular_set_dense-a1.mass_eq_weight-a1.weight_le_mass-a1.orient_opnorm_bound-a1",
+        "subproblem": {
+          "key": "orient_opnorm_bound",
+          "title": "Unit orientations have operator norm at most 1",
+          "statement": "Let P, n ∈ ℕ, let Q be a linear subspace of ℝ^P (Euclid P) and let ξ ∈ MultiVector P n = (Covector (Euclid P) n →L[ℝ] ℝ). Here Covector (Euclid P) n is the normed space of continuous alternating n-linear forms on ℝ^P with the operator norm, and MultiVector P n carries the operator norm of continuous linear functionals. Suppose IsUnitOrientationOf ξ Q: there is an orthonormal family τ = (τ_1, …, τ_n) in ℝ^P spanning Q such that either ξ(α) = α(τ_1, …, τ_n) for every n-covector α, or ξ(α) = −α(τ_1, …, τ_n) for every n-covector α. Then ‖ξ‖ ≤ 1.",
+          "lean_statement": "∀ (P n : ℕ) (Q : Submodule ℝ (Euclid P)) (ξ : MultiVector P n), IsUnitOrientationOf ξ Q → ‖ξ‖ ≤ 1",
+          "lean_name": "rsd_mw_wlm_orient_opNorm_le_one",
+          "depends_on": [],
+          "natural_proof": "Source: parent proof, step 1(c) (\"‖ξ(x)‖ ≤ 1, because ξ(x)(α) = ±α(τ) for an orthonormal τ and |α(τ)| ≤ ‖α‖·∏_i ‖τ_i‖ = ‖α‖\").\n\nName note: the active DAG node root.half_space_cone_lies_in_boundary-a1.imrep_measure_unique-a1.orientation_norm_bound-a1 in another branch reserves the same proposition under the name unit_orientation_norm_le_one. That declaration is not part of this branch's Submission. This child therefore proves the statement itself under the globally unique name rsd_mw_wlm_orient_opNorm_le_one and does not cite the other declaration.\n\nNorms: Covector (Euclid P) n carries the operator norm of continuous alternating maps; MultiVector P n = (Covector (Euclid P) n →L[ℝ] ℝ) carries the operator norm of continuous linear functionals.\n\n1. By the hypothesis IsUnitOrientationOf ξ Q, choose a family τ = (τ_1, …, τ_n) in ℝ^P with the following properties. τ is orthonormal, and either ξ(α) = α(τ_1, …, τ_n) for every n-covector α, or ξ(α) = −α(τ_1, …, τ_n) for every n-covector α. The spanning property Submodule.span ℝ (range τ) = Q is not used.\n2. Fix an n-covector α. Since α is a continuous multilinear map, |α(τ_1, …, τ_n)| ≤ ‖α‖·∏_{i=1}^n ‖τ_i‖ (ContinuousAlternatingMap.le_opNorm). Orthonormality gives ‖τ_i‖ = 1 for every i (the first component of Orthonormal), so the product equals 1; for n = 0 it is the empty product 1. Hence |α(τ)| ≤ ‖α‖.\n3. In either sign case of step 1, |ξ(α)| = |±α(τ)| = |α(τ)| ≤ 1·‖α‖.\n4. Step 3 holds for every n-covector α, and 1 ≥ 0. By the defining property of the operator norm of the continuous linear functional ξ (ContinuousLinearMap.opNorm_le_bound), ‖ξ‖ ≤ 1. ∎\n\nLean route (kernel-checked in the frozen contract scope as Submission.rsd_mw_wlm_orient_opNorm_le_one; axioms propext, Classical.choice, Quot.sound):\n  rintro P n Q ξ ⟨τ, hτ, -, hξ⟩\n  refine ContinuousLinearMap.opNorm_le_bound _ zero_le_one fun α => ?_\n  have hbound : ‖α τ‖ ≤ ‖α‖ := by simpa [hτ.1] using α.le_opNorm τ\n  rcases hξ with h | h\n  · rw [h, one_mul]; exact hbound\n  · rw [h, norm_neg, one_mul]; exact hbound",
+          "proof_key_steps": [
+            "Unpack IsUnitOrientationOf: ξ(α) = ±α(τ) for an orthonormal family τ.",
+            "|α(τ)| ≤ ‖α‖·∏‖τ_i‖ = ‖α‖ by the multilinear operator-norm bound and ‖τ_i‖ = 1.",
+            "Hence |ξ(α)| ≤ 1·‖α‖ for every α, so ‖ξ‖ ≤ 1 by opNorm_le_bound."
+          ]
+        },
+        "audit": {
+          "key": "orient_opnorm_bound",
+          "acceptable": true,
+          "natural_proof_acceptable": true,
+          "reason": "The one-line type exactly matches the prose. Orthonormality, the multilinear operator-norm inequality and the two sign cases establish the functional bound, including n = 0. The proof is independent of the other branch's declaration."
+        },
+        "resolved_dependencies": [],
+        "plan_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-regular-set-dense-a1-mass-eq-weight-a1-weight-le-mass-a1-orient-e00ab99338/parent-supplied-plan.md",
+        "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-regular-set-dense-a1-mass-eq-weight-a1-weight-le-mass-a1-orient-e00ab99338/parent-supplied-natural-proof.md",
+        "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-regular-set-dense-a1-mass-eq-weight-a1-weight-le-mass-a1-orient-e00ab99338/parent-supplied-natural-proof.json"
+      }
+    }
+  ],
+  "files": {
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-regular-set-dense-a1-mass-eq-weight-a1-weight-le-mass-a1/task.md": "9e4ea41ef257319c83fb02009150ae5578d921c66b3d8377928fa0839feacb93",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-regular-set-dense-a1-mass-eq-weight-a1-weight-le-mass-a1/problem.md": "5b78b2fcb87970586dd76fea8db5f33ecf950ba8df40e0bbfb2eb94f2eb67d06",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-regular-set-dense-a1-mass-eq-weight-a1-weight-le-mass-a1/problem.json": "a64eb8eb7211544e754b40959feeb1378f1cc31f7893bafbe4c7add776da17a2",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-regular-set-dense-a1-mass-eq-weight-a1-weight-le-mass-a1/reference-manifest.json": "166b882f6e1c222a7523ace3505311d8aa41f939a8ae9b59a30353c38d3be033",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-regular-set-dense-a1-mass-eq-weight-a1-weight-le-mass-a1/decomposition.json": "bb6a4295a4d9e026d26d2361852fb9ca9221db08c5fdd9a59cc1d20efddb9a6e",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-regular-set-dense-a1-mass-eq-weight-a1-weight-le-mass-a1/decomposition-audit.json": "3fb44c55e0b160e501f3418704bc97b1b863f702042d4f31fd25686787f2f0e5",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-regular-set-dense-a1-mass-eq-weight-a1-weight-le-mass-a1/controller-contract.json": "98ca6c78b2de77f692540fa24e80694ddcd2346111afbb4918901a159346efca",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-regular-set-dense-a1-mass-eq-weight-a1-weight-le-mass-a1/children/root-regular-set-dense-a1-mass-eq-weight-a1-weight-le-mass-a1-eval-formula-a1/parent-child-handoff.json": "f091cf06eb0b84bf5cb1c8e1aea2ddaa8286a253dd024e383a33ae809b07af23",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-regular-set-dense-a1-mass-eq-weight-a1-weight-le-mass-a1/children/root-regular-set-dense-a1-mass-eq-weight-a1-weight-le-mass-a1-eval-formula-a1/parent-supplied-plan.md": "6ed9cdb59c65a3c36fc2b0d74ffb5b3211c51d47ab1f34154454b518a0556af3",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-regular-set-dense-a1-mass-eq-weight-a1-weight-le-mass-a1/children/root-regular-set-dense-a1-mass-eq-weight-a1-weight-le-mass-a1-eval-formula-a1/parent-supplied-natural-proof.md": "1c5143383cbff2bb26ce7471818a600a602a11366ac77bd8f51231db5c9bbc45",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-regular-set-dense-a1-mass-eq-weight-a1-weight-le-mass-a1/children/root-regular-set-dense-a1-mass-eq-weight-a1-weight-le-mass-a1-eval-formula-a1/parent-supplied-natural-proof.json": "05d04055622541211531c9456f26477e7be15aeb3d23fc561586714e58d2432a",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-regular-set-dense-a1-mass-eq-weight-a1-weight-le-mass-a1/children/root-regular-set-dense-a1-mass-eq-weight-a1-weight-le-mass-a1-eval-formula-a1/node.json": "7146652166ca4ad32dcb572d5ef122954686c4866683d769e1be913f06a0d599",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-regular-set-dense-a1-mass-eq-weight-a1-weight-le-mass-a1/children/root-regular-set-dense-a1-mass-eq-weight-a1-weight-le-mass-a1-integrable-comp-a1/parent-child-handoff.json": "5dff9fa92cc02a000b700721cde11d8aad5d67b5d64195945003e1633d6a30b3",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-regular-set-dense-a1-mass-eq-weight-a1-weight-le-mass-a1/children/root-regular-set-dense-a1-mass-eq-weight-a1-weight-le-mass-a1-integrable-comp-a1/parent-supplied-plan.md": "94daa86073a2e6f1613c19109c28bccdd9bcadb83fec8bd1926b0c47985d46e8",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-regular-set-dense-a1-mass-eq-weight-a1-weight-le-mass-a1/children/root-regular-set-dense-a1-mass-eq-weight-a1-weight-le-mass-a1-integrable-comp-a1/parent-supplied-natural-proof.md": "f0f54400ac7566dbc3e3d95405a66551c2ca4b96c54c5f007239515e45ab7c6e",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-regular-set-dense-a1-mass-eq-weight-a1-weight-le-mass-a1/children/root-regular-set-dense-a1-mass-eq-weight-a1-weight-le-mass-a1-integrable-comp-a1/parent-supplied-natural-proof.json": "5467a61fb59ccd12715dd61ab09ad8e6eb57289a7752ee85fcd6bec13a2c37d7",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-regular-set-dense-a1-mass-eq-weight-a1-weight-le-mass-a1/children/root-regular-set-dense-a1-mass-eq-weight-a1-weight-le-mass-a1-integrable-comp-a1/node.json": "db4ab3a8ca7268598f5ca507235dcc4a00d0b586631cd7404ad407f46e331444",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-regular-set-dense-a1-mass-eq-weight-a1-weight-le-mass-a1/children/root-regular-set-dense-a1-mass-eq-weight-a1-weight-le-mass-a1-integra-a67a38d715/parent-child-handoff.json": "39a09404af8b0cdd81d6afffb44cc914abf931294eada84fc4300dcbae5e7978",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-regular-set-dense-a1-mass-eq-weight-a1-weight-le-mass-a1/children/root-regular-set-dense-a1-mass-eq-weight-a1-weight-le-mass-a1-integra-a67a38d715/parent-supplied-plan.md": "7f0717841e2ee4d272507f92bf62e72284c9fce80a35c54f17afd3da5600528d",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-regular-set-dense-a1-mass-eq-weight-a1-weight-le-mass-a1/children/root-regular-set-dense-a1-mass-eq-weight-a1-weight-le-mass-a1-integra-a67a38d715/parent-supplied-natural-proof.md": "a9efb36ab6a0d80e79e0c686af92d1070c2bee2e5c7a4ec4e8b5b55f1fdcc917",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-regular-set-dense-a1-mass-eq-weight-a1-weight-le-mass-a1/children/root-regular-set-dense-a1-mass-eq-weight-a1-weight-le-mass-a1-integra-a67a38d715/parent-supplied-natural-proof.json": "b044151df6a87edcdbd2ad81502df43788214aea37e4fd732a8b6cd2284d828e",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-regular-set-dense-a1-mass-eq-weight-a1-weight-le-mass-a1/children/root-regular-set-dense-a1-mass-eq-weight-a1-weight-le-mass-a1-integra-a67a38d715/node.json": "27b7987cbbcc1403d56decc116f11c224d2e9f93e1b66d45d7385bae7cbe16ca",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-regular-set-dense-a1-mass-eq-weight-a1-weight-le-mass-a1/children/root-regular-set-dense-a1-mass-eq-weight-a1-weight-le-mass-a1-open-approx-a1/parent-child-handoff.json": "5d06fdd57e2fc00d96e88c559a5169974c3ed8e262c0a0c4d6f4275759a09ead",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-regular-set-dense-a1-mass-eq-weight-a1-weight-le-mass-a1/children/root-regular-set-dense-a1-mass-eq-weight-a1-weight-le-mass-a1-open-approx-a1/parent-supplied-plan.md": "aace1717cd2aa32f8e64c416bbb2ccd3f687ed13d07437f580f05bd115e47dc4",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-regular-set-dense-a1-mass-eq-weight-a1-weight-le-mass-a1/children/root-regular-set-dense-a1-mass-eq-weight-a1-weight-le-mass-a1-open-approx-a1/parent-supplied-natural-proof.md": "06fef50aa2cbcefdbbfaf6120e089bf00a5cf3dbf7e0544f4eef0f65aadccffe",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-regular-set-dense-a1-mass-eq-weight-a1-weight-le-mass-a1/children/root-regular-set-dense-a1-mass-eq-weight-a1-weight-le-mass-a1-open-approx-a1/parent-supplied-natural-proof.json": "aee0708be109e7ca91f87c3399dbf3982d00ea1b4578df4637f1a0d57fc244a4",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-regular-set-dense-a1-mass-eq-weight-a1-weight-le-mass-a1/children/root-regular-set-dense-a1-mass-eq-weight-a1-weight-le-mass-a1-open-approx-a1/node.json": "47f8be37838e444f6733ba6890072f253c6a404fae8b1c4af2393a49a86d91c4",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-regular-set-dense-a1-mass-eq-weight-a1-weight-le-mass-a1/children/root-regular-set-dense-a1-mass-eq-weight-a1-weight-le-mass-a1-orient-e00ab99338/parent-child-handoff.json": "12b98394164cee244a5982585bb544b87ab9fed48a4045dc74f2b2e3324d6b7b",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-regular-set-dense-a1-mass-eq-weight-a1-weight-le-mass-a1/children/root-regular-set-dense-a1-mass-eq-weight-a1-weight-le-mass-a1-orient-e00ab99338/parent-supplied-plan.md": "f74e4ce0f0e287ca002835a4dc4b2aee6a85bf699beb408e3e0d3ea4d4c3e1fb",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-regular-set-dense-a1-mass-eq-weight-a1-weight-le-mass-a1/children/root-regular-set-dense-a1-mass-eq-weight-a1-weight-le-mass-a1-orient-e00ab99338/parent-supplied-natural-proof.md": "81eef64de04608326a87adcca02647885abf2ec44e68e2c292728e30638071a8",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-regular-set-dense-a1-mass-eq-weight-a1-weight-le-mass-a1/children/root-regular-set-dense-a1-mass-eq-weight-a1-weight-le-mass-a1-orient-e00ab99338/parent-supplied-natural-proof.json": "d7e38018728702c7a97d2a95085b7d5714364b0d0006a4757f2c80a5820c00c5",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-regular-set-dense-a1-mass-eq-weight-a1-weight-le-mass-a1/children/root-regular-set-dense-a1-mass-eq-weight-a1-weight-le-mass-a1-orient-e00ab99338/node.json": "3dc543ec945a21be02c2d874fc8ef518ecd52f09329c7939337a6260af84ad3a"
+  }
+}

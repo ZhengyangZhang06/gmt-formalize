@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_sector_endpoint_density-a1.sector_points-a1.polar_null-a1",
+  "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_sector_endpoint_density-a1.sector_points-a1",
+  "depth": 5,
+  "title": "The polar parametrization of an orthonormal pair pulls μHE[2]-null sets back to Lebesgue-null sets",
+  "statement": "Let P ∈ ℕ, a, e ∈ ℝ^P with |a| = |e| = 1 and ⟨a, e⟩ = 0, and let N ⊆ ℝ^P be an arbitrary set with μHE[2](N) = 0. Then for Lebesgue-almost every p = (t, α) ∈ ℝ × ℝ: if t > 0 and −π < α < π, then t(cos α·a + sin α·e) ∉ N.",
+  "lean_statement": "∀ (P : ℕ) (a e : Euclid P) (N : Set (Euclid P)), ‖a‖ = 1 → ‖e‖ = 1 → inner ℝ a e = 0 → μHE[2] N = 0 → ∀ᵐ p : ℝ × ℝ, 0 < p.1 → -Real.pi < p.2 → p.2 < Real.pi → p.1 • (Real.cos p.2 • a + Real.sin p.2 • e) ∉ N",
+  "lean_name": "idtp_cse_sp_polar_null_preimage",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-046a94e391-a1"
+}

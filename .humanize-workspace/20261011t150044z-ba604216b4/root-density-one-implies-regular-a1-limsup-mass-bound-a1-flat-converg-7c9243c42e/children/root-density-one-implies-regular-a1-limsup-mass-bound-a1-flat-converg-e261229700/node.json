@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.flat_convergence-a1.deformation-a1.pushforward_calculus-a1.cylinder-a1",
+  "parent_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.flat_convergence-a1.deformation-a1.pushforward_calculus-a1",
+  "depth": 6,
+  "title": "The cylinder (0,1) × M over a Borel countably k-rectifiable M of finite measure: Borel, rectifiable, Fubini measure identity, tangent planes ℝe₀ ⊕ T_xM",
+  "statement": "Let P, k ∈ ℕ and Hᵈ = μHE[d]. Write ι(t,x) := (t, x_1, …, x_P) ∈ ℝ^{P+1} (Lean WithLp.toLp 2 (Fin.cons t (WithLp.ofLp x))), pr(y) := (y_1, …, y_P) ∈ ℝ^P (Lean WithLp.toLp 2 (Fin.tail (WithLp.ofLp y))) and ê₀ := EuclideanSpace.single 0 1. Let M ⊆ ℝ^P be Borel and countably k-rectifiable with H^k(M) < ∞. Then there is a Borel set C ⊆ ι((0,1) × M) ⊆ ℝ^{P+1} with three properties. (1) C is countably (k+1)-rectifiable. (2) H^{k+1}⌞C = ι_*(L¹⌞(0,1) ⊗ H^k⌞M), i.e. μHE[k+1].restrict C = ((volume.restrict (Ioo 0 1)).prod (μHE[k].restrict M)).map ι. (3) For H^{k+1}-a.e. y ∈ C and every linear subspace Q ⊆ ℝ^P: if M has approximate tangent space Q at pr(y) (HasApproximateTangentSpaceAt k M (pr y) Q), then C has approximate tangent space span(insert ê₀ (J''Q)) = ℝê₀ ⊕ J(Q) at y, where J v := ι(0, v).",
+  "lean_statement": "∀ (P k : ℕ) (M : Set (Euclid P)), MeasurableSet M → CountablyRectifiable k M → μHE[k] M ≠ ∞ → ∃ C : Set (Euclid (P + 1)), MeasurableSet C ∧ C ⊆ (fun p : ℝ × Euclid P => (WithLp.toLp 2 (Fin.cons p.1 (WithLp.ofLp p.2) : Fin (P + 1) → ℝ) : Euclid (P + 1))) '' (Ioo (0 : ℝ) 1 ×ˢ M) ∧ CountablyRectifiable (k + 1) C ∧ μHE[k + 1].restrict C = ((volume.restrict (Ioo (0 : ℝ) 1)).prod (μHE[k].restrict M)).map (fun p : ℝ × Euclid P => (WithLp.toLp 2 (Fin.cons p.1 (WithLp.ofLp p.2) : Fin (P + 1) → ℝ) : Euclid (P + 1))) ∧ ∀ᵐ y ∂(μHE[k + 1].restrict C), ∀ Q : Submodule ℝ (Euclid P), HasApproximateTangentSpaceAt k M (WithLp.toLp 2 (Fin.tail (WithLp.ofLp y)) : Euclid P) Q → HasApproximateTangentSpaceAt (k + 1) C y (Submodule.span ℝ (insert (EuclideanSpace.single (0 : Fin (P + 1)) (1 : ℝ)) ((fun v : Euclid P => (WithLp.toLp 2 (Fin.cons (0 : ℝ) (WithLp.ofLp v) : Fin (P + 1) → ℝ) : Euclid (P + 1))) '' (Q : Set (Euclid P)))))",
+  "lean_name": "dor_lmb_fcdp_cylinder",
+  "depends_on": [
+    "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.local_unit_rep-a1.area_formula-a1.gram_area-a1",
+    "root.minimizing_implies_stationary-a1.diffeo_pushforward-a1.bilipschitz_pieces-a1",
+    "root.minimizing_implies_stationary-a1.diffeo_pushforward-a1.piece_tangent_density-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.local_unit_rep-a1.area_formula-a1.gram_area-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-db95546c3f-a1",
+      "result_commit": "d5ba41d68f1ca2e5ef9b0ebdd62cf01e6e24a919",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.minimizing_implies_stationary-a1.diffeo_pushforward-a1.bilipschitz_pieces-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-bilipschi-4344c8c0d8-a1",
+      "result_commit": "a2ba78fca36b5fe8a0051278d30da09823c8b59c",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.minimizing_implies_stationary-a1.diffeo_pushforward-a1.piece_tangent_density-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-piece-tan-680a7024c9-a1",
+      "result_commit": "a21680472b6919972de04d02dc3e1395a15d4171",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-limsup-mass-bound-a1-flat-converg-e261229700-a1"
+}

@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.threshold_reduction-a1.blowup_class-a1.vanishing_blowup-a1",
+  "parent_id": "root.dimension_reduction_results-a1.threshold_reduction-a1.blowup_class-a1",
+  "depth": 4,
+  "title": "Blow-ups centred at a point off the support converge weakly to zero (conditional on blowup_calculus)",
+  "statement": "Assume (BC) — the frozen type of the selected node's registered dependency blowup_calculus: for all P, n ∈ ℕ, U ⊆ ℝ^P, T ∈ 𝒟_n(U), x ∈ ℝ^P and λ > 0: (i) M_W(blowUp T x λ) = ofReal(λ⁻¹ⁿ)·M_{(dilation x λ)⁻¹(W)}(T) for every W; (ii) currentEval (blowUp T x λ) ω = currentEval T (affinePullbackForm (dilationCLM P λ) (−(λ⁻¹•x)) ω) for every n-form ω on ℝ^P; (iii) currentEval (blowUp (blowUp T x λ) y μ) ω = currentEval (blowUp T (x + λ•y) (λμ)) ω for all y ∈ ℝ^P, μ > 0 and n-forms ω. Then for all P, n ∈ ℕ, every set U ⊆ ℝ^P, every T ∈ 𝒟_n(U) and every p ∈ U with p ∉ spt T there is ε > 0 such that B_ε(p) ⊆ U, T vanishes on B_ε(p) (T.VanishesOn (ball p ε): T ω = 0 for every ω ∈ 𝒟ⁿ(U) with tsupport ω ⊆ B_ε(p)), M_{B_ε(p)}(T) = 0, and for every sequence λ_j > 0 with λ_j → 0 the blow-ups converge weakly in ℝ^P to the zero current: ConvergesWeakly (j ↦ blowUp T p λ_j) 0, with 0 the zero element of 𝒟_n(ℝ^P) (GeometricCurrentOn univ n).",
+  "lean_statement": "(∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (x : Euclid P) (lam : ℝ) (hlam : 0 < lam), (∀ W : Set (Euclid P), (blowUp T x lam hlam.ne').massOn W = ENNReal.ofReal (lam⁻¹ ^ n) * T.massOn (dilation x lam ⁻¹' W)) ∧ (∀ ω : DifferentialForm (Euclid P) n, currentEval (blowUp T x lam hlam.ne') ω = currentEval T (affinePullbackForm (dilationCLM P lam) (-(lam⁻¹ • x)) ω)) ∧ ∀ (y : Euclid P) (mu : ℝ) (hmu : 0 < mu) (ω : DifferentialForm (Euclid P) n), currentEval (blowUp (blowUp T x lam hlam.ne') y mu hmu.ne') ω = currentEval (blowUp T (x + lam • y) (lam * mu) (mul_pos hlam hmu).ne') ω) → ∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (p : Euclid P), p ∈ U → p ∉ T.support → ∃ ε : ℝ, 0 < ε ∧ ball p ε ⊆ U ∧ T.VanishesOn (ball p ε) ∧ T.massOn (ball p ε) = 0 ∧ ∀ (lams : ℕ → ℝ) (hlams : ∀ j, 0 < lams j), Tendsto lams atTop (𝓝 0) → ConvergesWeakly (fun j => blowUp T p (lams j) (hlams j).ne') (0 : GeometricCurrentOn (univ : Set (Euclid P)) n)",
+  "lean_name": "dimred_tr_bc_vanishing_blowup",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-threshold-reduction-a1-blowup-cla-b6ccbff2fc-a1"
+}

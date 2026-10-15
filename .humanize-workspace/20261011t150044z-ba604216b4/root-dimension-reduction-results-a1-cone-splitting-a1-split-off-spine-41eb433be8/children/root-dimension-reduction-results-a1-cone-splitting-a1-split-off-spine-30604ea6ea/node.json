@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.cone_splitting-a1.split_off_spine-a1.minimality_transfer-a1.frame_measure-a1.box_measure-a1",
+  "parent_id": "root.dimension_reduction_results-a1.cone_splitting-a1.split_off_spine-a1.minimality_transfer-a1.frame_measure-a1",
+  "depth": 6,
+  "title": "Coordinate boxes in the span of an orthonormal frame have H^k-measure (2r)^k",
+  "statement": "Let P, k ∈ ℕ and let g = (g_1, …, g_k) (g : Fin k → Euclid P) be an orthonormal family in ℝ^P with span G := span{g_1, …, g_k}; H^k := μHE[k]. Then for every r > 0, the closed box {t ∈ G : |⟨g_i, t⟩| ≤ r for all i} and the open box {t ∈ G : |⟨g_i, t⟩| < r for all i} both have H^k-measure ENNReal.ofReal((2r)^k).",
+  "lean_statement": "∀ (P k : ℕ) (g : Fin k → Euclid P), Orthonormal ℝ g → ∀ r : ℝ, 0 < r → μHE[k] {t | t ∈ Submodule.span ℝ (Set.range g) ∧ ∀ i, |inner ℝ (g i) t| ≤ r} = ENNReal.ofReal ((2 * r) ^ k) ∧ μHE[k] {t | t ∈ Submodule.span ℝ (Set.range g) ∧ ∀ i, |inner ℝ (g i) t| < r} = ENNReal.ofReal ((2 * r) ^ k)",
+  "lean_name": "dimred_cs_sos_mt_fm_box_measure",
+  "depends_on": [
+    "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.plane_integer-a1.plane_measure-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.plane_integer-a1.plane_measure-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-6a8bb251d9-a1",
+      "result_commit": "21dd628cfe1c8277775119a1cc5660485ede7dfc",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-cone-splitting-a1-split-off-spine-30604ea6ea-a1"
+}

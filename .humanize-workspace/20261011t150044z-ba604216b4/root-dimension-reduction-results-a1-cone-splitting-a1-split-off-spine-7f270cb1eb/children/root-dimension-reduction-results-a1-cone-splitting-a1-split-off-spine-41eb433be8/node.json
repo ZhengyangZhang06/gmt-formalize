@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.cone_splitting-a1.split_off_spine-a1.minimality_transfer-a1.frame_measure-a1",
+  "parent_id": "root.dimension_reduction_results-a1.cone_splitting-a1.split_off_spine-a1.minimality_transfer-a1",
+  "depth": 5,
+  "title": "Hausdorff measure on the span of an orthonormal frame: the frame map pushes Lebesgue measure to H^k restricted to the span, and coordinate boxes have measure (2r)^k",
+  "statement": "Let P, k ∈ ℕ and let g = (g_1, …, g_k) (g : Fin k → Euclid P) be an orthonormal family in ℝ^P with span G := span{g_1, …, g_k}; H^k := μHE[k]. Let ι : (Fin k → ℝ) → ℝ^P, ι(u) := Σ_i u_i·g_i, where Fin k → ℝ carries its product Lebesgue measure volume. Then:\n(i) the push-forward of volume under ι is H^k restricted to G: (volume).map ι = H^k⌞G;\n(ii) for every r > 0 the closed box {t ∈ G : |⟨g_i, t⟩| ≤ r for all i} and the open box {t ∈ G : |⟨g_i, t⟩| < r for all i} both have H^k-measure ENNReal.ofReal((2r)^k).",
+  "lean_statement": "∀ (P k : ℕ) (g : Fin k → Euclid P), Orthonormal ℝ g → (volume : Measure (Fin k → ℝ)).map (fun u => ∑ i, u i • g i) = μHE[k].restrict (Submodule.span ℝ (Set.range g) : Set (Euclid P)) ∧ ∀ r : ℝ, 0 < r → μHE[k] {t | t ∈ Submodule.span ℝ (Set.range g) ∧ ∀ i, |inner ℝ (g i) t| ≤ r} = ENNReal.ofReal ((2 * r) ^ k) ∧ μHE[k] {t | t ∈ Submodule.span ℝ (Set.range g) ∧ ∀ i, |inner ℝ (g i) t| < r} = ENNReal.ofReal ((2 * r) ^ k)",
+  "lean_name": "dimred_cs_sos_mt_frame_measure",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-cone-splitting-a1-split-off-spine-41eb433be8-a1"
+}

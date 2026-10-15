@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_constant_density_planar-a1.sheet_first_variation-a1.approx_tangent_eq-a1",
+  "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_constant_density_planar-a1.sheet_first_variation-a1",
+  "depth": 5,
+  "title": "On a carrier lying a.e. inside a C¹ submanifold, the approximate tangent planes are the submanifold's tangent planes",
+  "statement": "For all P, n ∈ ℕ, every U ⊆ ℝ^P, every integer multiplicity triple R = (S, θ, ξ) ∈ IMRep U n and all M, V ⊆ ℝ^P, assume three things: M is an embedded C¹ n-dimensional submanifold (IsEmbeddedSubmanifold 1 n M); V is open; and Hⁿ((S ∩ V) ∖ M) = 0, where Hⁿ := μHE[n]. Then approxTangentPlane n S x = span(tangentSpace M x) for Hⁿ⌞(S ∩ V)-a.e. x.",
+  "lean_statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (R : IMRep U n) (M V : Set (Euclid P)), IsEmbeddedSubmanifold 1 n M → IsOpen V → μHE[n] ((R.carrier ∩ V) \\ M) = 0 → ∀ᵐ x ∂(μHE[n].restrict (R.carrier ∩ V)), approxTangentPlane n R.carrier x = Submodule.span ℝ (tangentSpace M x)",
+  "lean_name": "idtp_ccd_sfv_approxTangentPlane_eq_span_ae",
+  "depends_on": [
+    "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_constant_density_planar-a1.sheet_first_variation-a1.tangent_space_dim-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_constant_density_planar-a1.sheet_first_variation-a1.tangent_space_dim-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-1bbaed24ad-a1"
+}

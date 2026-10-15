@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.retraction-a1.normal_coordinates-a1.linear_iso-a1",
+  "parent_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.retraction-a1.normal_coordinates-a1",
+  "depth": 5,
+  "title": "For injective L : ℝ^d → ℝ^P, (w, k) ↦ Lw + k is an isomorphism ℝ^d × (range L)^⊥ ≅ ℝ^P",
+  "statement": "Let P, d ∈ ℕ and let L : ℝ^d → ℝ^P be an injective linear map (automatically continuous, as ℝ^d is finite-dimensional). Let E := (range L)^⊥ ⊆ ℝ^P be the orthogonal complement of its range, with the subspace norm, and give ℝ^d × E the product (max) norm. Then there is a continuous linear equivalence Λ : ℝ^d × E → ℝ^P with Λ(w, k) = Lw + k for all w ∈ ℝ^d and k ∈ E.",
+  "lean_statement": "∀ (P d : ℕ) (L : Euclid d →L[ℝ] Euclid P), Injective L → ∃ Λ : (Euclid d × ↥(L.range)ᗮ) ≃L[ℝ] Euclid P, ∀ (w : Euclid d) (k : ↥(L.range)ᗮ), Λ (w, k) = L w + k",
+  "lean_name": "dor_lmb_ret_nc_linear_iso",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-limsup-mass-bound-a1-retraction-a-c42bc76ee3-a1"
+}

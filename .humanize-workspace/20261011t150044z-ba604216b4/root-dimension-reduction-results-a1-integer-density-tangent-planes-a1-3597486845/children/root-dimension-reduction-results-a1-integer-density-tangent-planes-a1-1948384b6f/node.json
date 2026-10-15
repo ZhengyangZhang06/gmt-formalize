@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_constant_density_planar-a1.regular_of_const_density-a1",
+  "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_constant_density_planar-a1",
+  "depth": 4,
+  "title": "Constant integer density on the support near p makes p a regular point of a minimizing cycle",
+  "statement": "For all P, n ∈ ℕ with n ≥ 1, every open U ⊆ ℝ^P (ℝ^P := Euclid P), every T ∈ 𝒟_n(U) that is minimizing in U (IsMinimizingIn T U) with ∂T = 0 in U (BoundaryVanishes T), every p ∈ spt T, every k ∈ ℕ and every δ > 0 such that Θⁿ(μ_T, y) = k (HasMassDensity T y k) for every y ∈ spt T ∩ B_δ(p): p ∈ reg T (p ∈ regularSet T, Simon 7.4.1).",
+  "lean_statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (p : Euclid P) (k : ℕ) (δ : ℝ), 1 ≤ n → IsOpen U → IsMinimizingIn T U → BoundaryVanishes T → p ∈ T.support → 0 < δ → (∀ y ∈ T.support, y ∈ ball p δ → HasMassDensity T y k) → p ∈ regularSet T",
+  "lean_name": "idtp_ccd_regular_of_const_density",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-1948384b6f-a1"
+}

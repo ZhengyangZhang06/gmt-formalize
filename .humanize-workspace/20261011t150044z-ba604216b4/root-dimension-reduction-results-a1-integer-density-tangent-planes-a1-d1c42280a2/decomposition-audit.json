@@ -1,0 +1,63 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "rg -n '^(import|open|namespace)|def (IsMinimizingIn|HasMassDensity|IsConeCurrent|BoundaryVanishes)|abbrev Euclid' .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "rg -n 'zeroRegion|def support|isClosed_support' .lake/packages/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+        "sed -n '118,140p' .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/SpecialFunctions/Trigonometric/Bounds.lean",
+        "sed -n '250,265p' .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/FiniteDimensional/Basic.lean",
+        "rg -n 'idtp_tdc_acont_' .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT GMT",
+        "git show a243c05352fb1eff492fec6420918b29098095d8 -- GMT/Ch07/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/acont-review-indep/Pure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/acont-review-indep/Gmt.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/acont-review-indep/AssemblyNoUniq.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/lake-manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/SpecialFunctions/Trigonometric/Bounds.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/FiniteDimensional/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Dimension/Constructions.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Order/IntermediateValue.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-d1c42280a2/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-d1c42280a2/decomposition-v1.json",
+        "/tmp/acont-review-indep/Pure.lean",
+        "/tmp/acont-review-indep/Gmt.lean",
+        "/tmp/acont-review-indep/AssemblyNoUniq.lean"
+      ],
+      "conclusion": "The project, mathlib and SimonGMT revisions match the pins; the workspace contract and submission match the snapshot contract. Support is closed on univ, and the cited trigonometric and finite-dimensional facts have the required hypotheses. Independently checked the supplied Lean checker types against the exact proposal, handoff and frozen prerequisite types, then reran them successfully: both pure proofs, both endpoint proofs conditional on their stated prerequisites, and assembly of the exact selected parent use only propext, Classical.choice and Quot.sound. Assembly uses the supplied inline density-uniqueness argument. No proposed name occurs in the project sources or another DAG branch/decomposition, and no existing DAG declaration has a proposed exact type. All names are bare identifiers and all four propositions are standalone, one-line types matching their prose. The sibling dependencies and recorded external prerequisite closures are acyclic and do not return to the selected parent. The split appropriately separates shared geometry, real induction and the two endpoint arguments; its conclusions establish the selected arc-continuation contract."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "real_induction",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type exactly matches all three hypotheses and the conclusion. The nonempty failure set is bounded below; its infimum lies in [0,L). The base or left-step hypothesis establishes G at the infimum, and right-openness yields a strictly larger lower bound, a contradiction. The proof is complete, non-circular and covers L ≤ 0 vacuously."
+    },
+    {
+      "key": "great_circle",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type matches all five claims and the orthonormality hypotheses. Gram expansion proves both unit norms and orthogonality; the global cosine bound proves the distance estimate after justified nonnegative square comparison; subtraction formulas prove the backward rotation identity. The Euclidean norm, real inner product and scalar-action instances are correct. No hidden dimension or angular restriction is needed."
+    },
+    {
+      "key": "endpoint_density",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and type agree, including k ≥ 1 and the strictly open arc. The explicit approximating arc point proves endpoint support using closedness. Positive cone dilation transfers density and rescales the support neighborhood by tε; inverse scaling justifies the plane inclusion. These facts satisfy every hypothesis of the exact frozen sector lemma. Only great_circle and the stated external prerequisites are used."
+    },
+    {
+      "key": "endpoint_plane",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type includes every stated hypothesis. Unit norm supplies the nonzero endpoint required by the frozen planar lemma, which needs no k ≥ 1 assumption. The chosen η lies strictly below φ₀, δ′ and π, giving an interior arc point and nonzero sine. This recovers the second orthonormal direction in Q′; equal finite dimensions imply Q′ = Q. Restricting to min(δ,δ′) proves both conclusions without circularity."
+    }
+  ],
+  "required_changes": []
+}

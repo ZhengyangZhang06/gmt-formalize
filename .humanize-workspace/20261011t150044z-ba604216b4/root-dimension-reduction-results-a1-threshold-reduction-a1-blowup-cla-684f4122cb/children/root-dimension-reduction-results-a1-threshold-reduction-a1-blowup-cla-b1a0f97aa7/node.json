@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.threshold_reduction-a1.blowup_class-a1.class_tangent-a1.weight_convergence-a1",
+  "parent_id": "root.dimension_reduction_results-a1.threshold_reduction-a1.blowup_class-a1.class_tangent-a1",
+  "depth": 5,
+  "title": "Along blow-ups with mass-measure convergence, the rescaled IMRep weights converge vaguely to the weight of the limit (preliminary P7 with MassMeasuresConverge)",
+  "statement": "Assume (BUI) — verbatim the frozen type of the registered dependency blowup_imrep of the grandparent node blowup_class (the reused accepted rep_pushforward): for all P, n ∈ ℕ, U ⊆ ℝ^P, T ∈ 𝒟_n(U), x ∈ ℝ^P, λ > 0 and every IMRep R of T in U there is an IMRep R′ in dilation x λ '' U representing blowUp T x λ with R′.measure(s) = ofReal(λ⁻¹ⁿ)·R.measure((dilation x λ)⁻¹(s)) for every Borel s. Let P, n ∈ ℕ, V ⊆ ℝ^P, A ∈ 𝒟_n(V) (GeometricCurrentOn V n) with an IMRep R of A in V (R.Represents A), a ∈ ℝ^P, scales s_j > 0 (j ∈ ℕ), and C ∈ 𝒟_n(ℝ^P) (GeometricCurrentOn univ n) with an IMRep R_C of C in ℝ^P. Suppose MassMeasuresConverge (j ↦ blowUp A a s_j) C. Then for every continuous f : ℝ^P → ℝ with compact support, ∫ f d(ofReal(s_j⁻¹ⁿ) • R.measure.map(dilation a s_j)) → ∫ f dR_C.measure as j → ∞, where dilation a s (v) = s⁻¹(v − a).",
+  "lean_statement": "(∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (x : Euclid P) (lam : ℝ) (hlam : 0 < lam) (R : IMRep U n), R.Represents T → ∃ R' : IMRep (dilation x lam '' U) n, R'.Represents (blowUp T x lam hlam.ne') ∧ ∀ s : Set (Euclid P), MeasurableSet s → R'.measure s = ENNReal.ofReal (lam⁻¹ ^ n) * R.measure (dilation x lam ⁻¹' s)) → ∀ (P n : ℕ) (V : Set (Euclid P)) (A : GeometricCurrentOn V n) (R : IMRep V n) (a : Euclid P) (ss : ℕ → ℝ) (hss : ∀ j, 0 < ss j) (C : GeometricCurrentOn (univ : Set (Euclid P)) n) (RC : IMRep (univ : Set (Euclid P)) n), R.Represents A → RC.Represents C → MassMeasuresConverge (fun j => blowUp A a (ss j) (hss j).ne') C → ∀ f : Euclid P → ℝ, Continuous f → HasCompactSupport f → Tendsto (fun j => ∫ x, f x ∂(ENNReal.ofReal ((ss j)⁻¹ ^ n) • R.measure.map (dilation a (ss j)))) atTop (𝓝 (∫ x, f x ∂RC.measure))",
+  "lean_name": "dimred_tr_bc_ct_weight_convergence",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-threshold-reduction-a1-blowup-cla-b1a0f97aa7-a1"
+}
