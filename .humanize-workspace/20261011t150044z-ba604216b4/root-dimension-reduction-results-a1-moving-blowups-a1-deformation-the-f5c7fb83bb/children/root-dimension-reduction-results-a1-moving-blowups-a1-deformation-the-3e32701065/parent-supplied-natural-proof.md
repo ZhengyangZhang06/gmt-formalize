@@ -1,0 +1,80 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.dimension_reduction_results-a1.moving_blowups-a1.deformation_theorem-a1.cube_bv_median-a1.bv_poincare-a1`
+- Child DAG node: `root.dimension_reduction_results-a1.moving_blowups-a1.deformation_theorem-a1.cube_bv_median-a1.bv_poincare-a1.osc_exhaustion-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: step 3 of the parent proof (δ_j := 1/(j + 3) ↓ 0 and dominated convergence, D(δ_j) → D(0)), carried out on the product Q₁ × Q₁, where the dominated convergence becomes continuity of the set integral along an increasing union. The integrability of |u(x) − u(y)| on Q₁ × Q₁ is step 1 of the parent proof.
+
+Notation. n := m + 1; Euclid n with Lebesgue measure vol; z_i is the i-th coordinate of z; Q(δ) := {z : δ < z_i < 1 − δ for all i}; Q₁ := {y : 0 < y_i < 1 for all i}; λ := vol ⊗ vol is the product measure on Euclid n × Euclid n (the volume of the product); F(x, y) := |u(x) − u(y)| ≥ 0. Sibling used: cube_volume (Submission.cmcdtfrfg_cube_volume) with k = m + 1, i.e. vol(Q₁) = 1.
+
+1. The sequence δ_j. Let δ_j := 1/(j + 3) for j ∈ ℕ. Then 0 < δ_j ≤ 1/3 < 1/2; if j ≤ j' then δ_{j'} ≤ δ_j (one_div_le_one_div_of_le); and δ_j → 0, because j + 3 → +∞ (tendsto_natCast_atTop_atTop, tendsto_atTop_add_const_right) and the reciprocal (j + 3)⁻¹ = 1/(j + 3) (one_div) of a sequence tending to +∞ tends to 0 (Filter.Tendsto.inv_tendsto_atTop).
+2. The cubes Q_j := Q(δ_j). (a) Measurability: Q_j = ⋂_{i ∈ Fin n} ({z : δ_j < z_i} ∩ {z : z_i < 1 − δ_j}); every coordinate map z ↦ z_i is a continuous linear map (EuclideanSpace.proj i), hence measurable, so each of these sets is measurable (measurableSet_lt), and so is the intersection over the finite index set Fin n (MeasurableSet.iInter). (b) Monotonicity: if j ≤ j' and z ∈ Q_j, then δ_{j'} ≤ δ_j < z_i and z_i < 1 − δ_j ≤ 1 − δ_{j'} for all i, so Q_j ⊆ Q_{j'}. (c) Q_j ⊆ Q₁, because δ_j > 0 gives 0 < δ_j < z_i and z_i < 1 − δ_j < 1.
+3. ⋃_j Q_j = Q₁. The inclusion ⊆ is step 2(c). Conversely let z ∈ Q₁. For each i we have z_i > 0 and 1 − z_i > 0; since δ_j → 0, eventually δ_j < z_i and eventually δ_j < 1 − z_i (Tendsto.eventually with gt_mem_nhds), i.e. eventually δ_j < z_i < 1 − δ_j. Because Fin n is finite, eventually these conditions hold for all i simultaneously (Filter.eventually_all), so some j satisfies z ∈ Q_j (Filter.Eventually.exists).
+4. Integrability on Q₁ × Q₁. By cube_volume with k = m + 1, vol(Q₁) = 1 ≠ ∞, so ν := vol restricted to Q₁ is a finite measure (isFiniteMeasure_restrict), and u ∈ L¹(ν) by hypothesis. The restriction of λ to Q₁ × Q₁ is ν ⊗ ν (Measure.prod_restrict). On ν ⊗ ν the functions (x, y) ↦ u(x) and (x, y) ↦ u(y) are integrable (Integrable.comp_fst and Integrable.comp_snd, ν finite), so F is ν⊗ν-integrable, i.e. F is λ-integrable on Q₁ × Q₁; hence F is also λ-integrable on every subset of Q₁ × Q₁ (IntegrableOn.mono_set).
+5. Product sets. Let s_j := Q_j × Q_j. Each s_j is measurable (MeasurableSet.prod and step 2(a)); (s_j) is increasing (Set.prod_mono and step 2(b)); and since (Q_j) is increasing, ⋃_j (Q_j × Q_j) = (⋃_j Q_j) × (⋃_j Q_j) (Set.iUnion_prod_of_monotone: a pair with x ∈ Q_a and y ∈ Q_b lies in Q_{max(a,b)} × Q_{max(a,b)}), which equals Q₁ × Q₁ by step 3.
+6. Convergence. F is λ-integrable on ⋃_j s_j = Q₁ × Q₁ (steps 4 and 5), and the s_j are measurable and increasing, so ∫_{s_j} F dλ → ∫_{Q₁×Q₁} F dλ (tendsto_setIntegral_of_monotone). This is exactly the dominated convergence of the parent's step 3: 1_{s_j}F → 1_{Q₁×Q₁}F pointwise, dominated by the integrable function 1_{Q₁×Q₁}F.
+7. Fubini identification. For each j, F is λ-integrable on s_j ⊆ Q₁ × Q₁ (step 4), so Fubini's theorem for set integrals (setIntegral_prod) gives ∫_{s_j} F dλ = ∫_{x∈Q_j}∫_{y∈Q_j}|u(x) − u(y)| dy dx =: D_j. Likewise ∫_{Q₁×Q₁} F dλ = ∫_{x∈Q₁}∫_{y∈Q₁}|u(x) − u(y)| dy dx =: D. By step 6, D_j → D.
+8. Conclusion. Each δ_j lies in (0, 1/2) (step 1), so the hypothesis with δ = δ_j gives D_j ≤ K for every j. A limit of real numbers that are all ≤ K is ≤ K (le_of_tendsto'), hence D ≤ K, which is the claim. ∎
+
+## Key steps
+
+1. δ_j := 1/(j + 3) ∈ (0, 1/2) decreases to 0; the cubes Q_j := Q_{δ_j} are measurable, increasing, contained in Q₁, and their union is Q₁.
+2. By cube_volume (k = m + 1), vol(Q₁) = 1, so |u(x) − u(y)| is integrable on Q₁ × Q₁ for vol ⊗ vol (Measure.prod_restrict, Integrable.comp_fst, Integrable.comp_snd).
+3. The products Q_j × Q_j increase to Q₁ × Q₁; tendsto_setIntegral_of_monotone and setIntegral_prod give D(δ_j) → D(Q₁).
+4. D(δ_j) ≤ K for every j, so D(Q₁) ≤ K.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat SNAPSHOT/manifest.json (mode local-project, project_commit b4d606db1da5da8fa2c0292ad4924d97de8b3c4b, mathlib_commit 25730c7c759d108ef87ab70af2342a196760f79d); git -C SNAPSHOT/mathlib rev-parse HEAD (25730c7c759d…, matches); cmp SNAPSHOT/project/GMT/Ch07/Contract.lean GMT/Ch07/Contract.lean (identical); cmp GMT/Ch07/Submission.lean GMT/Ch07/Contract.lean (identical)`
+- `rg -n 'dimred_mbl_dt_cbm_bvp|cmcdtfrfg_cube_volume' SNAPSHOT/project SNAPSHOT/mathlib/Mathlib lake-packages-25730c7c/simongmt GMT -g '*.lean' (no match)`
+- `rg -n 'BVPoincare|poincare_ineq|Poincaré inequality|Poincare inequality' SNAPSHOT/project/GMT -g '*.lean' (Ch02 def BVPoincare : Prop is an unproved specification under main_theorem := by sorry; Ch04 5.6 is the varifold Poincaré spec; Ch07 imports neither); rg -n -i 'poincar[eé] ineq|mean_dev|oscillation' lake-packages-25730c7c/simongmt/Poincare -g '*.lean' (only Chapter04/Poincare.lean, Simon 5.6 local Poincaré for generalized mean curvature: different setting)`
+- `rg -n 'lemma Integrable.comp_fst|lemma Integrable.comp_snd|theorem Integrable.integral_prod_left|theorem setIntegral_prod|theorem tendsto_setIntegral_of_monotone|theorem prod_restrict|lemma integral_mono_of_nonneg|lemma abs_integral_le_integral_abs|theorem iUnion_prod_of_monotone|theorem volume_pi_Ioo|lemma isFiniteMeasure_restrict|theorem measure_closedBall_lt_top|theorem ContinuousOn.integrableOn_compact|theorem tendsto_natCast_atTop_atTop|theorem restrict_apply_univ|PiLp.volume_preserving_ofLp|EuclideanSpace.proj|EuclideanSpace.norm_eq|inv_tendsto_atTop' SNAPSHOT/mathlib/Mathlib (all found)`
+- `python3 scans of RUN/dag.json (2092 nodes): exact lean_statement matches for each proposed type; cmcdtfrfg_cube_volume is the lean_name of exactly one node (status accepted, candidate_commit a104b3873f3c979b07a45e8d97d3d4d1d84c106a) with byte-identical type; twin children cmcdt_cbm_bvp_* (identical types) unaccepted under another parent; proposed fresh names occur 0 times; git show a104b3873f3c…:GMT/Ch07/Submission.lean (13-line accepted proof)`
+- `python3/cat of twin nodes/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-cub-c82ada6bf8/{decomposition-v1,decomposition-audit-v1,decomposition-scope-v1,parent-supplied-natural-proof.md}; diff against this node's parent-supplied-natural-proof.md (same argument, steps 0–4)`
+- `grep -n in /runtime/flows/gmt-claude-b888e19cffb1/_recursive_lean/runtime.py for _decompose (node.depth >= max_depth), _existing_lean_name_problem, _accepted_checkpoint, _install_parent_supplied_child_handoff, _overlay_accepted_children, _reference_use_problem; swarm-project.json (max_depth 6, max_children 12)`
+- `python3 -I importing verifier/gmt-compare.py contract_scope(Contract.lean, GMT.Ch07.main_theorem) to build the challenge prefix; lake env lean /tmp/dimred-bvp-k4q9/lean/{ChildTypes,Challenge_cube_volume,Challenge_osc_l1_limit,Challenge_osc_exhaustion,Challenge_mean_dev,Assembly,MeanDev,OscL1,OscExh,EndToEnd,ExactE2E}.lean (types elaborate; children fully proved; parent assembled; #print axioms propext, Classical.choice, Quot.sound)`
+- `validate_lean_statement from /runtime/flows/gmt-claude-b888e19cffb1/_recursive_lean/lean_contract.py and verifier/lean_contract.py on all four types (accepted unchanged)`
+- `sed -n 627,662p book/chapter-02.txt (Simon Ch. 2, 2.7 BV Poincaré); sed -n 1880,1893p book/chapter-06.txt (Ch. 6, proof of 5.1, display (32))`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch02/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch04/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Prod.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Prod.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Typeclasses/Finite.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Haar/InnerProductSpace.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/LocallyIntegrable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Data/Set/Lattice/Image.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Order/Field.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Order/Filter/AtTopBot/Archimedean.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/swarm-project.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-deformation-the-f5c7fb83bb/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-cub-c82ada6bf8/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-cub-c82ada6bf8/decomposition-audit-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter04/Poincare.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/runtime/flows/gmt-claude-b888e19cffb1/_recursive_lean/runtime.py`
+- `/runtime/flows/gmt-claude-b888e19cffb1/_recursive_lean/lean_contract.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-02.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt`
+- `/tmp/dimred-bvp-k4q9/lean/ExactE2E.lean`
+- `/tmp/dimred-bvp-k4q9/lean/Assembly.lean`
+
+The pins match (project b4d606db, Mathlib 25730c7c), and the snapshot Contract.lean, workspace Contract.lean and Submission.lean are byte-identical. Neither the snapshot project, Mathlib nor SimonGMT contains this BV Poincaré inequality or any of the three new oscillation lemmas. Ch02 BVPoincare is an unproved specification that Ch07 does not import, and SimonGMT's Ch04 Poincaré is the varifold version. The unit-cube volume is already a comparator-accepted DAG declaration, cmcdtfrfg_cube_volume, with the byte-identical type ∀ k : ℕ, volume {y : Euclid k | ∀ i, 0 < y i ∧ y i < 1} = 1, so it is reused. The three new obligations get fresh, collision-free names dimred_mbl_dt_cbm_bvp_*. Their types equal the reviewed but unaccepted twin cmcdt_cbm_bvp_* lemmas owned by another parent. All cited Mathlib lemmas exist at the pinned revision and inside the bare GMT.Ch07.Submission import closure. All four children were compiled with complete proofs, and the exact frozen parent was derived from them plus the two sibling contracts using only propext, Classical.choice and Quot.sound.

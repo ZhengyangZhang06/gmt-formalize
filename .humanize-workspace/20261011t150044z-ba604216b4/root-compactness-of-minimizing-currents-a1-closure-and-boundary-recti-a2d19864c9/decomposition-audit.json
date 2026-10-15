@@ -1,0 +1,54 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "theorem extDeriv_apply|comp_isClosedEmbedding|HasCompactSupport.fderiv_apply|theorem setIntegral_map|theorem integral_map|setIntegral_eq_of_subset_of_forall_sdiff_eq_zero|setIntegral_eq_zero_of_forall_eq_zero|inner_left_fintype|isClosedEmbedding_of_injective|fintypeLinearCombination_injective",
+        "cbr_cipi_plane_extDeriv_coords|cbr_cipi_plane_halfspace_boundary|cbr_cipi_plane_boundary_zero|halfspace.*[Ss]tokes|plane.*[Ss]tokes",
+        "TestFormOn|tsupport_exteriorDerivative_subset|exteriorDerivative_isTestForm",
+        "volume_pi|instMeasureSpace|MeasureSpace \\(",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/plane-stokes-independent-audit/Audit.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/DifferentialForm/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Const.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Support.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Constructions/Pi.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-a2d19864c9/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-a2d19864c9/decomposition-v1.json",
+        "/tmp/cipi-ps-decomp/lean/E2E2.lean",
+        "/tmp/plane-stokes-independent-audit/Audit.lean"
+      ],
+      "conclusion": "The pinned sources support the derivative, support, and integral identities used. Snapshot searches found no proposed declaration names; DAG inspection confirms all three names are fresh bare identifiers. PM and FTC match the frozen sibling types verbatim. The selected contract digest independently recomputes to the requested value. Fresh Lean checks successfully elaborate every exact proposition before defining any child, recheck the supplied proof bodies and comparator examples, and derive the unchanged selected parent type with PM/FTC as parameters. Each child and the assembly use only propext, Classical.choice, and Quot.sound. The coordinate volume instance is definitionally product Lebesgue measure. The split is appropriate: its obligations are genuine, dependencies are correctly directed and acyclic, and together they prove precisely the selected theorem."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "extderiv_coords",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line proposition exactly matches both prose conclusions and includes all hypotheses. Orthonormality makes the coordinate map injective and hence a closed embedding. Evaluation and composition preserve smoothness; the closed embedding preserves compact support. The chain rule, coordinate-vector calculation, and exterior-derivative formula yield the stated real signs. The proof is complete and independent of the parent and other children."
+    },
+    {
+      "key": "halfspace_boundary",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact one-line type explicitly includes the complete PM/FTC hypotheses and matches the prose. Its sole child dependency, extderiv_coords, supplies precisely the regularity and coordinate identity used. Both changes of measure have the required measurability; compact support and continuity justify termwise integration. FTC eliminates the tangential terms, and removeNth_zero with Fin.cons identifies the boundary integral with the correct positive sign, including d = 0. No parent theorem is assumed."
+    },
+    {
+      "key": "boundary_zero",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line proposition exactly states the conditional support argument, including HS for the fixed test form. Compact support supplies T beyond the support; support containment makes dφ vanish on the omitted region. Closedness supplies the measurability needed for the integral restriction. Orthonormality gives inner y (v 0) = T on L_T, so its integrand vanishes. HS then proves the conclusion. No child dependency is needed because HS is an explicit hypothesis, discharged independently during parent assembly."
+    }
+  ],
+  "required_changes": []
+}

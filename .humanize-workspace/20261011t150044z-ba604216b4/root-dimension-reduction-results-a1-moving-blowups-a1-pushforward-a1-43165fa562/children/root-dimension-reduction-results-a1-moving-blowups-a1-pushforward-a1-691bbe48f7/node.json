@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.moving_blowups-a1.pushforward-a1.orient_comp-a1.hs_comp-a1",
+  "parent_id": "root.dimension_reduction_results-a1.moving_blowups-a1.pushforward-a1.orient_comp-a1",
+  "depth": 5,
+  "title": "Hilbert–Schmidt bound for precomposing every slot of a multilinear form with A",
+  "statement": "Let N, N', n ∈ ℕ. Let A : ℝ^N → ℝ^{N'} be a continuous linear map (A : Euclid N →L[ℝ] Euclid N') with operator norm ‖A‖. Let γ : (ℝ^{N'})ⁿ → ℝ be an n-linear map (γ : MultilinearMap ℝ (fun _ : Fin n => Euclid N') ℝ); neither alternation nor continuity is assumed. Let e and e' be the standard orthonormal bases of ℝ^N and ℝ^{N'} (EuclideanSpace.basisFun). Then Σ_{j : Fin n → Fin N} γ(A e_{j(0)}, …, A e_{j(n−1)})² ≤ (‖A‖²)ⁿ·Σ_{j : Fin n → Fin N'} γ(e'_{j(0)}, …, e'_{j(n−1)})². In words: precomposing every slot with A multiplies the Hilbert–Schmidt norm of γ by at most ‖A‖ⁿ.",
+  "lean_statement": "∀ (N N' n : ℕ) (A : Euclid N →L[ℝ] Euclid N') (γ : MultilinearMap ℝ (fun _ : Fin n => Euclid N') ℝ), ∑ j : Fin n → Fin N, (γ (fun k => A (EuclideanSpace.basisFun (Fin N) ℝ (j k)))) ^ 2 ≤ (‖A‖ ^ 2) ^ n * ∑ j : Fin n → Fin N', (γ (fun k => EuclideanSpace.basisFun (Fin N') ℝ (j k))) ^ 2",
+  "lean_name": "dimred_mbl_pf_oc_multilinear_hs_comp_le",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-moving-blowups-a1-pushforward-a1-691bbe48f7-a1"
+}

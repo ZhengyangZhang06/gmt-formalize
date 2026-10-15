@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.moving_blowups-a1.pushforward-a1.pf_integer-a1.cutoff-a1",
+  "parent_id": "root.dimension_reduction_results-a1.moving_blowups-a1.pushforward-a1.pf_integer-a1",
+  "depth": 5,
+  "title": "A map that is C¹ on an open neighbourhood of a compact set agrees near it with a globally Lipschitz C¹ map",
+  "statement": "Let P ∈ ℕ, K ⊆ ℝ^P compact, O ⊆ ℝ^P open with K ⊆ O, and f : ℝ^P → ℝ^P of class C¹ on O (ContDiffOn ℝ 1 f O; no assumption on f off O). Then there are g : ℝ^P → ℝ^P of class C¹ on all of ℝ^P (ContDiff ℝ 1 g) and L ∈ ℝ≥0 such that g is L-Lipschitz on ℝ^P and, for every x ∈ K, g(x) = f(x) and Dg(x) = Df(x) (fderiv ℝ g x = fderiv ℝ f x).",
+  "lean_statement": "∀ (P : ℕ) (K O : Set (Euclid P)) (f : Euclid P → Euclid P), IsCompact K → IsOpen O → K ⊆ O → ContDiffOn ℝ 1 f O → ∃ (g : Euclid P → Euclid P) (L : NNReal), ContDiff ℝ 1 g ∧ LipschitzWith L g ∧ ∀ x ∈ K, g x = f x ∧ fderiv ℝ g x = fderiv ℝ f x",
+  "lean_name": "dimred_mbl_pfi_c1_lipschitz_cutoff",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-moving-blowups-a1-pushforward-a1-40546402b2-a1"
+}

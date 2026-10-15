@@ -1,0 +1,55 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "BoundaryVanishes|structure IMRep|def Represents|locallyIntegrable_mult|orients|μHE|abbrev Euclid",
+        "exists_contDiff_support_eq_eq_one_iff|exists_cthickening_subset_open|theorem IsCompact.cthickening|cthickening_subset_thickening|closure_thickening_subset_cthickening",
+        "hasFDerivAt_convolution_right|contDiff_convolution_left|convolution_tendsto_right_of_continuous|integral_normed|nonneg_normed",
+        "def TestFormOn|abbrev TestFormOn|exteriorDerivativeTestOn|boundary_apply|exteriorDerivativeOn_pullbackFormWithin|pullbackFormWithin|def IsSmoothForm|def IsTestForm",
+        "dimred_mbl_pfb_c1_compact_perturbation|dpf_pushforward_formula_boundaryVanishes",
+        "python3 -I /tmp/pfb-independent-audit/audit.py",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/pfb-independent-audit/Check.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Manifold/PartitionOfUnity.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/Thickening.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/Convolution.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/BumpFunction/Normed.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/BumpFunction/Convolution.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/Alternating/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/DifferentialForm/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-pushforward-a1-d20ddc8d39/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-pushforward-a1-d20ddc8d39/decomposition-v1.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-pushforwa-b3d596d026/accepted-candidate.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-pushforwa-b3d596d026/isolated-comparator-result.json",
+        "/tmp/pfbdecomp/TA.lean",
+        "/tmp/pfb-independent-audit/audit.py",
+        "/tmp/pfb-independent-audit/Check.lean"
+      ],
+      "conclusion": "Project, Mathlib and SimonGMT revisions match the pins; current contract definitions are byte-identical to the snapshot and the accepted candidate's definitions. The pinned sources support the cutoff, mollification, pullback, boundary and convergence arguments. Neither proposed declaration occurs in the snapshot's project/GMT search. Independent DAG and saved-proposal scans found no collision for the new name. Reuse of candidate 74a1c6be has an identical frozen type, verified artifact hashes and a passed isolated comparator. Both child types elaborate before their implementations. Independent compilation of the conditional assembly, full child proofs and exact selected parent succeeded; axiom checks report only propext, Classical.choice and Quot.sound. The split is appropriate and its dependency graph is acyclic."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "c1_perturbation",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The standalone one-line type matches every hypothesis and conclusion in the prose. The proof supplies the compact margin, smooth cutoff, compact support containment, identity outside that support, and global C¹ regularity even though f is arbitrary outside O. Equality on the open neighbourhood V gives equality of Fréchet derivatives by locality. Empty K and dimension zero cause no gap. The proof is complete and non-circular, and the bare declaration name is unreserved. Applying it on O ∩ U supplies precisely the compact perturbation required by perturbed_boundary."
+    },
+    {
+      "key": "perturbed_boundary",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The standalone one-line type matches the prose and is byte-identical to the comparator-accepted declaration being reused. Its existing accepted dependency closure is acyclic and does not depend on the selected parent. Independently checked proof steps establish smooth approximants with common compact support control and bounded derivatives, valid pulled-back test forms, naturality of exterior differentiation, vanishing approximating evaluations, and dominated convergence using the IMRep orientation bound and local integrability. Degree zero is handled explicitly. Ambient test forms make an additional image-in-U hypothesis unnecessary. In the parent assembly, the null carrier outside K transfers the integral formula from f to the cutoff map, so this child proves exactly BoundaryVanishes Q."
+    }
+  ],
+  "required_changes": []
+}

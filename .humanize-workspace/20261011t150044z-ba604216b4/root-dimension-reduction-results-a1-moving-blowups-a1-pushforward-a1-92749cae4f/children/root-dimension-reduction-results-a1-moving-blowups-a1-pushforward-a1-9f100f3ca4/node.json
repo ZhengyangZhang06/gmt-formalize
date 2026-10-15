@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.moving_blowups-a1.pushforward-a1.extension-a1.testform_uniform_approx-a1",
+  "parent_id": "root.dimension_reduction_results-a1.moving_blowups-a1.pushforward-a1.extension-a1",
+  "depth": 5,
+  "title": "Test forms approximate a continuous compactly supported covector field uniformly (mollification)",
+  "statement": "Let P, n ∈ ℕ and let h : ℝ^P → Λⁿ(ℝ^P) be continuous with compact support. Here Λⁿ(ℝ^P) = Covector (Euclid P) n, the n-covectors with the operator norm. Then there is a sequence (ω_j)_{j∈ℕ} of test forms ω_j ∈ 𝒟ⁿ(ℝ^P) (elements of TestFormOn univ n, i.e. C^∞ n-forms with compact support) converging to h uniformly on ℝ^P: sup_x ‖ω_j(x) − h(x)‖ → 0 as j → ∞.",
+  "lean_statement": "∀ (P n : ℕ) (h : Euclid P → Covector (Euclid P) n), Continuous h → HasCompactSupport h → ∃ ωs : ℕ → TestFormOn (univ : Set (Euclid P)) n, TendstoUniformly (fun j x => (ωs j : DifferentialForm (Euclid P) n) x) h atTop",
+  "lean_name": "dimred_mbl_pf_ext_testForm_uniform_approx",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-moving-blowups-a1-pushforward-a1-9f100f3ca4-a1"
+}
