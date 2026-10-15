@@ -168267,4 +168267,77 @@ theorem Submission.dimred_threshold_reduction : ∀ (n k ℓ : ℕ), ℓ ≤ k �
       exact ((hfin0 (by omega) μ₀ hμ₀ (1 / 2) (by norm_num)).image _).subset
         (hZ (r / 2) (1 / 2) (by norm_num) (by ring))
 
+/-- **Simon 7.3.3(1), display (5)**, for one ball.  If `Θⁿ(μ_T, ·) < m − β` on `B̄_{4σ}(x₀) ⊆ U`,
+then `H^{n−3+α}{x ∈ B_σ(x₀) : Θⁿ(μ_T, x) ≥ m − 1 + β} = 0` for every `α > 0`.  Monotonicity
+gives `M_{B_ρ(y)}(T) ≤ (m − β/2) ωₙ ρⁿ` for `y ∈ B̄_{3σ/2}(x₀)` and small `ρ` (display (2)), so
+every density of a zero-scale limit `S` of blow-ups centred in `B_σ(x₀)` is `≤ m − β/2`
+(display (11)).  No integer lies in `[m − 1 + β, m − β/2]`, whereas planar limits of constant
+density and limits invariant along a spine of dimension `≥ n − 2` have integer densities
+(displays (13)–(15)).  Hence the dimension reduction with `d₀ = n − 2` makes the set
+`H^{n−3+α}`-null, and empty when `n ≤ 2`. -/
+theorem Submission.idod_local_threshold_null : ∀ (n k ℓ : ℕ), ℓ ≤ k → ∀ (U N : Set (Euclid (n + k))) (T : GeometricCurrentOn U n), 1 ≤ n → IsOpen U → IsEmbeddedSubmanifold 2 (n + ℓ) N → (closure N \ N) ∩ U = ∅ → IsMinimizingIn T (U ∩ N) → T.support ⊆ U ∩ N → BoundaryVanishes T → ∀ (m : ℕ) (β σ : ℝ) (x₀ : Euclid (n + k)), 1 ≤ m → 0 < β → 0 < σ → closedBall x₀ (4 * σ) ⊆ U → (∀ y ∈ closedBall x₀ (4 * σ), ∃ θ : ℝ, θ < (m : ℝ) - β ∧ HasMassDensity T y θ) → ∀ α : ℝ, 0 < α → μH[(n : ℝ) - 3 + α] {x | x ∈ ball x₀ σ ∧ ∃ θ : ℝ, (m : ℝ) - 1 + β ≤ θ ∧ HasMassDensity T x θ} = 0 := by
+  intro n k ℓ hℓ U N T hn hU hN hNU hmin hspt hbd m β σ x₀ hm hβ hσ hK hdens α hα
+  -- monotonicity on the compact set `B̄_{4σ}(x₀) ⊆ U`
+  obtain ⟨Λ, hΛ, hmono⟩ := (Submission.dimred_minimizing_monotonicity (n + k) n (n + ℓ) U N T hn
+    (Nat.le_add_right n ℓ) (by omega) hU hN hNU hmin hspt hbd).1
+    (closedBall x₀ (4 * σ)) (isCompact_closedBall x₀ (4 * σ)) hK
+  -- (2): `M_{B_ρ(y)}(T) ≤ (m − β/2) ωₙ ρⁿ` for `y ∈ B̄_{3σ/2}(x₀)` and `0 < ρ < ρ₀`
+  obtain ⟨ρ₀, hρ₀, hbound⟩ := Submission.idod_uniform_ball_mass_bound (n + k) n U T
+    (closedBall x₀ (3 * σ / 2)) (closedBall x₀ (4 * σ)) Λ σ ((m : ℝ) - β) ((m : ℝ) - β / 2)
+    (isCompact_closedBall x₀ _) hΛ hσ (by linarith)
+    (fun y hy => hdens y (closedBall_subset_closedBall (by linarith) hy))
+    (fun y hy => closedBall_subset_closedBall' (by rw [mem_closedBall] at hy; linarith)) hmono
+  -- `0 ≤ m − β/2` (densities are nonnegative), `0 < m − 1 + β`, and no integer lies between
+  -- `m − 1 + β` and `m − β/2`
+  obtain ⟨θ, hθ, hθT⟩ := hdens x₀ (mem_closedBall_self (by linarith))
+  have hθ₂ : 0 ≤ (m : ℝ) - β / 2 := by linarith [hθT.1]
+  have hc : 0 < (m : ℝ) - 1 + β := by
+    have : (1 : ℝ) ≤ m := by exact_mod_cast hm
+    linarith
+  have hgap : ∀ m' : ℕ, (m : ℝ) - 1 + β ≤ m' → (m' : ℝ) ≤ (m : ℝ) - β / 2 → False := by
+    intro m' h1 h2
+    have h3 : m' < m := by exact_mod_cast (show (m' : ℝ) < m by linarith)
+    have h4 : m < m' + 1 := by exact_mod_cast (show (m : ℝ) < m' + 1 by linarith)
+    omega
+  -- (11): every density of a zero-scale limit of blow-ups centred in `B_σ(x₀)` is `≤ m − β/2`
+  have hlim : ∀ (S : GeometricCurrentOn (univ : Set (Euclid (n + k))) n) (xs : ℕ → Euclid (n + k))
+      (lams : ℕ → ℝ) (hlams : ∀ i, 0 < lams i), (∀ i, xs i ∈ ball x₀ σ) →
+      Tendsto lams atTop (𝓝 0) →
+      ConvergesWeakly (fun i => blowUp T (xs i) (lams i) (hlams i).ne') S →
+      ∀ (w : Euclid (n + k)) (θ : ℝ), HasMassDensity S w θ → θ ≤ (m : ℝ) - β / 2 :=
+    fun S xs lams hlams hxs hlams0 hconv =>
+      (Submission.idod_blowUp_limit_mass_density_le (n + k) n U T S x₀ σ ((m : ℝ) - β / 2) ρ₀
+        xs lams hlams hσ hθ₂ hρ₀
+        (ball_subset_closedBall.trans ((closedBall_subset_closedBall (by linarith)).trans hK))
+        (fun y hy => hbound y (ball_subset_closedBall hy)) hxs hlams0 hconv).2
+  -- dimension reduction with `d₀ = n − 2`: by the integer gap, no planar limit of constant
+  -- density `≥ m − 1 + β` and no spine of dimension `≥ n − 2` occurs ((13)–(15))
+  have hred := Submission.dimred_threshold_reduction n k ℓ hℓ U N T hn hU hN hNU hmin hspt hbd
+    ((m : ℝ) - 1 + β) (n - 2) x₀ σ hc hσ ((closedBall_subset_closedBall (by linarith)).trans hK)
+    (fun S xs lams hlams Q c' hxs hlams0 hconv hSmin _ _ hcc' hSdens => by
+      -- the constant density `c'` of a planar limit is an integer `≤ m − β/2`
+      have h0 := hSdens 0
+      rw [Set.indicator_of_mem (show (0 : Euclid (n + k)) ∈ (Q : Set (Euclid (n + k))) from
+        Q.zero_mem)] at h0
+      obtain ⟨m', rfl⟩ := Submission.idod_planar_density_const_nat (n + k) n S Q c' hn hSmin.1
+        (by linarith) hSdens
+      exact hgap m' hcc' (hlim S xs lams hlams hxs hlams0 hconv 0 _ h0))
+    (fun S xs lams hlams L hxs hlams0 hconv hSmin hSbd hL hLn hinv hspine => by
+      -- the density `θ₀ ≥ m − 1 + β` of an invariant limit at `0 ∈ L` is an integer `≤ m − β/2`
+      obtain ⟨θ₀, hθ₀c, hθ₀⟩ := (hspine 0).2 L.zero_mem
+      obtain ⟨m', rfl⟩ := Submission.idod_spine_invariant_density_nat (n + k) n S L θ₀ hLn
+        (by omega) hSmin hSbd hinv hθ₀
+      exact hgap m' hθ₀c (hlim S xs lams hlams hxs hlams0 hconv 0 _ hθ₀))
+  rcases Nat.lt_or_ge n 3 with h3 | h3
+  · -- `n ≤ 2`: the set is empty
+    rw [hred.2.1 (by omega)]
+    exact measure_empty
+  · -- `n ≥ 3`: the exponent `(n − 2) − 1 + α` is `n − 3 + α`
+    have hexp : ((n - 2 : ℕ) : ℝ) - 1 + α = (n : ℝ) - 3 + α := by
+      rw [Nat.cast_sub (by omega)]
+      push_cast
+      ring
+    rw [← hexp]
+    exact hred.1 α hα
+
 end GMT.Ch07
