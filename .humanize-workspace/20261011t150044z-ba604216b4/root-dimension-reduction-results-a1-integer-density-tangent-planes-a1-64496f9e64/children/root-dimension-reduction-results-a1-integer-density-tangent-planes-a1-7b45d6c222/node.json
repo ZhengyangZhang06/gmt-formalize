@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_sector_endpoint_density-a1.sector_points-a1.flat_region-a1",
+  "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_sector_endpoint_density-a1.sector_points-a1",
+  "depth": 5,
+  "title": "On a relatively open flat region of density k, almost every point is a carrier point with multiplicity k and approximate tangent plane Q",
+  "statement": "Let P, n ∈ ℕ, C ∈ 𝒟_n(ℝ^P) (GeometricCurrentOn univ n), Q ⊆ ℝ^P a linear subspace with dim Q = n, G ⊆ ℝ^P an arbitrary set, k ∈ ℕ with k ≥ 1, and R = (M, θ, ξ) ∈ IMRep(ℝ^P, n) with R.Represents C. Assume every y ∈ G satisfies: y ∈ Q, HasMassDensity C y k, and there is r > 0 with Q ∩ B_r(y) ⊆ G and spt C ∩ B_r(y) ⊆ Q. Then for μHE[n]-a.e. y ∈ ℝ^P: if y ∈ G, then y ∈ M, θ(y) = k and approxTangentPlane n M y = Q.",
+  "lean_statement": "∀ (P n : ℕ) (C : GeometricCurrentOn (univ : Set (Euclid P)) n) (Q : Submodule ℝ (Euclid P)) (G : Set (Euclid P)) (k : ℕ) (R : IMRep (univ : Set (Euclid P)) n), Module.finrank ℝ Q = n → 1 ≤ k → (∀ y ∈ G, y ∈ Q ∧ HasMassDensity C y k ∧ ∃ r : ℝ, 0 < r ∧ (Q : Set (Euclid P)) ∩ ball y r ⊆ G ∧ C.support ∩ ball y r ⊆ (Q : Set (Euclid P))) → R.Represents C → ∀ᵐ y ∂(μHE[n] : Measure (Euclid P)), y ∈ G → y ∈ R.carrier ∧ R.mult y = k ∧ approxTangentPlane n R.carrier y = Q",
+  "lean_name": "idtp_cse_sp_flat_region_ae",
+  "depends_on": [
+    "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_sector_endpoint_density-a1.sector_points-a1.density_mult-a1",
+    "root.minimizing_implies_stationary-a1.support_null-a1",
+    "root.density_and_tangent_cones-a1.localize-a1.approx_tangent_local-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_sector_endpoint_density-a1.sector_points-a1.density_mult-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.minimizing_implies_stationary-a1.support_null-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-minimizing-implies-stationary-a1-support-null-a1-a1",
+      "result_commit": "d15b5cf486116871dce9295932632b12f0af96e0",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.density_and_tangent_cones-a1.localize-a1.approx_tangent_local-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-localize-a1-approx-tangent-local-a1-a1",
+      "result_commit": "022bd01bf7500f65a1cfbba033ecf91be9652452",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-7b45d6c222-a1"
+}

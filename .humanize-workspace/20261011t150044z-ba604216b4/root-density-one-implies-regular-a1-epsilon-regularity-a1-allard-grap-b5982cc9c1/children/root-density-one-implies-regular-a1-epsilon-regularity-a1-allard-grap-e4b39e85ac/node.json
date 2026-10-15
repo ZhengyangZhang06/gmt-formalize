@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.tilt_height-a1.radial_cutoff-a1",
+  "parent_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.tilt_height-a1",
+  "depth": 5,
+  "title": "C¹ radial cut-off with |Dζ| ≤ 3/r (cut-off of Simon 5.2.1)",
+  "statement": "For every P ∈ ℕ, every ξ ∈ ℝ^P and every r > 0 there is ζ : ℝ^P → ℝ of class C¹ such that 0 ≤ ζ(x) ≤ 1 for all x, ζ(x) = 1 for every x in the closed ball B̄_{r/2}(ξ), tsupport ζ (the closure of {ζ ≠ 0}) is contained in the closed ball B̄_r(ξ), and the operator norm of the Fréchet derivative satisfies ‖Dζ(x)‖ ≤ 3/r for every x ∈ ℝ^P (Lean: ‖fderiv ℝ ζ x‖ ≤ 3 / r; ℝ^P = Euclid P).",
+  "lean_statement": "∀ (P : ℕ) (ξ : Euclid P) (r : ℝ), 0 < r → ∃ ζ : Euclid P → ℝ, ContDiff ℝ 1 ζ ∧ (∀ x, 0 ≤ ζ x ∧ ζ x ≤ 1) ∧ (∀ x ∈ closedBall ξ (r / 2), ζ x = 1) ∧ tsupport ζ ⊆ closedBall ξ r ∧ ∀ x, ‖fderiv ℝ ζ x‖ ≤ 3 / r",
+  "lean_name": "dorag_th_radial_cutoff",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-e4b39e85ac-a1"
+}

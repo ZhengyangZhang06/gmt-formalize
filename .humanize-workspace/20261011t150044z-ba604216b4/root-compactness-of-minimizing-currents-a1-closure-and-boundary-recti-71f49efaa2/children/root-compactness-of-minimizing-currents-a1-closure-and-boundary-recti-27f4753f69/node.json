@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.weight_ge_one-a1.bv_estimate-a1.smooth_test_bound-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.weight_ge_one-a1.bv_estimate-a1",
+  "depth": 6,
+  "title": "Claim A: the pairing of u − u∗φ with a smooth test function bounded by 1 is at most sV",
+  "statement": "Let n ∈ ℕ, R, s, V ∈ ℝ with R > 0, s > 0, 2s < R and V ≥ 0, let φ : ℝⁿ → ℝ be smooth with φ ≥ 0, tsupport φ ⊆ B_s(0) and ∫φ = 1, and let u : ℝⁿ → ℝ be integrable on B_{2R}(0) (ℝⁿ = Euclid n with Lebesgue measure). Assume |∫_{B_{2R}(0)} u(y)·Df(y)(z) dy| ≤ V‖z‖M for every smooth compactly supported f : ℝⁿ → ℝ with tsupport f ⊆ B_{2R}(0), every z ∈ ℝⁿ and every M ∈ ℝ with |f| ≤ M everywhere. Let g : ℝⁿ → ℝ be smooth with compact support, tsupport g ⊆ B_{R+s}(0) and |g(x)| ≤ 1 for all x. Then |∫_{ℝⁿ} (u(x) − w(x))·g(x) dx| ≤ sV, where w(x) := ∫_{B_{2R}(0)} u(y)φ(x − y) dy.",
+  "lean_statement": "∀ (n : ℕ) (R s V : ℝ) (φ u g : Euclid n → ℝ), 0 < R → 0 < s → 2 * s < R → 0 ≤ V → ContDiff ℝ (⊤ : ℕ∞) φ → (∀ y, 0 ≤ φ y) → tsupport φ ⊆ ball 0 s → ∫ y, φ y = 1 → IntegrableOn u (ball 0 (2 * R)) → (∀ (f : Euclid n → ℝ) (z : Euclid n) (M : ℝ), ContDiff ℝ (⊤ : ℕ∞) f → HasCompactSupport f → tsupport f ⊆ ball 0 (2 * R) → (∀ y, |f y| ≤ M) → |∫ y in ball 0 (2 * R), u y * fderiv ℝ f y z| ≤ V * ‖z‖ * M) → ContDiff ℝ (⊤ : ℕ∞) g → HasCompactSupport g → tsupport g ⊆ ball 0 (R + s) → (∀ x, |g x| ≤ 1) → |∫ x, (u x - ∫ y in ball 0 (2 * R), u y * φ (x - y)) * g x| ≤ s * V",
+  "lean_name": "cbr_ci_pw_bv_smooth_test_bound",
+  "depends_on": [
+    "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.weight_ge_one-a1.bv_estimate-a1.translate_test-a1",
+    "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.weight_ge_one-a1.bv_estimate-a1.pairing_identity-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.weight_ge_one-a1.bv_estimate-a1.translate_test-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.weight_ge_one-a1.bv_estimate-a1.pairing_identity-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-27f4753f69-a1"
+}

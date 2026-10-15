@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.graph_cycle_regular-a1.graph_embedded-a1.left_inverse_chart-a1",
+  "parent_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.graph_cycle_regular-a1.graph_embedded-a1",
+  "depth": 5,
+  "title": "A C¹ map on a ball with a continuous affine left inverse is an injective immersion onto an embedded C¹ submanifold",
+  "statement": "Let d, P ∈ ℕ, Φ : ℝ^d → ℝ^P, let L : ℝ^P → ℝ^d be a continuous linear map, and let z ∈ ℝ^P and s ∈ ℝ. Let D := B_s(0) ⊆ ℝ^d be the open ball. Assume Φ is of class C¹ on D and L(Φ(v) − z) = v for every v ∈ D. Then:\n(a) Φ is injective on D.\n(b) For every v ∈ D, Φ is differentiable at v and its derivative DΦ(v) = fderiv ℝ Φ v is injective.\n(c) Σ := Φ(D) is an embedded d-dimensional C¹ submanifold of ℝ^P in the sense of the contract (IsEmbeddedSubmanifold 1 d Σ). That is, every y ∈ Σ admits open V ⊆ ℝ^d, open W ⊆ ℝ^P with y ∈ W, and ψ : ℝ^d → ℝ^P that is C¹ on V and injective on V, such that: ψ(V) = W ∩ Σ; V ∩ ψ⁻¹(K) is compact for every compact K ⊆ W; and Dψ(x) is injective for every x ∈ V.\nHere ℝ^m denotes Euclid m = EuclideanSpace ℝ (Fin m).",
+  "lean_statement": "∀ (d P : ℕ) (Φ : Euclid d → Euclid P) (L : Euclid P →L[ℝ] Euclid d) (z : Euclid P) (s : ℝ), ContDiffOn ℝ 1 Φ (ball 0 s) → (∀ v ∈ ball (0 : Euclid d) s, L (Φ v - z) = v) → InjOn Φ (ball (0 : Euclid d) s) ∧ (∀ v ∈ ball (0 : Euclid d) s, DifferentiableAt ℝ Φ v ∧ Injective (fderiv ℝ Φ v)) ∧ IsEmbeddedSubmanifold 1 d (Φ '' ball (0 : Euclid d) s)",
+  "lean_name": "dgce_left_inverse_chart_embedded",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-graph-cycle-60926cd991-a1"
+}

@@ -1,0 +1,115 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "rg -n 'flat|slice|slicing|deformation|pushforward|coarea|CountablyRectifiable' .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch06 .lake/packages/simongmt/Poincare/SimonGMT/Chapter06 -g '*.lean'",
+        "rg -n 'countable_meas_level_set_pos|norm_fderiv_le_of_lipschitzOn' .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib",
+        "git show bff81d31ecb43002d1bfc77f510d3463c6be155f:GMT/Ch07/Submission.lean",
+        "git show 44ef61f79e2168134f8a5a6d6520baba56052d67:GMT/Ch07/Submission.lean",
+        "git show 2af75d6921b01a9c889a45103692ca0af95ea394:GMT/Ch07/Submission.lean",
+        "git show 8f3bacb2e7f68423e88b488e5939a0d419c646fb:GMT/Ch07/Submission.lean",
+        "git show 02c6122c94d0280a6288d299659b2dab7b59e109:GMT/Ch07/Submission.lean",
+        "sed -n '1135,1385p' /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt",
+        "sed -n '1990,2140p' /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/dtcbclc/check/Types.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/dtcbclc/out/Assembly.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Typeclasses/SFinite.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-comparison-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-comparison-a1/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-03.txt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt",
+        "/tmp/dtcbclc/check/Types.lean",
+        "/tmp/dtcbclc/out/Assembly.lean"
+      ],
+      "conclusion": "The split is appropriate for the selected local-comparison theorem. All 12 types match their prose, are standalone one-line propositions, and passed elaboration checks. The assembly assumptions match the frozen child types and inherited measure_locality type exactly; both assembly proofs compiled with only propext, Classical.choice and Quot.sound. Thus the children establish the exact selected parent, preserving the competitor-independent choice of W and subsequence. Dependencies, including reused declarations' dependency closures, are acyclic and do not depend on this parent or its ancestors. The final 820-node DAG check found all seven new bare identifiers unreserved. The five reused declarations have identical accepted types and passing comparator records at compatible revisions with the permitted axioms. No matrix-unit or other incorrect inline instance selection was found."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "flat_decomposition",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type matches all hypotheses and the global decomposition conclusion. Localization, finite polyhedral approximation, summable differences, boundary rectifiability, and near-optimal choices complete the argument without relying on the parent. The cited results were checked against Simon, Chapter 6: https://web.stanford.edu/class/math285/ts-gmt.pdf."
+    },
+    {
+      "key": "slicing",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Restrictions define the family for every t. Coarea supplies rectifiability, integrability and the mass bound; mollification and a countable dense family give a common exceptional null set. The integral formula, support condition and a.e. measurability match the exact type."
+    },
+    {
+      "key": "pushforward",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof establishes representation independence, current continuity, additivity, support, integer multiplicity and the stated Euclidean-norm mass bound. Smooth approximation proves preservation of cycles. Openness justifies ordinary fderiv, and the empty-domain case handles potentially negative L."
+    },
+    {
+      "key": "orientation_fixed",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Concentration on the support and locality of blow-up integrals justify the good set. The cone-test argument supplies secant directions, and differentiability fixes every tangent vector, hence the orientation. Degree zero is explicitly covered."
+    },
+    {
+      "key": "measure_subadditive",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The admissible-form estimate proves the open-set inequality. Compact exhaustion and outer regularity of finite restrictions extend it to the stated measure inequality without assuming ambient local finiteness near the boundary of U."
+    },
+    {
+      "key": "retraction_comparison",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The pushed cycle is an admissible compactly supported competitor. Orientation fixation proves push Q = Q, and measure subadditivity removes mass outside the comparison ball. The exact contract also follows from its declared dependencies in the checked ret_assembly."
+    },
+    {
+      "key": "good_level",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Tonelli gives pointwise summability almost everywhere. Restricting each arbitrary measure to the finite-measure band justifies countability of charged levels. A positive-length interval contains a point avoiding all exceptional sets."
+    },
+    {
+      "key": "mass_eq_measure",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Identical accepted-type reuse was verified. The supplied dual-orientation estimate, compact-set approximation and exhaustion prove both inequalities for the exact Euclidean coefficient norm."
+    },
+    {
+      "key": "vanish_off_support",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Identical accepted-type reuse was verified. A finite zero-region cover and smooth partition of unity prove vanishing, including for nonopen U as permitted by the type."
+    },
+    {
+      "key": "im_calculus",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Identical accepted-type reuse was verified. Density locality, restricted representations, signed multiplicity combination and the orientation bound prove all four conjuncts, including degree zero."
+    },
+    {
+      "key": "restrict_domain_im",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Identical accepted-type reuse and its accepted tangent-locality dependency were verified. Restricting the carrier preserves every representation field and gives the required evaluation identity; openness is needed only for V."
+    },
+    {
+      "key": "support_of_vanishing",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Identical accepted-type reuse was verified. Relatively compact zero balls exclude U outside K from the support, and support = K minus the open zero region proves compactness."
+    }
+  ],
+  "required_changes": []
+}

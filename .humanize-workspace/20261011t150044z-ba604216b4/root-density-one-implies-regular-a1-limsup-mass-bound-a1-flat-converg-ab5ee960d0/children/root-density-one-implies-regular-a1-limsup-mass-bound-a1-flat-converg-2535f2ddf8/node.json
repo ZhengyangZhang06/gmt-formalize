@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.flat_convergence-a1.deformation-a1.face_replacement-a1.skeleton_cells-a1",
+  "parent_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.flat_convergence-a1.deformation-a1.face_replacement-a1",
+  "depth": 6,
+  "title": "Cell structure of L_n near a compact set K: finitely many faces meeting K, closedness of L_n, Hⁿ(L_{n−1}) = 0 and Hⁿ-a.e. covering of L_n ∩ K by their open faces (Simon Ch. 6, 5.1 and (26)–(33); steps 1(b), 1(c), 2 of the parent proof)",
+  "statement": "Conventions (as in the selected node): ℝ^P = Euclid P, ℝⁿ = Euclid n, Hᵈ = μHE[d], e_i = EuclideanSpace.single i 1 ∈ ℝ^P, x_i the i-th coordinate. n := m + 1. For a pair p = (z, ι) ∈ ℤ^P × (Fin n → Fin P): Φ_p(y) := z + Σ_{j<n} y_j e_{ι(j)} for y ∈ ℝⁿ (Lean: WithLp.toLp 2 (fun i => (p.1 i : ℝ)) + ∑ j, y j • EuclideanSpace.single (p.2 j) (1 : ℝ)); e_p := (e_{ι(0)}, …, e_{ι(m)}); Q₁ := {y ∈ ℝⁿ : 0 < y_i < 1 for all i} with Lebesgue measure (volume); F_p := {x ∈ ℝ^P : z_i ≤ x_i ≤ z_i + 1 for i ∈ range ι, x_i = z_i for i ∉ range ι} (the closed unit face of the selected node's statement); A_p := Φ_p(Q₁) (the open face). 𝒟^d(U) = TestFormOn U d and 𝒟_d(U) = GeometricCurrentOn U d (domain univ throughout); ∂X = X.boundary; M_W(X) = X.massOn W and M(X) = X.mass (Euclidean coefficient norm covectorEuclideanNorm); IMRep and IsIntegerMultiplicity are the contract notions. Statement: let P, m ∈ ℕ with n = m + 1 < P, K ⊆ ℝ^P compact, and L_n := {x ∈ ℝ^P : there is a finset t of coordinate indices with P ≤ m + 1 + |t| and x_i ∈ ℤ for i ∈ t}. Then there is a finite set s of pairs p = (z, ι) ∈ ℤ^P × (Fin n → Fin P) such that: ι is strictly increasing for every p ∈ s; F_p ⊆ cthickening(√P, K) for every p ∈ s; L_n is closed; and for μHE[n]-almost every x ∈ L_n ∩ K (a.e. for μHE[n]⌞(L_n ∩ K)) there are p ∈ s and y ∈ Q₁ with Φ_p(y) = x.",
+  "lean_statement": "∀ (P m : ℕ) (K : Set (Euclid P)), m + 1 < P → IsCompact K → ∃ s : Finset ((Fin P → ℤ) × (Fin (m + 1) → Fin P)), (∀ p ∈ s, StrictMono p.2) ∧ (∀ p ∈ s, {x : Euclid P | ∀ i : Fin P, (i ∈ Set.range p.2 → (p.1 i : ℝ) ≤ x i ∧ x i ≤ p.1 i + 1) ∧ (i ∉ Set.range p.2 → x i = p.1 i)} ⊆ cthickening (Real.sqrt P) K) ∧ IsClosed {x : Euclid P | ∃ t : Finset (Fin P), P ≤ m + 1 + t.card ∧ ∀ i ∈ t, ∃ z : ℤ, x i = z} ∧ ∀ᵐ x ∂(μHE[m + 1].restrict ({x : Euclid P | ∃ t : Finset (Fin P), P ≤ m + 1 + t.card ∧ ∀ i ∈ t, ∃ z : ℤ, x i = z} ∩ K)), ∃ p ∈ s, ∃ y : Euclid (m + 1), (∀ i, 0 < y i ∧ y i < 1) ∧ WithLp.toLp 2 (fun i => (p.1 i : ℝ)) + ∑ j, y j • EuclideanSpace.single (p.2 j) (1 : ℝ) = x",
+  "lean_name": "dor_lmb_fcd_fr_skeleton_cells",
+  "depends_on": [
+    "root.density_one_implies_regular-a1.limsup_mass_bound-a1.flat_convergence-a1.deformation-a1.face_replacement-a1.face_geometry-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.flat_convergence-a1.deformation-a1.face_replacement-a1.face_geometry-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-limsup-mass-bound-a1-flat-converg-2535f2ddf8-a1"
+}

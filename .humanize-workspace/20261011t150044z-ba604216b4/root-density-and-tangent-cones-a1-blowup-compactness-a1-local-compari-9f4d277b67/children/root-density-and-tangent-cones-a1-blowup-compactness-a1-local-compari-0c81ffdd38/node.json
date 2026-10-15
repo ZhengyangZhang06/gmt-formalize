@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.pushforward-a1.orient_comp-a1.hadamard-a1",
+  "parent_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.pushforward-a1.orient_comp-a1",
+  "depth": 6,
+  "title": "Hadamard's inequality for Gram determinants: det(⟨v_i, v_j⟩) ≤ ∏|v_i|²",
+  "statement": "Let P, n ∈ ℕ and let v = (v_1, …, v_n) (indexed by Fin n) be an arbitrary family of vectors in ℝ^P (Euclid P); no independence is assumed. Then the Gram determinant satisfies det(⟨v_i, v_j⟩)_{i,j} ≤ ∏_{i=1}^n |v_i|². Here ⟨·,·⟩ and |·| are the Euclidean inner product and norm, and the determinant is that of the n×n real matrix with entries ⟨v_i, v_j⟩ (Matrix.of fun i j => inner ℝ (v i) (v j)). For n = 0 both sides equal 1.",
+  "lean_statement": "∀ (P n : ℕ) (v : Fin n → Euclid P), Matrix.det (Matrix.of fun i j => inner ℝ (v i) (v j)) ≤ ∏ i, ‖v i‖ ^ 2",
+  "lean_name": "dtc_bc_lc_pf_gram_det_le_prod_norm_sq",
+  "depends_on": [
+    "root.minimizing_implies_stationary-a1.diffeo_pushforward-a1.orientation_pushforward-a1.gram_schmidt_frame-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.minimizing_implies_stationary-a1.diffeo_pushforward-a1.orientation_pushforward-a1.gram_schmidt_frame-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-orientati-ce923d2f7f-a1",
+      "result_commit": "93ec31ab686fa25a7af150db4f17b9bcc26da7df",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-compari-0c81ffdd38-a1"
+}
