@@ -1086,6 +1086,12 @@ Leibniz).  For the determinant covector `u ↦ det(⟨uₐ, v_b⟩)` this is Cau
 `det(⟨vᵢ, vⱼ⟩) = Σ_I (det V_I)²`; then (1) is Cauchy–Schwarz over the `I`, and (2) holds for the
 determinant covector of `τ`. -/
 theorem Submission.covectorEuclideanNorm_gram_bounds : ∀ (P n : ℕ), (∀ (α : Covector (Euclid P) n) (v : Fin n → Euclid P), |α v| ≤ covectorEuclideanNorm α * Real.sqrt (Matrix.det (Matrix.of fun i j => inner ℝ (v i) (v j)))) ∧ ∀ τ : Fin n → Euclid P, Orthonormal ℝ τ → ∃ α : Covector (Euclid P) n, covectorEuclideanNorm α ≤ 1 ∧ α τ = 1 := by
+/-- **Simon Ch. 6, 1.2 and 1.5–1.7**: a unit orientation `ξ = ±τ₁ ∧ ⋯ ∧ τₙ` (`τ` orthonormal)
+has `|ξ(α)| ≤ |α|` for the Euclidean coefficient norm, and `L(ζ) = Σ_I ζ(dx^I) dx^I` (`I` strictly
+increasing) has `|L(ξ)| ≤ 1` and `ξ(L(ξ)) = 1`.  Every covector expands as `α = Σ_I α(e_I) dx^I`,
+and `dx^I(e_J) = δ_IJ`.  Expanding `δ_τ(v) = det(⟨τᵢ, vⱼ⟩)` at `v = τ` gives the Cauchy–Binet
+identity `Σ_I dx^I(τ)² = 1`; with Cauchy–Schwarz, `|α(τ)| ≤ |α|`. -/
+theorem Submission.dor_ims_unitOrientation_dual : ∀ (P n : ℕ), ∃ L : MultiVector P n →L[ℝ] Covector (Euclid P) n, ∀ (ξ : MultiVector P n) (Q : Submodule ℝ (Euclid P)), IsUnitOrientationOf ξ Q → (∀ α : Covector (Euclid P) n, |ξ α| ≤ covectorEuclideanNorm α) ∧ covectorEuclideanNorm (L ξ) ≤ 1 ∧ ξ (L ξ) = 1 := by
   intro P n
   classical
   set e := EuclideanSpace.basisFun (Fin P) ℝ with he
@@ -50320,6 +50326,101 @@ theorem Submission.cbr_orient_ae_eq_of_setIntegral_eq : ∀ (P k : ℕ) (B : Set
     measure_mono_null ?_ (ae_iff.1 (hK _ (isCompact_closedBall x (ε / 2))
       ((closedBall_subset_ball (half_lt_self hε)).trans hεB)))⟩
   exact fun y hy h => hy.1 fun _ => h hy.2
+                  · exact covectorEuclideanNorm_nonneg _
+                  · exact (hχ01 x).2
+                  · exact hβg x
+              _ ≤ 2 * C * ‖f x - g x‖ := by linarith
+        calc covectorEuclideanNorm (ω₀ x - f x)
+            = covectorEuclideanNorm ((ω₀ x - χ x • β x) + (χ x • β x - f x)) := by
+              rw [sub_add_sub_cancel]
+          _ ≤ _ := hNtri _ _
+          _ ≤ 2 * C * δ + 2 * C * ‖f x - g x‖ := add_le_add h1 h2
+      -- integrate: `|T(ω) - μ(K)| ≤ 2Cδ ν(V) + 2Cδ = ε/2`
+      have hfgi : Integrable (fun x => ‖f x - g x‖) ν := (hfi.sub hgi).norm
+      have hbi : Integrable (fun x => 2 * C * δ + 2 * C * ‖f x - g x‖) ν :=
+        (integrable_const _).add (hfgi.const_mul _)
+      have hest : |T ω - (R.measure K).toReal| ≤ ε / 2 := by
+        rw [hTω, hμKf, ← integral_sub hω₀i hfξi, ← Real.norm_eq_abs]
+        refine (norm_integral_le_of_norm_le hbi hpt).trans ?_
+        rw [integral_add (integrable_const _) (hfgi.const_mul _), integral_const,
+          integral_const_mul, smul_eq_mul]
+        have hν0 : 0 ≤ ν.real univ := measureReal_nonneg
+        calc ν.real univ * (2 * C * δ) + 2 * C * ∫ x, ‖f x - g x‖ ∂ν
+            ≤ ν.real univ * (2 * C * δ) + 2 * C * δ := by gcongr
+          _ = 2 * C * δ * (ν.real univ + 1) := by ring
+          _ = ε / 2 := by
+            rw [hδ]
+            field_simp
+            ring
+      have hTω' : (R.measure K).toReal ≤ T ω + ε := by
+        have := (abs_le.1 hest).1
+        have : (0 : ℝ) ≤ ε := ε.coe_nonneg
+        linarith
+      calc R.measure K = ENNReal.ofReal (R.measure K).toReal :=
+            (ENNReal.ofReal_toReal hμK.ne).symm
+        _ ≤ ENNReal.ofReal (T ω + ε) := ENNReal.ofReal_le_ofReal hTω'
+        _ ≤ ENNReal.ofReal (T ω) + ENNReal.ofReal ε := ENNReal.ofReal_add_le
+        _ = ENNReal.ofReal (T ω) + ε := by rw [ENNReal.ofReal_coe_nnreal]
+        _ ≤ T.massOn W + ε := by gcongr; exact T.le_massOn hωadm
+    -- exhaust `W` by the increasing compact sets `F m ∩ B̄_m(0)`
+    obtain ⟨F, hFc, hFW, hFU, hFm⟩ := hW.exists_iUnion_isClosed
+    have hKm : Monotone fun m : ℕ => F m ∩ closedBall (0 : Euclid P) m := fun a b hab =>
+      inter_subset_inter (hFm hab) (closedBall_subset_closedBall (Nat.cast_le.2 hab))
+    have hKU : ⋃ m : ℕ, F m ∩ closedBall (0 : Euclid P) m = W := by
+      refine Subset.antisymm (iUnion_subset fun m => inter_subset_left.trans (hFW m))
+        fun x hx => ?_
+      rw [← hFU] at hx
+      obtain ⟨a, ha⟩ := mem_iUnion.1 hx
+      obtain ⟨b, hb⟩ := exists_nat_ge (dist x 0)
+      exact mem_iUnion.2 ⟨max a b, hFm (le_max_left a b) ha,
+        mem_closedBall.2 (hb.trans (Nat.cast_le.2 (le_max_right a b)))⟩
+    calc R.measure W = R.measure (⋃ m : ℕ, F m ∩ closedBall (0 : Euclid P) m) := by rw [hKU]
+      _ = ⨆ m : ℕ, R.measure (F m ∩ closedBall (0 : Euclid P) m) := hKm.measure_iUnion
+      _ ≤ T.massOn W := iSup_le fun m => hcompact _
+          ((isCompact_closedBall 0 m).inter_left (hFc m)) (inter_subset_left.trans (hFW m))
+/-- **Simon 6.2.5, 6.2.16** (mass across a change of domain).  If `W ⊆ V ⊆ U`, and
+`S ∈ 𝒟ₙ(U)`, `S' ∈ 𝒟ₙ(V)` agree on every `ω ∈ 𝒟ⁿ(V)` with `spt ω ⊆ W`, then
+`M_W(S) = M_W(S')`.  A form admissible for `M_W` has `spt ω ⊆ W ⊆ V`, so the admissible forms in
+`U` and in `V` are the same underlying forms, related by `testFormOnInclusion`; the two suprema
+therefore range over the same values. -/
+theorem Submission.dtc_massOn_eq_of_agreeOn : ∀ (P n : ℕ) (U V W : Set (Euclid P)) (hVU : V ⊆ U) (S : GeometricCurrentOn U n) (S' : GeometricCurrentOn V n), W ⊆ V → (∀ ω : TestFormOn V n, tsupport (ω : DifferentialForm (Euclid P) n) ⊆ W → S (testFormOnInclusion hVU n ω) = S' ω) → S.massOn W = S'.massOn W := by
+  intro P n U V W hVU S S' hWV hagree
+  -- both masses are suprema of `ofReal (T ω)` over admissible forms: compare the value sets
+  unfold GeometricCurrentOn.massOn
+  congr 1
+  ext r
+  constructor
+  · -- an admissible `ω ∈ 𝒟ⁿ(U)` has `spt ω ⊆ W ⊆ V`, so it is an admissible `ω' ∈ 𝒟ⁿ(V)`
+    rintro ⟨ω, hω, rfl⟩
+    let ω' : TestFormOn V n := ⟨ω, ω.property.1, hω.1.trans hWV⟩
+    have hincl : testFormOnInclusion hVU n ω' = ω := Subtype.ext rfl
+    refine ⟨ω', hω, ?_⟩
+    dsimp only
+    rw [← hagree ω' hω.1, hincl]
+  · -- an admissible `ω' ∈ 𝒟ⁿ(V)` is admissible in `U` after inclusion
+    rintro ⟨ω', hω', rfl⟩
+    refine ⟨testFormOnInclusion hVU n ω', hω', ?_⟩
+    dsimp only
+    rw [hagree ω' hω'.1]
+/-- Local finiteness of an integer multiplicity representation `(M, θ, ξ)` in `U` (Simon Ch. 6,
+Definition 3.1).  For compact `K ⊆ U`, `μ_R(K) = ∫_{M ∩ K} θ dHⁿ < ∞` by the local integrability
+of `θ`, and `Hⁿ(M ∩ K) = ∫_{M ∩ K} 1 dHⁿ ≤ ∫_{M ∩ K} θ dHⁿ < ∞` since `θ ≥ 1` on `M`. -/
+theorem Submission.rsd_imrep_compact_measure_ne_top : ∀ (P n : ℕ) (U : Set (Euclid P)) (R : IMRep U n) (K : Set (Euclid P)), IsCompact K → K ⊆ U → μHE[n] (R.carrier ∩ K) ≠ ∞ ∧ R.measure K ≠ ∞ := by
+  intro P n U R K hK hKU
+  have hint := R.locallyIntegrable_mult K hK hKU
+  -- `μ_R(K) = ∫_K θ d(Hⁿ⌞M) = ∫_{M ∩ K} θ dHⁿ`, `K` being closed, hence Borel
+  have hmeas : R.measure K = ∫⁻ x in R.carrier ∩ K, (R.mult x : ℝ≥0∞) ∂μHE[n] := by
+    rw [IMRep.measure, withDensity_apply _ hK.measurableSet,
+      Measure.restrict_restrict hK.measurableSet, inter_comm]
+  refine ⟨?_, by rw [hmeas]; exact hint⟩
+  refine ne_top_of_le_ne_top hint ?_
+  -- `Hⁿ(M ∩ K) = ∫_{M ∩ K} 1 dHⁿ ≤ ∫_{M ∩ K} θ dHⁿ`, as `1 ≤ θ` on `M`
+  calc μHE[n] (R.carrier ∩ K) = ∫⁻ _ in R.carrier ∩ K, (1 : ℝ≥0∞) ∂μHE[n] := by
+        rw [setLIntegral_one]
+    _ ≤ ∫⁻ x in R.carrier ∩ K, (R.mult x : ℝ≥0∞) ∂μHE[n] := by
+        refine setLIntegral_mono (measurable_from_nat.comp R.measurable_mult) ?_
+        intro x hx
+        exact_mod_cast R.mult_pos x hx.1
 /-- Measures `μ, ν` on `ℝᴾ` that agree on the open subsets of an open set `O`, with `μ` finite on
 compact subsets of `O`, agree on the Borel subsets of `O`.  `O` is exhausted by the open sets
 `Oᵢ = {x : |x| < i, dist(x, ℝᴾ ∖ O) > 1/(i+1)}`, whose closures are compact subsets of `O`; the
@@ -58201,6 +58302,44 @@ theorem Submission.dtc_bc_lc_good_level : ∀ (P : ℕ) (g : ℕ → ℝ → ℝ
   have hS : {x | h x = t} ⊆ S := fun x (hx : h x = t) => show a < h x ∧ h x < b from hx ▸ ht
   rw [← Measure.restrict_eq_self (μ i) hS]
   exact nonpos_iff_eq_zero.1 (not_lt.1 fun hpos => hCt (mem_iUnion.2 ⟨i, hpos⟩))
+/-- **Simon 6.3.2(3), 6.2.16** (locality of the weight measure).  If `R₁, R₂` represent
+`T₁ ∈ 𝒟ₙ(U₁)`, `T₂ ∈ 𝒟ₙ(U₂)` and `T₁ = T₂` in the open set `W ⊆ U₁ ∩ U₂`, then
+`μ_{R₁}⌞W = μ_{R₂}⌞W`.  For open `G ⊆ W` the admissible forms for `M_G(Tᵢ)` are forms in
+`𝒟ⁿ(W)`, on which `T₁, T₂` agree, so `μ_{R₁}(G) = M_G(T₁) = M_G(T₂) = μ_{R₂}(G)`; as `μ_{R₁}` is
+finite on compact subsets of `W`, the two measures agree on every Borel subset of `W`. -/
+theorem Submission.dtc_bc_measure_restrict_eq_of_eqOn : ∀ (P n : ℕ) (U₁ U₂ W : Set (Euclid P)) (T₁ : GeometricCurrentOn U₁ n) (T₂ : GeometricCurrentOn U₂ n) (R₁ : IMRep U₁ n) (R₂ : IMRep U₂ n), IsOpen U₁ → IsOpen U₂ → IsOpen W → W ⊆ U₁ → W ⊆ U₂ → R₁.Represents T₁ → R₂.Represents T₂ → (∀ ω : TestFormOn W n, currentEval T₁ (ω : DifferentialForm (Euclid P) n) = currentEval T₂ (ω : DifferentialForm (Euclid P) n)) → R₁.measure.restrict W = R₂.measure.restrict W := by
+  intro P n U₁ U₂ W T₁ T₂ R₁ R₂ hU₁ hU₂ hW hWU₁ hWU₂ hR₁ hR₂ hT
+  -- `ω ∈ 𝒟ⁿ(W)` regarded in `𝒟ⁿ(Uᵢ)`: `Tᵢ(ω) = currentEval Tᵢ ω`
+  have hev₁ : ∀ ω : TestFormOn W n,
+      T₁ (testFormOnInclusion hWU₁ n ω) = currentEval T₁ (ω : DifferentialForm (Euclid P) n) := by
+    intro ω
+    rw [currentEval, dite_eq_left ⟨ω.property.1, ω.property.2.trans hWU₁⟩]
+    rfl
+  have hev₂ : ∀ ω : TestFormOn W n,
+      T₂ (testFormOnInclusion hWU₂ n ω) = currentEval T₂ (ω : DifferentialForm (Euclid P) n) := by
+    intro ω
+    rw [currentEval, dite_eq_left ⟨ω.property.1, ω.property.2.trans hWU₂⟩]
+    rfl
+  -- 1. `M_G(T₁) = M_G(T₂⌞W) = M_G(T₂)` for `G ⊆ W`
+  have hmass : ∀ G : Set (Euclid P), G ⊆ W → T₁.massOn G = T₂.massOn G := by
+    intro G hGW
+    rw [Submission.dtc_massOn_eq_of_agreeOn P n U₁ W G hWU₁ T₁ (T₂.restrictDomain hWU₂) hGW
+        fun ω _ => by rw [GeometricCurrentOn.restrictDomain_apply, hev₁, hev₂, hT],
+      Submission.dtc_massOn_eq_of_agreeOn P n U₂ W G hWU₂ T₂ (T₂.restrictDomain hWU₂) hGW
+        fun ω _ => rfl]
+  -- 2. `μ_{R₁}(G) = M_G(T₁) = M_G(T₂) = μ_{R₂}(G)` for open `G ⊆ W`
+  have hopen : ∀ G : Set (Euclid P), IsOpen G → G ⊆ W → R₁.measure G = R₂.measure G := by
+    intro G hG hGW
+    rw [← Submission.dtc_mass_eq_measure P n U₁ G T₁ R₁ hU₁ hG (hGW.trans hWU₁) hR₁,
+      ← Submission.dtc_mass_eq_measure P n U₂ G T₂ R₂ hU₂ hG (hGW.trans hWU₂) hR₂, hmass G hGW]
+  -- 3. `μ_{R₁}(C) < ∞` for compact `C ⊆ W ⊆ U₁`
+  have hfin : ∀ C : Set (Euclid P), IsCompact C → C ⊆ W → R₁.measure C ≠ ∞ := fun C hC hCW =>
+    (Submission.rsd_imrep_compact_measure_ne_top P n U₁ R₁ C hC (hCW.trans hWU₁)).2
+  -- 4. hence `μ_{R₁}(B ∩ W) = μ_{R₂}(B ∩ W)` for Borel `B`
+  ext B hB
+  rw [Measure.restrict_apply hB, Measure.restrict_apply hB]
+  exact Submission.cmc_ml_measure_eq_of_eq_on_open_subsets P W R₁.measure R₂.measure hW hfin
+    hopen (B ∩ W) (hB.inter hW.measurableSet) inter_subset_right
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
