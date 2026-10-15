@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.projected_comparison-a1.competitor_mass-a1.integral_le_measure-a1",
+  "parent_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.projected_comparison-a1.competitor_mass-a1",
+  "depth": 5,
+  "title": "A θ-weighted integral of an integrand bounded by c·1_G is at most ofReal(c)·μ_R(G)",
+  "statement": "Let P, n ∈ ℕ, U ⊆ ℝ^P, let R = (M, θ, ξ) be an IMRep in U (IMRep U n), let G ⊆ ℝ^P be measurable, and let g : ℝ^P → ℝ and c ∈ ℝ satisfy |g(x)| ≤ 1_G(x)·c for Hⁿ⌞M-a.e. x (Hⁿ = μHE[n]; in Lean |g x| ≤ G.indicator (fun _ => c) x). Then ofReal(∫_M θ(x)g(x) dHⁿ(x)) ≤ ofReal(c)·μ_R(G) in [0, ∞], where μ_R = R.measure = (Hⁿ⌞M).withDensity θ.",
+  "lean_statement": "∀ (P n : ℕ) (U G : Set (Euclid P)) (R : IMRep U n) (g : Euclid P → ℝ) (c : ℝ), MeasurableSet G → (∀ᵐ x ∂(μHE[n].restrict R.carrier), |g x| ≤ G.indicator (fun _ => c) x) → ENNReal.ofReal (∫ x in R.carrier, (R.mult x : ℝ) * g x ∂μHE[n]) ≤ ENNReal.ofReal c * R.measure G",
+  "lean_name": "dor_lmb_pc_cm_ofReal_integral_le_measure",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-limsup-mass-bound-a1-projected-co-7b651e4eed-a1"
+}

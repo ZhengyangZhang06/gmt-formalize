@@ -1,0 +1,60 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "gram|normDet|areaJacobian|eigenvalue|det_id_add|prod_one_add",
+        "eigenvectorBasis|apply_eigenvectorBasis|trace_eq_sum_inner|adjoint_inner_right|def det|det_toMatrix|basisFun_apply|finrank_euclideanSpace_fin",
+        "normDet_sq|normDet_nonneg",
+        "norm_fderiv_le_of_lipschitz|ae_differentiableAt",
+        "python3 -I /tmp/ga-review-741a8bde/prepare.py",
+        "LEAN_PATH=\"$(cat /tmp/ga-split/leanpath.txt)\" '/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean' /tmp/ga-review-741a8bde/Types.lean",
+        "LEAN_PATH=\"$(cat /tmp/ga-split/leanpath.txt)\" '/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean' /tmp/ga-review-741a8bde/Children.lean",
+        "LEAN_PATH=\"$(cat /tmp/ga-split/leanpath.txt)\" '/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean' /tmp/ga-review-741a8bde/Parent.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Spectrum.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Trace.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Adjoint.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Module/Determinant.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Determinant.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/NormDet.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/Area.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaLipschitz.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-27e8b1c734/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-27e8b1c734/decomposition-v1.json",
+        "/tmp/ga-review-741a8bde/prepare.py",
+        "/tmp/ga-review-741a8bde/Types.lean",
+        "/tmp/ga-review-741a8bde/Children.lean",
+        "/tmp/ga-review-741a8bde/Parent.lean"
+      ],
+      "conclusion": "The split is appropriate for the selected graph-area theorem. Snapshot searches found related Jacobian contracts, but no matching proved project declaration. The inspected spectral, trace, adjoint and determinant APIs support the proposed proofs. The workspace contract matches the snapshot; Mathlib and SimonGMT revisions match their pins. Independently generated comparator-scope checks elaborate all three frozen propositions without child implementations. The supplied child witnesses and exact frozen parent assembly independently compile with only propext, Classical.choice and Quot.sound. The parent assembly uses the specified AreaLipschitz import, the Gram and determinant bounds, Rademacher and lower-integral monotonicity to obtain precisely the selected weighted inequalities. The constant 2^n suffices. All names are bare identifiers; scans of eight workspace DAGs and other recorded decompositions found no collisions. Dependencies are acyclic, with det_bound depending only on prod_bound."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "prod_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line proposition exactly matches the prose, including m = 0 and both entrywise bounds. The induction handles the empty case, preserves the hypotheses on the restricted family, and justifies every multiplication and upper estimate using nonnegativity. It proves both inequalities without circular reliance and supplies sufficient formalization detail."
+    },
+    {
+      "key": "gram_identity",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and one-line type contain the same dimensions, isometries, continuous linear map and orthogonality hypothesis. Adjoint duality, expansion, preservation of inner products and real symmetry correctly eliminate both cross terms. Extensionality proves the exact operator equality, including zero-dimensional cases. Composition and addition elaborate as continuous-linear-map operations. No child or parent theorem is assumed."
+    },
+    {
+      "key": "det_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type exactly states the prose bounds using the operator norm and ordinary endomorphism determinant. The proof establishes symmetry, obtains an orthonormal eigenbasis, derives eigenvalues in [0,1], and identifies their product and sum through determinant and trace computations. Applying prod_bound then proves both conclusions, including n = 0. Its sole declared dependency is correct, and the proof is complete and non-circular."
+    }
+  ],
+  "required_changes": []
+}

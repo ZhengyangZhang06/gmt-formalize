@@ -1,0 +1,358 @@
+{
+  "schema_version": 1,
+  "run_id": "20261011T150044Z-ba604216b4",
+  "parent_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.slicing-a1.slice_family-a1.c1_cover-a1",
+  "dispatch_branch": "proof-workspace/gmt-ch07/20261011t150044z-ba604216b4/dispatch/root-density-one-implies-regular-a1-limsup-mass-bound-a1-slicing-a1-s-1351bbab52",
+  "source_commit": "b4d606db1da5da8fa2c0292ad4924d97de8b3c4b",
+  "comparator_command": "python3 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py --lean-target {lean_target} --verifier-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier --verify-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification --packages /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c --frozen-commit b4d606db1da5da8fa2c0292ad4924d97de8b3c4b {node_id}",
+  "comparator_success": "Your solution is okay!",
+  "lean_target": "GMT/Ch07/Submission.lean",
+  "children": [
+    {
+      "node_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.slicing-a1.slice_family-a1.c1_cover-a1.ball_chart-a1",
+      "key": "ball_chart",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-limsup-mass-bound-a1-slicing-a1-s-355b24d760-a1",
+      "bundle_path": ".humanize-workspace/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-limsup-mass-bound-a1-slicing-a1-s-1351bbab52/children/root-density-one-implies-regular-a1-limsup-mass-bound-a1-slicing-a1-s-355b24d760",
+      "handoff": {
+        "reference_use": [
+          {
+            "source": "local-project",
+            "queries": [
+              "cmp local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean GMT/Ch07/Contract.lean (identical); manifest.json: project b4d606db, mathlib 25730c7c; simongmt package HEAD 2b366308",
+              "cat simongmt Poincare/SimonGMT/Chapter03/SubmanifoldCover.lean (only the cover ⇒ rectifiable direction; its docstring says the converse is a separate, unformalized theorem)",
+              "grep -n '^theorem' simongmt Chapter02/AreaCritical.lean (area_image_criticalSet_eq_zero, area_image_eq_zero_of_critical)",
+              "grep -rn euclideanHausdorffMeasure_image_le_of_lipschitzOn simongmt (Chapter02/Lipschitz.lean:216)",
+              "grep -n 'def IsSimonSubmanifold|IsProperOnInto' simongmt Chapter02/Submanifold.lean; sed Chapter03/Rectifiable.lean (CountablyRectifiable definition)",
+              "rg -n \"theorem LinearMap.exists_antilipschitzWith|theorem norm_image_sub_le_of_norm_fderiv_le'|theorem EuclideanSpace.euclideanHausdorffMeasure_eq_volume|theorem isOpen_iUnion_countable|theorem IsLindelof.indexed_countable_subcover|theorem contDiff_piLp|theorem measure_iUnion_fintype_le\" mathlib/Mathlib",
+              "rg -n -i 'immersion|injOn_of_injective_fderiv|eventually_injOn|injective_of_injective_fderiv' mathlib/Mathlib/Analysis/Calculus (no match)",
+              "#check probe after import GMT.Ch07.Submission: Poincare.SimonGMT.Chapter02.area_image_criticalSet_eq_zero -> unknown identifier (import needed)",
+              "python3 -I dag.json scan: lean_name containing 'dor_lmbsf_c1c_' (none) and 'c1cov' (codim1_rdo_c1cov_* accepted, different types); duplicate lean_names (none); git grep of the 4 names over all local branches (0 hits)",
+              "python3 -I verifier lean_contract.validate_lean_statement and gmt-compare contract_scope/child_modules on the 4 statements; lake env lean on the generated NodeChallenge files and on /tmp/c1c-decomp/All.lean (#print axioms)"
+            ],
+            "files": [
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-limsup-mass-bound-a1-slicing-a1-s-1351bbab52/parent-child-handoff.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/SubmanifoldCover.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/DisjointCover.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaCritical.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/Lipschitz.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/Submanifold.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/FiniteDimension.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/MeanValue.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Bases.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Compactness/Lindelof.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/WithLp.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/OuterMeasure/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-03.txt",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+              "/tmp/c1c-decomp/All.lean"
+            ],
+            "conclusion": "Snapshot: project b4d606d, mathlib 25730c7c, simongmt 2b36630. The snapshot Contract.lean is byte-identical to the workspace contract.\n\nNo declaration in the snapshot states the 'only if' direction of Simon Ch. 3 Lemma 1.2:\n- SimonGMT Chapter03/SubmanifoldCover.lean proves only the converse.\n- Mathlib has no lemma that a C¹ immersion is locally injective (rg found no match).\n\nThe reusable library facts are verified:\n- SimonGMT Chapter02.area_image_criticalSet_eq_zero (critical images are H^m-null). It needs the extra import Poincare.SimonGMT.Chapter02.AreaCritical.\n- SimonGMT Chapter02.euclideanHausdorffMeasure_image_le_of_lipschitzOn.\n- Mathlib: EuclideanSpace.euclideanHausdorffMeasure_eq_volume, LinearMap.exists_antilipschitzWith, Convex.norm_image_sub_le_of_norm_fderiv_le', ContDiff.continuous_fderiv, IsLindelof.indexed_countable_subcover / HereditarilyLindelofSpace.isLindelof, contDiff_piLp, PiLp.norm_apply_le, measure_iUnion_fintype_le, ENNReal.tendsto_inv_nat_nhds_zero, finrank_euclideanSpace_fin.\n\nThe accepted codim1_rdo_c1cov_* nodes in the codimension-one branch prove a different ball-parametrisation statement, so their types differ. Reuse is not possible; the children get fresh dor_lmbsf_c1c_ names, and none collides.\n\nLean checks:\n- All four child types elaborate in the exact comparator scope.\n- Their scratch proofs and the assembly of the exact frozen parent type compile. The only non-standard axiom is the sorry stand-in for the resolved sibling c1_approx."
+          }
+        ],
+        "parent_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.slicing-a1.slice_family-a1.c1_cover-a1",
+        "child_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.slicing-a1.slice_family-a1.c1_cover-a1.ball_chart-a1",
+        "subproblem": {
+          "key": "ball_chart",
+          "title": "The image of an open ball under a C¹ immersion that is injective on the closed ball is an embedded C¹ submanifold",
+          "statement": "Let P, m ∈ ℕ, let G : ℝ^m → ℝ^P be of class C¹ (ContDiff ℝ 1 G; ℝ^k = Euclid k), x ∈ ℝ^m and r ∈ ℝ. Assume:\n- G is injective on the closed ball B̄_r(x) = {z : |z − x| ≤ r};\n- DG(z) = fderiv ℝ G z is injective for every z in the open ball B_r(x) = {z : |z − x| < r}.\nThen N := G(B_r(x)) is an embedded m-dimensional C¹ submanifold of ℝ^P in the sense of the contract (IsEmbeddedSubmanifold 1 m N). That is, every y ∈ N has an open W ∋ y, an open V ⊆ ℝ^m and a map ψ such that:\n- ψ is C¹ on V and injective on V;\n- ψ(V) = W ∩ N;\n- V ∩ ψ⁻¹(K) is compact for every compact K ⊆ W;\n- Dψ(z) is injective for every z ∈ V.\nIf r ≤ 0, then N = ∅ and the statement is vacuous.",
+          "lean_statement": "∀ (P m : ℕ) (G : Euclid m → Euclid P) (x : Euclid m) (r : ℝ), ContDiff ℝ 1 G → Set.InjOn G (Metric.closedBall x r) → (∀ z ∈ Metric.ball x r, Function.Injective (fderiv ℝ G z)) → IsEmbeddedSubmanifold 1 m (G '' Metric.ball x r)",
+          "lean_name": "dor_lmbsf_c1c_injOn_closedBall_chart",
+          "depends_on": [],
+          "natural_proof": "Source: Simon Ch. 3, proof of Lemma 1.2, chapter-03.txt lines 61–64: 'G_ij(B_σ(x)) is an n-dimensional C¹ submanifold … (with G_ij providing a local representation in a neighborhood of the point y = G_ij(x))'. The printed 'submanifold of ℝ^n' is a misprint for ℝ^{n+ℓ}. This child is the chart half of step 5 of the parent proof, with V = B_ρ(x) and ψ = G. The parent takes W = ℝ^P ∖ G(B̄_{2ρ}(x) ∖ B_ρ(x)). Its properness argument uses only the sphere ∂B_ρ(x) inside that annulus. So here W := ℝ^P ∖ G(∂B_r(x)), and injectivity is needed only on B̄_r(x).\n\nNotation:\n- S := {z ∈ ℝ^m : |z − x| = r}, the sphere; S ⊆ B̄_r(x) and S ∩ B_r(x) = ∅.\n- V := B_r(x), W := ℝ^P ∖ G(S), ψ := G, N := G(V).\n\n1. W and V are open. S is closed and bounded in ℝ^m, hence compact (Mathlib isCompact_sphere). G is continuous because it is C¹, so G(S) is compact and hence closed in the Hausdorff space ℝ^P. So W is open. V is an open ball, so V is open.\n\n2. N ⊆ W. Let y ∈ N, say y = G(v) with v ∈ V. Suppose y ∈ G(S), say y = G(s) with s ∈ S. Both v ∈ B_r(x) ⊆ B̄_r(x) and s ∈ S ⊆ B̄_r(x), and G is injective on B̄_r(x), so s = v. But |v − x| < r = |s − x|, a contradiction. Hence y ∉ G(S), that is, y ∈ W.\n\n3. Fix y ∈ N. We check the defining conditions of IsEmbeddedSubmanifold 1 m N at y with the data (V, W, ψ), which are the same for every y.\n   (a) V and W are open by step 1, and y ∈ W by step 2.\n   (b) ψ = G is C¹ on V: G is C¹ on ℝ^m, so ContDiffOn ℝ 1 G V (ContDiff.contDiffOn; the contract's order is the natural number 1 cast to WithTop ℕ∞).\n   (c) ψ is injective on V, because V ⊆ B̄_r(x) and G is injective on B̄_r(x).\n   (d) ψ(V) = W ∩ N. Indeed ψ(V) = N by definition, and N ⊆ W by step 2, so W ∩ N = N = ψ(V).\n   (e) Properness. Let K ⊆ W be compact. We claim V ∩ G⁻¹(K) = B̄_r(x) ∩ G⁻¹(K).\n       - The inclusion ⊆ holds because V ⊆ B̄_r(x).\n       - Conversely, let z ∈ B̄_r(x) with G(z) ∈ K. If |z − x| = r, then z ∈ S, so G(z) ∈ G(S) and G(z) ∉ W. This contradicts G(z) ∈ K ⊆ W. Hence |z − x| < r, that is, z ∈ V.\n       Now B̄_r(x) is compact (closed balls of ℝ^m are compact; isCompact_closedBall). K is compact, hence closed in ℝ^P, and G is continuous, so G⁻¹(K) is closed. A compact set intersected with a closed set is compact (IsCompact.inter_right). Therefore V ∩ ψ⁻¹(K) = B̄_r(x) ∩ G⁻¹(K) is compact.\n   (f) For z ∈ V, Dψ(z) = DG(z) is injective by hypothesis.\n\n4. Conclusion. Conditions (a)–(f) hold at every y ∈ N, so IsEmbeddedSubmanifold 1 m N holds. When r ≤ 0, V = ∅ and N = ∅, so there is nothing to check; the argument above does not use r > 0 anyway. ∎\n\nLean notes (checked in a scratch file):\n- Step 1: `((isCompact_sphere x r).image hG.continuous).isClosed.isOpen_compl`.\n- Step 3(b): `exact_mod_cast hG.contDiffOn`.\n- Step 3(e): `Metric.mem_closedBall`, `lt_or_eq`, `Metric.mem_sphere`, `(isCompact_closedBall x r).inter_right (hK.isClosed.preimage hG.continuous)`.",
+          "proof_key_steps": [
+            "W := ℝ^P ∖ G(∂B_r(x)) is open, because the sphere is compact and G is continuous.",
+            "Injectivity of G on B̄_r(x) gives G(B_r(x)) ⊆ W. So with V = B_r(x) and ψ = G, ψ(V) = W ∩ N.",
+            "C¹ regularity on V, injectivity on V and injective derivatives follow from the hypotheses.",
+            "Properness: for compact K ⊆ W, B_r(x) ∩ G⁻¹(K) = B̄_r(x) ∩ G⁻¹(K), because sphere points map outside W. This is a closed subset of a compact ball, hence compact."
+          ]
+        },
+        "audit": {
+          "key": "ball_chart",
+          "acceptable": true,
+          "natural_proof_acceptable": true,
+          "reason": "The exact contract allows arbitrary r. The sphere-image complement is open and contains the ball image by closed-ball injectivity. The proved compact-preimage equality supplies precisely the contract's properness condition; all other chart conditions follow from the stated hypotheses. Empty balls and zero-dimensional spaces cause no gap."
+        },
+        "resolved_dependencies": [],
+        "plan_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-limsup-mass-bound-a1-slicing-a1-s-355b24d760/parent-supplied-plan.md",
+        "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-limsup-mass-bound-a1-slicing-a1-s-355b24d760/parent-supplied-natural-proof.md",
+        "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-limsup-mass-bound-a1-slicing-a1-s-355b24d760/parent-supplied-natural-proof.json"
+      }
+    },
+    {
+      "node_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.slicing-a1.slice_family-a1.c1_cover-a1.immersion_injective-a1",
+      "key": "immersion_injective",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-limsup-mass-bound-a1-slicing-a1-s-7ed7fc33b4-a1",
+      "bundle_path": ".humanize-workspace/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-limsup-mass-bound-a1-slicing-a1-s-1351bbab52/children/root-density-one-implies-regular-a1-limsup-mass-bound-a1-slicing-a1-s-7ed7fc33b4",
+      "handoff": {
+        "reference_use": [
+          {
+            "source": "local-project",
+            "queries": [
+              "cmp local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean GMT/Ch07/Contract.lean (identical); manifest.json: project b4d606db, mathlib 25730c7c; simongmt package HEAD 2b366308",
+              "cat simongmt Poincare/SimonGMT/Chapter03/SubmanifoldCover.lean (only the cover ⇒ rectifiable direction; its docstring says the converse is a separate, unformalized theorem)",
+              "grep -n '^theorem' simongmt Chapter02/AreaCritical.lean (area_image_criticalSet_eq_zero, area_image_eq_zero_of_critical)",
+              "grep -rn euclideanHausdorffMeasure_image_le_of_lipschitzOn simongmt (Chapter02/Lipschitz.lean:216)",
+              "grep -n 'def IsSimonSubmanifold|IsProperOnInto' simongmt Chapter02/Submanifold.lean; sed Chapter03/Rectifiable.lean (CountablyRectifiable definition)",
+              "rg -n \"theorem LinearMap.exists_antilipschitzWith|theorem norm_image_sub_le_of_norm_fderiv_le'|theorem EuclideanSpace.euclideanHausdorffMeasure_eq_volume|theorem isOpen_iUnion_countable|theorem IsLindelof.indexed_countable_subcover|theorem contDiff_piLp|theorem measure_iUnion_fintype_le\" mathlib/Mathlib",
+              "rg -n -i 'immersion|injOn_of_injective_fderiv|eventually_injOn|injective_of_injective_fderiv' mathlib/Mathlib/Analysis/Calculus (no match)",
+              "#check probe after import GMT.Ch07.Submission: Poincare.SimonGMT.Chapter02.area_image_criticalSet_eq_zero -> unknown identifier (import needed)",
+              "python3 -I dag.json scan: lean_name containing 'dor_lmbsf_c1c_' (none) and 'c1cov' (codim1_rdo_c1cov_* accepted, different types); duplicate lean_names (none); git grep of the 4 names over all local branches (0 hits)",
+              "python3 -I verifier lean_contract.validate_lean_statement and gmt-compare contract_scope/child_modules on the 4 statements; lake env lean on the generated NodeChallenge files and on /tmp/c1c-decomp/All.lean (#print axioms)"
+            ],
+            "files": [
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-limsup-mass-bound-a1-slicing-a1-s-1351bbab52/parent-child-handoff.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/SubmanifoldCover.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/DisjointCover.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaCritical.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/Lipschitz.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/Submanifold.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/FiniteDimension.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/MeanValue.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Bases.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Compactness/Lindelof.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/WithLp.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/OuterMeasure/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-03.txt",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+              "/tmp/c1c-decomp/All.lean"
+            ],
+            "conclusion": "Snapshot: project b4d606d, mathlib 25730c7c, simongmt 2b36630. The snapshot Contract.lean is byte-identical to the workspace contract.\n\nNo declaration in the snapshot states the 'only if' direction of Simon Ch. 3 Lemma 1.2:\n- SimonGMT Chapter03/SubmanifoldCover.lean proves only the converse.\n- Mathlib has no lemma that a C¹ immersion is locally injective (rg found no match).\n\nThe reusable library facts are verified:\n- SimonGMT Chapter02.area_image_criticalSet_eq_zero (critical images are H^m-null). It needs the extra import Poincare.SimonGMT.Chapter02.AreaCritical.\n- SimonGMT Chapter02.euclideanHausdorffMeasure_image_le_of_lipschitzOn.\n- Mathlib: EuclideanSpace.euclideanHausdorffMeasure_eq_volume, LinearMap.exists_antilipschitzWith, Convex.norm_image_sub_le_of_norm_fderiv_le', ContDiff.continuous_fderiv, IsLindelof.indexed_countable_subcover / HereditarilyLindelofSpace.isLindelof, contDiff_piLp, PiLp.norm_apply_le, measure_iUnion_fintype_le, ENNReal.tendsto_inv_nat_nhds_zero, finrank_euclideanSpace_fin.\n\nThe accepted codim1_rdo_c1cov_* nodes in the codimension-one branch prove a different ball-parametrisation statement, so their types differ. Reuse is not possible; the children get fresh dor_lmbsf_c1c_ names, and none collides.\n\nLean checks:\n- All four child types elaborate in the exact comparator scope.\n- Their scratch proofs and the assembly of the exact frozen parent type compile. The only non-standard axiom is the sorry stand-in for the resolved sibling c1_approx."
+          }
+        ],
+        "parent_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.slicing-a1.slice_family-a1.c1_cover-a1",
+        "child_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.slicing-a1.slice_family-a1.c1_cover-a1.immersion_injective-a1",
+        "subproblem": {
+          "key": "immersion_injective",
+          "title": "A C¹ map is injective, with injective derivatives, on a closed ball around a point where its derivative is injective",
+          "statement": "Let P, m ∈ ℕ, write ℝ^k = Euclid k with the Euclidean norm |·|, and let G : ℝ^m → ℝ^P be of class C¹ (ContDiff ℝ 1 G). Let x ∈ ℝ^m be a point at which the derivative DG(x) = fderiv ℝ G x : ℝ^m → ℝ^P is injective. Then there is r > 0 with two properties:\n- G is injective on the closed ball B̄_r(x) = {z : |z − x| ≤ r};\n- DG(z) is injective for every z ∈ B̄_r(x).",
+          "lean_statement": "∀ (P m : ℕ) (G : Euclid m → Euclid P) (x : Euclid m), ContDiff ℝ 1 G → Function.Injective (fderiv ℝ G x) → ∃ r : ℝ, 0 < r ∧ Set.InjOn G (Metric.closedBall x r) ∧ ∀ z ∈ Metric.closedBall x r, Function.Injective (fderiv ℝ G z)",
+          "lean_name": "dor_lmbsf_c1c_immersion_local_injOn",
+          "depends_on": [],
+          "natural_proof": "Source: Simon Ch. 3, proof of Lemma 1.2, 'only if' part (chapter-03.txt lines 61–65): 'if the Jacobian of G_ij is non-zero at a point x, then there is a σ > 0 such that G_ij(B_σ(x)) is an n-dimensional C¹ submanifold'. This child is the analytic first half of step 5 of the parent proof: the choice of c and ρ, the mean value inequality and injectivity. Notation: L := DG(x); ‖A‖ denotes the operator norm of a linear map A.\n\n1. Lower bound for L. L is an injective linear map on the finite-dimensional space ℝ^m, so ker L = 0 and L is anti-Lipschitz: there is K > 0 with |v| ≤ K|Lv| for all v ∈ ℝ^m. (Mathlib LinearMap.exists_antilipschitzWith, applied to L as a linear map with ker = ⊥ from LinearMap.ker_eq_bot, gives AntilipschitzWith K L. Applying it to v and 0 gives |v| ≤ K|Lv|.) For m ≥ 1, 1/K plays the role of c = min_{|v|=1}|Lv| > 0 in the parent proof. For m = 0 every vector is 0 and the bound is trivial. Put c := 1/K > 0. Then c|v| ≤ |Lv| for every v ∈ ℝ^m.\n\n2. Choice of r. Since G is C¹, z ↦ DG(z) is continuous into the space of linear maps with the operator norm (ContDiff.continuous_fderiv, using 1 ≠ 0). So there is δ > 0 with ‖DG(z) − L‖ < c/2 whenever |z − x| < δ. Put r := δ/2 > 0. Every z ∈ B̄_r(x) has |z − x| ≤ δ/2 < δ. Hence ‖DG(z) − L‖ ≤ c/2 for every z ∈ B̄_r(x).\n\n3. Injective derivatives on B̄_r(x). Let z ∈ B̄_r(x) and v, w ∈ ℝ^m with DG(z)v = DG(z)w. Put u := v − w. By linearity DG(z)u = 0, so Lu = Lu − DG(z)u = −(DG(z) − L)u. By steps 1 and 2,\n   c|u| ≤ |Lu| = |(DG(z) − L)u| ≤ ‖DG(z) − L‖·|u| ≤ (c/2)|u|.\n   Since c > 0, this gives |u| ≤ 0, so u = 0 and v = w. Hence DG(z) is injective.\n\n4. Mean value inequality. The closed ball B̄_r(x) is convex, G is differentiable at each of its points (G is C¹), and ‖DG(z) − L‖ ≤ c/2 for z ∈ B̄_r(x) by step 2. Apply the mean value inequality to G − L on B̄_r(x) (Mathlib Convex.norm_image_sub_le_of_norm_fderiv_le' with φ = L and C = c/2). For all a, b ∈ B̄_r(x):\n   |G(a) − G(b) − L(a − b)| ≤ (c/2)|a − b|.\n\n5. G is injective on B̄_r(x). Let a, b ∈ B̄_r(x) with G(a) = G(b). Then G(a) − G(b) = 0 and |−L(a − b)| = |L(a − b)|, so step 4 reads |L(a − b)| ≤ (c/2)|a − b|. Step 1 gives c|a − b| ≤ |L(a − b)|. Hence c|a − b| ≤ (c/2)|a − b|. As c > 0, |a − b| = 0 and a = b.\n\n6. Conclusion. r = δ/2 > 0, G is injective on B̄_r(x) by step 5, and DG(z) is injective for every z ∈ B̄_r(x) by step 3. ∎\n\nLean notes (checked in a scratch file):\n- Steps 1–2: `(fderiv ℝ G x : Euclid m →ₗ[ℝ] Euclid P).exists_antilipschitzWith (LinearMap.ker_eq_bot.2 hx)`, then `hK.le_mul_dist v 0`, `inv_mul_le_iff₀`, `hG.continuous_fderiv (by norm_num)` and `Metric.continuous_iff`.\n- Step 4: `(convex_closedBall x r).norm_image_sub_le_of_norm_fderiv_le'`.\n- Steps 3 and 5: `ContinuousLinearMap.le_opNorm`; conclude with nlinarith from c‖u‖ ≤ (c/2)‖u‖.",
+          "proof_key_steps": [
+            "DG(x) is injective on the finite-dimensional ℝ^m, hence anti-Lipschitz: c|v| ≤ |DG(x)v| for some c > 0.",
+            "Continuity of DG gives r > 0 with ‖DG(z) − DG(x)‖ ≤ c/2 on B̄_r(x).",
+            "Then c|u| ≤ |DG(x)u| = |(DG(z) − DG(x))u| ≤ (c/2)|u| whenever DG(z)u = 0, so DG(z) is injective on B̄_r(x).",
+            "Mean value inequality on the convex ball: |G(a) − G(b) − DG(x)(a − b)| ≤ (c/2)|a − b|.",
+            "If G(a) = G(b), then c|a − b| ≤ (c/2)|a − b|, so a = b: G is injective on B̄_r(x)."
+          ]
+        },
+        "audit": {
+          "key": "immersion_injective",
+          "acceptable": true,
+          "natural_proof_acceptable": true,
+          "reason": "The prose and Lean type agree. The positive anti-Lipschitz bound, continuity of the derivative and the mean value inequality prove both asserted injectivity properties on the same closed ball. The argument includes m = 0 and is complete and non-circular."
+        },
+        "resolved_dependencies": [],
+        "plan_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-limsup-mass-bound-a1-slicing-a1-s-7ed7fc33b4/parent-supplied-plan.md",
+        "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-limsup-mass-bound-a1-slicing-a1-s-7ed7fc33b4/parent-supplied-natural-proof.md",
+        "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-limsup-mass-bound-a1-slicing-a1-s-7ed7fc33b4/parent-supplied-natural-proof.json"
+      }
+    },
+    {
+      "node_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.slicing-a1.slice_family-a1.c1_cover-a1.lipschitz_c1_pieces-a1",
+      "key": "lipschitz_c1_pieces",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-limsup-mass-bound-a1-slicing-a1-s-8cc7497947-a1",
+      "bundle_path": ".humanize-workspace/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-limsup-mass-bound-a1-slicing-a1-s-1351bbab52/children/root-density-one-implies-regular-a1-limsup-mass-bound-a1-slicing-a1-s-8cc7497947",
+      "handoff": {
+        "reference_use": [
+          {
+            "source": "local-project",
+            "queries": [
+              "cmp local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean GMT/Ch07/Contract.lean (identical); manifest.json: project b4d606db, mathlib 25730c7c; simongmt package HEAD 2b366308",
+              "cat simongmt Poincare/SimonGMT/Chapter03/SubmanifoldCover.lean (only the cover ⇒ rectifiable direction; its docstring says the converse is a separate, unformalized theorem)",
+              "grep -n '^theorem' simongmt Chapter02/AreaCritical.lean (area_image_criticalSet_eq_zero, area_image_eq_zero_of_critical)",
+              "grep -rn euclideanHausdorffMeasure_image_le_of_lipschitzOn simongmt (Chapter02/Lipschitz.lean:216)",
+              "grep -n 'def IsSimonSubmanifold|IsProperOnInto' simongmt Chapter02/Submanifold.lean; sed Chapter03/Rectifiable.lean (CountablyRectifiable definition)",
+              "rg -n \"theorem LinearMap.exists_antilipschitzWith|theorem norm_image_sub_le_of_norm_fderiv_le'|theorem EuclideanSpace.euclideanHausdorffMeasure_eq_volume|theorem isOpen_iUnion_countable|theorem IsLindelof.indexed_countable_subcover|theorem contDiff_piLp|theorem measure_iUnion_fintype_le\" mathlib/Mathlib",
+              "rg -n -i 'immersion|injOn_of_injective_fderiv|eventually_injOn|injective_of_injective_fderiv' mathlib/Mathlib/Analysis/Calculus (no match)",
+              "#check probe after import GMT.Ch07.Submission: Poincare.SimonGMT.Chapter02.area_image_criticalSet_eq_zero -> unknown identifier (import needed)",
+              "python3 -I dag.json scan: lean_name containing 'dor_lmbsf_c1c_' (none) and 'c1cov' (codim1_rdo_c1cov_* accepted, different types); duplicate lean_names (none); git grep of the 4 names over all local branches (0 hits)",
+              "python3 -I verifier lean_contract.validate_lean_statement and gmt-compare contract_scope/child_modules on the 4 statements; lake env lean on the generated NodeChallenge files and on /tmp/c1c-decomp/All.lean (#print axioms)"
+            ],
+            "files": [
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-limsup-mass-bound-a1-slicing-a1-s-1351bbab52/parent-child-handoff.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/SubmanifoldCover.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/DisjointCover.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaCritical.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/Lipschitz.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/Submanifold.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/FiniteDimension.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/MeanValue.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Bases.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Compactness/Lindelof.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/WithLp.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/OuterMeasure/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-03.txt",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+              "/tmp/c1c-decomp/All.lean"
+            ],
+            "conclusion": "Snapshot: project b4d606d, mathlib 25730c7c, simongmt 2b36630. The snapshot Contract.lean is byte-identical to the workspace contract.\n\nNo declaration in the snapshot states the 'only if' direction of Simon Ch. 3 Lemma 1.2:\n- SimonGMT Chapter03/SubmanifoldCover.lean proves only the converse.\n- Mathlib has no lemma that a C¹ immersion is locally injective (rg found no match).\n\nThe reusable library facts are verified:\n- SimonGMT Chapter02.area_image_criticalSet_eq_zero (critical images are H^m-null). It needs the extra import Poincare.SimonGMT.Chapter02.AreaCritical.\n- SimonGMT Chapter02.euclideanHausdorffMeasure_image_le_of_lipschitzOn.\n- Mathlib: EuclideanSpace.euclideanHausdorffMeasure_eq_volume, LinearMap.exists_antilipschitzWith, Convex.norm_image_sub_le_of_norm_fderiv_le', ContDiff.continuous_fderiv, IsLindelof.indexed_countable_subcover / HereditarilyLindelofSpace.isLindelof, contDiff_piLp, PiLp.norm_apply_le, measure_iUnion_fintype_le, ENNReal.tendsto_inv_nat_nhds_zero, finrank_euclideanSpace_fin.\n\nThe accepted codim1_rdo_c1cov_* nodes in the codimension-one branch prove a different ball-parametrisation statement, so their types differ. Reuse is not possible; the children get fresh dor_lmbsf_c1c_ names, and none collides.\n\nLean checks:\n- All four child types elaborate in the exact comparator scope.\n- Their scratch proofs and the assembly of the exact frozen parent type compile. The only non-standard axiom is the sorry stand-in for the resolved sibling c1_approx."
+          }
+        ],
+        "parent_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.slicing-a1.slice_family-a1.c1_cover-a1",
+        "child_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.slicing-a1.slice_family-a1.c1_cover-a1.lipschitz_c1_pieces-a1",
+        "subproblem": {
+          "key": "lipschitz_c1_pieces",
+          "title": "A Lipschitz map ℝ^m → ℝ^P agrees with countably many C¹ maps off a set with H^m-null image (given scalar C¹ approximation)",
+          "statement": "Let P, m ∈ ℕ, K ≥ 0, and let F : ℝ^m → ℝ^P be K-Lipschitz (ℝ^k = Euclid k). Assume:\n(H) for every Lipschitz u : ℝ^m → ℝ (with any constant L ≥ 0) and every ε ∈ (0, ∞] there is g : ℝ^m → ℝ of class C¹ with L^m({y : u(y) ≠ g(y)}) < ε, where L^m = volume on ℝ^m.\n(H) is verbatim the frozen type of the C¹-approximation node c1_approx (Lean dor_lmbsf_lipschitz_c1_approx; Simon Ch. 2, Theorem 1.5, value part) at dimension m.\nThen there are E ⊆ ℝ^P with H^m(E) = 0 (H^m = μHE[m]) and C¹ maps G_i : ℝ^m → ℝ^P (i ∈ ℕ) such that F(ℝ^m) ⊆ E ∪ ⋃_i G_i(ℝ^m).",
+          "lean_statement": "∀ (P m : ℕ) (F : Euclid m → Euclid P) (K : NNReal), LipschitzWith K F → (∀ (u : Euclid m → ℝ) (L : NNReal), LipschitzWith L u → ∀ ε : ℝ≥0∞, 0 < ε → ∃ g : Euclid m → ℝ, ContDiff ℝ 1 g ∧ volume {y | u y ≠ g y} < ε) → ∃ (E : Set (Euclid P)) (G : ℕ → Euclid m → Euclid P), μHE[m] E = 0 ∧ (∀ i, ContDiff ℝ 1 (G i)) ∧ Set.range F ⊆ E ∪ ⋃ i, Set.range (G i)",
+          "lean_name": "dor_lmbsf_c1c_lipschitz_range_c1_pieces",
+          "depends_on": [],
+          "natural_proof": "Source: Simon Ch. 3, proof of Lemma 1.2, 'only if' part, chapter-03.txt lines 39–59. This is steps 2–3 of the parent proof for one Lipschitz map F = F_j.\n\nPrinted errata, applied here:\n- Lines 41–42: 'G_ij : ℝ^n → ℝ^ℓ' should read ℝ^{n+ℓ}.\n- Line 49: 'graph F_j ⊆ E_j ∪ ⋃_i G_ij(ℝ^n)' should read F_j(ℝ^n) ⊆ ….\n- Ch. 2 Theorem 1.5 is scalar, so it is applied coordinatewise.\n\nThe constants differ harmlessly from the parent's step 2: each coordinate uses ε = 1/i instead of 1/(iP). The resulting bound P/i → 0 replaces 1/i and removes the separate case P = 0.\n\n1. Coordinates are Lipschitz. For p ∈ Fin P let F^p(y) := (F(y))_p. For a ∈ ℝ^P we have |a_p| ≤ |a| (Mathlib PiLp.norm_apply_le). Hence\n   |F^p(a) − F^p(b)| = |(F(a) − F(b))_p| ≤ |F(a) − F(b)| ≤ K|a − b|,\n   so F^p is K-Lipschitz.\n\n2. Coordinatewise C¹ approximation. Fix i ∈ ℕ and put ε_i := 1/i ∈ (0, ∞]. In [0, ∞] we have 1/0 = ∞, and ε_i > 0 because i < ∞. For each p, apply (H) to u = F^p, L = K and ε = ε_i. This gives a C¹ function g_{ip} : ℝ^m → ℝ with L^m({F^p ≠ g_{ip}}) < 1/i. Define G_i : ℝ^m → ℝ^P by (G_i(y))_p := g_{ip}(y). Each coordinate of G_i is C¹, so G_i is C¹ (Mathlib contDiff_piLp).\n\n3. Disagreement sets are small. If F(y) ≠ G_i(y), then F^p(y) ≠ g_{ip}(y) for some p, since two vectors of ℝ^P with equal coordinates are equal. So {F ≠ G_i} ⊆ ⋃_p {F^p ≠ g_{ip}}. By monotonicity and finite subadditivity of the outer measure L^m (no measurability needed; measure_iUnion_fintype_le):\n   L^m({F ≠ G_i}) ≤ Σ_p L^m({F^p ≠ g_{ip}}) ≤ P · (1/i).\n\n4. The bad set is null. Let Z := ⋂_{i∈ℕ} {F ≠ G_i}. For each i, Z ⊆ {F ≠ G_i}, so L^m(Z) ≤ P · (1/i). In [0, ∞], 1/i → 0 as i → ∞, and P < ∞, so P · (1/i) → 0 (ENNReal.tendsto_inv_nat_nhds_zero, ENNReal.Tendsto.const_mul). Hence L^m(Z) ≤ 0, that is, L^m(Z) = 0.\n\n5. The image of the bad set is null. Put E := F(Z). F is K-Lipschitz on Z, so H^m(F(Z)) ≤ K^m H^m(Z) (SimonGMT Chapter02.euclideanHausdorffMeasure_image_le_of_lipschitzOn with n = m, applied to LipschitzOnWith K F Z). On ℝ^m = Euclid m, H^m = L^m (Mathlib EuclideanSpace.euclideanHausdorffMeasure_eq_volume m). So H^m(E) ≤ K^m · L^m(Z) = 0.\n\n6. Covering. Let y ∈ F(ℝ^m), say y = F(z).\n   - If z ∈ Z, then y ∈ F(Z) = E.\n   - Otherwise z ∉ {F ≠ G_i} for some i, that is, F(z) = G_i(z), so y = G_i(z) ∈ G_i(ℝ^m).\n   Hence F(ℝ^m) ⊆ E ∪ ⋃_i G_i(ℝ^m).\n\n7. Conclusion. E and the maps (G_i) have the required properties by steps 2, 5 and 6. ∎\n\nLean notes (checked in a scratch file):\n- Coordinates are `(F y).ofLp p`; use `PiLp.sub_apply` and `PiLp.norm_apply_le`.\n- `ε := ((i : ℝ≥0∞))⁻¹`, positive by `ENNReal.inv_pos.2 (ENNReal.natCast_ne_top i)`.\n- `G i y := WithLp.toLp 2 (fun p => g i p y)` with `(contDiff_piLp 2).2`.\n- Step 3: `measure_iUnion_fintype_le`; the sum of constants simplifies to `(P : ℝ≥0∞) * (i)⁻¹`.\n- Step 4: `ge_of_tendsto'` with `ENNReal.Tendsto.const_mul ENNReal.tendsto_inv_nat_nhds_zero (Or.inr (ENNReal.natCast_ne_top P))`.\n- Step 5: `Poincare.SimonGMT.Chapter02.euclideanHausdorffMeasure_image_le_of_lipschitzOn m (hF.lipschitzOnWith (s := Z))`, then rewrite with `EuclideanSpace.euclideanHausdorffMeasure_eq_volume`.",
+          "proof_key_steps": [
+            "The coordinates F^p of F are K-Lipschitz.",
+            "Apply (H) to each coordinate with ε = 1/i and assemble the C¹ maps G_i coordinatewise.",
+            "Subadditivity over the P coordinates gives L^m({F ≠ G_i}) ≤ P/i.",
+            "Z = ⋂_i {F ≠ G_i} is L^m-null, and E = F(Z) is H^m-null by the Lipschitz image bound and H^m = L^m on ℝ^m.",
+            "Points off Z satisfy F = G_i for some i, so F(ℝ^m) ⊆ E ∪ ⋃_i G_i(ℝ^m)."
+          ]
+        },
+        "audit": {
+          "key": "lipschitz_c1_pieces",
+          "acceptable": true,
+          "natural_proof_acceptable": true,
+          "reason": "Hypothesis H is explicit and matches the existing scalar-approximation dependency at dimension m. Coordinatewise approximation, finite subadditivity and P/i tending to zero establish the null disagreement intersection; Hausdorff-volume normalization and the Lipschitz image estimate establish its null image. The covering argument is complete, including i = 0 and P = 0 under ENNReal conventions, and requires no unstated measurability."
+        },
+        "resolved_dependencies": [],
+        "plan_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-limsup-mass-bound-a1-slicing-a1-s-8cc7497947/parent-supplied-plan.md",
+        "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-limsup-mass-bound-a1-slicing-a1-s-8cc7497947/parent-supplied-natural-proof.md",
+        "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-limsup-mass-bound-a1-slicing-a1-s-8cc7497947/parent-supplied-natural-proof.json"
+      }
+    },
+    {
+      "node_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.slicing-a1.slice_family-a1.c1_cover-a1.c1_range_cover-a1",
+      "key": "c1_range_cover",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-limsup-mass-bound-a1-slicing-a1-s-2fc5872b4f-a1",
+      "bundle_path": ".humanize-workspace/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-limsup-mass-bound-a1-slicing-a1-s-1351bbab52/children/root-density-one-implies-regular-a1-limsup-mass-bound-a1-slicing-a1-s-2fc5872b4f",
+      "handoff": {
+        "reference_use": [
+          {
+            "source": "local-project",
+            "queries": [
+              "cmp local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean GMT/Ch07/Contract.lean (identical); manifest.json: project b4d606db, mathlib 25730c7c; simongmt package HEAD 2b366308",
+              "cat simongmt Poincare/SimonGMT/Chapter03/SubmanifoldCover.lean (only the cover ⇒ rectifiable direction; its docstring says the converse is a separate, unformalized theorem)",
+              "grep -n '^theorem' simongmt Chapter02/AreaCritical.lean (area_image_criticalSet_eq_zero, area_image_eq_zero_of_critical)",
+              "grep -rn euclideanHausdorffMeasure_image_le_of_lipschitzOn simongmt (Chapter02/Lipschitz.lean:216)",
+              "grep -n 'def IsSimonSubmanifold|IsProperOnInto' simongmt Chapter02/Submanifold.lean; sed Chapter03/Rectifiable.lean (CountablyRectifiable definition)",
+              "rg -n \"theorem LinearMap.exists_antilipschitzWith|theorem norm_image_sub_le_of_norm_fderiv_le'|theorem EuclideanSpace.euclideanHausdorffMeasure_eq_volume|theorem isOpen_iUnion_countable|theorem IsLindelof.indexed_countable_subcover|theorem contDiff_piLp|theorem measure_iUnion_fintype_le\" mathlib/Mathlib",
+              "rg -n -i 'immersion|injOn_of_injective_fderiv|eventually_injOn|injective_of_injective_fderiv' mathlib/Mathlib/Analysis/Calculus (no match)",
+              "#check probe after import GMT.Ch07.Submission: Poincare.SimonGMT.Chapter02.area_image_criticalSet_eq_zero -> unknown identifier (import needed)",
+              "python3 -I dag.json scan: lean_name containing 'dor_lmbsf_c1c_' (none) and 'c1cov' (codim1_rdo_c1cov_* accepted, different types); duplicate lean_names (none); git grep of the 4 names over all local branches (0 hits)",
+              "python3 -I verifier lean_contract.validate_lean_statement and gmt-compare contract_scope/child_modules on the 4 statements; lake env lean on the generated NodeChallenge files and on /tmp/c1c-decomp/All.lean (#print axioms)"
+            ],
+            "files": [
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-limsup-mass-bound-a1-slicing-a1-s-1351bbab52/parent-child-handoff.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/SubmanifoldCover.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/DisjointCover.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaCritical.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/Lipschitz.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/Submanifold.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/FiniteDimension.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/MeanValue.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Bases.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Compactness/Lindelof.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/WithLp.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/OuterMeasure/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-03.txt",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+              "/tmp/c1c-decomp/All.lean"
+            ],
+            "conclusion": "Snapshot: project b4d606d, mathlib 25730c7c, simongmt 2b36630. The snapshot Contract.lean is byte-identical to the workspace contract.\n\nNo declaration in the snapshot states the 'only if' direction of Simon Ch. 3 Lemma 1.2:\n- SimonGMT Chapter03/SubmanifoldCover.lean proves only the converse.\n- Mathlib has no lemma that a C¹ immersion is locally injective (rg found no match).\n\nThe reusable library facts are verified:\n- SimonGMT Chapter02.area_image_criticalSet_eq_zero (critical images are H^m-null). It needs the extra import Poincare.SimonGMT.Chapter02.AreaCritical.\n- SimonGMT Chapter02.euclideanHausdorffMeasure_image_le_of_lipschitzOn.\n- Mathlib: EuclideanSpace.euclideanHausdorffMeasure_eq_volume, LinearMap.exists_antilipschitzWith, Convex.norm_image_sub_le_of_norm_fderiv_le', ContDiff.continuous_fderiv, IsLindelof.indexed_countable_subcover / HereditarilyLindelofSpace.isLindelof, contDiff_piLp, PiLp.norm_apply_le, measure_iUnion_fintype_le, ENNReal.tendsto_inv_nat_nhds_zero, finrank_euclideanSpace_fin.\n\nThe accepted codim1_rdo_c1cov_* nodes in the codimension-one branch prove a different ball-parametrisation statement, so their types differ. Reuse is not possible; the children get fresh dor_lmbsf_c1c_ names, and none collides.\n\nLean checks:\n- All four child types elaborate in the exact comparator scope.\n- Their scratch proofs and the assembly of the exact frozen parent type compile. The only non-standard axiom is the sorry stand-in for the resolved sibling c1_approx."
+          }
+        ],
+        "parent_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.slicing-a1.slice_family-a1.c1_cover-a1",
+        "child_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.slicing-a1.slice_family-a1.c1_cover-a1.c1_range_cover-a1",
+        "subproblem": {
+          "key": "c1_range_cover",
+          "title": "The image of a C¹ map ℝ^m → ℝ^P is covered by an H^m-null set and countably many embedded C¹ m-submanifolds",
+          "statement": "Let P, m ∈ ℕ and let G : ℝ^m → ℝ^P be of class C¹ (ContDiff ℝ 1 G; ℝ^k = Euclid k). Then there are:\n- a set N₀ ⊆ ℝ^P with H^m(N₀) = 0 (H^m = μHE[m]);\n- sets N_l ⊆ ℝ^P (l ∈ ℕ), each an embedded m-dimensional C¹ submanifold of ℝ^P in the sense of the contract (IsEmbeddedSubmanifold 1 m N_l);\nsuch that G(ℝ^m) ⊆ N₀ ∪ ⋃_l N_l.",
+          "lean_statement": "∀ (P m : ℕ) (G : Euclid m → Euclid P), ContDiff ℝ 1 G → ∃ (N₀ : Set (Euclid P)) (N : ℕ → Set (Euclid P)), μHE[m] N₀ = 0 ∧ (∀ l, IsEmbeddedSubmanifold 1 m (N l)) ∧ Set.range G ⊆ N₀ ∪ ⋃ l, N l",
+          "lean_name": "dor_lmbsf_c1c_c1_range_cover",
+          "depends_on": [
+            "immersion_injective",
+            "ball_chart"
+          ],
+          "natural_proof": "Source: Simon Ch. 3, proof of Lemma 1.2, 'only if' part, last paragraph (chapter-03.txt lines 61–65). This is steps 4 and 6 of the parent proof for a single C¹ map.\n\nPrinted errata, applied here:\n- Line 61, 'by the area formula L^n({x : JG_ij = 0}', is garbled; it means H^n(G_ij({x : JG_ij = 0})) = 0.\n- Line 63, 'submanifold of ℝ^n', should read ℝ^{n+ℓ}.\n- Simon leaves the countable selection of balls (Lindelöf) implicit.\n\nUses siblings:\n- immersion_injective (Lean dor_lmbsf_c1c_immersion_local_injOn);\n- ball_chart (Lean dor_lmbsf_c1c_injOn_closedBall_chart).\nRequired import: Poincare.SimonGMT.Chapter02.AreaCritical. It is not in the contract's import closure, so add it to Submission.lean.\n\n1. G is differentiable everywhere. G is C¹, so it is differentiable at every x ∈ ℝ^m (ContDiff.differentiable, 1 ≠ 0).\n\n2. The critical image is null. Let Crit := {x ∈ ℝ^m : G is differentiable at x and DG(x) is not injective}. By step 1, Crit = {x : DG(x) not injective}.\n   - Mathematically: by the area formula of Simon Ch. 2 §3, H^m(G(A)) ≤ ∫_A J_G dL^m with J_G = 0 exactly where DG is not injective, so H^m(G(Crit)) = 0.\n   - In SimonGMT this is Chapter02.area_image_criticalSet_eq_zero G, with E = ℝ^m = Euclid m and F = ℝ^P. It states μHE[finrank ℝ E](G '' {x | DifferentiableAt ℝ G x ∧ ¬ Injective (fderiv ℝ G x)}) = 0, and finrank ℝ (Euclid m) = m (finrank_euclideanSpace_fin).\n   Put N₀ := G(Crit). Then μHE[m] N₀ = 0.\n\n3. Local charts at regular points. Let R := {x ∈ ℝ^m : DG(x) is injective}. Fix x ∈ R.\n   - Sibling immersion_injective, applied to G and x, gives r_x > 0 such that G is injective on B̄_{r_x}(x) and DG(z) is injective for all z ∈ B̄_{r_x}(x).\n   - Apply sibling ball_chart to G, x and r = r_x. Its hypotheses hold: G is C¹; G is injective on B̄_{r_x}(x); and DG(z) is injective for z ∈ B_{r_x}(x), since B_{r_x}(x) ⊆ B̄_{r_x}(x).\n   Hence G(B_{r_x}(x)) satisfies IsEmbeddedSubmanifold 1 m.\n\n4. Countable subcover (Lindelöf).\n   - If R = ∅, put N_l := ∅ for every l. The empty set satisfies IsEmbeddedSubmanifold 1 m vacuously, because the definition quantifies over the points of the set.\n   - If R ≠ ∅, the open balls B_{r_x}(x), x ∈ R, cover R, since x ∈ B_{r_x}(x) as r_x > 0. ℝ^m is second countable, hence hereditarily Lindelöf, so R is Lindelöf. So there is a sequence (x_l)_{l∈ℕ} in R with R ⊆ ⋃_l B_{r_{x_l}}(x_l) (Mathlib HereditarilyLindelofSpace.isLindelof R and IsLindelof.indexed_countable_subcover, with the nonempty index type R). Put N_l := G(B_{r_{x_l}}(x_l)). By step 3, each N_l satisfies IsEmbeddedSubmanifold 1 m.\n\n5. Covering. Let y ∈ G(ℝ^m), say y = G(x).\n   - If DG(x) is injective, then x ∈ R (so R ≠ ∅). By step 4, x ∈ B_{r_{x_l}}(x_l) for some l, so y ∈ N_l.\n   - Otherwise G is differentiable at x (step 1) and DG(x) is not injective, so x ∈ Crit and y ∈ N₀.\n   Hence G(ℝ^m) ⊆ N₀ ∪ ⋃_l N_l.\n\n6. Conclusion. N₀ and the sets N_l have all the required properties by steps 2, 4 and 5. ∎\n\nLean notes (checked in a scratch file):\n- Step 2: `have h := Poincare.SimonGMT.Chapter02.area_image_criticalSet_eq_zero (E := Euclid m) (F := Euclid P) G`, then `rw [finrank_euclideanSpace_fin] at h`.\n- Step 3: choose `r hr hinj hder` from the sibling over x : R.\n- Step 4: `rcases isEmpty_or_nonempty R`; `(HereditarilyLindelofSpace.isLindelof R).indexed_countable_subcover (fun x : R => Metric.ball (x : Euclid m) (r x)) (fun _ => Metric.isOpen_ball) …`.\n- Step 5: `by_cases hx : Function.Injective (fderiv ℝ G x)`.",
+          "proof_key_steps": [
+            "A C¹ map is differentiable everywhere, so the critical set is {x : DG(x) not injective}.",
+            "SimonGMT area_image_criticalSet_eq_zero with finrank_euclideanSpace_fin gives H^m(G(Crit)) = 0; set N₀ := G(Crit).",
+            "For a regular x, immersion_injective gives r_x, and ball_chart makes G(B_{r_x}(x)) an embedded C¹ m-submanifold.",
+            "Lindelöf: countably many balls B_{r_{x_l}}(x_l) cover the regular set; set N_l := ∅ if the regular set is empty.",
+            "Every G(x) lies in N₀ (x critical) or in some N_l (x regular)."
+          ]
+        },
+        "audit": {
+          "key": "c1_range_cover",
+          "acceptable": true,
+          "natural_proof_acceptable": true,
+          "reason": "The prose matches the standalone Lean proposition. C¹ regularity supplies differentiability for the critical-image theorem, with finrank equal to m. The two declared sibling dependencies supply the charts, and Lindelöf supplies a countable cover with the empty regular set handled separately. The dependencies are correctly directed and non-circular; the required AreaCritical import is explicitly identified."
+        },
+        "resolved_dependencies": [
+          "root.density_one_implies_regular-a1.limsup_mass_bound-a1.slicing-a1.slice_family-a1.c1_cover-a1.immersion_injective-a1",
+          "root.density_one_implies_regular-a1.limsup_mass_bound-a1.slicing-a1.slice_family-a1.c1_cover-a1.ball_chart-a1"
+        ],
+        "plan_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-limsup-mass-bound-a1-slicing-a1-s-2fc5872b4f/parent-supplied-plan.md",
+        "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-limsup-mass-bound-a1-slicing-a1-s-2fc5872b4f/parent-supplied-natural-proof.md",
+        "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-limsup-mass-bound-a1-slicing-a1-s-2fc5872b4f/parent-supplied-natural-proof.json"
+      }
+    }
+  ],
+  "files": {
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-limsup-mass-bound-a1-slicing-a1-s-1351bbab52/task.md": "9e4ea41ef257319c83fb02009150ae5578d921c66b3d8377928fa0839feacb93",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-limsup-mass-bound-a1-slicing-a1-s-1351bbab52/problem.md": "5b78b2fcb87970586dd76fea8db5f33ecf950ba8df40e0bbfb2eb94f2eb67d06",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-limsup-mass-bound-a1-slicing-a1-s-1351bbab52/problem.json": "a64eb8eb7211544e754b40959feeb1378f1cc31f7893bafbe4c7add776da17a2",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-limsup-mass-bound-a1-slicing-a1-s-1351bbab52/reference-manifest.json": "166b882f6e1c222a7523ace3505311d8aa41f939a8ae9b59a30353c38d3be033",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-limsup-mass-bound-a1-slicing-a1-s-1351bbab52/decomposition.json": "e5cdd3943a320d20b3a94e41d6b42ebc0032a81ce5b73b1a89ced0faf8cecdea",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-limsup-mass-bound-a1-slicing-a1-s-1351bbab52/decomposition-audit.json": "16faaa84d60277fc651bee9f73b13b804c3b399e242c32a614b147239f581ff9",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-limsup-mass-bound-a1-slicing-a1-s-1351bbab52/controller-contract.json": "98ca6c78b2de77f692540fa24e80694ddcd2346111afbb4918901a159346efca",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-limsup-mass-bound-a1-slicing-a1-s-1351bbab52/children/root-density-one-implies-regular-a1-limsup-mass-bound-a1-slicing-a1-s-355b24d760/parent-child-handoff.json": "23cf65930ff7a7f16687e74edb071edaf35cb1bd5e0bf9a98a339d3019e9a61f",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-limsup-mass-bound-a1-slicing-a1-s-1351bbab52/children/root-density-one-implies-regular-a1-limsup-mass-bound-a1-slicing-a1-s-355b24d760/parent-supplied-plan.md": "d7f2e54d9cef99b7170b423913865a0b8c0628c768a23aac60e02018585a6c53",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-limsup-mass-bound-a1-slicing-a1-s-1351bbab52/children/root-density-one-implies-regular-a1-limsup-mass-bound-a1-slicing-a1-s-355b24d760/parent-supplied-natural-proof.md": "61036acf40e7b3839c0078bc2b409ab166ac64c6ece396e7ef5583e5b501a315",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-limsup-mass-bound-a1-slicing-a1-s-1351bbab52/children/root-density-one-implies-regular-a1-limsup-mass-bound-a1-slicing-a1-s-355b24d760/parent-supplied-natural-proof.json": "42968511bbf6f992ae01ee4825e66612d9c154d6ad548132164a9ec465222ae2",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-limsup-mass-bound-a1-slicing-a1-s-1351bbab52/children/root-density-one-implies-regular-a1-limsup-mass-bound-a1-slicing-a1-s-355b24d760/node.json": "c8a9fa8103e5aaef9df491810dd98c9b3caa1cacffa6a605659ee87300155d7d",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-limsup-mass-bound-a1-slicing-a1-s-1351bbab52/children/root-density-one-implies-regular-a1-limsup-mass-bound-a1-slicing-a1-s-7ed7fc33b4/parent-child-handoff.json": "d51a5dc051e65f0d3cac90894f94f6e62a053ff27bb84aa78ea689f5742d221c",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-limsup-mass-bound-a1-slicing-a1-s-1351bbab52/children/root-density-one-implies-regular-a1-limsup-mass-bound-a1-slicing-a1-s-7ed7fc33b4/parent-supplied-plan.md": "988d030dcc7aaf1df6a2228063bf6f15242bbff98e384ae3cec396973b67567e",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-limsup-mass-bound-a1-slicing-a1-s-1351bbab52/children/root-density-one-implies-regular-a1-limsup-mass-bound-a1-slicing-a1-s-7ed7fc33b4/parent-supplied-natural-proof.md": "847694cdbfe403f1118c223d6a5054f6750e3449d77a74619c12eaed2b90fed1",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-limsup-mass-bound-a1-slicing-a1-s-1351bbab52/children/root-density-one-implies-regular-a1-limsup-mass-bound-a1-slicing-a1-s-7ed7fc33b4/parent-supplied-natural-proof.json": "3fa42276b956c1815d3f1ee86dd654193450890850a3c6cce47455570b60cd1a",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-limsup-mass-bound-a1-slicing-a1-s-1351bbab52/children/root-density-one-implies-regular-a1-limsup-mass-bound-a1-slicing-a1-s-7ed7fc33b4/node.json": "d83a93bf70764659dd8e0248346b6b34451f8953e077c51f48b1e5a0ccf9524c",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-limsup-mass-bound-a1-slicing-a1-s-1351bbab52/children/root-density-one-implies-regular-a1-limsup-mass-bound-a1-slicing-a1-s-8cc7497947/parent-child-handoff.json": "e2412323c2193870c0dfe6847af14a21117fa3d5d5a47512ef197a6691fb6227",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-limsup-mass-bound-a1-slicing-a1-s-1351bbab52/children/root-density-one-implies-regular-a1-limsup-mass-bound-a1-slicing-a1-s-8cc7497947/parent-supplied-plan.md": "6b2ae3a75750da8582c7ace57c690ff09872b8c9af41159a8b4ec9409dc78202",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-limsup-mass-bound-a1-slicing-a1-s-1351bbab52/children/root-density-one-implies-regular-a1-limsup-mass-bound-a1-slicing-a1-s-8cc7497947/parent-supplied-natural-proof.md": "380a3ca76a3a8ac7b1e7201b242acbc381f7e6d724a686f4ba1045dd1bb05096",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-limsup-mass-bound-a1-slicing-a1-s-1351bbab52/children/root-density-one-implies-regular-a1-limsup-mass-bound-a1-slicing-a1-s-8cc7497947/parent-supplied-natural-proof.json": "6d98e02b6a451039f170281c38f8306e37d988a877cb7bd0668af14e82a8ce44",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-limsup-mass-bound-a1-slicing-a1-s-1351bbab52/children/root-density-one-implies-regular-a1-limsup-mass-bound-a1-slicing-a1-s-8cc7497947/node.json": "ed059fd010166e741f19c7004fc7a372dc7d0f7ec3db5fb1f57a72e3a1f6743c",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-limsup-mass-bound-a1-slicing-a1-s-1351bbab52/children/root-density-one-implies-regular-a1-limsup-mass-bound-a1-slicing-a1-s-2fc5872b4f/parent-child-handoff.json": "eb61366dd69a9b65b340773b9e9598aa6838fabdbb75fde536f8128490eef6ae",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-limsup-mass-bound-a1-slicing-a1-s-1351bbab52/children/root-density-one-implies-regular-a1-limsup-mass-bound-a1-slicing-a1-s-2fc5872b4f/parent-supplied-plan.md": "ec407657f0c0ac70815aafdb36994bf6f45dff1fb6bedc525b1df8c824db45ad",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-limsup-mass-bound-a1-slicing-a1-s-1351bbab52/children/root-density-one-implies-regular-a1-limsup-mass-bound-a1-slicing-a1-s-2fc5872b4f/parent-supplied-natural-proof.md": "100c693aabc3477a54196a2797372c6d64ab999b34886f17154f6aaa2a3d9830",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-limsup-mass-bound-a1-slicing-a1-s-1351bbab52/children/root-density-one-implies-regular-a1-limsup-mass-bound-a1-slicing-a1-s-2fc5872b4f/parent-supplied-natural-proof.json": "149b8604c8480b7808c8968978c17137f3c01fc4618190f6126ce4c07660e6ed",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-limsup-mass-bound-a1-slicing-a1-s-1351bbab52/children/root-density-one-implies-regular-a1-limsup-mass-bound-a1-slicing-a1-s-2fc5872b4f/node.json": "632b021718cebfdefe53a7e2276b8b448013a3ca54154cbfc16586717b50a10f"
+  }
+}
