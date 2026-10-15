@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.pushforward-a1.pf_integer-a1.refined_pieces-a1",
+  "parent_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.pushforward-a1.pf_integer-a1",
+  "depth": 6,
+  "title": "Bi-Lipschitz parametrization of a rectifiable set adapted to a differentiable map (regular or critical pieces)",
+  "statement": "Let P, n ∈ ℕ, M ⊆ ℝ^P Borel and countably n-rectifiable, and φ : ℝ^P → ℝ^P differentiable. Then there are Lipschitz maps G_j : ℝⁿ → ℝ^P, Borel sets A_j ⊆ ℝⁿ and constants κ_j > 0 (j ∈ ℕ) such that κ_j|a − a'| ≤ |G_j(a) − G_j(a')| for a, a' ∈ A_j, G_j is differentiable with injective derivative at every point of A_j, the sets G_j(A_j) are Borel, contained in M and pairwise disjoint, Hⁿ(M ∖ ⋃_j G_j(A_j)) = 0, and for every j either (regular) there is κ'_j > 0 with κ'_j|a − a'| ≤ |φ(G_j(a)) − φ(G_j(a'))| for a, a' ∈ A_j and D(φ∘G_j)(a) injective for all a ∈ A_j, or (critical) D(φ∘G_j)(a) is not injective for any a ∈ A_j.",
+  "lean_statement": "∀ (P n : ℕ) (M : Set (Euclid P)) (φ : Euclid P → Euclid P), MeasurableSet M → CountablyRectifiable n M → Differentiable ℝ φ → ∃ (G : ℕ → Euclid n → Euclid P) (A : ℕ → Set (Euclid n)) (κ : ℕ → ℝ), (∀ j, ∃ L : NNReal, LipschitzWith L (G j)) ∧ (∀ j, MeasurableSet (A j)) ∧ (∀ j, 0 < κ j) ∧ (∀ j, ∀ a ∈ A j, ∀ a' ∈ A j, κ j * ‖a - a'‖ ≤ ‖G j a - G j a'‖) ∧ (∀ j, ∀ a ∈ A j, DifferentiableAt ℝ (G j) a ∧ Injective (fderiv ℝ (G j) a)) ∧ (∀ j, MeasurableSet (G j '' A j)) ∧ (∀ j, G j '' A j ⊆ M) ∧ Pairwise (fun i j => Disjoint (G i '' A i) (G j '' A j)) ∧ μHE[n] (M \\ ⋃ j, G j '' A j) = 0 ∧ ∀ j, ((∃ κ' : ℝ, 0 < κ' ∧ ∀ a ∈ A j, ∀ a' ∈ A j, κ' * ‖a - a'‖ ≤ ‖φ (G j a) - φ (G j a')‖) ∧ ∀ a ∈ A j, Injective (fderiv ℝ (φ ∘ G j) a)) ∨ ∀ a ∈ A j, ¬ Injective (fderiv ℝ (φ ∘ G j) a)",
+  "lean_name": "dtc_bc_lc_pfi_refined_bilipschitz_pieces",
+  "depends_on": [
+    "root.minimizing_implies_stationary-a1.diffeo_pushforward-a1.bilipschitz_pieces-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.minimizing_implies_stationary-a1.diffeo_pushforward-a1.bilipschitz_pieces-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-bilipschi-4344c8c0d8-a1",
+      "result_commit": "a2ba78fca36b5fe8a0051278d30da09823c8b59c",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-compari-5729b2ece3-a1"
+}

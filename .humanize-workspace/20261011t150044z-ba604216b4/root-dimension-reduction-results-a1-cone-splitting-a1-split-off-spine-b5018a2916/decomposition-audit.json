@@ -1,0 +1,72 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "starProjection_apply_eq_zero_iff|starProjection_eq_self_iff|le_orthogonal_orthogonal|isClosed_orthogonal",
+        "setLIntegral_mono'|withDensity_absolutelyContinuous|closed_of_finiteDimensional",
+        "boundary_apply|boundary_boundary",
+        "dimred_cs_sos_mt_cc_support_smul_boundary",
+        "dimred_cs_sos_mt_cc_support_subset_iff_measure",
+        "dimred_cs_sos_mt_cc_product_support",
+        "dimred_cs_sos_mt_cc_cube_sum_geometry",
+        "dimred_cs_sos_mt_cc_cycle_of_boundary_eq",
+        "git show 4aa9ba8dc9ec5fe22643a88f4a53931e8190119e:GMT/Ch07/Submission.lean",
+        "lake env lean /tmp/cube-cycle-independent-audit/StandaloneTypes.lean",
+        "lake env lean /tmp/cc-decomp/check/Children.lean",
+        "lake env lean /tmp/cc-decomp/check/Types.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/lake-manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Projection/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/WithDensity.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-cone-splitting-a1-split-off-spine-b5018a2916/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-cone-splitting-a1-split-off-spine-b5018a2916/decomposition-v1.json",
+        "/tmp/cc-decomp/check/Children.lean",
+        "/tmp/cc-decomp/check/Types.lean"
+      ],
+      "conclusion": "The project, mathlib and SimonGMT revisions match the pins; the workspace contract matches the snapshot. The five names are bare identifiers with no DAG collisions. Every frozen child type is a standalone one-line proposition matching its statement, without implementation-dependent aliases. The two child dependency edges are correctly directed and acyclic; inherited prerequisites do not depend on the selected node. Accepted prerequisite declarations match their frozen types, and their retained comparator evidence passes with only propext, Quot.sound and Classical.choice permitted. The split appropriately separates support, measure, geometry and cycle algebra. Inspection of the assembly confirms that these obligations, together with the declared siblings, establish the exact selected parent, including its action formula for every admissible flat map. Projection and scalar-current constructions use the intended operations. Fresh Lean checks could not run because lake is unavailable; the supplied scratch files were inspected, and their dependency stubs were not treated as completed proofs."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "support_smul_boundary",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The statement and type agree, including arbitrary U and c. Exterior differentiation preserves test-form support, so every set defining T.zeroRegion also defines S.zeroRegion. Taking relative complements proves the required support inclusion without circularity."
+    },
+    {
+      "key": "support_measure",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Both directions are proved for the exact hypotheses. Carrier-nullity and absolute continuity give concentration on support; monotonicity proves the forward implication. Closedness of F supplies the ball needed for the reverse implication using the accepted support criterion."
+    },
+    {
+      "key": "product_support",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Compactness makes the sum set closed and its complement measurable. Each translated complement has zero RA-measure on E, so the assumed measure formula gives zero RB-measure there. Applying support_measure proves the conclusion. No dimension relation or additional integrability assumption is needed."
+    },
+    {
+      "key": "cube_geometry",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The expansion, closedness and displayed norm bound prove compactness for all stated k and r; compact addition and orthogonal projection identities prove the remaining conclusions. The nonessential parenthesis claiming emptiness whenever r<0 overlooks k=0, where Q_r={0}. This does not leave a proof gap: the preceding bound remains valid with both sides zero and already handles that case."
+    },
+    {
+      "key": "cycle_algebra",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof constructs continuous currents explicitly. The sign identities give the action formula and integer combination, boundary_boundary proves BoundaryVanishes at the stated successor degree, and support_smul_boundary supplies support containment. The mass inequality correctly uses the accepted local triangle estimate on U and zero mass of the zero current."
+    }
+  ],
+  "required_changes": []
+}

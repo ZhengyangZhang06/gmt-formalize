@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.slicing-a1.coarea-a1.gradient_field-a1",
+  "parent_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.slicing-a1.coarea-a1",
+  "depth": 6,
+  "title": "Borel tangential gradient ∇^M f on disjoint C¹ chart pieces with |∇^M f| ≤ L everywhere (Simon Ch. 3, 2.1)",
+  "statement": "Let P, d ∈ ℕ, M ⊆ ℝ^P, L ≥ 0 and f : ℝ^P → ℝ L-Lipschitz. For j ∈ ℕ let ψ_j : ℝ^d → ℝ^P and F_j : ℝ^d → ℝ be C¹ and V_j, Y_j ⊆ ℝ^d, such that ψ_j is injective on V_j, Dψ_j(y) is injective for y ∈ V_j, Y_j is Borel, closure(Y_j) is compact and contained in V_j, and f(ψ_j(y)) = F_j(y) for y ∈ Y_j. Assume the images ψ_j(Y_j) are pairwise disjoint and H^d(M ∖ ⋃_j ψ_j(Y_j)) = 0 (H^d = μHE[d]). Then there are sets Y′_j ⊆ Y_j (j ∈ ℕ) and a map G : ℝ^P → ℝ^P such that: each Y′_j and each ψ_j(Y′_j) is Borel; H^d(M ∖ ⋃_j ψ_j(Y′_j)) = 0; G is Borel; |G(x)| ≤ L for every x ∈ ℝ^P; and for every j and y ∈ Y′_j, G(ψ_j(y)) ∈ Dψ_j(y)(ℝ^d) and ⟨G(ψ_j(y)), Dψ_j(y)e⟩ = DF_j(y)e for every e ∈ ℝ^d.",
+  "lean_statement": "∀ (P d : ℕ) (M : Set (Euclid P)) (f : Euclid P → ℝ) (L : NNReal) (ψ : ℕ → Euclid d → Euclid P) (V Y : ℕ → Set (Euclid d)) (F : ℕ → Euclid d → ℝ), LipschitzWith L f → (∀ j, ContDiff ℝ 1 (ψ j)) → (∀ j, InjOn (ψ j) (V j)) → (∀ j, ∀ y ∈ V j, Injective (fderiv ℝ (ψ j) y)) → (∀ j, ContDiff ℝ 1 (F j)) → (∀ j, MeasurableSet (Y j)) → (∀ j, IsCompact (closure (Y j))) → (∀ j, closure (Y j) ⊆ V j) → (∀ j, ∀ y ∈ Y j, f (ψ j y) = F j y) → Pairwise (fun i j => Disjoint (ψ i '' Y i) (ψ j '' Y j)) → μHE[d] (M \\ ⋃ j, ψ j '' Y j) = 0 → ∃ (Y' : ℕ → Set (Euclid d)) (G : Euclid P → Euclid P), (∀ j, Y' j ⊆ Y j) ∧ (∀ j, MeasurableSet (Y' j)) ∧ (∀ j, MeasurableSet (ψ j '' Y' j)) ∧ μHE[d] (M \\ ⋃ j, ψ j '' Y' j) = 0 ∧ Measurable G ∧ (∀ x, ‖G x‖ ≤ L) ∧ ∀ j, ∀ y ∈ Y' j, G (ψ j y) ∈ LinearMap.range (fderiv ℝ (ψ j) y : Euclid d →ₗ[ℝ] Euclid P) ∧ ∀ e : Euclid d, inner ℝ (G (ψ j y)) (fderiv ℝ (ψ j) y e) = fderiv ℝ (F j) y e",
+  "lean_name": "dtc_bc_lc_sl_co_gradient_field",
+  "depends_on": [
+    "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.slicing-a1.coarea-a1.chart_bilipschitz-a1",
+    "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.slicing-a1.coarea-a1.chart_gradient-a1",
+    "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.slicing-a1.coarea-a1.density_gradient_bound-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.slicing-a1.coarea-a1.chart_bilipschitz-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.slicing-a1.coarea-a1.chart_gradient-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.slicing-a1.coarea-a1.density_gradient_bound-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-compari-c067b1bf20-a1"
+}

@@ -1,0 +1,54 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "imrep_approxTangent_starProjection_aesm|dtc_cone_opEuclid|dtc_cone_tangentProjection",
+        "def approxTangentPlane",
+        "protected theorem aemeasurable|protected theorem measurable|instMeasurableSpace|instBorelSpace",
+        "def HasApproximateTangentSpaceAt|theorem HasApproximateTangentSpaceAt.unique",
+        "abbrev Covector|def wedgeCovectors|theorem wedgeCovectors_apply_det",
+        "theorem alternatizeUncurryFin_apply|theorem det_apply |starProjection_eq_sum_rankOne",
+        "git diff c36d11c25906697028ef66b85732cab5268c4fa7 36b2d372040645171f355c68541910ce3ab4bab8 -- GMT/Ch07/Submission.lean",
+        "rg -l '\"lean_name\": \"dtc_cone_opEuclid_aemeasurable_of_aesm\"' .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes -g '*.json'",
+        "python3 /tmp/dtc-tpm-independent-audit-nhl68h05/compile.py",
+        "python3 /tmp/dtc-tpm-independent-audit-nhl68h05/compile.py TypesAssembly.lean ConstructionChecks.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/StronglyMeasurable/AEStronglyMeasurable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/StronglyMeasurable/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Constructions/BorelSpace/ContinuousLinearMap.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/Alternating/Uncurry/Fin.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Matrix/Determinant/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/FormsDuality.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-cone-a1-tangent-projection-measurable-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-tangent-projection-measurable-a1/accepted-candidate.json",
+        "/tmp/dtc-tpm-independent-audit-nhl68h05/Replay.lean",
+        "/tmp/dtc-tpm-independent-audit-nhl68h05/TypesAssembly.lean",
+        "/tmp/dtc-tpm-independent-audit-nhl68h05/ConstructionChecks.lean"
+      ],
+      "conclusion": "Verified compatibility with project b4d606db, mathlib 25730c7c and simongmt 2b366308. The snapshot supplies the stated IMRep fields, tangent-plane definition and required library facts. Neither proposed declaration occurs in the snapshot project. The DAG reserves the first name only for accepted candidate 36b2d372, whose frozen type is byte-identical; the second name is unreserved. Fresh pinned-Lean checks independently elaborate both child types and the selected parent type, verify the operator-space Borel instance by rfl, and check the covector construction with its cited FormsDuality import. Conditional assembly and replay of the accepted theorem, conversion and selected parent compile with only propext, Classical.choice and Quot.sound. The split is appropriate: it enables validated reuse of the substantial analytic result and isolates the remaining measurability implication. Both children are independent, and their conclusions establish exactly the selected parent."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "tangent_projection_aesm",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and independently elaborated one-line proposition agree, preserving the full IMRep hypothesis, arbitrary U, all dimensions and the exact restricted measure. The supplied proof independently establishes the zero-dimensional case, the factorial-normalized Gram identity, orientation-sign cancellation, deleted-frame determinant identities, continuous operator reconstruction, a.e. tangent identification and strong measurability. It contains no circular step or deferred proof construction. The bare name validly reuses an accepted declaration with an identical frozen type and no dependencies; its replay passes the axiom check."
+    },
+    {
+      "key": "opspace_aemeasurable_of_aesm",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact one-line proposition matches the prose for arbitrary μ and f. The inferred target is the continuous-linear-operator space with its Borel measurable structure, independently verified in Lean. The strongly measurable representative and distance-to-complement argument correctly prove measurability without additional measure assumptions; hf.aemeasurable compiles. The name is bare and unreserved. No sibling dependency is needed: this general implication combines with the first child to prove the selected parent exactly."
+    }
+  ],
+  "required_changes": []
+}

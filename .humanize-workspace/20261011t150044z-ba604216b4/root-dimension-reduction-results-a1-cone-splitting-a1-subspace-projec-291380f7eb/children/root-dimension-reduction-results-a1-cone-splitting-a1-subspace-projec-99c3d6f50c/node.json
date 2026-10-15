@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.cone_splitting-a1.subspace_projection-a1.current_pushforward-a1.cycle_exact-a1",
+  "parent_id": "root.dimension_reduction_results-a1.cone_splitting-a1.subspace_projection-a1.current_pushforward-a1",
+  "depth": 5,
+  "title": "A compactly carried integer multiplicity cycle annihilates every exact smooth form (cutoff step of Simon 6.2.23–2.24)",
+  "statement": "Let P, k ∈ ℕ. Let X ∈ 𝒟_{k+1}(ℝ^P) be a current in ℝ^P (GeometricCurrentOn univ (k+1)), and let R = (M, θ, ξ) be an integer multiplicity triple in ℝ^P (IMRep univ (k+1)) representing X, i.e. X(ω) = R.action(ω) = ∫_M θ(x)⟨ω(x), ξ(x)⟩ dH^{k+1}(x) for every ω ∈ 𝒟^{k+1}(ℝ^P). Let K ⊆ ℝ^P be compact with μ_R(ℝ^P ∖ K) = 0, where μ_R = θH^{k+1}⌞M (R.measure). If ∂X = 0 (X.boundary = 0), then R.action(dη) = ∫_M θ⟨dη, ξ⟩ dH^{k+1} = 0 for every smooth k-form η on ℝ^P (IsSmoothForm η: C^∞, with no support condition), where dη = exteriorDerivative η.",
+  "lean_statement": "∀ (P k : ℕ) (X : GeometricCurrentOn (univ : Set (Euclid P)) (k + 1)) (R : IMRep (univ : Set (Euclid P)) (k + 1)) (K : Set (Euclid P)) (η : DifferentialForm (Euclid P) k), R.Represents X → IsCompact K → R.measure Kᶜ = 0 → X.boundary = 0 → IsSmoothForm η → R.action (exteriorDerivative η) = 0",
+  "lean_name": "dimred_cs_sp_cp_action_extDeriv_eq_zero",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-cone-splitting-a1-subspace-projec-99c3d6f50c-a1"
+}

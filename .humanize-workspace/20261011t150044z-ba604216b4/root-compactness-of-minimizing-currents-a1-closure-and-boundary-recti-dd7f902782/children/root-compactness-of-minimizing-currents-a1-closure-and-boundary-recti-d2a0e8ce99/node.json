@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.weight_ge_one-a1.top_density-a1.top_covector_spans-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.weight_ge_one-a1.top_density-a1",
+  "depth": 6,
+  "title": "A top-degree covector of ℝⁿ normalised on the standard basis has Euclidean norm 1 and spans Λⁿ(ℝⁿ)",
+  "statement": "Let n ∈ ℕ, ℝⁿ = Euclid n = EuclideanSpace ℝ (Fin n), e_i = EuclideanSpace.single i 1 (i ∈ Fin n) the standard basis, and e = (e₀, …, e_{n−1}). Let δ be an n-covector of ℝⁿ (δ ∈ Covector (Euclid n) n, a continuous alternating n-linear form) with δ(e) = 1. Then:\n(a) covectorEuclideanNorm δ = 1. Here covectorEuclideanNorm β = (Σ over strictly increasing I : Fin n → Fin n of β(b_{I(0)}, …, b_{I(n−1)})²)^{1/2}, with b = EuclideanSpace.basisFun (Fin n) ℝ.\n(b) Every n-covector α of ℝⁿ satisfies α = α(e)·δ, as continuous alternating maps with pointwise scalar multiplication.",
+  "lean_statement": "∀ (n : ℕ) (δ : Covector (Euclid n) n), δ (fun i => EuclideanSpace.single i (1 : ℝ)) = 1 → covectorEuclideanNorm δ = 1 ∧ ∀ α : Covector (Euclid n) n, α = α (fun i => EuclideanSpace.single i (1 : ℝ)) • δ",
+  "lean_name": "cbr_ci_pw_td_top_covector_spans",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-d2a0e8ce99-a1"
+}
