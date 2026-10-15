@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.harmonic_approximation-a1.interior_estimates-a1.mean_value_sq_bound-a1",
+  "parent_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.harmonic_approximation-a1.interior_estimates-a1",
+  "depth": 6,
+  "title": "Pointwise L² bound from the ball mean value identity (Cauchy–Schwarz)",
+  "statement": "Let n ∈ ℕ, y ∈ ℝⁿ (ℝⁿ = Euclid n), ρ > 0, and let f : ℝⁿ → ℝ be continuous on closedBall(y, ρ). Put V := Lⁿ(B̆_ρ(y)) as a real number, i.e. (volume (ball y ρ)).toReal. If f satisfies the ball mean value identity ∫_{B̆_ρ(y)} f = V·f(y), then f(y)²·V ≤ ∫_{B̆_ρ(y)} f².",
+  "lean_statement": "∀ (n : ℕ) (f : Euclid n → ℝ) (y : Euclid n) (ρ : ℝ), 0 < ρ → ContinuousOn f (closedBall y ρ) → ∫ z in ball y ρ, f z = (volume (ball y ρ)).toReal * f y → f y ^ 2 * (volume (ball y ρ)).toReal ≤ ∫ z in ball y ρ, f z ^ 2",
+  "lean_name": "dorag_ha_ie_sq_mul_volume_le_of_mean_value",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-1b1501f0f0-a1"
+}

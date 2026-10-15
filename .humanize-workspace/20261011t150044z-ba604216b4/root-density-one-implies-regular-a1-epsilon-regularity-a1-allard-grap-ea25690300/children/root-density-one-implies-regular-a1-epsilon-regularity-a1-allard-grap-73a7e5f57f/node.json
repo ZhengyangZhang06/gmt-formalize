@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.harmonic_approximation-a1.weyl_lemma-a1.conv_swap-a1",
+  "parent_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.harmonic_approximation-a1.weyl_lemma-a1",
+  "depth": 6,
+  "title": "Fubini symmetry of iterated convolutions: ((f⋆φ)⋆ψ)(x) = ((f⋆ψ)⋆φ)(x)",
+  "statement": "Let n ∈ ℕ and ℝⁿ = Euclid n with Lebesgue measure. Let f : ℝⁿ → ℝ be integrable, let φ, ψ : ℝⁿ → ℝ be continuous with compact support, and let x ∈ ℝⁿ. Then\n∫ (∫ f(y)·φ(x − z − y) dy)·ψ(z) dz = ∫ (∫ f(y)·ψ(x − z − y) dy)·φ(z) dz.",
+  "lean_statement": "∀ (n : ℕ) (f φ ψ : Euclid n → ℝ) (x : Euclid n), Integrable f → Continuous φ → HasCompactSupport φ → Continuous ψ → HasCompactSupport ψ → ∫ z, (∫ y, f y * φ (x - z - y)) * ψ z = ∫ z, (∫ y, f y * ψ (x - z - y)) * φ z",
+  "lean_name": "dorag_ha_weyl_conv_swap",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-73a7e5f57f-a1"
+}
