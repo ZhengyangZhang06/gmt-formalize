@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.weight_ge_one-a1.projection-a1.smooth_cutoff-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.weight_ge_one-a1.projection-a1",
+  "depth": 6,
+  "title": "Smooth cutoff in C_c^∞ equal to one on an open neighbourhood of a compact set inside an open set",
+  "statement": "Let P ∈ ℕ and let K, O ⊆ ℝ^P (ℝ^P = Euclid P = EuclideanSpace ℝ (Fin P)) with K compact, O open and K ⊆ O. Then there are a function χ : ℝ^P → ℝ and a set O' ⊆ ℝ^P such that: χ is C^∞ (ContDiff ℝ ∞); χ has compact support; tsupport χ ⊆ O; 0 ≤ χ(x) ≤ 1 for every x ∈ ℝ^P; O' is open; K ⊆ O'; and χ(x) = 1 for every x ∈ O'.",
+  "lean_statement": "∀ (P : ℕ) (K O : Set (Euclid P)), IsCompact K → IsOpen O → K ⊆ O → ∃ (χ : Euclid P → ℝ) (O' : Set (Euclid P)), ContDiff ℝ (⊤ : ℕ∞) χ ∧ HasCompactSupport χ ∧ tsupport χ ⊆ O ∧ (∀ x, 0 ≤ χ x ∧ χ x ≤ 1) ∧ IsOpen O' ∧ K ⊆ O' ∧ ∀ x ∈ O', χ x = 1",
+  "lean_name": "cbr_ci_pw_proj_smooth_cutoff",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-940fd83bc5-a1"
+}
