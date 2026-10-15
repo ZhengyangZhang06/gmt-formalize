@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.slicing-a1.slice_support-a1.vanish_outside-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.slicing-a1.slice_support-a1",
+  "depth": 4,
+  "title": "Off S both ∂(T⌞S) and (∂T)⌞S vanish",
+  "statement": "Let P, k ∈ ℕ and let U ⊆ ℝ^P be any set. Let μ, μ' be measures on ℝ^P, let ξ : ℝ^P → Λ_{k+1}(ℝ^P) and ξ' : ℝ^P → Λ_k(ℝ^P) be arbitrary maps, and let S ⊆ ℝ^P be any set. Let A ∈ 𝒟_{k+1}(U) and B ∈ 𝒟_k(U) satisfy A(ω) = ∫_S ξ(x)(ω(x)) dμ(x) for every ω ∈ 𝒟^{k+1}(U) and B(θ) = ∫_S ξ'(x)(θ(x)) dμ'(x) for every θ ∈ 𝒟^k(U) (Bochner integrals). Then ∂A(θ) = 0 and B(θ) = 0 for every θ ∈ 𝒟^k(U) whose topological support tsupport θ is disjoint from S.",
+  "lean_statement": "∀ (P k : ℕ) (U : Set (Euclid P)) (μ μ' : Measure (Euclid P)) (ξ : Euclid P → MultiVector P (k + 1)) (ξ' : Euclid P → MultiVector P k) (S : Set (Euclid P)) (A : GeometricCurrentOn U (k + 1)) (B : GeometricCurrentOn U k), (∀ ω : TestFormOn U (k + 1), A ω = ∫ x in S, ξ x ((ω : DifferentialForm (Euclid P) (k + 1)) x) ∂μ) → (∀ θ : TestFormOn U k, B θ = ∫ x in S, ξ' x ((θ : DifferentialForm (Euclid P) k) x) ∂μ') → ∀ θ : TestFormOn U k, Disjoint (tsupport (θ : DifferentialForm (Euclid P) k)) S → A.boundary θ = 0 ∧ B θ = 0",
+  "lean_name": "cmcs_ss_boundary_vanish_of_disjoint",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-slicing-a1-slice-support-a-53e3ba98c9-a1"
+}
