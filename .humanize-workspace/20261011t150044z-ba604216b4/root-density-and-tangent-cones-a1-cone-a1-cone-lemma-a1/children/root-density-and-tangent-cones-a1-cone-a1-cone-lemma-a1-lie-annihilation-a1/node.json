@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_and_tangent_cones-a1.cone-a1.cone_lemma-a1.lie_annihilation-a1",
+  "parent_id": "root.density_and_tangent_cones-a1.cone-a1.cone_lemma-a1",
+  "depth": 4,
+  "title": "∂C = 0 and x ∧ C⃗ = 0 a.e. imply that C annihilates Euler–Lie derivatives of test forms (core of Simon 6.2.33)",
+  "statement": "Let P, n ∈ ℕ with n ≥ 1, C ∈ 𝒟_n(ℝ^P) (GeometricCurrentOn univ n) and R = (M, θ, ξ) ∈ IMRep(ℝ^P, n) with C = τ(M, θ, ξ) (R.Represents C). Assume ∂C = 0 (BoundaryVanishes C) and x ∧ C⃗ = 0 μ_C-a.e. in the sense that for R.measure-a.e. x, ξ(x)(α.curryLeft x) = 0 for every (n+1)-covector α. Then C(γ) = 0 for all test forms β, γ ∈ 𝒟ⁿ(ℝ^P) (TestFormOn univ n) with γ(y) = n·β(y) + Dβ(y)[y] for every y (Dβ(y) = fderiv ℝ β y); that is, C annihilates the Lie derivative L_Xβ = d(ι_Xβ) + ι_X dβ of every test form along the Euler field X(y) = y.",
+  "lean_statement": "∀ (P n : ℕ) (C : GeometricCurrentOn (univ : Set (Euclid P)) n) (R : IMRep (univ : Set (Euclid P)) n), 0 < n → R.Represents C → BoundaryVanishes C → (∀ᵐ x ∂R.measure, ∀ β : Covector (Euclid P) (n + 1), R.orient x (ContinuousAlternatingMap.curryLeft β x) = 0) → ∀ β γ : TestFormOn (univ : Set (Euclid P)) n, (∀ y, (γ : DifferentialForm (Euclid P) n) y = (n : ℝ) • (β : DifferentialForm (Euclid P) n) y + fderiv ℝ (β : DifferentialForm (Euclid P) n) y y) → C γ = 0",
+  "lean_name": "dtc_cwv_euler_lie_annihilated",
+  "depends_on": [
+    "root.density_and_tangent_cones-a1.cone-a1.euler_cartan-a1",
+    "root.density_and_tangent_cones-a1.cone-a1.cone_lemma-a1.contraction_test_form-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.density_and_tangent_cones-a1.cone-a1.euler_cartan-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-cone-a1-euler-cartan-a1-a1",
+      "result_commit": "77ba6718296797531c46092c9edeed99a93d1890",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.density_and_tangent_cones-a1.cone-a1.cone_lemma-a1.contraction_test_form-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-cone-a1-cone-lemma-a1-lie-annihilation-a1-a1"
+}

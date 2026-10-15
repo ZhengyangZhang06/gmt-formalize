@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_and_tangent_cones-a1.cone-a1.cone_lemma-a1",
+  "parent_id": "root.density_and_tangent_cones-a1.cone-a1",
+  "depth": 3,
+  "title": "Cone criterion: ∂C = 0 and x ∧ C⃗ = 0 imply η_{0,λ#}C = C (Simon Lemma 6.2.33)",
+  "statement": "Let P ∈ ℕ, n ≥ 1, C ∈ 𝒟_n(ℝ^P) (GeometricCurrentOn univ n) and R = (M, θ, ξ) ∈ IMRep(ℝ^P, n) with C = τ(M, θ, ξ) (R.Represents C). Assume ∂C = 0 (BoundaryVanishes C). Assume also x ∧ C⃗ = 0 μ_C-a.e., in the sense that for R.measure-a.e. x, ξ(x)(β.curryLeft x) = 0 for every (n+1)-covector β. Then C is a cone: currentEval(η_{0,λ#}C, ω) = C(ω) for every λ > 0 and every ω ∈ 𝒟ⁿ(ℝ^P) (IsConeCurrent C).",
+  "lean_statement": "∀ (P n : ℕ) (C : GeometricCurrentOn (univ : Set (Euclid P)) n) (R : IMRep (univ : Set (Euclid P)) n), 0 < n → R.Represents C → BoundaryVanishes C → (∀ᵐ x ∂R.measure, ∀ β : Covector (Euclid P) (n + 1), R.orient x (ContinuousAlternatingMap.curryLeft β x) = 0) → IsConeCurrent C",
+  "lean_name": "dtc_cone_of_wedge_vanishing",
+  "depends_on": [
+    "root.density_and_tangent_cones-a1.cone-a1.euler_cartan-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.density_and_tangent_cones-a1.cone-a1.euler_cartan-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-cone-a1-cone-lemma-a1-a1"
+}

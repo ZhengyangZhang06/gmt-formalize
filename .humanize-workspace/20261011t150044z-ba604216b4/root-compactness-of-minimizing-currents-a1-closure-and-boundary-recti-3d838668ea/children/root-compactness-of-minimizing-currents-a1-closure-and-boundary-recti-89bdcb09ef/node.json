@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.lower_density-a1.null_set-a1.ball_mass-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.lower_density-a1.null_set-a1",
+  "depth": 5,
+  "title": "Mass of the current obtained by integrating over a ball",
+  "statement": "Let P, n ∈ ℕ and let μ be a measure on ℝ^P. Let ξ : ℝ^P → Λ_n(ℝ^P) (MultiVector P n, the continuous linear functionals on Covector (Euclid P) n) satisfy |ξ(y)(α)| ≤ |α| for μ-a.e. y and every α ∈ Λ^n(ℝ^P), where |·| is covectorEuclideanNorm. Let x ∈ ℝ^P and ρ ∈ ℝ, and let A ∈ 𝒟_n(ℝ^P) (GeometricCurrentOn univ n) satisfy A(ω) = ∫_{B_ρ(x)} ξ(y)(ω(y)) dμ(y) for every test form ω ∈ 𝒟^n(ℝ^P), where B_ρ(x) is the open ball. Then M(A) ≤ μ(B_ρ(x)) in [0, ∞], where M(A) = A.mass = M_{ℝ^P}(A).",
+  "lean_statement": "∀ (P n : ℕ) (μ : Measure (Euclid P)) (ξ : Euclid P → MultiVector P n) (A : GeometricCurrentOn (univ : Set (Euclid P)) n) (x : Euclid P) (ρ : ℝ), (∀ᵐ y ∂μ, ∀ α : Covector (Euclid P) n, |ξ y α| ≤ covectorEuclideanNorm α) → (∀ ω : TestFormOn (univ : Set (Euclid P)) n, A ω = ∫ y in ball x ρ, ξ y ((ω : DifferentialForm (Euclid P) n) y) ∂μ) → A.mass ≤ μ (ball x ρ)",
+  "lean_name": "cbrld_ns_ball_current_mass_le",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-89bdcb09ef-a1"
+}

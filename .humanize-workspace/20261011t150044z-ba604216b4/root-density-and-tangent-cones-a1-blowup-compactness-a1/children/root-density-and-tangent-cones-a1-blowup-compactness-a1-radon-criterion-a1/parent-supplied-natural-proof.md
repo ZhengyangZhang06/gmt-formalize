@@ -1,0 +1,77 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.density_and_tangent_cones-a1.blowup_compactness-a1`
+- Child DAG node: `root.density_and_tangent_cones-a1.blowup_compactness-a1.radon_criterion-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: step 6.3 of the parent proof, i.e. the 'standard approximation argument' that ends Simon's proof of 7.2.4 (chapter-07.txt lines 285–288). No dependencies; Mathlib's layer-cake formulas and Fatou lemmas.
+Let f be continuous with compact support, K₀ := tsupport f (compact) and M₀ := sup_y |f(y)| < ∞. If M₀ = 0 then f = 0 and all integrals vanish, so assume M₀ > 0.
+1. (Eventual finiteness.) By (a), μ(K₀) < ∞. By (b), limsup_j μ_j(K₀) ≤ μ(K₀) < μ(K₀) + 1, so there is j₁ with μ_j(K₀) ≤ A := μ(K₀) + 1 < ∞ for all j ≥ j₁. For ν ∈ {μ} ∪ {μ_j : j ≥ j₁}, f is ν-integrable: it is continuous, hence Borel, |f| ≤ M₀·1_{K₀} and ν(K₀) < ∞.
+2. (Reduction to nonnegative functions.) Write f = f⁺ − f⁻ with f^± := max(±f, 0). These are continuous, nonnegative, vanish outside K₀ and are bounded by M₀, and ∫ f dν = ∫ f⁺ dν − ∫ f⁻ dν for the measures ν of step 1. Finitely many indices do not affect limits, so it suffices to show ∫ g dμ_j → ∫ g dμ for every continuous g ≥ 0 vanishing outside K₀ with g ≤ M₀.
+3. (Layer cake.) Fix such a g. For every Borel measure ν on ℝ^P (Mathlib MeasureTheory.lintegral_eq_lintegral_meas_lt and MeasureTheory.lintegral_eq_lintegral_meas_le; g ≥ 0 is measurable):
+   ∫⁻ ofReal(g) dν = ∫⁻_{t∈(0,∞)} ν({g > t}) dt = ∫⁻_{t∈(0,∞)} ν({g ≥ t}) dt.
+For t ≥ M₀ the set {g > t} is empty and for t > M₀ the set {g ≥ t} is empty. For t > 0, {g > t} is open (g continuous) and contained in K₀, hence bounded; {g ≥ t} is closed and contained in K₀, hence compact. The functions t ↦ ν({g > t}) and t ↦ ν({g ≥ t}) are antitone, hence measurable.
+4. (Lower bound.) By (c), μ({g > t}) ≤ liminf_j μ_j({g > t}) for every t > 0. Put F_j(t) := μ_j({g > t}). By step 3 and Fatou's lemma for lower integrals (Mathlib MeasureTheory.lintegral_liminf_le, on (0, ∞) with Lebesgue measure): ∫⁻ ofReal(g) dμ = ∫⁻_{(0,∞)} μ({g > t}) dt ≤ ∫⁻_{(0,∞)} liminf_j F_j dt ≤ liminf_j ∫⁻_{(0,∞)} F_j dt = liminf_j ∫⁻ ofReal(g) dμ_j.
+5. (Upper bound.) Put G_j(t) := μ_j({g ≥ t}). For j ≥ j₁ and t > 0, G_j(t) ≤ μ_j(K₀)·1_{(0,M₀]}(t) ≤ A·1_{(0,M₀]}(t), and ∫⁻_{(0,∞)} A·1_{(0,M₀]} dt = A·M₀ < ∞. By the reverse Fatou lemma (Mathlib MeasureTheory.limsup_lintegral_le, applied to the shifted sequence (G_{j₁+i})_i, which has the same lim sup) and by (b) for the compact sets {g ≥ t}, t > 0: limsup_j ∫⁻ ofReal(g) dμ_j = limsup_j ∫⁻_{(0,∞)} G_j dt ≤ ∫⁻_{(0,∞)} limsup_j G_j dt ≤ ∫⁻_{(0,∞)} μ({g ≥ t}) dt = ∫⁻ ofReal(g) dμ.
+6. (Conclusion.) Steps 4 and 5 give ∫⁻ ofReal(g) dμ_j → ∫⁻ ofReal(g) dμ in [0, ∞]; the limit is ≤ M₀μ(K₀) < ∞ and the terms are ≤ M₀A < ∞ for j ≥ j₁. For a nonnegative integrable g, ∫ g dν = (∫⁻ ofReal(g) dν).toReal (Mathlib integral_eq_lintegral_of_nonneg_ae), and toReal is continuous at finite values, so ∫ g dμ_j → ∫ g dμ. By step 2, ∫ f dμ_j → ∫ f dμ. ∎
+
+## Key steps
+
+1. By (a) and (b), μ_j(tsupport f) is eventually bounded, so f is eventually μ_j-integrable; split f = f⁺ − f⁻.
+2. Layer cake: ∫ g dν = ∫_0^∞ ν({g > t}) dt = ∫_0^∞ ν({g ≥ t}) dt, with {g > t} bounded open and {g ≥ t} compact for t > 0.
+3. Fatou with (c) gives the liminf inequality; reverse Fatou with the eventual bound and (b) gives the limsup inequality.
+4. Convert lintegrals back to Bochner integrals and recombine f⁺ and f⁻.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat local-references/123e8435b4a2469b/manifest.json (project b4d606db, mathlib 25730c7c); cmp project/GMT/Ch07/Contract.lean against workspace GMT/Ch07/Contract.lean and GMT/Ch07/Submission.lean (identical)`
+- `grep -n 'def GeometricCurrentOn.massOn|massAdmissibleOn|massOn_le_liminf|massOn_mono|le_massOn' simongmt/Poincare/SimonGMT/Chapter06/Mass.lean`
+- `grep -n 'restrictDomain|VanishesOn|zeroRegion|def GeometricCurrentOn.support' simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean; grep -n 'GeometricCurrentOn.boundary|instance .*Zero|tsupport_exteriorDerivative_subset|WeaklyConvergesOn' simongmt/Poincare/SimonGMT/Chapter06/Currents.lean`
+- `grep -n 'affinePullbackForm|affinePushforward|boundary_affinePushforward|tsupport_affinePullbackForm_subset|exteriorDerivative_affinePullbackForm' simongmt/Poincare/SimonGMT/Chapter06/AffineCurrentPushforward.lean`
+- `grep -n 'def CountablyRectifiable|CountablyRectifiable.mono|countablyRectifiable_range|def HasApproximateTangentSpaceAt|hasApproximateTangentSpaceAt_submodule|HasApproximateTangentSpaceAt.unique' simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `grep -rn 'ae_eq_const_of_weak_coordinate_derivatives_zero|WeakDerivativesZero' simongmt/Poincare/SimonGMT/Chapter08/DistributionalConstancy.lean; #print axioms Poincare.SimonGMT.Chapter08.ae_eq_const_of_weak_coordinate_derivatives_zero`
+- `grep -n '^theorem' simongmt/Poincare/SimonGMT/Chapter02/{AreaLipschitz,AreaFormula,CoareaLinear,BV,Lipschitz}.lean simongmt/Poincare/SimonGMT/Chapter03/SubmanifoldCover.lean (no Federer–Fleming compactness, slicing, flat metric, rectifiable area/coarea formula or C¹ push-forward of currents)`
+- `grep -rn 'lintegral_eq_lintegral_meas_lt|lintegral_eq_lintegral_meas_le|lintegral_liminf_le|limsup_lintegral_le|ext_of_generate_finite|isPiSystem_isOpen|tendsto_measure_thickening_of_isClosed|extraction_of_frequently_atTop|toOpenPartialHomeomorph|norm_image_sub_le_of_norm_fderiv_le|euclideanHausdorffMeasure_eq_volume|eq_smul_basis_det|det_to_matrix_orthonormalBasis_real|exists_thickening_subset_open|setIntegral_eq_integral_of_forall_compl_eq_zero|restrict_withDensity' local-references/123e8435b4a2469b/mathlib/Mathlib`
+- `grep -rl 'dtc_bc_' .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4 GMT simongmt/Poincare (no match); lean_name inventory of dag.json (198 nodes, no collision)`
+- `python3 -I: verifier/gmt-compare.py contract_scope + child_modules (contract mode) and verifier/lean_contract.py validate_lean_statement on all eight child types`
+- `lake env lean /tmp/dtcbc/check/Challenge_<key>.lean (8 files), /tmp/dtcbc/check/Assembly.lean, /tmp/dtcbc/check/Iface.lean, /tmp/dtcbc/check/Lib.lean, /tmp/dtcbc/check/Lib2.lean with #print axioms`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/README.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-compactness-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/AffineCurrentPushforward.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter08/DistributionalConstancy.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaLipschitz.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/BV.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Layercake.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/DominatedConvergence.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Typeclasses/Finite.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/InverseFunctionTheorem/ContDiff.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/MeanValue.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/Thickening.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-07.txt`
+- `/tmp/dtcbc/check/Assembly.lean`
+- `/tmp/dtcbc/check/Iface.lean`
+- `/tmp/dtcbc/stmts/stmts.py`
+- `/tmp/dtcbc/stmts/children.py`
+
+The snapshot contract (project b4d606d, Mathlib 25730c7c) is byte-identical to the workspace Contract.lean and Submission.lean. The pinned SimonGMT library provides the objects the children use: GeometricCurrentOn, boundary, massOn/massAdmissibleOn, WeaklyConvergesOn.massOn_le_liminf, support/zeroRegion, restrictDomain, affinePushforward with boundary_affinePushforward and tsupport_affinePullbackForm_subset, CountablyRectifiable with countablyRectifiable_range, and HasApproximateTangentSpaceAt with hasApproximateTangentSpaceAt_submodule. It also provides the distributional constancy theorem Chapter08.ae_eq_const_of_weak_coordinate_derivatives_zero (standard axioms), which makes the k = 0 child self-contained. The library has no Federer–Fleming compactness, slicing, flat-metric theorem, rectifiable area/coarea formula or C¹ push-forward of currents. Those Simon Ch. 6 results are cited only by truncated_compactness and local_comparison, exactly as in the accepted parent proof. Every Mathlib lemma named in the proofs exists at the pin. All eight child types elaborate in the comparator scope, and the conditional assembly of the selected type from five of them uses only propext, Classical.choice and Quot.sound. No dtc_bc_ name occurs elsewhere.
