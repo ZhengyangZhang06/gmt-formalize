@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.slicing-a1.slice_family-a1.piece_slice_tangent-a1.level_set_local_chart-a1",
+  "parent_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.slicing-a1.slice_family-a1.piece_slice_tangent-a1",
+  "depth": 6,
+  "title": "Implicit function theorem: local C¹ graph chart of the regular part of a level set of a C¹ function on ℝ^{n+1}",
+  "statement": "Let n ∈ ℕ, W ⊆ ℝ^{n+1} open, F : ℝ^{n+1} → ℝ of class C¹ (ContDiff ℝ 1 F), and y₀ ∈ W with DF(y₀) ≠ 0. Then there exist an open set D ⊆ ℝⁿ, a map Λ : ℝⁿ → ℝ^{n+1}, a point c ∈ ℝⁿ, a real ρ and an open set N ⊆ ℝ^{n+1} such that: Λ is C¹ on D and injective on D; for every z ∈ D, Λ(z) ∈ W, F(Λ(z)) = F(y₀), DΛ(z) (= fderiv ℝ Λ z) is injective and DΛ(z)(ℝⁿ) = ker DF(Λ(z)); the closed ball B̄_ρ(c) is contained in D; y₀ ∈ N; and every y ∈ N with F(y) = F(y₀) is of the form y = Λ(z) with z in the open ball B_ρ(c).",
+  "lean_statement": "∀ (n : ℕ) (W : Set (Euclid (n + 1))) (F : Euclid (n + 1) → ℝ) (y₀ : Euclid (n + 1)), IsOpen W → ContDiff ℝ 1 F → y₀ ∈ W → fderiv ℝ F y₀ ≠ 0 → ∃ (D : Set (Euclid n)) (Λ : Euclid n → Euclid (n + 1)) (c : Euclid n) (ρ : ℝ) (N : Set (Euclid (n + 1))), IsOpen D ∧ ContDiffOn ℝ 1 Λ D ∧ InjOn Λ D ∧ (∀ z ∈ D, Λ z ∈ W ∧ F (Λ z) = F y₀ ∧ Injective (fderiv ℝ Λ z) ∧ LinearMap.range (fderiv ℝ Λ z : Euclid n →ₗ[ℝ] Euclid (n + 1)) = LinearMap.ker (fderiv ℝ F (Λ z) : Euclid (n + 1) →ₗ[ℝ] ℝ)) ∧ closedBall c ρ ⊆ D ∧ IsOpen N ∧ y₀ ∈ N ∧ N ∩ F ⁻¹' {F y₀} ⊆ Λ '' ball c ρ",
+  "lean_name": "dor_lmbsf_pst_level_set_local_chart",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-limsup-mass-bound-a1-slicing-a1-s-14fe4943e6-a1"
+}
