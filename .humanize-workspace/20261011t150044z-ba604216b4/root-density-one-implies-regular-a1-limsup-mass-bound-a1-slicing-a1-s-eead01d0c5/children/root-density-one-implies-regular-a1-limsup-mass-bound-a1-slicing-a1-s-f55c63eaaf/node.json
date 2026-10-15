@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.slicing-a1.slice_family-a1.piece_weak_limit-a1.eqon_deriv-a1",
+  "parent_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.slicing-a1.slice_family-a1.piece_weak_limit-a1",
+  "depth": 6,
+  "title": "Derivatives of two functions agreeing on a Borel set coincide at almost every point of the set",
+  "statement": "Assume (DD), the frozen statement of the sibling node density_directions of the node being decomposed (Lean dor_lmbsf_density_directions): for every d ∈ ℕ, every Z ⊆ ℝ^d and every y ∈ ℝ^d with L^d(Z ∩ B̄_r(y))/L^d(B̄_r(y)) → 1 as r ↓ 0 (L^d = volume on Euclid d as an outer measure, B̄_r(y) = closedBall y r), and every v ∈ ℝ^d with |v| = 1, there is a sequence (y_i) in Z ∖ {y} with y_i → y and (y_i − y)/|y_i − y| → v. Let d ∈ ℕ, Z ⊆ ℝ^d Borel, and v₁, v₂ : ℝ^d → ℝ with v₁ = v₂ on Z. Then for L^d-a.e. y: if y ∈ Z and v₁, v₂ are both differentiable at y, then Dv₁(y) = Dv₂(y) (Fréchet derivatives).",
+  "lean_statement": "(∀ (d : ℕ) (Z : Set (Euclid d)) (y : Euclid d), Tendsto (fun r => volume (Z ∩ closedBall y r) / volume (closedBall y r)) (𝓝[>] 0) (𝓝 1) → ∀ v : Euclid d, ‖v‖ = 1 → ∃ ys : ℕ → Euclid d, (∀ i, ys i ∈ Z ∧ ys i ≠ y) ∧ Tendsto ys atTop (𝓝 y) ∧ Tendsto (fun i => ‖ys i - y‖⁻¹ • (ys i - y)) atTop (𝓝 v)) → ∀ (d : ℕ) (Z : Set (Euclid d)) (v₁ v₂ : Euclid d → ℝ), MeasurableSet Z → EqOn v₁ v₂ Z → ∀ᵐ y ∂(volume : Measure (Euclid d)), y ∈ Z → DifferentiableAt ℝ v₁ y → DifferentiableAt ℝ v₂ y → fderiv ℝ v₁ y = fderiv ℝ v₂ y",
+  "lean_name": "dor_lmbsf_pwl_fderiv_eq_ae_of_eqOn",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-limsup-mass-bound-a1-slicing-a1-s-f55c63eaaf-a1"
+}

@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.slicing-a1.slice_family-a1.piece_weak_limit-a1.weak_integrable-a1",
+  "parent_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.slicing-a1.slice_family-a1.piece_weak_limit-a1",
+  "depth": 6,
+  "title": "Weak-* convergence of derivatives of uniformly Lipschitz, uniformly convergent functions against L¹ vector fields",
+  "statement": "Let d ∈ ℕ and K ≥ 0. Let u_k : ℝ^d → ℝ (k ∈ ℕ) be K-Lipschitz functions converging uniformly on ℝ^d to u : ℝ^d → ℝ, and let Φ : ℝ^d → ℝ^d be Lebesgue integrable. With Dv(y) the Fréchet derivative (fderiv; 0 where v is not differentiable) and Bochner integrals for Lebesgue measure, ∫ Du_k(y)[Φ(y)] dy → ∫ Du(y)[Φ(y)] dy as k → ∞.",
+  "lean_statement": "∀ (d : ℕ) (K : NNReal) (us : ℕ → Euclid d → ℝ) (u : Euclid d → ℝ) (Φ : Euclid d → Euclid d), (∀ k, LipschitzWith K (us k)) → TendstoUniformly us u atTop → Integrable Φ → Tendsto (fun k => ∫ y, fderiv ℝ (us k) y (Φ y)) atTop (𝓝 (∫ y, fderiv ℝ u y (Φ y)))",
+  "lean_name": "dor_lmbsf_pwl_fderiv_weak_integrable",
+  "depends_on": [
+    "root.density_one_implies_regular-a1.limsup_mass_bound-a1.slicing-a1.slice_family-a1.piece_weak_limit-a1.weak_smooth-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.slicing-a1.slice_family-a1.piece_weak_limit-a1.weak_smooth-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-limsup-mass-bound-a1-slicing-a1-s-e358a4c0e4-a1"
+}

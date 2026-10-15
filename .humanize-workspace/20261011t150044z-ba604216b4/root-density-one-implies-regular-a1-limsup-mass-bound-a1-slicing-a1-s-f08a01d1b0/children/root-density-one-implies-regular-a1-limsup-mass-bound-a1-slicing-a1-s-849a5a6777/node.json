@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.slicing-a1.slice_family-a1.piece_slice_tangent-a1.level_set_chart_cover-a1",
+  "parent_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.slicing-a1.slice_family-a1.piece_slice_tangent-a1",
+  "depth": 6,
+  "title": "Countably many C¹ graph charts cover the regular part of a level set of a C¹ function on an open subset of ℝ^{n+1}",
+  "statement": "Let n ∈ ℕ, W ⊆ ℝ^{n+1} open, F : ℝ^{n+1} → ℝ of class C¹ and t ∈ ℝ. Then there are, for k ∈ ℕ, open sets D_k ⊆ ℝⁿ, maps Λ_k : ℝⁿ → ℝ^{n+1}, points c_k ∈ ℝⁿ and reals ρ_k such that: Λ_k is C¹ on D_k and injective on D_k; for every z ∈ D_k, Λ_k(z) ∈ W, F(Λ_k(z)) = t, DΛ_k(z) is injective and DΛ_k(z)(ℝⁿ) = ker DF(Λ_k(z)); B̄_{ρ_k}(c_k) ⊆ D_k; and every y ∈ W with DF(y) ≠ 0 and F(y) = t equals Λ_k(z) for some k and some z in the open ball B_{ρ_k}(c_k).",
+  "lean_statement": "∀ (n : ℕ) (W : Set (Euclid (n + 1))) (F : Euclid (n + 1) → ℝ) (t : ℝ), IsOpen W → ContDiff ℝ 1 F → ∃ (D : ℕ → Set (Euclid n)) (Λ : ℕ → Euclid n → Euclid (n + 1)) (c : ℕ → Euclid n) (ρ : ℕ → ℝ), (∀ k, IsOpen (D k)) ∧ (∀ k, ContDiffOn ℝ 1 (Λ k) (D k)) ∧ (∀ k, InjOn (Λ k) (D k)) ∧ (∀ k, ∀ z ∈ D k, Λ k z ∈ W ∧ F (Λ k z) = t ∧ Injective (fderiv ℝ (Λ k) z) ∧ LinearMap.range (fderiv ℝ (Λ k) z : Euclid n →ₗ[ℝ] Euclid (n + 1)) = LinearMap.ker (fderiv ℝ F (Λ k z) : Euclid (n + 1) →ₗ[ℝ] ℝ)) ∧ (∀ k, closedBall (c k) (ρ k) ⊆ D k) ∧ ∀ y ∈ W, fderiv ℝ F y ≠ 0 → F y = t → ∃ k, ∃ z ∈ ball (c k) (ρ k), Λ k z = y",
+  "lean_name": "dor_lmbsf_pst_level_set_chart_cover",
+  "depends_on": [
+    "root.density_one_implies_regular-a1.limsup_mass_bound-a1.slicing-a1.slice_family-a1.piece_slice_tangent-a1.level_set_local_chart-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.slicing-a1.slice_family-a1.piece_slice_tangent-a1.level_set_local_chart-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-limsup-mass-bound-a1-slicing-a1-s-849a5a6777-a1"
+}

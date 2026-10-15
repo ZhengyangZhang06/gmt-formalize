@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.slicing-a1.slice_family-a1.piece_coarea-a1.slice_tonelli-a1",
+  "parent_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.slicing-a1.slice_family-a1.piece_coarea-a1",
+  "depth": 6,
+  "title": "Slice area formula and Tonelli: ∫_ℝ ∫_{Φ(S∩{w₀=t})} φ dHⁿ dt = ∫_S J'·φ∘Φ for an injective immersion Φ of ℝ^{n+1}",
+  "statement": "Let P, n ∈ ℕ, Φ : ℝ^{n+1} → ℝ^P and S ⊆ ℝ^{n+1} Borel. Assume Φ is differentiable at every w ∈ S with injective derivative DΦ(w) = fderiv ℝ Φ w, and Φ is injective on S. Let e_k := EuclideanSpace.single k 1, let w(0) be the 0-th coordinate of w, and J'(w) := (det[⟨DΦ(w)e_{i+1}, DΦ(w)e_{j+1}⟩]_{i,j=0}^{n−1})^{1/2} (Real.sqrt). Then for every Borel φ : ℝ^P → [0, ∞]: (a) t ↦ ∫_{Φ(S ∩ {w : w(0) = t})} φ dHⁿ is a.e.-measurable for Lebesgue measure on ℝ; (b) ∫_ℝ ∫_{Φ(S ∩ {w(0) = t})} φ dHⁿ dt = ∫_S ofReal(J'(w))·φ(Φ(w)) dw, the last integral with respect to Lebesgue measure (volume) on ℝ^{n+1}. Here Hⁿ = μHE[n] and all integrals are lower integrals in [0, ∞].",
+  "lean_statement": "∀ (P n : ℕ) (Φ : Euclid (n + 1) → Euclid P) (S : Set (Euclid (n + 1))), MeasurableSet S → (∀ w ∈ S, DifferentiableAt ℝ Φ w) → (∀ w ∈ S, Injective (fderiv ℝ Φ w)) → InjOn Φ S → ∀ φ : Euclid P → ℝ≥0∞, Measurable φ → AEMeasurable (fun t : ℝ => ∫⁻ x in Φ '' (S ∩ {w | w 0 = t}), φ x ∂μHE[n]) ∧ ∫⁻ t : ℝ, (∫⁻ x in Φ '' (S ∩ {w | w 0 = t}), φ x ∂μHE[n]) = ∫⁻ w in S, ENNReal.ofReal (Real.sqrt (Matrix.det (Matrix.of fun i j : Fin n => inner ℝ (fderiv ℝ Φ w (EuclideanSpace.single i.succ 1)) (fderiv ℝ Φ w (EuclideanSpace.single j.succ 1))))) * φ (Φ w) ∂volume",
+  "lean_name": "dor_lmbsf_pc_slice_area_tonelli",
+  "depends_on": [
+    "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.local_unit_rep-a1.area_formula-a1.gram_area-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.local_unit_rep-a1.area_formula-a1.gram_area-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-db95546c3f-a1",
+      "result_commit": "d5ba41d68f1ca2e5ef9b0ebdd62cf01e6e24a919",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-limsup-mass-bound-a1-slicing-a1-s-3fc66b1738-a1"
+}

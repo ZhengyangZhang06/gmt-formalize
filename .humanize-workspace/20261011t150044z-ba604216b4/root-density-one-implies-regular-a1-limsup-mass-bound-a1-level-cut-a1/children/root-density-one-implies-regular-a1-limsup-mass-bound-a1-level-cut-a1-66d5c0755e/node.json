@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.level_cut-a1.mass_difference-a1",
+  "parent_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.level_cut-a1",
+  "depth": 4,
+  "title": "Local mass of a difference: M_W(Y) ≤ M_W(T) + M_W(S) when Y = T − S on forms supported in W",
+  "statement": "Let P, n ∈ ℕ, U, W ⊆ ℝ^P be arbitrary sets, and T, S, Y ∈ 𝒟_n(U) (contract GeometricCurrentOn U n). Suppose Y(ω) = T(ω) − S(ω) for every ω ∈ 𝒟ⁿ(U) (TestFormOn U n) with tsupport ω ⊆ W. Then M_W(Y) ≤ M_W(T) + M_W(S) in [0, ∞], where M_W is the SimonGMT local mass massOn (Simon Ch. 6, 2.5): the supremum of ofReal(Z(ω)) over ω ∈ 𝒟ⁿ(U) with tsupport ω ⊆ W and Euclidean coefficient norm covectorEuclideanNorm(ω(x)) ≤ 1 for every x.",
+  "lean_statement": "∀ (P n : ℕ) (U W : Set (Euclid P)) (T S Y : GeometricCurrentOn U n), (∀ ω : TestFormOn U n, tsupport (ω : DifferentialForm (Euclid P) n) ⊆ W → Y ω = T ω - S ω) → Y.massOn W ≤ T.massOn W + S.massOn W",
+  "lean_name": "dor_lmb_glc_massOn_sub_le",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-limsup-mass-bound-a1-level-cut-a1-66d5c0755e-a1"
+}

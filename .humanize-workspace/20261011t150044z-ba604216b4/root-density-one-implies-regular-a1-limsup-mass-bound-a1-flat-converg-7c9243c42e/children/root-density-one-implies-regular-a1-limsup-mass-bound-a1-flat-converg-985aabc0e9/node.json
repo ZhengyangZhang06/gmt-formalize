@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.flat_convergence-a1.deformation-a1.pushforward_calculus-a1.product_imrep-a1",
+  "parent_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.flat_convergence-a1.deformation-a1.pushforward_calculus-a1",
+  "depth": 6,
+  "title": "Product of an integer multiplicity representation with (0,1) (Simon 2.17–2.22, 3.2(2)): IMRep, null-set transfer and the Fubini action formula",
+  "statement": "Conventions: ℝ^N = Euclid N and Hᵈ = μHE[d]. 𝒟^d(U) = TestFormOn U d (smooth d-forms with compact support in U) and 𝒟_d(U) = GeometricCurrentOn U d; ∂X = X.boundary; X − Y is pointwise on test forms. |α| = covectorEuclideanNorm α is the Euclidean coefficient norm of a covector and ‖·‖ is the operator norm. M_W(X) = X.massOn W and M(X) = X.mass = M_univ(X). An IMRep R = (M, θ, ξ) (contract structure IMRep U d) has μ_R = θ·Hᵈ⌞M = R.measure and R.action(γ) = ∫_M θ ξ(γ) dHᵈ for any d-form γ; X is IM if some IMRep represents it. X vanishes off E if X(ω) = 0 whenever tsupport ω is disjoint from E. For a map Φ and a form ω, Φ^#ω(x) := ω(Φ(x)) ∘ DΦ(x) (Lean (ω (Φ x)).compContinuousLinearMap (fderiv ℝ Φ x)). Let P, k ∈ ℕ and R = (M, θ, ξ) an IMRep of degree k in univ ⊆ ℝ^P with μ_R(ℝ^P) ≠ ∞. Write ι(t,x) := (t, x) ∈ ℝ^{P+1} (Lean WithLp.toLp 2 (Fin.cons t (WithLp.ofLp x))) and ê₀ := EuclideanSpace.single 0 1 ∈ ℝ^{P+1}. Then there is an IMRep R' of degree k+1 in univ ⊆ ℝ^{P+1} with three properties. (1) μ_{R'}(ℝ^{P+1}) ≠ ∞. (2) For every Borel S ⊆ ℝ^P with H^k(M ∖ S) = 0: H^{k+1}(R'.carrier ∖ ι([0,1] × S)) = 0. (3) For every continuous (k+1)-form β on ℝ^{P+1} with sup_y ‖β(y)‖ < ∞: R'.action(β) = R.action(x ↦ ∫_0^1 (β(ι(t,x)).curryLeft ê₀) ∘ D_xι(t,x) dt). Here D_xι(t,x) = fderiv ℝ (x' ↦ ι(t,x')) x, which is the isometric embedding J v = ι(0, v). Explicitly, R'.action β = ∫_M θ(x)ξ(x)(∫_0^1 β₁(t,x) dt) dH^k(x) with β₁(t,x)(v_1, …, v_k) = β(ι(t,x))(ê₀, Jv_1, …, Jv_k).",
+  "lean_statement": "∀ (P k : ℕ) (R : IMRep (univ : Set (Euclid P)) k), R.measure univ ≠ ∞ → ∃ R' : IMRep (univ : Set (Euclid (P + 1))) (k + 1), R'.measure univ ≠ ∞ ∧ (∀ S : Set (Euclid P), MeasurableSet S → μHE[k] (R.carrier \\ S) = 0 → μHE[k + 1] (R'.carrier \\ ((fun p : ℝ × Euclid P => (WithLp.toLp 2 (Fin.cons p.1 (WithLp.ofLp p.2) : Fin (P + 1) → ℝ) : Euclid (P + 1))) '' (Icc (0 : ℝ) 1 ×ˢ S))) = 0) ∧ ∀ β : DifferentialForm (Euclid (P + 1)) (k + 1), Continuous β → (∃ C : ℝ, ∀ y, ‖β y‖ ≤ C) → R'.action β = R.action (fun x => ∫ t in (0 : ℝ)..1, ((β (WithLp.toLp 2 (Fin.cons t (WithLp.ofLp x) : Fin (P + 1) → ℝ) : Euclid (P + 1))).curryLeft (EuclideanSpace.single (0 : Fin (P + 1)) (1 : ℝ))).compContinuousLinearMap (fderiv ℝ (fun x' : Euclid P => (WithLp.toLp 2 (Fin.cons t (WithLp.ofLp x') : Fin (P + 1) → ℝ) : Euclid (P + 1))) x))",
+  "lean_name": "dor_lmb_fcdp_product_imrep",
+  "depends_on": [
+    "root.density_one_implies_regular-a1.limsup_mass_bound-a1.flat_convergence-a1.deformation-a1.pushforward_calculus-a1.cylinder-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.flat_convergence-a1.deformation-a1.pushforward_calculus-a1.cylinder-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-limsup-mass-bound-a1-flat-converg-985aabc0e9-a1"
+}

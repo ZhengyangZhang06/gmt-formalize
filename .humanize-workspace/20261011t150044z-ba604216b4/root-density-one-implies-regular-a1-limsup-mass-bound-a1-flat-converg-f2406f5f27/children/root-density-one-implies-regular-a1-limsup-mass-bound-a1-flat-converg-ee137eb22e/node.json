@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.flat_convergence-a1.deformation-a1.skeleton_deformation-a1.im_restrict-a1",
+  "parent_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.flat_convergence-a1.deformation-a1.skeleton_deformation-a1",
+  "depth": 6,
+  "title": "Restriction of an integer multiplicity current to a Borel set: integrability, representation, mass and vanishing set",
+  "statement": "Let P, k ∈ ℕ and R = (M, θ, ξ) an IMRep in univ of degree k. (A) For every k-form β on ℝ^P that is a test form (IsTestForm: smooth with compact support), x ↦ θ(x)·ξ(x)(β(x)) is H^k-integrable on M. (B) If X ∈ 𝒟_k(ℝ^P) is represented by R, F ⊆ ℝ^P is closed, X vanishes off F (X(ω) = 0 whenever tsupport ω ∩ F = ∅) and B ⊆ ℝ^P is Borel, then there is an integer multiplicity Y ∈ 𝒟_k(ℝ^P) with Y(ω) = ∫_{M∩B} θ⟨ω, ξ⟩ dH^k for every ω ∈ 𝒟^k(ℝ^P), M(Y) = μ_R(B), and Y(ω) = 0 whenever tsupport ω ∩ (F ∩ B) = ∅.",
+  "lean_statement": "∀ (P k : ℕ) (R : IMRep (univ : Set (Euclid P)) k), (∀ β : DifferentialForm (Euclid P) k, IsTestForm β → IntegrableOn (fun x => (R.mult x : ℝ) * R.orient x (β x)) R.carrier μHE[k]) ∧ ∀ (X : GeometricCurrentOn (univ : Set (Euclid P)) k) (F B : Set (Euclid P)), R.Represents X → IsClosed F → (∀ ω : TestFormOn (univ : Set (Euclid P)) k, Disjoint (tsupport (ω : DifferentialForm (Euclid P) k)) (F) → X ω = 0) → MeasurableSet B → ∃ Y : GeometricCurrentOn (univ : Set (Euclid P)) k, IsIntegerMultiplicity Y ∧ (∀ ω : TestFormOn (univ : Set (Euclid P)) k, Y ω = ∫ x in R.carrier ∩ B, (R.mult x : ℝ) * R.orient x ((ω : DifferentialForm (Euclid P) k) x) ∂μHE[k]) ∧ Y.mass = R.measure B ∧ ∀ ω : TestFormOn (univ : Set (Euclid P)) k, Disjoint (tsupport (ω : DifferentialForm (Euclid P) k)) (F ∩ B) → Y ω = 0",
+  "lean_name": "dor_lmb_fcd_sd_im_restrict",
+  "depends_on": [
+    "root.density_one_implies_regular-a1.imrep_mass_and_support-a1",
+    "root.compactness_of_minimizing_currents-a1.im_calculus-a1",
+    "root.density_one_implies_regular-a1.limsup_mass_bound-a1.flat_convergence-a1.deformation-a1.skeleton_deformation-a1.im_concentrated-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.density_one_implies_regular-a1.imrep_mass_and_support-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-imrep-mass-and-support-a1-a1",
+      "result_commit": "d49dda91b75b7417d67a10053e6dc4b65d4f0312",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.compactness_of_minimizing_currents-a1.im_calculus-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-im-calculus-a1-a1",
+      "result_commit": "2af75d6921b01a9c889a45103692ca0af95ea394",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.flat_convergence-a1.deformation-a1.skeleton_deformation-a1.im_concentrated-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-limsup-mass-bound-a1-flat-converg-ee137eb22e-a1"
+}

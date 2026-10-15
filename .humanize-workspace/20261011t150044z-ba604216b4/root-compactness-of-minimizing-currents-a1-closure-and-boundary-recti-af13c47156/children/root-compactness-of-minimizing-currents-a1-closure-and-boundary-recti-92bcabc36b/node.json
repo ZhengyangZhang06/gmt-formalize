@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.density_rep-a1.unit_ae-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.density_rep-a1",
+  "depth": 5,
+  "title": "The mass identity forces the representing n-vector field to attain 1 on the unit covector ball almost everywhere",
+  "statement": "Let P, n ∈ ℕ, Γ ∈ 𝒟_n(ℝ^P), and μ a measure on ℝ^P with μ(ℝ^P) < ∞ and M_{ℝ^P}(Γ) = Γ.massOn ℝ^P = μ(ℝ^P). Let ξ : ℝ^P → Λ_n(ℝ^P) be μ-a.e. strongly measurable with |ξ(x)(α)| ≤ |α| for μ-a.e. x and all n-covectors α (|·| = covectorEuclideanNorm), and suppose Γ(ω) = ∫ ξ(x)(ω(x)) dμ(x) for every test n-form ω on ℝ^P. Then for μ-a.e. x there is an n-covector β with |β| ≤ 1 and ξ(x)(β) = 1.",
+  "lean_statement": "∀ (P n : ℕ) (Γ : GeometricCurrentOn (univ : Set (Euclid P)) n) (μ : Measure (Euclid P)) (ξ : Euclid P → MultiVector P n), μ univ < ∞ → Γ.massOn univ = μ univ → AEStronglyMeasurable ξ μ → (∀ᵐ x ∂μ, ∀ α : Covector (Euclid P) n, |ξ x α| ≤ covectorEuclideanNorm α) → (∀ ω : TestFormOn (univ : Set (Euclid P)) n, Γ ω = ∫ x, ξ x ((ω : DifferentialForm (Euclid P) n) x) ∂μ) → ∀ᵐ x ∂μ, ∃ β : Covector (Euclid P) n, covectorEuclideanNorm β ≤ 1 ∧ ξ x β = 1",
+  "lean_name": "cbr_ci_dr_ae_unit_attained_of_mass_eq",
+  "depends_on": [
+    "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.density_rep-a1.dual_norm-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.density_rep-a1.dual_norm-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-92bcabc36b-a1"
+}

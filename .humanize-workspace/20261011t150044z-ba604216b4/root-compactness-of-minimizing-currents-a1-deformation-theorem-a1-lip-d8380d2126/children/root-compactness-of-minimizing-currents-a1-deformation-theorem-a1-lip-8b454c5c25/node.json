@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.lipschitz_pushforward-a1.operators-a1.homotopy-a1.smooth_approx-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.lipschitz_pushforward-a1.operators-a1.homotopy-a1",
+  "depth": 6,
+  "title": "Smooth approximations of a Lipschitz straight-line homotopy",
+  "statement": "For all N, N' ∈ ℕ, Λ ∈ ℝ≥0, Λ-Lipschitz F, G : ℝ^N → ℝ^{N'}, every map H : ℝ^{N+1} → ℝ^{N'} and every compact K ⊆ ℝ^N with H(ι(t, x)) = F(x) + t(G(x) − F(x)) for x ∈ K and t ∈ [0, 1] (ι(t, x) := WithLp.toLp 2 (Fin.cons t (WithLp.ofLp x)), Jv := ι(0, v), e₀ := EuclideanSpace.single 0 1, D = fderiv ℝ), there are maps F_j, G_j : ℝ^N → ℝ^{N'} and H_j : ℝ^{N+1} → ℝ^{N'} (j ∈ ℕ) and Λ' ∈ ℝ such that: (1) every F_j, G_j, H_j is C^∞; (2) ‖DF_j(x)‖ ≤ Λ and ‖DG_j(x)‖ ≤ Λ for all j, x; (3) F_j → F and G_j → G uniformly on ℝ^N; (4) H_j(ι(1, x)) = G_j(x) and H_j(ι(0, x)) = F_j(x); (5) DH_j(ι(1, x))(Jv) = DG_j(x)v and DH_j(ι(0, x))(Jv) = DF_j(x)v; (6) ‖DH_j(ι(t, x))e₀‖ ≤ dist(F x, G x) + 2Λ/(j + 1) for all j, t, x; (7) ‖DH_j(ι(t, x))(Jv)‖ ≤ Λ‖v‖ for all j, t ∈ [0, 1], x, v; (8) ‖DH_j(ι(t, x))‖ ≤ Λ' for all j, t ∈ [0, 1], x ∈ K; (9) H_j → H uniformly on {ι(t, x) : t ∈ [0, 1], x ∈ K}.",
+  "lean_statement": "∀ (N N' : ℕ) (Λ : NNReal) (F G : Euclid N → Euclid N') (H : Euclid (N + 1) → Euclid N') (K : Set (Euclid N)), LipschitzWith Λ F → LipschitzWith Λ G → IsCompact K → (∀ x ∈ K, ∀ t ∈ Icc (0 : ℝ) 1, H (WithLp.toLp 2 (Fin.cons t (WithLp.ofLp x))) = F x + t • (G x - F x)) → ∃ (Fs Gs : ℕ → Euclid N → Euclid N') (Hs : ℕ → Euclid (N + 1) → Euclid N') (Λ' : ℝ), (∀ j, ContDiff ℝ (⊤ : ℕ∞) (Fs j)) ∧ (∀ j, ContDiff ℝ (⊤ : ℕ∞) (Gs j)) ∧ (∀ j, ContDiff ℝ (⊤ : ℕ∞) (Hs j)) ∧ (∀ (j : ℕ) (x : Euclid N), ‖fderiv ℝ (Fs j) x‖ ≤ (Λ : ℝ)) ∧ (∀ (j : ℕ) (x : Euclid N), ‖fderiv ℝ (Gs j) x‖ ≤ (Λ : ℝ)) ∧ TendstoUniformly Fs F atTop ∧ TendstoUniformly Gs G atTop ∧ (∀ (j : ℕ) (x : Euclid N), Hs j (WithLp.toLp 2 (Fin.cons 1 (WithLp.ofLp x))) = Gs j x) ∧ (∀ (j : ℕ) (x : Euclid N), Hs j (WithLp.toLp 2 (Fin.cons 0 (WithLp.ofLp x))) = Fs j x) ∧ (∀ (j : ℕ) (x v : Euclid N), fderiv ℝ (Hs j) (WithLp.toLp 2 (Fin.cons 1 (WithLp.ofLp x))) (WithLp.toLp 2 (Fin.cons 0 (WithLp.ofLp v))) = fderiv ℝ (Gs j) x v) ∧ (∀ (j : ℕ) (x v : Euclid N), fderiv ℝ (Hs j) (WithLp.toLp 2 (Fin.cons 0 (WithLp.ofLp x))) (WithLp.toLp 2 (Fin.cons 0 (WithLp.ofLp v))) = fderiv ℝ (Fs j) x v) ∧ (∀ (j : ℕ) (t : ℝ) (x : Euclid N), ‖fderiv ℝ (Hs j) (WithLp.toLp 2 (Fin.cons t (WithLp.ofLp x))) (EuclideanSpace.single 0 1)‖ ≤ dist (F x) (G x) + 2 * (Λ : ℝ) / ((j : ℝ) + 1)) ∧ (∀ (j : ℕ), ∀ t ∈ Icc (0 : ℝ) 1, ∀ (x v : Euclid N), ‖fderiv ℝ (Hs j) (WithLp.toLp 2 (Fin.cons t (WithLp.ofLp x))) (WithLp.toLp 2 (Fin.cons 0 (WithLp.ofLp v)))‖ ≤ (Λ : ℝ) * ‖v‖) ∧ (∀ (j : ℕ), ∀ t ∈ Icc (0 : ℝ) 1, ∀ x ∈ K, ‖fderiv ℝ (Hs j) (WithLp.toLp 2 (Fin.cons t (WithLp.ofLp x)))‖ ≤ Λ') ∧ TendstoUniformlyOn Hs H atTop {y : Euclid (N + 1) | ∃ t ∈ Icc (0 : ℝ) 1, ∃ x ∈ K, y = WithLp.toLp 2 (Fin.cons t (WithLp.ofLp x))}",
+  "lean_name": "cmcdt_lpoh_smooth_approx",
+  "depends_on": [
+    "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.lipschitz_pushforward-a1.operators-a1.homotopy-a1.interp_calculus-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.lipschitz_pushforward-a1.operators-a1.homotopy-a1.interp_calculus-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-lip-8b454c5c25-a1"
+}

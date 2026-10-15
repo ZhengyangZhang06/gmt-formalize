@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.density_gap-a1.cone_ball_mass-a1",
+  "parent_id": "root.dimension_reduction_results-a1.density_gap-a1",
+  "depth": 3,
+  "title": "Ball masses, vertex density and vertex support of an integer multiplicity cone",
+  "statement": "Let P, j ∈ ℕ and let C ∈ 𝒟_j(ℝ^P) (GeometricCurrentOn univ j) be a cone, i.e. IsConeCurrent C: currentEval(η_{0,λ#}C)(ω) = C(ω) for every λ > 0 and every test form ω ∈ 𝒟^j(ℝ^P), where η_{0,λ#}C = blowUp C 0 λ. Assume C has integer multiplicity, i.e. IsIntegerMultiplicity C: C = τ(M, θ, ξ) for some integer multiplicity triple R in ℝ^P (R.Represents C). Write M_W(C) = C.massOn W ∈ [0, ∞] and ω_j := unitBallVolume j, the Lebesgue measure of the open unit ball of ℝ^j. Then:\n(i) M_{B_ρ(0)}(C) = ofReal(ρ^j)·M_{B_1(0)}(C) for every real ρ > 0 (open balls);\n(ii) for every real θ, HasMassDensity C 0 θ holds iff θ ≥ 0 and M_{B_1(0)}(C) = ω_j·ofReal(θ);\n(iii) for every real θ > 0, HasMassDensity C 0 θ implies 0 ∈ spt C (C.support).\nNo minimality and no restriction on j are assumed.",
+  "lean_statement": "∀ (P j : ℕ) (C : GeometricCurrentOn (univ : Set (Euclid P)) j), IsConeCurrent C → IsIntegerMultiplicity C → (∀ ρ : ℝ, 0 < ρ → C.massOn (ball 0 ρ) = ENNReal.ofReal (ρ ^ j) * C.massOn (ball 0 1)) ∧ (∀ θ : ℝ, HasMassDensity C 0 θ ↔ 0 ≤ θ ∧ C.massOn (ball 0 1) = unitBallVolume j * ENNReal.ofReal θ) ∧ ∀ θ : ℝ, 0 < θ → HasMassDensity C 0 θ → (0 : Euclid P) ∈ C.support",
+  "lean_name": "dimred_cdg_im_cone_ball_mass",
+  "depends_on": [
+    "root.half_space_cone_lies_in_boundary-a1.cone_measure_homogeneous-a1",
+    "root.density_one_implies_regular-a1.imrep_mass_and_support-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.half_space_cone_lies_in_boundary-a1.cone_measure_homogeneous-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-half-space-cone-lies-in-boundary-a1-cone-measure-homogeneous-a1-a1",
+      "result_commit": "e183b985f8baf48aa0fe07ee8e978c1474ec9d0a",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.density_one_implies_regular-a1.imrep_mass_and_support-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-imrep-mass-and-support-a1-a1",
+      "result_commit": "d49dda91b75b7417d67a10053e6dc4b65d4f0312",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-density-gap-a1-cone-ball-mass-a1-a1"
+}

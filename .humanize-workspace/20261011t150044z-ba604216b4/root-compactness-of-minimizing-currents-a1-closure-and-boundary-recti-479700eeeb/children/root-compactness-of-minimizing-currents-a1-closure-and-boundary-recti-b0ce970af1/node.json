@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.good_points-a1.lebesgue_error-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.good_points-a1",
+  "depth": 5,
+  "title": "Normalised Lebesgue-point error of an L¹ multivector field on M tends to 0 where M has finite upper density",
+  "statement": "Let P, n ∈ ℕ, let M ⊆ ℝ^P be Borel with μHE[n](M) < ∞, and let τ : ℝ^P → Λ_n(ℝ^P) = MultiVector P n be strongly measurable with ∫⁻_M ‖τ‖ₑ dμHE[n] < ∞, where ‖·‖ is the operator norm on MultiVector P n = (Covector →L[ℝ] ℝ). Then for μHE[n]⌞M-almost every a the following holds: if limsup_{r→0+} μHE[n](M ∩ B̄_r(a))/(ω_n·rⁿ) < ∞, then (∫⁻_{M∩B̄_r(a)} ‖τ(x) − τ(a)‖ₑ dμHE[n](x))/(ω_n·rⁿ) → 0 as r → 0+. All quantities are taken in [0, ∞], with ω_n·rⁿ written unitBallVolume n * ofReal(rⁿ).",
+  "lean_statement": "∀ (P n : ℕ) (M : Set (Euclid P)) (τ : Euclid P → MultiVector P n), MeasurableSet M → μHE[n] M < ∞ → StronglyMeasurable τ → ∫⁻ x in M, ‖τ x‖ₑ ∂μHE[n] < ∞ → ∀ᵐ a ∂(μHE[n].restrict M), limsup (fun r : ℝ => μHE[n] (M ∩ closedBall a r) / (unitBallVolume n * ENNReal.ofReal (r ^ n))) (𝓝[>] 0) < ∞ → Tendsto (fun r : ℝ => (∫⁻ x in M ∩ closedBall a r, ‖τ x - τ a‖ₑ ∂μHE[n]) / (unitBallVolume n * ENNReal.ofReal (r ^ n))) (𝓝[>] 0) (𝓝 0)",
+  "lean_name": "cbr_ci_gp_lebesgue_error_tendsto",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-b0ce970af1-a1"
+}
