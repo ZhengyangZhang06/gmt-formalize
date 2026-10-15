@@ -1,0 +1,86 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.face_replacement-a1`
+- Child DAG node: `root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.face_replacement-a1.boundary_variation-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: Simon Ch. 6, proof of 5.1, displays (27)–(28) and (32) (chapter-06.txt lines 1849–1893; the BV estimate M_{F̆}(∂Q) = ∫_{F̆}|DθF| via 2.35), as written out in step 5 of the parent proof (parent E7(b)). Following the parent proof, the variation on a face is bounded by V_p := M_{N_p}(∂Q₀) for explicit pairwise disjoint open neighbourhoods N_p. The proof uses the hypothesis (VO) and the sibling face_geometry.
+
+Notation. n := m + 1; Q₁, Cⁿ, Φ_p, E_p, F_p := Φ_p(Cⁿ), F̆_p := Φ_p(Q₁) as usual (Φ_p(y) := toLp(b) + Σ_j y_j e_{ι(j)}). For p = (ι, b) let p̃_p : ℝ^P → Euclid n, p̃_p(x)_j := x_{ι(j)} − b_{ι(j)}. It is continuous and affine, with p̃_p(Φ_p y) = y and p̃_p(x + t e_{ι(i)}) = p̃_p(x) + t e_i. Let δ_p(t) := min(1, min_j min(t_j, 1 − t_j)) for t ∈ Euclid n. δ_p is continuous and positive on Q₁. Recall |α| := covectorEuclideanNorm α. For a degree-m current S on ℝ^P and an open W, M_W(S) = sup{ofReal(S γ) : tsupport γ ⊆ W, |γ(x)| ≤ 1 ∀ x}.
+
+1. Neighbourhoods. N_p := {x : p̃_p(x) ∈ Q₁ and dist(x, Φ_p(p̃_p x)) < δ_p(p̃_p x)/2}. N_p is open (the open preimage of Q₁ intersected with a strict inequality of continuous functions). F̆_p ⊆ N_p: for x = Φ_p(y) with y ∈ Q₁, p̃_p x = y and the distance is 0.
+ (i) N_p ∩ F_q = ∅ for q ∈ s, q ≠ p. If x ∈ N_p and x = Φ_q(y') with y' ∈ Cⁿ, put t := p̃_p(x) ∈ Q₁. The separation part of face_geometry (p ≠ q, t ∈ Q₁, y' ∈ Cⁿ) gives dist(Φ_p t, x) ≥ 1 or ≥ min(t_j, 1 − t_j) for some j; either way dist(Φ_p t, x) ≥ δ_p(t). This contradicts dist(x, Φ_p t) < δ_p(t)/2.
+ (ii) N_p ∩ N_q = ∅ for distinct p, q ∈ s. Suppose x lies in both and put t := p̃_p x, t' := p̃_q x (both in Q₁), y := Φ_p t, y' := Φ_q t'. Separation for (p, q, t, t') gives dist(y, y') ≥ δ_p(t), and for (q, p, t', t) it gives dist(y', y) ≥ δ_q(t'). But dist(y, y') ≤ dist(y, x) + dist(x, y') < δ_p(t)/2 + δ_q(t')/2 ≤ max(δ_p(t), δ_q(t')), a contradiction.
+2. Supports. Z := ⋃_{q∈s} F_q is compact (finite union of continuous images of Cⁿ), hence closed. spt Q₀ ⊆ Z: for x ∉ Z pick r > 0 with ball(x, r) ∩ Z = ∅. If tsupport ω ⊆ ball(x, r), then ω(Φ_q y) = 0 for all q ∈ s and y ∈ Q₁, so Q₀(ω) = 0. Thus the open, relatively compact ball(x, r) lies in the zero region of Q₀. spt ∂Q₀ ⊆ spt Q₀: if Q₀ vanishes on an open W, so does ∂Q₀, because ∂Q₀(γ) = Q₀(dγ) and tsupport dγ ⊆ tsupport γ (tsupport_exteriorDerivative_subset). Hence spt ∂Q₀ ⊆ Z.
+3. Definition of V_p. M_{N_p}(∂Q₀) ≤ M(∂Q₀) < ∞ (massOn_mono). Put V_p := (M_{N_p}(∂Q₀)).toReal ≥ 0. For every γ admissible for N_p, ofReal(∂Q₀ γ) ≤ M_{N_p}(∂Q₀), hence ∂Q₀(γ) ≤ V_p.
+4. Coordinate covectors. For a strictly increasing J : Fin m → Fin P let dx^J be the m-covector (v_1, …, v_m) ↦ det[(v_a)_{J(c)}]_{a,c} (continuous, as everything is finite-dimensional). For strictly increasing I : Fin m → Fin P, dx^J(e_{I(0)}, …, e_{I(m−1)}) = 1 if I = J and 0 otherwise. Indeed, the matrix [(e_{I(a)})_{J(c)}] = [I(a) = J(c)] is the identity if I = J. If I ≠ J, the ranges differ (strictly increasing maps with equal range coincide), and some row of the matrix is zero. For j ∈ Fin n let ε_j := (−1)^j dx^{ι∘succAbove j}. The maps ι ∘ succAbove j are strictly increasing and pairwise distinct (their ranges are range ι ∖ {ι(j)}). Hence for reals c_j, (Σ_j c_j ε_j)(e_I) equals (−1)^j c_j if I = ι ∘ succAbove j and 0 for other I. So |Σ_j c_j ε_j|² = Σ_j c_j², and (Σ_{j'} c_{j'} ε_{j'})(E_p ∘ succAbove j) = (−1)^j c_j. (For m = 0, ι ∘ succAbove 0 is the empty map and ε_0 is the constant 0-covector 1.)
+5. The test form for g. Fix p ∈ s and g as in the statement. If tsupport g = ∅ then g = 0, the integral is 0 and 0 ≤ V_p, so assume tsupport g ≠ ∅. Kg := Φ_p(tsupport g) is compact and Kg ⊆ F̆_p ⊆ N_p. Choose r > 0 with cthickening(3r, Kg) ⊆ N_p (IsCompact.exists_cthickening_subset_open). Apply exists_contDiff_support_eq_eq_one_iff to the open set thickening(2r, Kg) and the closed set cthickening(r, Kg). This gives a C^∞ map χ : ℝ^P → [0, 1] with support χ = thickening(2r, Kg), so tsupport χ ⊆ cthickening(2r, Kg) ⊆ N_p is compact, and χ = 1 on cthickening(r, Kg), hence on the open neighbourhood thickening(r, Kg) of Kg. Put
+ γ(x) := χ(x) Σ_j g_j(p̃_p x) ε_j.
+ γ is C^∞ with compact tsupport γ ⊆ tsupport χ ⊆ N_p, so it is a test m-form. By step 4, |γ(x)| = χ(x)|g(p̃_p x)| ≤ 1. So γ is admissible for N_p, and ∂Q₀(γ) ≤ V_p by step 3.
+6. dγ on F̆_p. By step 4, γ(·)(E_p ∘ succAbove i) = (−1)^i χ(·) g_i(p̃_p ·). The coordinate formula for d (SimonGMT exteriorDerivative_apply, with removeNth i v = v ∘ succAbove i) gives dγ(x)(E_p) = Σ_i (−1)^i D[γ(·)(E_p∘succAbove i)](x)(e_{ι(i)}) = Σ_i D[χ·(g_i∘p̃_p)](x)(e_{ι(i)}). Let y ∈ Q₁ and x := Φ_p(y). If x ∈ thickening(r, Kg), then χ ≡ 1 near x, so D[χ·(g_i∘p̃_p)](x)(e_{ι(i)}) = D(g_i∘p̃_p)(x)(e_{ι(i)}) = Dg_i(y)(e_i). Otherwise y ∉ tsupport g. Then g vanishes near y, so Dg(y) = 0, and g_i ∘ p̃_p vanishes near x (p̃_p is continuous with p̃_p x = y), so both sides are 0. Hence dγ(Φ_p y)(E_p) = Σ_i ∂_i g_i(y) = trace Dg(y) for all y ∈ Q₁. (The trace of a linear map A of Euclid n is Σ_i (A e_i)_i.)
+7. Other faces. For q ∈ s, q ≠ p, and y ∈ Q₁, Φ_q(y) ∈ F_q, which is disjoint from N_p ⊇ tsupport γ ⊇ tsupport dγ (step 1(i)). So dγ(Φ_q y) = 0.
+8. Bound. By steps 6–7, ∂Q₀(γ) = Q₀(dγ) = Σ_{q∈s} ∫_{Q₁} u_q(y) dγ(Φ_q y)(E_q) dy = ∫_{Q₁} u_p(y) trace Dg(y) dy. With step 5 this proves ∫_{Q₁} u_p div g ≤ V_p.
+9. Sum bound. Let η > 0. For each p ∈ s choose an admissible γ_p for N_p with ∂Q₀(γ_p) ≥ V_p − η: take γ_p := 0 if V_p ≤ η; otherwise ofReal(V_p − η) < M_{N_p}(∂Q₀) and the supremum supplies γ_p. Put γ := Σ_{p∈s} γ_p. At each x at most one γ_p(x) is nonzero, because tsupport γ_p ⊆ N_p and the N_p are pairwise disjoint (step 1(ii)). So |γ(x)| ≤ 1, and γ is admissible for M(∂Q₀) = M_{ℝ^P}(∂Q₀). Hence Σ_{p∈s}(V_p − η) ≤ Σ_p ∂Q₀(γ_p) = ∂Q₀(γ) ≤ M(∂Q₀).toReal. Letting η → 0 gives Σ_{p∈s} V_p ≤ M(∂Q₀).toReal. As M(∂Q₀) < ∞, ofReal(Σ_{p∈s} V_p) ≤ M(∂Q₀).
+10. Support. Let p ∈ s with V_p ≠ 0. Then M_{N_p}(∂Q₀) > 0, so some admissible γ for N_p has ∂Q₀(γ) > 0. By (VO) applied to S := ∂Q₀ (degree m, U = ℝ^P), tsupport γ is not disjoint from spt ∂Q₀. Take x ∈ tsupport γ ∩ spt ∂Q₀ ⊆ N_p ∩ spt ∂Q₀. By step 2, x ∈ F_q for some q ∈ s, and q = p by step 1(i). So x = Φ_p(y) with y ∈ Cⁿ and x ∈ spt ∂Q₀.
+11. Steps 3 and 8–10 give V_p ≥ 0, ofReal(Σ_p V_p) ≤ M(∂Q₀), the bound for every admissible g, and the support statement. ∎
+
+## Key steps
+
+1. Open neighbourhoods N_p ⊇ Φ_p(Q₁) with N_p ∩ Φ_q([0,1]ⁿ) = ∅ (q ≠ p) and pairwise disjoint, by face_geometry separation. Also spt ∂Q₀ ⊆ spt Q₀ ⊆ ⋃_q Φ_q([0,1]ⁿ).
+2. V_p := M_{N_p}(∂Q₀) (finite) bounds ∂Q₀(γ) for every admissible γ supported in N_p.
+3. For g, the form γ = χ Σ_j g_j(p̃_p x)(−1)^j dx^{ι∘succAbove j} is admissible in N_p, with dγ(Φ_p y)(e_ι) = div g(y), and dγ vanishes on the other faces. Hence ∫u_p div g = ∂Q₀(γ) ≤ V_p.
+4. Summing near-optimal forms over the disjoint N_p gives Σ V_p ≤ M(∂Q₀). If V_p > 0, (VO) gives a point of spt ∂Q₀ in N_p, which must lie on Φ_p([0,1]ⁿ).
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cmp local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean GMT/Ch07/Contract.lean (identical); cmp GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean (identical); git -C local-references/123e8435b4a2469b/mathlib rev-parse HEAD (25730c7c759d108ef87ab70af2342a196760f79d, matches manifest)`
+- `rg -n 'cmcdtfr_' project mathlib/Mathlib -g '*.lean' (no match); python3 scan of runs/20261011T150044Z-ba604216b4/dag.json lean_name fields for cmcdtfr, polyhedral, cubical, stokes, face_ (no collision among 902 nodes; only cmcdt_face_replacement itself)`
+- `rg -n -i 'polyhedral|cubical|lattice|IsLatticeChain' project/GMT -g '*.lean'`
+- `rg -n 'theorem integral_divergence_of_hasFDerivAt_off_countable' mathlib/Mathlib`
+- `rg -n 'theorem (EuclideanSpace.euclideanHausdorffMeasure_eq_volume|Isometry.map_euclideanHausdorffMeasure|Isometry.euclideanHausdorffMeasure_image|MeasureTheory.Measure.euclideanHausdorffMeasure_zero)' mathlib/Mathlib`
+- `rg -n 'theorem (hausdorffMeasure_of_dimH_lt|dimH_univ_eq_finrank|dimH_image_le)' mathlib/Mathlib`
+- `rg -n 'theorem (AlternatingMap.eq_smul_basis_det|OrthonormalBasis.det_to_matrix_orthonormalBasis_real)' mathlib/Mathlib`
+- `grep -rn 'exists_contDiff_support_eq_eq_one_iff|IsCompact.exists_cthickening_subset_open|PiLp.volume_preserving_ofLp|volume_euclideanSpace_eq_dirac|volume_pi_Ioo|Integrable.bdd_mul|integral_biUnion_finset' mathlib/Mathlib (all found)`
+- `grep in lake-packages-25730c7c/simongmt Chapter03/Rectifiable.lean and Chapter06/{Forms,Currents,Mass,CurrentLocalEquality}.lean for HasApproximateTangentSpaceAt, blowUpMap, CountablyRectifiable, support_euclideanHausdorffMeasure_restrict_submodule, regular_euclideanHausdorffMeasure_restrict_submodule, exteriorDerivative_apply, tsupport_exteriorDerivative_subset, GeometricCurrentOn.support, zeroRegion, massAdmissibleOn, covectorEuclideanNorm, le_massOn, massOn_mono (all found)`
+- `sed -n 560,700p and 1700,1935p book/chapter-06.txt (Simon 2.34–2.37 and 5.1 displays (26)–(38))`
+- `lake env lean /tmp/frdecomp/lean/Types.lean (nine child types, wrapped as verifier/gmt-compare.py child_modules does after the replayed contract scope; no errors)`
+- `lake env lean /tmp/frdecomp/lean/Assembly.lean (FRAsm.check: frozen CB type + nine child types imply the selected frozen type; #print axioms: propext, Classical.choice, Quot.sound)`
+- `lake env lean /tmp/frdecomp/lean/InstCheck.lean and /tmp/frdecomp/lean/InstCheck2.lean (C^∞ not ω, pointwise Sub by rfl, trace coercion, coordinates of the face map, vol((0,1)^k) = 1, μHE[0]{x} = 1)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch06/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/DivergenceTheorem.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/HausdorffDimension.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Determinant.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Manifold/PartitionOfUnity.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/Thickening.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Haar/InnerProductSpace.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/L1Space/Integrable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/AffineCurrentPushforward.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-fac-297ffaa421/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1/decomposition-v2.json`
+- `/tmp/frdecomp/lean/Types.lean`
+- `/tmp/frdecomp/lean/Assembly.lean`
+- `/tmp/frdecomp/lean/InstCheck.lean`
+- `/tmp/frdecomp/lean/InstCheck2.lean`
+
+The snapshot (project b4d606d, Mathlib 25730c7c) has the same Ch07 contract as the workspace, and Submission.lean equals the contract. The only lattice-chain material is in the separate Ch06 problem (project/GMT/Ch06/Contract.lean: LatticeFaceIndex, latticeFace, latticeFaceAction, IsLatticeChain; main_theorem := by sorry). It lives in another module with another type (Eucl) and has no proofs, so it is not reusable. Its face convention ((Fin N → ℤ) × increasing multi-index, orientation fun j => EuclideanSpace.single (F.2 j) 1) matches the one adopted here. Mathlib has no polyhedral-chain, cubical-Stokes or deformation results (no match). It does provide every tool cited by the child proofs: the box divergence theorem, isometry invariance of μHE with μHE = volume on Euclid d, Hausdorff dimension bounds, eq_smul_basis_det, the ±1 determinant between orthonormal bases, the smooth Urysohn lemma, the measure-preserving ofLp, Integrable.bdd_mul and integral_biUnion_finset. SimonGMT supplies approximate tangent spaces, the support of Hⁿ on planes, exteriorDerivative_apply, support and mass. No declaration or DAG node uses the prefix cmcdtfr_. All nine child types elaborate in the comparator's replayed scope. The Lean assembly from the frozen CB type and the nine child types to the selected frozen type compiles with only standard axioms.
