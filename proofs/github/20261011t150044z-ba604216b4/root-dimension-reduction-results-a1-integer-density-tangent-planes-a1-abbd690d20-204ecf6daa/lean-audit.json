@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "7ecfee08c01cbe589291a3ed2fd9a694a2e5f327c7c7421cf74f15e39cd94a39",
+  "git_delta": {
+    "base_commit": "3ed105c8a3f6e21a14094da4fdbd9b7604233666",
+    "candidate_commit": "41232799e541b9281eac63d2f80f9fa4478cd68e",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "idtp_tdc_acont_endpoint_plane",
+    "diff_sha256": "773b57913adc0adc2c4d0cd396ebae9bfeb47af83d12817383a8762b7b05037d",
+    "source_sha256": "166f36c03a10cd4e5f382b4f724a58e0e09e1d2b121013e92c3f712a7201651f",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.idtp_tdc_acont_endpoint_plane",
+      "statement": "∀ (P : ℕ) (C : GeometricCurrentOn (univ : Set (Euclid P)) 2) (Q : Submodule ℝ (Euclid P)) (z e : Euclid P) (k : ℕ) (φ₀ δ : ℝ), IsMinimizingIn C univ → BoundaryVanishes C → IsConeCurrent C → Module.finrank ℝ Q = 2 → z ∈ Q → e ∈ Q → ‖z‖ = 1 → ‖e‖ = 1 → inner ℝ z e = 0 → 0 < φ₀ → (∀ φ : ℝ, 0 < φ → φ < φ₀ → Real.cos φ • z + Real.sin φ • e ∈ C.support) → Real.cos φ₀ • z + Real.sin φ₀ • e ∈ C.support → 0 < δ → (∀ y ∈ C.support, y ∈ ball (Real.cos φ₀ • z + Real.sin φ₀ • e) δ → HasMassDensity C y k) → ∃ ε : ℝ, 0 < ε ∧ C.support ∩ ball (Real.cos φ₀ • z + Real.sin φ₀ • e) ε = (Q : Set (Euclid P)) ∩ ball (Real.cos φ₀ • z + Real.sin φ₀ • e) ε ∧ ∀ y ∈ C.support, y ∈ ball (Real.cos φ₀ • z + Real.sin φ₀ • e) ε → HasMassDensity C y k",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
