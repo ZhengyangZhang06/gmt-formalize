@@ -66763,4 +66763,515 @@ theorem Submission.dtc_bc_lc_flat_decomposition : ∀ (P m : ℕ) (Ts : ℕ → 
     (fun _ => zero_le) hle⟩
   simpa using ha.add (ENNReal.tendsto_pow_atTop_nhds_zero_of_lt_one (r := 2⁻¹) (by norm_num))
 
+/-- **Simon 7.2.4, (1)–(11), with Remark 7.2.5(2)** (local comparison).  Let `S_j` minimize in
+`A_j ⊇ spt S_j` with locally bounded masses, let `π_j` be `C¹` retractions onto `A_j` that are
+eventually `(1 + η)`-Lipschitz on balls, and let the integer multiplicity `Ŝ_j ⇀ C` (with locally
+bounded `M + M ∘ ∂`) agree with `S_j` on `B_{ρ_j}(0)`, `ρ_j → ∞`.  Given a compact `K`, `ε > 0` and
+a subsequence `ψ`, there are an open `W` with `K ⊆ W ⊆ {dist(·, K) < ε}` and a further subsequence
+`φ'` with `limsup M_W(S_{ψ(φ'(i))}) ≤ M_W(S)` whenever `S` is integer multiplicity, `∂S = ∂C` and
+`spt(S − C) ⊆ K`.
+
+Put `f = dist(·, K)`, `W₀ = {f < ε/2}` and choose `G` with `{f ≤ ε} ⊆ B_{G/2}(0)`.  Flat
+convergence gives `C − Ŝ_{ψ(j)} − S'_j = ∂R_j` with `M_{W₀}(R_j) + M_{W₀}(S'_j) → 0`, at most
+`2⁻ⁱ` along `φ' = φ₁`.  Slicing `R_{φ₁(i)}` by `f` at a good level `t ∈ (0, ε/2)` gives
+`∂(R_i⌞W) = (∂R_i)⌞W + P_i` for `W = {f < t}`, with `Σᵢ M_{W₀}(P_i) < ∞` and `μ_{S_i}{f = t} = 0`.
+Then `Y_i = (S − C) + ∂(R_i⌞W)` is an integer multiplicity cycle supported in `{f ≤ t}`, and the
+retraction comparison gives `M_{B_G}(S_i) ≤ (1 + η)ⁿ M_{B_G}(S_i + Y_i)`.  Split
+`B_G = W ∪ {f = t} ∪ O'`, `O' = B_G ∩ {f > t}`: on `W`, `S_i + Y_i = S − S'_i`; on `O'`,
+`S_i + Y_i = S_i`; and `μ_{S_i + Y_i}{f = t} ≤ M_{W₀}(P_i)` by subadditivity of the weights.  So
+`M_W(S_i) ≤ (1 + η)ⁿ (M_W(S) + e_i) + ((1 + η)ⁿ − 1) c_G` with `e_i → 0`; let `i → ∞`, `η ↓ 0`. -/
+theorem Submission.dtc_bc_local_comparison : ∀ (P m : ℕ) (Us As : ℕ → Set (Euclid P)) (Ss : (j : ℕ) → GeometricCurrentOn (Us j) (m + 1)) (Ŝ : ℕ → GeometricCurrentOn (univ : Set (Euclid P)) (m + 1)) (C : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1)) (ρ : ℕ → ℝ), m + 1 < P → (∀ j, IsOpen (Us j)) → (∀ j, IsMinimizingIn (Ss j) (As j)) → (∀ j, (Ss j).support ⊆ As j) → (∀ R : ℝ, ∃ c : ℝ≥0∞, c ≠ ∞ ∧ ∀ᶠ j in atTop, (Ss j).massOn (ball 0 R) ≤ c) → (∀ G : ℝ, 0 < G → ∃ πs : ℕ → Euclid P → Euclid P, (∀ᶠ j in atTop, ContDiffOn ℝ 1 (πs j) (ball 0 G) ∧ MapsTo (πs j) (ball 0 G) (As j) ∧ (∀ y ∈ As j ∩ ball 0 G, πs j y = y) ∧ ∀ y ∈ ball 0 G, ‖πs j y‖ ≤ 2 * ‖y‖) ∧ ∀ η : ℝ, 0 < η → ∀ᶠ j in atTop, ∀ y ∈ ball 0 G, ∀ z ∈ ball 0 G, ‖πs j y - πs j z‖ ≤ (1 + η) * ‖y - z‖) → IsIntegerMultiplicity C → (∀ j, IsIntegerMultiplicity (Ŝ j)) → (∀ W : Set (Euclid P), IsOpen W → Bornology.IsBounded W → ⨆ j, ((Ŝ j).massOn W + (Ŝ j).boundary.massOn W) < ∞) → WeaklyConvergesOn Ŝ C → Tendsto ρ atTop atTop → (∀ j, closedBall (0 : Euclid P) (ρ j) ⊆ Us j) → (∀ (j : ℕ) (ω : TestFormOn (univ : Set (Euclid P)) (m + 1)), tsupport (ω : DifferentialForm (Euclid P) (m + 1)) ⊆ ball 0 (ρ j) → Ŝ j ω = currentEval (Ss j) (ω : DifferentialForm (Euclid P) (m + 1))) → ∀ (K : Set (Euclid P)) (ε : ℝ), IsCompact K → 0 < ε → ∀ ψ : ℕ → ℕ, StrictMono ψ → ∃ W : Set (Euclid P), IsOpen W ∧ K ⊆ W ∧ W ⊆ thickening ε K ∧ ∃ φ' : ℕ → ℕ, StrictMono φ' ∧ ∀ S : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1), IsIntegerMultiplicity S → SameBoundary S C → (S - C).support ⊆ K → limsup (fun j => (Ss (ψ (φ' j))).massOn W) atTop ≤ S.massOn W := by
+  intro P m Us As Ss Ŝ C ρ hmP hUs hmin hsptA hmass hπ hCim hŜim hsup hconv hρ hρU hŜS K ε hK hε
+    ψ hψ
+  -- Step 0: facts about integer multiplicity currents (parent proof, step 0)
+  -- (G) differences and sums of integer multiplicity currents are integer multiplicity
+  have hsub_im : ∀ (U : Set (Euclid P)) (A B : GeometricCurrentOn U (m + 1)), IsOpen U →
+      IsIntegerMultiplicity A → IsIntegerMultiplicity B → IsIntegerMultiplicity (A - B) :=
+    fun U A B hU hA hB => Submission.cmc_imRep_locality_restrict_sub.2.2.1 P (m + 1) U A B hU hA hB
+  have hadd_im : ∀ (U : Set (Euclid P)) (A B T : GeometricCurrentOn U (m + 1)), IsOpen U →
+      IsIntegerMultiplicity A → IsIntegerMultiplicity B →
+        (∀ ω : TestFormOn U (m + 1), T ω = A ω + B ω) → IsIntegerMultiplicity T := by
+    intro U A B T hU hA hB h
+    -- `T = A - ((B - B) - B)`
+    have hT : T = A - ((B - B) - B) := GeometricCurrentOn.ext fun ω => by
+      rw [h ω]
+      show A ω + B ω = A ω - ((B ω - B ω) - B ω)
+      ring
+    rw [hT]
+    exact hsub_im U _ _ hU hA (hsub_im U _ _ hU (hsub_im U _ _ hU hB hB) hB)
+  -- `currentEval T ω = T(ω)` for `ω ∈ 𝒟ⁿ(U)`
+  have hce : ∀ (U : Set (Euclid P)) (T : GeometricCurrentOn U (m + 1)) (ω : TestFormOn U (m + 1)),
+      currentEval T (ω : DifferentialForm (Euclid P) (m + 1)) = T ω := by
+    intro U T ω
+    rw [currentEval, dite_eq_left ⟨ω.property.1, ω.property.2⟩]
+  -- a current vanishing on the forms supported in `O` has no mass in `O`
+  have hmass_zero : ∀ (U O : Set (Euclid P)) (T : GeometricCurrentOn U (m + 1)),
+      (∀ ω : TestFormOn U (m + 1), tsupport (ω : DifferentialForm (Euclid P) (m + 1)) ⊆ O →
+        T ω = 0) → T.massOn O = 0 := by
+    intro U O T h
+    refine le_antisymm (sSup_le ?_) zero_le
+    rintro _ ⟨ω, hω, rfl⟩
+    dsimp only
+    rw [h ω hω.1, ENNReal.ofReal_zero]
+  -- (F1), (F3): the weight vanishes on an open set on whose forms the current vanishes
+  have hmeas_zero : ∀ (U O : Set (Euclid P)) (T : GeometricCurrentOn U (m + 1))
+      (R : IMRep U (m + 1)), IsOpen U → IsOpen O → O ⊆ U → R.Represents T →
+        (∀ ω : TestFormOn U (m + 1), tsupport (ω : DifferentialForm (Euclid P) (m + 1)) ⊆ O →
+          T ω = 0) → R.measure O = 0 := by
+    intro U O T R hU hO hOU hR h
+    rw [← Submission.dtc_mass_eq_measure P (m + 1) U O T R hU hO hOU hR]
+    exact hmass_zero U O T h
+  -- `M_W(Z) ≤ M_W(X) + M_W(Y)` if `Z = X - Y` on the forms supported in `W`
+  have hmass_sub : ∀ (U W : Set (Euclid P)) (Z : GeometricCurrentOn U (m + 1))
+      (X Y : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1)),
+      (∀ ω : TestFormOn U (m + 1), tsupport (ω : DifferentialForm (Euclid P) (m + 1)) ⊆ W →
+        Z ω = X (testFormOnInclusion (subset_univ U) (m + 1) ω) -
+          Y (testFormOnInclusion (subset_univ U) (m + 1) ω)) →
+        Z.massOn W ≤ X.massOn W + Y.massOn W := by
+    intro U W Z X Y h
+    refine sSup_le ?_
+    rintro _ ⟨ω, hω, rfl⟩
+    dsimp only
+    -- `ω` and `-ω` are admissible for `M_W` in `ℝᴾ`
+    set ω' := testFormOnInclusion (subset_univ U) (m + 1) ω
+    have hω' : ω' ∈ massAdmissibleOn univ (m + 1) W := hω
+    have hω'' : -ω' ∈ massAdmissibleOn univ (m + 1) W := by
+      refine ⟨?_, fun x => ?_⟩
+      · rw [Submodule.coe_neg, tsupport_neg]
+        exact hω'.1
+      · rw [Submodule.coe_neg, Pi.neg_apply, covectorEuclideanNorm_neg]
+        exact hω'.2 x
+    rw [h ω hω.1, sub_eq_add_neg, ← map_neg Y.toCurrent ω']
+    exact ENNReal.ofReal_add_le.trans (add_le_add (X.le_massOn hω') (Y.le_massOn hω''))
+  -- (F5) the restriction `R' = (M ∩ E, θ, ξ)` of `R = (M, θ, ξ)` agrees with `R` on forms
+  -- supported in `E` and vanishes on forms supported off `E`
+  have hrestr_eq : ∀ (k : ℕ) (R R' : IMRep (univ : Set (Euclid P)) k) (E : Set (Euclid P)),
+      R'.carrier = R.carrier ∩ E → R'.mult = R.mult → R'.orient = R.orient →
+        ∀ ω : DifferentialForm (Euclid P) k, tsupport ω ⊆ E → R'.action ω = R.action ω := by
+    intro k R R' E hc hm ho ω hω
+    rw [IMRep.action, IMRep.action, hc, hm, ho]
+    symm
+    refine setIntegral_eq_of_subset_of_forall_sdiff_eq_zero R.measurableSet_carrier
+      inter_subset_left fun x hx => ?_
+    have hxω : x ∉ tsupport ω := fun h => hx.2 ⟨hx.1, hω h⟩
+    rw [image_eq_zero_of_notMem_tsupport hxω, map_zero, mul_zero]
+  have hrestr_zero : ∀ (k : ℕ) (R R' : IMRep (univ : Set (Euclid P)) k) (E : Set (Euclid P)),
+      R'.carrier = R.carrier ∩ E → R'.mult = R.mult → R'.orient = R.orient →
+        ∀ ω : DifferentialForm (Euclid P) k, Disjoint (tsupport ω) E → R'.action ω = 0 := by
+    intro k R R' E hc hm ho ω hω
+    rw [IMRep.action]
+    refine setIntegral_eq_zero_of_forall_eq_zero fun x hx => ?_
+    rw [hc] at hx
+    have hxω : x ∉ tsupport ω := fun h => Set.disjoint_left.mp hω h hx.2
+    rw [image_eq_zero_of_notMem_tsupport hxω, map_zero, mul_zero]
+  -- the algebra of step 8(e): `u + x ≤ l(b + x)`, `x ≤ c < ∞`, `l ≥ 1` give
+  -- `u ≤ lb + (l - 1)c`
+  have halg : ∀ (u b x c l : ℝ≥0∞), x ≤ c → c ≠ ∞ → 1 ≤ l → u + x ≤ l * (b + x) →
+      u ≤ l * b + (l - 1) * c := by
+    intro u b x c l hxc hc hl h
+    have hx : x ≠ ∞ := ne_top_of_le_ne_top hc hxc
+    have h1 : l * (b + x) = l * b + (l - 1) * x + x := by
+      rw [mul_add, add_assoc]
+      congr 1
+      conv_lhs => rw [← tsub_add_cancel_of_le hl]
+      rw [add_mul, one_mul]
+    rw [h1] at h
+    calc u ≤ l * b + (l - 1) * x := ENNReal.le_of_add_le_add_right hx h
+      _ ≤ l * b + (l - 1) * c := by gcongr
+  -- Step 1: if `K = ∅`, take `W = ∅` (all masses in `∅` vanish) and `φ' = id`
+  rcases K.eq_empty_or_nonempty with rfl | hKne
+  · refine ⟨∅, isOpen_empty, subset_rfl, empty_subset _, id, strictMono_id, fun S _ _ _ => ?_⟩
+    have h0 : ∀ (U : Set (Euclid P)) (T : GeometricCurrentOn U (m + 1)), T.massOn ∅ = 0 := by
+      intro U T
+      refine hmass_zero U ∅ T fun ω hω => ?_
+      have hω0 : ω = 0 := Subtype.ext (tsupport_eq_empty_iff.mp (subset_empty_iff.mp hω))
+      rw [hω0]
+      exact map_zero T.toCurrent
+    simp only [h0, limsup_const, le_refl]
+  -- Step 2: the `1`-Lipschitz cut-off `f = dist(·, K)` (whose sublevel sets `{f < s}` are the
+  -- sets `W_α` of the book) and radii `r = ε/2 < ε`, `D`, `G = 2D` with `{f ≤ ε} ⊆ B_D(0)`
+  obtain ⟨RK, hRK⟩ := hK.isBounded.subset_closedBall (0 : Euclid P)
+  set D : ℝ := max RK 0 + ε + 1 with hD_def
+  have hRK0 : 0 ≤ max RK 0 := le_max_right _ _
+  have hD : 0 < D := by linarith
+  set G : ℝ := 2 * D with hG_def
+  have hG : 0 < G := by linarith
+  have hDG : D ≤ G := by linarith
+  have hG2 : G / 2 = D := by rw [hG_def]; ring
+  set r : ℝ := ε / 2 with hr_def
+  have hr : 0 < r := by linarith
+  have hrε : r < ε := by linarith
+  set f : Euclid P → ℝ := fun x => infDist x K
+  have hf_cont : Continuous f := continuous_infDist_pt K
+  have hf_lip : LipschitzWith 1 f := lipschitz_infDist_pt K
+  have hfK : ∀ x ∈ K, f x = 0 := fun x hx => infDist_zero_of_mem hx
+  have hf_ball : ∀ x, f x ≤ ε → x ∈ ball (0 : Euclid P) D := by
+    intro x hx
+    have hlt : infDist x K < ε + 1 := by
+      have : f x = infDist x K := rfl
+      linarith
+    obtain ⟨y, hyK, hxy⟩ := (infDist_lt_iff hKne).1 hlt
+    have hy : ‖y‖ ≤ max RK 0 := (mem_closedBall_zero_iff.1 (hRK hyK)).trans (le_max_left _ _)
+    have htri := dist_triangle x y 0
+    rw [dist_zero_right, dist_zero_right] at htri
+    rw [mem_ball_zero_iff]
+    linarith
+  -- Step 3: the retractions `π_j` on `B_{2G}(0)` and the mass bound `c_G` on `B_G(0)`; (R1)–(R3)
+  -- hold for all large `j`
+  obtain ⟨πs, hπ_ev, hπ_lip⟩ := hπ (2 * G) (by linarith)
+  obtain ⟨cG, hcG, hcG_ev⟩ := hmass G
+  have hgood_ev := hπ_ev.and ((hρ.eventually_ge_atTop G).and hcG_ev)
+  -- Step 4 (book (2)): flat convergence, `C - Ŝ_{ψ(j)} - S'_j = ∂R_j` with
+  -- `M_{W₀}(R_j) + M_{W₀}(S'_j) → 0`, `W₀ = {f < r}`
+  set W₀ : Set (Euclid P) := {x | f x < r}
+  have hW₀_open : IsOpen W₀ := isOpen_lt hf_cont continuous_const
+  have hW₀_ball : W₀ ⊆ ball (0 : Euclid P) D := fun x hx =>
+    hf_ball x (le_of_lt (lt_trans hx hrε))
+  have hW₀_bdd : Bornology.IsBounded W₀ := isBounded_ball.subset hW₀_ball
+  obtain ⟨Rf, Sf, hRSf, ha⟩ := Submission.dtc_bc_lc_flat_decomposition P m (fun j => Ŝ (ψ j)) C
+    hmP (fun j => hŜim (ψ j)) hCim
+    (fun W hW hWb => lt_of_le_of_lt
+      (iSup_le fun j => le_iSup (fun j => (Ŝ j).massOn W + (Ŝ j).boundary.massOn W) (ψ j))
+      (hsup W hW hWb))
+    (fun ω => (hconv ω).comp hψ.tendsto_atTop) W₀ hW₀_open hW₀_bdd
+  -- Step 5 (book (3)–(5)): `φ₁` with (R1)–(R3) at `ψ(φ₁(i))` and
+  -- `M_{W₀}(R_{φ₁(i)}) + M_{W₀}(S'_{φ₁(i)}) ≤ 2⁻ⁱ`
+  have h2pos : ∀ i : ℕ, (0 : ℝ≥0∞) < 2⁻¹ ^ i := fun i =>
+    ENNReal.pow_pos (ENNReal.inv_pos.2 (by simp : (2 : ℝ≥0∞) ≠ ∞)) i
+  have hext := fun i : ℕ => (hψ.tendsto_atTop.eventually hgood_ev).and
+    (((tendsto_order.1 ha).2 _ (h2pos i)).mono fun k hk => hk.le)
+  obtain ⟨φ₁, hφ₁, hφ₁P⟩ := Filter.extraction_forall_of_eventually hext
+  -- `∂R_j = C - Ŝ_{ψ(j)} - S'_j` is integer multiplicity
+  have hbd_im : ∀ j, IsIntegerMultiplicity (Rf j).boundary := by
+    intro j
+    rw [← (hRSf j).2.2]
+    exact hsub_im univ _ _ isOpen_univ (hsub_im univ _ _ isOpen_univ hCim (hŜim _)) (hRSf j).2.1
+  choose RT hRT using fun i => (hRSf (φ₁ i)).1
+  choose RB hRB using fun i => hbd_im (φ₁ i)
+  choose RS hRS using fun i => (hmin (ψ (φ₁ i))).1
+  -- the slices `P_i(t)` of `R_{φ₁(i)}` by `f`
+  choose Ps hPs_mass hPs_ae using fun i =>
+    Submission.dtc_bc_lc_slice P m (Rf (φ₁ i)) (RT i) (RB i) f 1 hmP (hRT i) (hRB i) hf_lip
+  have hUi : ∀ i, closedBall (0 : Euclid P) G ⊆ Us (ψ (φ₁ i)) := fun i =>
+    (closedBall_subset_closedBall (hφ₁P i).1.2.1).trans (hρU _)
+  have hBi : ∀ i, ball (0 : Euclid P) G ⊆ Us (ψ (φ₁ i)) := fun i =>
+    ball_subset_closedBall.trans (hUi i)
+  -- `Σᵢ ∫_0^r M_{W₀}(P_i(t)) dt ≤ Σᵢ M_{W₀}(R_{φ₁(i)}) ≤ Σᵢ 2⁻ⁱ < ∞`
+  have hsum : (∑' i, ∫⁻ t in Ioo 0 r, (Ps i t).massOn W₀) ≠ ∞ := by
+    refine ne_top_of_le_ne_top (b := ∑' i : ℕ, (2⁻¹ : ℝ≥0∞) ^ i) ?_
+      (ENNReal.tsum_le_tsum fun i => ?_)
+    · rw [ENNReal.tsum_geometric, ENNReal.one_sub_inv_two, inv_inv]
+      exact ENNReal.ofNat_ne_top
+    · calc ∫⁻ t in Ioo 0 r, (Ps i t).massOn W₀ ≤ ∫⁻ t, (Ps i t).massOn W₀ :=
+            setLIntegral_le_lintegral _ _
+        _ ≤ ((1 : NNReal) : ℝ≥0∞) * (Rf (φ₁ i)).massOn W₀ := (hPs_mass i W₀ hW₀_open).2
+        _ = (Rf (φ₁ i)).massOn W₀ := by rw [ENNReal.coe_one, one_mul]
+        _ ≤ (Rf (φ₁ i)).massOn W₀ + (Sf (φ₁ i)).massOn W₀ := le_self_add
+        _ ≤ 2⁻¹ ^ i := (hφ₁P i).2
+  -- the weights of the `S_{ψ(φ₁(i))}` are finite on `{0 < f < r} ⊆ B_G(0)`, by (R3)
+  have hfin : ∀ i, (RS i).measure {x | 0 < f x ∧ f x < r} ≠ ∞ := by
+    intro i
+    have h1 : (RS i).measure (ball 0 G) ≠ ∞ := by
+      rw [← Submission.dtc_mass_eq_measure P (m + 1) _ _ (Ss (ψ (φ₁ i))) (RS i) (hUs _)
+        isOpen_ball (hBi i) (hRS i)]
+      exact ne_top_of_le_ne_top hcG (hφ₁P i).1.2.2
+    exact ne_top_of_le_ne_top h1
+      (measure_mono fun x hx => ball_subset_ball hDG (hW₀_ball hx.2))
+  -- the level `t ∈ (0, r)`: the slices are good, `Σᵢ M_{W₀}(P_i(t)) < ∞`, `μ_{S_i}{f = t} = 0`
+  obtain ⟨t, ht, htgood, htsum, htnull⟩ := Submission.dtc_bc_lc_good_level P
+    (fun i t => (Ps i t).massOn W₀) (fun i => (RS i).measure) f _ 0 r hr hf_cont.measurable
+    (fun i => (hPs_mass i W₀ hW₀_open).1.restrict) hsum hfin hPs_ae
+  -- the output: `W = {f < t}`, so `K ⊆ W ⊆ {f < ε}`, and `φ' = φ₁`
+  set W : Set (Euclid P) := {x | f x < t}
+  have hW_open : IsOpen W := isOpen_lt hf_cont continuous_const
+  have hW_meas : MeasurableSet W := hW_open.measurableSet
+  have hKW : K ⊆ W := fun x hx => by
+    show f x < t
+    rw [hfK x hx]
+    exact ht.1
+  have hWW₀ : W ⊆ W₀ := fun x hx => lt_trans hx ht.2
+  refine ⟨W, hW_open, hKW, fun x hx => (mem_thickening_iff_infDist_lt hKne).2
+    (lt_trans hx (ht.2.trans hrε)), φ₁, hφ₁, ?_⟩
+  intro S hSim hSB hSK
+  -- Step 6: `Σ = {f = t}`, `O' = B_G(0) ∩ {f > t}`, `F = {f ≤ t}` (compact, `⊆ B_{G/2}(0)`)
+  set Lv : Set (Euclid P) := {x | f x = t}
+  set O' : Set (Euclid P) := ball 0 G ∩ {x | t < f x}
+  set F : Set (Euclid P) := {x | f x ≤ t}
+  have hLv_meas : MeasurableSet Lv := (isClosed_eq hf_cont continuous_const).measurableSet
+  have hO'_open : IsOpen O' := isOpen_ball.inter (isOpen_lt continuous_const hf_cont)
+  have hF_ball : F ⊆ ball (0 : Euclid P) D := fun x hx =>
+    hf_ball x (hx.trans (ht.2.trans hrε).le)
+  have hF_cpt : IsCompact F := (isCompact_closedBall (0 : Euclid P) D).of_isClosed_subset
+    (isClosed_le hf_cont continuous_const) (hF_ball.trans ball_subset_closedBall)
+  have hKF : K ⊆ F := fun x hx => show f x ≤ t from le_of_lt (hKW hx)
+  have hWF : W ⊆ F := fun x (hx : f x < t) => show f x ≤ t from le_of_lt hx
+  have hWB : W ⊆ ball (0 : Euclid P) G := (hWF.trans hF_ball).trans (ball_subset_ball hDG)
+  have hLvF : Lv ⊆ F := fun x (hx : f x = t) => show f x ≤ t from le_of_eq hx
+  have hLvB : Lv ⊆ ball (0 : Euclid P) G := hLvF.trans (hF_ball.trans (ball_subset_ball hDG))
+  -- the restrictions `R̃_i = R_{φ₁(i)}⌞W` and `(∂R_{φ₁(i)})⌞W`
+  have hrestr := Submission.cmc_imRep_locality_restrict_sub.2.1
+  choose Rt RTt hRTt hRTt_car hRTt_mult hRTt_or using fun i =>
+    hrestr P (m + 2) univ (RT i) W isOpen_univ hW_meas
+  choose Bt RBt hRBt hRBt_car hRBt_mult hRBt_or using fun i =>
+    hrestr P (m + 1) univ (RB i) W isOpen_univ hW_meas
+  -- the slice identity (book (3)): `∂R̃_i = (∂R_{φ₁(i)})⌞W + P_i`, `P_i = P_i(t)`
+  have hslice_id : ∀ i (ω : TestFormOn (univ : Set (Euclid P)) (m + 1)),
+      (Rt i).boundary ω = Bt i ω + Ps i t ω := by
+    intro i ω
+    rw [GeometricCurrentOn.boundary_apply, hRTt i, hRBt i, (htgood i).2.2 ω, IMRep.action,
+      IMRep.action, hRTt_car i, hRTt_mult i, hRTt_or i, hRBt_car i, hRBt_mult i, hRBt_or i]
+    exact (add_sub_cancel _ _).symm
+  have hBt_im : ∀ i, IsIntegerMultiplicity (Bt i) := fun i => ⟨RBt i, hRBt i⟩
+  have hdRt_im : ∀ i, IsIntegerMultiplicity (Rt i).boundary := fun i =>
+    hadd_im univ (Bt i) (Ps i t) _ isOpen_univ (hBt_im i) (htgood i).1 (hslice_id i)
+  -- the cycles `Y_i = X + ∂R̃_i`, `X = S - C`
+  have hX_im : IsIntegerMultiplicity (S - C) := hsub_im univ S C isOpen_univ hSim hCim
+  set Y : ℕ → GeometricCurrentOn (univ : Set (Euclid P)) (m + 1) := fun i =>
+    (S - C) - (0 - (Rt i).boundary)
+  have hY_apply : ∀ i (ω : TestFormOn (univ : Set (Euclid P)) (m + 1)),
+      Y i ω = (S - C) ω + (Rt i).boundary ω := by
+    intro i ω
+    show (S - C) ω - ((0 : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1)) ω -
+      (Rt i).boundary ω) = _
+    rw [GeometricCurrentOn.zero_apply]
+    ring
+  have hY_im : ∀ i, IsIntegerMultiplicity (Y i) := fun i =>
+    hadd_im univ (S - C) (Rt i).boundary (Y i) isOpen_univ hX_im (hdRt_im i) (hY_apply i)
+  -- `∂Y_i = ∂S - ∂C + ∂∂R̃_i = 0`
+  have hY_bd : ∀ i, (Y i).boundary = 0 := by
+    intro i
+    ext ω
+    rw [GeometricCurrentOn.boundary_apply, hY_apply, GeometricCurrentOn.zero_apply]
+    have hSB' : S.boundary = C.boundary := hSB
+    have h1 : (S - C) (exteriorDerivativeTestOn univ m ω) = 0 := by
+      show S (exteriorDerivativeTestOn univ m ω) - C (exteriorDerivativeTestOn univ m ω) = 0
+      rw [← GeometricCurrentOn.boundary_apply, ← GeometricCurrentOn.boundary_apply, hSB',
+        sub_self]
+    have h2 : (Rt i).boundary (exteriorDerivativeTestOn univ m ω) = 0 := by
+      rw [← GeometricCurrentOn.boundary_apply, GeometricCurrentOn.boundary_boundary,
+        GeometricCurrentOn.zero_apply]
+    rw [h1, h2, add_zero]
+  -- `Y_i` vanishes on forms supported off `F`: `spt X ⊆ K ⊆ F` and `R̃_i` is carried by `W ⊆ F`
+  have hY_van : ∀ i (ω : TestFormOn (univ : Set (Euclid P)) (m + 1)),
+      Disjoint (tsupport (ω : DifferentialForm (Euclid P) (m + 1))) F → Y i ω = 0 := by
+    intro i ω hω
+    rw [hY_apply]
+    have h1 : (S - C) ω = 0 :=
+      Submission.dtc_vanish_off_support P (m + 1) univ (S - C) ω (hω.mono_right (hSK.trans hKF))
+    have h2 : (Rt i).boundary ω = 0 := by
+      rw [GeometricCurrentOn.boundary_apply, hRTt i]
+      exact hrestr_zero (m + 2) (RT i) (RTt i) W (hRTt_car i) (hRTt_mult i) (hRTt_or i) _
+        ((Disjoint.mono_left (tsupport_exteriorDerivative_subset _) hω).mono_right hWF)
+    rw [h1, h2, add_zero]
+  have hY_spt : ∀ i, (Y i).support ⊆ F ∧ IsCompact (Y i).support := fun i =>
+    Submission.rsd_cmr_support_subset_of_vanish P (m + 1) univ F (Y i) isOpen_univ hF_cpt
+      (subset_univ _) (hY_van i)
+  -- the competitors `Z_i = S_i + Y_i` in `U_i`, `S_i = S_{ψ(φ₁(i))}`
+  set Z : (i : ℕ) → GeometricCurrentOn (Us (ψ (φ₁ i))) (m + 1) := fun i =>
+    Ss (ψ (φ₁ i)) - (0 - (Y i).restrictDomain (subset_univ (Us (ψ (φ₁ i)))))
+  have hZ_apply : ∀ i (ω : TestFormOn (Us (ψ (φ₁ i))) (m + 1)),
+      Z i ω = Ss (ψ (φ₁ i)) ω + Y i (testFormOnInclusion (subset_univ _) (m + 1) ω) := by
+    intro i ω
+    show Ss (ψ (φ₁ i)) ω - ((0 : GeometricCurrentOn (Us (ψ (φ₁ i))) (m + 1)) ω -
+      (Y i).restrictDomain (subset_univ (Us (ψ (φ₁ i)))) ω) = _
+    rw [GeometricCurrentOn.zero_apply, GeometricCurrentOn.restrictDomain_apply]
+    ring
+  -- Step 8(d): on forms supported in `W ⊆ B_{ρ_i}(0)`, `Z_i = Ŝ_i + S - C + (C - Ŝ_i - S'_i)`
+  have hZW : ∀ i, (Z i).massOn W ≤ S.massOn W + (Sf (φ₁ i)).massOn W := by
+    intro i
+    refine hmass_sub _ W (Z i) S (Sf (φ₁ i)) fun ω hω => ?_
+    set ω' := testFormOnInclusion (subset_univ (Us (ψ (φ₁ i)))) (m + 1) ω
+    rw [hZ_apply, hY_apply]
+    have h1 : Ss (ψ (φ₁ i)) ω = Ŝ (ψ (φ₁ i)) ω' := by
+      rw [hŜS _ ω' (hω.trans (hWB.trans (ball_subset_ball (hφ₁P i).1.2.1)))]
+      exact (hce _ (Ss (ψ (φ₁ i))) ω).symm
+    have h2 : (Rt i).boundary ω' = (Rf (φ₁ i)).boundary ω' := by
+      rw [GeometricCurrentOn.boundary_apply, GeometricCurrentOn.boundary_apply, hRTt i, hRT i]
+      exact hrestr_eq (m + 2) (RT i) (RTt i) W (hRTt_car i) (hRTt_mult i) (hRTt_or i) _
+        ((tsupport_exteriorDerivative_subset _).trans hω)
+    have h3 : (Rf (φ₁ i)).boundary ω' = C ω' - Ŝ (ψ (φ₁ i)) ω' - Sf (φ₁ i) ω' := by
+      rw [← (hRSf (φ₁ i)).2.2]
+      rfl
+    rw [h1, h2, h3]
+    show _ + (S ω' - C ω' + _) = S ω' - Sf (φ₁ i) ω'
+    ring
+  -- Step 8(b): on forms supported in `O'` (disjoint from `F`), `Z_i = S_i`
+  have hZO : ∀ i, (Z i).massOn O' = (Ss (ψ (φ₁ i))).massOn O' := by
+    intro i
+    unfold GeometricCurrentOn.massOn
+    refine congrArg sSup (Set.image_congr fun ω hω => ?_)
+    rw [hZ_apply, hY_van i _ (Set.disjoint_left.2 fun x hx (hxF : f x ≤ t) =>
+      not_lt.2 hxF (show t < f x from (hω.1 hx).2)), add_zero]
+  -- integer multiplicity representations
+  have hYU_im : ∀ i,
+      IsIntegerMultiplicity ((Y i).restrictDomain (subset_univ (Us (ψ (φ₁ i))))) := fun i =>
+    Submission.dtc_restrictDomain_isIntegerMultiplicity P (m + 1) univ _ (subset_univ _) (Y i)
+      (hUs _) (hY_im i)
+  have hZ_im : ∀ i, IsIntegerMultiplicity (Z i) := fun i =>
+    hadd_im _ (Ss (ψ (φ₁ i))) ((Y i).restrictDomain _) (Z i) (hUs _) (hmin _).1 (hYU_im i)
+      fun ω => by rw [hZ_apply]; rfl
+  choose RZ hRZ using fun i => hZ_im i
+  choose RYU hRYU using fun i => hYU_im i
+  choose RY hRY using fun i => hY_im i
+  obtain ⟨RX, hRX⟩ := id hX_im
+  choose RdR hRdR using fun i => hdRt_im i
+  choose RP hRP using fun i => (htgood i).1
+  -- Step 8(c): `μ_{Z_i}(Σ) ≤ μ_{S_i}(Σ) + μ_X(Σ) + μ_{(∂R)⌞W}(Σ) + μ_{P_i}(Σ) ≤ M_{W₀}(P_i)`
+  have hLvK : Lv ⊆ Kᶜ := fun x hx hxK => by
+    have h1 : f x = t := hx
+    rw [hfK x hxK] at h1
+    exact ht.1.ne h1
+  have hRX0 : RX.measure Lv = 0 := measure_mono_null hLvK
+    (hmeas_zero univ Kᶜ (S - C) RX isOpen_univ hK.isClosed.isOpen_compl (subset_univ _) hRX
+      fun ω hω => Submission.dtc_vanish_off_support P (m + 1) univ (S - C) ω
+        (Set.disjoint_left.2 fun x hx hxS => hω hx (hSK hxS)))
+  have hZLv : ∀ i, (RZ i).measure Lv ≤ (Ps i t).massOn W₀ := by
+    intro i
+    have hLvU : Lv ⊆ Us (ψ (φ₁ i)) := hLvB.trans (hBi i)
+    -- (F4) for `Z_i = S_i + Y_i`
+    have c1 := Submission.dtc_bc_lc_measure_le_add P (m + 1) (Us (ψ (φ₁ i))) (Ss (ψ (φ₁ i)))
+      ((Y i).restrictDomain _) (Z i) (RS i) (RYU i) (RZ i) 1 (hUs _) (by norm_num) (hRS i)
+      (hRYU i) (hRZ i) fun ω => by rw [one_mul, hZ_apply]; rfl
+    -- (F2): `Y_i` and its restriction to `U_i` have the same weight in `U_i`
+    have c2 : (RYU i).measure Lv = (RY i).measure Lv := by
+      have h := Submission.dtc_bc_measure_restrict_eq_of_eqOn P (m + 1) (Us (ψ (φ₁ i))) univ
+        (Us (ψ (φ₁ i))) ((Y i).restrictDomain _) (Y i) (RYU i) (RY i) (hUs _) isOpen_univ
+        (hUs _) subset_rfl (subset_univ _) (hRYU i) (hRY i) fun ω => by
+          rw [hce _ _ ω]
+          exact (hce univ (Y i) (testFormOnInclusion (subset_univ _) (m + 1) ω)).symm
+      calc (RYU i).measure Lv = ((RYU i).measure.restrict (Us (ψ (φ₁ i)))) Lv := by
+            rw [Measure.restrict_apply hLv_meas, inter_eq_left.2 hLvU]
+        _ = ((RY i).measure.restrict (Us (ψ (φ₁ i)))) Lv := by rw [h]
+        _ = (RY i).measure Lv := by rw [Measure.restrict_apply hLv_meas, inter_eq_left.2 hLvU]
+    -- (F4) for `Y_i = X + ∂R̃_i` and `∂R̃_i = (∂R)⌞W + P_i`
+    have c3 := Submission.dtc_bc_lc_measure_le_add P (m + 1) univ (S - C) (Rt i).boundary (Y i)
+      RX (RdR i) (RY i) 1 isOpen_univ (by norm_num) hRX (hRdR i) (hRY i) fun ω => by
+        rw [one_mul, hY_apply]
+    have c4 := Submission.dtc_bc_lc_measure_le_add P (m + 1) univ (Bt i) (Ps i t)
+      (Rt i).boundary (RBt i) (RP i) (RdR i) 1 isOpen_univ (by norm_num) (hRBt i) (hRP i)
+      (hRdR i) fun ω => by rw [one_mul, hslice_id]
+    -- (F5): `(∂R)⌞W` is carried by `W`, which misses `Σ`
+    have c7 : (RBt i).measure Lv = 0 := by
+      refine withDensity_absolutelyContinuous _ _ ?_
+      rw [Measure.restrict_apply hLv_meas, hRBt_car i]
+      refine measure_mono_null (fun x hx => ?_) measure_empty
+      exact absurd hx.1 (ne_of_lt hx.2.2)
+    -- (F1): `μ_{P_i}(Σ) ≤ μ_{P_i}(W₀) = M_{W₀}(P_i)`
+    have c8 : (RP i).measure Lv ≤ (Ps i t).massOn W₀ := by
+      rw [Submission.dtc_mass_eq_measure P (m + 1) univ W₀ (Ps i t) (RP i) isOpen_univ hW₀_open
+        (subset_univ _) (hRP i)]
+      exact measure_mono fun x (hx : f x = t) => (show f x < r by rw [hx]; exact ht.2)
+    calc (RZ i).measure Lv ≤ (RS i).measure Lv + (RYU i).measure Lv := c1 Lv
+      _ = (RY i).measure Lv := by rw [htnull i, c2, zero_add]
+      _ ≤ RX.measure Lv + (RdR i).measure Lv := c3 Lv
+      _ ≤ RX.measure Lv + ((RBt i).measure Lv + (RP i).measure Lv) :=
+        add_le_add le_rfl ((c4 Lv).trans_eq (Measure.add_apply _ _ _))
+      _ ≤ (Ps i t).massOn W₀ := by rw [hRX0, c7, zero_add, zero_add]; exact c8
+  -- Steps 7–8(e) at one index: the retraction comparison (I) and the splitting
+  -- `B_G(0) = W ∪ Σ ∪ O'`
+  have hmain : ∀ η : ℝ, 0 < η → ∀ i, (∀ y ∈ ball (0 : Euclid P) (2 * G),
+      ∀ z ∈ ball (0 : Euclid P) (2 * G),
+        ‖πs (ψ (φ₁ i)) y - πs (ψ (φ₁ i)) z‖ ≤ (1 + η) * ‖y - z‖) →
+      (Ss (ψ (φ₁ i))).massOn W ≤ ENNReal.ofReal ((1 + η) ^ (m + 1)) *
+        (S.massOn W + ((Sf (φ₁ i)).massOn W + (Ps i t).massOn W₀)) +
+          (ENNReal.ofReal ((1 + η) ^ (m + 1)) - 1) * cG := by
+    intro η hη i hlip
+    obtain ⟨⟨hπC, hπA, hπfix, hπ2⟩, -, hci⟩ := (hφ₁P i).1
+    -- (I): `M_{B_G}(S_i) ≤ (1 + η)ⁿ M_{B_G}(Z_i)`
+    have hret := Submission.dtc_bc_lc_retraction_comparison P m (Us (ψ (φ₁ i)))
+      (As (ψ (φ₁ i))) (Ss (ψ (φ₁ i))) (Y i) (πs (ψ (φ₁ i))) G (1 + η) (hUs _) (hmin _)
+      (hsptA _) hG (hUi i) (by linarith) hπC hπA hπfix hπ2 hlip (hY_im i) (hY_bd i)
+      (hY_spt i).2 ((hY_spt i).1.trans (hF_ball.trans (ball_subset_ball hG2.ge)))
+    -- (F1): masses on open subsets of `U_i` are weights
+    have mS : ∀ O, IsOpen O → O ⊆ Us (ψ (φ₁ i)) →
+        (Ss (ψ (φ₁ i))).massOn O = (RS i).measure O := fun O hO hOU =>
+      Submission.dtc_mass_eq_measure P (m + 1) _ O (Ss (ψ (φ₁ i))) (RS i) (hUs _) hO hOU (hRS i)
+    have mZ : ∀ O, IsOpen O → O ⊆ Us (ψ (φ₁ i)) → (Z i).massOn O = (RZ i).measure O :=
+      fun O hO hOU =>
+        Submission.dtc_mass_eq_measure P (m + 1) _ O (Z i) (RZ i) (hUs _) hO hOU (hRZ i)
+    have hO'U : O' ⊆ Us (ψ (φ₁ i)) := inter_subset_left.trans (hBi i)
+    have hWU : W ⊆ Us (ψ (φ₁ i)) := hWB.trans (hBi i)
+    -- 8(a): `μ_{S_i}(W) + μ_{S_i}(O') ≤ μ_{S_i}(B_G)`
+    have hdisj : Disjoint W O' :=
+      Set.disjoint_left.2 fun x (hx : f x < t) hx' => lt_asymm hx hx'.2
+    have hS_split : (RS i).measure W + (RS i).measure O' ≤ (RS i).measure (ball 0 G) := by
+      rw [← measure_union hdisj hO'_open.measurableSet]
+      exact measure_mono (union_subset hWB inter_subset_left)
+    -- `μ_{Z_i}(B_G) ≤ μ_{Z_i}(W) + μ_{Z_i}(Σ) + μ_{Z_i}(O')`
+    have hcover : ball (0 : Euclid P) G ⊆ W ∪ Lv ∪ O' := by
+      intro x hx
+      rcases lt_trichotomy (f x) t with h | h | h
+      · exact Or.inl (Or.inl h)
+      · exact Or.inl (Or.inr h)
+      · exact Or.inr ⟨hx, h⟩
+    have hZ_split : (RZ i).measure (ball 0 G) ≤ (RZ i).measure W + (RZ i).measure Lv +
+        (RZ i).measure O' :=
+      (measure_mono hcover).trans ((measure_union_le _ _).trans
+        (add_le_add (measure_union_le _ _) le_rfl))
+    -- (R3): `μ_{S_i}(O') ≤ M_{B_G}(S_i) ≤ c_G`
+    have hx : (RS i).measure O' ≤ cG := by
+      rw [← mS O' hO'_open hO'U]
+      exact ((Ss (ψ (φ₁ i))).massOn_mono inter_subset_left).trans hci
+    have hl : 1 ≤ ENNReal.ofReal ((1 + η) ^ (m + 1)) :=
+      ENNReal.one_le_ofReal.2 (one_le_pow₀ (by linarith))
+    refine halg _ _ _ cG _ hx hcG hl ?_
+    calc (Ss (ψ (φ₁ i))).massOn W + (RS i).measure O' =
+          (RS i).measure W + (RS i).measure O' := by rw [mS W hW_open hWU]
+      _ ≤ (RS i).measure (ball 0 G) := hS_split
+      _ = (Ss (ψ (φ₁ i))).massOn (ball 0 G) := (mS _ isOpen_ball (hBi i)).symm
+      _ ≤ ENNReal.ofReal ((1 + η) ^ (m + 1)) * (Z i).massOn (ball 0 G) := hret
+      _ = ENNReal.ofReal ((1 + η) ^ (m + 1)) * (RZ i).measure (ball 0 G) := by
+          rw [mZ _ isOpen_ball (hBi i)]
+      _ ≤ ENNReal.ofReal ((1 + η) ^ (m + 1)) *
+          ((RZ i).measure W + (RZ i).measure Lv + (RZ i).measure O') := by gcongr
+      _ ≤ ENNReal.ofReal ((1 + η) ^ (m + 1)) *
+          ((S.massOn W + (Sf (φ₁ i)).massOn W) + (Ps i t).massOn W₀ + (RS i).measure O') := by
+          refine mul_le_mul' le_rfl (add_le_add (add_le_add ?_ (hZLv i)) (le_of_eq ?_))
+          · rw [← mZ W hW_open hWU]
+            exact hZW i
+          · rw [← mZ O' hO'_open hO'U, hZO i, mS O' hO'_open hO'U]
+      _ = ENNReal.ofReal ((1 + η) ^ (m + 1)) *
+          (S.massOn W + ((Sf (φ₁ i)).massOn W + (Ps i t).massOn W₀) + (RS i).measure O') := by
+          ring
+  -- Step 8(f): `e_i = M_W(S'_{φ₁(i)}) + M_{W₀}(P_i) → 0`; let `i → ∞`, then `η ↓ 0`
+  have he : Tendsto (fun i => (Sf (φ₁ i)).massOn W + (Ps i t).massOn W₀) atTop (𝓝 0) := by
+    have h1 : Tendsto (fun i => (Sf (φ₁ i)).massOn W) atTop (𝓝 0) :=
+      tendsto_of_tendsto_of_tendsto_of_le_of_le tendsto_const_nhds (ha.comp hφ₁.tendsto_atTop)
+        (fun i => zero_le) fun i => ((Sf (φ₁ i)).massOn_mono hWW₀).trans le_add_self
+    have h2 := (h1.add (ENNReal.tendsto_atTop_zero_of_tsum_ne_top htsum))
+    rwa [add_zero] at h2
+  have hlim_eta : ∀ η : ℝ, 0 < η → limsup (fun i => (Ss (ψ (φ₁ i))).massOn W) atTop ≤
+      ENNReal.ofReal ((1 + η) ^ (m + 1)) * S.massOn W +
+        (ENNReal.ofReal ((1 + η) ^ (m + 1)) - 1) * cG := by
+    intro η hη
+    have hev := ((hψ.comp hφ₁).tendsto_atTop.eventually (hπ_lip η hη)).mono fun i hi =>
+      hmain η hη i hi
+    have h1 : Tendsto (fun i => S.massOn W + ((Sf (φ₁ i)).massOn W + (Ps i t).massOn W₀)) atTop
+        (𝓝 (S.massOn W)) := by
+      have h := (tendsto_const_nhds (x := S.massOn W)).add he
+      rwa [add_zero] at h
+    have htend : Tendsto (fun i => ENNReal.ofReal ((1 + η) ^ (m + 1)) *
+        (S.massOn W + ((Sf (φ₁ i)).massOn W + (Ps i t).massOn W₀)) +
+          (ENNReal.ofReal ((1 + η) ^ (m + 1)) - 1) * cG) atTop
+        (𝓝 (ENNReal.ofReal ((1 + η) ^ (m + 1)) * S.massOn W +
+          (ENNReal.ofReal ((1 + η) ^ (m + 1)) - 1) * cG)) :=
+      (ENNReal.Tendsto.const_mul h1 (Or.inr ENNReal.ofReal_ne_top)).add tendsto_const_nhds
+    exact (limsup_le_limsup hev).trans htend.limsup_eq.le
+  have hg : Tendsto (fun η : ℝ => ENNReal.ofReal ((1 + η) ^ (m + 1)) * S.massOn W +
+      (ENNReal.ofReal ((1 + η) ^ (m + 1)) - 1) * cG) (𝓝[>] 0) (𝓝 (S.massOn W)) := by
+    have hc : Continuous fun η : ℝ => ENNReal.ofReal ((1 + η) ^ (m + 1)) :=
+      ENNReal.continuous_ofReal.comp ((continuous_const.add continuous_id).pow (m + 1))
+    have hl0 := hc.tendsto 0
+    simp only [add_zero, one_pow, ENNReal.ofReal_one] at hl0
+    have hl := tendsto_nhdsWithin_of_tendsto_nhds (s := Ioi 0) hl0
+    have h1 : Tendsto (fun η : ℝ => ENNReal.ofReal ((1 + η) ^ (m + 1)) * S.massOn W) (𝓝[>] 0)
+        (𝓝 (1 * S.massOn W)) := ENNReal.Tendsto.mul_const hl (Or.inl one_ne_zero)
+    have h2 : Tendsto (fun η : ℝ => (ENNReal.ofReal ((1 + η) ^ (m + 1)) - 1) * cG) (𝓝[>] 0)
+        (𝓝 ((1 - 1) * cG)) :=
+      ENNReal.Tendsto.mul_const (ENNReal.Tendsto.sub hl (tendsto_const_nhds (x := (1 : ℝ≥0∞)))
+        (Or.inl ENNReal.one_ne_top)) (Or.inr hcG)
+    have h3 := h1.add h2
+    rwa [one_mul, tsub_self, zero_mul, add_zero] at h3
+  exact ge_of_tendsto hg (eventually_nhdsWithin_of_forall fun η hη => hlim_eta η hη)
+
 end GMT.Ch07
