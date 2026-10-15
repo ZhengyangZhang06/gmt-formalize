@@ -1,0 +1,143 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.lipschitz_pushforward-a1.integrality-a1.piece_representation-a1`
+- Child DAG node: `root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.lipschitz_pushforward-a1.integrality-a1.piece_representation-a1.lintegral_pullback-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: the measure comparison of step 10 (integrability) of the supplied proof, for one piece: "the image of λ⌞A_i under G_i is at most m_i^{-n}·Hⁿ⌞G_i(A_i) as measures", followed by lintegral_map. The basic bound (step 0 below) is the lower half of the sibling bilipschitz_measure, the accepted theorem Submission.dimred_rpd_bilipschitz_image_measure, as the supplied proof's step 3 remark anticipates.
+
+Notation: Hⁿ := μHE[n] on ℝ^P; λ := volume on ℝⁿ = Euclid n; c := ofReal((m^n)^{-1}) ∈ [0, ∞).
+
+0. (Basic bound.) For every E ⊆ A: λ(E) ≤ c·Hⁿ(G(E)). Indeed, let a, b ∈ E. Then m|a − b| ≤ |G(a) − G(b)| by hypothesis (E ⊆ A), and |G(a) − G(b)| = dist(G(a), G(b)) ≤ L·dist(a, b) = L|a − b| (LipschitzWith.dist_le_mul). Apply dimred_rpd_bilipschitz_image_measure with χ := G, the set E, c₁ := m > 0 and c₂ := L ≥ 0. Its first conclusion is ofReal(m^n)·λ(E) ≤ Hⁿ(G(E)). Since m^n > 0, c·ofReal(m^n) = ofReal((m^n)^{-1}·m^n) = ofReal(1) = 1 (ENNReal.ofReal_mul). Hence λ(E) = c·(ofReal(m^n)·λ(E)) ≤ c·Hⁿ(G(E)).
+1. (G is Borel.) G is Lipschitz, hence continuous, hence Borel measurable.
+2. (Image measure.) Let B ⊆ ℝ^P be Borel. Then (G_*(λ⌞A))(B) = (λ⌞A)(G^{-1}(B)) = λ(G^{-1}(B) ∩ A) (Measure.map_apply with step 1; Measure.restrict_apply' with A Borel). The set E := G^{-1}(B) ∩ A ⊆ A satisfies G(E) ⊆ B ∩ G(A). By step 0 and monotonicity, (G_*(λ⌞A))(B) ≤ c·Hⁿ(G(E)) ≤ c·Hⁿ(B ∩ G(A)) = (c·Hⁿ⌞G(A))(B) (Measure.restrict_apply, B Borel). As this holds for every Borel B, G_*(λ⌞A) ≤ c·Hⁿ⌞G(A) as measures (Measure.le_iff).
+3. (The integral bound.) Let f : ℝ^P → [0, ∞] be Borel. By lintegral_map (f and G measurable), ∫_A f(G(u)) dλ(u) = ∫ f d(G_*(λ⌞A)). By step 2 and monotonicity of the integral in the measure (lintegral_mono'), this is ≤ ∫ f d(c·Hⁿ⌞G(A)). By lintegral_smul_measure, the latter equals c·∫_{G(A)} f dHⁿ. ∎
+
+Lean reference proof (verified). The declaration below was compiled with `lake env lean` (Lean v4.35.0-rc3, Mathlib 25730c7c) in a scratch file that imports GMT.Ch07.Submission and uses the contract's opens (`open Filter Function Set MeasureTheory Metric`, `open scoped ENNReal Topology`, `namespace GMT.Ch07`, `open Poincare.SimonGMT.Chapter06`, `open Poincare.SimonGMT.Chapter03 (CountablyRectifiable HasApproximateTangentSpaceAt)`). The prerequisites it applies (Submission.dimred_rpd_bilipschitz_image_measure) were declared before it with their exact frozen types and `sorry` bodies; `#print axioms` reports propext, Classical.choice and Quot.sound, plus sorryAx coming only from those stubs. It follows the numbered proof above step by step.
+
+```lean
+theorem Submission.cmcdt_lpi_pr_lintegral_pullback : ∀ (P n : ℕ) (G : Euclid n → Euclid P) (A : Set (Euclid n)) (L : NNReal) (m : ℝ), LipschitzWith L G → MeasurableSet A → 0 < m → (∀ a ∈ A, ∀ a' ∈ A, m * ‖a - a'‖ ≤ ‖G a - G a'‖) → ∀ f : Euclid P → ℝ≥0∞, Measurable f → ∫⁻ u in A, f (G u) ≤ ENNReal.ofReal ((m ^ n)⁻¹) * ∫⁻ x in G '' A, f x ∂μHE[n] := by
+  intro P n G A L m hL hA hm hlow f hf
+  have hGm : Measurable G := hL.continuous.measurable
+  -- `λ(E) ≤ m⁻ⁿ Hⁿ(G(E))` for `E ⊆ A`
+  have hbound : ∀ E ⊆ A, volume E ≤ ENNReal.ofReal ((m ^ n)⁻¹) * μHE[n] (G '' E) := by
+    intro E hE
+    have h := (Submission.dimred_rpd_bilipschitz_image_measure P n G E m L hm L.coe_nonneg
+      (fun a ha b hb => ⟨hlow a (hE ha) b (hE hb), by
+        have := hL.dist_le_mul a b
+        rwa [dist_eq_norm, dist_eq_norm] at this⟩)).1
+    have hpos : (0 : ℝ) < m ^ n := pow_pos hm n
+    calc volume E = ENNReal.ofReal ((m ^ n)⁻¹) * (ENNReal.ofReal (m ^ n) * volume E) := by
+          rw [← mul_assoc, ← ENNReal.ofReal_mul (inv_nonneg.mpr hpos.le),
+            inv_mul_cancel₀ hpos.ne', ENNReal.ofReal_one, one_mul]
+      _ ≤ ENNReal.ofReal ((m ^ n)⁻¹) * μHE[n] (G '' E) := by gcongr
+  -- the image of `λ⌞A` under `G` is at most `m⁻ⁿ Hⁿ⌞G(A)`
+  have hle : Measure.map G (volume.restrict A) ≤
+      ENNReal.ofReal ((m ^ n)⁻¹) • μHE[n].restrict (G '' A) := by
+    rw [Measure.le_iff]
+    intro S hS
+    rw [Measure.map_apply hGm hS, Measure.restrict_apply' hA, Measure.smul_apply,
+      Measure.restrict_apply hS, smul_eq_mul]
+    refine (hbound _ inter_subset_right).trans ?_
+    gcongr
+    rintro _ ⟨u, ⟨hu1, hu2⟩, rfl⟩
+    exact ⟨hu1, mem_image_of_mem G hu2⟩
+  calc ∫⁻ u in A, f (G u) = ∫⁻ x, f x ∂(Measure.map G (volume.restrict A)) :=
+        (lintegral_map hf hGm).symm
+    _ ≤ ∫⁻ x, f x ∂(ENNReal.ofReal ((m ^ n)⁻¹) • μHE[n].restrict (G '' A)) :=
+        lintegral_mono' hle le_rfl
+    _ = _ := by rw [lintegral_smul_measure, smul_eq_mul]
+```
+
+## Key steps
+
+1. dimred_rpd_bilipschitz_image_measure with c₁ := m, c₂ := L gives λ(E) ≤ ofReal((m^n)^{-1})·Hⁿ(G(E)) for every E ⊆ A.
+2. For Borel B, G_*(λ⌞A)(B) = λ(A ∩ G^{-1}B) ≤ c·Hⁿ(B ∩ G(A)), so G_*(λ⌞A) ≤ c·Hⁿ⌞G(A).
+3. lintegral_map, lintegral_mono' and lintegral_smul_measure give ∫_A f∘G dλ ≤ c·∫_{G(A)} f dHⁿ.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat local-references/123e8435b4a2469b/manifest.json (project b4d606db1da5da8fa2c0292ad4924d97de8b3c4b, mathlib 25730c7c759d108ef87ab70af2342a196760f79d); sed -n 1,200p GMT/Ch07/Submission.lean (IMRep, IMRep.action, IMRep.Represents, IMRep.measure, IsIntegerMultiplicity, MultiVector, IsUnitOrientationOf)`
+- `rg -n 'carrier ⊆|IMRep|massOn' local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `python3 -I scan of runs/20261011T150044Z-ba604216b4/dag.json: the selected node (depth 5, max_depth 6, so new children are leaves), its parent integrality-a1 and siblings, the statuses and frozen types of the selected node's five resolved dependencies, the dependencies of every ancestor (two of them, besides this node's own not-yet-accepted span dependency, are not yet accepted), accepted theorems overlapping the supplied steps (dimred_rpd_bilipschitz_image_measure, ptd_piece_image_measurable_ae_pullback, imrep_carrier_sdiff_support_null; frozen types copied verbatim), and lean_name collisions for cmcdt_lpi_pr_imrep_in_support, cmcdt_lpi_pr_lintegral_pullback, cmcdt_lpi_pr_piece_orientation_ae, cmcdt_lpi_pr_orientation_sign, cmcdt_lpi_pr_oriented_piece_area (no node)`
+- `grep -rln 'cmcdt_lpi_pr_' local-references/123e8435b4a2469b/project local-references/123e8435b4a2469b/mathlib/Mathlib --include=*.lean (no match)`
+- `grep -n in simongmt Chapter06/Mass.lean (covectorEuclideanNorm, covectorEuclideanNorm_zero, massAdmissibleOn, GeometricCurrentOn.massOn, GeometricCurrentOn.mass), Chapter06/CurrentLocalEquality.lean (VanishesOn, zeroRegion, GeometricCurrentOn.support, isOpen_zeroRegion), Chapter06/Currents.lean (TestFormOn, GeometricCurrentOn), Chapter06/Forms.lean (Covector, DifferentialForm, IsTestForm), Chapter03/Rectifiable.lean (CountablyRectifiable, HasApproximateTangentSpaceAt, HasApproximateTangentSpaceAt.unique)`
+- `rg -n 'theorem hasSum_integral_iUnion|theorem measurableSet_eq_fun|theorem ae_restrict_of_ae_restrict_of_subset|theorem le_restrict_apply|theorem restrict_apply.|theorem setIntegral_congr_set|theorem lintegral_iUnion|theorem measurable_of_countable|theorem lintegral_map|theorem lintegral_smul_measure|theorem ae_eq_mk|theorem ae_eq_set' local-references/123e8435b4a2469b/mathlib/Mathlib`
+- `rg -n 'enorm_natCast|theorem isBoundedBilinearMap_apply|comp_aestronglyMeasurable₂|bounded_above_of_compact_support|theorem basisFun_apply|theorem LinearIndependent.map.' local-references/123e8435b4a2469b/mathlib/Mathlib`
+- `rg -n 'continuous_eval_const|def apply|apply_apply' Mathlib/Topology/Algebra/Module/Alternating/Topology.lean; rg -n 'norm_image_sub_le' Mathlib/Analysis/Normed/Module/Alternating/Basic.lean; rg -n 'measurable_fderiv_apply_const' Mathlib/Analysis/Calculus/FDeriv/Measurable.lean`
+- `rg -n 'MetrizableSpace|toMetrizableSpace|pseudoMetrizableSpace' Mathlib/Topology/Metrizable/Basic.lean; rg -n 'toPseudoMetricSpace|toSeminormedAddCommGroup|toNormedAddCommGroup' Mathlib/Analysis/Normed/Operator/Basic.lean Mathlib/Analysis/Normed/Operator/NormedSpace.lean`
+- `lake env lean /tmp/prsplit/Inst.lean, Inst2.lean, Inst3.lean (#synth: Covector (Euclid 3) 2 is normed via ContinuousAlternatingMap.instNormedAddCommGroup; MultiVector 3 2 is normed via ContinuousLinearMap.toNormedAddCommGroup and its topology is ContinuousLinearMap.topologicalSpace, defeq (rfl) to the norm topology; MetrizableSpace (MultiVector N n) is not synthesized but is built from a local MetricSpace; z ↦ ev_z is continuous)`
+- `sed -n 1,200p nodes/root-dimension-reduction-results-a1-regular-point-density-a1-bilipsch-1804d7035f/parent-supplied-natural-proof.md (accepted proof of the reused child); python3 of nodes/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-lip-9bda5f8762/decomposition-v1.json (parent decomposition and its reuse convention); sections of nodes/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-lip-655ccd9eaf/parent-supplied-natural-proof.md`
+- `grep -n of /runtime/flows/gmt-claude-0e9a4f203404/_recursive_lean/runtime.py (_decompose and max_depth, _existing_lean_name_problem, _overlay_accepted_children, _inherited_prerequisites) and inherited.py (cited_inherited scans the whole frozen proof file, including Key steps and Reference use)`
+- `git show <candidate>:GMT/Ch07/Submission.lean for the three reused theorems (d15b5cf486 imrep_carrier_sdiff_support_null, bed5b8494a ptd_piece_image_measurable_ae_pullback, 0501e07ced dimred_rpd_bilipschitz_image_measure) with #print axioms appended; lake env lean /tmp/prsplit/review/ax_*.lean (each: propext, Classical.choice, Quot.sound); sed of their accepted parent-supplied-natural-proof.md files`
+- `lake env lean /tmp/prsplit/v2/ASSEMBLY.lean (the selected theorem from the eight child types and the selected node's five dependencies, all stubbed by their exact frozen types; no other sorry); /tmp/prsplit/v2/ALL.lean (five new children proven plus the assembly; no errors; only the eight stub sorry warnings; #print axioms propext, Classical.choice, Quot.sound plus sorryAx from the stubs only); /tmp/prsplit/v2/ROUNDTRIP.lean (every Lean text of this decomposition extracted verbatim from the JSON; same result); /tmp/prsplit/review/FullParent.lean (merge of the seven accepted prerequisite commits as the runtime overlays them, with only this node's not-yet-accepted span dependency stubbed; exit 0; the new children other than orientation_sign use only propext, Classical.choice, Quot.sound)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-lip-655ccd9eaf/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-lip-655ccd9eaf/parent-supplied-plan.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-lip-655ccd9eaf/parent-supplied-natural-proof.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-lip-9bda5f8762/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-regular-point-density-a1-bilipsch-1804d7035f/parent-supplied-natural-proof.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Map.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/OuterMeasure/AE.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/MeasurableSpace/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/MeasurableSpace/Constructions.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/StronglyMeasurable/AEStronglyMeasurable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/Alternating/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Module/Alternating/Topology.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Measurable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Operator/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Operator/NormedSpace.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Operator/BoundedLinearMaps.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Metrizable/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Group/Bounded.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Group/Real.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean`
+- `/runtime/flows/gmt-claude-0e9a4f203404/_recursive_lean/runtime.py`
+- `/runtime/flows/gmt-claude-0e9a4f203404/_recursive_lean/inherited.py`
+- `/tmp/prsplit/Stmts.lean`
+- `/tmp/prsplit/Assembly.lean`
+- `/tmp/prsplit/Inst.lean`
+- `/tmp/prsplit/Inst2.lean`
+- `/tmp/prsplit/Inst3.lean`
+- `/tmp/prsplit/kids/K1.lean`
+- `/tmp/prsplit/kids/K25.lean`
+- `/tmp/prsplit/kids/K3.lean`
+- `/tmp/prsplit/kids/K4.lean`
+- `/tmp/prsplit/kids/ALL.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-support-null-a1/parent-supplied-natural-proof.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-piece-tan-e483a373f0/parent-supplied-natural-proof.md`
+- `/tmp/prsplit/review/ax_imrep_carrier_sdiff_support_null.lean`
+- `/tmp/prsplit/review/ax_ptd_piece_image_measurable_ae_pullback.lean`
+- `/tmp/prsplit/review/ax_dimred.lean`
+- `/tmp/prsplit/v2/ALL.lean`
+- `/tmp/prsplit/v2/ASSEMBLY.lean`
+- `/tmp/prsplit/v2/ROUNDTRIP.lean`
+- `/tmp/prsplit/review/FullParent.lean`
+
+The snapshot (project b4d606d, Mathlib 25730c7c) carries the same Ch07 contract as the workspace. It contains no lemma giving a support-carried representation, a pulled-back integral bound for bi-Lipschitz pieces, an orientation sign for Lipschitz pieces or an oriented piece area formula. None of the five new cmcdt_lpi_pr_ names occurs in the snapshot or the DAG. Three accepted DAG theorems prove supplied steps exactly and are reused as children with their frozen types copied verbatim:
+- imrep_carrier_sdiff_support_null: the null set of step 1;
+- ptd_piece_image_measurable_ae_pullback: the a.e. pull-back of step 3 and Borel images;
+- dimred_rpd_bilipschitz_image_measure: the measure bound of steps 3 and 10.
+Each compiles at its candidate commit with only propext, Classical.choice and Quot.sound.
+Library support. SimonGMT provides the current support as U ∖ zeroRegion with zeroRegion open, test forms, and HasApproximateTangentSpaceAt.unique. Mathlib provides every other tool the child proofs cite: ae_eq_set, setIntegral_congr_set, Measure.restrict_apply', Measure.map_apply, Measure.le_iff, lintegral_map, lintegral_smul_measure, ae_restrict_of_ae_restrict_of_subset, AEStronglyMeasurable.mk, StronglyMeasurable.measurableSet_eq_fun, measurable_fderiv_apply_const, ContinuousAlternatingMap.apply and norm_image_sub_le, ContinuousLinearMap.opNorm_le_bound, LinearIndependent.map', EuclideanSpace.basisFun, hasSum_integral_iUnion, lintegral_iUnion, isBoundedBilinearMap_apply and Continuous.bounded_above_of_compact_support.
+Instance quirk. MultiVector N n has the CLM topology, which is defeq but not reducibly defeq to its norm topology, so MetrizableSpace must be supplied by hand. The orientation_sign proof records how.
+Lean evidence. All eight child types elaborate. The selected statement compiles from the children and the selected node's dependencies. Each of the five new children has a complete Lean proof. The bundle compiles with only standard axioms plus sorryAx from the stubbed prerequisites. It also compiles on the merged real commits of the seven accepted prerequisites, where only this node's not-yet-accepted span dependency remains stubbed.
+Prerequisite hygiene. No child proof file names an ancestor dependency it does not apply, so the two unaccepted ancestor dependencies of integrality-a1 and deformation_theorem-a1 never become inherited prerequisites.

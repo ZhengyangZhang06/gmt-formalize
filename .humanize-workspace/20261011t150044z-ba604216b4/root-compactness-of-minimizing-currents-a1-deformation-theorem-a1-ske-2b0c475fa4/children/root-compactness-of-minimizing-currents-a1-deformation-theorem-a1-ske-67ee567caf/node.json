@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.skeleton_retraction-a1.retraction_family-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.skeleton_retraction-a1",
+  "depth": 4,
+  "title": "The face retractions glue to a well-defined composite family Ψ_k (parent steps 3 and 4)",
+  "statement": "Let P, m ∈ ℕ and a ∈ ℝ^P (Euclid P) with |a_i − 1/2| < 1/4 for all i. For b ∈ ℤ^P and a finite set J of coordinate indices put F(b, J) := {x : b_i ≤ x_i ≤ b_i + 1 (i ∈ J), x_i = b_i (i ∉ J)} and, for J ≠ ∅, N_{b,J}(x) := max_{k ∈ J} max((x_k − b_k − a_k)/(1 − a_k), (b_k + a_k − x_k)/a_k). Then there is a family of maps Ψ_k : ℝ^P → ℝ^P (k ∈ ℕ) with Ψ_{m+1} = id such that, for every j with m + 2 ≤ j ≤ P, every b ∈ ℤ^P, every nonempty set J of j coordinate indices, every x ∈ F(b, J), and every y ∈ ℝ^P with y_i = b_i + a_i + (x_i − b_i − a_i)/N_{b,J}(x) for i ∈ J and y_i = x_i for i ∉ J, we have Ψ_j(x) = Ψ_{j−1}(y). (y is the radial retraction ψ_F(x) of x from the face centre a_F onto ∂F.) Division by 0 is read as 0 (as in Lean); this only matters at the centre a_F, where N_{b,J} = 0 and the formula gives y = x.",
+  "lean_statement": "∀ (P m : ℕ) (a : Euclid P), (∀ i, |a i - 1 / 2| < 1 / 4) → ∃ Ψ : ℕ → Euclid P → Euclid P, (∀ x, Ψ (m + 1) x = x) ∧ ∀ j, m + 2 ≤ j → j ≤ P → ∀ (b : Fin P → ℤ) (J : Finset (Fin P)) (hJ : J.Nonempty), J.card = j → ∀ x : Euclid P, (∀ i, (i ∈ J → (b i : ℝ) ≤ x i ∧ x i ≤ b i + 1) ∧ (i ∉ J → x i = b i)) → ∀ y : Euclid P, (∀ i, y i = if i ∈ J then (b i : ℝ) + a i + (x i - b i - a i) / J.sup' hJ (fun k => max ((x k - b k - a k) / (1 - a k)) ((b k + a k - x k) / a k)) else x i) → Ψ j x = Ψ (j - 1) y",
+  "lean_name": "cmcdtsr_face_retraction_family",
+  "depends_on": [
+    "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.skeleton_retraction-a1.face_radial-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.skeleton_retraction-a1.face_radial-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-ske-67ee567caf-a1"
+}
