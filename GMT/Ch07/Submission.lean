@@ -141820,4 +141820,163 @@ theorem Submission.idtp_tdc_dlc_light_disc : ∀ (P : ℕ) (C : GeometricCurrent
   exact Submission.idtp_tdc_dlc_ld_piece_mass_bound P C Q x k (‖x‖ * ε) hmin hbd hcone hk hxQ hx0
     (mul_pos hs hε) hA' hB'
 
+/-- **The density of a 2-dimensional minimizing cone is locally constant away from its vertex**
+(proof of Simon 7.3.3(1), p. 191, for 2-dimensional minimizing cones; chapter-07.txt lines
+497–510 cite [Whi82] for their structure).  Let `C ∈ 𝒟₂(ℝᴾ)` be a minimizing cone with `∂C = 0`
+and `p ∈ spt C \ {0}`.  Then `Θ²(μ_C, ·)` is a constant `k ∈ ℕ` on `spt C ∩ B_δ(p)` for some
+`δ > 0`.  Call a point *stable* if this holds there.  Stability is dilation invariant, so if `p`
+is unstable, so is `p/|p|`; choose an unstable `b` with `|b| = 1` of least density `m₀`.  The
+density `Θ` is upper semicontinuous, so `Θ ≤ m₀` on `spt C ∩ B_r(b)` and `Θ = m₀` at the unstable
+unit points of `B_r(b)`.  As `b` is unstable, stable unit points `zᵢ → b` of density `kᵢ < m₀`
+exist.  Each carries a planar disc `Qᵢ ∩ B_ρ(zᵢ)` of a fixed radius `ρ` with `μ_C ≥ H²⌞Qᵢ`
+(`idtp_tdc_dlc_light_disc`).  Discs of this kind accumulating at an unstable point contradict the
+finiteness of mass (`idtp_tdc_dlc_accumulating_discs`). -/
+theorem Submission.idtp_tdc_density_locally_constant : ∀ (P : ℕ) (C : GeometricCurrentOn (univ : Set (Euclid P)) 2), IsMinimizingIn C univ → BoundaryVanishes C → IsConeCurrent C → ∀ p ∈ C.support, p ≠ 0 → ∃ (δ : ℝ) (k : ℕ), 0 < δ ∧ ∀ y ∈ C.support, y ∈ ball p δ → HasMassDensity C y k := by
+  intro P C hmin hbd hcone p hp hp0
+  classical
+  -- `q` is stable if `Θ²(μ_C, ·)` is a constant natural number on `spt C ∩ B_δ(q)`, some `δ > 0`
+  set Stable : Euclid P → Prop := fun q => ∃ (δ : ℝ) (k : ℕ), 0 < δ ∧
+    ∀ y ∈ C.support, y ∈ ball q δ → HasMassDensity C y k
+  -- Steps 2–3: the density `Θ` is upper semicontinuous, a positive integer on `spt C \ {0}` and
+  -- dilation invariant
+  obtain ⟨Θ, hΘ, hΘusc, hΘint, hΘdil⟩ :=
+    Submission.idtp_tdc_dlc_cone_density_function P C hmin hbd hcone ⟨p, hp, hp0⟩
+  -- Fact (a): densities are unique
+  have huniq : ∀ (y : Euclid P) (θ : ℝ), HasMassDensity C y θ → θ = Θ y := fun y θ h =>
+    Submission.dimred_cs_mi_hasMassDensity_unique P 2 univ C y θ (Θ y) h (hΘ y)
+  -- Step 4: stability is invariant under the dilations `x ↦ sx`, `s > 0`
+  have hstab : ∀ (s : ℝ) (q : Euclid P), 0 < s → Stable (s • q) → Stable q := by
+    rintro s q hs ⟨δ, k, hδ, hk⟩
+    have hdil := Submission.idtp_tdc_cone_dilation P 2 C hmin.1 hcone s hs
+    refine ⟨δ / s, k, div_pos hδ hs, fun y hy hyq => (hdil.2.2 y k).1
+      (hk _ ((hdil.2.1 y).2 hy) ?_)⟩
+    rw [mem_ball, dist_smul₀, Real.norm_of_nonneg hs.le]
+    calc s * dist y q < s * (δ / s) := mul_lt_mul_of_pos_left (mem_ball.1 hyq) hs
+      _ = δ := mul_div_cancel₀ δ hs.ne'
+  -- Step 1: argue by contradiction; then `p/|p|` is an unstable point of the unit sphere
+  by_contra hpS
+  have hnp : 0 < ‖p‖ := norm_pos_iff.2 hp0
+  have hex : ∃ m : ℕ, ∃ q ∈ C.support, ‖q‖ = 1 ∧ ¬ Stable q ∧ Θ q = m := by
+    have hb' : ‖p‖⁻¹ • p ∈ C.support :=
+      ((Submission.idtp_tdc_cone_dilation P 2 C hmin.1 hcone _ (inv_pos.2 hnp)).2.1 p).2 hp
+    have hb'1 : ‖‖p‖⁻¹ • p‖ = 1 := by
+      rw [norm_smul, norm_inv, norm_norm, inv_mul_cancel₀ hnp.ne']
+    obtain ⟨m, -, hm⟩ := hΘint _ hb' fun h => by
+      rw [h, norm_zero] at hb'1
+      exact zero_ne_one hb'1
+    exact ⟨m, _, hb', hb'1, fun h => hpS (hstab _ p (inv_pos.2 hnp) h), hm⟩
+  -- Step 5: an unstable unit point `b` of least density `m₀`
+  obtain ⟨m₀, ⟨b, hb, hb1, hbS, hbΘ⟩, hm₀min⟩ : ∃ m₀ : ℕ,
+      (∃ q ∈ C.support, ‖q‖ = 1 ∧ ¬ Stable q ∧ Θ q = m₀) ∧
+        ∀ m : ℕ, (∃ q ∈ C.support, ‖q‖ = 1 ∧ ¬ Stable q ∧ Θ q = m) → m₀ ≤ m :=
+    ⟨Nat.find hex, Nat.find_spec hex, fun m hm => Nat.find_min' hex hm⟩
+  have hm₀le : ∀ q ∈ C.support, ‖q‖ = 1 → ¬ Stable q → (m₀ : ℝ) ≤ Θ q := by
+    intro q hq hq1 hqS
+    obtain ⟨m, -, hm⟩ := hΘint q hq fun h => by
+      rw [h, norm_zero] at hq1
+      exact zero_ne_one hq1
+    rw [hm]
+    exact_mod_cast hm₀min m ⟨q, hq, hq1, hqS, hm⟩
+  -- upper semicontinuity at `b`: `Θ < m₀ + 1` on `B_r(b)`, `r ≤ 1/2`
+  obtain ⟨r₀, hr₀, hr₀Θ⟩ := Metric.eventually_nhds_iff.1
+    (hΘusc b ((m₀ : ℝ) + 1) (by show Θ b < (m₀ : ℝ) + 1; rw [hbΘ]; exact lt_add_one _))
+  obtain ⟨r, hr0, hrr₀, hr12⟩ : ∃ r : ℝ, 0 < r ∧ r ≤ r₀ ∧ r ≤ 1 / 2 :=
+    ⟨min r₀ (1 / 2), lt_min hr₀ (by norm_num), min_le_left _ _, min_le_right _ _⟩
+  -- (5a) on `spt C ∩ B_r(b)` the density is a natural number in `[1, m₀]`
+  have h5a : ∀ y ∈ C.support, dist y b < r → y ≠ 0 ∧ ∃ m : ℕ, 1 ≤ m ∧ m ≤ m₀ ∧ Θ y = m := by
+    intro y hy hyb
+    have hy0 : y ≠ 0 := by
+      rintro rfl
+      rw [dist_comm, dist_zero_right, hb1] at hyb
+      linarith
+    obtain ⟨m, hm1, hm⟩ := hΘint y hy hy0
+    have hlt : (m : ℝ) < m₀ + 1 := hm ▸ hr₀Θ (lt_of_lt_of_le hyb hrr₀)
+    exact ⟨hy0, m, hm1, Nat.lt_succ_iff.1 (by exact_mod_cast hlt), hm⟩
+  -- (5b) the unstable unit points of `B_r(b)` have density exactly `m₀`
+  have h5b : ∀ q ∈ C.support, ‖q‖ = 1 → ¬ Stable q → dist q b < r → Θ q = m₀ := by
+    intro q hq hq1 hqS hqb
+    obtain ⟨-, m, -, hm, hΘq⟩ := h5a q hq hqb
+    have hle := hm₀le q hq hq1 hqS
+    rw [hΘq] at hle ⊢
+    exact_mod_cast le_antisymm hm (by exact_mod_cast hle)
+  -- Step 6: stable unit points of density `< m₀` accumulate at `b`
+  have hlight : ∀ η : ℝ, 0 < η → η ≤ r → ∃ (z : Euclid P) (k : ℕ) (δ : ℝ), z ∈ C.support ∧
+      ‖z‖ = 1 ∧ dist z b < η ∧ 1 ≤ k ∧ k < m₀ ∧ 0 < δ ∧
+      ∀ y ∈ C.support, y ∈ ball z δ → HasMassDensity C y k := by
+    intro η hη hηr
+    -- `b` is unstable: some `w ∈ spt C ∩ B_{η/2}(b)` has density `≠ m₀`, hence `< m₀`
+    obtain ⟨w, hw, hwb, hwΘ⟩ : ∃ w ∈ C.support, w ∈ ball b (η / 2) ∧
+        ¬ HasMassDensity C w m₀ := by
+      by_contra h
+      exact hbS ⟨η / 2, m₀, half_pos hη, fun w hw hwb =>
+        Classical.byContradiction fun hwΘ => h ⟨w, hw, hwb, hwΘ⟩⟩
+    obtain ⟨hw0, m, hm1, hmm₀, hΘw⟩ := h5a w hw (lt_of_lt_of_le (mem_ball.1 hwb) (by linarith))
+    have hmlt : m < m₀ := lt_of_le_of_ne hmm₀ fun h => hwΘ (by rw [← h, ← hΘw]; exact hΘ w)
+    -- `z = w/|w|` is a unit point of `spt C` with `|z − b| ≤ 2|w − b| < η` and `Θ(z) = m`
+    have hnw : 0 < ‖w‖ := norm_pos_iff.2 hw0
+    have hzC : ‖w‖⁻¹ • w ∈ C.support :=
+      ((Submission.idtp_tdc_cone_dilation P 2 C hmin.1 hcone _ (inv_pos.2 hnw)).2.1 w).2 hw
+    have hz1 : ‖‖w‖⁻¹ • w‖ = 1 := by
+      rw [norm_smul, norm_inv, norm_norm, inv_mul_cancel₀ hnw.ne']
+    have hzb : dist (‖w‖⁻¹ • w) b < η := by
+      rw [dist_eq_norm]
+      calc ‖‖w‖⁻¹ • w - b‖ ≤ 2 * ‖w - b‖ :=
+            Submission.idtp_tdc_dlc_normalize_dist_le P w b hw0 hb1
+        _ < 2 * (η / 2) := mul_lt_mul_of_pos_left (mem_ball_iff_norm.1 hwb) two_pos
+        _ = η := by ring
+    have hΘz : Θ (‖w‖⁻¹ • w) = m := by rw [hΘdil _ _ (inv_pos.2 hnw), hΘw]
+    -- `z` is stable by (5b), and its constant nearby density is `Θ(z) = m`
+    have hzS : Stable (‖w‖⁻¹ • w) := by
+      by_contra hzS'
+      have h := h5b _ hzC hz1 hzS' (lt_of_lt_of_le hzb hηr)
+      rw [hΘz] at h
+      exact hmlt.ne (by exact_mod_cast h)
+    obtain ⟨δ, k, hδ, hk⟩ := hzS
+    have hkm : k = m := by
+      have h := huniq _ _ (hk _ hzC (mem_ball_self hδ))
+      rw [hΘz] at h
+      exact_mod_cast h
+    rw [hkm] at hk
+    exact ⟨_, m, δ, hzC, hz1, hzb, hm1, hmlt, hδ, hk⟩
+  -- the light points `zᵢ`, with `|zᵢ − b| < ηᵢ = (r/4)/(i + 1) → 0`
+  have hη : ∀ i : ℕ, 0 < r / 4 * (1 / ((i : ℝ) + 1)) ∧ r / 4 * (1 / ((i : ℝ) + 1)) ≤ r / 4 := by
+    intro i
+    have h1 : 1 / ((i : ℝ) + 1) ≤ 1 := by
+      rw [div_le_one (by positivity)]
+      linarith [(Nat.cast_nonneg i : (0 : ℝ) ≤ i)]
+    exact ⟨by positivity, mul_le_of_le_one_right (by positivity) h1⟩
+  choose z k δ hzC hz1 hzb hk1 hkm₀ hδ hkδ using fun i : ℕ =>
+    hlight (r / 4 * (1 / ((i : ℝ) + 1))) (hη i).1 (by linarith [(hη i).2])
+  -- Steps 7–10: each `zᵢ` carries a planar disc `Qᵢ ∩ B_ρ(zᵢ)`, `ρ = min(1/2, r/8)`, near whose
+  -- points `spt C = Qᵢ`, `Θ = kᵢ` and `μ_C ≥ H²⌞Qᵢ`
+  have hdisc : ∀ i, ∃ Q : Submodule ℝ (Euclid P), Module.finrank ℝ Q = 2 ∧ z i ∈ Q ∧
+      ∀ x ∈ (Q : Set (Euclid P)) ∩ ball (z i) (min (1 / 2) (r / 2 / 4)), ∃ ε : ℝ, 0 < ε ∧
+        C.support ∩ ball x ε = (Q : Set (Euclid P)) ∩ ball x ε ∧
+        (∀ y ∈ C.support, y ∈ ball x ε → HasMassDensity C y (k i)) ∧
+        ∀ W : Set (Euclid P), IsOpen W → W ⊆ ball x ε →
+          μHE[2] (W ∩ (Q : Set (Euclid P))) ≤ C.massOn W := by
+    intro i
+    refine Submission.idtp_tdc_dlc_light_disc P C (z i) (k i) (δ i) (r / 2) hmin hbd hcone
+      (hzC i) (hz1 i) (hk1 i) (hδ i) (half_pos hr0) (hkδ i) ?_
+    -- a unit point `a ∈ spt C ∩ B_{r/2}(zᵢ)` of density `kᵢ < m₀` lies in `B_r(b)`; were it
+    -- unstable, (5b) would give it density `m₀`
+    intro a ha ha1 haz hak
+    by_contra haS
+    have hab : dist a b < r := by
+      calc dist a b ≤ dist a (z i) + dist (z i) b := dist_triangle _ _ _
+        _ < r / 2 + r / 4 := add_lt_add (mem_ball.1 haz) ((hzb i).trans_le (hη i).2)
+        _ < r := by linarith
+    have h := h5b a ha ha1 haS hab
+    rw [← huniq a _ hak] at h
+    exact (hkm₀ i).ne (by exact_mod_cast h)
+  choose Q hQ2 hzQ hQdisc using hdisc
+  -- Steps 11–14: planar discs of a fixed radius accumulating at the unstable point `b`
+  -- contradict the finiteness of mass
+  have hlim : Tendsto z atTop (𝓝 b) := by
+    rw [tendsto_iff_dist_tendsto_zero]
+    refine squeeze_zero (fun i => dist_nonneg) (fun i => (hzb i).le) ?_
+    simpa only [mul_zero] using tendsto_one_div_add_atTop_nhds_zero_nat.const_mul (r / 4)
+  exact Submission.idtp_tdc_dlc_accumulating_discs P C Q z k b (min (1 / 2) (r / 2 / 4)) hmin.1
+    (lt_min (by norm_num) (by positivity)) hQ2 hzQ hlim hQdisc hbS
+
 end GMT.Ch07
