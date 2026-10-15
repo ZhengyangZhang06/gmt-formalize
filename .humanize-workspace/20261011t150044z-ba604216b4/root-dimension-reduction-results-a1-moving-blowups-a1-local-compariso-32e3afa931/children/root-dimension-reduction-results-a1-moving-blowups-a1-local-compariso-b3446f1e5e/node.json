@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.moving_blowups-a1.local_comparison-a1.index_comparison-a1.region_bound-a1",
+  "parent_id": "root.dimension_reduction_results-a1.moving_blowups-a1.local_comparison-a1.index_comparison-a1",
+  "depth": 5,
+  "title": "Three-region mass estimate for the comparison current (parent steps 4–7; Simon 7.2.4 (8)–(11))",
+  "statement": "Let P, n ∈ ℕ, U ⊆ ℝ^P open, W, F, B ⊆ ℝ^P, T, Z ∈ 𝒟_n(U) and C, S, Ŷ, Sr, Y ∈ 𝒟_n(ℝ^P) (GeometricCurrentOn univ n). Let R be an integer multiplicity representation of T in U (IMRep U n with R.Represents T), μ_T := R.measure, and let e ∈ [0, ∞]. Assume: Z is integer multiplicity; B is open and B ⊆ U; W is open, F is compact and W ⊆ F ⊆ B; μ_T(F ∖ W) = 0; spt(S − C) ⊆ W; Ŷ is integer multiplicity with spt Ŷ ⊆ F; μ_{R′}(F ∖ W) ≤ e for every integer multiplicity representation R′ of Ŷ in ℝ^P (IMRep univ n); M(Sr) ≤ e; C(ω) = currentEval(T, ω) + Ŷ(ω) + Sr(ω) for every ω ∈ 𝒟ⁿ(ℝ^P) with tsupport ω ⊆ W; Y(ω) = (S − C)(ω) + Ŷ(ω) for every ω ∈ 𝒟ⁿ(ℝ^P); and Z(ω) = T(ω) + Y(ιω) for every ω ∈ 𝒟ⁿ(U), where ιω = testFormOnInclusion (subset_univ U) n ω. Then there is b ∈ [0, ∞] with M_B(T) = M_W(T) + b and M_B(Z) ≤ M_W(S) + e + e + b. Here M_G(A) = A.massOn G is the local mass in [0, ∞] (supremum of ofReal(A(ω)) over test forms ω of the domain of A with tsupport ω ⊆ G and Euclidean coefficient norm ≤ 1); M(Sr) = Sr.mass = M_{ℝ^P}(Sr); currentEval(T, ω) (contract currentEval) is T(ω) if ω is a test form with tsupport ω ⊆ U, and 0 otherwise; spt is GeometricCurrentOn.support and (S − C)(ω) = S(ω) − C(ω).",
+  "lean_statement": "∀ (P n : ℕ) (U W F B : Set (Euclid P)) (T Z : GeometricCurrentOn U n) (R : IMRep U n) (C S Ŷ Sr Y : GeometricCurrentOn (univ : Set (Euclid P)) n) (e : ℝ≥0∞), IsOpen U → R.Represents T → IsIntegerMultiplicity Z → IsOpen B → B ⊆ U → IsOpen W → IsCompact F → W ⊆ F → F ⊆ B → R.measure (F \\ W) = 0 → (S - C).support ⊆ W → IsIntegerMultiplicity Ŷ → Ŷ.support ⊆ F → (∀ R' : IMRep (univ : Set (Euclid P)) n, R'.Represents Ŷ → R'.measure (F \\ W) ≤ e) → Sr.mass ≤ e → (∀ ω : TestFormOn (univ : Set (Euclid P)) n, tsupport (ω : DifferentialForm (Euclid P) n) ⊆ W → C ω = currentEval T (ω : DifferentialForm (Euclid P) n) + Ŷ ω + Sr ω) → (∀ ω : TestFormOn (univ : Set (Euclid P)) n, Y ω = (S - C) ω + Ŷ ω) → (∀ ω : TestFormOn U n, Z ω = T ω + Y (testFormOnInclusion (subset_univ U) n ω)) → ∃ b : ℝ≥0∞, T.massOn B = T.massOn W + b ∧ Z.massOn B ≤ S.massOn W + e + e + b",
+  "lean_name": "dimred_mbl_lc_ic_region_bound",
+  "depends_on": [
+    "root.density_and_tangent_cones-a1.vanish_off_support-a1",
+    "root.density_one_implies_regular-a1.imrep_mass_and_support-a1",
+    "root.compactness_of_minimizing_currents-a1.local_comparison-a1.compact_outer_bound-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.density_and_tangent_cones-a1.vanish_off_support-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-vanish-off-support-a1-a1",
+      "result_commit": "44ef61f79e2168134f8a5a6d6520baba56052d67",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.density_one_implies_regular-a1.imrep_mass_and_support-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-imrep-mass-and-support-a1-a1",
+      "result_commit": "d49dda91b75b7417d67a10053e6dc4b65d4f0312",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.compactness_of_minimizing_currents-a1.local_comparison-a1.compact_outer_bound-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-local-comparison-a1-compac-a4168491cb-a1",
+      "result_commit": "bb7f0a567a77ec463f2a7135f2f0fe37047b43f2",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-moving-blowups-a1-local-compariso-b3446f1e5e-a1"
+}

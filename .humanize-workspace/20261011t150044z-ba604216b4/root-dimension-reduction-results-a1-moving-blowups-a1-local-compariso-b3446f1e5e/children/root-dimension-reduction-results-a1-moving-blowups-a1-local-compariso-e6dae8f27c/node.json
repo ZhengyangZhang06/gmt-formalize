@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.moving_blowups-a1.local_comparison-a1.index_comparison-a1.region_bound-a1.mixed_mass_triangle-a1",
+  "parent_id": "root.dimension_reduction_results-a1.moving_blowups-a1.local_comparison-a1.index_comparison-a1.region_bound-a1",
+  "depth": 6,
+  "title": "Local mass triangle inequality for currents on nested domains (the inline supremum arguments of parent steps 2–4)",
+  "statement": "Let P, n ∈ ℕ and U, V₁, V₂, G ⊆ ℝ^P with U ⊆ V₁ and U ⊆ V₂. Let Z ∈ 𝒟_n(U), X ∈ 𝒟_n(V₁) and Y ∈ 𝒟_n(V₂) be currents (SimonGMT GeometricCurrentOn), and let c ∈ ℝ. For ω ∈ 𝒟ⁿ(U) let ι₁ω := testFormOnInclusion (U ⊆ V₁) n ω ∈ 𝒟ⁿ(V₁) and ι₂ω := testFormOnInclusion (U ⊆ V₂) n ω ∈ 𝒟ⁿ(V₂) be ω regarded as a test form in the larger domain (same underlying differential form). Suppose Z(ω) = X(ι₁ω) + c·Y(ι₂ω) for every ω ∈ 𝒟ⁿ(U) with tsupport ω ⊆ G. Then M_G(Z) ≤ M_G(X) + ofReal(|c|)·M_G(Y) in [0, ∞]. Here M_G(A) = A.massOn G is the supremum in [0, ∞] of ofReal(A(η)) over the test forms η of the domain of A with tsupport η ⊆ G and Euclidean coefficient norm |η(x)| ≤ 1 for every x (covectorEuclideanNorm; massAdmissibleOn), ofReal = ENNReal.ofReal, and the product is taken in [0, ∞] (so 0·∞ = 0).",
+  "lean_statement": "∀ (P n : ℕ) (U V₁ V₂ G : Set (Euclid P)) (h₁ : U ⊆ V₁) (h₂ : U ⊆ V₂) (Z : GeometricCurrentOn U n) (X : GeometricCurrentOn V₁ n) (Y : GeometricCurrentOn V₂ n) (c : ℝ), (∀ ω : TestFormOn U n, tsupport (ω : DifferentialForm (Euclid P) n) ⊆ G → Z ω = X (testFormOnInclusion h₁ n ω) + c * Y (testFormOnInclusion h₂ n ω)) → Z.massOn G ≤ X.massOn G + ENNReal.ofReal |c| * Y.massOn G",
+  "lean_name": "dimred_mbl_lc_ic_rb_massOn_le_add_incl",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-moving-blowups-a1-local-compariso-e6dae8f27c-a1"
+}
