@@ -2280,6 +2280,106 @@ theorem Submission.dmcbr_cc_zero_current_finite_sum : (∀ (P n : ℕ) (U : Set 
   push_cast
   ring
 
+/-- **Compactly supported integer multiplicity filling of `∂T`** (Simon Ch. 6, 6.1 and the proof
+of 8.2: "the general case of the theorem follows from the special case when `∂T = 0`").  If
+`T ∈ 𝒟_{d+1}(ℝᴾ)` has compact support and `∂T` is integer multiplicity of finite mass, then
+`∂T = ∂Y` for an integer multiplicity `Y ∈ 𝒟_{d+1}(ℝᴾ)` of finite mass with compact support.
+First, `spt ∂T ⊆ spt T` is compact by (VO), as `spt dη ⊆ spt η`.  For `d ≥ 1` the cycle `Z = ∂T`
+is filled by (ISO) inside a bounded thickening of `spt Z`.  For `d = 0`, `∂T = Σ_{x ∈ F} m(x) δ_x`
+with `Σ_{x ∈ F} m(x) = 0` (test `∂T` on a bump `0`-form `≡ 1` near `spt T`), and
+`Y = Σ_{x ∈ F} m(x) [[0, x]]`. -/
+theorem Submission.dmcbr_cc_compact_im_filling : (∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (R : IMRep U n), IsOpen U → R.Represents T → ∀ W : Set (Euclid P), IsOpen W → T.massOn W = R.measure W) → (∀ (P n : ℕ) (U : Set (Euclid P)) (A B : GeometricCurrentOn U n), IsOpen U → IsIntegerMultiplicity A → IsIntegerMultiplicity B → IsIntegerMultiplicity (A - B)) → (∀ (P n : ℕ) (U : Set (Euclid P)) (S : GeometricCurrentOn U n) (ω : TestFormOn U n), Disjoint (tsupport (ω : DifferentialForm (Euclid P) n)) S.support → S ω = 0) → (∀ (P m : ℕ), ∃ c : ℝ, 1 ≤ c ∧ ∀ Z : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1), IsIntegerMultiplicity Z → IsCompact Z.support → Z.boundary = 0 → Z.mass < ∞ → ∃ Y : GeometricCurrentOn (univ : Set (Euclid P)) (m + 2), IsIntegerMultiplicity Y ∧ Y.boundary = Z ∧ Y.mass ≤ ENNReal.ofReal (c * (2 * c * Z.mass.toReal) ^ ((1 : ℝ) / (m + 1)) * Z.mass.toReal) ∧ Y.support ⊆ thickening (3 * Real.sqrt P * (2 * c * Z.mass.toReal) ^ ((1 : ℝ) / (m + 1))) Z.support) → ∀ (d P : ℕ) (T : GeometricCurrentOn (univ : Set (Euclid P)) (d + 1)), IsCompact T.support → T.boundary.mass < ∞ → IsIntegerMultiplicity T.boundary → ∃ Y : GeometricCurrentOn (univ : Set (Euclid P)) (d + 1), IsIntegerMultiplicity Y ∧ Y.boundary = T.boundary ∧ Y.mass < ∞ ∧ IsCompact Y.support := by
+  intro hMR hIMC hVO hISO d P T hTc hbm hbim
+  -- Step 1: `spt ∂T ⊆ spt T` and `spt ∂T` is compact, by (VO) and `spt dη ⊆ spt η`
+  obtain ⟨hbsub, hbc⟩ := Submission.rsd_cmr_support_subset_of_vanish P d univ T.support
+    T.boundary isOpen_univ hTc (subset_univ _) fun η hη => by
+      rw [GeometricCurrentOn.boundary_apply]
+      exact hVO P (d + 1) univ T (exteriorDerivativeTestOn univ d η) (Disjoint.mono_left
+        (tsupport_exteriorDerivative_subset (η : DifferentialForm (Euclid P) d)) hη)
+  rcases d with _ | m
+  · -- Case `d = 0`.  Step 4: `∂T = Σ_{x ∈ F} m(x) δ_x` with `F ⊆ spt ∂T ⊆ spt T`
+    obtain ⟨F, m, hF, hsum⟩ :=
+      Submission.dmcbr_cc_zero_current_finite_sum hMR hVO P T.boundary hbim hbc
+    have hFT : ∀ x ∈ F, x ∈ T.support := fun x hx => hbsub (hF hx)
+    -- Step 5: `Σ_{x ∈ F} m(x) = 0`.  Choose `spt T ⊆ B_ρ(0)` and a bump `0`-form `g` with
+    -- `g = ψ ≡ 1` on `B̄_ρ(0)`
+    obtain ⟨ρ, hρ, hTρ⟩ := hTc.isBounded.subset_ball_lt 0 (0 : Euclid P)
+    let ψ : ContDiffBump (0 : Euclid P) := ⟨ρ, 2 * ρ, hρ, by linarith⟩
+    let gf : DifferentialForm (Euclid P) 0 := fun y =>
+      ContinuousAlternatingMap.constOfIsEmpty ℝ (Euclid P) (Fin 0) (ψ y)
+    have hg : IsTestForm gf ∧ tsupport gf ⊆ univ :=
+      ⟨⟨(ContinuousAlternatingMap.constOfIsEmptyLIE ℝ (Euclid P) ℝ (Fin 0)).contDiff.comp
+          ψ.contDiff,
+        ψ.hasCompactSupport.comp_left
+          (map_zero (ContinuousAlternatingMap.constOfIsEmptyLIE ℝ (Euclid P) ℝ (Fin 0)))⟩,
+        subset_univ _⟩
+    let g : TestFormOn (univ : Set (Euclid P)) 0 := ⟨gf, hg⟩
+    -- `dg = 0` on `B_ρ(0)`, where `ψ ≡ 1`
+    have hdg : ∀ y ∈ ball (0 : Euclid P) ρ, exteriorDerivative gf y = 0 := by
+      intro y hy
+      have hψ : fderiv ℝ ψ y = 0 :=
+        (ψ.eventuallyEq_one_of_mem_ball hy).fderiv_eq.trans (fderiv_const_apply 1)
+      show extDeriv (fun x => ContinuousAlternatingMap.constOfIsEmpty ℝ (Euclid P) (Fin 0) (ψ x))
+        y = 0
+      rw [extDeriv_constOfIsEmpty, hψ]
+      ext v
+      simp
+    -- so `spt dg` misses `B_ρ(0) ⊇ spt T`, and `∂T(g) = T(dg) = 0` by (VO)
+    have hTg : T.boundary g = 0 := by
+      rw [GeometricCurrentOn.boundary_apply]
+      refine hVO P (0 + 1) univ T (exteriorDerivativeTestOn univ 0 g)
+        (Disjoint.mono ?_ hTρ disjoint_compl_left)
+      exact closure_minimal (fun y hy hyρ => hy (hdg y hyρ)) isOpen_ball.isClosed_compl
+    -- while `∂T(g) = Σ_{x ∈ F} m(x) g(x) = Σ_{x ∈ F} m(x)`, as `F ⊆ spt T ⊆ B_ρ(0)`
+    have htot : ∑ x ∈ F, (m x : ℝ) = 0 := by
+      refine Eq.trans (Finset.sum_congr rfl fun x hx => ?_) ((hsum g).symm.trans hTg)
+      show (m x : ℝ) = (m x : ℝ) * ψ x
+      rw [ψ.one_of_mem_closedBall (ball_subset_closedBall (hTρ (hFT x hx))), mul_one]
+    -- Step 6: integer multiplicity segments `S_x`, `∂S_x = δ_x - δ_0`, `spt S_x ⊆ [0, x]`
+    choose S hSim hSb hSm hSsupp using Submission.dmcbr_cc_segment_current hMR P (0 : Euclid P)
+    -- Step 7: `Y = Σ_{x ∈ F} m(x) S_x` is integer multiplicity by (IMC)(c)
+    obtain ⟨Y, hYim, hYeval, hYmass⟩ :=
+      Submission.cbr_cc_current_algebra.2.2 hIMC P 1 univ (Euclid P) F S m isOpen_univ
+        fun x _ => hSim x
+    refine ⟨Y, hYim, ?_, ?_, ?_⟩
+    · -- Step 8: `∂Y = Σ_{x ∈ F} m(x) (δ_x - δ_0) = ∂T`, as `Σ_{x ∈ F} m(x) = 0`
+      ext η
+      calc Y.boundary η
+          = ∑ x ∈ F, (m x : ℝ) * S x (exteriorDerivativeTestOn univ 0 η) := by
+            rw [GeometricCurrentOn.boundary_apply]
+            exact hYeval (exteriorDerivativeTestOn univ 0 η)
+        _ = ∑ x ∈ F, ((m x : ℝ) * (η : DifferentialForm (Euclid P) 0) x (fun i => i.elim0) -
+              (m x : ℝ) * (η : DifferentialForm (Euclid P) 0) 0 (fun i => i.elim0)) :=
+            Finset.sum_congr rfl fun x _ => by
+              rw [← mul_sub, ← hSb x η, GeometricCurrentOn.boundary_apply]
+        _ = ∑ x ∈ F, (m x : ℝ) * (η : DifferentialForm (Euclid P) 0) x (fun i => i.elim0) -
+              (∑ x ∈ F, (m x : ℝ)) * (η : DifferentialForm (Euclid P) 0) 0 (fun i => i.elim0) := by
+            rw [Finset.sum_sub_distrib, Finset.sum_mul]
+        _ = T.boundary η := by rw [htot, zero_mul, sub_zero, hsum η]
+    · -- `M(Y) ≤ Σ_{x ∈ F} |m(x)| M(S_x) < ∞`
+      exact (hYmass univ).trans_lt (ENNReal.sum_lt_top.2 fun x _ =>
+        ENNReal.mul_lt_top (ENNReal.natCast_lt_top _) (hSm x))
+    · -- Step 9: `Y` vanishes off the compact `C = ⋃_{x ∈ F} [0, x]`, so `spt Y` is compact
+      have hC : IsCompact (⋃ x ∈ F, segment ℝ (0 : Euclid P) x) :=
+        F.isCompact_biUnion fun x _ => by
+          rw [segment_eq_image_lineMap]
+          exact isCompact_Icc.image AffineMap.lineMap_continuous
+      refine (Submission.rsd_cmr_support_subset_of_vanish P 1 univ _ Y isOpen_univ hC
+        (subset_univ _) fun ω hω => ?_).2
+      rw [hYeval ω]
+      refine Finset.sum_eq_zero fun x hx => ?_
+      rw [hVO P 1 univ (S x) ω (hω.mono_right ((hSsupp x).trans
+        (subset_iUnion₂ (s := fun x (_ : x ∈ F) => segment ℝ (0 : Euclid P) x) x hx))), mul_zero]
+  · -- Case `d = m + 1`.  Step 2: fill the cycle `Z = ∂T` by (ISO)
+    obtain ⟨c, -, hfill⟩ := hISO P m
+    obtain ⟨Y, hYim, hYb, hYm, hYsupp⟩ :=
+      hfill T.boundary hbim hbc (GeometricCurrentOn.boundary_boundary T) hbm
+    refine ⟨Y, hYim, hYb, hYm.trans_lt ENNReal.ofReal_lt_top, ?_⟩
+    -- Step 3: `Y` vanishes off the compact closure of the bounded thickening of `spt Z`
+    exact (Submission.rsd_cmr_support_subset_of_vanish P (m + 2) univ _ Y isOpen_univ
+      hbc.isBounded.thickening.isCompact_closure (subset_univ _) fun ω hω =>
+        hVO P (m + 2) univ Y ω (hω.mono_right (hYsupp.trans subset_closure))).2
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
