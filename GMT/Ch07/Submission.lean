@@ -39588,4 +39588,37 @@ theorem Submission.dmcbr_closure_succ : (∀ (P n : ℕ) (U : Set (Euclid P)) (T
     _ = (E A).restrictDomain (subset_univ (ball x₀ r)) ω := rfl
     _ = R.action (ω : DifferentialForm (Euclid P) (d + 1)) := hR ω
 
+/-- **Simon Ch. 6, 8.2–8.3 and 6.3** (closure theorem and boundary rectifiability, with
+rectifiability from White's tangent planes).  (CL) If the integer multiplicity `T_j ∈ 𝒟_d(U)` have
+`sup_j (M_W(T_j) + M_W(∂T_j)) < ∞` for every open `W ⊂⊂ U` and `T_j ⇀ T`, then `T` is integer
+multiplicity; (BR) if `R ∈ 𝒟_{d+1}(U)` is integer multiplicity and `M_W(∂R) < ∞` for every open
+`W ⊂⊂ U`, then `∂R` is integer multiplicity.  Joint induction on `d` (Part II): `CL(0)`
+(`dmcbr_closure_degree_zero`), `CL(d) ⇒ BR(d)` (`dmcbr_boundary_isIntegerMultiplicity`) and
+`CL(d) ∧ BR(d) ⇒ CL(d + 1)` (`dmcbr_closure_succ`), each fed with the representation and integer
+multiplicity facts (REP), (IMC) of `dimred_mbl_current_foundations`, the mass identity (MR) of
+`dor_imrep_massOn_eq_measure_and_support`, slicing (`dimred_mbl_slice_mass_bounds`), the
+deformation theorem (`dimred_mbl_deformation_theorem`) and `dtc_vanish_off_support`. -/
+theorem Submission.dimred_mbl_closure_and_boundary_rectifiability : (∀ (P d : ℕ) (U : Set (Euclid P)) (Ts : ℕ → GeometricCurrentOn U d) (T : GeometricCurrentOn U d), IsOpen U → (∀ j, IsIntegerMultiplicity (Ts j)) → (∀ W : Set (Euclid P), IsOpen W → CompactlyContained W U → ⨆ j, ((Ts j).massOn W + boundaryMassOn (Ts j) W) < ∞) → WeaklyConvergesOn Ts T → IsIntegerMultiplicity T) ∧ (∀ (P d : ℕ) (U : Set (Euclid P)) (R : GeometricCurrentOn U (d + 1)), IsOpen U → IsIntegerMultiplicity R → (∀ W : Set (Euclid P), IsOpen W → CompactlyContained W U → R.boundary.massOn W < ∞) → IsIntegerMultiplicity R.boundary) := by
+  -- the dependencies: (REP) ∧ (IMC), (MR), (SL), (DT), (VO)
+  obtain ⟨hREP, hIMC⟩ := Submission.dimred_mbl_current_foundations
+  have hMR : ∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (R : IMRep U n),
+      IsOpen U → R.Represents T → ∀ W : Set (Euclid P), IsOpen W → T.massOn W = R.measure W :=
+    fun P n U T R hU hR => (Submission.dor_imrep_massOn_eq_measure_and_support P n U T R hU hR).1
+  have hSL := Submission.dimred_mbl_slice_mass_bounds
+  have hDT := Submission.dimred_mbl_deformation_theorem
+  have hVO := Submission.dtc_vanish_off_support
+  -- `CL(d) ⇒ BR(d)` (Part IV)
+  have hBR := Submission.dmcbr_boundary_isIntegerMultiplicity hREP hMR hIMC hSL hDT hVO
+  -- `CL(d)` for every `d`: `CL(0)` (Part III) and `CL(d) ∧ BR(d) ⇒ CL(d + 1)` (Part V)
+  have hCL : ∀ d : ℕ, ∀ (P : ℕ) (U : Set (Euclid P)) (Ts : ℕ → GeometricCurrentOn U d)
+      (T : GeometricCurrentOn U d), IsOpen U → (∀ j, IsIntegerMultiplicity (Ts j)) →
+      (∀ W : Set (Euclid P), IsOpen W → CompactlyContained W U →
+        ⨆ j, ((Ts j).massOn W + boundaryMassOn (Ts j) W) < ∞) →
+      WeaklyConvergesOn Ts T → IsIntegerMultiplicity T := by
+    intro d
+    induction d with
+    | zero => exact Submission.dmcbr_closure_degree_zero hREP hMR hIMC
+    | succ d ih => exact Submission.dmcbr_closure_succ hREP hMR hIMC hSL hDT hVO d ih (hBR d ih)
+  exact ⟨fun P d => hCL d P, fun P d => hBR d (hCL d) P⟩
+
 end GMT.Ch07
