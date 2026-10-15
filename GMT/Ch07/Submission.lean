@@ -31555,4 +31555,145 @@ theorem Submission.dor_lmb_flat_convergence_cycles : (∀ (P n : ℕ) (U : Set (
   refine tendsto_of_tendsto_of_tendsto_of_le_of_le tendsto_const_nhds ?_ (fun _ => zero_le) hle
   simpa only [mul_zero] using ENNReal.Tendsto.const_mul hε (Or.inr ENNReal.ofNat_ne_top)
 
+/-- **Lemma M: limsup bound for the masses of the `Tⱼ` near `y ∈ N`** (Simon 7.2.4 and Remark
+7.2.5(2), as used in the proof of 7.4.3; the proof of 7.2.4, chapter-07.txt lines 176–290, with
+the competitor projected into `N`, README erratum 5).  `dor_lmb_c1_retraction` gives `r`, `c_π`
+and a `C¹` retraction `π` onto `N` near `y` with `‖Dπ(x)‖ ≤ 1 + c_π|x − y|`; monotonicity (C3) and
+C1 give `μ_{Tⱼ}(B_s(y)) ≤ c₂sⁿ` for `0 < s ≤ r₀`.  Put `r₁ = min(r₀/3, r/3, 1/(6c_π + 1))`,
+`c = 3c_π` and `c₁ = n·c·2ⁿ·3ⁿ·c₂`.  For `0 < ε < ρ < r₁`, flat convergence on
+`W = B_{ρ+ε}(y)` writes `T − Tⱼ = ∂Rⱼ + Sⱼ` with `M_W(Rⱼ) + M_W(Sⱼ) → 0`; the level cut at some
+`t ∈ (ρ, ρ + ε)` (chosen for each `j`, so no subsequence is needed) and the comparison with the
+projected competitor (`Z = Tⱼ`) give
+`M_{B_ρ}(Tⱼ) ≤ (1 + cρ)ⁿ(M_W(T) + M_W(Sⱼ) + (2/ε)M_W(Rⱼ)) + ((1 + cρ)ⁿ − 1)c₂(3ρ)ⁿ`, and
+`(1 + a)ⁿ − 1 ≤ n·a·2ⁿ` (`0 ≤ a ≤ 1`) bounds the last term by `c₁ρⁿ⁺¹`.  Let `j → ∞`. -/
+theorem Submission.dor_minimizing_limsup_mass_bound : ∀ (n k ℓ : ℕ), ℓ ≤ k → 0 < n → ∀ (U N : Set (Euclid (n + k))) (Ts : ℕ → GeometricCurrentOn U n) (T : GeometricCurrentOn U n) (y : Euclid (n + k)), IsOpen U → IsEmbeddedSubmanifold 2 (n + ℓ) N → (closure N \ N) ∩ U = ∅ → (∀ j, IsMinimizingIn (Ts j) (U ∩ N)) → IsIntegerMultiplicity T → (∀ j, (Ts j).support ⊆ N) → (∀ j, BoundaryVanishes (Ts j)) → BoundaryVanishes T → (∀ j, ∀ R : IMRep U n, R.Represents (Ts j) → R.IsStationaryAlong N) → (∀ W : Set (Euclid (n + k)), IsOpen W → CompactlyContained W U → ⨆ j, (Ts j).massOn W < ∞) → WeaklyConvergesOn Ts T → y ∈ N ∩ U → ∃ r₁ c c₁ : ℝ, 0 < r₁ ∧ 0 ≤ c ∧ 0 ≤ c₁ ∧ ∀ ρ ε : ℝ, 0 < ε → ε < ρ → ρ < r₁ → limsup (fun j => (Ts j).massOn (ball y ρ)) atTop ≤ ENNReal.ofReal ((1 + c * ρ) ^ n) * T.massOn (ball y (ρ + ε)) + ENNReal.ofReal (c₁ * ρ ^ (n + 1)) := by
+  intro n k ℓ hℓ hn U N Ts T y hU hN hNcl hmin hT hspt hbd hTbd hstat hmass hconv hy
+  have C1 := Submission.dor_imrep_massOn_eq_measure_and_support
+  -- Step 1(a): the `C¹` retraction `π` onto `N` near `y`, `‖Dπ(x)‖ ≤ 1 + c_π|x − y|`
+  obtain ⟨r, cπ, proj, hr, hcπ, hrU, hproj, hprojN, hprojfix, hprojT, hprojD⟩ :=
+    Submission.dor_lmb_c1_retraction (n + k) (n + ℓ) U N y hU hN hNcl hy
+  -- Step 1(b): monotonicity at `y` for every representation of every `Tⱼ` (C3)
+  obtain ⟨r₀, κ, hr₀, hκ, hr₀U, hmono⟩ :=
+    Submission.dor_stationary_mean_curvature_monotonicity n k ℓ hℓ hn U N y hU hN hNcl hy
+  choose Rj hRj using fun j => (hmin j).1
+  have hcc : ∀ s, closedBall y s ⊆ U → CompactlyContained (ball y s) U := fun s hs =>
+    ⟨(isCompact_closedBall y s).of_isClosed_subset isClosed_closure closure_ball_subset_closedBall,
+      closure_ball_subset_closedBall.trans hs⟩
+  -- Step 1(c): `Λ₀ = supⱼ M_{B_{r₀}(y)}(Tⱼ) < ∞`, hence `μ_{Tⱼ}(B_s(y)) ≤ c₂sⁿ` for `0 < s ≤ r₀`
+  obtain ⟨Λ₀, hΛ₀0, hΛ₀⟩ : ∃ Λ₀ : ℝ, 0 ≤ Λ₀ ∧
+      ∀ j, (Rj j).measure (ball y r₀) ≤ ENNReal.ofReal Λ₀ := by
+    refine ⟨(⨆ j, (Ts j).massOn (ball y r₀)).toReal, ENNReal.toReal_nonneg, fun j => ?_⟩
+    rw [ENNReal.ofReal_toReal (hmass _ isOpen_ball
+      (hcc r₀ ((closedBall_subset_closedBall (by linarith)).trans hr₀U))).ne,
+      ← (C1 (n + k) n U (Ts j) (Rj j) hU (hRj j)).1 _ isOpen_ball]
+    exact le_iSup (fun j => (Ts j).massOn (ball y r₀)) j
+  obtain ⟨c₂, hc₂, hball⟩ : ∃ c₂ : ℝ, 0 ≤ c₂ ∧ ∀ j s, 0 < s → s ≤ r₀ →
+      (Rj j).measure (ball y s) ≤ ENNReal.ofReal (c₂ * s ^ n) := by
+    refine ⟨Real.exp (κ * r₀) / r₀ ^ n * Λ₀, by positivity, fun j s hs hsr₀ => ?_⟩
+    have h1 := (hmono (Ts j) (Rj j) (hRj j) (hspt j) (hstat j (Rj j) (hRj j))).2 y
+      (mem_ball_self hr₀) s r₀ hs hsr₀ le_rfl
+    have h3 : 1 ≤ Real.exp (κ * s) / s ^ n * s ^ n := by
+      rw [div_mul_cancel₀ _ (pow_pos hs n).ne']
+      exact Real.one_le_exp (mul_nonneg hκ hs.le)
+    calc (Rj j).measure (ball y s)
+        ≤ ENNReal.ofReal (Real.exp (κ * s) / s ^ n * s ^ n) * (Rj j).measure (ball y s) :=
+          le_mul_of_one_le_left' (ENNReal.one_le_ofReal.2 h3)
+      _ = ENNReal.ofReal (s ^ n) *
+            (ENNReal.ofReal (Real.exp (κ * s) / s ^ n) * (Rj j).measure (ball y s)) := by
+          rw [mul_comm (Real.exp (κ * s) / s ^ n), ENNReal.ofReal_mul (by positivity), mul_assoc]
+      _ ≤ ENNReal.ofReal (s ^ n) *
+            (ENNReal.ofReal (Real.exp (κ * r₀) / r₀ ^ n) * ENNReal.ofReal Λ₀) :=
+          mul_le_mul_right (h1.trans (mul_le_mul_right (hΛ₀ j) _)) _
+      _ = ENNReal.ofReal (Real.exp (κ * r₀) / r₀ ^ n * Λ₀ * s ^ n) := by
+          rw [← ENNReal.ofReal_mul (show 0 ≤ Real.exp (κ * r₀) / r₀ ^ n by positivity),
+            ← ENNReal.ofReal_mul (show 0 ≤ s ^ n by positivity), mul_comm (s ^ n)]
+  -- `(1 + a)ᵐ − 1 ≤ m·a·2ᵐ` for `0 ≤ a ≤ 1`
+  have hgeom : ∀ (m : ℕ) (a : ℝ), 0 ≤ a → a ≤ 1 → (1 + a) ^ m - 1 ≤ m * a * 2 ^ m := by
+    intro m a ha0 ha1
+    induction m with
+    | zero => simp
+    | succ m ih =>
+      have h1 : 1 ≤ (1 + a) ^ m := one_le_pow₀ (by linarith)
+      have h2 : (1 : ℝ) ≤ 2 ^ m := one_le_pow₀ (by norm_num)
+      have h3 : 0 ≤ (m : ℝ) * 2 ^ m := by positivity
+      push_cast
+      rw [pow_succ, pow_succ]
+      nlinarith [mul_le_mul_of_nonneg_left ih ha0,
+        mul_nonneg (mul_nonneg ha0 (sub_nonneg.2 ha1)) h3]
+  -- Step 1(d): `r₁ = min(r₀/3, r/3, 1/(6c_π + 1))`, `c = 3c_π`, `c₁ = n·c·2ⁿ·3ⁿ·c₂`
+  refine ⟨min (r₀ / 3) (min (r / 3) (1 / (6 * cπ + 1))), 3 * cπ,
+    (n : ℝ) * (3 * cπ) * 2 ^ n * 3 ^ n * c₂,
+    lt_min (by linarith) (lt_min (by linarith) (div_pos one_pos (by linarith))), by linarith,
+    by positivity, fun ρ ε hε hερ hρr₁ => ?_⟩
+  have hρ : 0 < ρ := hε.trans hερ
+  have hρ₀ : ρ < r₀ / 3 := hρr₁.trans_le (min_le_left _ _)
+  have hρr : ρ < r / 3 := hρr₁.trans_le ((min_le_right _ _).trans (min_le_left _ _))
+  have hρc : ρ * (6 * cπ + 1) < 1 := (lt_div_iff₀ (by linarith)).1
+    (hρr₁.trans_le ((min_le_right _ _).trans (min_le_right _ _)))
+  have hcπρ : 0 ≤ cπ * ρ := mul_nonneg hcπ hρ.le
+  have h4 : 4 * cπ * ρ ≤ 1 := by nlinarith
+  have hrρ : 3 * ρ < r := by linarith
+  have hcl3 : closedBall y (3 * ρ) ⊆ U := (closedBall_subset_closedBall hrρ.le).trans hrU
+  have hclε : closedBall y (ρ + ε) ⊆ U :=
+    (closedBall_subset_closedBall (by linarith)).trans hcl3
+  -- Step 4: flat convergence on `W = B_{ρ+ε}(y)` (Simon Ch. 6, 7.2)
+  obtain ⟨Rs, Ss, hRs, hSs, hdiff, hlim⟩ :=
+    Submission.dor_lmb_flat_convergence_cycles C1 (n + k) n U Ts T hU hn (fun j => (hmin j).1) hT
+      hbd hTbd hmass hconv (ball y (ρ + ε)) isOpen_ball (hcc _ hclε)
+  -- the error term `((1 + cρ)ⁿ − 1)·c₂(3ρ)ⁿ ≤ c₁ρⁿ⁺¹`
+  have hΛ1 : 0 ≤ (1 + 3 * cπ * ρ) ^ n - 1 := sub_nonneg.2 (one_le_pow₀ (by linarith))
+  have hreal : ((1 + 3 * cπ * ρ) ^ n - 1) * (c₂ * (3 * ρ) ^ n) ≤
+      n * (3 * cπ) * 2 ^ n * 3 ^ n * c₂ * ρ ^ (n + 1) :=
+    calc ((1 + 3 * cπ * ρ) ^ n - 1) * (c₂ * (3 * ρ) ^ n)
+        ≤ n * (3 * cπ * ρ) * 2 ^ n * (c₂ * (3 * ρ) ^ n) :=
+          mul_le_mul_of_nonneg_right (hgeom n _ (by positivity) (by linarith)) (by positivity)
+      _ = n * (3 * cπ) * 2 ^ n * 3 ^ n * c₂ * ρ ^ (n + 1) := by ring
+  -- Steps 5–9 for each `j`: cut `Tⱼ` at a good level `t ∈ (ρ, ρ + ε)` and compare with the
+  -- competitor `Tⱼ + π_#X` (Simon (3)–(11))
+  have hbound : ∀ j, (Ts j).massOn (ball y ρ) ≤
+      ENNReal.ofReal ((1 + 3 * cπ * ρ) ^ n) * (T.massOn (ball y (ρ + ε)) +
+        (Ss j).massOn (ball y (ρ + ε)) +
+        ENNReal.ofReal (2 / (ρ + ε - ρ)) * (Rs j).massOn (ball y (ρ + ε))) +
+      ENNReal.ofReal (n * (3 * cπ) * 2 ^ n * 3 ^ n * c₂ * ρ ^ (n + 1)) := by
+    intro j
+    obtain ⟨t, X, Y, RY, hρt, htε, hX, hXbd, hXvan, hY, hRY, hRYt⟩ :=
+      Submission.dor_lmb_good_level_cut C1 (n + k) n U T (Ts j) (Ss j) (Rs j) y ρ (ρ + ε) hU hn
+        hT (hmin j).1 (hSs j) (hRs j) (hdiff j) hρ (by linarith) hclε
+    have hcmp := Submission.dor_lmb_projected_competitor_comparison C1 (n + k) (n + ℓ) n U N
+      (Ts j) X Y (Rj j) RY proj y r cπ ρ t hU hn hN (hmin j) (hspt j) (hbd j) (hRj j) hX hXbd
+      hXvan hY hRY hy.1 hcπ hρ hrρ h4 (by linarith) hcl3 hproj hprojN hprojfix hprojT hprojD
+    rw [(C1 (n + k) n U (Ts j) (Rj j) hU (hRj j)).1 _ isOpen_ball]
+    calc (Rj j).measure (ball y ρ) ≤ (Rj j).measure (closedBall y t) :=
+          measure_mono (ball_subset_closedBall.trans (closedBall_subset_closedBall hρt.le))
+      _ ≤ ENNReal.ofReal ((1 + 3 * cπ * ρ) ^ n) * RY.measure (closedBall y t) +
+            ENNReal.ofReal ((1 + 3 * cπ * ρ) ^ n - 1) * (Rj j).measure (ball y (3 * ρ)) := hcmp
+      _ ≤ ENNReal.ofReal ((1 + 3 * cπ * ρ) ^ n) * (T.massOn (ball y (ρ + ε)) +
+            (Ss j).massOn (ball y (ρ + ε)) +
+            ENNReal.ofReal (2 / (ρ + ε - ρ)) * (Rs j).massOn (ball y (ρ + ε))) +
+            ENNReal.ofReal ((1 + 3 * cπ * ρ) ^ n - 1) * ENNReal.ofReal (c₂ * (3 * ρ) ^ n) :=
+          add_le_add (mul_le_mul_right hRYt _)
+            (mul_le_mul_right (hball j (3 * ρ) (by linarith) (by linarith)) _)
+      _ ≤ _ := by
+          rw [← ENNReal.ofReal_mul hΛ1]
+          exact add_le_add le_rfl (ENNReal.ofReal_le_ofReal hreal)
+  -- Step 10: `M_W(Sⱼ), M_W(Rⱼ) → 0`, so the bound tends to `(1 + cρ)ⁿM_W(T) + c₁ρⁿ⁺¹`
+  have hS : Tendsto (fun j => (Ss j).massOn (ball y (ρ + ε))) atTop (𝓝 0) :=
+    tendsto_of_tendsto_of_tendsto_of_le_of_le tendsto_const_nhds hlim (fun _ => zero_le)
+      (fun _ => le_add_self)
+  have hR : Tendsto (fun j => (Rs j).massOn (ball y (ρ + ε))) atTop (𝓝 0) :=
+    tendsto_of_tendsto_of_tendsto_of_le_of_le tendsto_const_nhds hlim (fun _ => zero_le)
+      (fun _ => le_self_add)
+  have hlim' : Tendsto (fun j => ENNReal.ofReal ((1 + 3 * cπ * ρ) ^ n) *
+      (T.massOn (ball y (ρ + ε)) + (Ss j).massOn (ball y (ρ + ε)) +
+        ENNReal.ofReal (2 / (ρ + ε - ρ)) * (Rs j).massOn (ball y (ρ + ε))) +
+      ENNReal.ofReal (n * (3 * cπ) * 2 ^ n * 3 ^ n * c₂ * ρ ^ (n + 1))) atTop
+      (𝓝 (ENNReal.ofReal ((1 + 3 * cπ * ρ) ^ n) *
+        (T.massOn (ball y (ρ + ε)) + 0 + ENNReal.ofReal (2 / (ρ + ε - ρ)) * 0) +
+        ENNReal.ofReal (n * (3 * cπ) * 2 ^ n * 3 ^ n * c₂ * ρ ^ (n + 1)))) :=
+    (ENNReal.Tendsto.const_mul ((tendsto_const_nhds.add hS).add
+      (ENNReal.Tendsto.const_mul hR (Or.inr ENNReal.ofReal_ne_top)))
+      (Or.inr ENNReal.ofReal_ne_top)).add tendsto_const_nhds
+  rw [mul_zero, add_zero, add_zero] at hlim'
+  exact (limsup_le_limsup (Eventually.of_forall hbound)).trans_eq hlim'.limsup_eq
+
 end GMT.Ch07
