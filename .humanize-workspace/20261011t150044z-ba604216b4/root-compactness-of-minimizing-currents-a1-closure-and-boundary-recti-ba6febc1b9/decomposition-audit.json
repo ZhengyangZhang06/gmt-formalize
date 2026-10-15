@@ -1,0 +1,115 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "rg -n 'cbr_|closure theorem|boundary rectifi' .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT -g '*.lean'",
+        "simon_theorem_4_16_compact_metrizable|simon_theorem_3_3|simon_theorem_3_26_i|exists_isClosed_continuousOn_of_measurable",
+        "euclideanHausdorffMeasure_zero_or_top|euclideanHausdorffMeasure_zero|theorem.*toMeasurable.*inter|theorem.*inter.*toMeasurable",
+        "git -C .lake/packages/simongmt rev-parse HEAD",
+        "git -C .lake/packages/mathlib rev-parse HEAD",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/independent-cbr-audit-sw6ihmkb/TypesAndAssembly.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/independent-cbr-audit-sw6ihmkb/ISPCompatibility.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/independent-cbr-audit-sw6ihmkb/ReferenceAxioms.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch06/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/IntervalIntegral/DerivIntegrable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Covering/Besicovitch.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Covering/Differentiation.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/CompactMetrizableCompactness.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/DensityComparison.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-ba6febc1b9/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-ba6febc1b9/decomposition-v1.json",
+        "/tmp/independent-cbr-audit-sw6ihmkb/TypesAndAssembly.lean",
+        "/tmp/independent-cbr-audit-sw6ihmkb/ISPCompatibility.lean",
+        "/tmp/independent-cbr-audit-sw6ihmkb/ReferenceAxioms.lean"
+      ],
+      "conclusion": "The split appropriately isolates the selected joint CL/BR induction. Snapshot and workspace contracts are identical; package revisions match the pins. No proposed name is reserved in the final 580-node DAG scan. All names are bare identifiers, all statements are one-line propositions without implementation-dependent references, and all twelve elaborate independently. The copied prerequisite types match the frozen dependencies verbatim. Child and upstream dependencies are acyclic and correctly directed. Independent Lean checks establish ISP compatibility and derive the exact selected parent type from the three induction-step contracts and six prerequisites. The assembly and checked library declarations use only propext, Classical.choice and Quot.sound. Chapter 6 search matches are contract definitions and a sorry-backed main theorem, not reusable completed proofs. No matrix-unit construction occurs."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "restrict_unique",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proposition matches every representation and measurability hypothesis. Compact-support integrability, coefficient expansion, uniqueness of finite measures against smooth tests, and evaluation on Borel restrictions prove the exact conclusion without circularity."
+    },
+    {
+      "key": "convergence_tools",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All three conjuncts match their prose. Exhaustion and diagonal compactness yield T1; the one-sided cutoff argument proves T2 without requiring the target representation to vanish on the level set. MM correctly handles arbitrary G by splitting along measurable strips, then applying differentiation and Fatou."
+    },
+    {
+      "key": "im_local",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Both locality and domain restriction are proved with the stated prerequisites. Local measure and orientation identification justify the countable gluing; local integrability and tangent-space locality supply all IMRep fields. The restrict_unique dependency is sufficient and correctly directed."
+    },
+    {
+      "key": "closure_zero",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact CL(0) contract follows from counting-measure representations, bounded signed point counts, subsequence compactness, and local gluing. Cancellation of coincident limit points and the finite-carrier orientation conditions are addressed."
+    },
+    {
+      "key": "boundary_im",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Localization and deformation produce IM d-boundaries with uniformly bounded masses and zero boundary mass. CL(d), followed by domain restriction and locality, proves BR(d) without invoking CL(d+1). This agrees with the lower-dimensional use in [Simon, Chapter 6, §§6.2–6.4](https://math.stanford.edu/~lms/ntu-gmt-text.pdf)."
+    },
+    {
+      "key": "isoperimetric",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The degree indexing, real exponent, mass conversion, and support bound match the prose. The zero-mass case is handled separately; otherwise the chosen scale forces both deformation error S and polyhedral term Q to vanish, yielding exactly the asserted filling."
+    },
+    {
+      "key": "slice_limit",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The universal representation-based ISP contract is preserved. Summed slice majorants provide one subsequence controlling both required masses; restriction convergence and CL(d) apply locally, and locality globalizes the result. The degree-zero boundary convention is handled explicitly."
+    },
+    {
+      "key": "lower_density",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof establishes the stated uniform positive lower-density bound. Good radii, controlled fillings, the degree-one mass gap, disjoint covering, cone estimates, and lower semicontinuity give the required contradiction on every compact low-density subset. No closure conclusion is assumed."
+    },
+    {
+      "key": "rectifiable",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The measurable projection hypothesis suffices for the Lusin–Egorov construction. The corrected epsilon gives the cone contradiction; compact pieces admit Lipschitz graph extensions, and arbitrarily small discarded measure yields countable rectifiability. Degenerate dimensions are covered."
+    },
+    {
+      "key": "cycle_im",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The detailed proof establishes the exact conditional cycle theorem: representation-independent dilation and slicing, lower density, constant-vector blow-ups, translation invariance, the projection/BV estimate forcing unit plane weight, measurable tangent planes, and integer densities from slices. The final IMRep construction discharges all fields. CL(d) is used only through slice stability."
+    },
+    {
+      "key": "closure_compact",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof derives an IM boundary using CL(d), constructs a finite-mass compact filling, and transfers ISP to the resulting cycle through restriction linearity and slice_limit. cycle_im then proves the compact closure conclusion. BR(d) is an explicit hypothesis, so its use introduces no cycle."
+    },
+    {
+      "key": "closure_succ",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The localization proof supplies every hypothesis of closure_compact: IM currents and boundaries, common compact support, uniform total mass bounds, and weak convergence after extension. Domain restriction and locality recover CL(d+1). Together with closure_zero and boundary_im, this proves both exact parent conjuncts by induction."
+    }
+  ],
+  "required_changes": []
+}

@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.moving_blowups-a1.deformation_theorem-a1.lipschitz_pushforward-a1.cylinder-a1.cylinder_current-a1",
+  "parent_id": "root.dimension_reduction_results-a1.moving_blowups-a1.deformation_theorem-a1.lipschitz_pushforward-a1.cylinder-a1",
+  "depth": 6,
+  "title": "The current [[0, 1]] × X for finite-mass X: t-integral formula, continuity, mass ≤ M(X), support in ι([0, 1] × spt X)",
+  "statement": "Assume (CB), the exact frozen type of Submission.dimred_mbl_dt_lp_covector_bounds: (L1) for all N, N', k ∈ ℕ, every continuous linear A : ℝ^N → ℝ^{N'} and every k-covector β on ℝ^{N'}, |β.compContinuousLinearMap A| ≤ ‖A‖^k·|β| (where (β.compContinuousLinearMap A)(w) = β(Aw_1, …, Aw_k)); and (L2) for all N, k, every v ∈ ℝ^N and every (k+1)-covector β on ℝ^N, |β.curryLeft v| ≤ ‖v‖·|β| (where (β.curryLeft v)(w) = β(v, w_1, …, w_k)), and (VO), the vanishing-off-support antecedent of the selected statement: for all P, n, U ⊆ ℝ^P, S ∈ 𝒟_n(U) and ω ∈ 𝒟ⁿ(U) with tsupport ω disjoint from spt S, S(ω) = 0. Write ι(t, x) := (t, x_1, …, x_N) ∈ ℝ^{N+1} (Lean WithLp.toLp 2 (Fin.cons t (WithLp.ofLp x))), e₀ := (1, 0, …, 0) (EuclideanSpace.single 0 1), Jv := ι(0, v), |α| := covectorEuclideanNorm α, Dω := fderiv ℝ ω, and 𝒟^k(ℝ^m) := TestFormOn univ k (smooth compactly supported k-forms on ℝ^m). For all N, k ∈ ℕ and every X ∈ 𝒟_k(ℝ^N) = GeometricCurrentOn univ k with M(X) < ∞ there is Y ∈ 𝒟_{k+1}(ℝ^{N+1}) = GeometricCurrentOn univ (k+1) such that (a) M(Y) ≤ M(X); (b) if spt X is compact, then spt Y is compact and spt Y ⊆ {ι(t, x) : t ∈ [0, 1], x ∈ spt X}; (c) for every ω ∈ 𝒟^{k+1}(ℝ^{N+1}) and every family η : ℝ → 𝒟^k(ℝ^N) with η_t(x)(v_1, …, v_k) = ω(ι(t, x))(e₀, Jv_1, …, Jv_k) for all t, x, v, the function t ↦ X(η_t) is continuous and Y(ω) = ∫_0^1 X(η_t) dt.",
+  "lean_statement": "((∀ (N N' k : ℕ) (A : Euclid N →L[ℝ] Euclid N') (β : Covector (Euclid N') k), covectorEuclideanNorm (β.compContinuousLinearMap A) ≤ ‖A‖ ^ k * covectorEuclideanNorm β) ∧ ∀ (N k : ℕ) (v : Euclid N) (β : Covector (Euclid N) (k + 1)), covectorEuclideanNorm (β.curryLeft v) ≤ ‖v‖ * covectorEuclideanNorm β) → (∀ (P n : ℕ) (U : Set (Euclid P)) (S : GeometricCurrentOn U n) (ω : TestFormOn U n), Disjoint (tsupport (ω : DifferentialForm (Euclid P) n)) S.support → S ω = 0) → ∀ (N k : ℕ) (X : GeometricCurrentOn (univ : Set (Euclid N)) k), X.mass < ∞ → ∃ Y : GeometricCurrentOn (univ : Set (Euclid (N + 1))) (k + 1), Y.mass ≤ X.mass ∧ (IsCompact X.support → IsCompact Y.support ∧ Y.support ⊆ {y : Euclid (N + 1) | ∃ t ∈ Icc (0 : ℝ) 1, ∃ x ∈ X.support, y = WithLp.toLp 2 (Fin.cons t (WithLp.ofLp x))}) ∧ ∀ (ω : TestFormOn (univ : Set (Euclid (N + 1))) (k + 1)) (η : ℝ → TestFormOn (univ : Set (Euclid N)) k), (∀ (t : ℝ) (x : Euclid N) (v : Fin k → Euclid N), (η t : DifferentialForm (Euclid N) k) x v = (ω : DifferentialForm (Euclid (N + 1)) (k + 1)) (WithLp.toLp 2 (Fin.cons t (WithLp.ofLp x))) (Fin.cons (EuclideanSpace.single 0 1) (fun i => WithLp.toLp 2 (Fin.cons 0 (WithLp.ofLp (v i)))))) → Continuous (fun t => X (η t)) ∧ Y ω = ∫ t in (0 : ℝ)..1, X (η t)",
+  "lean_name": "dimred_mbl_dt_lpc_cylinder_current",
+  "depends_on": [
+    "root.dimension_reduction_results-a1.moving_blowups-a1.deformation_theorem-a1.lipschitz_pushforward-a1.cylinder-a1.slice_forms-a1",
+    "root.compactness_of_minimizing_currents-a1.flat_convergence-a1.series_current-a1.abs_le_mass-a1",
+    "root.compactness_of_minimizing_currents-a1.flat_convergence-a1.series_current-a1.bounded_current-a1",
+    "root.regular_set_dense-a1.constant_multiplicity_reduction-a1.support_of_vanishing-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.dimension_reduction_results-a1.moving_blowups-a1.deformation_theorem-a1.lipschitz_pushforward-a1.cylinder-a1.slice_forms-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.compactness_of_minimizing_currents-a1.flat_convergence-a1.series_current-a1.abs_le_mass-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-flat-convergence-a1-series-99cd9ba1b0-a1",
+      "result_commit": "970ade23f816818f39a2762490197646385e93f8",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.compactness_of_minimizing_currents-a1.flat_convergence-a1.series_current-a1.bounded_current-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-flat-convergence-a1-series-ae24472ce6-a1",
+      "result_commit": "3c4f763265d817512375837594432341d443b9ef",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.regular_set_dense-a1.constant_multiplicity_reduction-a1.support_of_vanishing-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-regular-set-dense-a1-constant-multiplicity-reduction-a1-support-a67ad69f81-a1",
+      "result_commit": "02c6122c94d0280a6288d299659b2dab7b59e109",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-moving-blowups-a1-deformation-the-46bb6d2ab2-a1"
+}
