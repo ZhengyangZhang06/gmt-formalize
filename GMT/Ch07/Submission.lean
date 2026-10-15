@@ -9286,6 +9286,175 @@ theorem Submission.idtp_cse_cone_stationary_radial : ∀ (P n : ℕ) (C : Geomet
   filter_upwards [ae_all_iff.2 hball] with x hx
   obtain ⟨k, hk⟩ := exists_nat_gt ‖x‖
   exact hx k hk
+/-- Approximate tangent spaces are invariant under the dilation `η = η_{x,λ}`, `λ > 0`
+(Simon Ch. 3, 1.4).  As `η(w) − η(y) = λ⁻¹(w − y)`, the rescaled set `η_{η(y),r}(η(M))` is
+`η_{y,λr}(M)`, and `r ↦ λr` maps `r ↓ 0` into `s ↓ 0`; `dim Q = n` is unchanged. -/
+theorem Submission.dtc_approxTangent_dilation : ∀ (P n : ℕ) (M : Set (Euclid P)) (x y : Euclid P) (lam : ℝ) (Q : Submodule ℝ (Euclid P)), 0 < lam → HasApproximateTangentSpaceAt n M y Q → HasApproximateTangentSpaceAt n (dilation x lam '' M) (dilation x lam y) Q := by
+  intro P n M x y lam Q hlam hT
+  refine ⟨hT.1, fun f => ?_⟩
+  -- `η_{η(y),r}(η(M)) = η_{y,λr}(M)`, since `η(w) − η(y) = λ⁻¹(w − y)`
+  have hset : ∀ r : ℝ, Poincare.SimonGMT.Chapter03.blowUpMap (dilation x lam y) r ''
+      (dilation x lam '' M) = Poincare.SimonGMT.Chapter03.blowUpMap y (lam * r) '' M := by
+    intro r
+    rw [image_image]
+    congr 1
+    funext w
+    simp only [Poincare.SimonGMT.Chapter03.blowUpMap, dilation, dilationCLM,
+      smul_apply, ContinuousLinearMap.id_apply, add_sub_add_left_eq_sub]
+    rw [← smul_sub, smul_smul, mul_inv, mul_comm]
+  simp_rw [hset]
+  -- `r ↦ λr` maps `r ↓ 0` into `s ↓ 0`
+  have hlim : Tendsto (fun r : ℝ => lam * r) (𝓝[>] 0) (𝓝[>] 0) := by
+    refine tendsto_nhdsWithin_of_tendsto_nhds_of_eventually_within _ ?_ ?_
+    · simpa using (tendsto_id.const_mul lam).mono_left (nhdsWithin_le_nhds (a := (0 : ℝ)))
+    · filter_upwards [self_mem_nhdsWithin] with r hr
+      exact mul_pos hlam hr
+  exact (hT.2 f).comp hlim
+/-- **Simon Ch. 3, 1.4**: approximate tangent planes are local and do not see `Hⁿ`-null
+modifications.  If `M' ⊆ M`, `V` is open, `x ∈ V` and `Hⁿ((M \ M') ∩ V) = 0`, then an
+approximate tangent plane of `M` at `x` is one of `M'`.  Given `f ∈ C_c(ℝᴾ)`, take
+`B_s(x) ⊆ V` and `spt f ⊆ B_L(0)`.  For `0 < r < s / L` the parts of `η_{x,r}(M)` and
+`η_{x,r}(M')` in `B_L(0)` differ inside `η_{x,r}((M \ M') ∩ V)`, which is `Hⁿ`-null because
+`η_{x,r}` is Lipschitz.  So the blow-up integrals agree for small `r` and have the same limit. -/
+theorem Submission.dtc_approxTangent_of_null_diff : ∀ (P n : ℕ) (M M' V : Set (Euclid P)) (x : Euclid P) (Q : Submodule ℝ (Euclid P)), M' ⊆ M → IsOpen V → x ∈ V → μHE[n] ((M \ M') ∩ V) = 0 → HasApproximateTangentSpaceAt n M x Q → HasApproximateTangentSpaceAt n M' x Q := by
+  intro P n M M' V x Q hMM' hV hxV hnull hT
+  refine ⟨hT.1, fun f => ?_⟩
+  -- `B_s(x) ⊆ V` and `spt f ⊆ B_L(0)`
+  obtain ⟨s, hs, hsV⟩ := Metric.isOpen_iff.mp hV x hxV
+  obtain ⟨L, hL, hfL⟩ := f.hasCompactSupport.isCompact.isBounded.subset_ball_lt 0 0
+  -- the blow-up integrals of `M` and `M'` agree for `0 < r < s / L`, so they have the same limit
+  refine (hT.2 f).congr' ?_
+  filter_upwards [Ioo_mem_nhdsGT (div_pos hs hL)] with r hr
+  have hr0 : 0 < r := hr.1
+  have hη : Poincare.SimonGMT.Chapter03.blowUpMap x r = fun y => r⁻¹ • (y - x) := rfl
+  rw [hη]
+  -- `f` vanishes off `B_L(0)`, so every set integral may be cut to `B_L(0)`
+  have hfB : ∀ y, y ∉ ball (0 : Euclid P) L → f y = 0 := fun y hy =>
+    image_eq_zero_of_notMem_tsupport fun h => hy (hfL h)
+  have hcut : ∀ S : Set (Euclid P),
+      ∫ y in S, f y ∂μHE[n] = ∫ y in ball (0 : Euclid P) L ∩ S, f y ∂μHE[n] := by
+    intro S
+    rw [← Measure.restrict_restrict measurableSet_ball]
+    exact (setIntegral_eq_integral_of_forall_compl_eq_zero hfB).symm
+  -- `η_{x,r}` is `r⁻¹`-Lipschitz, so it maps the `Hⁿ`-null set `(M \ M') ∩ V` to a null set
+  have hnullimg : μHE[n] ((fun y : Euclid P => r⁻¹ • (y - x)) '' ((M \ M') ∩ V)) = 0 := by
+    have hlip : LipschitzWith ‖r⁻¹‖₊ (fun y : Euclid P => r⁻¹ • (y - x)) :=
+      LipschitzWith.of_dist_le_mul fun a b =>
+        le_of_eq (by rw [dist_smul₀, dist_sub_right, coe_nnnorm])
+    rw [Measure.euclideanHausdorffMeasure_def, Measure.smul_apply, ENNReal.smul_def,
+      smul_eq_mul] at hnull ⊢
+    have hH : μH[(n : ℝ)] ((M \ M') ∩ V) = 0 := by
+      simpa [Measure.addHaarScalarFactor_volume_hausdorffMeasure_ne_zero n] using hnull
+    have hle := hlip.hausdorffMeasure_image_le (Nat.cast_nonneg n) ((M \ M') ∩ V)
+    rw [hH, mul_zero, nonpos_iff_eq_zero] at hle
+    rw [hle, mul_zero]
+  -- in `B_L(0)`, `η_{x,r}(M)` and `η_{x,r}(M')` differ inside `η_{x,r}((M \ M') ∩ V)`
+  have hsub : (ball (0 : Euclid P) L ∩ (fun y : Euclid P => r⁻¹ • (y - x)) '' M) \
+      (ball (0 : Euclid P) L ∩ (fun y : Euclid P => r⁻¹ • (y - x)) '' M') ⊆
+      (fun y : Euclid P => r⁻¹ • (y - x)) '' ((M \ M') ∩ V) := by
+    rintro y ⟨⟨hyB, ⟨z, hz, rfl⟩⟩, hy'⟩
+    refine ⟨z, ⟨⟨hz, fun hz' => hy' ⟨hyB, z, hz', rfl⟩⟩, hsV ?_⟩, rfl⟩
+    rw [mem_ball_zero_iff, norm_smul, norm_inv, Real.norm_of_nonneg hr0.le,
+      inv_mul_lt_iff₀ hr0] at hyB
+    have hrL := (lt_div_iff₀ hL).mp hr.2
+    rw [mem_ball, dist_eq_norm]
+    linarith
+  -- hence the two parts are `Hⁿ`-a.e. equal (`M' ⊆ M` gives the other inclusion)
+  have hae : (ball (0 : Euclid P) L ∩ (fun y : Euclid P => r⁻¹ • (y - x)) '' M' : Set (Euclid P))
+      =ᵐ[μHE[n]] (ball (0 : Euclid P) L ∩ (fun y : Euclid P => r⁻¹ • (y - x)) '' M) := by
+    rw [ae_eq_set]
+    constructor
+    · rw [sdiff_eq_empty.mpr (inter_subset_inter_right _ (image_mono hMM'))]
+      exact measure_empty
+    · exact measure_mono_null hsub hnullimg
+  rw [hcut, hcut ((fun y : Euclid P => r⁻¹ • (y - x)) '' M'), Measure.restrict_congr_set hae]
+
+/-- **Approximate tangent planes of a cone are dilation invariant** (Simon Ch. 3, 1.4, for the cone
+`C` of 7.3.1(2) in the proof of 7.3.3).  If the cone `C` is represented by `R = (M, θ, ξ)` with
+weight `μ = θHⁿ⌞M` and `r > 0`, then `T_{rx}M = TₓM` for `μ`-a.e. `x`.  As `μ(λA) = λⁿ μ(A)`,
+`μ`-a.e. statements survive `x ↦ λx`; since `θ ≥ 1` on `M`, this gives
+`Hⁿ(M \ rM) = Hⁿ(rM \ M) = 0`.  For `μ`-a.e. `x` both `TₓM` and `T_{rx}M` exist; `TₓM` is the
+approximate tangent plane of `η_{0,r⁻¹}(M) = rM` at `rx`, so both are approximate tangent planes
+of `M ∩ rM` at `rx`, and approximate tangent planes are unique. -/
+theorem Submission.idtp_cse_cone_approxTangent_smul : ∀ (P n : ℕ) (C : GeometricCurrentOn (univ : Set (Euclid P)) n) (R : IMRep (univ : Set (Euclid P)) n), IsConeCurrent C → R.Represents C → ∀ r : ℝ, 0 < r → ∀ᵐ x ∂R.measure, approxTangentPlane n R.carrier (r • x) = approxTangentPlane n R.carrier x := by
+  intro P n C R hC hR r hr
+  -- Step 1: `μ`-a.e. statements survive `x ↦ λx`, `λ > 0`: if `p` fails only on a `μ`-null Borel
+  -- set `E`, then `p(λ·)` fails only on `λ⁻¹E`, and `μ(λ⁻¹E) = λ⁻ⁿ μ(E) = 0`
+  have hscale : ∀ lam : ℝ, 0 < lam → ∀ p : Euclid P → Prop, (∀ᵐ x ∂R.measure, p x) →
+      ∀ᵐ x ∂R.measure, p (lam • x) := by
+    intro lam hlam p hp
+    obtain ⟨E, hpE, hE, hμE⟩ := exists_measurable_superset_of_null (ae_iff.1 hp)
+    rw [ae_iff]
+    refine measure_mono_null (t := (fun x => lam⁻¹ • x) '' E) (fun x hx =>
+      ⟨lam • x, hpE (show lam • x ∈ {y | ¬p y} from hx), inv_smul_smul₀ hlam.ne' x⟩) ?_
+    rw [Submission.cone_current_imrep_measure_smul_image P n C R hC hR lam⁻¹ (inv_pos.2 hlam) E
+      hE, hμE, mul_zero]
+  -- `μ = θHⁿ⌞M` and `Hⁿ⌞M` have the same null sets, as `θ ≥ 1` on `M`
+  have hac : R.measure ≪ μHE[n].restrict R.carrier := withDensity_absolutelyContinuous _ _
+  have hac' : μHE[n].restrict R.carrier ≪ R.measure := by
+    refine withDensity_absolutelyContinuous'
+      (measurable_from_nat.comp R.measurable_mult).aemeasurable ?_
+    filter_upwards [ae_restrict_mem R.measurableSet_carrier] with x hx
+    exact_mod_cast (R.mult_pos x hx).ne'
+  -- Step 2: `μ`-a.e. `x` lies in `M` and `M` has an approximate tangent space at `x`
+  have hgood : ∀ᵐ x ∂R.measure,
+      x ∈ R.carrier ∧ ∃ Q, HasApproximateTangentSpaceAt n R.carrier x Q := by
+    have h : ∀ᵐ x ∂(μHE[n].restrict R.carrier),
+        x ∈ R.carrier ∧ ∃ Q, HasApproximateTangentSpaceAt n R.carrier x Q := by
+      filter_upwards [R.orients, ae_restrict_mem R.measurableSet_carrier] with x ⟨Q, hQ, _⟩ hx
+      exact ⟨hx, Q, hQ⟩
+    exact hac.ae_le h
+  -- Step 3: `Hⁿ(M \ λM) = 0`: `μ`-a.e., hence `Hⁿ⌞M`-a.e., `λ⁻¹x ∈ M`
+  have hnull₁ : ∀ lam : ℝ, 0 < lam →
+      μHE[n] (R.carrier \ (fun y => lam • y) '' R.carrier) = 0 := by
+    intro lam hlam
+    have h : ∀ᵐ x ∂(μHE[n].restrict R.carrier), lam⁻¹ • x ∈ R.carrier :=
+      hac'.ae_le (hscale lam⁻¹ (inv_pos.2 hlam) (· ∈ R.carrier) (hgood.mono fun x hx => hx.1))
+    rw [ae_restrict_iff' R.measurableSet_carrier, ae_iff] at h
+    have hsub : R.carrier \ (fun y => lam • y) '' R.carrier ⊆
+        {x | ¬(x ∈ R.carrier → lam⁻¹ • x ∈ R.carrier)} :=
+      fun x hx himp => hx.2 ⟨lam⁻¹ • x, himp hx.1, smul_inv_smul₀ hlam.ne' x⟩
+    exact measure_mono_null hsub h
+  -- `Hⁿ(λM \ M) ≤ Hⁿ(λ(M \ λ⁻¹M)) = λⁿ Hⁿ(M \ λ⁻¹M) = 0`
+  have hnull₂ : ∀ lam : ℝ, 0 < lam →
+      μHE[n] ((fun y => lam • y) '' R.carrier \ R.carrier) = 0 := by
+    intro lam hlam
+    refine measure_mono_null
+      (t := (fun y => lam • y) '' (R.carrier \ (fun y => lam⁻¹ • y) '' R.carrier)) ?_ ?_
+    · rintro _ ⟨⟨y, hy, rfl⟩, hyM⟩
+      refine ⟨y, ⟨hy, ?_⟩, rfl⟩
+      rintro ⟨w, hw, rfl⟩
+      apply hyM
+      show lam • lam⁻¹ • w ∈ R.carrier
+      rwa [smul_inv_smul₀ hlam.ne']
+    · rw [Set.image_smul, Measure.euclideanHausdorffMeasure_smul₀ n hlam.ne',
+        hnull₁ lam⁻¹ (inv_pos.2 hlam), smul_zero]
+  -- `η_{0,r⁻¹}(y) = ry`
+  have hdil : dilation (0 : Euclid P) r⁻¹ = fun y => r • y := by
+    funext y
+    simp [dilation, dilationCLM]
+  -- `TₓM` is an approximate tangent space of `M` at `x` whenever one exists
+  have hspec : ∀ z, (∃ Q, HasApproximateTangentSpaceAt n R.carrier z Q) →
+      HasApproximateTangentSpaceAt n R.carrier z (approxTangentPlane n R.carrier z) := by
+    intro z hz
+    rw [approxTangentPlane, dite_eq_left hz]
+    exact hz.choose_spec
+  -- Step 4: compare `TₓM` and `T_{rx}M` at the `μ`-a.e. `x` where both exist
+  filter_upwards [hgood, hscale r hr _ hgood] with x hx hrx
+  -- (i) `TₓM` is the approximate tangent space of `η_{0,r⁻¹}(M) = rM` at `rx`
+  have h1 := Submission.dtc_approxTangent_dilation P n R.carrier 0 x r⁻¹ _ (inv_pos.2 hr)
+    (hspec x hx.2)
+  rw [hdil] at h1
+  -- (ii) and of `M ∩ rM`, as `Hⁿ(rM \ M) = 0`
+  have h2 := Submission.dtc_approxTangent_of_null_diff P n _
+    (R.carrier ∩ (fun y => r • y) '' R.carrier) univ (r • x) _ inter_subset_right isOpen_univ
+    (mem_univ _) (by rw [inter_univ, sdiff_inter_self_eq_sdiff]; exact hnull₂ r hr) h1
+  -- (iii) `T_{rx}M` is the approximate tangent space of `M ∩ rM` at `rx`, as `Hⁿ(M \ rM) = 0`
+  have h3 := Submission.dtc_approxTangent_of_null_diff P n R.carrier
+    (R.carrier ∩ (fun y => r • y) '' R.carrier) univ (r • x) _ inter_subset_left isOpen_univ
+    (mem_univ _) (by rw [inter_univ, sdiff_self_inter]; exact hnull₁ r hr) (hspec (r • x) hrx.2)
+  -- (iv) uniqueness of approximate tangent spaces
+  exact (h2.unique h3).symm
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
