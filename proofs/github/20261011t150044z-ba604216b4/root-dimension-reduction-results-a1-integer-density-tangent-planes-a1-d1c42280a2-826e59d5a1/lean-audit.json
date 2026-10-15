@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "4aa80f76e79ec5d14af8ec49b55e7dda9aca03cce4e19d395ef1440a797f1593",
+  "git_delta": {
+    "base_commit": "635fac4e89d041fb6325adb57ae7821284a63aa5",
+    "candidate_commit": "b8f5a2e7278d6a8d92d66f839e8aad297873c6dd",
+    "target": "GMT/Ch07/Submission.lean",
+    "changed_files": [
+      "GMT/Ch07/Submission.lean"
+    ],
+    "diff_sha256": "8eba18bcb9747753bf48d9a3e78c04814ff1c80a65ac0e540a950ed8341e106e",
+    "source_sha256": "89d6c37390b740fd49556c9a2594ec40d531f88baa5d256029f5f5ee367071b1",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.idtp_tdc_arc_continuation",
+      "statement": "∀ (P : ℕ) (C : GeometricCurrentOn (univ : Set (Euclid P)) 2) (Q : Submodule ℝ (Euclid P)) (z e : Euclid P) (k : ℕ) (L : ℝ), IsMinimizingIn C univ → BoundaryVanishes C → IsConeCurrent C → Module.finrank ℝ Q = 2 → z ∈ Q → e ∈ Q → ‖z‖ = 1 → ‖e‖ = 1 → inner ℝ z e = 0 → 1 ≤ k → (∃ ε : ℝ, 0 < ε ∧ C.support ∩ ball z ε = (Q : Set (Euclid P)) ∩ ball z ε ∧ ∀ y ∈ C.support, y ∈ ball z ε → HasMassDensity C y k) → (∀ φ : ℝ, 0 < φ → φ < L → Real.cos φ • z + Real.sin φ • e ∈ C.support → HasMassDensity C (Real.cos φ • z + Real.sin φ • e) k → ∃ (δ : ℝ) (k' : ℕ), 0 < δ ∧ ∀ y ∈ C.support, y ∈ ball (Real.cos φ • z + Real.sin φ • e) δ → HasMassDensity C y k') → ∀ φ : ℝ, 0 ≤ φ → φ < L → ∃ ε : ℝ, 0 < ε ∧ C.support ∩ ball (Real.cos φ • z + Real.sin φ • e) ε = (Q : Set (Euclid P)) ∩ ball (Real.cos φ • z + Real.sin φ • e) ε ∧ ∀ y ∈ C.support, y ∈ ball (Real.cos φ • z + Real.sin φ • e) ε → HasMassDensity C y k",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
