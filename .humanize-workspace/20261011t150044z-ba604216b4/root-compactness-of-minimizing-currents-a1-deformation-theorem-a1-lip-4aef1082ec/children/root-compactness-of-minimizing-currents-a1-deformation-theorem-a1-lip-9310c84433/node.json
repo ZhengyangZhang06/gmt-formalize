@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.lipschitz_pushforward-a1.operators-a1.slice-a1.param_integral-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.lipschitz_pushforward-a1.operators-a1.slice-a1",
+  "depth": 6,
+  "title": "Smoothness and derivative of parametric integrals over [0, 1]",
+  "statement": "Let N ∈ ℕ, let V be a complete real normed space (V : Type), and let h : ℝ × ℝ^N → V be C^∞ (ContDiff ℝ ∞, written ContDiff ℝ (⊤ : ℕ∞)), where ℝ^N = EuclideanSpace ℝ (Fin N). Then F(x) := ∫_0^1 h(t, x) dt (interval integral) is C^∞ on ℝ^N. Moreover, for every x ∈ ℝ^N, F has Fréchet derivative ∫_0^1 D[x' ↦ h(t, x')](x) dt at x. This derivative is the interval integral in L(ℝ^N, V) of the partial derivatives fderiv ℝ (fun x' => h (t, x')) x.",
+  "lean_statement": "∀ (N : ℕ) (V : Type) [NormedAddCommGroup V] [NormedSpace ℝ V] [CompleteSpace V] (h : ℝ × Euclid N → V), ContDiff ℝ (⊤ : ℕ∞) h → ContDiff ℝ (⊤ : ℕ∞) (fun x : Euclid N => ∫ t in (0 : ℝ)..1, h (t, x)) ∧ ∀ x : Euclid N, HasFDerivAt (fun x' : Euclid N => ∫ t in (0 : ℝ)..1, h (t, x')) (∫ t in (0 : ℝ)..1, fderiv ℝ (fun x' : Euclid N => h (t, x')) x) x",
+  "lean_name": "cmcdt_lpo_slice_param_integral",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-lip-9310c84433-a1"
+}

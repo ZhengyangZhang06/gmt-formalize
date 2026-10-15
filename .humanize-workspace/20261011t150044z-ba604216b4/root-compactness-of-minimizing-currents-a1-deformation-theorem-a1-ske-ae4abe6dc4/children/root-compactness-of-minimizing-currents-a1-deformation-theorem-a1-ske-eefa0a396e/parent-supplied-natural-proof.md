@@ -1,0 +1,68 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.skeleton_deformation-a1.telescoping_deformation-a1`
+- Child DAG node: `root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.skeleton_deformation-a1.telescoping_deformation-a1.telescoping_real-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: the telescoping argument of steps 7 and 8 of the parent's supplied proof (Simon Ch. 6, proof of 5.1, the passage from the limits (19) to the identity (21), chapter-06.txt lines 1792–1820), isolated as a statement about real sequences; the parent uses it once with a_j = W_j(ω) − V_j(ω) − E′_j(ω) − H_j(dω), k_j = K_j(ω) and once with a_j = V_j(dη) − Y_j(η), k_j = L′_j(η).
+1. (Partial sums.) For every N ∈ ℕ, Σ_{i=0}^{N} a_i = −k_N. This is proved by induction on N. For N = 0 the sum is a_0 = −k_0 by hypothesis. If Σ_{i=0}^{N} a_i = −k_N, then Σ_{i=0}^{N+1} a_i = Σ_{i=0}^{N} a_i + a_{N+1} = −k_N + (k_N − k_{N+1}) = −k_{N+1} (Finset.sum_range_succ).
+2. (Limit from the hypothesis.) Since HasSum a s, the partial sums S_N := Σ_{i<N} a_i tend to s as N → ∞ (HasSum.tendsto_sum_nat). Because N ↦ N + 1 tends to infinity (tendsto_add_atTop_nat 1), the shifted partial sums S_{N+1} = Σ_{i=0}^{N} a_i also tend to s.
+3. (Limit from step 1.) By step 1, S_{N+1} = −k_N for every N. Since k_N → 0, −k_N → −0 = 0 (Tendsto.neg). Hence S_{N+1} → 0.
+4. (Uniqueness.) Limits of real sequences are unique (ℝ is Hausdorff; tendsto_nhds_unique). Steps 2 and 3 give s = 0. ∎
+Lean note (compiled route, about 15 lines): prove `hpart : ∀ N, ∑ i ∈ Finset.range (N + 1), a i = -k N` by `induction N` (`simp [h0]` in the base case; `rw [Finset.sum_range_succ, ih, hs1]; ring` in the step); `h1 := hs.tendsto_sum_nat.comp (tendsto_add_atTop_nat 1)`; `h2` by `simp_rw [hpart]; simpa using hk.neg`; finish with `tendsto_nhds_unique h1 h2`.
+
+## Key steps
+
+1. By induction, the partial sums are Σ_{i=0}^{N} a_i = −k_N.
+2. HasSum a s gives Σ_{i=0}^{N} a_i → s (HasSum.tendsto_sum_nat composed with N ↦ N + 1).
+3. −k_N → 0, so s = 0 by uniqueness of limits in ℝ.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cmp local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean GMT/Ch07/Contract.lean (identical); cmp GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean (identical); git -C local-references/123e8435b4a2469b/mathlib rev-parse HEAD (25730c7c759d108ef87ab70af2342a196760f79d, matches manifest)`
+- `rg -c -i 'telescop' local-references/123e8435b4a2469b/project/GMT -g '*.lean' (no match)`
+- `rg -n 'cmcsdtd_' local-references/123e8435b4a2469b (no match); python3 -I scan of runs/20261011T150044Z-ba604216b4/dag.json lean_name values for the prefix cmcsdtd_ (no match)`
+- `rg -n "theorem tendsto_nhds_unique |theorem tendsto_add_atTop_nat|theorem summable_toReal|theorem tsum_toReal_eq|theorem ne_top_of_tsum_ne_top|theorem mem_cthickening_of_dist_le|theorem isClosed_cthickening|theorem tendsto_toReal |theorem Tendsto.const_mul |theorem IsCompact.of_isClosed_subset|theorem Summable.of_norm_bounded |theorem closure_minimal" local-references/123e8435b4a2469b/mathlib/Mathlib -g '*.lean'`
+- `grep -n 'def \|theorem \|instance' lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/{Currents,Mass,CurrentLocalEquality}.lean (GeometricCurrentOn.ext, boundary_apply, exteriorDerivativeTestOn, massOn, le_massOn, support; no Sub instance) and grep -n instance GMT/Ch07/Contract.lean (only the contract Sub instance)`
+- `python3 -I scan of dag.json: frozen types and status of cmr_abs_apply_le_massOn, cmc_fc_cs_massOn_sub_le, cmc_fc_sc_testForm_coeff_bound, rsd_mw_tfa_norm_props (accepted) and cmcsd_support_calculus (decomposing); search for accepted test-form coefficient bounds (lean_statement containing covectorEuclideanNorm and ∃ c)`
+- `git show f492ba4a003c8f1324077e050d48667ae23c7100 / 827f2b91f9f4bc56c57c61f028ddb49fff28d5b8 / 7a706164baaf42fc7f55751247396a8836928310 / ea5c1199c9160b359cf351e442ec9e8b76e9a258 :GMT/Ch07/Submission.lean (accepted proofs, byte-compared with the recompiled blocks)`
+- `sed -n 1405,1930p book/chapter-06.txt (Simon 6.5.1, displays (10)–(25) at lines 1734–1838)`
+- `lean Types.lean, InstCheck.lean, InstCheck2.lean (pp.explicit), ProbeTel.lean, ProbeMassEval.lean, ProbeShell.lean, ProbeSeries.lean, AssemblyFromJson.lean, FullFromJson.lean (#print axioms) in GMT/Scratch/cmcsdtd_telescoping_deformation_decomposition`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/Thickening.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/InfiniteSum/ENNReal.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Group/InfiniteSum.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Instances/ENNReal/Lemmas.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Separation/Hausdorff.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Order/Filter/AtTopBot/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Compactness/Compact.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Closure.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-ske-ae4abe6dc4/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-flat-convergence-a1-series-896eab3360/parent-supplied-natural-proof.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-regular-set-dense-a1-mass-eq-weight-a1-test-form-approx-a1-norm-props-a1/parent-supplied-natural-proof.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Scratch/cmcsd_skeleton_deformation_decomposition/draft_subproblems.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Scratch/cmcsdtd_telescoping_deformation_decomposition/AssemblyFromJson.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Scratch/cmcsdtd_telescoping_deformation_decomposition/FullFromJson.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Scratch/cmcsdtd_telescoping_deformation_decomposition/draft_subproblems.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt`
+
+The snapshot (project b4d606d, Mathlib 25730c7c) matches the workspace: its Contract.lean is identical to the workspace Contract.lean, which is identical to Submission.lean.
+
+No telescoping or deformed-series material exists in the snapshot project, and the prefix cmcsdtd_ is unused in both the snapshot and the DAG. The pinned Mathlib supplies every lemma the child proofs cite: tendsto_nhds_unique, tendsto_add_atTop_nat, ENNReal.summable_toReal / tsum_toReal_eq / ne_top_of_tsum_ne_top / tendsto_toReal / Tendsto.const_mul, Summable.of_norm_bounded, mem_cthickening_of_dist_le, isClosed_cthickening, IsCompact.of_isClosed_subset and closure_minimal. SimonGMT supplies GeometricCurrentOn.ext, boundary_apply, massOn / le_massOn and support. The contract's Sub instance is the only Sub instance on currents.
+
+The DAG has four accepted declarations with identical types that are reused: rsd_mw_tfa_norm_props, cmc_fc_sc_testForm_coeff_bound, cmr_abs_apply_le_massOn and cmc_fc_cs_massOn_sub_le. Their accepted proofs recompile byte-identically with standard axioms. cmcsd_support_calculus is not accepted, so its conjuncts are passed to the children as hypotheses.
+
+All child types elaborate. The selected frozen type is assembled from the child types, and every child is fully proved in scratch using only propext, Classical.choice and Quot.sound.

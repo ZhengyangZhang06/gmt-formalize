@@ -1,0 +1,110 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.cube_bv_median-a1.smooth_approx-a1`
+- Child DAG node: `root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.cube_bv_median-a1.smooth_approx-a1.mollify_l1-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: step 4 of the parent proof, L¹ convergence of mollifications by L¹ contraction, the continuous compactly supported case, and density. It is stated uniformly over all continuous normalized kernels supported in a small ball. The pointwise estimate of 4(b) is taken from Mathlib's dist_convolution_le for general kernels. In Simon this is the standard mollification fact Ch. 2, 2.5 (book/chapter-02.txt lines 543–545).
+
+Notation. n ∈ ℕ. ℝⁿ := Euclid n = EuclideanSpace ℝ (Fin n) with Lebesgue measure (volume), and |·| is the Euclidean norm. For a ∈ ℝ, ‖a‖ₑ ∈ [0, ∞] is the extended norm, ‖a‖ₑ = ofReal|a|. ∫⁻ is the [0, ∞]-valued Lebesgue integral. For a kernel k and a function a, (k ⋆ a)(x) := ∫ k(t) a(x − t) dt, which is Mathlib's `convolution k a (ContinuousLinearMap.lsmul ℝ ℝ) volume x`. B_r(0) is the open ball, and A + B := {a + b : a ∈ A, b ∈ B}.
+
+Import note: Integrable.exists_hasCompactSupport_lintegral_sub_le is in Mathlib.MeasureTheory.Function.ContinuousMapDense, which is not in the import closure of the frozen GMT/Ch07/Submission.lean. Add `import Mathlib.MeasureTheory.Function.ContinuousMapDense` to Submission.lean; accepted nodes of this run already import it, and the frozen statement elaborates without it. Minkowski sums of sets need `open scoped Pointwise`, e.g. `open scoped Pointwise in` before the theorem. All other cited lemmas are in the frozen import closure.
+
+Fix f integrable and ε > 0.
+
+1. L¹ contraction. Claim: for every continuous k ≥ 0 with ∫k = 1 and every a.e.-strongly measurable g, ∫⁻ ‖(k ⋆ g)(x)‖ₑ dx ≤ ∫⁻ ‖g(x)‖ₑ dx.
+Proof. k is integrable (integrable_of_integral_eq_one). As k ≥ 0, ∫⁻ ‖k‖ₑ = ofReal(∫k) = 1 (ofReal_integral_eq_lintegral_ofReal). For each x, ‖(k ⋆ g)(x)‖ₑ = ‖∫ k(t) g(x − t) dt‖ₑ ≤ ∫⁻ ‖k(t)‖ₑ ‖g(x − t)‖ₑ dt (enorm_integral_le_lintegral_enorm, enorm_mul). The function (x, t) ↦ ‖k(t)‖ₑ ‖g(x − t)‖ₑ is a.e.-measurable for the product measure (AEStronglyMeasurable.convolution_integrand, then enorm). Then use Tonelli (lintegral_lintegral_swap), translation invariance ∫⁻ ‖g(x − t)‖ₑ dx = ∫⁻ ‖g‖ₑ (lintegral_sub_right_eq_self), and factoring out constants (lintegral_const_mul', lintegral_mul_const):
+   ∫⁻_x ‖(k ⋆ g)(x)‖ₑ ≤ ∫⁻_x ∫⁻_t ‖k(t)‖ₑ ‖g(x − t)‖ₑ = ∫⁻_t ‖k(t)‖ₑ ∫⁻_x ‖g(x − t)‖ₑ = (∫⁻ ‖k‖ₑ)(∫⁻ ‖g‖ₑ) = ∫⁻ ‖g‖ₑ.
+
+2. Density. Lebesgue measure on Euclid n is regular and ℝⁿ is locally compact. So Integrable.exists_hasCompactSupport_lintegral_sub_le, with tolerance ofReal(ε/4) ≠ 0, gives h : ℝⁿ → ℝ that is continuous, has compact support, is integrable, and satisfies ∫⁻ ‖f(x) − h(x)‖ₑ dx ≤ ofReal(ε/4).
+
+3. Choice of r. Let S := tsupport h + closedBall(0, 1). As a sum of two compact sets it is compact (IsCompact.add), hence closed, measurable and of finite measure. Put η := ε / (4(vol(S).toReal + 1)) > 0. Since h is continuous with compact support, it is uniformly continuous (HasCompactSupport.uniformContinuous_of_continuous). So there is r₀ > 0 with |h(a) − h(b)| < η whenever |a − b| < r₀ (Metric.uniformContinuous_iff). Put r := min(r₀, 1) > 0.
+
+Now let ρ be continuous with ρ ≥ 0, ∫ρ = 1 and support ρ ⊆ B_r(0). Then ρ has compact support, since support ρ ⊆ closedBall(0, r), which is compact.
+
+4. The continuous compactly supported case. For every x:
+ (a) |(ρ ⋆ h)(x) − h(x)| ≤ η. Indeed (ρ ⋆ h)(x) − h(x) = ∫ ρ(t)(h(x − t) − h(x)) dt. Whenever ρ(t) ≠ 0 we have |t| < r ≤ r₀, so |h(x − t) − h(x)| ≤ η, and the bound follows from ρ ≥ 0 and ∫ρ = 1. In Mathlib this is dist_convolution_le, applied with support ρ ⊆ B_r(0), ρ ≥ 0, ∫ρ = 1, h a.e.-strongly measurable, and dist(h(y), h(x)) ≤ η for y ∈ B_r(x).
+ (b) If x ∉ S, then (ρ ⋆ h)(x) = 0 = h(x). If h(x) ≠ 0, then x = x + 0 ∈ tsupport h + closedBall(0, 1) = S. If (ρ ⋆ h)(x) ≠ 0, then x = a + t with h(a) ≠ 0 and ρ(t) ≠ 0 (support_convolution_subset_swap); so a ∈ tsupport h and |t| < r ≤ 1, giving x ∈ S.
+Hence ‖(ρ ⋆ h)(x) − h(x)‖ₑ ≤ 1_S(x) · ofReal(η) for all x, and (lintegral_indicator_const)
+   ∫⁻ ‖ρ ⋆ h − h‖ₑ ≤ ofReal(η) · vol(S) = ofReal(η · vol(S).toReal) ≤ ofReal(ε/4),
+because η · vol(S).toReal = ε · vol(S).toReal / (4(vol(S).toReal + 1)) ≤ ε/4.
+
+5. Linearity. For every x, (ρ ⋆ f)(x) − (ρ ⋆ h)(x) = (ρ ⋆ (f − h))(x). The integrals defining (ρ ⋆ f)(x) and (ρ ⋆ h)(x) exist, because ρ is continuous with compact support and f, h are locally integrable (HasCompactSupport.convolutionExists_left). So integral_sub and linearity of t ↦ ρ(t) · (−) apply.
+
+6. Conclusion. For every x, by step 5 and the triangle inequality,
+   ‖(ρ ⋆ f)(x) − f(x)‖ₑ ≤ ‖(ρ ⋆ (f − h))(x)‖ₑ + ‖(ρ ⋆ h)(x) − h(x)‖ₑ + ‖h(x) − f(x)‖ₑ.
+The first two summands are continuous in x (HasCompactSupport.continuous_convolution_left; h is continuous), hence measurable. So the lintegral of the sum is the sum of the lintegrals (lintegral_add_left'). The three terms are bounded as follows:
+- first: by step 1 (with k = ρ, g = f − h) and step 2, it is ≤ ∫⁻ ‖f − h‖ₑ ≤ ofReal(ε/4);
+- second: ≤ ofReal(ε/4) by step 4;
+- third: it equals ∫⁻ ‖f − h‖ₑ ≤ ofReal(ε/4).
+Therefore ∫⁻ ‖ρ ⋆ f − f‖ₑ ≤ 3 · ofReal(ε/4) = ofReal(3ε/4) ≤ ofReal(ε). ∎
+The case n = 0 needs no separate treatment.
+
+Formalization note: a complete Lean proof of the exact frozen statement compiles with `import GMT.Ch07.Submission`, `import Mathlib.MeasureTheory.Function.ContinuousMapDense` and `open scoped Pointwise in`. It is about 150 lines, uses the lemmas named above, and has axioms propext, Classical.choice and Quot.sound.
+
+## Key steps
+
+1. L¹ contraction: ∫⁻‖ρ⋆g‖ₑ ≤ ∫⁻‖g‖ₑ for continuous ρ ≥ 0 with ∫ρ = 1, by Tonelli and translation invariance.
+2. Density: choose h continuous with compact support and ∫⁻‖f − h‖ₑ ≤ ε/4.
+3. Uniform continuity of h gives r ≤ 1 with |ρ⋆h − h| ≤ η everywhere, and ρ⋆h − h = 0 off the compact S = tsupport h + closedBall(0,1). Hence ∫⁻‖ρ⋆h − h‖ₑ ≤ η vol(S) ≤ ε/4.
+4. ρ⋆f − f = ρ⋆(f − h) + (ρ⋆h − h) + (h − f), and the three ε/4 bounds sum to at most ε.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cmp local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean GMT/Ch07/Contract.lean (identical); cmp GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean (identical); git -C .lake/packages/mathlib rev-parse HEAD = 25730c7c759d108ef87ab70af2342a196760f79d (= manifest.json mathlib_commit); git show 928be6d1df1e312edba524c8fd76720db6eee7eb:GMT/Ch07/Submission.lean (proof base = frozen contract)`
+- `rg -n 'cmcdt_cbm_sa' project mathlib/Mathlib -g '*.lean' (no match); grep -c 'cmcdt_cbm_sa_' dag.json DAG.md dag.mmd issue-workers.json (0 each)`
+- `rg -n -i 'mollif|convolution' project/GMT -g '*.lean' (no match)`
+- `rg -n 'eLpNorm.*convolution|convolution.*eLpNorm|integral_norm_convolution|lintegral.*convolution|tendsto_convolution|convolution_tendsto' mathlib/Mathlib -g '*.lean'`
+- `rg -n 'theorem dist_convolution_le |theorem support_convolution_subset_swap|theorem convolution_def|theorem ConvolutionExistsAt.integrable_swap|theorem AEStronglyMeasurable.convolution_integrand ' mathlib/Mathlib/Analysis/Convolution.lean`
+- `rg -n 'HasCompactSupport.(hasFDerivAt_convolution_left|contDiff_convolution_left|convolutionExists_left|continuous_convolution_left)' mathlib/Mathlib/Analysis/Calculus/ContDiff/Convolution.lean mathlib/Mathlib/Analysis/Convolution.lean`
+- `rg -n 'theorem (normed_neg|support_normed_eq|integral_normed|contDiff_normed|hasCompactSupport_normed|continuous_normed|nonneg_normed)' mathlib/Mathlib/Analysis/Calculus/BumpFunction/Normed.lean`
+- `rg -n 'theorem Integrable.exists_hasCompactSupport_lintegral_sub_le' mathlib/Mathlib/MeasureTheory/Function/ContinuousMapDense.lean; sed -n 1,80p mathlib/Mathlib/Analysis/Normed/Lp/SmoothApprox.lean`
+- `rg -n 'theorem toDual_symm_apply' mathlib/Mathlib/Analysis/InnerProductSpace/Dual.lean; rg -n 'theorem norm_apply_le ' mathlib/Mathlib/Analysis/Normed/Lp/PiLp.lean; rg -n 'uniformContinuous_of_continuous' mathlib/Mathlib/Topology/UniformSpace/HeineCantor.lean; rg -n 'enorm_integral_le_lintegral_enorm|norm_integral_le_lintegral_norm' mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean`
+- `python3 -I scan of runs/20261011T150044Z-ba604216b4/dag.json (1571 nodes) for mollif|convolution|ContDiffBump nodes; git show ae0277d4bed94a51b60fb4c7470fe259ed625e37:GMT/Ch07/Submission.lean (accepted even-kernel codim1_rdo_dg_sp_mollifier_adjoint, lines 463-543)`
+- `lake env lean /tmp/sa-decomp/Avail.lean and /tmp/sa-decomp/Avail2.lean (import-closure check: convolution lemmas present; ContDiffBump.normed, Integrable.exists_hasCompactSupport_integral_sub_le and gradient absent; HasContDiffBump, IsNegInvariant, IsAddHaarMeasure and Regular instances resolve for volume on Euclid n)`
+- `lake env lean /tmp/sa-decomp/final/TypesOnly.lean (four child types elaborate under import GMT.Ch07.Submission only); lake env lean /tmp/sa-decomp/final/Final.lean (all four children and the frozen parent proved; #print axioms: propext, Classical.choice, Quot.sound)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Convolution.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/Convolution.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/BumpFunction/Normed.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/ContinuousMapDense.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Lp/SmoothApprox.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Dual.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Lp/PiLp.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/UniformSpace/HeineCantor.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-cub-458697e68e/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-cub-c373840d71/decomposition-v1.json`
+- `/tmp/sa-decomp/final/TypesOnly.lean`
+- `/tmp/sa-decomp/final/Final.lean`
+
+The snapshot (project b4d606d, Mathlib 25730c7c) matches the workspace Contract.lean and Submission.lean, and the proof base 928be6d1 is that pristine Submission.
+
+Nothing in the snapshot proves any of the four obligations:
+- the project GMT tree has no mollifier or convolution results;
+- Mathlib has no L¹ convergence of mollifications (only the pointwise convolution_tendsto_right and Hölder-type eLpNorm bounds) and no mollifier adjoint identity.
+
+Mathlib does supply every tool the child proofs cite:
+- HasCompactSupport.hasFDerivAt_convolution_left, contDiff_convolution_left, convolutionExists_left and continuous_convolution_left;
+- convolution_def, convolution_eq_swap, support_convolution_subset_swap, dist_convolution_le and AEStronglyMeasurable.convolution_integrand;
+- ContDiffBump.normed and its lemmas;
+- Integrable.exists_hasCompactSupport_lintegral_sub_le;
+- InnerProductSpace.toDual_symm_apply, PiLp.norm_apply_le, HasCompactSupport.uniformContinuous_of_continuous and enorm_integral_le_lintegral_enorm.
+
+Only two modules lie outside the frozen import closure: ContinuousMapDense (needed by mollify_l1) and BumpFunction.Normed (needed by the parent assembly). The child types elaborate without them.
+
+The DAG's accepted even-kernel special case of mollify_adjoint (codim1_rdo_dg_sp_mollifier_adjoint, commit ae0277d4) lies on another branch outside the proof base. It served only as a proof template and is not reused. No cmcdt_cbm_sa_* name is reserved anywhere.
+
+Complete Lean proofs of all four children, and of the exact frozen parent type from them, compile with standard axioms only (/tmp/sa-decomp/final/Final.lean).

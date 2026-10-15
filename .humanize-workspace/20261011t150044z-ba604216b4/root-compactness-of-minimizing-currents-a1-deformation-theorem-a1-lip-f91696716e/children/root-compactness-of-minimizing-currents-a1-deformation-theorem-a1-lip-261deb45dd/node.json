@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.lipschitz_pushforward-a1.operators-a1.pushforward-a1.form_bounds-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.lipschitz_pushforward-a1.operators-a1.pushforward-a1",
+  "depth": 6,
+  "title": "Test forms and their exterior derivatives have bounded Euclidean covector norm",
+  "statement": "For all N, k ∈ ℕ and every test form ω ∈ 𝒟^k(ℝ^N) (TestFormOn univ k) there are real numbers a and b such that covectorEuclideanNorm(ω(y)) ≤ a and covectorEuclideanNorm((exteriorDerivative ω)(y)) ≤ b for every y ∈ ℝ^N.",
+  "lean_statement": "∀ (N k : ℕ) (ω : TestFormOn (univ : Set (Euclid N)) k), (∃ a : ℝ, ∀ y, covectorEuclideanNorm ((ω : DifferentialForm (Euclid N) k) y) ≤ a) ∧ ∃ b : ℝ, ∀ y, covectorEuclideanNorm (exteriorDerivative (ω : DifferentialForm (Euclid N) k) y) ≤ b",
+  "lean_name": "cmcdt_lpo_pf_form_bounds",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-lip-261deb45dd-a1"
+}
