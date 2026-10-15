@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.cone_splitting-a1.subspace_projection-a1.current_pushforward-a1",
+  "parent_id": "root.dimension_reduction_results-a1.cone_splitting-a1.subspace_projection-a1",
+  "depth": 4,
+  "title": "Linear push-forward of a compactly supported integer multiplicity current (Simon 6.2.23–2.24 and 3.9)",
+  "statement": "Let P, m ∈ ℕ with m ≥ 1, let X ∈ 𝒟_m(ℝ^P) (GeometricCurrentOn univ m) have compact support spt X and an integer multiplicity representation R = (M, θ, ξ) (IMRep univ m, R.Represents X), and let L : ℝ^P → ℝ^P be linear (Euclid P →L[ℝ] Euclid P). Then there is an integer multiplicity current Y ∈ 𝒟_m(ℝ^P) with:\n- spt Y ⊆ L(spt X);\n- ∂Y = 0 whenever ∂X = 0 (BoundaryVanishes X → BoundaryVanishes Y);\n- Y(ω) = R.action(L^#ω) = ∫_M θ(x)·ξ(x)(ω(Lx)∘Λ^m L) dH^m(x) for every ω ∈ 𝒟^m(ℝ^P), where L^#ω = affinePullbackForm L 0 ω.",
+  "lean_statement": "∀ (P m : ℕ) (X : GeometricCurrentOn (univ : Set (Euclid P)) m) (R : IMRep (univ : Set (Euclid P)) m) (L : Euclid P →L[ℝ] Euclid P), 0 < m → R.Represents X → IsCompact X.support → ∃ Y : GeometricCurrentOn (univ : Set (Euclid P)) m, IsIntegerMultiplicity Y ∧ Y.support ⊆ L '' X.support ∧ (BoundaryVanishes X → BoundaryVanishes Y) ∧ ∀ ω : TestFormOn (univ : Set (Euclid P)) m, Y ω = R.action (affinePullbackForm L 0 (ω : DifferentialForm (Euclid P) m))",
+  "lean_name": "dimred_cs_sp_linear_pushforward",
+  "depends_on": [
+    "root.dimension_reduction_results-a1.cone_splitting-a1.subspace_projection-a1.imrep_pushforward-a1",
+    "root.density_one_implies_regular-a1.imrep_mass_and_support-a1",
+    "root.density_and_tangent_cones-a1.localize-a1.imrep_current-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.dimension_reduction_results-a1.cone_splitting-a1.subspace_projection-a1.imrep_pushforward-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.density_one_implies_regular-a1.imrep_mass_and_support-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-imrep-mass-and-support-a1-a1",
+      "result_commit": "d49dda91b75b7417d67a10053e6dc4b65d4f0312",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.density_and_tangent_cones-a1.localize-a1.imrep_current-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-localize-a1-imrep-current-a1-a1",
+      "result_commit": "642d7450f79f28435ddba02f9c815e2208bcee00",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-cone-splitting-a1-subspace-projec-291380f7eb-a1"
+}
