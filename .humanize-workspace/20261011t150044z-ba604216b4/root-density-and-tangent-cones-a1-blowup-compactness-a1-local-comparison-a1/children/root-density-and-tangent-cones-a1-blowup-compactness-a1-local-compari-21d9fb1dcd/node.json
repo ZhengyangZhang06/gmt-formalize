@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.flat_decomposition-a1",
+  "parent_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1",
+  "depth": 4,
+  "title": "Flat decomposition of weakly convergent integer multiplicity currents in ℝ^P (Simon 6.7.1–7.2, 'only if' part)",
+  "statement": "Let P, m ∈ ℕ with n := m + 1 < P. Let T_j (j ∈ ℕ) and T be integer multiplicity currents in 𝒟_n(ℝ^P) (GeometricCurrentOn univ n with IsIntegerMultiplicity) such that sup_j (M_W(T_j) + M_W(∂T_j)) < ∞ for every bounded open W ⊆ ℝ^P, and T_j ⇀ T in ℝ^P (WeaklyConvergesOn: T_j(ω) → T(ω) for every ω ∈ 𝒟ⁿ(ℝ^P)). Then for every bounded open W ⊆ ℝ^P there are integer multiplicity currents R_j ∈ 𝒟_{n+1}(ℝ^P) and S_j ∈ 𝒟_n(ℝ^P) (j ∈ ℕ) with T − T_j − S_j = ∂R_j for every j (Simon: T − T_j = ∂R_j + S_j) and M_W(R_j) + M_W(S_j) → 0. Here M_W is the SimonGMT mass massOn W (Euclidean coefficient norm).",
+  "lean_statement": "∀ (P m : ℕ) (Ts : ℕ → GeometricCurrentOn (univ : Set (Euclid P)) (m + 1)) (T : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1)), m + 1 < P → (∀ j, IsIntegerMultiplicity (Ts j)) → IsIntegerMultiplicity T → (∀ W : Set (Euclid P), IsOpen W → Bornology.IsBounded W → ⨆ j, ((Ts j).massOn W + (Ts j).boundary.massOn W) < ∞) → WeaklyConvergesOn Ts T → ∀ W : Set (Euclid P), IsOpen W → Bornology.IsBounded W → ∃ (R : ℕ → GeometricCurrentOn (univ : Set (Euclid P)) (m + 2)) (S : ℕ → GeometricCurrentOn (univ : Set (Euclid P)) (m + 1)), (∀ j, IsIntegerMultiplicity (R j) ∧ IsIntegerMultiplicity (S j) ∧ T - Ts j - S j = (R j).boundary) ∧ Tendsto (fun j => (R j).massOn W + (S j).massOn W) atTop (𝓝 0)",
+  "lean_name": "dtc_bc_lc_flat_decomposition",
+  "depends_on": [
+    "root.compactness_of_minimizing_currents-a1.im_calculus-a1",
+    "root.density_and_tangent_cones-a1.mass_eq_measure-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.compactness_of_minimizing_currents-a1.im_calculus-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-im-calculus-a1-a1",
+      "result_commit": "2af75d6921b01a9c889a45103692ca0af95ea394",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.density_and_tangent_cones-a1.mass_eq_measure-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-mass-eq-measure-a1-a1",
+      "result_commit": "bff81d31ecb43002d1bfc77f510d3463c6be155f",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-compari-21d9fb1dcd-a1"
+}

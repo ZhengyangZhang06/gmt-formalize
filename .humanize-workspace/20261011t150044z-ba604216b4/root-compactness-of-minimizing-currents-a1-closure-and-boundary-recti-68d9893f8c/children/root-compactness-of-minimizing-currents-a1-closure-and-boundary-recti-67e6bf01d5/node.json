@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.closure_zero-a1.imrep_point_sum-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.closure_zero-a1",
+  "depth": 4,
+  "title": "Degree-0 integer multiplicity currents are finite weighted point sums on compactly contained sets",
+  "statement": "Let P ∈ ℕ and U, B ⊆ ℝ^P. Let R be a degree-0 IMRep in U representing S ∈ 𝒟_0(U), and suppose B ⊂⊂ U (closure B is compact and contained in U). Then there are N ∈ ℕ, w : ℕ → ℤ and x : ℕ → ℝ^P such that:\n- x_l ∈ B and w_l ≠ 0 for every l < N;\n- Σ_{l<N} |w_l| ≤ R.measure(B) in [0, ∞];\n- S(ω) = Σ_{l<N} w_l ⟨ω(x_l)⟩ for every ω ∈ 𝒟^0(U) with tsupport ω ⊆ B.\nHere ⟨α⟩ := α(e) is the value of a 0-covector on the empty family e = (fun i => i.elim0).",
+  "lean_statement": "∀ (P : ℕ) (U B : Set (Euclid P)) (R : IMRep U 0) (S : GeometricCurrentOn U 0), R.Represents S → CompactlyContained B U → ∃ (N : ℕ) (w : ℕ → ℤ) (x : ℕ → Euclid P), (∀ l < N, x l ∈ B) ∧ (∀ l < N, w l ≠ 0) ∧ (∑ l ∈ Finset.range N, ((w l).natAbs : ℝ≥0∞)) ≤ R.measure B ∧ ∀ ω : TestFormOn U 0, tsupport (ω : DifferentialForm (Euclid P) 0) ⊆ B → S ω = ∑ l ∈ Finset.range N, (w l : ℝ) * (ω : DifferentialForm (Euclid P) 0) (x l) (fun i => i.elim0)",
+  "lean_name": "cbrz_imrep_zero_local_point_sum",
+  "depends_on": [
+    "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.closure_zero-a1.count_integral-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.closure_zero-a1.count_integral-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-67e6bf01d5-a1"
+}

@@ -1,0 +1,64 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.dilation_isp-a1`
+- Child DAG node: `root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.dilation_isp-a1.testform_comp-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: parent proof, step 1 (for a test form ω, ω∘η is a test form: it is smooth and tsupport(ω∘η) = η⁻¹(tsupport ω) is compact), extracted for test m-forms on ℝ^P.
+Notation: η := dilation a λ, η(y) = −(λ⁻¹a) + dilationCLM P λ (y) = −λ⁻¹a + λ⁻¹y.
+1. Smoothness. η is the sum of the constant map y ↦ −λ⁻¹a and the continuous linear map dilationCLM P λ, so η is C^∞ (contDiff_const.add (dilationCLM P λ).contDiff). The test form φ is C^∞: φ ∈ TestFormOn univ m means IsTestForm φ ∧ tsupport φ ⊆ univ, where IsTestForm φ = (ContDiff ℝ ∞ φ) ∧ HasCompactSupport φ; so the smoothness is φ.property.1.1. A composite of C^∞ maps is C^∞ (ContDiff.comp), so y ↦ φ(η(y)) is C^∞. In Lean, give this as the proof term φ.property.1.1.comp (contDiff_const.add (dilationCLM P lam).contDiff) rather than stating the type, because ∞ in the contract scope denotes ENNReal's top.
+2. Compact support. Since λ > 0, λ⁻¹ ≠ 0. Let e be the homeomorphism y ↦ λ⁻¹y (Homeomorph.smulOfNeZero λ⁻¹ _) followed by z ↦ −λ⁻¹a + z (Homeomorph.addLeft (−(λ⁻¹a))). Then e(y) = −λ⁻¹a + λ⁻¹y = η(y) for all y, so e = η (funext; simp with dilation, dilationCLM). φ has compact support (φ.property.1.2). A compactly supported function composed with a homeomorphism has compact support (HasCompactSupport.comp_homeomorph: tsupport(φ ∘ e) = e⁻¹(tsupport φ), which is compact). Rewriting e = η, φ ∘ η has compact support.
+3. Support condition. tsupport(φ ∘ η) ⊆ univ trivially (subset_univ).
+4. Conclusion. By steps 1–3, the form y ↦ φ(η(y)) satisfies IsTestForm and the support condition. So it defines an element φ' := ⟨fun y => φ(η(y)), ⟨⟨step 1, step 2⟩, step 3⟩⟩ of TestFormOn univ m, and φ'(y) = φ(η(y)) for every y by definition (rfl). ∎
+
+## Key steps
+
+1. η = constant + dilationCLM is C^∞, so φ ∘ η is C^∞.
+2. η coincides with a homeomorphism, so φ ∘ η has compact support (HasCompactSupport.comp_homeomorph).
+3. tsupport ⊆ univ is trivial; package φ ∘ η as an element φ' of TestFormOn univ m, with φ'(y) = φ(η(y)) by definition.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json (mode local-project, project_commit b4d606db1da5da8fa2c0292ad4924d97de8b3c4b, mathlib_commit 25730c7c759d108ef87ab70af2342a196760f79d); cmp GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean (identical); sed -n 120,457p GMT/Ch07/Submission.lean (dilation, dilationCLM, IsIntegerMultiplicity, Sub instance on GeometricCurrentOn)`
+- `grep -n 'structure GeometricCurrentOn|def TestFormOn|def IsTestForm|GeometricCurrentOn.ext|zero_apply|boundary_apply|covectorEuclideanNorm' in lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/{Currents,Forms,Mass}.lean`
+- `python3 -I scan of dag.json: frozen lean_statement of the selected node (equal to the handoff), of sibling cbr_ci_dilation_calculus, and of cmc_slice_mass_bounds and cbr_setIntegral_eq_of_integral_eq ('(' + frozen + ')' is exactly the SL and RU hypotheses); all 1316 lean_names (no 'cbr_ci_dsp' prefix); no node with a type identical to a child; related nodes dtc_blowUp_testForm_corr, dtc_hausdorff_dilation, cbrld_sphere_slice_isIntegerMultiplicity (other branches, different types)`
+- `rg -n --fixed-strings in .../123e8435b4a2469b/mathlib/Mathlib: '_root_.MeasurableEmbedding.setIntegral_map', '_root_.MeasurableEmbedding.aestronglyMeasurable_map_iff', 'theorem ae_map_iff', 'theorem ae_smul_measure', 'theorem integral_smul_measure', 'theorem restrict_smul', 'theorem restrict_zero', 'theorem integral_zero_measure', 'theorem aestronglyMeasurable_zero_measure', 'Homeomorph.smulOfNeZero', 'lemma Homeomorph.measurableEmbedding', 'theorem isCompact_preimage', 'comp_homeomorph', 'lemma LipschitzWith.mul' (all found); literal 'theorem HasCompactSupport.comp_homeomorph' (no match: it is the to_additive form of HasCompactMulSupport.comp_homeomorph, Support.lean:562, and #check confirms it); 'LipschitzWith.const_add' (does not exist, per Lean error; LipschitzWith.const.add is used)`
+- `lake env lean /tmp/dilisp-decomp/lean/Probe.lean (#check of the cited lemmas, all reachable from import GMT.Ch07.Submission; MeasurableEquiv.setIntegral_map and unqualified ae_smul_measure unknown, replaced by MeasurableEmbedding.setIntegral_map and Measure.ae_smul_measure)`
+- `lake env lean /tmp/dilisp-decomp/lean/{Stmts,Children,Assembly,Emul}.lean plus set_option maxHeartbeats {8000,15000,25000,40000} probes and #print axioms`
+- `python3 -I validate_lean_statement from verifier/lean_contract.py on the three child types; check_source_delta (extracted with ast from /runtime/flows/gmt-claude-b888e19cffb1/_recursive_lean/leaf_verification.py) on the three child proofs and on the parent assembly`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-474ece9e64/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-474ece9e64/parent-supplied-plan.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/StronglyMeasurable/AEStronglyMeasurable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Module.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/ConstMulAction.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Constructions/BorelSpace/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Homeomorph/Lemmas.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Support.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Group/Uniform.lean`
+- `/runtime/flows/gmt-claude-b888e19cffb1/_recursive_lean/leaf_verification.py`
+- `/runtime/flows/gmt-claude-b888e19cffb1/_recursive_lean/runtime.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/tmp/dilisp-decomp/lean/Stmts.lean`
+- `/tmp/dilisp-decomp/lean/Children.lean`
+- `/tmp/dilisp-decomp/lean/Assembly.lean`
+- `/tmp/dilisp-decomp/lean/Emul.lean`
+
+The snapshot contract is byte-identical to the workspace Contract.lean and Submission.lean (project b4d606db, Mathlib 25730c7c). No existing declaration or DAG node uses the proposed names (prefix cbr_ci_dsp_) or has any of the three child types. The related accepted nodes (dtc_blowUp_testForm_corr, dtc_hausdorff_dilation, cbrld_sphere_slice_isIntegerMultiplicity) live in other branches with different types, so they are not prerequisites here. In the parent type, the SL and RU hypotheses are exactly the parenthesized frozen statements of cmc_slice_mass_bounds and cbr_setIntegral_eq_of_integral_eq. Every Mathlib lemma used by the child proofs exists in the snapshot and is reachable from import GMT.Ch07.Submission. Each of the three child types elaborates and was fully proven in scratch (axioms propext, Classical.choice, Quot.sound; each within 15000 heartbeats), and all three pass validate_lean_statement and the leaf source-delta check. The exact frozen parent type was proven from the exact child types and the exact frozen sibling type cbr_ci_dilation_calculus (assembly within 40000 heartbeats; only standard axioms besides the sorry placeholder for the unproven sibling).
