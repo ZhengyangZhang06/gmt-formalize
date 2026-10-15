@@ -58662,7 +58662,4 @@ theorem Submission.idtp_ccd_planar_support_mass : ∀ (P n : ℕ) (U : Set (Eucl
   rw [hmassW W hW hWB, hck, ← EuclideanSpace.euclideanHausdorffMeasure_eq_volume,
     ← hΦiso.euclideanHausdorffMeasure_image, image_preimage_eq_inter_range, hΦrange]
 
-/-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
-theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
-
 end GMT.Ch07
