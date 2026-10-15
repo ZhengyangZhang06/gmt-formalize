@@ -1,0 +1,74 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "rg -n 'doragm_rfv|radial_field' .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project",
+        "sed -n '29,97p;250,277p' .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "theorem (contDiffAt_norm|HasFDerivAt.norm_sq)|theorem (IsProj.trace|trace_smulRight|trace_comp_comm)|lemma starProjection_apply_mem|theorem starProjection_(eq_self_iff|inner_eq_zero|norm_le)|theorem norm_sub_sq_real|theorem HasFDerivAt.sqrt",
+        "integral_withDensity_eq_integral_toReal_smul|integrableOn_iff_integrable_of_support_subset|integrableOn_of_bounded|withDensity_absolutelyContinuous|HasCompactSupport.fderiv|fderiv_of_notMem_tsupport",
+        "HasApproximateTangentSpaceAt|finrank_eq",
+        "git show 6c199bd2f71cf6454e96792be486679e1ca03ac1:GMT/Ch07/Submission.lean | tail -n 88",
+        "git show db9124843c506359873f91062030c510c3800:GMT/Ch07/Submission.lean | tail -n 38",
+        "git show 702e7082a5a7012f7a8f6efd9d272697e426f50b:GMT/Ch07/Submission.lean | tail -n 46",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/rfv-independent-audit/Challenges.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/rfv-independent-audit/AllAxioms.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Trace.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Calculus.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Projection/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/SpecialFunctions/Sqrt.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/ContinuousLinearMap.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/WithDensity.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-240d390605/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-240d390605/decomposition-v1.json",
+        "/tmp/rfv-decomp/FromJson.lean",
+        "/tmp/rfv-independent-audit/Challenges.lean",
+        "/tmp/rfv-independent-audit/AllAxioms.lean"
+      ],
+      "conclusion": "Verified the pinned revisions and byte-identical contract context; the project search found no doragm_rfv or radial_field declarations. All five exact one-line types independently elaborate as propositions before their implementations, and projection, finite-dimensionality and operator-space measurability instances resolve correctly. No matrix construction occurs. All names are bare identifiers; scanning the eight chapter DAGs found only the three permitted accepted reuses, with byte-identical frozen types and no dependencies. Their accepted proof bodies also match the supplied Lean evidence. Independently compiling all five proofs and the exact selected parent assembly succeeded; every theorem uses only propext, Classical.choice and Quot.sound. The split is appropriate and acyclic. Its conclusions establish the selected radial first-variation identity: compact finiteness gives integrability of the cutoff, integrable divergence gives integrability of the correction term by subtraction, and integral linearity completes the stated assembly without assumptions on H."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "radial_field_c1",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and Lean type match all hypotheses and three conclusions. The proof establishes support containment, compactness, local affine agreement at the centre, and C¹ regularity elsewhere using smoothness of the nonzero Euclidean norm. It is complete and independent of the parent and other children."
+    },
+    {
+      "key": "radial_field_trace",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact trace formula follows from the supplied projection trace, square-root derivative, scalar-vector product rule, rank-one trace and orthogonality calculations. The centre and zero denominator are handled explicitly. Finite-dimensionality supplies the orthogonal-projection instance for every Q; no missing closedness hypothesis or child dependency is required."
+    },
+    {
+      "key": "first_variation_integral",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "This reuses the identical accepted frozen type. Independently, the supplied proof establishes strong measurability through the finite-dimensional operator space, bounds divergence on its compact support, proves that support has finite weight directly from IMRep, and applies the finite measurable density formula. Both conclusions follow without circular reliance on compact_measure_finite or the parent."
+    },
+    {
+      "key": "tangent_dimension",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose matches the identical accepted type. The proof correctly obtains tangent existence from R.orients, unfolds the chosen tangent plane, applies the dimension condition of its witness, and transfers the almost-everywhere assertion through withDensity absolute continuity. It needs neither uniqueness nor any other proposed child."
+    },
+    {
+      "key": "compact_measure_finite",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The identical accepted type expresses precisely both finiteness conclusions. Compactness makes K measurable; restriction and density formulas identify its weight with the finite local multiplicity integral. Positivity of the integer multiplicity then bounds the unweighted measure. The supplied proof is complete and independent."
+    }
+  ],
+  "required_changes": []
+}

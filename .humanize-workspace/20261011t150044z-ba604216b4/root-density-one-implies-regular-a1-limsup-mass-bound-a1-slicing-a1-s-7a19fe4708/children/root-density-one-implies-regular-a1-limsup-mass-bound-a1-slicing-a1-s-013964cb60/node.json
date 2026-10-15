@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.slicing-a1.slice_family-a1.slice_imreps-a1.ae_forall_compact-a1",
+  "parent_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.slicing-a1.slice_family-a1.slice_imreps-a1",
+  "depth": 6,
+  "title": "Countable compact exhaustion: swapping 'for all compact K ⊆ U' with 'for a.e. t'",
+  "statement": "Let P ∈ ℕ, U ⊆ ℝ^P open, and (F_t)_{t∈ℝ} a family of set functions F_t : 𝒫(ℝ^P) → [0, ∞], each monotone (A ⊆ B ⇒ F_t(A) ≤ F_t(B)). Assume that for every compact K ⊆ U, F_t(K) ≠ ∞ for Lebesgue-a.e. t ∈ ℝ. Then for Lebesgue-a.e. t ∈ ℝ: F_t(K) ≠ ∞ for every compact K ⊆ U.",
+  "lean_statement": "∀ (P : ℕ) (U : Set (Euclid P)) (F : ℝ → Set (Euclid P) → ℝ≥0∞), IsOpen U → (∀ t, Monotone (F t)) → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → ∀ᵐ t, F t K ≠ ∞) → ∀ᵐ t, ∀ K : Set (Euclid P), IsCompact K → K ⊆ U → F t K ≠ ∞",
+  "lean_name": "dor_lmbsf_si_ae_forall_compact",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-limsup-mass-bound-a1-slicing-a1-s-013964cb60-a1"
+}
