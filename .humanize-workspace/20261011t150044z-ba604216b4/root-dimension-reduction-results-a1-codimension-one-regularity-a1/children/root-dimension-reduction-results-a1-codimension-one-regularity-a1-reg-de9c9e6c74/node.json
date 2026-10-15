@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1",
+  "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1",
+  "depth": 3,
+  "title": "Boundaries of regions have density one on a dense subset of their support (Simon 7.5.2(‡))",
+  "statement": "Let P, n ∈ ℕ with n ≥ 1, U, N, E ⊆ ℝ^P, ξ_N : ℝ^P → Λ_{n+1}(ℝ^P) and T ∈ 𝒟_n(U). Assume U is open, InClassO n U N ξ_N, E is measurable with E ⊆ N ∩ U, T(ω) = ∫_E ξ_N(x)(dω(x)) dH^{n+1}(x) for every ω ∈ 𝒟^n(U) (IsBoundaryOfRegion T E ξ_N), and T is integer multiplicity (IsIntegerMultiplicity T). Then for every x ∈ spt T and every ρ > 0 there is y ∈ spt T ∩ B_ρ(x) with Θ^n(μ_T, y) = 1 (HasMassDensity T y 1).",
+  "lean_statement": "∀ (P n : ℕ) (U N E : Set (Euclid P)) (ξN : Euclid P → MultiVector P (n + 1)) (T : GeometricCurrentOn U n), 1 ≤ n → IsOpen U → InClassO n U N ξN → MeasurableSet E → E ⊆ N ∩ U → IsBoundaryOfRegion T E ξN → IsIntegerMultiplicity T → ∀ x ∈ T.support, ∀ ρ : ℝ, 0 < ρ → ∃ y ∈ T.support ∩ ball x ρ, HasMassDensity T y 1",
+  "lean_name": "codim1_region_density_one_dense",
+  "depends_on": [
+    "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_support_cycle-a1",
+    "root.dimension_reduction_results-a1.codimension_one_regularity-a1.oriented_piece_mass-a1",
+    "root.density_one_implies_regular-a1.imrep_mass_and_support-a1.unit_orientation_duality-a1",
+    "root.regular_set_dense-a1.integer_combination-a1.orientation_sign-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_support_cycle-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.oriented_piece_mass-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.density_one_implies_regular-a1.imrep_mass_and_support-a1.unit_orientation_duality-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-imrep-mass-and-support-a1-unit-or-24edf309fb-a1",
+      "result_commit": "9c8432cb0101c6d41f824c0d8191b92a92dbdd80",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.regular_set_dense-a1.integer_combination-a1.orientation_sign-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-regular-set-dense-a1-integer-combination-a1-orientation-sign-a1-a1",
+      "result_commit": "fe95347baaed6a2cf2ecde4455e2b32f361fde51",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-de9c9e6c74-a1"
+}

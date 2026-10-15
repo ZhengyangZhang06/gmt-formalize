@@ -1,0 +1,7 @@
+# Theorem solutions
+
+Local proof acceptance and GitHub merge status are separate.
+
+| Node | Issue | PR | Requires |
+| --- | --- | --- | --- |
+| root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.two_dim_cone_density-a1 | https://github.com/ZhengyangZhang06/gmt-formalize/issues/4833 | this PR | root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_tangent_cone_planar-a1, root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_constant_density_planar-a1, root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_sector_endpoint_density-a1, root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.planar_constancy-a1, root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.two_dim_cone_density-a1.cone_dilation-a1, root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.two_dim_cone_density-a1.subspace_ball_measure-a1, root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.two_dim_cone_density-a1.no_infinite_planar_pieces-a1, root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.two_dim_cone_density-a1.arc_continuation-a1, root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.two_dim_cone_density-a1.density_locally_constant-a1, root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.two_dim_cone_density-a1.cone_set_finite_planes-a1, root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.two_dim_cone_density-a1.planes_union_vertex_density-a1 |

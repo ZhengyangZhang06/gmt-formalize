@@ -1,0 +1,114 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "idtp_cse_sp_",
+        "idtp_cse_sp_|polarCoord|HasApproximateTangentSpaceAt|approxTangentPlane|HasMassDensity|structure IMRep|def measure",
+        "euclideanHausdorffMeasure_preimage|EuclideanSpace.euclideanHausdorffMeasure_eq_volume",
+        "volume_preserving_finTwoArrow|volume_preserving_toLp",
+        "isOpen_image_of_subset_source",
+        "measure_toOuterMeasure_isBorelRegular|realUnitBallVolume_pos|simonHausdorffMeasureReal_toOuterMeasure",
+        "git merge-base --is-ancestor 591230fd256e4a25aea8a8a57e9508ced7f5c9db 71a35e92ff3a966996363e5040ecd37921ba6cb9",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/sp_check/v2/All_axiom.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/sector-independent-audit-in79_kng/rsd_ae_hasMassDensity_mult.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/sector-independent-audit-in79_kng/imrep_carrier_sdiff_support_null.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/sector-independent-audit-in79_kng/dtc_approxTangent_of_null_diff.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/sector-independent-audit-in79_kng/dorag_sn_hausdorff_le_mul_of_lower_density.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/sector-independent-audit-in79_kng/dorag_sn_open_superset_measure_lt.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Submission.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/SpecialFunctions/PolarCoord.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Constructions/Pi.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Haar/InnerProductSpace.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/QuasiMeasurePreserving.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/MeasureSpaceDef.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/OpenPartialHomeomorph/Basic.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter01/Basic.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter01/DensityComparison.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter02/AreaNormalization.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-64496f9e64/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-64496f9e64/decomposition-v1.json",
+        "/tmp/sp_check/v2/All_axiom.lean",
+        "/tmp/sector-independent-audit-in79_kng/rsd_ae_hasMassDensity_mult.lean",
+        "/tmp/sector-independent-audit-in79_kng/imrep_carrier_sdiff_support_null.lean",
+        "/tmp/sector-independent-audit-in79_kng/dtc_approxTangent_of_null_diff.lean",
+        "/tmp/sector-independent-audit-in79_kng/dorag_sn_hausdorff_le_mul_of_lower_density.lean",
+        "/tmp/sector-independent-audit-in79_kng/dorag_sn_open_superset_measure_lt.lean"
+      ],
+      "conclusion": "Verified the pinned definitions, library hypotheses, six accepted reuse types, and dependency closures. The four new names have no reservation elsewhere; node-record matches occur only in this selected node's proposal/retry records. All ten types are standalone one-line propositions matching their prose, with bare identifiers and no problematic inline matrix-unit constructions. The internal dependencies are acyclic; no reused dependency closure reaches the selected node. Independently reran All_axiom.lean: the four new proofs and exact frozen parent compile using precisely the six intended reuse assumptions. Fresh compilations of those accepted implementations report only propext, Classical.choice and Quot.sound; none depends on sorryAx. The split appropriately separates density, tangent-plane, topology and polar-measure arguments, and its assembly proves this selected parent. The comparison and tangent arguments also agree with [Simon's text, Chapter 1 Theorem 3.3 and Chapter 3 Definition 1.4/Remark 1.5](https://math.stanford.edu/~lms/ntu-gmt-text.pdf)."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "density_mult",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact type includes representation and positive integer density. The proof correctly transfers the carrier a.e. statement, establishes local finiteness, eliminates off-carrier positive-density points by comparison and outer regularity, and identifies multiplicity by uniqueness of limits. Its four prerequisites are explicitly registered."
+    },
+    {
+      "key": "flat_region",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All local planarity, relative-neighbourhood, dimension and density hypotheses match. The two null-difference inclusions transfer both tangent planes to the same intersection; uniqueness and the definition of approxTangentPlane finish. No measurability assumption on G is silently required."
+    },
+    {
+      "key": "polar_null",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The isometry and measure-preserving coordinate conversion use the intended Euclidean and product measures. A measurable null superset handles arbitrary N, and the positive radial Jacobian yields precisely the stated conditional Lebesgue-a.e. conclusion."
+    },
+    {
+      "key": "sector_open",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Orthonormality and finrank give coordinates on Q. The polar image is open on the stated angular interval, and continuous coordinate pullback supplies the required radius. Positivity of δ follows from 0 < φ < δ; no hypothesis is missing."
+    },
+    {
+      "key": "mass_eq_measure",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Identical comparator-accepted reuse. The proof uses the frozen Euclidean coefficient norm, proves both mass inequalities, and supplies the compact localization, smooth approximation and error estimates needed for the lower bound."
+    },
+    {
+      "key": "ae_density_mult",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Identical comparator-accepted reuse retaining its accepted mass-equality prerequisite. Local finiteness, tangent-derived unweighted density, localized differentiation, the closed/open-ball sandwich and absolute continuity establish the exact R.measure-a.e. conclusion."
+    },
+    {
+      "key": "lower_density_comparison",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Identical comparator-accepted reuse. Openness places small closed balls inside O; the lower bound gives the required upper-density bound. The positive finite normalization factors justify division and produce a finite constant for arbitrary A."
+    },
+    {
+      "key": "null_open_superset",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Identical comparator-accepted reuse. The countable finite-measure ball cover, summable positive budgets and outer regularity of each restricted measure give the strict bound, including ε = ∞ and A = ∅."
+    },
+    {
+      "key": "carrier_support_null",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Identical comparator-accepted reuse. The proof matches the frozen support definition. Local test forms and the fundamental lemma force all orientation components to vanish on each zero region, contradicting unit orientation except on a null set; countable reduction completes the argument."
+    },
+    {
+      "key": "approx_tangent_null_diff",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Identical comparator-accepted reuse. Compact test support localizes small blow-ups inside V; Lipschitz null-set preservation and M' ⊆ M give a.e.-equal restricted measures and identical eventual integrals, without assuming measurability of either set."
+    }
+  ],
+  "required_changes": []
+}

@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_sector_endpoint_density-a1.stationary_radial-a1",
+  "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_sector_endpoint_density-a1",
+  "depth": 4,
+  "title": "A minimizing cone with vanishing boundary is stationary and radially tangent",
+  "statement": "Let P, n ∈ ℕ, let C ∈ 𝒟_n(ℝ^P) be minimizing in ℝ^P (IsMinimizingIn C univ), with ∂C = 0 (BoundaryVanishes C), and a cone (IsConeCurrent C), and let R = (M, θ, ξ) ∈ IMRep(ℝ^P, n) represent C. Then (a) R.firstVariation X = 0 for every C¹ vector field X : ℝ^P → ℝ^P with compact support, and (b) for R.measure-almost every x, p_{T_x}(x) = x, where T_x := approxTangentPlane n M x and p_{T_x} is the orthogonal projection onto T_x (starProjection).",
+  "lean_statement": "∀ (P n : ℕ) (C : GeometricCurrentOn (univ : Set (Euclid P)) n) (R : IMRep (univ : Set (Euclid P)) n), IsMinimizingIn C univ → BoundaryVanishes C → IsConeCurrent C → R.Represents C → (∀ X : Euclid P → Euclid P, ContDiff ℝ 1 X → HasCompactSupport X → R.firstVariation X = 0) ∧ ∀ᵐ x ∂R.measure, (approxTangentPlane n R.carrier x).starProjection x = x",
+  "lean_name": "idtp_cse_cone_stationary_radial",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-f9234d9220-a1"
+}

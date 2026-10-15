@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.two_dim_cone_density-a1.planes_union_vertex_density-a1.plane_domain-a1",
+  "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.two_dim_cone_density-a1.planes_union_vertex_density-a1",
+  "depth": 5,
+  "title": "An open domain containing a punctured 2-plane, avoiding the other planes, whose trace on the plane is connected",
+  "statement": "Let P, q ∈ ℕ, let P_1, …, P_q (a family Ps : Fin q → Submodule ℝ ℝ^P) be linear subspaces of ℝ^P, and let i ∈ Fin q be such that dim P_i = 2 and P_i ∩ P_j = {0} (Ps i ⊓ Ps j = ⊥) for every j ≠ i. Then there is an open set V ⊆ ℝ^P such that V ∩ P_i is connected, P_i ∖ {0} ⊆ V, and V is disjoint from P_j for every j ≠ i.",
+  "lean_statement": "∀ (P q : ℕ) (Ps : Fin q → Submodule ℝ (Euclid P)) (i : Fin q), Module.finrank ℝ (Ps i) = 2 → (∀ j, j ≠ i → Ps i ⊓ Ps j = ⊥) → ∃ V : Set (Euclid P), IsOpen V ∧ IsConnected (V ∩ (Ps i : Set (Euclid P))) ∧ (Ps i : Set (Euclid P)) \\ {0} ⊆ V ∧ ∀ j, j ≠ i → Disjoint V (Ps j : Set (Euclid P))",
+  "lean_name": "idtp_tdc_puvd_plane_domain",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-6338e0babb-a1"
+}

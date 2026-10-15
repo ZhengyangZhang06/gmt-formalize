@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_sector_endpoint_density-a1.fibre_area-a1.polar_jacobian-a1.proj_norm_sq-a1",
+  "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_sector_endpoint_density-a1.fibre_area-a1.polar_jacobian-a1",
+  "depth": 6,
+  "title": "Squared norm of the orthogonal projection onto a 2-plane spanned by an orthonormal pair",
+  "statement": "Let P ∈ ℕ, Q a linear subspace of ℝ^P with dim Q = 2, a, e ∈ Q with |a| = |e| = 1 and ⟨a,e⟩ = 0, and x ∈ ℝ^P. Then |Q.starProjection x|² = ⟨x,a⟩² + ⟨x,e⟩².",
+  "lean_statement": "∀ (P : ℕ) (Q : Submodule ℝ (Euclid P)) (a e x : Euclid P), Module.finrank ℝ Q = 2 → a ∈ Q → e ∈ Q → ‖a‖ = 1 → ‖e‖ = 1 → inner ℝ a e = 0 → ‖Q.starProjection x‖ ^ 2 = inner ℝ x a ^ 2 + inner ℝ x e ^ 2",
+  "lean_name": "idtp_cse_fa_pj_starProjection_norm_sq",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-630acd662f-a1"
+}

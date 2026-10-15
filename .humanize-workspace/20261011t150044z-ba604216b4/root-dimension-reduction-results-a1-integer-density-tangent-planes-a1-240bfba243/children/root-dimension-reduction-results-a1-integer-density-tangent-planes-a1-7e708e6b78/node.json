@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_sector_endpoint_density-a1.box_mass_limits-a1.box_inclusions-a1.norm_expansion-a1",
+  "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_sector_endpoint_density-a1.box_mass_limits-a1.box_inclusions-a1",
+  "depth": 6,
+  "title": "Second-order expansion of |a + s'w| at a unit vector a",
+  "statement": "Let P ∈ ℕ, let a, w ∈ ℝ^P with |a| = 1 and |w| ≤ 3, and let s' ∈ ℝ with 0 < s' and 20s' < 1. Then ||a + s'w| − 1 − s'⟨w, a⟩| ≤ 30s'².",
+  "lean_statement": "∀ (P : ℕ) (a w : Euclid P) (s' : ℝ), ‖a‖ = 1 → ‖w‖ ≤ 3 → 0 < s' → 20 * s' < 1 → |‖a + s' • w‖ - 1 - s' * inner ℝ w a| ≤ 30 * s' ^ 2",
+  "lean_name": "idtp_cse_bml_rbi_norm_expansion",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-7e708e6b78-a1"
+}

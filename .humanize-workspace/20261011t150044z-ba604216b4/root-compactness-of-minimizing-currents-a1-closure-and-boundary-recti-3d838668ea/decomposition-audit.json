@@ -1,0 +1,68 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "massOn_sub|mass_sub|mass_add_le|massOn_add|support_sub|support_add|sub_support|zeroRegion_inter",
+        "norm_setIntegral_le_of_norm_le_const_ae|setIntegral_eq_zero_of_forall_eq_zero|setIntegral_eq_integral_of_forall_compl_eq_zero",
+        "theorem.*aestronglyMeasurable_comp₂|lemma.*aestronglyMeasurable_comp₂",
+        "ofReal_add_le|ofReal_le_iff_le_toReal|toReal_mono|theorem toReal_add|theorem toReal_mul|ofReal_toReal",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/cbrld-null-audit-g_4670nu/Challenges.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/cbrld-null-audit-g_4670nu/Children.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/cbrld-null-audit-g_4670nu/Assembly.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/StronglyMeasurable/Lemmas.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Basic/ENNReal/Real.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-3d838668ea/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-3d838668ea/decomposition-v1.json",
+        "/tmp/cbrld-null-audit-g_4670nu/Challenges.lean",
+        "/tmp/cbrld-null-audit-g_4670nu/Children.lean",
+        "/tmp/cbrld-null-audit-g_4670nu/Assembly.lean"
+      ],
+      "conclusion": "The snapshot and compiler dependencies match the pinned revisions; the working contract is byte-identical to the snapshot. Searches found no matching current-difference mass/support lemma in the searched project and SimonGMT sources. The actual Sub instance implements subtraction of current functionals. All five contracts are standalone one-line propositions, elaborate without child implementations, and have distinct bare names unreserved in the DAG. Only comparison depends on support_sub and mass_sub; these edges and the existing cone/covering dependencies are acyclic. Independent Lean checks of all five proofs and the conditional assembly of the verbatim selected parent succeeded using only propext, Classical.choice and Quot.sound. The split appropriately isolates genuine obligations, and the retained measure-theoretic argument establishes exactly the selected null-set statement."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "support_sub",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Prose and type agree for arbitrary U. The proof correctly uses membership in U to obtain both zero-region witnesses, then verifies openness, compact closure, domain containment and vanishing on their intersection. It requires neither openness of U nor circular reliance."
+    },
+    {
+      "key": "mass_sub",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact local-mass inequality follows by negating admissible forms, applying ENNReal.ofReal_add_le and le_massOn, and taking the supremum. The proof correctly preserves the coefficient norm and support and covers infinite masses without additional hypotheses."
+    },
+    {
+      "key": "ball_mass",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Prose and type match, including arbitrary measure and radius. The infinite-measure case is trivial; the finite case uses the verified integral-norm lemma, which requires no measurability hypothesis. Restriction of the a.e. bound and conversion through ofReal_toReal are justified."
+    },
+    {
+      "key": "ball_support",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The separating ball gives a valid zero-region witness with compact closure in Euclidean space. The integrand vanishes pointwise on the integration ball, so no measurability or integrability assumption is missing. The argument also covers nonpositive radii."
+    },
+    {
+      "key": "comparison",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All hypotheses appear in both prose and type. The proof establishes the boundary, finite mass and support conditions for S−A using precisely its declared dependencies. Every toReal conversion has a finite upper bound, and multiplication uses cR ≥ 0. The explicit cone hypothesis matches the existing cone conclusion; the final algebra proves the exact estimate without circularity."
+    }
+  ],
+  "required_changes": []
+}

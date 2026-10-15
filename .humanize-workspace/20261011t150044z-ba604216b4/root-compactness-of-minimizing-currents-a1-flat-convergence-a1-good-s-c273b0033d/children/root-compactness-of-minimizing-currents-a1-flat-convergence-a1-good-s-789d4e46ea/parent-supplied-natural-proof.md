@@ -1,0 +1,136 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.compactness_of_minimizing_currents-a1.flat_convergence-a1.good_slice-a1.ae_quotient_finite-a1`
+- Child DAG node: `root.compactness_of_minimizing_currents-a1.flat_convergence-a1.good_slice-a1.ae_quotient_finite-a1.ae_seq_liminf_finite-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: steps 1, 3 and 4 of the parent-supplied proof of cmc_fc_gs_ae_quotient_finite (two applications of Fatou's lemma). Here it is stated for arbitrary measures ν_j with uniformly bounded total mass.
+
+This proof uses the sibling lemma window_lintegral (Lean: Submission.cmc_fc_gs_aqf_window_lintegral). It says: for every s-finite Borel measure ν on ℝ and every h ∈ ℝ, the function t ↦ ν((t − h, t)) is measurable and ∫⁻ ν((t − h, t)) dt = ENNReal.ofReal(h)·ν(ℝ).
+
+Notation is as in the statement. Leb is Lebesgue measure on ℝ, ∫⁻ is the [0, ∞]-valued Lebesgue integral with respect to Leb, and h_n := 1/(n + 1) ∈ ℝ.
+
+1. (Finiteness.) For every j, ν_j(ℝ) ≤ Λ < ∞, so ν_j is a finite measure. In particular it is s-finite, so window_lintegral applies to ν_j.
+
+2. (Q_{j,n} is measurable.) Fix j and n. By window_lintegral with ν := ν_j and h := h_n, the function t ↦ ν_j((t − h_n, t)) is measurable. Multiplying by the constant n + 1 ∈ [0, ∞] preserves measurability (Mathlib Measurable.const_mul). So Q_{j,n} is measurable.
+
+3. (Normalization.) For every n ∈ ℕ, (n + 1)·ENNReal.ofReal(1/(n + 1)) = 1 in [0, ∞].
+  Since n + 1 > 0 in ℝ and 1/(n + 1) = (n + 1)⁻¹, Mathlib ENNReal.ofReal_inv_of_pos gives ENNReal.ofReal(1/(n + 1)) = (ENNReal.ofReal(n + 1))⁻¹.
+  Next, ENNReal.ofReal(n + 1) = ENNReal.ofReal(n) + ENNReal.ofReal(1) = n + 1 in [0, ∞]. This uses ENNReal.ofReal_add (as n ≥ 0 and 1 ≥ 0), then ENNReal.ofReal_natCast and ENNReal.ofReal_one.
+  The element n + 1 of [0, ∞] is neither 0 nor ∞, so (n + 1)·(n + 1)⁻¹ = 1 (ENNReal.mul_inv_cancel).
+
+4. (Integral of Q_{j,n}.) By step 2 the function t ↦ ν_j((t − h_n, t)) is measurable, so the constant n + 1 can be pulled out of the integral (Mathlib lintegral_const_mul). With window_lintegral and step 3 this gives
+  ∫⁻ Q_{j,n} = (n + 1)·∫⁻ ν_j((t − h_n, t)) dt = (n + 1)·(ENNReal.ofReal(h_n)·ν_j(ℝ)) = ((n + 1)·ENNReal.ofReal(h_n))·ν_j(ℝ) = ν_j(ℝ).
+
+5. (First Fatou.) Let q_j(t) := liminf_{n→∞} Q_{j,n}(t). By step 2 and Mathlib Measurable.liminf, q_j is measurable. Fatou's lemma (Mathlib lintegral_liminf_le, with the measurability from step 2) and step 4 give
+  ∫⁻ q_j ≤ liminf_{n→∞} ∫⁻ Q_{j,n} = liminf_{n→∞} ν_j(ℝ) = ν_j(ℝ) ≤ Λ.
+  The liminf of a constant sequence is that constant (Filter.liminf_const; atTop on ℕ is a nontrivial filter).
+
+6. (Second Fatou.) Let F(t) := liminf_{j→∞} q_j(t). By step 5 and Measurable.liminf, F is measurable. Fatou's lemma again (lintegral_liminf_le, with the measurability of the q_j) gives ∫⁻ F ≤ liminf_{j→∞} ∫⁻ q_j.
+  By step 5, ∫⁻ q_j ≤ Λ for every j. So monotonicity of liminf (Filter.liminf_le_liminf) gives liminf_j ∫⁻ q_j ≤ liminf_j Λ = Λ, using Filter.liminf_const. No boundedness side conditions are needed, because [0, ∞] is a complete lattice.
+  Hence ∫⁻ F ≤ Λ, and since Λ ≠ ∞, ∫⁻ F ≠ ∞.
+
+7. (Finite almost everywhere.) A measurable [0, ∞]-valued function with finite integral is finite almost everywhere (Mathlib ae_lt_top). So F(t) < ∞, i.e. F(t) ≠ ∞, for Lebesgue-almost every t. Since F(t) = liminf_{j→∞} liminf_{n→∞} Q_{j,n}(t) is exactly the quantity in the statement, the theorem follows. ∎
+
+## Key steps
+
+1. Each ν_j has ν_j(ℝ) ≤ Λ < ∞, so it is finite, hence s-finite, and window_lintegral applies.
+2. Q_{j,n} = (n + 1)·ν_j((· − 1/(n + 1), ·)) is measurable (window_lintegral, Measurable.const_mul).
+3. (n + 1)·ofReal(1/(n + 1)) = 1 in [0, ∞] (ofReal_inv_of_pos, ofReal_add, ofReal_natCast, mul_inv_cancel), so ∫⁻ Q_{j,n} = ν_j(ℝ) (lintegral_const_mul, window_lintegral).
+4. First Fatou: q_j := liminf_n Q_{j,n} is measurable (Measurable.liminf) and ∫⁻ q_j ≤ liminf_n ν_j(ℝ) = ν_j(ℝ) ≤ Λ.
+5. Second Fatou: F := liminf_j q_j is measurable and ∫⁻ F ≤ liminf_j ∫⁻ q_j ≤ Λ < ∞ (lintegral_liminf_le, liminf_le_liminf, liminf_const).
+6. ae_lt_top: F(t) < ∞ for a.e. t, which is the claim.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `rg -n "theorem measurable_measure_prodMk_left |theorem prod_apply |theorem prod_apply_symm|theorem lintegral_liminf_le |theorem ae_lt_top |theorem Measurable.liminf |liminf_le_liminf_comp|theorem liminf_congr|theorem liminf_le_liminf |theorem tendsto_one_div_add_atTop_nhds_zero_nat|theorem lintegral_const_mul |theorem lintegral_const |theorem volume_Ioo|theorem restrict_apply_univ|theorem restrict_apply |theorem liminf_const " mathlib/Mathlib --glob '*.lean'`
+- `rg -n -B2 "theorem limsup_le_limsup \{|theorem limsup_congr \{|theorem limsup_const |lemma limsup_const " mathlib/Mathlib/Order --glob '*.lean' (to_dual sources of liminf_le_liminf, liminf_congr, liminf_const)`
+- `rg -n "theorem ofReal_inv_of_pos|theorem mul_inv_cancel|theorem ofReal_natCast|theorem ofReal_add " mathlib/Mathlib/Basic/ENNReal; rg -n "theorem tendsto_nhdsWithin_iff" mathlib/Mathlib; rg -n "theorem measurableSet_lt " mathlib/Mathlib/MeasureTheory/Constructions/BorelSpace/Order.lean; rg -n "lemma ofReal_natCast|theorem ne_top_of_le_ne_top|theorem tendsto_order " mathlib/Mathlib`
+- `rg -n "Ioo \(t - h\) t|Ioo \(x - h\) x|Ioo \(t - r\) t" mathlib/Mathlib project --glob '*.lean' (no match)`
+- `rg -n "lintegral_measure_Ioo|measure_Ioo_sub|lintegral_measure_Ioc_sub|∫⁻ [a-z], [a-zμν]+ \((Ioo|Ioc|Ico|Icc) \([a-z] - " mathlib/Mathlib project --glob '*.lean' (no match)`
+- `rg -n "cmc_fc_gs|aqf_" project --glob '*.lean' (no match); rg -n "liminf .*𝓝\[>\] 0" project --glob '*.lean' (no match)`
+- `python3 scan of dag.json: lean_name membership of cmc_fc_gs_aqf_window_lintegral / cmc_fc_gs_aqf_ae_seq_liminf_finite / cmc_fc_gs_aqf_liminf_le_seq (all absent); lean_statement patterns 'Ioo (t - h) t', 'ofReal h *', 'SFinite', 'liminf (fun n : ℕ', '∫⁻ t, ', 'h⁻¹ *', 'liminf (fun h'; node status and children of the selected node`
+- `sed -n 560,613p verifier/gmt-compare.py (contract_scope, child_modules); sed -n 2790,2840p and 6532,6575p runtime.py (_install_speculative_assumptions, _existing_lean_name_problem); sed -n 16,96p lean_contract.py (validate_lean_statement)`
+- `python3 -I /tmp/aqf2-dec-b7c1/gen.py (imports verifier/gmt-compare.py child_modules in 'contract' mode and lean_contract.validate_lean_statement; writes exact NodeChallenge/NodeSolution files)`
+- `lake env lean /tmp/aqf2-dec-b7c1/gen/{parent,window_lintegral,ae_seq_liminf_finite,liminf_le_seq}_NodeChallenge.lean`
+- `lake env lean /tmp/aqf2-dec-b7c1/proofs/{Full,FullSolution,Stub,InstancesFull}.lean (complete child proofs, exact-type assembly, comparator resolution, speculative-stub scope, rfl instance checks, #print axioms)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Prod.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Add.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Markov.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Constructions/BorelSpace/Order.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Order/LiminfLimsup.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Order/BoundedOrder/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/SpecificLimits/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Basic/ENNReal/Inv.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Basic/ENNReal/Real.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Basic/ENNReal/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/NhdsWithin.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Order/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-flat-convergence-a1-good-s-c273b0033d/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-flat-convergence-a1-good-s-c273b0033d/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-flat-convergence-a1-good-s-c273b0033d/decomposition-audit-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/runtime/flows/gmt-claude-d253855dab51/_recursive_lean/runtime.py`
+- `/runtime/flows/gmt-claude-d253855dab51/_recursive_lean/lean_contract.py`
+- `/tmp/aqf2-dec-b7c1/gen/parent_NodeChallenge.lean`
+- `/tmp/aqf2-dec-b7c1/gen/window_lintegral_NodeChallenge.lean`
+- `/tmp/aqf2-dec-b7c1/gen/ae_seq_liminf_finite_NodeChallenge.lean`
+- `/tmp/aqf2-dec-b7c1/gen/liminf_le_seq_NodeChallenge.lean`
+- `/tmp/aqf2-dec-b7c1/proofs/Full.lean`
+- `/tmp/aqf2-dec-b7c1/proofs/FullSolution.lean`
+- `/tmp/aqf2-dec-b7c1/proofs/Stub.lean`
+- `/tmp/aqf2-dec-b7c1/proofs/InstancesFull.lean`
+
+Snapshot revisions: project b4d606db1da5da8fa2c0292ad4924d97de8b3c4b, mathlib 25730c7c759d108ef87ab70af2342a196760f79d. The workspace Contract.lean and Submission.lean are identical.
+
+Neither the snapshot project nor the pinned Mathlib states any of the three child obligations. The sliding-window and window-lintegral searches and the project searches for cmc_fc_gs/aqf_ and for 𝓝[>] 0 liminfs all returned no match. So each child is a new obligation.
+
+Every tool the child proofs use exists in the snapshot:
+- measurable_measure_prodMk_left: Measure/Prod.lean:97, needs only [SFinite ν]
+- Measure.prod_apply: Prod.lean:223
+- Measure.prod_apply_symm: Prod.lean:706
+- measurableSet_lt: BorelSpace/Order.lean:245
+- Real.volume_Ioo: Lebesgue/Basic.lean:96
+- lintegral_const: Integral/Lebesgue/Basic.lean:110
+- lintegral_const_mul: Add.lean:381
+- lintegral_liminf_le (Fatou): Add.lean:233
+- Measurable.liminf: BorelSpace/Order.lean:1058
+- ae_lt_top: Markov.lean:159
+- Filter.Tendsto.liminf_le_liminf_comp: LiminfLimsup.lean:181 via to_dual, form Tendsto v f g → liminf u g ≤ liminf (u ∘ v) f
+- liminf_le_liminf, liminf_congr, liminf_const: to_dual of LiminfLimsup.lean:159/201/213
+- tendsto_one_div_add_atTop_nhds_zero_nat: SpecificLimits/Basic.lean:70
+- tendsto_nhdsWithin_iff: NhdsWithin.lean:474
+- tendsto_order: Topology/Order/Basic.lean:139
+- ENNReal.ofReal_inv_of_pos: Inv.lean:945
+- ENNReal.mul_inv_cancel: Inv.lean:103
+- ENNReal.ofReal_add: Real.lean:52
+- ENNReal.ofReal_natCast: Basic.lean:510
+- Measure.restrict_apply and restrict_apply_univ: Restrict.lean:75/168
+- ne_top_of_le_ne_top: BoundedOrder/Basic.lean:206
+
+The three bare names are absent from dag.json, and the selected node has no children. No accepted node has an identical type. The nearest node, cmcs_smi_lintegral_left_density_le (different parent, speculative-ready), has a different type and is not reused.
+
+With the pinned toolchain, all the following compile:
+- the verifier-generated contract-mode challenges for the parent and all three children;
+- complete scratch proofs of the three children;
+- the exact-type parent assembly;
+- comparator-style exact Submission.X solutions;
+- the assembly against the runtime's speculative-stub axioms;
+- rfl instance checks.
+Every #print axioms report lists only propext, Classical.choice and Quot.sound, except the stub run, which also lists the two child stub axioms the assembly uses.

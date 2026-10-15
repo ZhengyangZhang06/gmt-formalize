@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.slicing-a1.lipschitz_leibniz-a1.grad_weak_limit-a1",
+  "parent_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.slicing-a1.lipschitz_leibniz-a1",
+  "depth": 6,
+  "title": "Weak-* convergence of the gradients of uniformly convergent, uniformly Lipschitz functions on ℝ^N (supplied step 4(d))",
+  "statement": "Let N ∈ ℕ and Λ ≥ 0. Let u_k (k ∈ ℕ) and u be Λ-Lipschitz functions ℝ^N → ℝ (ℝ^N = Euclid N, Lebesgue measure L^N = volume) with u_k → u uniformly on ℝ^N. Let W : ℝ^N → ℝ^N be Lebesgue integrable. Then ∫ Du_k(y)(W(y)) dy → ∫ Du(y)(W(y)) dy as k → ∞, where Df(y) := fderiv ℝ f y, which is 0 where f is not differentiable.",
+  "lean_statement": "∀ (N : ℕ) (us : ℕ → Euclid N → ℝ) (u : Euclid N → ℝ) (Λ : NNReal) (W : Euclid N → Euclid N), (∀ k, LipschitzWith Λ (us k)) → LipschitzWith Λ u → TendstoUniformly us u atTop → Integrable W → Tendsto (fun k => ∫ y, fderiv ℝ (us k) y (W y)) atTop (𝓝 (∫ y, fderiv ℝ u y (W y)))",
+  "lean_name": "dtc_bc_lc_sl_ll_grad_weak_limit",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-compari-6f4ddfe91e-a1"
+}

@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.slicing-a1.slice_identity-a1",
+  "parent_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.slicing-a1",
+  "depth": 5,
+  "title": "From the averaged slice identity to the slice identity for a.e. t, simultaneously for all test forms (Simon Ch. 6, Remark 4.2 and the end of the proof of 4.5(2))",
+  "statement": "Let P, m ∈ ℕ, let R_T = (M, θ, ξ) be an integer multiplicity triple in ℝ^P of dimension m+2 (IMRep univ (m+2)), R_∂ = (M', θ', ξ') one of dimension m+1, (R_s)_{s∈ℝ} a family of integer multiplicity triples of dimension m+1 (Rs : ℝ → IMRep univ (m+1)), and f : ℝ^P → ℝ Borel. Write τ(R)(ω) := R.action ω = ∫_N φ⟨ω, ζ⟩ dH^{m+1} for R = (N, φ, ζ), Hᵏ = μHE[k], and γ_{a,b}(s) := min{1, max{0, (b − s)/(b − a)}}. Assume (i) for every ω ∈ 𝒟^{m+1}(ℝ^P), s ↦ τ(R_s)(ω) is locally integrable on ℝ; and (ii) for every ω ∈ 𝒟^{m+1}(ℝ^P) and all real a < b, ∫_a^b τ(R_s)(ω) ds = (b − a)·(∫_M θ γ_{a,b}(f)⟨dω, ξ⟩ dH^{m+2} − ∫_{M'} θ' γ_{a,b}(f)⟨ω, ξ'⟩ dH^{m+1}). Then for L¹-a.e. t ∈ ℝ, simultaneously for every ω ∈ 𝒟^{m+1}(ℝ^P): τ(R_t)(ω) = ∫_{M∩{f<t}} θ⟨dω, ξ⟩ dH^{m+2} − ∫_{M'∩{f<t}} θ'⟨ω, ξ'⟩ dH^{m+1}.",
+  "lean_statement": "∀ (P m : ℕ) (RT : IMRep (univ : Set (Euclid P)) (m + 2)) (RB : IMRep (univ : Set (Euclid P)) (m + 1)) (Rs : ℝ → IMRep (univ : Set (Euclid P)) (m + 1)) (f : Euclid P → ℝ), Measurable f → (∀ ω : TestFormOn (univ : Set (Euclid P)) (m + 1), LocallyIntegrable (fun s => (Rs s).action (ω : DifferentialForm (Euclid P) (m + 1)))) → (∀ (ω : TestFormOn (univ : Set (Euclid P)) (m + 1)) (a b : ℝ), a < b → ∫ s in a..b, (Rs s).action (ω : DifferentialForm (Euclid P) (m + 1)) = (b - a) * ((∫ x in RT.carrier, (RT.mult x : ℝ) * min 1 (max 0 ((b - f x) / (b - a))) * RT.orient x (exteriorDerivative (ω : DifferentialForm (Euclid P) (m + 1)) x) ∂μHE[m + 2]) - ∫ x in RB.carrier, (RB.mult x : ℝ) * min 1 (max 0 ((b - f x) / (b - a))) * RB.orient x ((ω : DifferentialForm (Euclid P) (m + 1)) x) ∂μHE[m + 1])) → ∀ᵐ t, ∀ ω : TestFormOn (univ : Set (Euclid P)) (m + 1), (Rs t).action (ω : DifferentialForm (Euclid P) (m + 1)) = (∫ x in RT.carrier ∩ {x | f x < t}, (RT.mult x : ℝ) * RT.orient x (exteriorDerivative (ω : DifferentialForm (Euclid P) (m + 1)) x) ∂μHE[m + 2]) - ∫ x in RB.carrier ∩ {x | f x < t}, (RB.mult x : ℝ) * RB.orient x ((ω : DifferentialForm (Euclid P) (m + 1)) x) ∂μHE[m + 1]",
+  "lean_name": "dtc_bc_lc_sl_slice_identity",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-compari-567cec0764-a1"
+}

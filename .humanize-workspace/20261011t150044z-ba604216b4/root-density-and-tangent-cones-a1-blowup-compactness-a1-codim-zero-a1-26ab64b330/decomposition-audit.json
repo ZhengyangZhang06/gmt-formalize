@@ -1,0 +1,60 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "^(import|namespace|open|abbrev|def|theorem)|IsMinimizingIn|SameBoundary",
+        "def IsSmoothForm|def IsTestForm|abbrev TestFormOn|def TestFormOn|structure GeometricCurrentOn|def zeroRegion|def support|boundary_apply|theorem ext|map_add|map_zero",
+        "exists_isSubordinate|sum_eq_one",
+        "continuous_matrix|theorem Continuous.matrix_det",
+        "dtc_bc_cz_isMinimizingIn_(bump_form|const_eq_zero)",
+        "git show 44ef61f79e2168134f8a5a6d6520baba56052d67:GMT/Ch07/Submission.lean",
+        "python3 /tmp/minimizing-decomposition-audit/check.py"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/BumpFunction/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/BumpFunction/Normed.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Determinant.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Instances/Matrix.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Manifold/PartitionOfUnity.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-compactness-a1-codim-zero-a1-26ab64b330/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-vanish-off-support-a1/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-vanish-off-support-a1/isolated-comparator-result.json",
+        "/tmp/minimizing-decomposition-audit/Types.lean",
+        "/tmp/minimizing-decomposition-audit/ReusedSupport.lean",
+        "/tmp/minimizing-decomposition-audit/Assembly.lean",
+        "/tmp/minimizing-decomposition-audit/BumpProof.lean",
+        "/tmp/minimizing-decomposition-audit/DetRoute.lean"
+      ],
+      "conclusion": "Verified the pinned revisions and compatibility of the inspected sources. All four frozen propositions independently elaborate against the frozen definitions without child implementations. The bump construction, determinant construction, reused support proof, and conditional assemblies compile using only propext, Classical.choice and Quot.sound. The additional BumpFunction.Normed import supplies integral_pos. Searches found no reservation of either new name; dtc_vanish_off_support is comparator-accepted with an identical frozen type. All names are bare identifiers. The proposed dependency graph is acyclic and correctly directed. The split appropriately isolates the analytic construction and compact-support rigidity: together with the selected node's existing subtraction and top-constancy dependencies, these establish S = C and hence the exact selected IsMinimizingIn conclusion for arbitrary A."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "bump_form",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line proposition exactly matches the prose, including n = 0. The basis determinant gives a continuous alternating covector with value one on the standard frame. Multiplication by the specified smooth bump gives the required test form, support containment, and positive integral. The construction and its relevant instances compile at the pin; no hypothesis or further proof construction is missing."
+    },
+    {
+      "key": "vanish_off_support",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Valid exact-type reuse of the accepted declaration. Independently checked the proof: compact test support lies in the zero region, a finite subordinate smooth partition splits the form into supported test forms, and linearity annihilates their sum. Closedness of their supports supplies compactness. The argument requires no openness assumption on U and handles empty support. The reused proof passes the independent axiom check."
+    },
+    {
+      "key": "const_eq_zero",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and one-line type agree on every hypothesis. Compactness bounds the support; n > 0 supplies a unit coordinate vector and a distant ball. The triangle inequality proves disjointness, bump_form supplies a positive integral, and vanish_off_support gives c times that integral equal to zero. Cancellation proves the exact conclusion. Both dependencies are correctly declared, and the proof is complete and non-circular."
+    }
+  ],
+  "required_changes": []
+}

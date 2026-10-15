@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.two_dim_cone_density-a1.arc_continuation-a1.endpoint_density-a1",
+  "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.two_dim_cone_density-a1.arc_continuation-a1",
+  "depth": 5,
+  "title": "The endpoint of a planar constant-density arc of a 2-dimensional minimizing cone lies in the support and has the arc's density (via the sector lemma)",
+  "statement": "Let P ∈ ℕ and let C ∈ 𝒟_2(ℝ^P) be minimizing in ℝ^P (IsMinimizingIn C univ), with ∂C = 0 (BoundaryVanishes C) and a cone (IsConeCurrent C). Let Q ⊆ ℝ^P be a 2-dimensional linear subspace, z, e ∈ Q with |z| = |e| = 1 and ⟨z, e⟩ = 0, k ∈ ℕ with k ≥ 1, and φ₀ > 0; write γ(φ) := cos φ·z + sin φ·e. Assume that for every φ with 0 < φ < φ₀ there is ε > 0 with spt C ∩ B_ε(γ(φ)) = Q ∩ B_ε(γ(φ)) and HasMassDensity C y k for every y ∈ spt C ∩ B_ε(γ(φ)). Then γ(φ₀) ∈ spt C and HasMassDensity C γ(φ₀) k.",
+  "lean_statement": "∀ (P : ℕ) (C : GeometricCurrentOn (univ : Set (Euclid P)) 2) (Q : Submodule ℝ (Euclid P)) (z e : Euclid P) (k : ℕ) (φ₀ : ℝ), IsMinimizingIn C univ → BoundaryVanishes C → IsConeCurrent C → Module.finrank ℝ Q = 2 → z ∈ Q → e ∈ Q → ‖z‖ = 1 → ‖e‖ = 1 → inner ℝ z e = 0 → 1 ≤ k → 0 < φ₀ → (∀ φ : ℝ, 0 < φ → φ < φ₀ → ∃ ε : ℝ, 0 < ε ∧ C.support ∩ ball (Real.cos φ • z + Real.sin φ • e) ε = (Q : Set (Euclid P)) ∩ ball (Real.cos φ • z + Real.sin φ • e) ε ∧ ∀ y ∈ C.support, y ∈ ball (Real.cos φ • z + Real.sin φ • e) ε → HasMassDensity C y k) → Real.cos φ₀ • z + Real.sin φ₀ • e ∈ C.support ∧ HasMassDensity C (Real.cos φ₀ • z + Real.sin φ₀ • e) k",
+  "lean_name": "idtp_tdc_acont_endpoint_density",
+  "depends_on": [
+    "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.two_dim_cone_density-a1.arc_continuation-a1.great_circle-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.two_dim_cone_density-a1.arc_continuation-a1.great_circle-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-503b17c592-a1"
+}

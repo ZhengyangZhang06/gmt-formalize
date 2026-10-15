@@ -1,0 +1,72 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "lintegral_pow_le_pow_lintegral_fderiv|lintegralPowLePowLIntegralFDerivConst|eLpNorm_le_eLpNorm_fderiv_one",
+        "ae_convolution_tendsto_right_of_locallyIntegrable|normed_neg|integral_normed|nonneg_normed|contDiff_normed|hasCompactSupport_normed",
+        "hasFDerivAt_convolution_left|contDiff_convolution_left|theorem HasCompactSupport.convolution|convolution_eq_swap|integrable_swap|trace_smulRight|theorem lintegral_liminf_le|theorem integral_integral_swap|theorem Measurable.inv|theorem integrable_indicator_iff",
+        "codim1_rdo_dg_sp_|SobolevInequality|BumpFunction.Convolution",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean -DautoImplicit=false /tmp/sp-independent-audit-20261013/Challenges.lean > /tmp/sp-independent-audit-20261013/Challenges.out 2>&1",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean -DautoImplicit=false /tmp/sp-independent-audit-20261013/ChildrenOnly.lean > /tmp/sp-independent-audit-20261013/ChildrenOnly.out 2>&1",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean -DautoImplicit=false /tmp/sp-independent-audit-20261013/ParentFull.lean > /tmp/sp-independent-audit-20261013/ParentFull.out 2>&1"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/FunctionalSpaces/SobolevInequality.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/BumpFunction/Convolution.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/BumpFunction/Normed.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/Convolution.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Convolution.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Trace.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Add.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Prod.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Group/Arithmetic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-88facaa5c0/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-88facaa5c0/decomposition-v2.json",
+        "/tmp/sp-independent-audit-20261013/Challenges.lean",
+        "/tmp/sp-independent-audit-20261013/ChildrenOnly.lean",
+        "/tmp/sp-independent-audit-20261013/ParentFull.lean"
+      ],
+      "conclusion": "The split appropriately separates steps 0–4 of the selected Sobolev-perimeter proof. Snapshot revisions match the workspace, and inspected Mathlib sources are byte-identical to the pinned copies. GNS, normalized-bump convergence, convolution differentiation, trace, Fubini, measurable inversion and Fatou supply the cited results. The proposed-name/import search had no matches in the snapshot's Ch07 source. All five names are bare identifiers, with no reservations or identical-type declarations in the inspected 1083-node DAG. Dependencies are acyclic and match actual proof references. All five raw types independently elaborate directly after the frozen Contract source, without child implementations; explicit output confirms Euclidean volume and the intended scalar/vector convolution instances. No matrix-unit construction occurs. Fresh compilation of the supplied child proofs and exact parent assembly succeeds, with only propext, Classical.choice and Quot.sound in their axiom reports. Each child also passes the single-declaration insertion check. The parent independently supplies the GNS hypothesis and convergent kernels, and the children establish its exact frozen conclusion."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "gns_real_of_lintegral",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line type matches all prose hypotheses. Compact support gives a finite derivative lower integral; finiteness justifies taking toReal. Nonnegative bases and p>0 justify reciprocal powers and the strictly positive constant C^(1/p)+1. The assumed lower-integral inequality is independently supplied by Mathlib, so this conversion is non-circular."
+    },
+    {
+      "key": "gauss_green_variation",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type preserves the complete Gauss–Green hypotheses. The proof verifies admissibility of ζg, the rank-at-most-one trace identity, integrability for both measures, and both pointwise bounds. These yield the exact inequality. The explicitly acknowledged redundancy of openness and μ(Dᶜ)=0 causes no gap."
+    },
+    {
+      "key": "mollifier_adjoint",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type exactly matches the stated scalar/vector convolutions. Compactly supported C¹ η has bounded derivative; integrability of u and s supplies the product domination needed for Fubini. Differentiation, evaluation and trace commute with the justified integrals, and oddness of Dη gives the correct minus sign. No additional support assumption or circular dependency is used."
+    },
+    {
+      "key": "mollify_variation",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof correctly uses Riesz duality for the operator norm. Total inversion makes the normalized gradient Borel, including at zeros; its compact indicator is integrable. The derivative vanishes off tsupport w, and η*s is an admissible test field. The sole declared dependency, mollifier_adjoint, then gives the exact bound."
+    },
+    {
+      "key": "sobolev_limit",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type includes every Sobolev, variation, kernel and convergence hypothesis. Testing with zero establishes M≥0. The declared mollify_variation dependency gives uniform bounds; compact support justifies conversion to lower integrals. Almost-everywhere convergence and Fatou give a finite limiting bound, and nonnegative reciprocal powers yield the exact conclusion. The parent independently supplies the remaining hypotheses."
+    }
+  ],
+  "required_changes": []
+}

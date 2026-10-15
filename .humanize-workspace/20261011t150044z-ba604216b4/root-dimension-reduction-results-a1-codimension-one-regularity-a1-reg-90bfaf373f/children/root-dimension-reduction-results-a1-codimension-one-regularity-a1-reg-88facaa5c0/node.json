@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.de_giorgi-a1.sobolev_perimeter-a1",
+  "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.de_giorgi-a1",
+  "depth": 5,
+  "title": "Sobolev inequality for ζ·1_F from the Gauss–Green identity (Simon 4.3 Sobolev step; Ch. 2, 2.5)",
+  "statement": "For every m ≥ 1 there is c > 0 with the following property. Whenever D ⊆ ℝ^{m+1} is open, F ⊆ ℝ^{m+1} is Borel, μ is a Borel measure on ℝ^{m+1} with μ(ℝ^{m+1} \\ D) = 0 and μ(K) < ∞ for every compact K ⊆ D, ν : ℝ^{m+1} → ℝ^{m+1} is Borel with |ν(z)| = 1 for every z, and the Gauss–Green identity (GG) ∫_F div φ dL^{m+1} = −∫⟨φ, ν⟩ dμ holds for every C¹ compactly supported φ : ℝ^{m+1} → ℝ^{m+1} with tsupport φ ⊆ D (div φ = trace Dφ, L^{m+1} = volume), then (∫_F ζ^{(m+1)/m} dL^{m+1})^{m/(m+1)} ≤ c (∫ ζ dμ + ∫_F |Dζ| dL^{m+1}) for every C¹ compactly supported ζ : ℝ^{m+1} → [0, ∞) with tsupport ζ ⊆ D (|Dζ| the operator norm of the derivative).",
+  "lean_statement": "∀ (m : ℕ), 1 ≤ m → ∃ c : ℝ, 0 < c ∧ ∀ (D F : Set (Euclid (m + 1))) (μ : Measure (Euclid (m + 1))) (ν : Euclid (m + 1) → Euclid (m + 1)), IsOpen D → MeasurableSet F → μ Dᶜ = 0 → (∀ K : Set (Euclid (m + 1)), IsCompact K → K ⊆ D → μ K ≠ ∞) → Measurable ν → (∀ z, ‖ν z‖ = 1) → (∀ φ : Euclid (m + 1) → Euclid (m + 1), ContDiff ℝ 1 φ → HasCompactSupport φ → tsupport φ ⊆ D → ∫ z in F, LinearMap.trace ℝ (Euclid (m + 1)) (fderiv ℝ φ z : Euclid (m + 1) →ₗ[ℝ] Euclid (m + 1)) = -∫ z, inner ℝ (φ z) (ν z) ∂μ) → ∀ ζ : Euclid (m + 1) → ℝ, ContDiff ℝ 1 ζ → HasCompactSupport ζ → tsupport ζ ⊆ D → (∀ z, 0 ≤ ζ z) → (∫ z in F, ζ z ^ ((m + 1 : ℝ) / m)) ^ ((m : ℝ) / (m + 1)) ≤ c * (∫ z, ζ z ∂μ + ∫ z in F, ‖fderiv ℝ ζ z‖)",
+  "lean_name": "codim1_rdo_dg_sobolev_perimeter",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-88facaa5c0-a1"
+}
