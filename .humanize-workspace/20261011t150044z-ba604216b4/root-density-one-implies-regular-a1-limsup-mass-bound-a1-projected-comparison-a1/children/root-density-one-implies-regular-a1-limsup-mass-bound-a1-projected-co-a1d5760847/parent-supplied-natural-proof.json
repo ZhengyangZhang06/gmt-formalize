@@ -1,0 +1,67 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat local-references/123e8435b4a2469b/manifest.json; git rev-parse HEAD; git -C .lake/packages/mathlib rev-parse HEAD; git -C .lake/packages/simongmt rev-parse HEAD (b4d606d, 25730c7c, 2b36630)",
+        "cmp local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean GMT/Ch07/Contract.lean; cmp GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean (identical)",
+        "grep -n '^def|^structure|^abbrev|^theorem' SimonGMT Chapter06/{Currents,Forms,Mass,CurrentLocalEquality}.lean; sed -n 55,150p Chapter06/Forms.lean",
+        "grep -n 'def CountablyRectifiable|def HasApproximateTangentSpaceAt|def blowUpMap' Chapter03/Rectifiable.lean; sed -n 1,60p Chapter03/SubmanifoldCover.lean; grep -n theorem Chapter03/DisjointCover.lean",
+        "grep -n '^theorem|^def' Chapter02/{AreaLipschitz,AreaNoninjective,AreaFormula}.lean; grep -n 'def areaJacobianAt' Chapter02/Area.lean",
+        "grep -rn 'pullback' mathlib/Mathlib/Analysis/Calculus/DifferentialForm/Basic.lean (extDeriv_pullback, extDerivWithin_pullback)",
+        "grep -rn 'theorem exists_partition_approximatesLinearOn_of_hasFDerivWithinAt' mathlib/Mathlib/MeasureTheory/Function/Jacobian.lean",
+        "grep -rn 'measure_compl_support' mathlib/Mathlib/MeasureTheory/Measure/Support.lean; grep -rn 'LipschitzOnWith.extend_finite_dimension' mathlib/Mathlib",
+        "grep -rln -i hadamard mathlib/Mathlib; grep -rn 'det_le_prod|normDet' mathlib/Mathlib/Analysis/InnerProductSpace/NormDet.lean (no Gram Hadamard inequality; LinearMap.normDet)",
+        "python3 dag.json scans: accepted declarations with lean_statement containing compContinuousLinearMap/IsUnitOrientationOf/indicator/orient; status and candidate_commit of the 6 reused nodes; collision scan of the 6 new dor_lmb_pc_* names (0 hits, 719 nodes)",
+        "git grep -q dor_lmb_pc_ <sha> -- GMT/Ch07/Submission.lean over all 1347 ref objects (0 hits)",
+        "sed -n runtime.py _existing_lean_name_problem and child activation (reuse of accepted nodes requires identical frozen type)",
+        "lake env lean /tmp/pc-decomp/Types2.lean (12 child types in comparator scope); lake env lean /tmp/pc-decomp/Assembly.lean (#print axioms pc_assembly); lake env lean /tmp/pc-decomp/Checks.lean",
+        "sed -n 200,260p book/chapter-07.txt; sed -n 400,445p and 755,870p book/chapter-06.txt"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/README.md",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-limsup-mass-bound-a1-projected-comparison-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-limsup-mass-bound-a1/decomposition-audit-v6.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-cone-splitting-a1-split-off-spine-a1/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-bilipschi-4344c8c0d8/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/DifferentialForm/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/Jacobian.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Support.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/MeanValue.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/NormDet.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/FiniteDimension.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/SubmanifoldCover.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/DisjointCover.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaLipschitz.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaNoninjective.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/Area.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-07.txt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py",
+        "/tmp/pc-decomp/Types2.lean",
+        "/tmp/pc-decomp/Assembly.lean"
+      ],
+      "conclusion": "Snapshot: project b4d606d, mathlib 25730c7c, SimonGMT 2b36630. The snapshot Contract.lean is byte-identical to the workspace Contract.lean and Submission.lean.\n\nReusable facts found:\n- SimonGMT Chapter06: GeometricCurrentOn, TestFormOnConverges, boundary, massOn and massAdmissibleOn, support as U minus the zero region, and exteriorDerivativeOn_pullbackFormWithin. No C¹ or Lipschitz push-forward exists; only the affine push-forward does.\n- SimonGMT Chapter03: CountablyRectifiable (global Lipschitz maps), HasApproximateTangentSpaceAt and .unique. SubmanifoldCover.lean states that the converse of Lemma 1.2 (C¹-submanifold cover of rectifiable sets) is not formalized.\n- SimonGMT Chapter02: areaRegularSet, measurableSet_areaRegularSet, area_image_compl_regularSet_eq_zero, weighted_area_formula_lipschitz_injOn, and areaJacobianAt = normDet.\n- Mathlib: extDeriv_pullback (naturality of d), exists_partition_approximatesLinearOn_of_hasFDerivWithinAt, Measure.measure_compl_support, Convex.norm_image_sub_le_of_norm_fderiv_le, LipschitzOnWith.extend_finite_dimension and LinearMap.normDet. Mathlib has no Hadamard inequality for Gram determinants; the accepted dpf_exists_orthonormal_frame_det_gram supplies it.\n\nAccepted DAG declarations reused with identical frozen types:\n- approxTangent_le_submanifold_tangentSpace\n- covectorEuclideanNorm_gram_bounds\n- dpf_exists_orthonormal_frame_det_gram\n- rsdic_exists_imrep_int_combination\n- rsdic_imrep_action_int_combination\n- imrep_weighted_orient_indicator_ae_eq\nFurther accepted lemmas are cited as optional reuse targets for later decompositions: dpf_rectifiable_bilipschitz_pieces, dpf_pfc_*, dpf_smooth_approx_compact_perturbation and dpf_pb_*.\n\nLean checks:\n- The 12 child types elaborate in the comparator scope.\n- The conditional assembly of the exact parent type from the child types plus the resolved siblings dor_lmb_approx_tangent_locality and dor_lmb_int_combination_imrep compiles with axioms propext, Classical.choice and Quot.sound only.\n- No new name collides in dag.json (719 nodes) or in any git ref."
+    }
+  ],
+  "proof": "Source: steps 3–4 of the parent proof (Simon Ch. 3, §1 and Ch. 2, §4: approximate tangent planes of a set carried by N lie in TₓN; a retraction fixing N to first order fixes the carried orientation).\nNotation. Hⁿ := μHE[n]; μ := Hⁿ⌞M (M = R.carrier is Borel); Df(x) := fderiv ℝ f x.\n1. Almost every point of M lies in N. Since M is Borel, μ(ℝ^P ∖ N) = Hⁿ((ℝ^P ∖ N) ∩ M) = Hⁿ(M ∖ N) = 0 (Mathlib Measure.restrict_apply' for the measurable restricting set M). So x ∈ N for μ-a.e. x.\n2. Orientations. By the field R.orients, for μ-a.e. x there is a linear subspace Q_x with HasApproximateTangentSpaceAt n M x Q_x and IsUnitOrientationOf (ξ(x)) Q_x.\n3. Tangent inclusion. Let x satisfy steps 1 and 2. The accepted sibling approxTangent_le_submanifold_tangentSpace applies to N (IsEmbeddedSubmanifold 1 d N), x ∈ N, Hⁿ(M ∖ N) = 0 and HasApproximateTangentSpaceAt n M x Q_x, and gives Q_x ⊆ tangentSpace N x.\n4. Fixed orientation. If moreover x ∈ O, then x ∈ N ∩ O, so f(x) = x by hypothesis. For every w ∈ Q_x we have w ∈ tangentSpace N x by step 3, so Df(x)w = w by hypothesis. The sibling dor_lmb_pc_unitOrientation_comp, part (b), applied to ξ(x), Q_x and L := Df(x), gives ξ(x)(α∘Df(x)) = ξ(x)(α) for every n-covector α.\n5. Restriction. The properties of steps 1–2 hold μ-a.e., hence Hⁿ⌞(M ∩ O)-a.e. (restriction of the measure to the subset M ∩ O ⊆ M; Mathlib ae_restrict_of_ae_restrict_of_subset). Since M ∩ O is Borel, x ∈ M ∩ O, and in particular x ∈ O, for Hⁿ⌞(M ∩ O)-a.e. x (Mathlib ae_restrict_mem). By steps 3–4, for Hⁿ⌞(M ∩ O)-a.e. x we have f(x) = x and ξ(x)(α∘Df(x)) = ξ(x)(α) for every n-covector α. ∎",
+  "key_steps": [
+    "Hⁿ(M ∖ N) = 0 and R.orients: a.e. x ∈ M lies in N and ξ(x) is a unit orientation of an approximate tangent plane Q_x of M.",
+    "approxTangent_le_submanifold_tangentSpace gives Q_x ⊆ T_xN.",
+    "For x ∈ N ∩ O, f(x) = x and Df(x) fixes T_xN ⊇ Q_x, so part (b) of dor_lmb_pc_unitOrientation_comp gives ξ(x)(α∘Df(x)) = ξ(x)(α).",
+    "Restrict the a.e. statements from Hⁿ⌞M to Hⁿ⌞(M ∩ O)."
+  ],
+  "unresolved": [],
+  "validation_notes": []
+}

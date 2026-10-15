@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_constant_density_planar-a1.stationary_cone_sheet_planar-a1.cone_chart-a1.scaled_curve_range-a1",
+  "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_constant_density_planar-a1.stationary_cone_sheet_planar-a1.cone_chart-a1",
+  "depth": 6,
+  "title": "Range of the derivative of (t, α) ↦ tγ(α)",
+  "statement": "Let P ∈ ℕ, γ : ℝ → ℝ^P, G : ℝ² → ℝ^P (ℝ² = Euclid 2), S ⊆ ℝ² open and t, α ∈ ℝ with (t, α) ∈ S. If G(w) = w₀·γ(w₁) for every w ∈ S, γ is differentiable at α and t ≠ 0, then the range of the Fréchet derivative DG(t, α) equals (as a set) the linear span of γ(α) and γ′(α), where γ′ = deriv γ.",
+  "lean_statement": "∀ (P : ℕ) (γ : ℝ → Euclid P) (G : Euclid 2 → Euclid P) (S : Set (Euclid 2)) (t α : ℝ), IsOpen S → !₂[t, α] ∈ S → (∀ w ∈ S, G w = w 0 • γ (w 1)) → DifferentiableAt ℝ γ α → t ≠ 0 → Set.range (fderiv ℝ G !₂[t, α]) = (Submodule.span ℝ {γ α, deriv γ α} : Set (Euclid P))",
+  "lean_name": "idtp_ccd_scsp_cc_scaled_curve_range",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-37d4b197e8-a1"
+}

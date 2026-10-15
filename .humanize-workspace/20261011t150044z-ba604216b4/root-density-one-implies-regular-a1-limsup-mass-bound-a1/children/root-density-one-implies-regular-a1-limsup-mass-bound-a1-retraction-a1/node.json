@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.retraction-a1",
+  "parent_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1",
+  "depth": 3,
+  "title": "Local C¹ retraction onto a C² submanifold with ‖Dπ(x)‖ ≤ 1 + c|x − y|",
+  "statement": "Let P, d ∈ ℕ, U ⊆ ℝ^P open, N ⊆ ℝ^P an embedded C² d-dimensional submanifold (IsEmbeddedSubmanifold 2 d N) with (N̄ ∖ N) ∩ U = ∅, and y ∈ N ∩ U. Then there are r > 0, c ≥ 0 and a map π : ℝ^P → ℝ^P such that:\n- B̄_r(y) ⊆ U;\n- π is C¹ on B_r(y) and π(B_r(y)) ⊆ N;\n- π(x) = x for x ∈ N ∩ B_r(y);\n- Dπ(x)v = v for x ∈ N ∩ B_r(y) and v ∈ T_xN. Here Dπ(x) is the Fréchet derivative of π at x, and T_xN = tangentSpace N x is the set of velocities γ'(0) of C¹ curves γ : (−1, 1) → N with γ(0) = x;\n- ‖Dπ(x)‖ ≤ 1 + c|x − y| (operator norm) for every x ∈ B_r(y).",
+  "lean_statement": "∀ (P d : ℕ) (U N : Set (Euclid P)) (y : Euclid P), IsOpen U → IsEmbeddedSubmanifold 2 d N → (closure N \\ N) ∩ U = ∅ → y ∈ N ∩ U → ∃ (r c : ℝ) (proj : Euclid P → Euclid P), 0 < r ∧ 0 ≤ c ∧ closedBall y r ⊆ U ∧ ContDiffOn ℝ 1 proj (ball y r) ∧ MapsTo proj (ball y r) N ∧ (∀ x ∈ N ∩ ball y r, proj x = x) ∧ (∀ x ∈ N ∩ ball y r, ∀ v ∈ tangentSpace N x, fderiv ℝ proj x v = v) ∧ ∀ x ∈ ball y r, ‖fderiv ℝ proj x‖ ≤ 1 + c * dist x y",
+  "lean_name": "dor_lmb_c1_retraction",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-limsup-mass-bound-a1-retraction-a1-a1"
+}

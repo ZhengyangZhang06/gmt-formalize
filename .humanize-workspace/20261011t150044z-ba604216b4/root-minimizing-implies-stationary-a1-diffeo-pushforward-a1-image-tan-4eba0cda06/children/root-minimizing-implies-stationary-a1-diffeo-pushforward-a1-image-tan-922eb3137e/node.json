@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.minimizing_implies_stationary-a1.diffeo_pushforward-a1.image_tangent_transport-a1.image_regularity-a1",
+  "parent_id": "root.minimizing_implies_stationary-a1.diffeo_pushforward-a1.image_tangent_transport-a1",
+  "depth": 4,
+  "title": "Bi-Lipschitz images of Borel, locally H^n-finite subsets of U",
+  "statement": "Let P, n ∈ ℕ and U, M ⊆ ℝ^P with M Borel, M ⊆ U, and H^n(M ∩ C) < ∞ for every compact C ⊆ U, where H^n = μHE[n]. Let φ : ℝ^P → ℝ^P be Λ-Lipschitz and Λ'-antilipschitz (|x − y| ≤ Λ'|φ(x) − φ(y)| for all x, y; Λ, Λ' ≥ 0) with φ^{-1}(U) = U. Then φ(M) is Borel, φ(M) ⊆ U, and H^n(φ(M) ∩ C) < ∞ for every compact C ⊆ U.",
+  "lean_statement": "∀ (P n : ℕ) (U M : Set (Euclid P)) (φ : Euclid P → Euclid P) (Λ Λ' : NNReal), MeasurableSet M → M ⊆ U → (∀ C : Set (Euclid P), IsCompact C → C ⊆ U → μHE[n] (M ∩ C) ≠ ∞) → LipschitzWith Λ φ → AntilipschitzWith Λ' φ → φ ⁻¹' U = U → MeasurableSet (φ '' M) ∧ φ '' M ⊆ U ∧ ∀ C : Set (Euclid P), IsCompact C → C ⊆ U → μHE[n] (φ '' M ∩ C) ≠ ∞",
+  "lean_name": "dpf_itt_bilipschitz_image_locfin",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-image-tan-922eb3137e-a1"
+}

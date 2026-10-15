@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.mean_curvature_monotonicity-a1.exp_monotonicity-a1.cutoff_first_variation-a1",
+  "parent_id": "root.density_one_implies_regular-a1.mean_curvature_monotonicity-a1.exp_monotonicity-a1",
+  "depth": 4,
+  "title": "Radial first-variation inequality n∫η(u_s) + ∫2u_sη′(u_s) ≤ κs∫η(u_s) under bounded mean curvature (Simon Ch. 4, 3.2–3.3, 3.14–3.16)",
+  "statement": "Let P, n ∈ ℕ, U ⊆ ℝ^P, R = (M, θ, ξ) an IMRep U n with μ := μ_R = θHⁿ⌞M (R.measure), H : ℝ^P → ℝ^P, κ, r ∈ ℝ, z ∈ ℝ^P and η : ℝ → ℝ. Assume: B̄_r(z) ⊆ U; x ↦ p_x, the orthogonal projection onto approxTangentPlane n M x, is μ-AEMeasurable; |H(x)| ≤ κ for all x; R.firstVariation X = −∫⟨X, H⟩ dμ for every C¹ vector field X with compact support and tsupport X ⊆ B_r(z); η is C¹, η ≥ 0, deriv η ≤ 0 everywhere, and η(u) = 0 for u ≥ 1. Then for every s with 0 < s < r, writing u_s(x) := |x − z|²/s² and η′ := deriv η: n·∫η(u_s) dμ + ∫ 2·u_s·η′(u_s) dμ ≤ κ·s·∫η(u_s) dμ. (Measurability of H is not needed.)",
+  "lean_statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (R : IMRep U n) (H : Euclid P → Euclid P) (κ : ℝ) (z : Euclid P) (r : ℝ) (η : ℝ → ℝ), closedBall z r ⊆ U → AEMeasurable (fun x => (approxTangentPlane n R.carrier x).starProjection) R.measure → (∀ x, ‖H x‖ ≤ κ) → (∀ X : Euclid P → Euclid P, ContDiff ℝ 1 X → HasCompactSupport X → tsupport X ⊆ ball z r → R.firstVariation X = -∫ x, inner ℝ (X x) (H x) ∂R.measure) → ContDiff ℝ 1 η → (∀ u, 0 ≤ η u) → (∀ u, deriv η u ≤ 0) → (∀ u, 1 ≤ u → η u = 0) → ∀ s : ℝ, 0 < s → s < r → (n : ℝ) * ∫ x, η (‖x - z‖ ^ 2 / s ^ 2) ∂R.measure + ∫ x, 2 * (‖x - z‖ ^ 2 / s ^ 2) * deriv η (‖x - z‖ ^ 2 / s ^ 2) ∂R.measure ≤ κ * s * ∫ x, η (‖x - z‖ ^ 2 / s ^ 2) ∂R.measure",
+  "lean_name": "dsmc_em_cutoff_first_variation_le",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-mean-curvature-monotonicity-a1-ex-52a2d9a01b-a1"
+}

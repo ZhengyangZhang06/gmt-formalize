@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.slicing-a1.slice_family-a1.c1_cover-a1.c1_range_cover-a1",
+  "parent_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.slicing-a1.slice_family-a1.c1_cover-a1",
+  "depth": 6,
+  "title": "The image of a C¹ map ℝ^m → ℝ^P is covered by an H^m-null set and countably many embedded C¹ m-submanifolds",
+  "statement": "Let P, m ∈ ℕ and let G : ℝ^m → ℝ^P be of class C¹ (ContDiff ℝ 1 G; ℝ^k = Euclid k). Then there are:\n- a set N₀ ⊆ ℝ^P with H^m(N₀) = 0 (H^m = μHE[m]);\n- sets N_l ⊆ ℝ^P (l ∈ ℕ), each an embedded m-dimensional C¹ submanifold of ℝ^P in the sense of the contract (IsEmbeddedSubmanifold 1 m N_l);\nsuch that G(ℝ^m) ⊆ N₀ ∪ ⋃_l N_l.",
+  "lean_statement": "∀ (P m : ℕ) (G : Euclid m → Euclid P), ContDiff ℝ 1 G → ∃ (N₀ : Set (Euclid P)) (N : ℕ → Set (Euclid P)), μHE[m] N₀ = 0 ∧ (∀ l, IsEmbeddedSubmanifold 1 m (N l)) ∧ Set.range G ⊆ N₀ ∪ ⋃ l, N l",
+  "lean_name": "dor_lmbsf_c1c_c1_range_cover",
+  "depends_on": [
+    "root.density_one_implies_regular-a1.limsup_mass_bound-a1.slicing-a1.slice_family-a1.c1_cover-a1.immersion_injective-a1",
+    "root.density_one_implies_regular-a1.limsup_mass_bound-a1.slicing-a1.slice_family-a1.c1_cover-a1.ball_chart-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.slicing-a1.slice_family-a1.c1_cover-a1.immersion_injective-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.slicing-a1.slice_family-a1.c1_cover-a1.ball_chart-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-limsup-mass-bound-a1-slicing-a1-s-2fc5872b4f-a1"
+}
