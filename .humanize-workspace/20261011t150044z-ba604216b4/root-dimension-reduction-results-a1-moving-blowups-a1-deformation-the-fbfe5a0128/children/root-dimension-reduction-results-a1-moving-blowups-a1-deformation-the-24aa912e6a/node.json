@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.moving_blowups-a1.deformation_theorem-a1.face_replacement-a1.polyhedral_im-a1.coord_plane_orientation-a1",
+  "parent_id": "root.dimension_reduction_results-a1.moving_blowups-a1.deformation_theorem-a1.face_replacement-a1.polyhedral_im-a1",
+  "depth": 6,
+  "title": "Coordinate k-planes: dimension k and unit orientations ±e_ι",
+  "statement": "Let P, k ∈ ℕ and let ι : Fin k → Fin P be strictly increasing. Put τ_j := e_{ι(j)} = EuclideanSpace.single (ι j) 1 (standard basis vectors of Euclid P) and V := span{τ_j : j ∈ Fin k}. Then finrank V = k. Moreover, there is a k-vector e ∈ MultiVector P k (a continuous linear functional on k-covectors) with e(α) = α(τ_0, …, τ_{k−1}) for every k-covector α, such that both e and −e are unit orientations of V (IsUnitOrientationOf).",
+  "lean_statement": "∀ (P k : ℕ) (ι : Fin k → Fin P), StrictMono ι → Module.finrank ℝ (Submodule.span ℝ (range (fun j => EuclideanSpace.single (ι j) (1 : ℝ) : Fin k → Euclid P))) = k ∧ ∃ e : MultiVector P k, (∀ α : Covector (Euclid P) k, e α = α (fun j => EuclideanSpace.single (ι j) (1 : ℝ))) ∧ IsUnitOrientationOf e (Submodule.span ℝ (range (fun j => EuclideanSpace.single (ι j) (1 : ℝ) : Fin k → Euclid P))) ∧ IsUnitOrientationOf (-e) (Submodule.span ℝ (range (fun j => EuclideanSpace.single (ι j) (1 : ℝ) : Fin k → Euclid P)))",
+  "lean_name": "dimred_mbl_dtfrpi_coord_plane_orientation",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-moving-blowups-a1-deformation-the-24aa912e6a-a1"
+}

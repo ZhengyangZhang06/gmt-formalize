@@ -1,0 +1,63 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "abbrev Covector|def covectorEuclideanNorm|covectorEuclideanNorm_|abbrev Euclid",
+        "sum_sq_inner_left|sum_inner_mul_inner|sum_repr\\x27|basisFun|exists_orthonormalBasis_extension_of_card_eq",
+        "adjoint_inner_left|def adjoint|adjointAux_norm",
+        "covectorEuclideanNorm.*comp|comp.*covectorEuclideanNorm|multilinear_hs_comp",
+        "dimred_mbl_pf_oc_multilinear_hs_comp_le|dimred_mbl_pf_oc_covectorEuclideanNorm_comp_le",
+        "git show 16144a475b272196ba8b2bd15f104028282dbcfc:GMT/Ch07/Submission.lean",
+        "git show b7846b639953f647296619e6e73dec8a8a22ba73:GMT/Ch07/Submission.lean",
+        "git log --all --oneline -S'dimred_mbl_pf_oc_' -- GMT/Ch07/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean -DautoImplicit=false /tmp/dimred-orient-independent-audit/EndToEnd.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean -DautoImplicit=false /tmp/dimred-orient-independent-audit/AllTypes.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-pushforward-a1-43165fa562/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Adjoint.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/Alternating/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-regular-components-are-minimizing-a1-imrep-mass-formula-a1-covec-c35871b74d/isolated-comparator-result.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-regular-components-are-minimizing-a1-imrep-mass-formula-a1-covec-930e70c904/isolated-comparator-result.json",
+        "/tmp/dimred-orient-independent-audit/AllTypes.lean",
+        "/tmp/dimred-orient-independent-audit/EndToEnd.lean"
+      ],
+      "conclusion": "The split appropriately follows L0–L2. Pinned revisions, frozen definitions, and reused candidates' build inputs match. Both reused declarations have identical frozen types and passing comparator receipts; the two new names are unreserved. The composition-estimate search found no coefficient-norm theorem; Mathlib's existing composition bound concerns the operator norm. All four child types are standalone one-line propositions matching their prose, with bare identifiers and acyclic, correctly directed dependencies. All five challenge types elaborate without child implementations under autoImplicit=false. An independent end-to-end compilation proves all four children and the exact selected parent using only propext, Classical.choice, and Quot.sound. Parent clause (a) follows from evaluation and pullback bounds; clause (b) follows because L fixes the spanning frame. The inferred norms are the intended operator norms; no matrix-unit construction occurs."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "onb_sq_sum",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and Lean type agree. Slotwise Parseval establishes basis invariance; alternation, sorting injective tuples, and permutation counting supply exactly the factorial normalization. Nonnegativity justifies squaring the coefficient norm. The proof covers n = 0 and n > P without circular reliance. Reuse at 16144a4 is comparator-approved with an identical frozen type."
+    },
+    {
+      "key": "eval_orthonormal_le",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Orthonormality supplies n ≤ P and the required basis extension. The distinct permuted frames contribute n! equal squares; the remaining terms are nonnegative. The declared onb_sq_sum dependency, factorial positivity, and norm nonnegativity give the exact conclusion, including degree zero. Reuse at b7846b6 has an identical frozen type and passing comparator receipt."
+    },
+    {
+      "key": "hs_comp",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact rectangular-map statement is proved. The explicit representing vector, Parseval identities, and adjoint operator-norm equality establish the one-slot estimate without assuming continuity of γ. Induction through Fin.cons handles every slot, zero degree, and zero dimensions. No child or parent theorem is assumed, and the supplied details suffice for direct formalization."
+    },
+    {
+      "key": "norm_comp",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof uses precisely the declared hs_comp and onb_sq_sum dependencies with matching dimensions and degree. The two normalization identities convert the Hilbert–Schmidt bound into the squared coefficient-norm bound; cancellation of k! > 0 and nonnegative square roots finish. Degree zero is included. Specializing N = N' = P supplies the selected parent's required estimate."
+    }
+  ],
+  "required_changes": []
+}

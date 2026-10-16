@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.graph_cycle_regular-a1",
+  "parent_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1",
+  "depth": 3,
+  "title": "An integer multiplicity cycle supported on a C¹ graph is regular at the graph's base point",
+  "statement": "Let n ≥ 1, k ≥ 0, U ⊆ ℝ^{n+k} open, and T ∈ 𝒟_n(U) represented by an integer multiplicity triple R = (M, θ, ξ) in U (T = τ(M, θ, ξ), R.Represents T), with ∂T = 0 in U. Let ι : ℝⁿ → ℝ^{n+k} and ι' : ℝ^k → ℝ^{n+k} be linear isometries with ⟨ιv, ι'w⟩ = 0 for all v, w; z ∈ ℝ^{n+k}; s, h > 0; and u : ℝⁿ → ℝ^k of class C¹ on the open ball B_s(0) ⊆ ℝⁿ with u(0) = 0. Put C := {z + ιv + ι'w : |v| < s, |w| < h} and Φ(v) := z + ιv + ι'u(v). If C ⊆ U, spt μ_R ∩ C = Φ(B_s(0)) (μ_R = θHⁿ⌞M = R.measure) and z ∈ spt T, then z ∈ reg T in the sense of the contract's regularSet: z ∈ spt T and there are ρ'' > 0 with B_{ρ''}(z) ⊆ U, m ∈ ℤ ∖ {0}, and an embedded C¹ n-submanifold Σ ∋ z with a continuous orientation ξ_Σ and Hⁿ(Σ ∩ K) < ∞ for compact K ⊆ B_{ρ''}(z), such that T(ω) = m∫_Σ⟨ω, ξ_Σ⟩ dHⁿ for every ω ∈ 𝒟ⁿ(U) with spt ω ⊆ B_{ρ''}(z).",
+  "lean_statement": "∀ (n k : ℕ) (U : Set (Euclid (n + k))) (T : GeometricCurrentOn U n) (R : IMRep U n) (ι : Euclid n →ₗᵢ[ℝ] Euclid (n + k)) (ι' : Euclid k →ₗᵢ[ℝ] Euclid (n + k)) (u : Euclid n → Euclid k) (z : Euclid (n + k)) (s h : ℝ), 0 < n → IsOpen U → R.Represents T → BoundaryVanishes T → (∀ v w, inner ℝ (ι v) (ι' w) = 0) → 0 < s → 0 < h → ContDiffOn ℝ 1 u (ball 0 s) → u 0 = 0 → {x | ∃ v ∈ ball (0 : Euclid n) s, ∃ w ∈ ball (0 : Euclid k) h, x = z + ι v + ι' w} ⊆ U → R.measure.support ∩ {x | ∃ v ∈ ball (0 : Euclid n) s, ∃ w ∈ ball (0 : Euclid k) h, x = z + ι v + ι' w} = (fun v => z + ι v + ι' (u v)) '' ball (0 : Euclid n) s → z ∈ T.support → z ∈ regularSet T",
+  "lean_name": "dor_graph_supported_cycle_regular",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-graph-cycle-regular-a1-a1"
+}

@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.threshold_reduction-a1.measure_class_reduction-a1.threshold_limit-a1",
+  "parent_id": "root.dimension_reduction_results-a1.threshold_reduction-a1.measure_class_reduction-a1",
+  "depth": 4,
+  "title": "Density thresholds pass to vague limits of measures obeying the monotonicity formula (parent Lemma D together with step 5, in density form)",
+  "statement": "Let P, n ∈ ℕ and Λ, c ∈ ℝ. Let μ and μ_j (j ∈ ℕ) be measures on ℝ^P (Borel σ-algebra), each finite on compact sets. For a measure ν, x ∈ ℝ^P and ρ ∈ ℝ put q(ν, x, ρ) := ν(B_ρ(x))/(ω_n·ofReal(ρⁿ)) ∈ [0, ∞] (open ball B_ρ(x), ω_n = unitBallVolume n, division in [0, ∞]) and Θ(ν, x) := (limsup_{ρ→0⁺} q(ν, x, ρ)).toReal (limsup in [0, ∞] along 𝓝[>]0; toReal sends ∞ to 0). Assume: (M) for ν = μ and for ν = μ_j (every j), and for all y ∈ ℝ^P and R ∈ ℝ with B̄_R(y) ⊆ B̄_2(0), the function ρ ↦ ofReal(e^{Λρ}/ρⁿ)·ν(B_ρ(y)) is nondecreasing on (0, R); (V) ∫ f dμ_j → ∫ f dμ for every continuous compactly supported f : ℝ^P → ℝ; w_j → w in ℝ^P with |w| < 2; and c ≤ Θ(μ_j, w_j) for every j. Then c ≤ Θ(μ, w).",
+  "lean_statement": "∀ (P n : ℕ) (Λ c : ℝ) (μ : Measure (Euclid P)) (μs : ℕ → Measure (Euclid P)) (ws : ℕ → Euclid P) (w : Euclid P), (∀ K : Set (Euclid P), IsCompact K → μ K ≠ ∞) → (∀ (j : ℕ) (K : Set (Euclid P)), IsCompact K → μs j K ≠ ∞) → (∀ (y : Euclid P) (R : ℝ), closedBall y R ⊆ closedBall 0 2 → MonotoneOn (fun ρ : ℝ => ENNReal.ofReal (Real.exp (Λ * ρ) / ρ ^ n) * μ (ball y ρ)) (Ioo 0 R)) → (∀ (j : ℕ) (y : Euclid P) (R : ℝ), closedBall y R ⊆ closedBall 0 2 → MonotoneOn (fun ρ : ℝ => ENNReal.ofReal (Real.exp (Λ * ρ) / ρ ^ n) * μs j (ball y ρ)) (Ioo 0 R)) → (∀ f : Euclid P → ℝ, Continuous f → HasCompactSupport f → Tendsto (fun j => ∫ x, f x ∂(μs j)) atTop (𝓝 (∫ x, f x ∂μ))) → Tendsto ws atTop (𝓝 w) → ‖w‖ < 2 → (∀ j, c ≤ (limsup (fun ρ : ℝ => μs j (ball (ws j) ρ) / (unitBallVolume n * ENNReal.ofReal (ρ ^ n))) (𝓝[>] 0)).toReal) → c ≤ (limsup (fun ρ : ℝ => μ (ball w ρ) / (unitBallVolume n * ENNReal.ofReal (ρ ^ n))) (𝓝[>] 0)).toReal",
+  "lean_name": "dimred_tr_mcr_threshold_limit",
+  "depends_on": [
+    "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.convergence_tools-a1.portmanteau-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.convergence_tools-a1.portmanteau-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-959ef3c94c-a1",
+      "result_commit": "ef833280210e2a76d19989de42138b03535941cf",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-threshold-reduction-a1-measure-cl-64c33e67d4-a1"
+}

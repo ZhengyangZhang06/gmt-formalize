@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.minimizing_implies_stationary-a1.diffeo_pushforward-a1.piece_tangent_density-a1.tangent_locality-a1",
+  "parent_id": "root.minimizing_implies_stationary-a1.diffeo_pushforward-a1.piece_tangent_density-a1",
+  "depth": 4,
+  "title": "Locality of approximate tangent spaces for nested locally H^n-finite Borel sets",
+  "statement": "Let U ⊆ ℝ^P be open and A ⊆ B ⊆ U Borel sets with H^n(B ∩ K) < ∞ for every compact K ⊆ U (H^n = μHE[n]). Then for H^n⌞A-a.e. x, simultaneously for every linear subspace Q of ℝ^P: B has approximate tangent space Q at x (HasApproximateTangentSpaceAt n B x Q) if and only if A has approximate tangent space Q at x.",
+  "lean_statement": "∀ (P n : ℕ) (U A B : Set (Euclid P)), IsOpen U → MeasurableSet A → MeasurableSet B → A ⊆ B → B ⊆ U → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μHE[n] (B ∩ K) ≠ ∞) → ∀ᵐ x ∂(μHE[n].restrict A), ∀ Q : Submodule ℝ (Euclid P), HasApproximateTangentSpaceAt n B x Q ↔ HasApproximateTangentSpaceAt n A x Q",
+  "lean_name": "ptd_ae_approxTangent_iff_of_subset",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-piece-tan-48c739e201-a1"
+}

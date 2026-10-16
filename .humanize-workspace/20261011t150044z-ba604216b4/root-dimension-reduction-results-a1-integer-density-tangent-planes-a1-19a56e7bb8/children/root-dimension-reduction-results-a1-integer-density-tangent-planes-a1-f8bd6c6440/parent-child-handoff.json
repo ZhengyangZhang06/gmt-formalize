@@ -1,0 +1,85 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat local-references/123e8435b4a2469b/manifest.json; git rev-parse HEAD; git -C .lake/packages/mathlib rev-parse HEAD; cmp local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean GMT/Ch07/Contract.lean; cmp GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean",
+        "grep -rn 'theorem exists_contDiff_support_eq_eq_one_iff|theorem IsCompact.exists_cthickening_subset_open|theorem contDiffAt_norm|theorem HasFDerivAt.norm\\b|theorem hasStrictFDerivAt_norm_sq|theorem HasFDerivAt.norm_sq|theorem support_deriv_subset|theorem tsupport_deriv_subset|theorem hasDerivAt_arctan|theorem contDiff_arctan|theorem support_fderiv_subset|theorem exists_contDiff_tsupport_subset' local-references/123e8435b4a2469b/mathlib/Mathlib",
+        "grep -rn 'hasStrictFDerivAt_norm\\b|hasFDerivAt_norm\\b|fderiv_norm\\b|theorem HasFDerivAt.sqrt|theorem HasFDerivAt.arctan|theorem HasFDerivAt.(inv|div|fun_inv|fun_div)|theorem HasFDerivAt.smul|theorem HasFDerivAt.mul|theorem fderiv_div|theorem hasFDerivAt_inv'|theorem ContDiffAt.div|theorem ContDiffAt.inv' local-references/123e8435b4a2469b/mathlib/Mathlib; grep -n 'theorem|lemma' mathlib/Mathlib/Analysis/Calculus/Deriv/Inv.lean",
+        "python3 -I dag.json scans of lean_statement: (HasCompactSupport and '= 1' and IsCompact) | (tsupport and '= 1', short) | arctan | (starProjection and trace) | (Orthonormal and trace) | (fderiv/HasFDerivAt and norm and inner); lean_name lookups fvmb_trace_starProjection_comp_eq_sum_inner, idtp_ccd_scsp_angle_curve, dgcr_bwd_normal_cutoff; node listing under stationary_cone_sheet_planar-a1 and cone_area-a1 (status, depends_on, children)",
+        "grep -c / grep -rl for idtp_ccd_scsp_tf_cutoff, idtp_ccd_scsp_tf_profile_deriv, idtp_ccd_scsp_tf_frame_trace, idtp_ccd_scsp_tf_ in dag.json, runs/.../nodes and ../.swarm-worktrees/*/gmt-ch07/GMT/Ch07/Submission.lean (no match); _existing_lean_name_problem simulation for the 4 final names against dag.json",
+        "git show 56e107017393dc93d7e61087e6b2c2ef320f68b4:GMT/Ch07/Submission.lean; git show 837b09e1388488f4626c119b2dbc9c1462ea3307:GMT/Ch07/Submission.lean; git show d2fde8c03e02a7cc4f0542787f0bf53c1019dc84:GMT/Ch07/Submission.lean (diffed against the leaf-simulation bases)",
+        "python3 -I read nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-81d59b907b/decomposition-v1.json (cone_area reuse precedent gram_area) and nodes/root-minimizing-implies-stationary-a1-first-variation-mass-bound-a1-t-e90143df5c/parent-supplied-natural-proof.md (fvmb accepted proof)",
+        "sed/grep of controller /runtime/flows/gmt-claude-0e9a4f203404/_recursive_lean/{runtime.py (_overlay_accepted_children, existing_by_name, _existing_lean_name_problem, _install_parent_supplied_child_handoff, _accepted_checkpoint), inherited.py, store.py (ensure), leaf_verification.py (check_source_delta), lean_contract.py (validate_lean_statement)}",
+        "lake env lean /tmp/tf_check/{Probe,Probe2,Children,Assembly,Full}.lean; lake env lean /tmp/tf_final/{Stubs,Leaf_cutoff,Leaf_profile_deriv,Leaf_rotation_trace,ParentFull}.lean (#print axioms); python3 -I /tmp/tf_final/delta_check.py; python3 -I /tmp/tf_final/validate.py"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-19a56e7bb8/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-19a56e7bb8/parent-supplied-natural-proof.md",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-19a56e7bb8/parent-supplied-plan.md",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-first-variation-mass-bound-a1-t-e90143df5c/parent-supplied-natural-proof.md",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-81d59b907b/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/.swarm-worktrees/7bdeaa5da3b42437c15e/gmt-ch07/GMT/Ch07/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Manifold/PartitionOfUnity.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Calculus.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/SpecialFunctions/Trigonometric/ArctanDeriv.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/SpecialFunctions/Sqrt.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Mul.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/Deriv/Inv.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/Deriv/Support.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Const.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Norm.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/NormPow.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/BumpFunction/FiniteDimension.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/Operations.lean",
+        "/runtime/flows/gmt-claude-0e9a4f203404/_recursive_lean/runtime.py",
+        "/runtime/flows/gmt-claude-0e9a4f203404/_recursive_lean/inherited.py",
+        "/runtime/flows/gmt-claude-0e9a4f203404/_recursive_lean/store.py",
+        "/runtime/flows/gmt-claude-0e9a4f203404/_recursive_lean/leaf_verification.py",
+        "/runtime/flows/gmt-claude-0e9a4f203404/_recursive_lean/lean_contract.py",
+        "/tmp/tf_check/Children.lean",
+        "/tmp/tf_check/Assembly.lean",
+        "/tmp/tf_check/Full.lean",
+        "/tmp/tf_final/subproblems.json",
+        "/tmp/tf_final/Stubs.lean",
+        "/tmp/tf_final/Leaf_cutoff.lean",
+        "/tmp/tf_final/Leaf_profile_deriv.lean",
+        "/tmp/tf_final/Leaf_rotation_trace.lean",
+        "/tmp/tf_final/ParentFull.lean"
+      ],
+      "conclusion": "Pins match. Snapshot project_commit b4d606d equals workspace HEAD and mathlib 25730c7c equals .lake/packages/mathlib HEAD. The snapshot Contract.lean is byte-identical to the workspace Contract.lean and Submission.lean.\n\nNo DAG node states the needed cutoff, profile-derivative or rotation-field trace lemmas. The only cutoff lemmas are ball-specific (dgcr_bwd_normal_cutoff, dorag_th_radial_cutoff), and no DAG statement mentions arctan. So the three idtp_ccd_scsp_tf_* lemmas are new, and their names occur nowhere in the DAG, the run nodes, or any worktree Submission.lean.\n\nThe accepted fvmb_trace_starProjection_comp_eq_sum_inner (candidate 56e10701; axioms propext, Classical.choice, Quot.sound) has exactly the frame formula used in step 5. The controller code shows it reaches a child only as a declared dependency, so it is reused as `frame_sum` with its byte-identical type, following the cone_area/gram_area precedent.\n\nPinned Mathlib supplies every cited lemma:\n- cutoff: exists_contDiff_support_eq_eq_one_iff (PartitionOfUnity, reachable from the frozen imports), IsCompact.exists_cthickening_subset_open, IsCompact.cthickening, cthickening_subset_thickening', closure_thickening_subset_cthickening\n- derivatives: contDiffAt_norm, hasStrictFDerivAt_norm_sq, HasFDerivAt.sqrt, HasFDerivAt.arctan, hasDerivAt_inv, HasFDerivAt.fun_mul/smul, ContDiffAt.div, Real.contDiff_arctan, support_deriv_subset, Filter.EventuallyEq.fderiv_eq\nThere is no HasFDerivAt lemma for the norm itself and no HasFDerivAt.div for scalar fields; the proofs avoid both.\n\nLean results:\n- All 4 child types elaborate, are statement-valid, and each new child is fully proved on its real base; leaf deltas pass check_source_delta.\n- The parent's exact frozen type is proved from the children plus the accepted angle_curve.\n- With all real proofs, test_field depends only on propext, Classical.choice and Quot.sound."
+    }
+  ],
+  "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_constant_density_planar-a1.stationary_cone_sheet_planar-a1.test_field-a1",
+  "child_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_constant_density_planar-a1.stationary_cone_sheet_planar-a1.test_field-a1.cutoff-a1",
+  "subproblem": {
+    "key": "cutoff",
+    "title": "Smooth cutoff equal to 1 near a compact set, supported in an open set",
+    "statement": "For every P ∈ ℕ and all sets K, N ⊆ ℝ^P with K compact, N open and K ⊆ N, there exist a C¹ function ζ : ℝ^P → ℝ with compact support and tsupport ζ ⊆ N, and an open set V ⊆ ℝ^P with K ⊆ V such that ζ(y) = 1 for every y ∈ V.",
+    "lean_statement": "∀ (P : ℕ) (K N : Set (Euclid P)), IsCompact K → IsOpen N → K ⊆ N → ∃ ζ : Euclid P → ℝ, ContDiff ℝ 1 ζ ∧ HasCompactSupport ζ ∧ tsupport ζ ⊆ N ∧ ∃ V : Set (Euclid P), IsOpen V ∧ K ⊆ V ∧ ∀ y ∈ V, ζ y = 1",
+    "lean_name": "idtp_ccd_scsp_tf_cutoff",
+    "depends_on": [],
+    "natural_proof": "Source: parent proof, step 3 (the compact set K₀ and the cutoff ζ ≡ 1 near K₀ with compact support inside N), stated for an arbitrary compact K ⊆ N; the parent applies it to K₀ = {tγ(α) : t ∈ tsupport λ, α ∈ tsupport φ}. Euclid P is a finite-dimensional real inner product space, hence a proper metric space.\n1. (Margin.) K is compact, N is open and K ⊆ N, so IsCompact.exists_cthickening_subset_open gives δ > 0 with cthickening δ K ⊆ N.\n2. (Nested neighbourhoods.) Put S := thickening (δ/2) K and C := cthickening (δ/4) K. S is open (isOpen_thickening) and C is closed (isClosed_cthickening). Since 0 < δ/2 and δ/4 < δ/2, cthickening_subset_thickening' gives C ⊆ S.\n3. (Smooth Urysohn function.) Apply exists_contDiff_support_eq_eq_one_iff (Euclid P is a finite-dimensional real normed space) with n := 1 to the open set S and the closed set C ⊆ S. It yields ζ : Euclid P → ℝ with ContDiff ℝ ((1 : ℕ∞) : WithTop ℕ∞) ζ, which is ContDiff ℝ 1 ζ (the coercion of 1 is 1, e.g. by exact_mod_cast), range ζ ⊆ [0, 1], support ζ = S, and, for every y, y ∈ C ↔ ζ y = 1.\n4. (Support.) tsupport ζ = closure (support ζ) = closure S ⊆ cthickening (δ/2) K, by closure_thickening_subset_cthickening.\n5. (Compact support.) cthickening (δ/2) K is compact (IsCompact.cthickening, Euclid P being proper) and tsupport ζ is closed (isClosed_tsupport); by step 4 and IsCompact.of_isClosed_subset, tsupport ζ is compact, i.e. HasCompactSupport ζ.\n6. (Support inside N.) Since δ/2 ≤ δ, cthickening_mono and step 1 give cthickening (δ/2) K ⊆ cthickening δ K ⊆ N; with step 4, tsupport ζ ⊆ N.\n7. (Plateau.) Let V := thickening (δ/4) K. V is open (isOpen_thickening); K ⊆ V by self_subset_thickening because δ/4 > 0; and V ⊆ cthickening (δ/4) K = C by thickening_subset_cthickening. Hence ζ y = 1 for every y ∈ V, by step 3.\n8. (Conclusion.) ζ (steps 3, 5, 6) and V (step 7) have all the required properties. The case K = ∅ needs no separate treatment: then S = C = V = ∅ and ζ = 0. ∎",
+    "proof_key_steps": [
+      "Choose δ > 0 with cthickening δ K ⊆ N (IsCompact.exists_cthickening_subset_open).",
+      "exists_contDiff_support_eq_eq_one_iff (n := 1) for the open set thickening (δ/2) K and the closed set cthickening (δ/4) K ⊆ thickening (δ/2) K gives a C¹ ζ with support ζ = thickening (δ/2) K and ζ = 1 exactly on cthickening (δ/4) K.",
+      "tsupport ζ ⊆ cthickening (δ/2) K ⊆ cthickening δ K ⊆ N, a closed subset of a compact set, so ζ has compact support and tsupport ζ ⊆ N.",
+      "V := thickening (δ/4) K is open, contains K, and lies in cthickening (δ/4) K, where ζ = 1."
+    ]
+  },
+  "audit": {
+    "key": "cutoff",
+    "acceptable": true,
+    "natural_proof_acceptable": true,
+    "reason": "The one-line proposition exactly matches all prose hypotheses and conclusions. The positive compact-set margin, nested thickenings and smooth Urysohn function give the required plateau and support. Properness makes the containing closed thickening compact. The empty-set case is valid. This is a complete, independent proof of the cutoff needed by the parent."
+  },
+  "resolved_dependencies": [],
+  "plan_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-f8bd6c6440/parent-supplied-plan.md",
+  "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-f8bd6c6440/parent-supplied-natural-proof.md",
+  "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-f8bd6c6440/parent-supplied-natural-proof.json"
+}

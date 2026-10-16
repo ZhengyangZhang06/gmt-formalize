@@ -1,0 +1,82 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.density_and_tangent_cones-a1.blowup_compactness-a1.radon_criterion-a1`
+- Child DAG node: `root.density_and_tangent_cones-a1.blowup_compactness-a1.radon_criterion-a1.fatou_lower_bound-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: steps 3 and 4 of the supplied proof of `dtc_bc_tendsto_integral_of_limsup_liminf` (the 'standard approximation argument' that ends Simon's proof of 7.2.4, chapter-07.txt lines 285–288), stated for one nonnegative function g. Only the bounded-open-set hypothesis is used; no finiteness assumption is needed. This is the open-set half of the portmanteau theorem: Mathlib's `MeasureTheory.lintegral_le_liminf_lintegral_of_forall_isOpen_measure_le_liminf_measure` (Mathlib/MeasureTheory/Measure/Portmanteau.lean) has the same proof but assumes the inequality for all open sets and is outside the import closure of `GMT.Ch07.Submission`; here only bounded open sets occur.
+Let g : ℝ^P → ℝ be continuous with compact support and g(x) ≥ 0 for all x. Write K₀ := tsupport g = closure{x : g(x) ≠ 0} and, for t ∈ ℝ, G_t := {x : t < g(x)}.
+1. (K₀ is bounded.) Since g has compact support, K₀ is compact (`HasCompactSupport.isCompact`), hence bounded in the metric space ℝ^P (`IsCompact.isBounded`).
+2. (Layer cake.) Let ν be any measure on ℝ^P (σ-finiteness is not needed: the cited lemma assumes only a.e. nonnegativity and a.e. measurability). Since g ≥ 0 everywhere and g is continuous, hence Borel measurable, the layer cake formula with strict superlevel sets gives ∫⁻ ofReal(g(x)) dν(x) = ∫⁻_{t∈(0,∞)} ν(G_t) dt, the outer integral being taken against Lebesgue measure restricted to (0, ∞) (`lintegral_eq_lintegral_meas_lt ν (ae_of_all _ hg0) hg.measurable.aemeasurable`). We use this for ν = μ and for ν = μ_j, every j.
+3. (For t > 0, G_t is bounded and open.) Let t > 0. G_t = g⁻¹((t, ∞)) is open because g is continuous (`isOpen_lt continuous_const hg`). If x ∈ G_t then g(x) > t > 0, so g(x) ≠ 0 and x ∈ support g ⊆ K₀ (`subset_tsupport`). Hence G_t ⊆ K₀, so G_t is bounded by step 1 (`Bornology.IsBounded.subset`). By the hypothesis, μ(G_t) ≤ liminf_j μ_j(G_t) for every t > 0.
+4. (Measurability.) For j ∈ ℕ and t ∈ ℝ put F_j(t) := μ_j(G_t). If s ≤ t then t < g(x) implies s < g(x), so G_t ⊆ G_s and F_j(t) ≤ F_j(s) (`measure_mono`). Thus F_j : ℝ → [0, ∞] is antitone, hence Borel measurable (`Antitone.measurable`).
+5. (Integrating the pointwise inequality.) By step 3, μ(G_t) ≤ liminf_j F_j(t) for every t in the measurable set (0, ∞). Monotonicity of the integral over (0, ∞) gives ∫⁻_{(0,∞)} μ(G_t) dt ≤ ∫⁻_{(0,∞)} liminf_j F_j(t) dt (`setLIntegral_mono' measurableSet_Ioi`).
+6. (Fatou.) Fatou's lemma for Lebesgue measure restricted to (0, ∞), applied to the measurable functions F_j of step 4 (`lintegral_liminf_le`), gives ∫⁻_{(0,∞)} liminf_j F_j(t) dt ≤ liminf_j ∫⁻_{(0,∞)} F_j(t) dt.
+7. (Conclusion.) By step 2 for ν = μ, steps 5 and 6, and step 2 for ν = μ_j:
+   ∫⁻ ofReal(g) dμ = ∫⁻_{(0,∞)} μ(G_t) dt ≤ ∫⁻_{(0,∞)} liminf_j F_j(t) dt ≤ liminf_j ∫⁻_{(0,∞)} F_j(t) dt = liminf_j ∫⁻ ofReal(g) dμ_j. ∎
+
+## Key steps
+
+1. Layer cake with strict superlevel sets: ∫⁻ ofReal(g) dν = ∫⁻_{(0,∞)} ν({g > t}) dt for ν = μ and ν = μ_j.
+2. For t > 0, {g > t} is open and contained in the compact set tsupport g, hence bounded, so μ({g > t}) ≤ liminf_j μ_j({g > t}).
+3. t ↦ μ_j({g > t}) is antitone, hence measurable.
+4. Integrate the pointwise inequality over (0, ∞) and apply Fatou's lemma (lintegral_liminf_le).
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat local-references/123e8435b4a2469b/manifest.json (project b4d606db, mathlib 25730c7c); cmp local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean GMT/Ch07/Contract.lean && cmp GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean (identical)`
+- `rg -n "theorem lintegral_eq_lintegral_meas_lt|theorem lintegral_eq_lintegral_meas_le|theorem limsup_lintegral_le|theorem lintegral_liminf_le |theorem integral_eq_lintegral_of_nonneg_ae|theorem tendsto_of_le_liminf_of_limsup_le|theorem limsup_nat_add|protected theorem Antitone.measurable|theorem Continuous.bounded_above_of_compact_support|theorem eventually_lt_of_limsup_lt|theorem isFiniteMeasure_restrict|theorem integrableOn_iff_integrable_of_support_subset|max_zero_sub_max_neg_zero_eq_self|theorem setLIntegral_mono'|theorem Integrable.lintegral_lt_top|theorem integral_sub " local-references/123e8435b4a2469b/mathlib/Mathlib`
+- `rg -n "lintegral_le_liminf_lintegral_of_forall_isOpen_measure_le_liminf_measure|limsup_lintegral_le_of_forall_isClosed|tendsto_measure_of_le_liminf_measure_of_limsup_measure_le" local-references/123e8435b4a2469b/mathlib/Mathlib`
+- `rg -n "^import" GMT/Ch07/Submission.lean (Portmanteau not imported)`
+- `rg -ln "liminf|limsup" simongmt/Poincare; rg -n "lintegral_liminf_le|limsup_lintegral_le|lintegral_eq_lintegral_meas" simongmt/Poincare`
+- `rg -n "dtc_bc_rc|liminf|limsup" local-references/123e8435b4a2469b/project/GMT`
+- `python3 -I over dag.json nodes[*].lean_name for dtc_bc_rc_lintegral_le_liminf / dtc_bc_rc_limsup_lintegral_le and cmc_rcc_* statuses; rg -l dtc_bc_rc_ GMT nodes DAG.md dag.mmd`
+- `python3 -I: verifier/gmt-compare.py contract_scope + child_modules(mode=contract) and verifier/lean_contract.py validate_lean_statement on both child types and the parent type`
+- `lake env lean /tmp/dtcbc-rc-x5SuMi/lean/Probe.lean, Probe2.lean (#check signatures), Challenge_dtc_bc_rc_lintegral_le_liminf.lean, Challenge_dtc_bc_rc_limsup_lintegral_le.lean, Full.lean (#print axioms)`
+- `sed -n 270,292p book/chapter-07.txt (Simon 7.2.4 '(13)', '(14)', 'standard approximation argument')`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/README.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-compactness-a1-radon-criterion-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-compactness-a1-radon-criterion-a1/parent-supplied-natural-proof.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-radon-convergence-criterion-a1/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Layercake.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/DominatedConvergence.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Add.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Constructions/BorelSpace/Order.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Order/LiminfLimsup.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Portmanteau.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter04/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter04/Poincare.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-07.txt`
+- `/tmp/dtcbc-rc-x5SuMi/lean/Full.lean`
+- `/tmp/dtcbc-rc-x5SuMi/lean/Challenge_dtc_bc_rc_lintegral_le_liminf.lean`
+- `/tmp/dtcbc-rc-x5SuMi/lean/Challenge_dtc_bc_rc_limsup_lintegral_le.lean`
+- `/tmp/dtcbc-rc-x5SuMi/proposal.json`
+
+Reference snapshot and source inventory:
+- The snapshot contract (project b4d606db, Mathlib 25730c7c) is byte-identical to the workspace Contract.lean and Submission.lean.
+- Every Mathlib lemma used by the children and the assembly exists at the pin and is in the import closure of GMT.Ch07.Submission: Layercake.lean:445/496 (lintegral_eq_lintegral_meas_le/_lt), Lebesgue/Add.lean:233 (lintegral_liminf_le), Lebesgue/DominatedConvergence.lean:29 (limsup_lintegral_le), Bochner/Basic.lean:515 (integral_eq_lintegral_of_nonneg_ae), LiminfLimsup.lean:305, BorelSpace/Order.lean:801, IntegrableOn.lean:462/479, Lebesgue/Basic.lean:254.
+- Mathlib's Portmanteau.lean:499 has the all-open-sets analogue of child A, but GMT.Ch07.Submission does not import it. The children's statements need only bounded open sets.
+- SimonGMT only uses the layer-cake formula (Chapter04/Basic.lean:223, Chapter04/Poincare.lean:289). It has no Radon or portmanteau convergence lemma to reuse.
+- No dtc_bc_rc_ name occurs anywhere.
+- The accepted sibling cmc_rcc_* nodes have different types.
+
+Lean checks of this split:
+- Both child types validate and elaborate in the comparator scope.
+- Scratch proofs of both children and the conditional assembly of the exact frozen parent type compile with only propext, Classical.choice and Quot.sound.

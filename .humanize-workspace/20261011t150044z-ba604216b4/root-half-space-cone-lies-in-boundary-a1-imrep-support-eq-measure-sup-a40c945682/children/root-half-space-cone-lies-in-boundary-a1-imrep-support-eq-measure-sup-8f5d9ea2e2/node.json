@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.half_space_cone_lies_in_boundary-a1.imrep_support_eq_measure_support-a1.weight_null_where_current_vanishes-a1.covector_space_finite_dimensional-a1",
+  "parent_id": "root.half_space_cone_lies_in_boundary-a1.imrep_support_eq_measure_support-a1.weight_null_where_current_vanishes-a1",
+  "depth": 4,
+  "title": "The space of n-covectors on ℝ^P is finite-dimensional",
+  "statement": "Let P, n ∈ ℕ. The real vector space Λ^n(ℝ^P) = Covector (Euclid P) n of continuous alternating n-linear forms on ℝ^P = EuclideanSpace ℝ (Fin P), with its standard ℝ-module structure, is finite-dimensional over ℝ.",
+  "lean_statement": "∀ (P n : ℕ), FiniteDimensional ℝ (Covector (Euclid P) n)",
+  "lean_name": "imsupp_covector_finiteDimensional",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-half-space-cone-lies-in-boundary-a1-imrep-support-eq-measure-sup-8f5d9ea2e2-a1"
+}

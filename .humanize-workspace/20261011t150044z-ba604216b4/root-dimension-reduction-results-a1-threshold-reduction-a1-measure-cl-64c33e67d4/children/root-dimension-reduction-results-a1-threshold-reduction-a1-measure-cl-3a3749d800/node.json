@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.threshold_reduction-a1.measure_class_reduction-a1.threshold_limit-a1.density_lower_bound-a1",
+  "parent_id": "root.dimension_reduction_results-a1.threshold_reduction-a1.measure_class_reduction-a1.threshold_limit-a1",
+  "depth": 5,
+  "title": "Density lower bound from lower bounds on balls (parent steps 8–9)",
+  "statement": "Let n ∈ ℕ and Λ, c, s ∈ ℝ with s > 0. Let m : ℝ → [0, ∞] and L ∈ [0, ∞]. Put ω := unitBallVolume n, the volume of the open unit ball of ℝⁿ = Euclid n. Assume that ω·ofReal(c)·ofReal(tⁿe^{−Λt}) ≤ m(t) for every t ∈ (0, s), and that m(t)/(ω·ofReal(tⁿ)) → L as t → 0⁺ (along 𝓝[>]0, division in [0, ∞]). Then ofReal(c) ≤ L.",
+  "lean_statement": "∀ (n : ℕ) (Λ c s : ℝ) (m : ℝ → ℝ≥0∞) (L : ℝ≥0∞), 0 < s → (∀ t ∈ Ioo 0 s, unitBallVolume n * ENNReal.ofReal c * ENNReal.ofReal (t ^ n * Real.exp (-(Λ * t))) ≤ m t) → Tendsto (fun t : ℝ => m t / (unitBallVolume n * ENNReal.ofReal (t ^ n))) (𝓝[>] 0) (𝓝 L) → ENNReal.ofReal c ≤ L",
+  "lean_name": "dimred_tr_mcr_tl_density_lower_bound",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-threshold-reduction-a1-measure-cl-3a3749d800-a1"
+}

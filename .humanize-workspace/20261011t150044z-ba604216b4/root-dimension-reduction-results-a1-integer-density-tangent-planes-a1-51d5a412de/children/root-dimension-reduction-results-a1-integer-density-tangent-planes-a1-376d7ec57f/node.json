@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_sector_endpoint_density-a1.edge_tangent_plane-a1.plane_imrep-a1",
+  "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_sector_endpoint_density-a1.edge_tangent_plane-a1",
+  "depth": 5,
+  "title": "The flat current c[[span τ]] has an integer multiplicity representation with measure |c|·Hⁿ⌞span τ",
+  "statement": "Let P, n ∈ ℕ, let τ = (τ_0, …, τ_{n−1}) be an orthonormal family in ℝ^P (τ : Fin n → Euclid P, Orthonormal ℝ τ), let Q' := span{τ_0, …, τ_{n−1}} (Submodule.span ℝ (range τ)) and let c ∈ ℤ with c ≠ 0. Then there is an integer multiplicity triple R ∈ IMRep(ℝ^P, n) (IMRep univ n) such that (i) R.action ω = c·∫_{Q'} ω(x)(τ) dHⁿ(x) for every ambient n-form ω : ℝ^P → Covector(ℝ^P, n) (DifferentialForm (Euclid P) n), where Hⁿ := μHE[n] and ω(x)(τ) is the covector ω(x) evaluated at the n-tuple τ; and (ii) R.measure = |c|·Hⁿ⌞Q', i.e. R.measure = (c.natAbs : ℝ≥0∞) • μHE[n].restrict Q'.",
+  "lean_statement": "∀ (P n : ℕ) (τ : Fin n → Euclid P) (c : ℤ), Orthonormal ℝ τ → c ≠ 0 → ∃ R : IMRep (univ : Set (Euclid P)) n, (∀ ω : DifferentialForm (Euclid P) n, R.action ω = (c : ℝ) * ∫ x in (Submodule.span ℝ (Set.range τ) : Set (Euclid P)), ω x τ ∂μHE[n]) ∧ R.measure = (c.natAbs : ℝ≥0∞) • (μHE[n] : Measure (Euclid P)).restrict (Submodule.span ℝ (Set.range τ) : Set (Euclid P))",
+  "lean_name": "idtp_cse_etp_plane_imrep",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-376d7ec57f-a1"
+}

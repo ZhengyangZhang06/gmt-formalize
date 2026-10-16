@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_off_null_set-a1.one_dim_cones-a1.polygonal_current-a1",
+  "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_off_null_set-a1.one_dim_cones-a1",
+  "depth": 5,
+  "title": "Weighted oriented open line pieces with H¹-null overlaps form an integer multiplicity 1-current with explicit mass measure (parent step 5)",
+  "statement": "Let P ∈ ℕ and ι a finite type, and for each k ∈ ι let p_k, v_k ∈ ℝ^P with ‖v_k‖ = 1, I_k ⊆ ℝ open and c_k ∈ ℤ; put γ_k(t) := p_k + t·v_k and S_k := γ_k(I_k). Assume H¹(S_j ∩ closure(S_k)) = 0 for all j ≠ k, where H¹ = μHE[1]. Then there are a current X ∈ 𝒟_1(ℝ^P) and a 1-dimensional integer multiplicity triple R (IMRep univ 1) such that R represents X, X(ω) = Σ_k c_k·∫_{I_k} ω(γ_k(t))(v_k) dt for every ω ∈ 𝒟¹(ℝ^P), and R.measure(A) = Σ_k |c_k|·ℒ¹(I_k ∩ γ_k⁻¹(A)) for every Borel set A ⊆ ℝ^P.",
+  "lean_statement": "∀ (P : ℕ) (ι : Type) [Fintype ι] (p v : ι → Euclid P) (I : ι → Set ℝ) (c : ι → ℤ), (∀ k, ‖v k‖ = 1) → (∀ k, IsOpen (I k)) → (∀ j k, j ≠ k → (μHE[1] : Measure (Euclid P)) (((fun t : ℝ => p j + t • v j) '' I j) ∩ closure ((fun t : ℝ => p k + t • v k) '' I k)) = 0) → ∃ (X : GeometricCurrentOn (univ : Set (Euclid P)) 1) (R : IMRep (univ : Set (Euclid P)) 1), R.Represents X ∧ (∀ ω : TestFormOn (univ : Set (Euclid P)) 1, X ω = ∑ k, (c k : ℝ) * ∫ t in I k, (ω : DifferentialForm (Euclid P) 1) (p k + t • v k) (fun _ => v k)) ∧ ∀ A : Set (Euclid P), MeasurableSet A → R.measure A = ∑ k, ENNReal.ofReal |(c k : ℝ)| * volume (I k ∩ (fun t : ℝ => p k + t • v k) ⁻¹' A)",
+  "lean_name": "idtp_fons_odc_polygonal_current",
+  "depends_on": [
+    "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_off_null_set-a1.one_dim_cones-a1.line_param-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_off_null_set-a1.one_dim_cones-a1.line_param-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-c1117fcc2a-a1"
+}

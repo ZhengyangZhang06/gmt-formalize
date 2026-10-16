@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_sector_endpoint_density-a1.flux_density-a1.fibre_signed-a1",
+  "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_sector_endpoint_density-a1.flux_density-a1",
+  "depth": 5,
+  "title": "Consequences of the fibre area identity: finiteness, integrability, signed and box identities",
+  "statement": "Let P ∈ ℕ, R = (M, θ, ξ) an integer multiplicity triple in ℝ^P (IMRep univ 2) with weight μ := R.measure = θ·H²⌞M (H² = μHE[2]), Q a 2-dimensional linear subspace of ℝ^P with orthogonal projection π = Q.starProjection, a, e ∈ Q with |a| = |e| = 1 and ⟨a,e⟩ = 0, and s ∈ ℝ. Put T_x := approxTangentPlane 2 M x with orthogonal projection p_{T_x}, Ax := ⟨x,a⟩e − ⟨x,e⟩a, G(x) := |p_{T_x}(Ax)|²/|πx|² (real division, t/0 = 0), f(x) := arctan(⟨x,e⟩/⟨x,a⟩), F̃(x) := (|x|, f(x)), Z(s,s') := {x : ⟨x,a⟩ > 0, ||x| − 1| < s', |f(x)| < s', |x − πx| < s|x|} and Z := Z(s,s). Let H : ℝ² → [0,∞] be a.e.-measurable for Lebesgue measure with ∫ b(p)H(p) dp = ∫_Z b(F̃(x))·ofReal(G(x)) dμ(x) for every Borel b : ℝ² → [0,∞]. Then (i) H(p) < ∞ for a.e. p; (ii) H_ℝ := toReal∘H is Lebesgue integrable on ℝ²; (iii) for every Borel b : ℝ² → ℝ with sup|b| < ∞, ∫ b(p)H_ℝ(p) dp = ∫_Z b(F̃(x))G(x) dμ(x) (Bochner integrals); (iv) for every s' ≤ s, ∫_{(1−s',1+s')×(−s',s')} H(p) dp = ∫_{Z(s,s')} ofReal(G) dμ.",
+  "lean_statement": "∀ (P : ℕ) (R : IMRep (univ : Set (Euclid P)) 2) (Q : Submodule ℝ (Euclid P)) (a e : Euclid P) (s : ℝ) (H : ℝ × ℝ → ℝ≥0∞), Module.finrank ℝ Q = 2 → a ∈ Q → e ∈ Q → ‖a‖ = 1 → ‖e‖ = 1 → inner ℝ a e = 0 → AEMeasurable H volume → (∀ b : ℝ × ℝ → ℝ≥0∞, Measurable b → ∫⁻ p : ℝ × ℝ, b p * H p = ∫⁻ x in {x : Euclid P | 0 < inner ℝ x a ∧ |‖x‖ - 1| < s ∧ |Real.arctan (inner ℝ x e / inner ℝ x a)| < s ∧ ‖x - Q.starProjection x‖ < s * ‖x‖}, b (‖x‖, Real.arctan (inner ℝ x e / inner ℝ x a)) * ENNReal.ofReal (‖(approxTangentPlane 2 R.carrier x).starProjection (inner ℝ x a • e - inner ℝ x e • a)‖ ^ 2 / ‖Q.starProjection x‖ ^ 2) ∂R.measure) → (∀ᵐ p : ℝ × ℝ, H p ≠ ∞) ∧ Integrable (fun p : ℝ × ℝ => (H p).toReal) ∧ (∀ b : ℝ × ℝ → ℝ, Measurable b → (∃ M : ℝ, ∀ p, |b p| ≤ M) → ∫ p : ℝ × ℝ, b p * (H p).toReal = ∫ x in {x : Euclid P | 0 < inner ℝ x a ∧ |‖x‖ - 1| < s ∧ |Real.arctan (inner ℝ x e / inner ℝ x a)| < s ∧ ‖x - Q.starProjection x‖ < s * ‖x‖}, b (‖x‖, Real.arctan (inner ℝ x e / inner ℝ x a)) * (‖(approxTangentPlane 2 R.carrier x).starProjection (inner ℝ x a • e - inner ℝ x e • a)‖ ^ 2 / ‖Q.starProjection x‖ ^ 2) ∂R.measure) ∧ ∀ s' : ℝ, s' ≤ s → ∫⁻ p in Ioo (1 - s') (1 + s') ×ˢ Ioo (-s') s', H p = ∫⁻ x in {x : Euclid P | 0 < inner ℝ x a ∧ |‖x‖ - 1| < s' ∧ |Real.arctan (inner ℝ x e / inner ℝ x a)| < s' ∧ ‖x - Q.starProjection x‖ < s * ‖x‖}, ENNReal.ofReal (‖(approxTangentPlane 2 R.carrier x).starProjection (inner ℝ x a • e - inner ℝ x e • a)‖ ^ 2 / ‖Q.starProjection x‖ ^ 2) ∂R.measure",
+  "lean_name": "idtp_cse_fd_fibre_signed_identity",
+  "depends_on": [
+    "root.minimizing_implies_stationary-a1.tangent_projection_measurable-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.minimizing_implies_stationary-a1.tangent_projection_measurable-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-minimizing-implies-stationary-a1-tangent-projection-measurable-a1-a1",
+      "result_commit": "36b2d372040645171f355c68541910ce3ab4bab8",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-7a55cb1c38-a1"
+}

@@ -1,0 +1,88 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat <snapshot>/manifest.json; cmp <snapshot>/project/GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean; git rev-parse HEAD; git -C .lake/packages/mathlib rev-parse HEAD; git -C .lake/packages/simongmt rev-parse HEAD",
+        "rg -n \"theorem tendsto_integral_filter_of_dominated_convergence|theorem Isometry.euclideanHausdorffMeasure_image|theorem Isometry.map_euclideanHausdorffMeasure|theorem lintegral_indicator_const|theorem integral_finsetSum|theorem lintegral_finsetSum|theorem finrank_span_singleton|theorem eventually_all |theorem integral_indicator |theorem image_inter_preimage|theorem withDensity_apply \" <snapshot>/mathlib/Mathlib",
+        "rg -n \"theorem _root_.MeasurableEmbedding.integral_map|_root_.MeasurableEmbedding.integrable_map_iff|theorem eventually_nhds_iff |theorem le_opNorm\" <snapshot>/mathlib/Mathlib",
+        "rg -n \"HasApproximateTangentSpaceAt|blowUpMap\" <snapshot>/mathlib/Mathlib (no match)",
+        "rg -n \"HasApproximateTangentSpaceAt|idtp_fons_odc|polygonal\" <snapshot>/project/GMT",
+        "grep -rn HasApproximateTangentSpaceAt (theorem|lemma) .lake/packages/simongmt/Poincare/SimonGMT; sed -n 50,260p Chapter03/Rectifiable.lean; sed -n 1,200p Chapter06/Currents.lean; grep Covector|DifferentialForm|IsTestForm Chapter06/Forms.lean",
+        "git show 75f499358:GMT/Ch07/Submission.lean > /tmp/pc_split/draft.lean (speculative draft of the grandparent): odc_line_*, odc_polycurrent_*, odc_tangent_*, odc_approxTangent_of_locally_line, odc_polyimrep_*, odc_polygonal_imrep",
+        "python3 -I scans of dag.json: nodes under the selected parent, sibling line_param-a1 frozen type, all idtp_fons_odc* lean_names, occurrences of the five proposed names, accepted statements with HasApproximateTangentSpaceAt and ball, accepted line-integral currents",
+        "grep -n max_depth runtime.py (_decompose line 1393); sed -n 60,200p leaf_verification.py (check_source_delta forbidden regex); sed -n 1,140p inherited.py (cited_inherited)",
+        "grep -n \"1.4 Definition|3.1 Definition|1-dimensional minimizing\" book/chapter-03.txt book/chapter-06.txt book/chapter-07.txt",
+        "lake env lean /tmp/pc_split/{Types,Alpha,Beta,Eps,Gamma,Delta,All,AllClean}.lean with #print axioms"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/DominatedConvergence.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/L1Space/Integrable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Add.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/WithDensity.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/FiniteDimensional/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Order/Filter/Finite.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/Pseudo/Defs.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/Alternating/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Data/Set/Image.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-c1117fcc2a/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        "/runtime/flows/gmt-claude-0e9a4f203404/_recursive_lean/runtime.py",
+        "/runtime/flows/gmt-claude-0e9a4f203404/_recursive_lean/leaf_verification.py",
+        "/runtime/flows/gmt-claude-0e9a4f203404/_recursive_lean/inherited.py",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-03.txt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-07.txt",
+        "/tmp/pc_split/draft.lean",
+        "/tmp/pc_split/Types.lean",
+        "/tmp/pc_split/Alpha.lean",
+        "/tmp/pc_split/Beta.lean",
+        "/tmp/pc_split/Eps.lean",
+        "/tmp/pc_split/Gamma.lean",
+        "/tmp/pc_split/Delta.lean",
+        "/tmp/pc_split/All.lean",
+        "/tmp/pc_split/AllClean.lean"
+      ],
+      "conclusion": "Pins match. The snapshot manifest records project b4d606db and Mathlib 25730c7c, which equal the workspace HEAD and .lake/packages/mathlib; SimonGMT is 2b366308. The snapshot Contract.lean is byte-identical to the workspace Submission.lean. Every Mathlib lemma used by the child proofs exists in the snapshot: tendsto_integral_filter_of_dominated_convergence (MeasureTheory/Integral/DominatedConvergence.lean:67), Isometry.euclideanHausdorffMeasure_image and map_euclideanHausdorffMeasure (Geometry/Euclidean/Volume/Measure.lean:131 and :141), MeasurableEmbedding.integral_map (Integral/Bochner/Basic.lean:1093), MeasurableEmbedding.integrable_map_iff (Function/L1Space/Integrable.lean:374), integral_finsetSum (Bochner/Basic.lean:248), integral_indicator (Bochner/Set.lean:185), lintegral_finsetSum (Lebesgue/Add.lean:356), lintegral_indicator_const (Lebesgue/Basic.lean:541), withDensity_apply (Measure/WithDensity.lean:44), finrank_span_singleton (LinearAlgebra/FiniteDimensional/Basic.lean:535), Filter.eventually_all (Order/Filter/Finite.lean:247), Metric.eventually_nhds_iff (Topology/MetricSpace/Pseudo/Defs.lean:779), ContinuousAlternatingMap.le_opNorm (Analysis/Normed/Module/Alternating/Basic.lean:212) and image_inter_preimage (Data/Set/Image.lean:454). The snapshot Mathlib has no HasApproximateTangentSpaceAt or blowUpMap (no match). SimonGMT Chapter03/Rectifiable.lean supplies blowUpMap (:96), HasApproximateTangentSpaceAt (:102), countablyRectifiable_range (:64), countablyRectifiable_sUnion (:416), and only the flat-model lemma hasApproximateTangentSpaceAt_submodule (:125), which covers points of a linear subspace with no locality; Chapter06/Currents.lean defines TestFormOnConverges and GeometricCurrentOn. The snapshot project GMT has no idtp_fons_odc or polygonal declaration. The DAG has no node with any of the five proposed lean_names, and no accepted statement equals any child type. The accepted codim1_ac_sat_approxTangent_of_local_eq proves locality but not the affine model, so it is not reused. The sibling line_param (idtp_fons_odc_line_hausdorff, frozen type read from dag.json) is the only external prerequisite and is cited by name in two children. Lean: all child types elaborate and the frozen parent type follows from three of them. Each child has a verified one-theorem proof that respects the leaf delta regex; the proofs are adapted from draft 75f499358. With a one-theorem proof of the line_param type, the whole chain uses only propext, Classical.choice and Quot.sound."
+    }
+  ],
+  "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_off_null_set-a1.one_dim_cones-a1.polygonal_current-a1",
+  "child_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_off_null_set-a1.one_dim_cones-a1.polygonal_current-a1.piece_locally_line-a1",
+  "subproblem": {
+    "key": "piece_locally_line",
+    "title": "Near a point of one open line piece away from the closures of the others, a union of pieces is locally the line (parent step 3e)",
+    "statement": "Let P ∈ ℕ, ι a finite type, p, v : ι → ℝ^P, I : ι → Set ℝ, M ⊆ ℝ^P, k ∈ ι and x ∈ ℝ^P. Put S_j := {p_j + t·v_j : t ∈ I_j}. Assume ‖v_k‖ = 1, I_k is open, M ⊆ ⋃_j S_j, S_k ⊆ M, x ∈ S_k, and x ∉ closure(S_j) for every j ≠ k. Then there is r > 0 such that M ∩ B_r(x) = {y : y − x ∈ span{v_k}} ∩ B_r(x).",
+    "lean_statement": "∀ (P : ℕ) (ι : Type) [Finite ι] (p v : ι → Euclid P) (I : ι → Set ℝ) (M : Set (Euclid P)) (k : ι) (x : Euclid P), ‖v k‖ = 1 → IsOpen (I k) → M ⊆ (⋃ j, (fun t : ℝ => p j + t • v j) '' I j) → (fun t : ℝ => p k + t • v k) '' I k ⊆ M → x ∈ (fun t : ℝ => p k + t • v k) '' I k → (∀ j, j ≠ k → x ∉ closure ((fun t : ℝ => p j + t • v j) '' I j)) → ∃ r : ℝ, 0 < r ∧ M ∩ ball x r = {y | y - x ∈ Submodule.span ℝ {v k}} ∩ ball x r",
+    "lean_name": "idtp_fons_odc_pc_piece_locally_line",
+    "depends_on": [],
+    "natural_proof": "Source: parent step 3e (“Write x = γ_k(t₀), t₀ ∈ I_k; since I_k is open there is ε > 0 with (t₀ − ε, t₀ + ε) ⊆ I_k, and since x ∉ closure(S_j) for the finitely many j ≠ k there is δ > 0 with B_δ(x) ∩ S_j = ∅ for all j ≠ k. With r := min(ε, δ): M ∩ B_r(x) = {x + s·v_k : s ∈ ℝ} ∩ B_r(x)”). Here the line through x is written {y : y − x ∈ span{v_k}}.\n1. Since x ∈ S_k, x = p_k + t₀·v_k for some t₀ ∈ I_k. As I_k is open, there is ε > 0 with B_ε(t₀) = (t₀ − ε, t₀ + ε) ⊆ I_k (Metric.isOpen_iff).\n2. For each j ≠ k we have x ∉ closure(S_j). By mem_closure_iff_frequently, this says it is not frequently true near x that y ∈ S_j; that is, eventually in 𝓝 x, y ∉ S_j. For j = k the statement “j ≠ k → y ∉ S_j” holds trivially. Since ι is finite, Filter.eventually_all combines these: eventually in 𝓝 x, y ∉ S_j for all j ≠ k. By Metric.eventually_nhds_iff there is δ > 0 such that every y with dist(y, x) < δ lies in no S_j with j ≠ k.\n3. Put r := min(ε, δ) > 0. (⊆) Let y ∈ M with dist(y, x) < r. Since M ⊆ ⋃_j S_j, y ∈ S_j for some j. Since dist(y, x) < r ≤ δ, step 2 forces j = k. So y = p_k + t·v_k with t ∈ I_k, and y − x = t·v_k − t₀·v_k = (t − t₀)·v_k ∈ span{v_k}.\n4. (⊇) Let y ∈ B_r(x) with y − x ∈ span{v_k}. By Submodule.mem_span_singleton, y − x = s·v_k for some s ∈ ℝ. Then y = p_k + (t₀ + s)·v_k. Using ‖v_k‖ = 1, |s| = |s|·‖v_k‖ = ‖s·v_k‖ = dist(y, x) < r ≤ ε. So |(t₀ + s) − t₀| < ε, i.e. t₀ + s ∈ B_ε(t₀) ⊆ I_k. Hence y ∈ S_k ⊆ M, so y ∈ M ∩ B_r(x).\n5. Steps 3 and 4 give M ∩ B_r(x) = {y : y − x ∈ span{v_k}} ∩ B_r(x) with r > 0. ∎",
+    "proof_key_steps": [
+      "Openness of I_k gives ε > 0 with (t₀ − ε, t₀ + ε) ⊆ I_k, where x = p_k + t₀ v_k.",
+      "Finitely many j ≠ k with x ∉ closure S_j give δ > 0 such that B_δ(x) misses every S_j with j ≠ k.",
+      "With r = min(ε, δ), every point of M ∩ B_r(x) lies on S_k, hence on x + span{v_k}.",
+      "Conversely, x + s v_k with |s| < r equals γ_k(t₀ + s) ∈ S_k ⊆ M."
+    ]
+  },
+  "audit": {
+    "key": "piece_locally_line",
+    "acceptable": true,
+    "natural_proof_acceptable": true,
+    "reason": "The exact type includes every hypothesis used. Finiteness provides a common neighborhood excluding other pieces; openness supplies the parameter interval. The unit-speed identity converts spatial distance into parameter distance, proving both inclusions. No measurability or additional assumptions on other pieces are needed."
+  },
+  "resolved_dependencies": [],
+  "plan_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-2a055a4c1e/parent-supplied-plan.md",
+  "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-2a055a4c1e/parent-supplied-natural-proof.md",
+  "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-2a055a4c1e/parent-supplied-natural-proof.json"
+}

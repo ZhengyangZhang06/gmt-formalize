@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_off_null_set-a1.cone_class-a1.positive_scale_family-a1.vague_unique-a1",
+  "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_off_null_set-a1.cone_class-a1.positive_scale_family-a1",
+  "depth": 6,
+  "title": "Uniqueness of vague limits: two measures on ℝ^P that are finite on compact sets and give equal integrals to every continuous compactly supported function are equal (parent fact (F6), step 5b)",
+  "statement": "Let P ∈ ℕ and let ν₁, ν₂ be measures on ℝ^P (Borel σ-algebra) such that ν₁(K) ≠ ∞ and ν₂(K) ≠ ∞ for every compact K ⊆ ℝ^P, and ∫ f dν₁ = ∫ f dν₂ for every continuous f : ℝ^P → ℝ with compact support. Then ν₁ = ν₂.",
+  "lean_statement": "∀ (P : ℕ) (ν₁ ν₂ : Measure (Euclid P)), (∀ K : Set (Euclid P), IsCompact K → ν₁ K ≠ ∞) → (∀ K : Set (Euclid P), IsCompact K → ν₂ K ≠ ∞) → (∀ f : Euclid P → ℝ, Continuous f → HasCompactSupport f → ∫ x, f x ∂ν₁ = ∫ x, f x ∂ν₂) → ν₁ = ν₂",
+  "lean_name": "idtp_fons_cc_psf_vague_unique",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-98c855726f-a1"
+}

@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_constant_density_planar-a1.planar_support_mass-a1",
+  "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_constant_density_planar-a1",
+  "depth": 4,
+  "title": "Mass of an integer multiplicity cycle supported in a plane near a point of density k",
+  "statement": "For all P, n, k ∈ ℕ with n ≥ 1, every open U ⊆ ℝ^P, every T ∈ 𝒟_n(U) that is integer multiplicity with ∂T = 0 in U (BoundaryVanishes T), every n-dimensional linear subspace Q of ℝ^P, every p ∈ Q and every r > 0 with B_r(p) ⊆ U and spt T ∩ B_r(p) ⊆ Q: if Θⁿ(μ_T, p) = k (HasMassDensity T p k), then M_W(T) = k·Hⁿ(W ∩ Q) for every open W ⊆ B_r(p), where Hⁿ := μHE[n].",
+  "lean_statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (Q : Submodule ℝ (Euclid P)) (p : Euclid P) (r : ℝ) (k : ℕ), 1 ≤ n → IsOpen U → IsIntegerMultiplicity T → BoundaryVanishes T → Module.finrank ℝ Q = n → p ∈ Q → 0 < r → ball p r ⊆ U → T.support ∩ ball p r ⊆ (Q : Set (Euclid P)) → HasMassDensity T p k → ∀ W : Set (Euclid P), IsOpen W → W ⊆ ball p r → T.massOn W = (k : ℝ≥0∞) * μHE[n] (W ∩ (Q : Set (Euclid P)))",
+  "lean_name": "idtp_ccd_planar_support_mass",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-15cbdbde67-a1"
+}

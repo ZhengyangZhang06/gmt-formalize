@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_off_null_set-a1.cone_class-a1.positive_scale_family-a1.domain_geometry-a1",
+  "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_off_null_set-a1.cone_class-a1.positive_scale_family-a1",
+  "depth": 6,
+  "title": "Domains G_{x,λ} = η_{x,λ}(B_2(0)): membership test ‖x + λv‖ < 2, openness, and B_2(0) ∪ closedBall 0 R ⊆ G_{x,λ} for admissible (x, λ) with λR ≤ 1 (parent steps 0(e), 4)",
+  "statement": "Let P ∈ ℕ, x ∈ ℝ^P (= Euclid P) and λ > 0, let η_{x,λ} := dilation x λ (so η_{x,λ}(u) = −λ⁻¹x + λ⁻¹u) and G := η_{x,λ}(B_2(0)), where B_2(0) is the open ball of radius 2 about 0. Then: (a) for every v ∈ ℝ^P, v ∈ G ⟺ ‖x + λ·v‖ < 2; (b) G is open; (c) if moreover λ ≤ 1 and ‖x‖ ≤ 1 − λ, then B_2(0) ⊆ G, and closedBall 0 R ⊆ G for every real R with λ·R ≤ 1.",
+  "lean_statement": "∀ (P : ℕ) (x : Euclid P) (lam : ℝ), 0 < lam → (∀ v : Euclid P, v ∈ dilation x lam '' ball 0 2 ↔ ‖x + lam • v‖ < 2) ∧ IsOpen (dilation x lam '' ball 0 2) ∧ (lam ≤ 1 → ‖x‖ ≤ 1 - lam → ball 0 2 ⊆ dilation x lam '' ball 0 2 ∧ ∀ R : ℝ, lam * R ≤ 1 → closedBall 0 R ⊆ dilation x lam '' ball 0 2)",
+  "lean_name": "idtp_fons_cc_psf_domain_geometry",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-ffb81264e3-a1"
+}

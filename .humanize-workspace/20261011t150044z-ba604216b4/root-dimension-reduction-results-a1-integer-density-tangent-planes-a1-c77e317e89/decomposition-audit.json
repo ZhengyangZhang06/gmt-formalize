@@ -1,0 +1,73 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "idtp_cttp_",
+        "euclideanHausdorffMeasure_image|euclideanHausdorffMeasure_eq_volume|ext_of_integral_eq_on_compactlySupported|of_sigmaCompactSpace_of_isLocallyFiniteMeasure|addHaar_ball_of_pos|map_linearDependent|isometryOfOrthonormal",
+        "def (zeroRegion|support|massOn|massAdmissibleOn|VanishesOn)|theorem (boundary_apply|exteriorDerivative_isTestForm)|def boundary|theorem ext",
+        "git -C . rev-parse HEAD",
+        "git -C .lake/packages/mathlib rev-parse HEAD",
+        "git -C .lake/packages/simongmt rev-parse HEAD",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/cttp_independent_audit_atz1nqn1/Contracts.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/cttp_independent_audit_atz1nqn1/AssemblyConditional.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/cttp_independent_audit_atz1nqn1/EndToEnd.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/lake-manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/RieszMarkovKakutani/Real.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Regular.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/EqHaar.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-c77e317e89/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-c77e317e89/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-07.txt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-A.txt",
+        "/tmp/cttp_independent_audit_atz1nqn1/Contracts.lean",
+        "/tmp/cttp_independent_audit_atz1nqn1/AssemblyConditional.lean",
+        "/tmp/cttp_independent_audit_atz1nqn1/EndToEnd.lean"
+      ],
+      "conclusion": "The split is appropriate for the selected idtp_cone_tangent_cone_planar contract. Snapshot and compiler revisions match; the snapshot Contract.lean and workspace Contract.lean/Submission.lean are byte-identical. All five frozen statements are standalone, one-line propositions and independently elaborate without their implementations. All five names are bare identifiers; no other DAG reservation or node-file occurrence was found outside this proposal. The relevant 267-node dependency/child closure is acyclic and does not return to the selected node. Empty child depends_on lists are correct: sequential application in the parent does not create dependencies between these independently proved children. Accepted reuses were checked against retained comparator challenge types, candidate hashes, package pins and successful kernel records permitting only propext, Classical.choice and Quot.sound. The conditional assembly proves the exact frozen parent from the five contracts, planar constancy and density uniqueness, using only those standard axioms. All supplied prototypes also compile; their external theorem stubs remain assumptions, not completed proof acceptance. The plane-ball prototype has no sorryAx dependency. No matrix-unit instance ambiguity occurs. The local mathematical references support the supplied steps; Simon's splitting lemma and Appendix A tangent-invariance argument are also corroborated by [the author's text](https://math.stanford.edu/~lms/ntu-gmt-text.pdf)."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "cycle_tangent_cone",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and Lean type agree, including n ≥ 1. The proof establishes n ≤ P, the ambient manifold hypotheses and empty boundary support before applying tangent-cone existence. Monotonicity supplies θ ≥ 1. Boundary commutation, blowUp 0 = 0 and weak convergence on exterior derivatives establish BoundaryVanishes C'. Every conclusion is supplied without circular reliance."
+    },
+    {
+      "key": "blowup_translation_invariance",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact universal representation contract matches the prose. The proof constructs blow-up representations, establishes local finiteness, derives the correct s_j^n translation identity, and controls moving test functions using uniform convergence, common compact support and bounded compact masses. Eventual positivity suffices. Translation signs and regular-measure uniqueness are correct. The argument also covers n = 0 and p = 0."
+    },
+    {
+      "key": "cone_density_invariance",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The statement and type match. The proof correctly uses translation by −y through a preimage, positive dilation of balls, and the mass-measure identity. Cancellation uses a positive finite ENNReal scalar, without assuming finite total mass. Composition with ρ ↦ ρ/λ preserves the right-sided limit, and density nonnegativity is retained."
+    },
+    {
+      "key": "planar_support_splitting",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact hypotheses suffice: the cited splitting contract does not require a separate cone assumption on S. The proof obtains the one-dimensional factor, identifies its multiplicity with θ, and proves its unit direction belongs to the support and hence to p's orthogonal complement. Normalizing p and applying orthogonal decomposition yields the required frame, containment and p-membership. Dependencies are correctly directed and non-circular."
+    },
+    {
+      "key": "plane_ball_measure",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and independently elaborated type agree for every n, including zero. The supplied proof constructs an isometry with precisely the required span as range, identifies the plane-ball intersection as an image, and applies the pinned Hausdorff-isometry, Euclidean-volume and positive-radius Haar-scaling results. It requires no omitted dimensional or nontriviality hypothesis."
+    }
+  ],
+  "required_changes": []
+}

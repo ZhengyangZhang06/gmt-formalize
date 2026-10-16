@@ -1,0 +1,69 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "abbrev MultiVector|def IsUnitOrientationOf|structure IMRep|orients :|HasApproximateTangentSpaceAt|namespace|^open",
+        "setIntegral_eq_zero_of_ae_eq_zero|integral_pos_of_hasCompactSupport_nonneg_nonzero|MeasurableEmbedding.integral_map|map_smul_univ|apply_apply|comp_isClosedEmbedding|notMem_iff_infDist_pos|eq_of_le_of_finrank_eq|finrank_span_singleton",
+        "idtp_fons_odc_ro_",
+        "cited_inherited|def _inherited_prerequisites|awaiting accepted inherited|def _existing_lean_name_problem",
+        "git -C . rev-parse HEAD",
+        "git -C .lake/packages/mathlib rev-parse HEAD",
+        "git -C .lake/packages/simongmt rev-parse HEAD",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/ro_independent_audit/ChallengesStandalone.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/ro_independent_audit/ProofChecksStandalone.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/lake-manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Module/Alternating/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Module/Alternating/Topology.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Support.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/Isometry.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/HausdorffDistance.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/FiniteDimensional/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/Lipschitz.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-a4a4246c9b/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-a4a4246c9b/decomposition-v1.json",
+        "/runtime/flows/gmt-claude-0e9a4f203404/_recursive_lean/inherited.py",
+        "/runtime/flows/gmt-claude-0e9a4f203404/_recursive_lean/runtime.py",
+        "/tmp/ro_independent_audit/ChallengesStandalone.lean",
+        "/tmp/ro_independent_audit/ProofChecksStandalone.lean"
+      ],
+      "conclusion": "Verified project, Mathlib and SimonGMT pins and compatibility of the inspected sources. All four verbatim one-line types elaborate as Prop before any child implementation exists. Independently inspected and recompiled the supplied child proofs and exact selected-parent assembly. Their axiom lists contain only propext, Classical.choice and Quot.sound, plus the explicitly stubbed, byte-identical inherited line_param contract where used; no sorryAx occurs in these declarations. DAG searches found no reservations for the four fresh bare identifiers and no identical existing child contracts. The dependency graph is acyclic: tangent_line depends on line_integral_pos, which correctly inherits line_param through its exact-name citation. The four-way split is appropriate and establishes this selected parent through ray isolation, tangent identification, orientation classification and restriction of R.orients. ContinuousAlternatingMap.apply has the intended continuous-linear-functional type; no matrix-unit construction occurs. The test-function definition was also checked against [Simon, Chapter 3, Definition 1.4](https://math.stanford.edu/~lms/ntu-gmt-text.pdf)."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "ray_isolation",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and Lean proposition match, including that e need not belong to F. Unit-length parameterizations make the unwanted closed rays closed; finiteness makes their union closed. Norm comparison excludes t₀e from that union, yielding the required ball and inclusion. Every step is complete and non-circular."
+    },
+    {
+      "key": "line_integral_pos",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact normalized-Hausdorff set integral matches the prose. The inherited line_param contract transports it to Lebesgue measure. The pullback is continuous, nonnegative, compactly supported through the isometric closed embedding, and positive at 1, proving strict positivity. The runtime independently resolves the cited inherited prerequisite; empty sibling dependencies are therefore correct."
+    },
+    {
+      "key": "tangent_line",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All hypotheses match, including arbitrary M and N. Nonzero v gives the required dimension comparison. A compact bump separated from span{v} has positive integral on Q, while sufficiently small blow-ups meet its nonzero set only inside a Lipschitz image of N. The pinned zero-integral lemma requires no measurability of M or N. Uniqueness of the right-hand limit yields the contradiction. The sole child dependency, line_integral_pos, is correctly directed."
+    },
+    {
+      "key": "line_orientation",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose exactly unpacks the pinned IsUnitOrientationOf definition. Membership gives τ 0 = c • e, and orthonormality together with ‖e‖ = 1 forces c = ±1. Multilinearity over Fin 1 and continuous-linear-map extensionality justify all four sign cases and the exact evaluation-functional conclusion. No additional hypothesis or circular reliance is used."
+    }
+  ],
+  "required_changes": []
+}

@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.slicing-a1.slice_family-a1.piece_slice_tangent-a1.slice_plane_algebra-a1",
+  "parent_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.slicing-a1.slice_family-a1.piece_slice_tangent-a1",
+  "depth": 6,
+  "title": "Slice tangent-plane algebra: range L ∩ g^⊥ = L(ker ℓ), and g = 0 ⇔ ℓ = 0, when ⟨g, L·⟩ = ℓ and g ∈ range L",
+  "statement": "Let m, P ∈ ℕ, let L : ℝ^m → ℝ^P and ℓ : ℝ^m → ℝ be continuous linear maps (ℝ^k = Euclid k), and let g ∈ ℝ^P satisfy g ∈ L(ℝ^m) and ⟨g, L e⟩ = ℓ(e) for every e ∈ ℝ^m. Then (a) g = 0 if and only if ℓ = 0, and (b) L(ℝ^m) ∩ g^⊥ = L(ker ℓ), where g^⊥ = (ℝ∙g)ᗮ = {v ∈ ℝ^P : ⟨g, v⟩ = 0}; in Lean: LinearMap.range L ⊓ (ℝ ∙ g)ᗮ = Submodule.map L (LinearMap.ker ℓ).",
+  "lean_statement": "∀ (m P : ℕ) (L : Euclid m →L[ℝ] Euclid P) (ℓ : Euclid m →L[ℝ] ℝ) (g : Euclid P), g ∈ LinearMap.range (L : Euclid m →ₗ[ℝ] Euclid P) → (∀ e : Euclid m, inner ℝ g (L e) = ℓ e) → (g = 0 ↔ ℓ = 0) ∧ LinearMap.range (L : Euclid m →ₗ[ℝ] Euclid P) ⊓ (ℝ ∙ g)ᗮ = Submodule.map (L : Euclid m →ₗ[ℝ] Euclid P) (LinearMap.ker (ℓ : Euclid m →ₗ[ℝ] ℝ))",
+  "lean_name": "dor_lmbsf_pst_slice_plane_algebra",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-limsup-mass-bound-a1-slicing-a1-s-8ea8f15305-a1"
+}

@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.lower_density-a1.null_set-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.lower_density-a1",
+  "depth": 4,
+  "title": "Points with small fillings at all scales form a μ-null set (Simon 8.2 (4)–(6), corrected)",
+  "statement": "Assume (VO), the exact frozen statement of dtc_vanish_off_support, which appears verbatim as the first hypothesis of the Lean statement (a current vanishes on test forms whose topological support is disjoint from its support). Let P, d ∈ ℕ, C ∈ 𝒟_{d+1}(ℝ^P), μ a Borel measure on ℝ^P with μ(K) < ∞ for every compact K and μ(W) = M_W(C) for every open W, ξ a μ-a.e. strongly measurable field of (d+1)-vectors with |ξ(x)(α)| ≤ |α| for μ-a.e. x and all α, with C(ω) = ∫ξ(ω)dμ for every test form ω. Let κ, λ ∈ ℝ (κ and lam in Lean) with 0 ≤ κ < 1 ≤ λ, and let E ⊆ ℝ^P be any set such that for every x ∈ E and every δ > 0 there are ρ ∈ (0, δ) with μ(∂B_ρ(x)) = 0 and currents A, S ∈ 𝒟_{d+1}(ℝ^P) with A(ω) = ∫_{B_ρ(x)} ξ(ω) dμ for every test form ω, ∂S = ∂A, M(S) ≤ κ·μ(B_ρ(x)) and spt S ⊆ B̄_{λδ}(x). Then μ(E) = 0.",
+  "lean_statement": "(∀ (P n : ℕ) (U : Set (Euclid P)) (S : GeometricCurrentOn U n) (ω : TestFormOn U n), Disjoint (tsupport (ω : DifferentialForm (Euclid P) n)) S.support → S ω = 0) → ∀ (P d : ℕ) (C : GeometricCurrentOn (univ : Set (Euclid P)) (d + 1)) (μ : Measure (Euclid P)) (ξ : Euclid P → MultiVector P (d + 1)) (κ lam : ℝ) (E : Set (Euclid P)), 0 ≤ κ → κ < 1 → 1 ≤ lam → (∀ K : Set (Euclid P), IsCompact K → μ K < ∞) → (∀ W : Set (Euclid P), IsOpen W → C.massOn W = μ W) → AEStronglyMeasurable ξ μ → (∀ᵐ x ∂μ, ∀ α : Covector (Euclid P) (d + 1), |ξ x α| ≤ covectorEuclideanNorm α) → (∀ ω : TestFormOn (univ : Set (Euclid P)) (d + 1), C ω = ∫ x, ξ x ((ω : DifferentialForm (Euclid P) (d + 1)) x) ∂μ) → (∀ x ∈ E, ∀ δ : ℝ, 0 < δ → ∃ ρ : ℝ, 0 < ρ ∧ ρ < δ ∧ μ (sphere x ρ) = 0 ∧ ∃ (A S : GeometricCurrentOn (univ : Set (Euclid P)) (d + 1)), (∀ ω : TestFormOn (univ : Set (Euclid P)) (d + 1), A ω = ∫ y in ball x ρ, ξ y ((ω : DifferentialForm (Euclid P) (d + 1)) y) ∂μ) ∧ S.boundary = A.boundary ∧ S.mass ≤ ENNReal.ofReal κ * μ (ball x ρ) ∧ S.support ⊆ closedBall x (lam * δ)) → μ E = 0",
+  "lean_name": "cbrld_measure_eq_zero_of_small_fillings",
+  "depends_on": [
+    "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.lower_density-a1.cone-a1",
+    "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.lower_density-a1.covering-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.lower_density-a1.cone-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.lower_density-a1.covering-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-3d838668ea-a1"
+}

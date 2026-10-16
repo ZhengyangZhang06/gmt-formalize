@@ -1,0 +1,65 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "du_bois|duBois|ray_cutoff|ray_ftc|boundary_ray_test|constancy",
+        "extDeriv_constOfIsEmpty|def constOfIsEmptyLIE|integral_Ioi_of_hasDerivAt_of_tendsto|comp_isClosedEmbedding|exists_forall_le\\x27|one_of_mem_closedBall|zero_of_le_dist|contDiff_norm_sq|norm_sub_sq_real",
+        "continuous_deriv|HasCompactSupport.deriv|integrable_of_hasCompactSupport|EventuallyEq.deriv_eq|ae_restrict_neBot|integral_const_mul",
+        "idtp_fons_odc_rc_boundary_ray_test",
+        "idtp_fons_odc_rc_ray_cutoff",
+        "idtp_fons_odc_rc_ray_ftc",
+        "python3 /tmp/rc_independent_audit_20261014/run_check.py Types",
+        "python3 /tmp/rc_independent_audit_20261014/run_check.py boundary_ray_test",
+        "python3 /tmp/rc_independent_audit_20261014/run_check.py ray_cutoff",
+        "python3 /tmp/rc_independent_audit_20261014/run_check.py ray_ftc",
+        "python3 /tmp/rc_independent_audit_20261014/run_check.py Implication"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/DifferentialForm/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/Alternating/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/BumpFunction/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Order/Compact.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Support.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/IntegralEqImproper.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-a005df247f/parent-child-handoff.json",
+        "/tmp/rc_split/check/Assembly.lean",
+        "/tmp/rc_independent_audit_20261014/Types.lean",
+        "/tmp/rc_independent_audit_20261014/boundary_ray_test.lean",
+        "/tmp/rc_independent_audit_20261014/ray_cutoff.lean",
+        "/tmp/rc_independent_audit_20261014/ray_ftc.lean",
+        "/tmp/rc_independent_audit_20261014/Implication.lean"
+      ],
+      "conclusion": "The project and mathlib revisions match the manifest, and inspected library files match the snapshot. The snapshot supplies the zero-form derivative, bump-function, compact-support and half-line FTC facts; no matching ray helper was found in snapshot project/GMT. The split appropriately isolates three independent obligations from the selected proof. All three exact one-line propositions elaborate without child implementations. Each child proof independently compiles against the frozen source using only propext, Classical.choice and Quot.sound. A separate proof with the three child propositions and the exact du Bois–Reymond proposition as explicit parameters establishes the exact frozen parent type, without stubs or sorry dependencies. All names are bare, unreserved identifiers. Dependencies are correctly directed and acyclic. The existing du Bois–Reymond dependency remains pending in the DAG; this audit does not treat it as an accepted theorem."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "boundary_ray_test",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and Lean proposition match, including arbitrary F and G. The supplied proof constructs the test zero-form, computes its exterior derivative, applies boundary vanishing and the representation, then uses the chain rule. Pointwise rewriting requires no additional integrability hypothesis. The proof is complete, independent and reusable in both parent applications."
+    },
+    {
+      "key": "ray_cutoff",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact type matches every stated hypothesis and conclusion, including not requiring e₀ ∈ F. The supplied construction handles empty support and antipodal directions. Its positive support bound, finite choice of κ, compact-support estimate and ray-value computations establish all conclusions without circularity or missing assumptions."
+    },
+    {
+      "key": "ray_ftc",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and exact type agree. Unit norm makes the line parametrization a closed isometric embedding, so the restriction has compact support. Smoothness supplies a continuous, compactly supported derivative, hence integrability; compact support supplies the zero limit at infinity. The stated half-line FTC then gives exactly −f(0)."
+    }
+  ],
+  "required_changes": []
+}

@@ -1,0 +1,58 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "git rev-parse HEAD",
+        "git -C .lake/packages/mathlib rev-parse HEAD",
+        "rg -n 'theorem isConnected_sphere|def IsPreconnected|theorem IsCompact.elim_nhds_subcover|theorem isCompact_sphere|def Finset.equivFin' Mathlib/Analysis/Normed/Module/Connected.lean Mathlib/Topology/Connected/Basic.lean Mathlib/Topology/Compactness/Compact.lean Mathlib/Topology/MetricSpace/ProperSpace.lean Mathlib/Data/Fintype/EquivFin.lean",
+        "rg -n 'idtp_tdc_csfp_(subspace_eq_of_inter_ball|great_circle_local_plane|planes_eq_or_inf_bot)' .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean GMT/Scratch/idtp_tdc_csfp_split_decision/Statements.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean GMT/Scratch/idtp_tdc_csfp_split_decision/EndToEnd.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean GMT/Scratch/idtp_tdc_csfp_split_decision/Assembly.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/Connected.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Connected/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Compactness/Compact.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/ProperSpace.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/Pseudo/Defs.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Algebra/Module/Submodule/Lattice.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Dimension/Free.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Dimension/StrongRankCondition.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Data/Fintype/EquivFin.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-badaf3b232/parent-child-handoff.json",
+        "GMT/Scratch/idtp_tdc_csfp_split_decision/proposal.json",
+        "GMT/Scratch/idtp_tdc_csfp_split_decision/Statements.lean",
+        "GMT/Scratch/idtp_tdc_csfp_split_decision/EndToEnd.lean",
+        "GMT/Scratch/idtp_tdc_csfp_split_decision/Assembly.lean"
+      ],
+      "conclusion": "Project and mathlib revisions match the manifest; the snapshot contract is byte-identical to the workspace Contract.lean and Submission.lean. The pinned library supplies the cited connectedness, compactness, dimension, submodule and enumeration facts. Independently rerun Lean checks succeeded for all exact standalone propositions, all three proofs, and the exact selected parent assembly. Proof axioms are only propext, Classical.choice and Quot.sound. All names are bare identifiers; none is reserved in the inspected 1,068-node DAG, and no exact child type is being reused. The split is appropriate: uniqueness supports continuation, both support the intersection dichotomy, and that dichotomy supports the parent's finite-cover assembly. Dependencies are acyclic, with no reliance on the selected parent or ancestors."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "subspace_eq_of_inter_ball",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose includes every hypothesis and matches the exact one-line Lean proposition. Positivity of t puts x in both subspaces. The explicit positive scaling places x+s·v inside the agreement ball; subtraction and inverse scaling prove one inclusion, and symmetry proves equality. No dimension assumption, circular dependency or missing step is involved."
+    },
+    {
+      "key": "great_circle_local_plane",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and standalone Lean type match. Finrank 2 correctly supplies the rank bound for connectedness of the sphere in Q. The proof establishes ambient openness of A, A∩Q⊆S, and exclusion from closure(A∩Q) using closedness or local planarity plus the declared uniqueness dependency. The seeded preconnectedness argument then proves the exact conclusion. All radius restrictions are valid; dilation invariance is unnecessary."
+    },
+    {
+      "key": "planes_eq_or_inf_bot",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All hypotheses are explicit and match the exact Lean proposition. A nonzero vector in the submodule intersection normalizes to a common unit vector. The continuation dependency applies with each supplied seed; restricting both local equalities to the minimum radius permits the uniqueness dependency. This proves the stated dichotomy without circularity. Its application to distinct enumerated planes, together with compactness and positive dilation, establishes the exact selected parent, including the empty-link case."
+    }
+  ],
+  "required_changes": []
+}

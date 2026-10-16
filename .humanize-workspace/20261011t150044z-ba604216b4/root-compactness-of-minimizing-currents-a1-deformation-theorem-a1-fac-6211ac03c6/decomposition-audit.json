@@ -1,0 +1,92 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "rg -n 'cmcdtfrbv|cmr_cc_det_covector_(exists|basis_kronecker)' project/GMT mathlib/Mathlib -g '*.lean'",
+        "rg -n 'exists_contDiff_support_eq_eq_one_iff|exists_cthickening_subset_open|cthickening_subset_thickening.|closure_thickening_subset_cthickening|theorem (IsCompact.cthickening|self_subset_thickening|cthickening_empty)' mathlib/Mathlib/Geometry/Manifold/PartitionOfUnity.lean mathlib/Mathlib/Topology/MetricSpace/Thickening.lean",
+        "rg -n 'trace_eq_matrix_trace|toMatrix_apply' mathlib/Mathlib/LinearAlgebra/Trace.lean mathlib/Mathlib/LinearAlgebra/Matrix/ToLin.lean",
+        "python3 /tmp/bv-audit-20261013/validate.py",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/bv-audit-20261013/Types.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/bv-audit-20261013/Assembly.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/bv-audit-20261013/Trace.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/bv-audit-20261013/cmr_cc_det_covector_exists.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/bv-audit-20261013/cmr_cc_det_covector_basis_kronecker.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Manifold/PartitionOfUnity.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/Thickening.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Trace.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-fac-6211ac03c6/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-fac-6211ac03c6/decomposition-v1.json",
+        "/tmp/bv-audit-20261013/validate.py",
+        "/tmp/bv-audit-20261013/Types.lean",
+        "/tmp/bv-audit-20261013/Assembly.lean",
+        "/tmp/bv-audit-20261013/Trace.lean",
+        "/tmp/bv-audit-20261013/cmr_cc_det_covector_exists.lean",
+        "/tmp/bv-audit-20261013/cmr_cc_det_covector_basis_kronecker.lean"
+      ],
+      "conclusion": "The pinned revisions and contract match the workspace. The declaration-name search found no snapshot matches; DAG checks establish six unreserved bare names and two comparator-accepted reuses with byte-identical frozen types. All eight standalone, one-line propositions elaborate without child implementations. The Euclidean norm, C∞ order, and continuous-linear-map trace conventions were independently checked; no problematic matrix IsUnit construction occurs. The split is appropriate and its dependencies are acyclic and correctly directed. Recompiled assembly proofs establish the exact selected parent from the children and its existing face_geometry dependency. Assembly and reused-proof axiom checks contain only propext, Classical.choice, and Quot.sound, with no sorryAx."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "face_neighbourhoods",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and Lean type match, including the explicit separation hypothesis. The projection and strict inequalities construct the required open neighborhoods; separation excludes other closed faces, and its two orientations prove disjointness by the triangle inequality. The proof also handles k = 0."
+    },
+    {
+      "key": "boundary_support_faces",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The representation hypothesis alone suffices. The finite union of closed faces is compact; outside it, relatively compact balls annihilate boundary tests because exterior differentiation preserves support. The zero-region definition then gives the exact conclusion. No integrability or monotonicity assumption is silently required."
+    },
+    {
+      "key": "det_covector_exists",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Identical-type accepted reuse was verified and its proof recompiled. Coordinate projection, determinant alternation, transposition, and the factorial product bound construct the required continuous alternating covector for arbitrary I, including degree zero."
+    },
+    {
+      "key": "det_covector_kronecker",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Identical-type accepted reuse was verified and its proof recompiled. The equal-index case gives the identity matrix; otherwise injectivity, finite range cardinalities, and strict monotonicity supply a zero row. Both cases prove the exact determinant identity without circular reliance."
+    },
+    {
+      "key": "face_covectors",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The two declared dependencies suffice. Distinct omitted-index maps and their signed Kronecker values give both the prescribed evaluations and the exact coefficient-norm identity. The finite-sum calculation and degree-zero case are complete; the corresponding implication also compiles."
+    },
+    {
+      "key": "cutoff_field",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The affine projection and smooth cutoff construction satisfy all support, smoothness, and norm requirements. Local agreement with g composed with the projection is justified both on and off tsupport g. The chain rule and standard-basis trace identity prove the exact derivative conclusion, including empty support."
+    },
+    {
+      "key": "divergence_test_form",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The stated hypotheses and declared dependencies provide the required covectors and lifted field. Their finite linear combination is a test form with the exact norm bound; the exterior-derivative signs cancel to yield the required trace. The implication from these two dependencies compiles."
+    },
+    {
+      "key": "mass_disjoint_sum",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The contract correctly permits arbitrary pairwise disjoint regions. Finite support gluing preserves admissibility because at most one summand is nonzero at each point. The proof handles infinite mass, zero local masses, the empty family, supremum approximation, and finite-mass ENNReal conversions without additional hypotheses."
+    }
+  ],
+  "required_changes": []
+}

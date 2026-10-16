@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_sector_endpoint_density-a1.rotation_conservation-a1.test_function-a1",
+  "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_sector_endpoint_density-a1.rotation_conservation-a1",
+  "depth": 5,
+  "title": "C¹ angular test function adapted to the gap hypothesis",
+  "statement": "Let P ∈ ℕ, let Q ⊆ ℝ^P be a 2-dimensional linear subspace with orthogonal projection π := Q.starProjection, let a, e ∈ Q with |a| = |e| = 1 and ⟨a,e⟩ = 0, and let 0 < s ≤ 1/4. Let ψ, l ∈ C¹(ℝ) with tsupport ψ ⊆ (−s, s) and tsupport l ⊆ (1 − s, 1 + s). Put f(y) := arctan(⟨y,e⟩/⟨y,a⟩), A y := ⟨y,a⟩e − ⟨y,e⟩a, and Z := {y : ⟨y,a⟩ > 0, ||y| − 1| < s, |f(y)| < s, |y − πy| < s|y|}. Say that x satisfies the gap condition if ⟨x,a⟩ > 0, ||x| − 1| < s and |f(x)| < s together imply that |x − πx| < (s/2)|x| or 2s|x| < |x − πx|. Then there is a C¹ function g : ℝ^P → ℝ with compact support such that, for every x satisfying the gap condition and every v ∈ ℝ^P with ⟨x,v⟩ = 0: Dg(x)v = ψ'(f(x))·l(|x|)·⟨Ax, v⟩/|πx|² if x ∈ Z, and Dg(x)v = 0 if x ∉ Z.",
+  "lean_statement": "∀ (P : ℕ) (Q : Submodule ℝ (Euclid P)) (a e : Euclid P) (s : ℝ) (ψ l : ℝ → ℝ), Module.finrank ℝ Q = 2 → a ∈ Q → e ∈ Q → ‖a‖ = 1 → ‖e‖ = 1 → inner ℝ a e = 0 → 0 < s → s ≤ 1 / 4 → ContDiff ℝ 1 ψ → ContDiff ℝ 1 l → tsupport ψ ⊆ Ioo (-s) s → tsupport l ⊆ Ioo (1 - s) (1 + s) → ∃ g : Euclid P → ℝ, ContDiff ℝ 1 g ∧ HasCompactSupport g ∧ (∀ x v : Euclid P, inner ℝ x v = 0 → (0 < inner ℝ x a → |‖x‖ - 1| < s → |Real.arctan (inner ℝ x e / inner ℝ x a)| < s → ‖x - Q.starProjection x‖ < s / 2 * ‖x‖ ∨ 2 * s * ‖x‖ < ‖x - Q.starProjection x‖) → x ∈ {y : Euclid P | 0 < inner ℝ y a ∧ |‖y‖ - 1| < s ∧ |Real.arctan (inner ℝ y e / inner ℝ y a)| < s ∧ ‖y - Q.starProjection y‖ < s * ‖y‖} → fderiv ℝ g x v = deriv ψ (Real.arctan (inner ℝ x e / inner ℝ x a)) * l ‖x‖ * (inner ℝ (inner ℝ x a • e - inner ℝ x e • a) v / ‖Q.starProjection x‖ ^ 2)) ∧ (∀ x v : Euclid P, inner ℝ x v = 0 → (0 < inner ℝ x a → |‖x‖ - 1| < s → |Real.arctan (inner ℝ x e / inner ℝ x a)| < s → ‖x - Q.starProjection x‖ < s / 2 * ‖x‖ ∨ 2 * s * ‖x‖ < ‖x - Q.starProjection x‖) → x ∉ {y : Euclid P | 0 < inner ℝ y a ∧ |‖y‖ - 1| < s ∧ |Real.arctan (inner ℝ y e / inner ℝ y a)| < s ∧ ‖y - Q.starProjection y‖ < s * ‖y‖} → fderiv ℝ g x v = 0)",
+  "lean_name": "idtp_cse_rc_test_function",
+  "depends_on": [
+    "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_sector_endpoint_density-a1.rotation_conservation-a1.cone_cutoff-a1",
+    "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_sector_endpoint_density-a1.rotation_conservation-a1.angle_fderiv-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_sector_endpoint_density-a1.rotation_conservation-a1.cone_cutoff-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_sector_endpoint_density-a1.rotation_conservation-a1.angle_fderiv-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-db9ae3fc33-a1"
+}

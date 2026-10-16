@@ -1,0 +1,84 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "nullSingletonClass_hausdorff|euclideanHausdorffMeasure_def|parallelogram_law_with_norm|theorem setIntegral_union |theorem integral_Ioc_eq_integral_Ioo |ofReal_sum_of_nonneg|theorem volume_Ioo|comp_isClosedEmbedding|theorem Continuous.integrable_of_hasCompactSupport",
+        "idtp_fons_odc_antipodal_|cbr_cc_seg_zero_form_ftc|rsd_cmr_support_subset_of_vanish|dimred_im_mass_measure",
+        "theorem ofReal_mul |ofReal_le_ofReal_iff|Ioc_union_Ioi_eq_Ioi|closure_Ioi |closure_Ioo |theorem mem_span_singleton |theorem smul_mem_iff",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/antipodal_independent_audit/Contracts.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/antipodal_independent_audit/Conditional.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Basic/ENNReal/Real.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-c6dd52ac2a/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-c6dd52ac2a/decomposition-v1.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-a0328cc6d3/accepted-candidate.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-regular-set-dense-a1-constant-multiplicity-reduction-a1-support-a67ad69f81/accepted-candidate.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-im-mass-measure-a1/accepted-candidate.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification/results/hoa14/20261013T182508Z-ch07-root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a-p09ycyxi/input-identity.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification/results/hoa24/20261012T135810Z-ch07-root.regular_set_dense-a1.constant_multiplicity_reduction-a1.support_of_vanishin-17gpkxm1/input-identity.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification/results/hoa54/20261013T025140Z-ch07-root.dimension_reduction_results-a1.im_mass_measure-a1-8ckfwp1g/input-identity.json",
+        "/tmp/antipodal_decomp/check/T6.lean",
+        "/tmp/antipodal_independent_audit/Contracts.lean",
+        "/tmp/antipodal_independent_audit/Conditional.lean"
+      ],
+      "conclusion": "The project and Mathlib revisions match the pinned manifest. The split is appropriate for this selected antipodality theorem. All seven frozen propositions elaborate independently without child declarations. The four new proofs and the exact parent conclusion also compile with external dependencies supplied as explicit hypotheses; their axiom reports contain only propext, Classical.choice and Quot.sound. The three reused types match their accepted contracts and comparator inputs exactly, with compatible revisions and standard-axiom checks. Dependency traversal found no cycles or reliance on the selected theorem. All names are bare identifiers; the four new names are unreserved and have no matches in the snapshot project or SimonGMT. The supplied types contain no problematic matrix-unit construction."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "chord",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and Lean proposition agree. Normalization gives the positive length, unit direction and endpoint; convexity gives containment. Non-collinearity proves the stated intersection uniqueness for unrestricted real parameters, using both distinctness hypotheses."
+    },
+    {
+      "key": "ray_split",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof establishes continuity, compact support and integrability before applying integral additivity. Removing the null endpoint gives exactly the stated open intervals. No additional hypothesis or circular dependency is needed."
+    },
+    {
+      "key": "ftc",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Valid reuse with an identical accepted type. Evaluation on the empty tuple, the exterior-derivative formula, chain rule and interval FTC prove the exact statement, including zero length and arbitrary direction."
+    },
+    {
+      "key": "support",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Valid reuse with an identical accepted type. The relatively compact zero neighborhoods establish support containment; the identity support = K minus zeroRegion establishes compactness. All domain and compactness hypotheses are present and correctly used."
+    },
+    {
+      "key": "im_mass",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Valid reuse with an identical accepted type and compatible standard-axiom comparator evidence. Unit-orientation duality, Radon approximation, the zero-region argument and measure uniqueness establish all three clauses independently of antipodality."
+    },
+    {
+      "key": "ray_mass",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The explicit representation hypotheses match the prose. The parameter preimage is exactly (0,r), and the ENNReal calculation remains valid for nonpositive radii. Its sole child dependency, im_mass, is correctly directed."
+    },
+    {
+      "key": "competitor",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "PC is exactly the sibling's frozen proposition, supplied as a hypothesis rather than assumed through an undeclared dependency. All nine directed overlap cases, including closures, are justified. PC and im_mass yield the action formula and mass bound, also at zero length. Together with the other children and declared sibling dependencies, these conclusions establish the selected parent through boundary cancellation, compact support, minimality and the parallelogram law."
+    }
+  ],
+  "required_changes": []
+}

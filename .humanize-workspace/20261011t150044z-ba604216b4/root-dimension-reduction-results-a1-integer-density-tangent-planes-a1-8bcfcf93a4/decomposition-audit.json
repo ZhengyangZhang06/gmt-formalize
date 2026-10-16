@@ -1,0 +1,52 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "idtp_fons_cc_mb_|monotone_lower_bound|mass_dichotomy",
+        "git rev-parse HEAD",
+        "git -C .lake/packages/mathlib rev-parse HEAD",
+        "git -C .lake/packages/simongmt rev-parse HEAD",
+        "sed -n '130,170p' .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/OuterMeasure/Basic.lean",
+        "sed -n '315,370p' .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Instances/ENNReal/Lemmas.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/mb_split_k3x9/final/Check.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/OuterMeasure/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/OpenPos.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Typeclasses/Finite.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Instances/ENNReal/Lemmas.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Basic/ENNReal/Inv.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Order/OrderClosed.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Order/LiminfLimsup.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Order/Filter/AtTopBot/Ring.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-8bcfcf93a4/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-8bcfcf93a4/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification/results/hoa54/20261013T025140Z-ch07-root.dimension_reduction_results-a1.im_mass_measure-a1-8ckfwp1g/comparator-config.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification/results/hoa54/20261013T025140Z-ch07-root.dimension_reduction_results-a1.im_mass_measure-a1-8ckfwp1g/comparator.log",
+        "/tmp/mb_split_k3x9/final/Check.lean"
+      ],
+      "conclusion": "The project and mathlib revisions match the manifest; the snapshot contract is byte-identical to the workspace contract and Submission.lean. Inspected definitions and library lemmas support the stated ENNReal cancellations, continuity conditions, positive finite unit-ball volume, growth at infinity, and local-nullity argument. No proposed name occurs in the searched libraries or among the 2092 DAG nodes. Both names are valid bare identifiers. Both children have no dependencies; the inherited parent dependencies have no path back to the selected node. The reused dimred_im_mass_measure declaration has exactly its frozen type and passed a comparator permitting only standard axioms. Independently rerunning Check.lean succeeded: both children use only propext, Classical.choice and Quot.sound. Its child and parent types match the decomposition and immutable handoff exactly; the parent assembly uses precisely the two inherited dependency declarations plus standard axioms. The split is appropriate: monotone_lower_bound establishes A and B1, mass_dichotomy establishes B2, and the supplied inline limsup argument establishes B3 using MON's density existence."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "monotone_lower_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line proposition exactly matches the prose, includes every hypothesis, and is independently usable without either proposed declaration. The proof establishes positive finite unit-ball volume for every n, including zero; verifies the ENNReal factorization and multiplication-limit side conditions; compares the limit with f(σ) along the nontrivial right-neighborhood filter; uses θ ≥ 1; and cancels positive finite weights. It requires neither Λ ≥ 0 nor finite m(σ). Every step is justified and non-circular, and the result supplies the parent's A and B1. The bare Lean name is fresh."
+    },
+    {
+      "key": "mass_dichotomy",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line proposition exactly matches the prose and uses the ordinary Borel measure instance on Euclid P. At a point with nonzero measure in every positive-radius ball, the assumed bound, n ≥ 1 and positive unit-ball volume force infinite total mass. Otherwise the classical negation supplies a null open-ball neighborhood at every point, and second countability gives zero total mass. No local-finiteness or dimension-comparison assumption is missing. The complete proof is independent of the parent and sibling and supplies B2 from B1. The bare Lean name is fresh."
+    }
+  ],
+  "required_changes": []
+}
